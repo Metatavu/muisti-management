@@ -1,0 +1,25 @@
+{
+  "exhibitions": {
+    "listTitle": "Exhibitions",
+    "createExhibitionDialog": {
+      "title": "Create new exhibition",
+      "helpText": "You can create new exihibiton by adding a name and pressing create button",
+      "nameLabel": "Name",
+      "cancelButton": "Cancel",
+      "createButton": "Create"
+    }
+  },
+
+  "errorDialog": {
+    "title": "Whoops! Something went wrong",
+    "reloadPage": "Try reloading the page.",
+    "unsavedContents": "Please note that unsaved content will not be saved when reloading. If you have unsaved content on this page, you can close this message and copy the content to the clipboard before reloading.",
+    "reportIssue": "If the problem persists, contact support@metatavu.fi by email. Please include technical details in to the email to speed up resolution of the problem.",
+    "technicalDetails": "technical details:",
+    "time": "Time: {0}",
+    "url": "URL: {0}",
+    "errorMessage": "Error message: ",
+    "close": "Close",
+    "reload": "Reload"
+  }
+}

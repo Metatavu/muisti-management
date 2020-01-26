@@ -1,0 +1,25 @@
+{
+  "exhibitions": {
+    "listTitle": "Näyttelyt",
+    "createExhibitionDialog": {
+      "title": "Luo uusi näyttely",
+      "helpText": "Voit luoda uuden näyttelyn täyttämällä nimi-kentän ja painamalla luo-nappulaa",
+      "nameLabel": "Nimi",
+      "cancelButton": "Peruuta",
+      "createButton": "Luo"
+    }
+  },
+
+  "errorDialog": {
+    "title": "Hups! Jokin meni pieleen",
+    "reloadPage": "Kokeile ladata sivu uudelleen.",
+    "unsavedContents": "Huomaathan, että tallentamattomat sisällöt häviävät uudelleenladattaessa. Mikäli sinulla on sivulla tallentamattomia sisältöjä, voit sulkea tämän ilmoituksen ja kopioida sisällöt leikepöydälle ennen uudelleenlatausta.",
+    "reportIssue": "Mikäli ongelma jatkuu, ota sähköpostilla yhteyttä osoitteeseen support@metatavu.fi. Liitä tekniset lisätiedot osaksi sähköpostia nopeuttaaksesi ongelan selvittelyä.",
+    "technicalDetails": "Teknisiä lisätietoja:",
+    "time": "Aika: {0}",
+    "url": "Osoite: {0}",
+    "errorMessage": "Virheilmoitus: ",
+    "close": "Sulje",
+    "reload": "Lataa uudelleen"
+  }
+}
