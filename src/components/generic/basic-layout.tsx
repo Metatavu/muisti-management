@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WithStyles, withStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, AppBar, Toolbar, IconButton, Typography, Button } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
 import { KeycloakInstance } from "keycloak-js";
@@ -41,11 +41,14 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-        <AppBar position="static">
+      <div className={classes.root}>
+        <AppBar position="static" className={ classes.appBar }>
           <Toolbar variant="dense">
-            <IconButton edge="end" onClick={this.onLogOutClick}>
+            <div style={{ flexGrow: 1 }} />
+            <IconButton edge="start" onClick={this.onLogOutClick}>
               <SignOutIcon />
             </IconButton>
           </Toolbar>

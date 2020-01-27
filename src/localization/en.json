@@ -1,6 +1,7 @@
 {
   "exhibitions": {
     "listTitle": "Exhibitions",
+    "newExhibitionLabel": "New exhibition",
     "createExhibitionDialog": {
       "title": "Create new exhibition",
       "helpText": "You can create new exihibiton by adding a name and pressing create button",
