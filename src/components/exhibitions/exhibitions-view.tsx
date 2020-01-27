@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Card, CardActionArea, CardContent, Icon, CardMedia } from "@material-ui/core";
-import styles from "../../styles/card-item";
+import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Card, CardActionArea, CardContent, Icon, CardMedia, Paper } from "@material-ui/core";
+import styles from "../../styles/exhibitions-view";
 import { History } from "history";
 import CardItem from "../generic/card-item";
 import strings from "../../localization/strings";
@@ -86,27 +86,26 @@ class ExhibitionsView extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+    const { classes } = this.props;
+
     const cards = this.state.exhibitions.map((exhibition) => this.renderCard(exhibition));
 
     return (
       <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
         <Container maxWidth="xl">
-          <Typography variant="h2">{ strings.exhibitions.listTitle }</Typography>
-          <Container maxWidth="md" style={{ background: "#fff" }}>
-            <Grid container spacing={5} direction="row">
+          <Container maxWidth="md">
+            <Paper elevation={3} className={ classes.paper } >
+              <Typography className={ classes.title } variant="h2">{ strings.exhibitions.listTitle }</Typography>
+
+              <Grid container spacing={5} direction="row">
               <Grid item>
-                <Card elevation={10} variant="outlined">
-                  <CardActionArea onClick={ this.onCreateButtonClick }>
-                    <CardMedia>
-                      <AddIcon style={{ fontSize: "60px" }}/>
-                    </CardMedia>
-                  </CardActionArea>
-                </Card>
+                <CardItem key="new" title={ strings.exhibitions.newExhibitionLabel } icon={ <AddIcon style={{ fontSize: "60px" }}/> } onClick={ this.onCreateButtonClick }/>
               </Grid>
-              {
-                cards
-              }
-            </Grid>
+                {
+                  cards
+                }
+              </Grid>
+            </Paper>
           </Container>
         </Container>
         { this.renderCreateDialog() }
@@ -119,13 +118,9 @@ class ExhibitionsView extends React.Component<Props, State> {
    */
   private renderCard(exhibition: Exhibition) {
     return (
-    <Grid item>
-      <CardItem
-        title={ exhibition.name }
-        img={ defaultExhibitionImage }
-        onClick={() => {} }>
-      </CardItem>
-    </Grid>
+      <Grid item>
+        <CardItem key={ exhibition.id } title={ exhibition.name } image={ defaultExhibitionImage } onClick={() => { alert("Coming soon! :)"); } }/>
+      </Grid>
     );
   }
   

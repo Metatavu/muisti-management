@@ -1,6 +1,7 @@
 {
   "exhibitions": {
     "listTitle": "Näyttelyt",
+    "newExhibitionLabel": "Uusi näyttely",
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
       "helpText": "Voit luoda uuden näyttelyn täyttämällä nimi-kentän ja painamalla luo-nappulaa",

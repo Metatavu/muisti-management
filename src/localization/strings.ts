@@ -6,6 +6,7 @@ import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
 export interface IStrings extends LocalizedStringsMethods {
   exhibitions: {
     listTitle: string,
+    newExhibitionLabel: string,
     createExhibitionDialog: {
       title: string,
       helpText: string,
