@@ -16,58 +16,65 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Exhibition
+ * @interface ExhibitionDeviceGroup
  */
-export interface Exhibition {
+export interface ExhibitionDeviceGroup {
     /**
      * 
      * @type {string}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
      */
     readonly id?: string;
     /**
      * 
      * @type {string}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
+     */
+    readonly exhibition_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionDeviceGroup
      */
     name: string;
     /**
      * 
      * @type {string}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
      */
     readonly creator_id?: string;
     /**
      * 
      * @type {string}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
      */
     readonly last_modifier_id?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
      */
     readonly created_at?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof Exhibition
+     * @memberof ExhibitionDeviceGroup
      */
     readonly modified_at?: Date;
 }
 
-export function ExhibitionFromJSON(json: any): Exhibition {
-    return ExhibitionFromJSONTyped(json, false);
+export function ExhibitionDeviceGroupFromJSON(json: any): ExhibitionDeviceGroup {
+    return ExhibitionDeviceGroupFromJSONTyped(json, false);
 }
 
-export function ExhibitionFromJSONTyped(json: any, ignoreDiscriminator: boolean): Exhibition {
+export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionDeviceGroup {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
+        'exhibition_id': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
         'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -76,7 +83,7 @@ export function ExhibitionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function ExhibitionToJSON(value?: Exhibition | null): any {
+export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null): any {
     if (value === undefined) {
         return undefined;
     }

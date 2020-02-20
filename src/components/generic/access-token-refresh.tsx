@@ -1,7 +1,10 @@
 import * as React from "react";
+
 import { connect } from "react-redux";
-import { StoreState, AccessToken } from "../../types";
-import * as actions from "../../actions";
+import { ReduxState, ReduxActions } from "../../store";
+import { login } from "../../actions/auth";
+
+import { AccessToken } from "../../types"
 import ErrorDialog from "./error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
@@ -72,17 +75,6 @@ class AccessTokenRefresh extends React.Component<Props, State> {
   }
 
   /**
-   * Initializes Keycloak client
-   */
-  private keycloakInit = () => {
-    return new Promise((resolve) => {
-      this.keycloak.init({ onLoad: "login-required" }).success((auth) => {
-        resolve(auth);
-      });
-    });
-  }
-
-  /**
    * Component will unmount life-cycle event
    */
   public componentWillUnmount() {
@@ -122,6 +114,16 @@ class AccessTokenRefresh extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Initializes Keycloak client
+   */
+  private keycloakInit = () => {
+    return new Promise((resolve) => {
+      this.keycloak.init({ onLoad: "login-required" }).success((auth) => {
+        resolve(auth);
+      });
+    });
+  }
 }
 
 /**
@@ -129,9 +131,9 @@ class AccessTokenRefresh extends React.Component<Props, State> {
  * 
  * @param state store state
  */
-function mapStateToProps(state: StoreState) {
+function mapStateToProps(state: ReduxState) {
   return {
-    accessToken: state.accessToken
+    accessToken: state.auth.accessToken
   };
 }
 
@@ -140,9 +142,9 @@ function mapStateToProps(state: StoreState) {
  * 
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<actions.AppAction>) {
+function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
   return {
-    onLogin: (keycloak: KeycloakInstance) => dispatch(actions.login(keycloak))
+    onLogin: (keycloak: KeycloakInstance) => dispatch(login(keycloak))
   };
 }
 
