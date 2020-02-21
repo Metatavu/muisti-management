@@ -57,8 +57,8 @@ class App extends React.Component<Props, State> {
                 <Route
                   path="/exhibitions/:exhibitionId"
                   exact={true}
-                  render={ ({ match, history }) => (
-                    <ExhibitionView history={ history } exhibitionId={ match.params.exhibitionId } />
+                  render={ ({ history }) => (
+                    <ExhibitionView history={ history } />
                   )}
                 />
               </div>

@@ -45,7 +45,7 @@ export interface VisitorSession {
      * @type {string}
      * @memberof VisitorSession
      */
-    readonly exhibition_id?: string;
+    readonly exhibitionId?: string;
     /**
      * 
      * @type {VisitorSessionState}
@@ -69,25 +69,25 @@ export interface VisitorSession {
      * @type {string}
      * @memberof VisitorSession
      */
-    readonly creator_id?: string;
+    readonly creatorId?: string;
     /**
      * 
      * @type {string}
      * @memberof VisitorSession
      */
-    readonly last_modifier_id?: string;
+    readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
      * @memberof VisitorSession
      */
-    readonly created_at?: Date;
+    readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
      * @memberof VisitorSession
      */
-    readonly modified_at?: Date;
+    readonly modifiedAt?: Date;
 }
 
 export function VisitorSessionFromJSON(json: any): VisitorSession {
@@ -101,14 +101,14 @@ export function VisitorSessionFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'exhibition_id': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'state': !exists(json, 'state') ? undefined : VisitorSessionStateFromJSON(json['state']),
         'variables': !exists(json, 'variables') ? undefined : ((json['variables'] as Array<any>).map(VisitorSessionVariableFromJSON)),
         'users': ((json['users'] as Array<any>).map(VisitorSessionUserFromJSON)),
-        'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
-        'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
-        'created_at': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'modified_at': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
+        'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
+        'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
+        'modifiedAt': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
     };
 }
 

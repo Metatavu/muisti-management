@@ -36,25 +36,25 @@ export interface Exhibition {
      * @type {string}
      * @memberof Exhibition
      */
-    readonly creator_id?: string;
+    readonly creatorId?: string;
     /**
      * 
      * @type {string}
      * @memberof Exhibition
      */
-    readonly last_modifier_id?: string;
+    readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
      * @memberof Exhibition
      */
-    readonly created_at?: Date;
+    readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
      * @memberof Exhibition
      */
-    readonly modified_at?: Date;
+    readonly modifiedAt?: Date;
 }
 
 export function ExhibitionFromJSON(json: any): Exhibition {
@@ -69,10 +69,10 @@ export function ExhibitionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
-        'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
-        'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
-        'created_at': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'modified_at': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
+        'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
+        'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
+        'modifiedAt': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
     };
 }
 

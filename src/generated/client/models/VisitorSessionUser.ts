@@ -24,13 +24,13 @@ export interface VisitorSessionUser {
      * @type {string}
      * @memberof VisitorSessionUser
      */
-    user_id: string;
+    userId: string;
     /**
      * 
      * @type {string}
      * @memberof VisitorSessionUser
      */
-    tag_id: string;
+    tagId: string;
 }
 
 export function VisitorSessionUserFromJSON(json: any): VisitorSessionUser {
@@ -43,8 +43,8 @@ export function VisitorSessionUserFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'user_id': json['userId'],
-        'tag_id': json['tagId'],
+        'userId': json['userId'],
+        'tagId': json['tagId'],
     };
 }
 
@@ -57,8 +57,8 @@ export function VisitorSessionUserToJSON(value?: VisitorSessionUser | null): any
     }
     return {
         
-        'userId': value.user_id,
-        'tagId': value.tag_id,
+        'userId': value.userId,
+        'tagId': value.tagId,
     };
 }
 

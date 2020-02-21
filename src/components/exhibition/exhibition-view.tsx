@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
@@ -23,7 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   history: History,
   keycloak: KeycloakInstance,
   accessToken: AccessToken,
-  exhibitionId: string
+  exhibition: Exhibition
 }
 
 /**
@@ -61,9 +62,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     });
 
     try {
-      const  { accessToken, exhibitionId } = this.props;
-      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-      const exhibition: Exhibition = await exhibitionsApi.findExhibition({ exhibition_id: exhibitionId });
+      const { exhibition } = this.props;
 
       this.setState({
         exhibition: exhibition
@@ -83,19 +82,21 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
+
+    if (this.state.loading) {
+      return (
+        <CircularProgress></CircularProgress>
+      );
+    }
+
     return (
       <div>
-        { this.state.loading ? (
-            <CircularProgress></CircularProgress>
-          ) : (
-            <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
-              <ViewSelectionBar />
-              <ElementNavigationPane />
-              <EditorView />
-              <ElementSettingsPane />
-            </BasicLayout>
-          )
-        }
+        <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+          <ViewSelectionBar />
+          <ElementNavigationPane />
+          <EditorView />
+          <ElementSettingsPane />
+        </BasicLayout>
       </div>
     );
   }
@@ -109,7 +110,8 @@ export class ExhibitionView extends React.Component<Props, State> {
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
+    accessToken: state.auth.accessToken as AccessToken,
+    exhibition: state.exhibition.exhibition as Exhibition
   };
 }
 
@@ -118,7 +120,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
   };
 }

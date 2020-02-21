@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { ReduxState, ReduxActions } from "../../store";
 import { setExhibition } from "../../actions/exhibition";
 
@@ -23,7 +24,8 @@ import { AccessToken } from "../../types";
 interface Props extends WithStyles<typeof styles> {
   history: History,
   keycloak: KeycloakInstance,
-  accessToken: AccessToken
+  accessToken: AccessToken,
+  setExhibition: typeof setExhibition
 }
 
 /**
@@ -183,7 +185,17 @@ class ExhibitionsView extends React.Component<Props, State> {
     });
   }
 
-  private openExhibition = (exhibitionId: string) => {
+
+  /**
+   * Opens exhibition
+   * 
+   * @param exhibitionId exhibition id
+   */
+  private openExhibition = async (exhibitionId: string) => {
+    const { accessToken } = this.props;
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const exhibition = await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId });
+    this.props.setExhibition(exhibition);
     this.props.history.push(`/exhibitions/${exhibitionId}`);
   }
 
@@ -250,7 +262,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))
   };

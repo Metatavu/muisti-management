@@ -21,28 +21,28 @@ import {
 } from '../models';
 
 export interface CreateExhibitionDeviceGroupRequest {
-    exhibition_device_group: ExhibitionDeviceGroup;
-    exhibition_id: string;
+    exhibitionDeviceGroup: ExhibitionDeviceGroup;
+    exhibitionId: string;
 }
 
 export interface DeleteExhibitionDeviceGroupRequest {
-    exhibition_id: string;
-    device_group_id: string;
+    exhibitionId: string;
+    deviceGroupId: string;
 }
 
 export interface FindExhibitionDeviceGroupRequest {
-    exhibition_id: string;
-    device_group_id: string;
+    exhibitionId: string;
+    deviceGroupId: string;
 }
 
 export interface ListExhibitionDeviceGroupsRequest {
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 export interface UpdateExhibitionDeviceGroupRequest {
-    exhibition_device_group: ExhibitionDeviceGroup;
-    exhibition_id: string;
-    device_group_id: string;
+    exhibitionDeviceGroup: ExhibitionDeviceGroup;
+    exhibitionId: string;
+    deviceGroupId: string;
 }
 
 /**
@@ -55,12 +55,12 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * Create a device group
      */
     async createExhibitionDeviceGroupRaw(requestParameters: CreateExhibitionDeviceGroupRequest): Promise<runtime.ApiResponse<ExhibitionDeviceGroup>> {
-        if (requestParameters.exhibition_device_group === null || requestParameters.exhibition_device_group === undefined) {
-            throw new runtime.RequiredError('exhibition_device_group','Required parameter requestParameters.exhibition_device_group was null or undefined when calling createExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionDeviceGroup === null || requestParameters.exhibitionDeviceGroup === undefined) {
+            throw new runtime.RequiredError('exhibitionDeviceGroup','Required parameter requestParameters.exhibitionDeviceGroup was null or undefined when calling createExhibitionDeviceGroup.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling createExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createExhibitionDeviceGroup.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -78,11 +78,11 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionDeviceGroupToJSON(requestParameters.exhibition_device_group),
+            body: ExhibitionDeviceGroupToJSON(requestParameters.exhibitionDeviceGroup),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionDeviceGroupFromJSON(jsonValue));
@@ -102,12 +102,12 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * Deletes device group.
      */
     async deleteExhibitionDeviceGroupRaw(requestParameters: DeleteExhibitionDeviceGroupRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling deleteExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteExhibitionDeviceGroup.');
         }
 
-        if (requestParameters.device_group_id === null || requestParameters.device_group_id === undefined) {
-            throw new runtime.RequiredError('device_group_id','Required parameter requestParameters.device_group_id was null or undefined when calling deleteExhibitionDeviceGroup.');
+        if (requestParameters.deviceGroupId === null || requestParameters.deviceGroupId === undefined) {
+            throw new runtime.RequiredError('deviceGroupId','Required parameter requestParameters.deviceGroupId was null or undefined when calling deleteExhibitionDeviceGroup.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -123,7 +123,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.device_group_id))),
+            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -145,12 +145,12 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * Find a device group
      */
     async findExhibitionDeviceGroupRaw(requestParameters: FindExhibitionDeviceGroupRequest): Promise<runtime.ApiResponse<ExhibitionDeviceGroup>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling findExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findExhibitionDeviceGroup.');
         }
 
-        if (requestParameters.device_group_id === null || requestParameters.device_group_id === undefined) {
-            throw new runtime.RequiredError('device_group_id','Required parameter requestParameters.device_group_id was null or undefined when calling findExhibitionDeviceGroup.');
+        if (requestParameters.deviceGroupId === null || requestParameters.deviceGroupId === undefined) {
+            throw new runtime.RequiredError('deviceGroupId','Required parameter requestParameters.deviceGroupId was null or undefined when calling findExhibitionDeviceGroup.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -166,7 +166,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.device_group_id))),
+            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -189,8 +189,8 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * List device groups
      */
     async listExhibitionDeviceGroupsRaw(requestParameters: ListExhibitionDeviceGroupsRequest): Promise<runtime.ApiResponse<Array<ExhibitionDeviceGroup>>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling listExhibitionDeviceGroups.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listExhibitionDeviceGroups.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -206,7 +206,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -229,16 +229,16 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * Updates device group.
      */
     async updateExhibitionDeviceGroupRaw(requestParameters: UpdateExhibitionDeviceGroupRequest): Promise<runtime.ApiResponse<ExhibitionDeviceGroup>> {
-        if (requestParameters.exhibition_device_group === null || requestParameters.exhibition_device_group === undefined) {
-            throw new runtime.RequiredError('exhibition_device_group','Required parameter requestParameters.exhibition_device_group was null or undefined when calling updateExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionDeviceGroup === null || requestParameters.exhibitionDeviceGroup === undefined) {
+            throw new runtime.RequiredError('exhibitionDeviceGroup','Required parameter requestParameters.exhibitionDeviceGroup was null or undefined when calling updateExhibitionDeviceGroup.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling updateExhibitionDeviceGroup.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateExhibitionDeviceGroup.');
         }
 
-        if (requestParameters.device_group_id === null || requestParameters.device_group_id === undefined) {
-            throw new runtime.RequiredError('device_group_id','Required parameter requestParameters.device_group_id was null or undefined when calling updateExhibitionDeviceGroup.');
+        if (requestParameters.deviceGroupId === null || requestParameters.deviceGroupId === undefined) {
+            throw new runtime.RequiredError('deviceGroupId','Required parameter requestParameters.deviceGroupId was null or undefined when calling updateExhibitionDeviceGroup.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -256,11 +256,11 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.device_group_id))),
+            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionDeviceGroupToJSON(requestParameters.exhibition_device_group),
+            body: ExhibitionDeviceGroupToJSON(requestParameters.exhibitionDeviceGroup),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionDeviceGroupFromJSON(jsonValue));

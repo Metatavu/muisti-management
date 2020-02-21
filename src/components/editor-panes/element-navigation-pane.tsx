@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { AccessToken } from "../../types";
 
@@ -55,7 +56,7 @@ class ElementNavigationPane extends React.Component<Props, State> {
   public componentDidMount = async () => {
     const { accessToken, exhibition } = this.props;
     
-    if (!accessToken || !exhibition || !exhibition.id) {
+    if (!exhibition || !exhibition.id) {
       return;
     }
 
@@ -65,7 +66,7 @@ class ElementNavigationPane extends React.Component<Props, State> {
 
     try {
       const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-      const exhibitionRooms: ExhibitionRoom[] = await exhibitionRoomsApi.listExhibitionRooms({ exhibition_id: exhibition.id });
+      const exhibitionRooms: ExhibitionRoom[] = await exhibitionRoomsApi.listExhibitionRooms({ exhibitionId: exhibition.id });
 
       this.setState({
         exhibitionRooms: exhibitionRooms
@@ -114,7 +115,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
   };
 }

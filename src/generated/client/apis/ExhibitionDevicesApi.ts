@@ -21,28 +21,28 @@ import {
 } from '../models';
 
 export interface CreateExhibitionDeviceRequest {
-    exhibition_device: ExhibitionDevice;
-    exhibition_id: string;
+    exhibitionDevice: ExhibitionDevice;
+    exhibitionId: string;
 }
 
 export interface DeleteExhibitionDeviceRequest {
-    exhibition_id: string;
-    device_id: string;
+    exhibitionId: string;
+    deviceId: string;
 }
 
 export interface FindExhibitionDeviceRequest {
-    exhibition_id: string;
-    device_id: string;
+    exhibitionId: string;
+    deviceId: string;
 }
 
 export interface ListExhibitionDevicesRequest {
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 export interface UpdateExhibitionDeviceRequest {
-    exhibition_device: ExhibitionDevice;
-    exhibition_id: string;
-    device_id: string;
+    exhibitionDevice: ExhibitionDevice;
+    exhibitionId: string;
+    deviceId: string;
 }
 
 /**
@@ -55,12 +55,12 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
      * Create a device
      */
     async createExhibitionDeviceRaw(requestParameters: CreateExhibitionDeviceRequest): Promise<runtime.ApiResponse<ExhibitionDevice>> {
-        if (requestParameters.exhibition_device === null || requestParameters.exhibition_device === undefined) {
-            throw new runtime.RequiredError('exhibition_device','Required parameter requestParameters.exhibition_device was null or undefined when calling createExhibitionDevice.');
+        if (requestParameters.exhibitionDevice === null || requestParameters.exhibitionDevice === undefined) {
+            throw new runtime.RequiredError('exhibitionDevice','Required parameter requestParameters.exhibitionDevice was null or undefined when calling createExhibitionDevice.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling createExhibitionDevice.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createExhibitionDevice.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -78,11 +78,11 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/devices`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/devices`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionDeviceToJSON(requestParameters.exhibition_device),
+            body: ExhibitionDeviceToJSON(requestParameters.exhibitionDevice),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionDeviceFromJSON(jsonValue));
@@ -102,12 +102,12 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
      * Deletes device.
      */
     async deleteExhibitionDeviceRaw(requestParameters: DeleteExhibitionDeviceRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling deleteExhibitionDevice.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteExhibitionDevice.');
         }
 
-        if (requestParameters.device_id === null || requestParameters.device_id === undefined) {
-            throw new runtime.RequiredError('device_id','Required parameter requestParameters.device_id was null or undefined when calling deleteExhibitionDevice.');
+        if (requestParameters.deviceId === null || requestParameters.deviceId === undefined) {
+            throw new runtime.RequiredError('deviceId','Required parameter requestParameters.deviceId was null or undefined when calling deleteExhibitionDevice.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -123,7 +123,7 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.device_id))),
+            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.deviceId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -145,12 +145,12 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
      * Find a device
      */
     async findExhibitionDeviceRaw(requestParameters: FindExhibitionDeviceRequest): Promise<runtime.ApiResponse<ExhibitionDevice>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling findExhibitionDevice.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findExhibitionDevice.');
         }
 
-        if (requestParameters.device_id === null || requestParameters.device_id === undefined) {
-            throw new runtime.RequiredError('device_id','Required parameter requestParameters.device_id was null or undefined when calling findExhibitionDevice.');
+        if (requestParameters.deviceId === null || requestParameters.deviceId === undefined) {
+            throw new runtime.RequiredError('deviceId','Required parameter requestParameters.deviceId was null or undefined when calling findExhibitionDevice.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -166,7 +166,7 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.device_id))),
+            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.deviceId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -189,8 +189,8 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
      * List devices
      */
     async listExhibitionDevicesRaw(requestParameters: ListExhibitionDevicesRequest): Promise<runtime.ApiResponse<Array<ExhibitionDevice>>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling listExhibitionDevices.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listExhibitionDevices.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -206,7 +206,7 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/devices`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/devices`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -229,16 +229,16 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
      * Updates device.
      */
     async updateExhibitionDeviceRaw(requestParameters: UpdateExhibitionDeviceRequest): Promise<runtime.ApiResponse<ExhibitionDevice>> {
-        if (requestParameters.exhibition_device === null || requestParameters.exhibition_device === undefined) {
-            throw new runtime.RequiredError('exhibition_device','Required parameter requestParameters.exhibition_device was null or undefined when calling updateExhibitionDevice.');
+        if (requestParameters.exhibitionDevice === null || requestParameters.exhibitionDevice === undefined) {
+            throw new runtime.RequiredError('exhibitionDevice','Required parameter requestParameters.exhibitionDevice was null or undefined when calling updateExhibitionDevice.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling updateExhibitionDevice.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateExhibitionDevice.');
         }
 
-        if (requestParameters.device_id === null || requestParameters.device_id === undefined) {
-            throw new runtime.RequiredError('device_id','Required parameter requestParameters.device_id was null or undefined when calling updateExhibitionDevice.');
+        if (requestParameters.deviceId === null || requestParameters.deviceId === undefined) {
+            throw new runtime.RequiredError('deviceId','Required parameter requestParameters.deviceId was null or undefined when calling updateExhibitionDevice.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -256,11 +256,11 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.device_id))),
+            path: `/exhibitions/{exhibitionId}/devices/{deviceId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceId"}}`, encodeURIComponent(String(requestParameters.deviceId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionDeviceToJSON(requestParameters.exhibition_device),
+            body: ExhibitionDeviceToJSON(requestParameters.exhibitionDevice),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionDeviceFromJSON(jsonValue));

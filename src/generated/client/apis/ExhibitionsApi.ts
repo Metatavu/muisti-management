@@ -25,16 +25,16 @@ export interface CreateExhibitionRequest {
 }
 
 export interface DeleteExhibitionRequest {
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 export interface FindExhibitionRequest {
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 export interface UpdateExhibitionRequest {
     exhibition: Exhibition;
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 /**
@@ -90,8 +90,8 @@ export class ExhibitionsApi extends runtime.BaseAPI {
      * Deletes exhibition.
      */
     async deleteExhibitionRaw(requestParameters: DeleteExhibitionRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling deleteExhibition.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteExhibition.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -107,7 +107,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -129,8 +129,8 @@ export class ExhibitionsApi extends runtime.BaseAPI {
      * Find a exhibition.
      */
     async findExhibitionRaw(requestParameters: FindExhibitionRequest): Promise<runtime.ApiResponse<Exhibition>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling findExhibition.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findExhibition.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -146,7 +146,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -209,8 +209,8 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('exhibition','Required parameter requestParameters.exhibition was null or undefined when calling updateExhibition.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling updateExhibition.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateExhibition.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -228,7 +228,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

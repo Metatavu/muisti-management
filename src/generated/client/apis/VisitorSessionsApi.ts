@@ -21,28 +21,28 @@ import {
 } from '../models';
 
 export interface CreateVisitorSessionRequest {
-    visitor_session: VisitorSession;
-    exhibition_id: string;
+    visitorSession: VisitorSession;
+    exhibitionId: string;
 }
 
 export interface DeleteVisitorSessionRequest {
-    exhibition_id: string;
-    visitor_session_id: string;
+    exhibitionId: string;
+    visitorSessionId: string;
 }
 
 export interface FindVisitorSessionRequest {
-    exhibition_id: string;
-    visitor_session_id: string;
+    exhibitionId: string;
+    visitorSessionId: string;
 }
 
 export interface ListVisitorSessionsRequest {
-    exhibition_id: string;
+    exhibitionId: string;
 }
 
 export interface UpdateVisitorSessionRequest {
-    visitor_session: VisitorSession;
-    exhibition_id: string;
-    visitor_session_id: string;
+    visitorSession: VisitorSession;
+    exhibitionId: string;
+    visitorSessionId: string;
 }
 
 /**
@@ -55,12 +55,12 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      * Create a visitor session
      */
     async createVisitorSessionRaw(requestParameters: CreateVisitorSessionRequest): Promise<runtime.ApiResponse<VisitorSession>> {
-        if (requestParameters.visitor_session === null || requestParameters.visitor_session === undefined) {
-            throw new runtime.RequiredError('visitor_session','Required parameter requestParameters.visitor_session was null or undefined when calling createVisitorSession.');
+        if (requestParameters.visitorSession === null || requestParameters.visitorSession === undefined) {
+            throw new runtime.RequiredError('visitorSession','Required parameter requestParameters.visitorSession was null or undefined when calling createVisitorSession.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling createVisitorSession.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createVisitorSession.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -78,11 +78,11 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: VisitorSessionToJSON(requestParameters.visitor_session),
+            body: VisitorSessionToJSON(requestParameters.visitorSession),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => VisitorSessionFromJSON(jsonValue));
@@ -102,12 +102,12 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      * Deletes visitor session.
      */
     async deleteVisitorSessionRaw(requestParameters: DeleteVisitorSessionRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling deleteVisitorSession.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteVisitorSession.');
         }
 
-        if (requestParameters.visitor_session_id === null || requestParameters.visitor_session_id === undefined) {
-            throw new runtime.RequiredError('visitor_session_id','Required parameter requestParameters.visitor_session_id was null or undefined when calling deleteVisitorSession.');
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling deleteVisitorSession.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -123,7 +123,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitor_session_id))),
+            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -145,12 +145,12 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      * Find a visitor session
      */
     async findVisitorSessionRaw(requestParameters: FindVisitorSessionRequest): Promise<runtime.ApiResponse<VisitorSession>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling findVisitorSession.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findVisitorSession.');
         }
 
-        if (requestParameters.visitor_session_id === null || requestParameters.visitor_session_id === undefined) {
-            throw new runtime.RequiredError('visitor_session_id','Required parameter requestParameters.visitor_session_id was null or undefined when calling findVisitorSession.');
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling findVisitorSession.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -166,7 +166,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitor_session_id))),
+            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -189,8 +189,8 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      * List visitor sessions
      */
     async listVisitorSessionsRaw(requestParameters: ListVisitorSessionsRequest): Promise<runtime.ApiResponse<Array<VisitorSession>>> {
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling listVisitorSessions.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listVisitorSessions.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -206,7 +206,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))),
+            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -229,16 +229,16 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      * Updates visitor session.
      */
     async updateVisitorSessionRaw(requestParameters: UpdateVisitorSessionRequest): Promise<runtime.ApiResponse<VisitorSession>> {
-        if (requestParameters.visitor_session === null || requestParameters.visitor_session === undefined) {
-            throw new runtime.RequiredError('visitor_session','Required parameter requestParameters.visitor_session was null or undefined when calling updateVisitorSession.');
+        if (requestParameters.visitorSession === null || requestParameters.visitorSession === undefined) {
+            throw new runtime.RequiredError('visitorSession','Required parameter requestParameters.visitorSession was null or undefined when calling updateVisitorSession.');
         }
 
-        if (requestParameters.exhibition_id === null || requestParameters.exhibition_id === undefined) {
-            throw new runtime.RequiredError('exhibition_id','Required parameter requestParameters.exhibition_id was null or undefined when calling updateVisitorSession.');
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateVisitorSession.');
         }
 
-        if (requestParameters.visitor_session_id === null || requestParameters.visitor_session_id === undefined) {
-            throw new runtime.RequiredError('visitor_session_id','Required parameter requestParameters.visitor_session_id was null or undefined when calling updateVisitorSession.');
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling updateVisitorSession.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -256,11 +256,11 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibition_id))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitor_session_id))),
+            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: VisitorSessionToJSON(requestParameters.visitor_session),
+            body: VisitorSessionToJSON(requestParameters.visitorSession),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => VisitorSessionFromJSON(jsonValue));

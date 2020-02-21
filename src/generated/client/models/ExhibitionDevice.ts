@@ -30,13 +30,13 @@ export interface ExhibitionDevice {
      * @type {string}
      * @memberof ExhibitionDevice
      */
-    readonly exhibition_id?: string;
+    readonly exhibitionId?: string;
     /**
      * Device group id
      * @type {string}
      * @memberof ExhibitionDevice
      */
-    group_id: string;
+    groupId: string;
     /**
      * 
      * @type {string}
@@ -48,25 +48,25 @@ export interface ExhibitionDevice {
      * @type {string}
      * @memberof ExhibitionDevice
      */
-    readonly creator_id?: string;
+    readonly creatorId?: string;
     /**
      * 
      * @type {string}
      * @memberof ExhibitionDevice
      */
-    readonly last_modifier_id?: string;
+    readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
      * @memberof ExhibitionDevice
      */
-    readonly created_at?: Date;
+    readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
      * @memberof ExhibitionDevice
      */
-    readonly modified_at?: Date;
+    readonly modifiedAt?: Date;
 }
 
 export function ExhibitionDeviceFromJSON(json: any): ExhibitionDevice {
@@ -80,13 +80,13 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'exhibition_id': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'group_id': json['groupId'],
+        'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'groupId': json['groupId'],
         'name': json['name'],
-        'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
-        'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
-        'created_at': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'modified_at': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
+        'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
+        'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
+        'modifiedAt': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
     };
 }
 
@@ -99,7 +99,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
     }
     return {
         
-        'groupId': value.group_id,
+        'groupId': value.groupId,
         'name': value.name,
     };
 }

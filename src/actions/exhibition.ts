@@ -3,7 +3,7 @@ import * as actionTypes from "../constants/actionTypes";
 import { Exhibition } from "../generated/client";
 
 /**
- * Interface for device action type
+ * Interface for exhibition action type
  */
 export interface SetExhibitionAction {
   type: actionTypes.SET_EXHIBITION,
@@ -11,9 +11,9 @@ export interface SetExhibitionAction {
 }
 
 /**
- * Function for dispatching customers
+ * Function for dispatching exhibitions
  *
- * @param device device being dispatched
+ * @param exhibition exhibition being dispatched
  */
 export const setExhibition: ActionCreator<SetExhibitionAction> = (exhibition: Exhibition) => {
   return {

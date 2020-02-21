@@ -45,6 +45,7 @@ class EditorView extends React.Component<Props, State> {
   public render() {
     return (
       <div>
+        { this.props.children }
       </div>
     );
   }

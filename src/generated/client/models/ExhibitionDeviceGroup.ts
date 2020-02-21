@@ -30,7 +30,7 @@ export interface ExhibitionDeviceGroup {
      * @type {string}
      * @memberof ExhibitionDeviceGroup
      */
-    readonly exhibition_id?: string;
+    readonly exhibitionId?: string;
     /**
      * 
      * @type {string}
@@ -42,25 +42,25 @@ export interface ExhibitionDeviceGroup {
      * @type {string}
      * @memberof ExhibitionDeviceGroup
      */
-    readonly creator_id?: string;
+    readonly creatorId?: string;
     /**
      * 
      * @type {string}
      * @memberof ExhibitionDeviceGroup
      */
-    readonly last_modifier_id?: string;
+    readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
      * @memberof ExhibitionDeviceGroup
      */
-    readonly created_at?: Date;
+    readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
      * @memberof ExhibitionDeviceGroup
      */
-    readonly modified_at?: Date;
+    readonly modifiedAt?: Date;
 }
 
 export function ExhibitionDeviceGroupFromJSON(json: any): ExhibitionDeviceGroup {
@@ -74,12 +74,12 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'exhibition_id': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
-        'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
-        'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
-        'created_at': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'modified_at': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
+        'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
+        'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
+        'modifiedAt': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
     };
 }
 
