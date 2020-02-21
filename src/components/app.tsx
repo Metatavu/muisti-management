@@ -1,20 +1,18 @@
 import * as React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
-import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
+
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import { ReduxState, ReduxActions, rootReducer } from "../store";
+
 import { ThemeProvider } from "@material-ui/styles";
 import muistiTheme from "../styles/theme";
+import { BrowserRouter, Route } from "react-router-dom";
+import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import ExhibitionsView from "./exhibitions/exhibitions-view";
 import AccessTokenRefresh from "./generic/access-token-refresh";
-import { Provider } from "react-redux";
-import { StoreState } from "../types";
-import { createStore } from 'redux';
-import { AppAction } from "../actions";
-import { reducer } from "../reducers";
+import ExhibitionView from "./exhibition/exhibition-view";
 
-const initalStoreState: StoreState = {
-};
-
-const store = createStore<StoreState, AppAction, any, any>(reducer as any, initalStoreState);
+const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
 /**
  * Interface representing component properties
@@ -53,7 +51,14 @@ class App extends React.Component<Props, State> {
                   path="/"
                   exact={true}
                   render={ ({ history }) => (
-                    <ExhibitionsView history={history} />
+                    <ExhibitionsView history={ history } />
+                  )}
+                />
+                <Route
+                  path="/exhibitions/:exhibitionId"
+                  exact={true}
+                  render={ ({ history }) => (
+                    <ExhibitionView history={ history } />
                   )}
                 />
               </div>

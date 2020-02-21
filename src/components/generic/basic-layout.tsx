@@ -1,5 +1,6 @@
 import * as React from "react";
-import { WithStyles, withStyles, AppBar, Toolbar, IconButton, Typography, Button } from "@material-ui/core";
+
+import { WithStyles, withStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
 import { KeycloakInstance } from "keycloak-js";
@@ -21,7 +22,7 @@ interface State {
 }
 
 /**
- * React component for basic application layout
+ * Component for basic application layout
  */
 class BasicLayout extends React.Component<Props, State> {
 

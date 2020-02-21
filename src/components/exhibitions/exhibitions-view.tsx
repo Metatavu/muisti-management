@@ -1,18 +1,22 @@
 import * as React from "react";
-import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Card, CardActionArea, CardContent, Icon, CardMedia, Paper } from "@material-ui/core";
-import styles from "../../styles/exhibitions-view";
+
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { ReduxState, ReduxActions } from "../../store";
+import { setExhibition } from "../../actions/exhibition";
+
 import { History } from "history";
-import CardItem from "../generic/card-item";
+import styles from "../../styles/exhibitions-view";
 import strings from "../../localization/strings";
+import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
+import CardItem from "../generic/card-item";
 import { Exhibition } from "../../generated/client";
 import defaultExhibitionImage from "../../resources/gfx/logo.png";
-import { StoreState, AccessToken } from "../../types";
-import * as actions from "../../actions";
-import { connect } from "react-redux";
 import Api from "../../api/api";
 import BasicLayout from "../generic/basic-layout";
 import { KeycloakInstance } from "keycloak-js";
 import AddIcon from "@material-ui/icons/Add";
+import { AccessToken } from "../../types";
 
 /**
  * Component props
@@ -20,7 +24,8 @@ import AddIcon from "@material-ui/icons/Add";
 interface Props extends WithStyles<typeof styles> {
   history: History,
   keycloak: KeycloakInstance,
-  accessToken: AccessToken
+  accessToken: AccessToken,
+  setExhibition: typeof setExhibition
 }
 
 /**
@@ -36,7 +41,7 @@ interface State {
 }
 
 /**
- * Exhibitions view
+ * Component for exhibitions view
  */
 class ExhibitionsView extends React.Component<Props, State> {
 
@@ -65,7 +70,8 @@ class ExhibitionsView extends React.Component<Props, State> {
     });
 
     try {
-      const exhibitionsApi = Api.getExhibitionsApi(this.props.accessToken);
+      const { accessToken } = this.props;
+      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       const exhibitions: Exhibition[] = await exhibitionsApi.listExhibitions();
 
       this.setState({
@@ -117,9 +123,15 @@ class ExhibitionsView extends React.Component<Props, State> {
    * Card render method
    */
   private renderCard(exhibition: Exhibition) {
+    if (!exhibition || !exhibition.id) {
+      return;
+    }
+
+    const exhibitionId: string = exhibition.id;
+
     return (
       <Grid item>
-        <CardItem key={ exhibition.id } title={ exhibition.name } image={ defaultExhibitionImage } onClick={() => { alert("Coming soon! :)"); } }/>
+        <CardItem key={ exhibitionId } title={ exhibition.name } image={ defaultExhibitionImage } onClick={ () => this.openExhibition(exhibitionId) }/>
       </Grid>
     );
   }
@@ -169,8 +181,22 @@ class ExhibitionsView extends React.Component<Props, State> {
 
     this.setState({
       creating: false,
-      exhibitions: [ ... this.state.exhibitions, exhibition ]
+      exhibitions: [ ...this.state.exhibitions, exhibition ]
     });
+  }
+
+
+  /**
+   * Opens exhibition
+   * 
+   * @param exhibitionId exhibition id
+   */
+  private openExhibition = async (exhibitionId: string) => {
+    const { accessToken } = this.props;
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const exhibition = await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId });
+    this.props.setExhibition(exhibition);
+    this.props.history.push(`/exhibitions/${exhibitionId}`);
   }
 
   /**
@@ -224,10 +250,10 @@ class ExhibitionsView extends React.Component<Props, State> {
  * 
  * @param state store state
  */
-function mapStateToProps(state: StoreState) {
+function mapStateToProps(state: ReduxState) {
   return {
-    keycloak: state.keycloak as KeycloakInstance,
-    accessToken: state.accessToken as AccessToken
+    keycloak: state.auth.keycloak as KeycloakInstance,
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 
@@ -236,8 +262,9 @@ function mapStateToProps(state: StoreState) {
  * 
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<actions.AppAction>) {
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
+    setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))
   };
 }
 

@@ -1,4 +1,4 @@
-import { Configuration, ExhibitionsApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ExhibitionRoomsApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -13,6 +13,15 @@ export default class Api {
    */
   public static getExhibitionsApi(accessToken: AccessToken) {
     return new ExhibitionsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized exhibition rooms api
+   * 
+   * @param token access token
+   */
+  public static getExhibitionRoomsApi(accessToken: AccessToken) {
+    return new ExhibitionRoomsApi(Api.getConfiguration(accessToken));
   }
 
   /**
