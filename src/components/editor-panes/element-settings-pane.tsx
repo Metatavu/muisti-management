@@ -43,12 +43,12 @@ class ElementSettingsPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { classes } = this.props;
     return (
-      <div>
-        <Drawer variant="permanent" anchor="left">
-
-        </Drawer>
-        { this.props.children }
+      <div className={ classes.root }>
+        <div className={ classes.panelContent }>
+          { this.props.children }
+        </div>
       </div>
     );
   }

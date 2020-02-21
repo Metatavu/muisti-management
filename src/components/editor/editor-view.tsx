@@ -43,8 +43,10 @@ class EditorView extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { classes } = this.props;
+    
     return (
-      <div>
+      <div className={ classes.root }>
         { this.props.children }
       </div>
     );
