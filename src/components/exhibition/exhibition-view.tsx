@@ -9,7 +9,6 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition } from "../../generated/client";
-import Api from "../../api/api";
 import BasicLayout from "../generic/basic-layout";
 import ViewSelectionBar from "../editor-panes/view-selection-bar";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -32,8 +31,7 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   error?: Error,
-  loading: boolean,
-  exhibition?: Exhibition
+  loading: boolean
 }
 
 /**
@@ -57,32 +55,13 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Component did mount life-cycle handler
    */
   public componentDidMount = async () => {
-    this.setState({
-      loading: true
-    });
 
-    try {
-      const { exhibition } = this.props;
-
-      this.setState({
-        exhibition: exhibition
-      });
-    } catch (e) {
-      this.setState({
-        error: e
-      });
-    }
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
    * Component render method
    */
   public render = () => {
-
     if (this.state.loading) {
       return (
         <CircularProgress></CircularProgress>
