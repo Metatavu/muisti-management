@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, AppBar, Toolbar, IconButton, Typography } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
 import { KeycloakInstance } from "keycloak-js";
@@ -45,18 +45,19 @@ class BasicLayout extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <AppBar position="static" className={ classes.appBar }>
-          <Toolbar variant="dense">
-            <div style={{ flexGrow: 1 }} />
-            <IconButton edge="start" onClick={this.onLogOutClick}>
-              <SignOutIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        
+      <div className={ classes.root }>
+        <header className={ classes.header }>
+          <Typography variant="h6" className={ classes.title }>
+            Alusta™
+          </Typography>
+          <IconButton className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
+            <SignOutIcon />
+          </IconButton>
+        </header>
+        <div className={ classes.content }>
+          { this.props.children }
+        </div>
         { this.renderErrorDialog() }
-        { this.props.children }
       </div>
     );
   }

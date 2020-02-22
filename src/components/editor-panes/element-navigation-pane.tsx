@@ -86,12 +86,13 @@ class ElementNavigationPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    return (
-      <div>
-        <Drawer variant="persistent" anchor="left" open={ true }>
+    const { classes } = this.props;
 
-        </Drawer>
-        { this.props.children }
+    return (
+      <div className={ classes.root }>
+        <div className={ classes.panelContent }>
+          { this.props.children }
+        </div>
       </div>
     );
   }

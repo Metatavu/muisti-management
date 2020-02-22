@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, ButtonGroup, IconButton, Drawer } from "@material-ui/core";
+import { WithStyles, withStyles, ButtonGroup, IconButton } from "@material-ui/core";
 import styles from "../../styles/view-selection-bar";
 import { ViewQuiltRounded, CheckBoxOutlineBlank, TabUnselected } from "@material-ui/icons";
 
@@ -48,20 +48,18 @@ class ViewSelectionBar extends React.Component<Props, State> {
 
     return (
       <div className={ classes.root }>
-        <Drawer variant="permanent" anchor="left">
-          <ButtonGroup orientation="vertical" variant="text" >
-            <IconButton>
-              <ViewQuiltRounded />
-            </IconButton>
-            <IconButton>
-              <CheckBoxOutlineBlank />
-            </IconButton>
-            <IconButton>
-              <TabUnselected />
-            </IconButton>
-          </ButtonGroup>
-          { this.props.children }
-        </Drawer>
+        <div className={ classes.buttonGroup }>
+          <IconButton>
+            <ViewQuiltRounded />
+          </IconButton>
+          <IconButton>
+            <CheckBoxOutlineBlank />
+          </IconButton>
+          <IconButton>
+            <TabUnselected />
+          </IconButton>
+        </div>
+        { this.props.children }
       </div>
     );
   }
