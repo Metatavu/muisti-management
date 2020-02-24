@@ -35,6 +35,9 @@ interface State {
   open: boolean
 }
 
+const minWidth = 320;
+const minimizedWidth = 50;
+
 /**
  * Component for element navigation pane
  */
@@ -94,7 +97,7 @@ class ElementNavigationPane extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={ classes.root } style={{ width: this.state.open ? 320 : 50 }}>
+      <div className={ classes.root } style={{ width: this.state.open ? minWidth : minimizedWidth }}>
         <div className={ classes.btnContainer }>
           <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
             { this.state.open ? <CloseIcon /> : <OpenIcon /> }
@@ -112,18 +115,12 @@ class ElementNavigationPane extends React.Component<Props, State> {
     );
   }
   /**
-   * Handle close panel
+   * Handle toggle panel
    */
   private onToggleClick = () => {
-    if (!this.state.open) {
-      this.setState({
-        open: true
-      });
-    } else {
-      this.setState({
-        open: false
-      });
-    }
+    this.setState({
+      open: !this.state.open
+    });
   }
 }
 

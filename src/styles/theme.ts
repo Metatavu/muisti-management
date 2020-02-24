@@ -5,9 +5,14 @@ export default createMuiTheme({
 
   palette: {
     primary: { main: grey[900] },
+    secondary: { 
+      main: "#8AC0CB",
+      light: "#C0DDE3"
+    },
 
     background: {
-      default: "#f2f2f2"
+      default: "#f2f2f2",
+      paper: "#fff"
     },
     text: {
       primary: "#292929"
