@@ -74,7 +74,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       <BasicLayout title={ this.props.exhibition.name } onBackButtonClick={() => this.onBackButtonClick() } keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
         <div className={ classes.editorLayout }>
           <ViewSelectionBar />
-          <ElementNavigationPane />
+          <ElementNavigationPane title="Example header" />
           <EditorView />
           <ElementSettingsPane />
         </div>

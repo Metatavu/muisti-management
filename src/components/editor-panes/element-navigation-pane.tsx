@@ -20,7 +20,8 @@ import classNames from "classnames";
 interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance,
   accessToken: AccessToken,
-  exhibition?: Exhibition
+  exhibition?: Exhibition,
+  title: string
 }
 
 /**
@@ -101,7 +102,7 @@ class ElementNavigationPane extends React.Component<Props, State> {
         </div>
         <div className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
           <div className={ classes.header }>
-            <h3>Panel header</h3>
+            <h3>{ this.props.title }</h3>
           </div>
           <div className={ classes.content }>
             { this.props.children }
