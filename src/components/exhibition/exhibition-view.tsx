@@ -62,6 +62,8 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
+    const { classes } = this.props;
+
     if (this.state.loading) {
       return (
         <CircularProgress></CircularProgress>
@@ -69,15 +71,21 @@ export class ExhibitionView extends React.Component<Props, State> {
     }
 
     return (
-      <div>
-        <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+      <BasicLayout title={ this.props.exhibition.name } onBackButtonClick={() => this.onBackButtonClick() } keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+        <div className={ classes.editorLayout }>
           <ViewSelectionBar />
           <ElementNavigationPane />
           <EditorView />
           <ElementSettingsPane />
-        </BasicLayout>
-      </div>
+        </div>
+      </BasicLayout>
     );
+  }
+  /**
+   * Handle back
+   */
+  private onBackButtonClick = () => {
+    this.props.history.push(`/`);
   }
 }
 
@@ -103,5 +111,6 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
   };
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionView));

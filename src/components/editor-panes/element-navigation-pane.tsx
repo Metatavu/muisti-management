@@ -4,12 +4,14 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { AccessToken } from "../../types";
-
-import { WithStyles, withStyles, Drawer } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
+import OpenIcon from "@material-ui/icons/ChevronRightSharp";
+import { WithStyles, withStyles, IconButton } from "@material-ui/core";
 import styles from "../../styles/element-navigation-pane";
 import { ExhibitionRoom, ExhibitionDevice, Exhibition } from "../../generated/client";
 import { KeycloakInstance } from "keycloak-js";
 import Api from "../../api/api";
+import classNames from "classnames";
 
 
 /**
@@ -28,7 +30,8 @@ interface State {
   error?: Error,
   loading: boolean,
   exhibitionRooms: ExhibitionRoom[],
-  exhibitionDevices: ExhibitionDevice[]
+  exhibitionDevices: ExhibitionDevice[],
+  open: boolean
 }
 
 /**
@@ -46,7 +49,8 @@ class ElementNavigationPane extends React.Component<Props, State> {
     this.state = {
       loading: false,
       exhibitionRooms: [],
-      exhibitionDevices: []
+      exhibitionDevices: [],
+      open: true
     };
   }
 
@@ -89,12 +93,36 @@ class ElementNavigationPane extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={ classes.root }>
-        <div className={ classes.panelContent }>
-          { this.props.children }
+      <div className={ classes.root } style={{ width: this.state.open ? 320 : 50 }}>
+        <div className={ classes.btnContainer }>
+          <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
+            { this.state.open ? <CloseIcon /> : <OpenIcon /> }
+          </IconButton>
+        </div>
+        <div className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
+          <div className={ classes.header }>
+            <h3>Panel header</h3>
+          </div>
+          <div className={ classes.content }>
+            { this.props.children }
+          </div>
         </div>
       </div>
     );
+  }
+  /**
+   * Handle close panel
+   */
+  private onToggleClick = () => {
+    if (!this.state.open) {
+      this.setState({
+        open: true
+      });
+    } else {
+      this.setState({
+        open: false
+      });
+    }
   }
 }
 

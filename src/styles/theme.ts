@@ -7,7 +7,10 @@ export default createMuiTheme({
     primary: { main: grey[900] },
 
     background: {
-      default: grey[100]
+      default: "#f2f2f2"
+    },
+    text: {
+      primary: "#292929"
     },
     error: red,
   },
@@ -15,6 +18,13 @@ export default createMuiTheme({
   typography: {
     h2: {
       fontSize: "24px"
+    }
+  },
+  overrides: {
+    MuiPaper: {
+      rounded: {
+        borderRadius: 8
+      }
     }
   }
 });
