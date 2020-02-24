@@ -11,11 +11,11 @@ import strings from "../../localization/strings";
 import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
 import CardItem from "../generic/card-item";
 import { Exhibition } from "../../generated/client";
-import defaultExhibitionImage from "../../resources/gfx/logo.png";
+import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
 import BasicLayout from "../generic/basic-layout";
 import { KeycloakInstance } from "keycloak-js";
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@material-ui/icons/AddRounded";
 import { AccessToken } from "../../types";
 
 /**
@@ -97,7 +97,7 @@ class ExhibitionsView extends React.Component<Props, State> {
     const cards = this.state.exhibitions.map((exhibition) => this.renderCard(exhibition));
 
     return (
-      <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+      <BasicLayout title="Alusta™" keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
         <Container maxWidth="xl">
           <Container maxWidth="md">
             <Paper elevation={3} className={ classes.paper } >
@@ -105,7 +105,7 @@ class ExhibitionsView extends React.Component<Props, State> {
 
               <Grid container spacing={5} direction="row">
               <Grid item>
-                <CardItem key="new" title={ strings.exhibitions.newExhibitionLabel } icon={ <AddIcon style={{ fontSize: "60px" }}/> } onClick={ this.onCreateButtonClick }/>
+                <CardItem key="new" title={ strings.exhibitions.newExhibitionLabel } icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
               </Grid>
                 {
                   cards

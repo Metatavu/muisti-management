@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, ButtonGroup, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, IconButton } from "@material-ui/core";
 import styles from "../../styles/view-selection-bar";
 import { ViewQuiltRounded, CheckBoxOutlineBlank, TabUnselected } from "@material-ui/icons";
 

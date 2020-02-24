@@ -1,8 +1,9 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, AppBar, Toolbar, IconButton, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, IconButton, Typography } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
+import BackIcon from "@material-ui/icons/ArrowBackSharp";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
 
@@ -10,9 +11,11 @@ import ErrorDialog from "./error-dialog";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  title: string,
   keycloak?: KeycloakInstance,
   error?: string | Error,
-  clearError?: () => void
+  clearError?: () => void,
+  onBackButtonClick?: () => void
 }
 
 /**
@@ -47,10 +50,15 @@ class BasicLayout extends React.Component<Props, State> {
     return (
       <div className={ classes.root }>
         <header className={ classes.header }>
+          { this.props.onBackButtonClick &&
+            <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onBackButtonClick }>
+              <BackIcon />
+            </IconButton>
+          }
           <Typography variant="h6" className={ classes.title }>
-            Alusta™
+            { this.props.title }
           </Typography>
-          <IconButton className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
+          <IconButton size="small" className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
             <SignOutIcon />
           </IconButton>
         </header>

@@ -17,20 +17,20 @@ export default createStyles({
     alignItems: "center",
     background: "#fff",
     borderBottom: "1px solid #ddd",
-    height: 40
+    height: 50
   },
   title: {
 
   },
+  backBtn: {
+    position: "absolute",
+    left: 12
+  },
   logoutBtn: {
     position: "absolute",
-    right: 20
+    right: 12
   },
   content: {
-    gridArea: "content",
-    display: "grid",
-    gridTemplateRows: "1fr",
-    gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ' "view-selection navigation editor settings" ',
+    gridArea: "content"
   },
 });

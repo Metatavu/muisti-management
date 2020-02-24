@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Drawer } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/element-settings-pane";
 
 /**

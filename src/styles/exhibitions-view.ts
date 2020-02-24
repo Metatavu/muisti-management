@@ -1,4 +1,5 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
 
@@ -17,22 +18,35 @@ export default createStyles({
   },
 
   cardItem: {
-    cursor: "pointer"
+    cursor: "pointer",
+    opacity: 0.5,
+    transition: "opacity 0.2s ease-out",
+    "&:hover": {
+      opacity: 0.9,
+    },
+    "&:active": {
+      opacity: 1,
+    }
   },
 
   card: {
     width: 120,
     height: 120,
-    padding: 30,
+    padding: 20,
     background: "#ebebeb",
-    borderColor: "#323232"
+    borderColor: theme.palette.text.primary
+  },
+
+  imageContainer: {
+    height: "100%"
   },
   
   media: {
-    backgroundSize: "contain",
-    backgroundPosition: "center",
-    height: 60,
-    width: 60
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%"
   },
 
   cardTitle: {

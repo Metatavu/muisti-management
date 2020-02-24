@@ -63,9 +63,9 @@ class CardItem extends React.Component<Props, State> {
     return (
       <div className={ classes.cardItem } onClick={ this.props.onClick }>
         <Card elevation={10} variant="outlined" className={ classes.card }>
-          <CardActionArea>
+          <div className={ classes.imageContainer }>
             { this.renderImage() }
-          </CardActionArea>
+          </div>
         </Card>
 
         <Typography variant="subtitle1" className={ classes.cardTitle }>
