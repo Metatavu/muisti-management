@@ -3,8 +3,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-import { setExhibition } from "../../actions/exhibition";
-import Api from "../../api/api";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
@@ -17,6 +15,8 @@ import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken } from '../../types';
+import { setExhibition } from "../../actions/exhibition";
+import Api from "../../api/api";
 
 /**
  * Component props
@@ -41,7 +41,7 @@ interface State {
 /**
  * Component for exhibition view
  */
-export class ExhibitionView extends React.Component<Props, State> {
+export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -65,14 +65,13 @@ export class ExhibitionView extends React.Component<Props, State> {
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       this.props.setExhibition(await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId }));
     }
-
   }
 
   /**
    * Component render method
    */
   public render = () => {
-    const { classes, exhibition , history } = this.props;
+    const { classes, exhibition, history } = this.props;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -85,12 +84,12 @@ export class ExhibitionView extends React.Component<Props, State> {
     return (
       <BasicLayout title={ exhibition.name } onBackButtonClick={() => this.onBackButtonClick() } keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
         <div className={ classes.editorLayout }>
-          <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath }/>
-          <ElementNavigationPane title="Näyttely" />
+          <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath } />
+          <ElementNavigationPane title="Näyttelypiste" />
           <EditorView>
-            <Typography>Olen näyttelyeditorin sisältö { history.location.pathname } </Typography>
+            <Typography>Olen näyttelyn laiteryhmän editorin sisältö</Typography>
           </EditorView>
-          <ElementSettingsPane title="2. Huone 1" />
+          <ElementSettingsPane title="1. Ryhmä" />
         </div>
       </BasicLayout>
     );
@@ -128,4 +127,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionView));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionDeviceGroupView));

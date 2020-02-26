@@ -5,11 +5,14 @@ import styles from "../../styles/view-selection-bar";
 import ExhibitionIcon from "../../resources/gfx/svg-paths/exhibition-icon";
 import ExhibitionLocationIcon from "../../resources/gfx/svg-paths/exhibition-location-icon";
 import ExhibitionPointIcon from "../../resources/gfx/svg-paths/exhibition-point-icon";
+import { Link as RouterLink } from 'react-router-dom';
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  exhibitionId: string,
+  locationPath: string
 }
 
 /**
@@ -46,19 +49,19 @@ class ViewSelectionBar extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, locationPath } = this.props;
 
     return (
       <div className={ classes.root }>
         <div className={ classes.buttonGroup }>
-          <IconButton>
-            <ExhibitionIcon selected />
+          <IconButton component={ RouterLink } to={ `/exhibitions/${ this.props.exhibitionId }` }>
+            <ExhibitionIcon selected={ locationPath === `/exhibitions/${ this.props.exhibitionId }` }/>
           </IconButton>
-          <IconButton>
-            <ExhibitionLocationIcon />
+          <IconButton component={ RouterLink } to={`/exhibitions/${ this.props.exhibitionId }/room`}>
+            <ExhibitionLocationIcon  selected={ locationPath === `/exhibitions/${ this.props.exhibitionId }/room` }/>
           </IconButton>
-          <IconButton>
-            <ExhibitionPointIcon />
+          <IconButton component={ RouterLink } to={`/exhibitions/${ this.props.exhibitionId }/deviceGroup`}>
+            <ExhibitionPointIcon selected={ locationPath === `/exhibitions/${ this.props.exhibitionId }/deviceGroup` }/>
           </IconButton>
         </div>
         { this.props.children }

@@ -36,7 +36,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      open: false
+      open: true
     };
   }
 
