@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Typography, Card, CardMedia, withStyles, WithStyles, CardActionArea } from "@material-ui/core";
+import { Typography, Card, CardMedia, withStyles, WithStyles } from "@material-ui/core";
 import styles from "../../styles/exhibitions-view";
 
 /**

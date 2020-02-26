@@ -11,6 +11,8 @@ import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import ExhibitionsView from "./exhibitions/exhibitions-view";
 import AccessTokenRefresh from "./generic/access-token-refresh";
 import ExhibitionView from "./exhibition/exhibition-view";
+import ExhibitionRoomView from "./exhibition/exhibition-room-view";
+import ExhibitionDeviceGroupView from "./exhibition/exhibition-device-group-view";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -57,8 +59,22 @@ class App extends React.Component<Props, State> {
                 <Route
                   path="/exhibitions/:exhibitionId"
                   exact={true}
-                  render={ ({ history }) => (
-                    <ExhibitionView history={ history } />
+                  render={ ({ match, history }) => (
+                    <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
+                  )}
+                />
+                <Route
+                  path="/exhibitions/:exhibitionId/room"
+                  exact={true}
+                  render={ ({ match, history }) => (
+                    <ExhibitionRoomView exhibitionId={ match.params.exhibitionId } history={ history } />
+                  )}
+                />
+                <Route
+                  path="/exhibitions/:exhibitionId/deviceGroup"
+                  exact={true}
+                  render={ ({ match, history }) => (
+                    <ExhibitionDeviceGroupView exhibitionId={ match.params.exhibitionId } history={ history } />
                   )}
                 />
               </div>
