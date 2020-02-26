@@ -2,7 +2,9 @@ import * as React from "react";
 
 import { WithStyles, withStyles, IconButton } from "@material-ui/core";
 import styles from "../../styles/view-selection-bar";
-import { ViewQuiltRounded, CheckBoxOutlineBlank, TabUnselected } from "@material-ui/icons";
+import ExhibitionIcon from "../../resources/gfx/svg-paths/exhibition-icon";
+import ExhibitionLocationIcon from "../../resources/gfx/svg-paths/exhibition-location-icon";
+import ExhibitionPointIcon from "../../resources/gfx/svg-paths/exhibition-point-icon";
 
 /**
  * Interface representing component properties
@@ -50,13 +52,13 @@ class ViewSelectionBar extends React.Component<Props, State> {
       <div className={ classes.root }>
         <div className={ classes.buttonGroup }>
           <IconButton>
-            <ViewQuiltRounded />
+            <ExhibitionIcon selected />
           </IconButton>
           <IconButton>
-            <CheckBoxOutlineBlank />
+            <ExhibitionLocationIcon />
           </IconButton>
           <IconButton>
-            <TabUnselected />
+            <ExhibitionPointIcon />
           </IconButton>
         </div>
         { this.props.children }

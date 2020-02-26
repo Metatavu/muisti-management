@@ -76,7 +76,7 @@ export class ExhibitionView extends React.Component<Props, State> {
           <ViewSelectionBar />
           <ElementNavigationPane title="Example header" />
           <EditorView />
-          <ElementSettingsPane />
+          <ElementSettingsPane title="Selected item name" />
         </div>
       </BasicLayout>
     );

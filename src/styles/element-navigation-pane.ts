@@ -33,7 +33,13 @@ export default createStyles({
     alignItems: "center",
     padding: "0 12px",
     borderBottom: "1px solid #ddd",
-    height: 55
+    height: 55,
+    "& h3": {
+      whiteSpace: "nowrap",
+      width: "calc(100% - 50px)",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
   },
   content: {   
 
