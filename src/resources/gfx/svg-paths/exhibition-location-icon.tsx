@@ -2,10 +2,16 @@ import * as React from "react";
 import { SvgIcon, SvgIconProps } from "@material-ui/core";
 import theme from "../../../styles/theme"
 
+/**
+ * Interface representing component properties
+ */
 interface Props extends SvgIconProps {
   selected?: boolean
 }
 
+/**
+ * Render Exhibition Location Icon
+ */
 const ExhibitionLocationIcon = (props: Props) => {
   const { selected } = props;
   return (
