@@ -8,7 +8,7 @@ import Api from "../../api/api";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Typography, Container } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
@@ -17,7 +17,7 @@ import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken } from '../../types';
-
+import FloorPlan from "../generic/floor-plan";
 /**
  * Component props
  */
@@ -76,7 +76,9 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
-        <CircularProgress></CircularProgress>
+        <Container fixed>
+          <CircularProgress></CircularProgress>
+        </Container>
       );
     }
 
@@ -88,7 +90,7 @@ export class ExhibitionView extends React.Component<Props, State> {
           <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath }/>
           <ElementNavigationPane title="Näyttely" />
           <EditorView>
-            <Typography>Olen näyttelyeditorin sisältö { history.location.pathname } </Typography>
+            <FloorPlan />
           </EditorView>
           <ElementSettingsPane title="2. Huone 1" />
         </div>
