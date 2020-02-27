@@ -89,7 +89,7 @@ export class ExhibitionRoomView extends React.Component<Props, State> {
           <EditorView>
             <Typography>Olen näyttelykohde-editorin sisältö</Typography>
           </EditorView>
-          <ElementSettingsPane title="1. Laite 8" />
+          <ElementSettingsPane title="Ominaisuudet" />
         </div>
       </BasicLayout>
     );

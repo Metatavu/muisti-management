@@ -34,6 +34,7 @@ export interface IStrings extends LocalizedStringsMethods {
       xml: string,
       json: string,
       saveButton: string
+      importButton: string
     }
   }
 }

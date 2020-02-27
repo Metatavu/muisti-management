@@ -29,7 +29,8 @@
     "editView": {
       "xml": "XML",
       "json": "JSON",
-      "saveButton": "Save"
+      "saveButton": "Save",
+      "importButton": "Import"
     }
 
   }
