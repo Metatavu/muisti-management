@@ -89,7 +89,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           <EditorView>
             <Typography>Olen näyttelyn laiteryhmän editorin sisältö</Typography>
           </EditorView>
-          <ElementSettingsPane title="1. Ryhmä" />
+          <ElementSettingsPane title="Ominaisuudet" />
         </div>
       </BasicLayout>
     );

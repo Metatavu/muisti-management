@@ -1,17 +1,33 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
 
   root: {
-    display: "flex",
-    height: "100%"
+    height: "100%",
+    display: "grid",
+    gridAutoColumns: "auto 1fr",
+    gridTemplateRows: "1fr",
+    gridTemplateAreas: "'panel content' 'panel content'",
   },
-  toolbar: {
+  panel: {
     position: "relative",
-    gridArea: "navigation",
+    gridArea: "panel",
     borderRight: "1px solid #ddd",
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
+  },
+  toolBar: {
+    backgroundColor: "#fbfbfb",
+    borderBottom: "1px solid #ddd",
+    display: "flex",
+    justifyContent: "flex-end",
+    height: 58,
+    padding: "0 16px",
+    alignItems: "center",
+  },
+  toolbarContent: {
+    padding: theme.spacing(2)
   },
   btnContainer: {
     position: "absolute",
@@ -46,10 +62,17 @@ export default createStyles({
       textOverflow: "ellipsis"
     }
   },
-  content: {},
+  content: {
+    gridArea: "content",
+    display: "flex",
+    height: "100%",
+    width: "100%",
+    flexDirection: "column"
+  },
   editors: {
     display: "grid",
     width: "100%",
+    height: "100%",
     gridGap: 10,
     gridTemplateColumns: "1fr 1fr"
   },

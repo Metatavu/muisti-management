@@ -28,6 +28,15 @@ export interface IStrings extends LocalizedStringsMethods {
     close: string
     reload: string,
   },
+
+  exhibitionLayouts: {
+    editView: {
+      xml: string,
+      json: string,
+      saveButton: string
+      importButton: string
+    }
+  }
 }
 
 const strings: IStrings = new LocalizedStrings({

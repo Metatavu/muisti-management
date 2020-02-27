@@ -13,6 +13,7 @@ import AccessTokenRefresh from "./generic/access-token-refresh";
 import ExhibitionView from "./exhibition/exhibition-view";
 import ExhibitionRoomView from "./exhibition/exhibition-room-view";
 import ExhibitionDeviceGroupView from "./exhibition/exhibition-device-group-view";
+import ExhibitionSettings from "./exhibition/exhibition-settings-view";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -75,6 +76,13 @@ class App extends React.Component<Props, State> {
                   exact={true}
                   render={ ({ match, history }) => (
                     <ExhibitionDeviceGroupView exhibitionId={ match.params.exhibitionId } history={ history } />
+                  )}
+                />
+                <Route
+                  path="/exhibitions/:exhibitionId/settings"
+                  exact={true}
+                  render={ ({ match, history }) => (
+                    <ExhibitionSettings exhibitionId={ match.params.exhibitionId } history={ history } />
                   )}
                 />
               </div>

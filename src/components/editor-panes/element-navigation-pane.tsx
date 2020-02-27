@@ -1,16 +1,9 @@
 import * as React from "react";
 
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { AccessToken } from "../../types";
 import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import { WithStyles, withStyles, IconButton } from "@material-ui/core";
 import styles from "../../styles/element-navigation-pane";
-import { ExhibitionRoom, ExhibitionDevice, Exhibition } from "../../generated/client";
-import { KeycloakInstance } from "keycloak-js";
-import Api from "../../api/api";
 import classNames from "classnames";
 
 
@@ -18,9 +11,6 @@ import classNames from "classnames";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  keycloak: KeycloakInstance,
-  accessToken: AccessToken,
-  exhibition?: Exhibition,
   title: string
 }
 
@@ -28,10 +18,6 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
-  error?: Error,
-  loading: boolean,
-  exhibitionRooms: ExhibitionRoom[],
-  exhibitionDevices: ExhibitionDevice[],
   open: boolean
 }
 
@@ -51,43 +37,8 @@ class ElementNavigationPane extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false,
-      exhibitionRooms: [],
-      exhibitionDevices: [],
       open: true
     };
-  }
-
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = async () => {
-    const { accessToken, exhibition } = this.props;
-    
-    if (!exhibition || !exhibition.id) {
-      return;
-    }
-
-    this.setState({
-      loading: true
-    });
-
-    try {
-      const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-      const exhibitionRooms: ExhibitionRoom[] = await exhibitionRoomsApi.listExhibitionRooms({ exhibitionId: exhibition.id });
-
-      this.setState({
-        exhibitionRooms: exhibitionRooms
-      });
-    } catch (e) {
-      this.setState({
-        error: e
-      });
-    }
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
@@ -124,27 +75,4 @@ class ElementNavigationPane extends React.Component<Props, State> {
   }
 }
 
-/**
- * Redux mapper for mapping store state to component props
- * 
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return {
-    keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken,
-    exhibition: state.exhibition.exhibition
-  };
-}
-
-/**
- * Redux mapper for mapping component dispatches 
- * 
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ElementNavigationPane));
+export default withStyles(styles)(ElementNavigationPane);

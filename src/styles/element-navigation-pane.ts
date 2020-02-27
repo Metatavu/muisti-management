@@ -1,4 +1,5 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
   root: {
@@ -42,6 +43,6 @@ export default createStyles({
     }
   },
   content: {   
-
+    padding: theme.spacing(2)
   },
 });

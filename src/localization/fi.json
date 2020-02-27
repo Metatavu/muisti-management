@@ -22,5 +22,16 @@
     "errorMessage": "Virheilmoitus: ",
     "close": "Sulje",
     "reload": "Lataa uudelleen"
+  },
+
+  "exhibitionLayouts": {
+
+    "editView": {
+      "xml": "XML",
+      "json": "JSON",
+      "saveButton": "Tallenna",
+      "importButton": "Tuo"
+    }
+
   }
 }

@@ -14,85 +14,73 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Point,
-    PointFromJSON,
-    PointFromJSONTyped,
-    PointToJSON,
+    ExhibitionPageLayoutView,
+    ExhibitionPageLayoutViewFromJSON,
+    ExhibitionPageLayoutViewFromJSONTyped,
+    ExhibitionPageLayoutViewToJSON,
 } from './';
 
 /**
- * 
+ * Describes a layout for a page in an exhibition
  * @export
- * @interface ExhibitionDevice
+ * @interface ExhibitionPageLayout
  */
-export interface ExhibitionDevice {
+export interface ExhibitionPageLayout {
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly id?: string;
     /**
-     * 
+     * Id of exhibition this layout belongs to
      * @type {string}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly exhibitionId?: string;
     /**
-     * Device group id
+     * Human readable name for the layout
      * @type {string}
-     * @memberof ExhibitionDevice
-     */
-    groupId: string;
-    /**
-     * Device model id
-     * @type {string}
-     * @memberof ExhibitionDevice
-     */
-    modelId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     name: string;
     /**
      * 
-     * @type {Point}
-     * @memberof ExhibitionDevice
+     * @type {ExhibitionPageLayoutView}
+     * @memberof ExhibitionPageLayout
      */
-    location?: Point;
+    data: ExhibitionPageLayoutView;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly creatorId?: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof ExhibitionDevice
+     * @memberof ExhibitionPageLayout
      */
     readonly modifiedAt?: Date;
 }
 
-export function ExhibitionDeviceFromJSON(json: any): ExhibitionDevice {
-    return ExhibitionDeviceFromJSONTyped(json, false);
+export function ExhibitionPageLayoutFromJSON(json: any): ExhibitionPageLayout {
+    return ExhibitionPageLayoutFromJSONTyped(json, false);
 }
 
-export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionDevice {
+export function ExhibitionPageLayoutFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageLayout {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -100,10 +88,8 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'groupId': json['groupId'],
-        'modelId': json['modelId'],
         'name': json['name'],
-        'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
+        'data': ExhibitionPageLayoutViewFromJSON(json['data']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -111,7 +97,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
+export function ExhibitionPageLayoutToJSON(value?: ExhibitionPageLayout | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -120,10 +106,8 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
     }
     return {
         
-        'groupId': value.groupId,
-        'modelId': value.modelId,
         'name': value.name,
-        'location': PointToJSON(value.location),
+        'data': ExhibitionPageLayoutViewToJSON(value.data),
     };
 }
 
