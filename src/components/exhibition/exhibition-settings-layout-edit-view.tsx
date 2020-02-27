@@ -6,7 +6,7 @@ import { parse as parseXML } from "fast-xml-parser"
 import { ExhibitionPageLayout, ExhibitionPageLayoutView, ExhibitionPageLayoutViewProperty, ExhibitionPageLayoutViewPropertyType } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
-import { v4 as uuidv4 } from "uuid";
+import uuid, { v4 as uuidv4 } from "uuid";
 import * as codemirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
@@ -127,7 +127,8 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
         attributeNamePrefix : "",
         attrNodeName: "@",
         textNodeName : "#text",
-        ignoreAttributes : false
+        ignoreAttributes : false,
+        arrayMode: true
       });
 
       const widgets = Object.keys(xml);
@@ -142,34 +143,39 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Converts widget XML into page layout view
    * 
-   * @param widgetXml XML
+   * @param widgetXmls array XML blocks
    * @param widget widget name
    */
-  private xmlToView(widgetXml: any, widget: string): ExhibitionPageLayoutView {
-    const attributes = widgetXml["@"] || {};
-    const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
-    const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
+  private xmlToView(widgetXmls: any[], widget: string): ExhibitionPageLayoutView[] {
+    return widgetXmls.map(widgetXml => {
+      const attributes = widgetXml["@"] || {};
 
-    const properties: ExhibitionPageLayoutViewProperty[] = attributeNames.map((attributeName) => {
-      const value = attributes[attributeName] as string;
+      const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
+      const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
+  
+      const properties: ExhibitionPageLayoutViewProperty[] = attributeNames.map((attributeName) => {
+        const value = attributes[attributeName] as string;
+  
+        return {
+          name: attributeName.substring(8),
+          value: value,
+          type: this.guessPropertyType(value)
+        }
+      });
+  
+      let children: ExhibitionPageLayoutView[] = [];
+      
+      childWidgetNames.forEach((childWidgetName) => {
+        children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
+      });
 
       return {
-        name: attributeName.substring(8),
-        value: value,
-        type: this.guessPropertyType(value)
+        children: children,
+        id: ((attributes["android:id"] || "").substring(5)) || uuidv4(),
+        properties: properties,
+        widget: widget
       }
     });
-
-    const children: ExhibitionPageLayoutView[] = childWidgetNames.map((childWidgetName) => {
-      return this.xmlToView(widgetXml[childWidgetName], childWidgetName);
-    });
-    
-    return {
-      children: children,
-      id: uuidv4(),
-      properties: properties,
-      widget: widget
-    }
   }
 
   /**
@@ -202,6 +208,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
     this.props.onSave(layout);
   } 
+
 }
 
 export default withStyles(styles)(ExhibitionSettingsLayoutEditView);

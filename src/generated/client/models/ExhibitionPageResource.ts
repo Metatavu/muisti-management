@@ -24,7 +24,7 @@ export interface ExhibitionPageResource {
      * @type {string}
      * @memberof ExhibitionPageResource
      */
-    readonly id?: string;
+    id: string;
     /**
      * 
      * @type {string}
@@ -43,7 +43,7 @@ export function ExhibitionPageResourceFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
+        'id': json['id'],
         'data': json['data'],
     };
 }
@@ -57,6 +57,7 @@ export function ExhibitionPageResourceToJSON(value?: ExhibitionPageResource | nu
     }
     return {
         
+        'id': value.id,
         'data': value.data,
     };
 }

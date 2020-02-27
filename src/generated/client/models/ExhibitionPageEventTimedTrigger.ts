@@ -24,7 +24,7 @@ export interface ExhibitionPageEventTimedTrigger {
      * @type {string}
      * @memberof ExhibitionPageEventTimedTrigger
      */
-    id?: string;
+    id: string;
     /**
      * 
      * @type {string}
@@ -55,7 +55,7 @@ export function ExhibitionPageEventTimedTriggerFromJSONTyped(json: any, ignoreDi
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
+        'id': json['id'],
         'eventId': !exists(json, 'eventId') ? undefined : json['eventId'],
         'delay': !exists(json, 'delay') ? undefined : json['delay'],
         'next': !exists(json, 'next') ? undefined : ((json['next'] as Array<any>).map(ExhibitionPageEventTimedTriggerFromJSON)),

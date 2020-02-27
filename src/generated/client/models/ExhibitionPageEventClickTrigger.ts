@@ -24,7 +24,7 @@ export interface ExhibitionPageEventClickTrigger {
      * @type {string}
      * @memberof ExhibitionPageEventClickTrigger
      */
-    id?: string;
+    id: string;
     /**
      * 
      * @type {string}
@@ -49,7 +49,7 @@ export function ExhibitionPageEventClickTriggerFromJSONTyped(json: any, ignoreDi
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
+        'id': json['id'],
         'eventId': !exists(json, 'eventId') ? undefined : json['eventId'],
         'viewId': !exists(json, 'viewId') ? undefined : json['viewId'],
     };

@@ -35,7 +35,7 @@ export interface ExhibitionPageEvent {
      * @type {string}
      * @memberof ExhibitionPageEvent
      */
-    id?: string;
+    id: string;
     /**
      * 
      * @type {ExhibitionPageEventType}
@@ -60,7 +60,7 @@ export function ExhibitionPageEventFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
+        'id': json['id'],
         'type': !exists(json, 'type') ? undefined : ExhibitionPageEventTypeFromJSON(json['type']),
         'data': !exists(json, 'data') ? undefined : ExhibitionPageEventDataFromJSON(json['data']),
     };
