@@ -6,7 +6,7 @@ import { parse as parseXML } from "fast-xml-parser"
 import { ExhibitionPageLayout, ExhibitionPageLayoutView, ExhibitionPageLayoutViewProperty, ExhibitionPageLayoutViewPropertyType } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
-import uuid, { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import * as codemirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
@@ -133,7 +133,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
       const widgets = Object.keys(xml);
       this.setState({
-        jsonCode: JSON.stringify(this.xmlToView(xml[widgets[0]], widgets[0]), null, 2)
+        jsonCode: JSON.stringify(this.xmlToView(xml[widgets[0]], widgets[0])[0] || {}, null, 2)
       });
     } catch (e) {
       console.warn("Failed to parse", e);
@@ -170,9 +170,9 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       });
 
       return {
-        children: children,
+        children: children || [],
         id: ((attributes["android:id"] || "").substring(5)) || uuidv4(),
-        properties: properties,
+        properties: properties || [],
         widget: widget
       }
     });

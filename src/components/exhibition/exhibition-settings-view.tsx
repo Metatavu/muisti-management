@@ -202,6 +202,8 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
         layouts: [ ... layouts, layout ]
       });
     } catch (e) {
+      console.error(e);
+
       this.setState({
         error: e
       });
