@@ -51,7 +51,7 @@ export interface VisitorSession {
      * @type {VisitorSessionState}
      * @memberof VisitorSession
      */
-    state?: VisitorSessionState;
+    state: VisitorSessionState;
     /**
      * 
      * @type {Array<VisitorSessionVariable>}
@@ -102,7 +102,7 @@ export function VisitorSessionFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'state': !exists(json, 'state') ? undefined : VisitorSessionStateFromJSON(json['state']),
+        'state': VisitorSessionStateFromJSON(json['state']),
         'variables': !exists(json, 'variables') ? undefined : ((json['variables'] as Array<any>).map(VisitorSessionVariableFromJSON)),
         'users': ((json['users'] as Array<any>).map(VisitorSessionUserFromJSON)),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],

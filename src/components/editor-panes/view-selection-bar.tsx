@@ -63,6 +63,9 @@ class ViewSelectionBar extends React.Component<Props, State> {
           <IconButton component={ RouterLink } to={`/exhibitions/${ this.props.exhibitionId }/deviceGroup`}>
             <ExhibitionPointIcon selected={ locationPath === `/exhibitions/${ this.props.exhibitionId }/deviceGroup` }/>
           </IconButton>
+          <IconButton component={ RouterLink } to={`/exhibitions/${ this.props.exhibitionId }/settings`}>
+            <ExhibitionPointIcon selected={ locationPath === `/exhibitions/${ this.props.exhibitionId }/settings` }/>
+          </IconButton>
         </div>
         { this.props.children }
       </div>

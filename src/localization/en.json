@@ -22,5 +22,16 @@
     "errorMessage": "Error message: ",
     "close": "Close",
     "reload": "Reload"
+  },
+
+  "exhibitionLayouts": {
+
+    "editView": {
+      "xml": "XML",
+      "json": "JSON",
+      "saveButton": "Save"
+    }
+
   }
+
 }
