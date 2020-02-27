@@ -7,7 +7,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Typography, Link } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Typography, Link, Button} from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPageLayout } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
@@ -20,6 +20,7 @@ import { setExhibition } from "../../actions/exhibition";
 import Api from "../../api/api";
 import { Link as RouterLink } from 'react-router-dom';
 import ExhibitionSettingsLayoutEditView from "./exhibition-settings-layout-edit-view";
+import AddIcon from "@material-ui/icons/AddSharp";
 
 /**
  * Component props
@@ -123,7 +124,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           <EditorView>
             { this.renderEditorView() }
           </EditorView>
-          <ElementSettingsPane title="Jokin" />
+          <ElementSettingsPane title="Ominaisuudet" />
         </div>
       </BasicLayout>
     );
@@ -134,15 +135,14 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private renderNavigation = () => {
     const items = [
-      <Link style={{ display: "block" }} onClick={ this.onLayoutClick }> Layout </Link>
+      <Link style={{ display: "block", fontWeight: "bold", cursor: "pointer", marginBottom: 12 }} onClick={ this.onLayoutClick }> Layout </Link>
     ];
 
     if (this.state.layoutsOpen) {
-      items.push(<Link style={{ display: "block" }} onClick={ this.onAddLayoutClick }> + Add layout </Link>);
-
       this.state.layouts.forEach(layout => {
-        items.push(<Link style={{ display: "block" }} onClick={ () => this.onEditLayoutClick(layout) }> { layout.name } </Link>);
+        items.push(<Link style={{ display: "block", cursor: "pointer", marginBottom: 12, marginLeft: 12  }} onClick={ () => this.onEditLayoutClick(layout) }> { layout.name } </Link>);
       });
+      items.push(<Button variant="outlined" color="primary"  onClick={ this.onAddLayoutClick } startIcon={ <AddIcon />  }>Add layout </Button>);
     }
 
     return items;

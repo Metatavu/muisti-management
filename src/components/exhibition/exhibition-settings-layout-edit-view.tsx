@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Button, TextField, Typography } from "@material-ui/core";
-import styles from "../../styles/floor-plan";
+import { WithStyles, withStyles, Button, TextField, Typography, IconButton } from "@material-ui/core";
+import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
 import { ExhibitionPageLayout, ExhibitionPageLayoutView, ExhibitionPageLayoutViewProperty, ExhibitionPageLayoutViewPropertyType } from "../../generated/client";
 import strings from "../../localization/strings";
@@ -12,6 +12,9 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript"
 import "codemirror/mode/xml/xml"
+import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
+import OpenIcon from "@material-ui/icons/ChevronRightSharp";
+import classNames from "classnames";
 
 /**
  * Interface representing component properties
@@ -27,8 +30,12 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   name: string,
   jsonCode: string,
-  xmlCode: string
+  xmlCode: string,
+  toolbarOpen: boolean
 }
+
+const minWidth = 320;
+const minimizedWidth = 50;
 
 /**
  * Component for editor view
@@ -46,7 +53,8 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     this.state = {
       name: props.layout.name,
       jsonCode: JSON.stringify(props.layout.data, null, 2),
-      xmlCode: ""
+      xmlCode: "",
+      toolbarOpen: true
     };
   }
   
@@ -76,14 +84,55 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     
     return (
       <div className={ classes.root }>
-        <TextField value={ this.state.name } onChange={ this.onNameChange }/>
-        <Typography>{ strings.exhibitionLayouts.editView.json }</Typography>
-        <CodeMirror value={ this.state.jsonCode } options={ jsonEditorOptions } onBeforeChange={ this.onBeforeJsonCodeChange } />
-        <Typography>{ strings.exhibitionLayouts.editView.xml }</Typography>
-        <CodeMirror value={ this.state.xmlCode } options={ xmlEditorOptions } onBeforeChange={ this.onBeforeXmlCodeChange } />
-        <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+        <div className={ classes.panel } style={{ width: this.state.toolbarOpen ? minWidth : minimizedWidth }}>
+          <div className={ classes.btnContainer }>
+            <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
+              { this.state.toolbarOpen ? <CloseIcon /> : <OpenIcon /> }
+            </IconButton>
+          </div>
+          <div className={ classNames( classes.container, this.state.toolbarOpen ? "" : "closed" ) }>
+            <div className={ classes.header }>
+              <h3>Layout</h3>
+            </div>
+            <div className={ classes.toolbarContent }>
+              <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+            </div>
+          </div>
+        </div>
+        <div className={ classes.content }>
+          <div className={ classes.toolBar }>
+            <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}> { strings.exhibitionLayouts.editView.importButton } </Button>
+            <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+          </div>
+          <div className={ classes.editors}>
+            <div className={ classes.editorContainer }>
+              <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
+              <CodeMirror className={ classes.editor } value={ this.state.jsonCode } options={ jsonEditorOptions } onBeforeChange={ this.onBeforeJsonCodeChange } />
+            </div>
+            <div className={ classes.editorContainer }>
+              <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
+              <CodeMirror className={ classes.editor } value={ this.state.xmlCode } options={ xmlEditorOptions } onBeforeChange={ this.onBeforeXmlCodeChange } />
+            </div>
+          </div>
+        </div>
       </div>
     );
+  }
+
+  /**
+   * Handle toggle panel
+   */
+  private onToggleClick = () => {
+    this.setState({
+      toolbarOpen: !this.state.toolbarOpen
+    });
+  }
+
+  /**
+   * Handle toggle panel
+   */
+  private onImportClick = () => {
+    alert("Clicked import");
   }
 
   /**

@@ -29,7 +29,8 @@
     "editView": {
       "xml": "XML",
       "json": "JSON",
-      "saveButton": "Tallenna"
+      "saveButton": "Tallenna",
+      "importButton": "Tuo"
     }
 
   }
