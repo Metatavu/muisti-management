@@ -7,7 +7,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Typography, Link, Button} from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Typography, Button} from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPageLayout, ExhibitionPage } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
@@ -18,7 +18,6 @@ import EditorView from "../editor/editor-view";
 import { AccessToken } from '../../types';
 import { setExhibition } from "../../actions/exhibition";
 import Api from "../../api/api";
-import { Link as RouterLink } from 'react-router-dom';
 import ExhibitionSettingsLayoutEditView from "./exhibition-settings-layout-edit-view";
 import ExhibitionSettingsPageEditView from "./exhibition-settings-page-edit-view";
 import AddIcon from "@material-ui/icons/AddSharp";
@@ -197,7 +196,8 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
   private renderEditorView = () => {
     if (this.state.editLayout) {
       return (
-        <ExhibitionSettingsLayoutEditView key={ this.state.editLayout.id! } 
+        <ExhibitionSettingsLayoutEditView 
+          key={ this.state.editLayout.id || "new-layout" } 
           layout={ this.state.editLayout } 
           onSave={ this.onLayoutSave }/>
       )
@@ -205,7 +205,9 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
 
     if (this.state.editPage) {
       return (
-        <ExhibitionSettingsPageEditView layouts={ this.state.layouts } 
+        <ExhibitionSettingsPageEditView 
+          key={ this.state.editPage.id || "new-page" }
+          layouts={ this.state.layouts } 
           page={ this.state.editPage }
           onSave={ this.onPageSave }/>
       );
@@ -238,10 +240,10 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
         exhibitionPageLayout: layout
       });
 
-      const layouts = this.state.layouts.filter(layout => layout.id != updatedLayout.id);
+      const layouts = this.state.layouts.filter(layout => layout.id !== updatedLayout.id);
 
       this.setState({
-        layouts: [ ... layouts, layout ]
+        layouts: [ ...layouts, layout ]
       });
     } catch (e) {
       console.error(e);
@@ -273,7 +275,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
       });
 
       this.setState({
-        layouts: [ ... this.state.layouts, layout ]
+        layouts: [ ...this.state.layouts, layout ]
       });
     } catch (e) {
       this.setState({
@@ -286,6 +288,11 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    * Event handler for add page click
    */
   private onAddPageClick = () => {
+    this.setState({
+      editPage: undefined,
+      editLayout: undefined
+    });
+
     const layoutId = this.state.layouts && this.state.layouts.length ? this.state.layouts[0].id : null;
 
     if (!layoutId) {
@@ -300,7 +307,8 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
     }
 
     this.setState({
-      editPage: newPage
+      editPage: newPage,
+      editLayout: undefined
     });
   }
 
@@ -310,7 +318,39 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    * @param page page
    */
   private onPageSave = async (page: ExhibitionPage) => {
+    try {
+      const exhibitionPagesApi = Api.getExhibitionPagesApi(this.props.accessToken);
+      
+      if (page.id) {
+        const updatedPage = await exhibitionPagesApi.updateExhibitionPage({
+          exhibitionId: this.props.exhibitionId,
+          pageId: page.id,
+          exhibitionPage: page
+        });
 
+        const pages = this.state.pages.filter(page => page.id !== updatedPage.id);
+
+        this.setState({
+          pages: [ ...pages, updatedPage ]
+        });
+
+      } else {
+        const createdPage = await exhibitionPagesApi.createExhibitionPage({
+          exhibitionId: this.props.exhibitionId,
+          exhibitionPage: page
+        });
+
+        this.setState({
+          pages: [ ...this.state.pages, createdPage ]
+        });
+      }
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
   }
 
   /**
@@ -320,7 +360,8 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private onEditLayoutClick = (layout: ExhibitionPageLayout) => {
     this.setState({
-      editLayout: layout
+      editLayout: layout,
+      editPage: undefined
     });
   }
 
@@ -331,6 +372,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private onEditPageClick = (page: ExhibitionPage) => {
     this.setState({
+      editLayout: undefined,
       editPage: page
     });
   }

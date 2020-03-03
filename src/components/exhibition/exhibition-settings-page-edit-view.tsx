@@ -412,7 +412,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     const parsedCode = this.parseJsonCode();
 
     this.props.onSave({
-      ... this.props.page,
+      ...this.props.page,
       layoutId: this.state.layoutId,
       name: this.state.name,
       eventTriggers: parsedCode.eventTriggers || [],
