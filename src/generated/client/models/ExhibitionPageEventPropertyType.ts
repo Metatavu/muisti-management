@@ -17,22 +17,22 @@
  * @export
  * @enum {string}
  */
-export enum ExhibitionPageLayoutViewPropertyType {
+export enum ExhibitionPageEventPropertyType {
     String = 'string',
     Boolean = 'boolean',
     Number = 'number',
     Color = 'color'
 }
 
-export function ExhibitionPageLayoutViewPropertyTypeFromJSON(json: any): ExhibitionPageLayoutViewPropertyType {
-    return ExhibitionPageLayoutViewPropertyTypeFromJSONTyped(json, false);
+export function ExhibitionPageEventPropertyTypeFromJSON(json: any): ExhibitionPageEventPropertyType {
+    return ExhibitionPageEventPropertyTypeFromJSONTyped(json, false);
 }
 
-export function ExhibitionPageLayoutViewPropertyTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageLayoutViewPropertyType {
-    return json as ExhibitionPageLayoutViewPropertyType;
+export function ExhibitionPageEventPropertyTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageEventPropertyType {
+    return json as ExhibitionPageEventPropertyType;
 }
 
-export function ExhibitionPageLayoutViewPropertyTypeToJSON(value?: ExhibitionPageLayoutViewPropertyType | null): any {
+export function ExhibitionPageEventPropertyTypeToJSON(value?: ExhibitionPageEventPropertyType | null): any {
     return value as any;
 }
 

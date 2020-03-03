@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ExhibitionPageEventData,
-    ExhibitionPageEventDataFromJSON,
-    ExhibitionPageEventDataFromJSONTyped,
-    ExhibitionPageEventDataToJSON,
+    ExhibitionPageEventProperty,
+    ExhibitionPageEventPropertyFromJSON,
+    ExhibitionPageEventPropertyFromJSONTyped,
+    ExhibitionPageEventPropertyToJSON,
     ExhibitionPageEventType,
     ExhibitionPageEventTypeFromJSON,
     ExhibitionPageEventTypeFromJSONTyped,
@@ -32,22 +32,16 @@ import {
 export interface ExhibitionPageEvent {
     /**
      * 
-     * @type {string}
-     * @memberof ExhibitionPageEvent
-     */
-    id: string;
-    /**
-     * 
      * @type {ExhibitionPageEventType}
      * @memberof ExhibitionPageEvent
      */
-    type?: ExhibitionPageEventType;
+    type: ExhibitionPageEventType;
     /**
      * 
-     * @type {ExhibitionPageEventData}
+     * @type {Array<ExhibitionPageEventProperty>}
      * @memberof ExhibitionPageEvent
      */
-    data?: ExhibitionPageEventData;
+    properties?: Array<ExhibitionPageEventProperty>;
 }
 
 export function ExhibitionPageEventFromJSON(json: any): ExhibitionPageEvent {
@@ -60,9 +54,8 @@ export function ExhibitionPageEventFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'id': json['id'],
-        'type': !exists(json, 'type') ? undefined : ExhibitionPageEventTypeFromJSON(json['type']),
-        'data': !exists(json, 'data') ? undefined : ExhibitionPageEventDataFromJSON(json['data']),
+        'type': ExhibitionPageEventTypeFromJSON(json['type']),
+        'properties': !exists(json, 'properties') ? undefined : ((json['properties'] as Array<any>).map(ExhibitionPageEventPropertyFromJSON)),
     };
 }
 
@@ -75,9 +68,8 @@ export function ExhibitionPageEventToJSON(value?: ExhibitionPageEvent | null): a
     }
     return {
         
-        'id': value.id,
         'type': ExhibitionPageEventTypeToJSON(value.type),
-        'data': ExhibitionPageEventDataToJSON(value.data),
+        'properties': value.properties === undefined ? undefined : ((value.properties as Array<any>).map(ExhibitionPageEventPropertyToJSON)),
     };
 }
 
