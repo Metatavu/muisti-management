@@ -20,9 +20,11 @@
 export enum ExhibitionPageEventType {
     Hide = 'hide',
     Show = 'show',
-    Trigger = 'trigger',
     Setuservalue = 'setuservalue',
-    Navigate = 'navigate'
+    Navigate = 'navigate',
+    Setstyle = 'setstyle',
+    Setsrc = 'setsrc',
+    Settext = 'settext'
 }
 
 export function ExhibitionPageEventTypeFromJSON(json: any): ExhibitionPageEventType {

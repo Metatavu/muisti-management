@@ -250,7 +250,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    */
   private onSaveClick = () => {
     const layout = {
-      ... this.props.layout,
+      ...this.props.layout,
       name: this.state.name,
       data: JSON.parse(this.state.jsonCode)
     };

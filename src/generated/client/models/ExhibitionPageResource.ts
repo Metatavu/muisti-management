@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ExhibitionPageResourceType,
+    ExhibitionPageResourceTypeFromJSON,
+    ExhibitionPageResourceTypeFromJSONTyped,
+    ExhibitionPageResourceTypeToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -31,6 +38,12 @@ export interface ExhibitionPageResource {
      * @memberof ExhibitionPageResource
      */
     data: string;
+    /**
+     * 
+     * @type {ExhibitionPageResourceType}
+     * @memberof ExhibitionPageResource
+     */
+    type: ExhibitionPageResourceType;
 }
 
 export function ExhibitionPageResourceFromJSON(json: any): ExhibitionPageResource {
@@ -45,6 +58,7 @@ export function ExhibitionPageResourceFromJSONTyped(json: any, ignoreDiscriminat
         
         'id': json['id'],
         'data': json['data'],
+        'type': ExhibitionPageResourceTypeFromJSON(json['type']),
     };
 }
 
@@ -59,6 +73,7 @@ export function ExhibitionPageResourceToJSON(value?: ExhibitionPageResource | nu
         
         'id': value.id,
         'data': value.data,
+        'type': ExhibitionPageResourceTypeToJSON(value.type),
     };
 }
 

@@ -14,14 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ExhibitionPageEvent,
-    ExhibitionPageEventFromJSON,
-    ExhibitionPageEventFromJSONTyped,
-    ExhibitionPageEventToJSON,
-    ExhibitionPageEventTriggers,
-    ExhibitionPageEventTriggersFromJSON,
-    ExhibitionPageEventTriggersFromJSONTyped,
-    ExhibitionPageEventTriggersToJSON,
+    ExhibitionPageEventTrigger,
+    ExhibitionPageEventTriggerFromJSON,
+    ExhibitionPageEventTriggerFromJSONTyped,
+    ExhibitionPageEventTriggerToJSON,
     ExhibitionPageResource,
     ExhibitionPageResourceFromJSON,
     ExhibitionPageResourceFromJSONTyped,
@@ -41,35 +37,35 @@ export interface ExhibitionPage {
      */
     readonly id?: string;
     /**
-     * Id of exhibition this layout belongs to
+     * Id of exhibition this page belongs to
      * @type {string}
      * @memberof ExhibitionPage
      */
     readonly exhibitionId?: string;
     /**
+     * Id of page layout
+     * @type {string}
+     * @memberof ExhibitionPage
+     */
+    layoutId: string;
+    /**
      * Human readable name for the layout
      * @type {string}
      * @memberof ExhibitionPage
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {Array<ExhibitionPageResource>}
      * @memberof ExhibitionPage
      */
-    resources?: Array<ExhibitionPageResource>;
+    resources: Array<ExhibitionPageResource>;
     /**
      * 
-     * @type {ExhibitionPageEventTriggers}
+     * @type {Array<ExhibitionPageEventTrigger>}
      * @memberof ExhibitionPage
      */
-    eventTriggers?: ExhibitionPageEventTriggers;
-    /**
-     * 
-     * @type {Array<ExhibitionPageEvent>}
-     * @memberof ExhibitionPage
-     */
-    events?: Array<ExhibitionPageEvent>;
+    eventTriggers: Array<ExhibitionPageEventTrigger>;
     /**
      * 
      * @type {string}
@@ -108,10 +104,10 @@ export function ExhibitionPageFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'name': !exists(json, 'name') ? undefined : json['name'],
-        'resources': !exists(json, 'resources') ? undefined : ((json['resources'] as Array<any>).map(ExhibitionPageResourceFromJSON)),
-        'eventTriggers': !exists(json, 'eventTriggers') ? undefined : ExhibitionPageEventTriggersFromJSON(json['eventTriggers']),
-        'events': !exists(json, 'events') ? undefined : ((json['events'] as Array<any>).map(ExhibitionPageEventFromJSON)),
+        'layoutId': json['layoutId'],
+        'name': json['name'],
+        'resources': ((json['resources'] as Array<any>).map(ExhibitionPageResourceFromJSON)),
+        'eventTriggers': ((json['eventTriggers'] as Array<any>).map(ExhibitionPageEventTriggerFromJSON)),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -128,10 +124,10 @@ export function ExhibitionPageToJSON(value?: ExhibitionPage | null): any {
     }
     return {
         
+        'layoutId': value.layoutId,
         'name': value.name,
-        'resources': value.resources === undefined ? undefined : ((value.resources as Array<any>).map(ExhibitionPageResourceToJSON)),
-        'eventTriggers': ExhibitionPageEventTriggersToJSON(value.eventTriggers),
-        'events': value.events === undefined ? undefined : ((value.events as Array<any>).map(ExhibitionPageEventToJSON)),
+        'resources': ((value.resources as Array<any>).map(ExhibitionPageResourceToJSON)),
+        'eventTriggers': ((value.eventTriggers as Array<any>).map(ExhibitionPageEventTriggerToJSON)),
     };
 }
 
