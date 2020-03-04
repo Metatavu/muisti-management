@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Button, TextField, Typography, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageLayout, ExhibitionPage, ExhibitionPageResourceFromJSON, ExhibitionPageEventType, ExhibitionPageResourceType, ExhibitionPageEventTrigger, ExhibitionPageEventPropertyType, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
+import { ExhibitionPageLayout, ExhibitionPage, ExhibitionPageResourceFromJSON, ExhibitionPageEventType, ExhibitionPageResourceType, ExhibitionPageEventTrigger, ExhibitionPageEventPropertyType, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResource } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as codemirror from "codemirror";
@@ -50,7 +50,8 @@ interface State {
   layout?: ExhibitionPageLayout,
   toolbarOpen: boolean,
   jsonCode: string,
-  layoutId: string
+  layoutId: string,
+  selectedNode?: ExhibitionPageResource | ExhibitionPageLayout   
 }
 
 const minWidth = 320;
@@ -116,6 +117,9 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
             <div className={ classes.toolbarContent }>
               <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
             </div>
+            <div className={ classes.toolbarContent }>
+              { this.renderLayoutSelect() }
+            </div>
             <div>
               <TreeView defaultCollapseIcon={ <ExpandMoreIcon /> } defaultExpandIcon={ <ChevronRightIcon /> }>
                 { this.renderResourcesTree() }
@@ -140,6 +144,23 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
           </div>
         </div>
       </div>
+    );
+  }
+
+  /**
+   * Renders layout select
+   */
+  private renderLayoutSelect = () => {
+    const layoutSelectItems = this.props.layouts.map((layout) => {
+      return (
+        <MenuItem value={ layout.id! }> { layout.name} </MenuItem>
+      );
+    });
+
+    return (
+      <Select fullWidth value={ this.state.layoutId } onChange={ this.onLayoutChange }>
+        { layoutSelectItems }
+      </Select>
     );
   }
 
@@ -389,6 +410,17 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       name: event.target.value
+    });
+  }
+
+  /**
+   * Event handler for layout change
+   * 
+   * @param event event
+   */
+  private onLayoutChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    this.setState({
+      layoutId: event.target.value
     });
   }
 
