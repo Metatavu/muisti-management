@@ -51,7 +51,7 @@ interface State {
   toolbarOpen: boolean,
   jsonCode: string,
   layoutId: string,
-  selectedNode?: ExhibitionPageResource | ExhibitionPageLayout   
+  selectedNode?: ExhibitionPageResource | ExhibitionPageEventTrigger   
 }
 
 const minWidth = 320;
@@ -172,7 +172,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     
     const items = (parsedCode.resources || []).map((resource, index) => {
       const label = slugify(`${resource.id}`);
-      return <TreeItem nodeId={ `resource-${index}` } label={ label } />;
+      return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => this.onResourceNodeClick(resource) } />;
     });
 
     return (
@@ -191,7 +191,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     
     const items = (parsedCode.eventTriggers || []).map((eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = `Event ${index + 1}`;
-      return <TreeItem nodeId={ `event-${index}` } label={ label } />;
+      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => this.onEventTriggerNodeClick(eventTrigger) }/>;
     });
 
     return (
@@ -390,6 +390,28 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     this.setState({
       jsonCode: this.toJsonCode(parsedCode)
+    });
+  }
+
+  /**
+   * Event handler for resource node click
+   * 
+   * @param resource selected node
+   */
+  private onResourceNodeClick = (resource: ExhibitionPageResource) => {
+    this.setState({
+      selectedNode: resource
+    });
+  }
+
+  /**
+   * Event handler for event trigger node click
+   * 
+   * @param eventTrigger selected node
+   */
+  private onEventTriggerNodeClick = (eventTrigger: ExhibitionPageEventTrigger) => {
+    this.setState({
+      selectedNode: eventTrigger
     });
   }
 
