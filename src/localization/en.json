@@ -30,7 +30,12 @@
       "xml": "XML",
       "json": "JSON",
       "saveButton": "Save",
-      "importButton": "Import"
+      "importButton": "Import",
+      "deleteButton": "Delete",
+      "deleteConfirmTitle": "Are you sure?", 
+      "deleteConfirmText": "Are you sure that you wish to delete this layout?",
+      "deleteConfirmDelete": "Delete",
+      "deleteConfirmCancel": "Cancel"
     }
 
   }

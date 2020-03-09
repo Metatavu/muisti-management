@@ -9,7 +9,7 @@ import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Typography, Button} from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, ExhibitionPageLayout, ExhibitionPage } from "../../generated/client";
+import { Exhibition, PageLayout, ExhibitionPage } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
 import ViewSelectionBar from "../editor-panes/view-selection-bar";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -44,9 +44,9 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   error?: Error,
   loading: boolean,
-  layouts: ExhibitionPageLayout[],
+  layouts: PageLayout[],
   pages: ExhibitionPage[],
-  editLayout?: ExhibitionPageLayout,
+  editLayout?: PageLayout,
   editPage?: ExhibitionPage
 }
 
@@ -85,13 +85,11 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
         this.props.setExhibition(await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId }));
       } 
       
-      const exhibitionPageLayoutsApi = Api.getExhibitionPageLayoutsApi(accessToken);
+      const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
 
       const [ layouts, pages ] = await Promise.all([
-        exhibitionPageLayoutsApi.listExhibitionPageLayouts({
-          exhibitionId: exhibitionId
-        }),
+        pageLayoutsApi.listPageLayouts(),
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId: exhibitionId
         })
@@ -199,7 +197,8 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
         <ExhibitionSettingsLayoutEditView 
           key={ this.state.editLayout.id || "new-layout" } 
           layout={ this.state.editLayout } 
-          onSave={ this.onLayoutSave }/>
+          onSave={ this.onLayoutSave }
+          onDelete={ this.onLayoutDelete }/>
       )
     }
 
@@ -226,18 +225,44 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for layout delete 
+   * 
+   * @param layout layout
+   */
+  private onLayoutDelete = async (layout: PageLayout) => {
+    try {
+      const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
+      const pageLayoutId = layout.id!!;
+      
+      await pageLayoutsApi.deletePageLayout({
+        pageLayoutId: pageLayoutId
+      });
+
+      this.setState({
+        editLayout: undefined,
+        layouts: this.state.layouts.filter(layout => layout.id !== pageLayoutId)
+      });
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
+  }
+
+  /**
    * Event handler for layout save 
    * 
    * @param layout layout
    */
-  private onLayoutSave = async (layout: ExhibitionPageLayout) => {
+  private onLayoutSave = async (layout: PageLayout) => {
     try {
-      const exhibitionPageLayoutsApi = Api.getExhibitionPageLayoutsApi(this.props.accessToken);
+      const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
       
-      const updatedLayout = await exhibitionPageLayoutsApi.updateExhibitionPageLayout({
-        exhibitionId: this.props.exhibitionId,
+      const updatedLayout = await pageLayoutsApi.updatePageLayout({
         pageLayoutId: layout.id!!,
-        exhibitionPageLayout: layout
+        pageLayout: layout
       });
 
       const layouts = this.state.layouts.filter(layout => layout.id !== updatedLayout.id);
@@ -259,11 +284,10 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private onAddLayoutClick = async () => {
     try {
-      const exhibitionPageLayoutsApi = Api.getExhibitionPageLayoutsApi(this.props.accessToken);
+      const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
       
-      const layout = await exhibitionPageLayoutsApi.createExhibitionPageLayout({
-        exhibitionId: this.props.exhibitionId,
-        exhibitionPageLayout: {
+      const layout = await pageLayoutsApi.createPageLayout({
+        pageLayout: {
           name: "New",
           data: {
             id: uuidv4(),
@@ -358,7 +382,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    * 
    * @param layout layout
    */
-  private onEditLayoutClick = (layout: ExhibitionPageLayout) => {
+  private onEditLayoutClick = (layout: PageLayout) => {
     this.setState({
       editLayout: layout,
       editPage: undefined
