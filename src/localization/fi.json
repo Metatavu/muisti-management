@@ -30,7 +30,12 @@
       "xml": "XML",
       "json": "JSON",
       "saveButton": "Tallenna",
-      "importButton": "Tuo"
+      "importButton": "Tuo",
+      "deleteButton": "Poista",
+      "deleteConfirmTitle": "Oletko varma?",
+      "deleteConfirmText": "Oletko varma, että haluat poistaa asettelun?",
+      "deleteConfirmDelte": "Poista",
+      "deleteConfirmCancel": "Peruuta"
     }
 
   }

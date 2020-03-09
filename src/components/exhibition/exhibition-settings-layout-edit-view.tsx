@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Button, TextField, Typography, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
-import { ExhibitionPageLayout, ExhibitionPageLayoutView, ExhibitionPageLayoutViewProperty, ExhibitionPageLayoutViewPropertyType } from "../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { v4 as uuidv4 } from "uuid";
@@ -20,8 +20,9 @@ import classNames from "classnames";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  layout: ExhibitionPageLayout,
-  onSave: (layout: ExhibitionPageLayout) => void
+  layout: PageLayout,
+  onSave: (layout: PageLayout) => void,
+  onDelete: (layout: PageLayout) => void
 }
 
 /**
@@ -31,7 +32,8 @@ interface State {
   name: string,
   jsonCode: string,
   xmlCode: string,
-  toolbarOpen: boolean
+  toolbarOpen: boolean,
+  deleteOpen: boolean
 }
 
 const minWidth = 320;
@@ -54,7 +56,8 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       name: props.layout.name,
       jsonCode: JSON.stringify(props.layout.data, null, 2),
       xmlCode: "",
-      toolbarOpen: true
+      toolbarOpen: true,
+      deleteOpen: false
     };
   }
   
@@ -81,7 +84,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       theme: "material",
       lineNumbers: true
     };
-    
+
     return (
       <div className={ classes.root }>
         <div className={ classes.panel } style={{ width: this.state.toolbarOpen ? minWidth : minimizedWidth }}>
@@ -101,6 +104,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           <div className={ classes.toolBar }>
+            <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}> { strings.exhibitionLayouts.editView.deleteButton } </Button>
             <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}> { strings.exhibitionLayouts.editView.importButton } </Button>
             <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
           </div>
@@ -115,8 +119,117 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
             </div>
           </div>
         </div>
+        { this.renderDeleteDialog() }
       </div>
     );
+  }
+
+  /**
+   * Renders delete dialog when needed
+   */
+  private renderDeleteDialog = () => {
+    return (
+      <Dialog open={this.state.deleteOpen} onClose={ this.onDeleteDialogClose } aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">{ strings.exhibitionLayouts.editView.deleteConfirmTitle }</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">{ strings.exhibitionLayouts.editView.deleteConfirmText }</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={ this.onDeleteDialogCancelButtonClick } color="primary">{ strings.exhibitionLayouts.editView.deleteConfirmCancel }</Button>
+          <Button onClick={ this.onDeleteDialogDeleteButtonClick } color="primary" autoFocus>{ strings.exhibitionLayouts.editView.deleteConfirmDelete }</Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  /**
+   * Converts widget XML into page layout view
+   * 
+   * @param widgetXmls array XML blocks
+   * @param widget widget name
+   */
+  private xmlToView(widgetXmls: any[], widget: string): PageLayoutView[] {
+    return widgetXmls.map(widgetXml => {
+      const attributes = widgetXml["@"] || {};
+
+      const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
+      const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
+  
+      const properties: PageLayoutViewProperty[] = attributeNames.map((attributeName) => {
+        const value = attributes[attributeName] as string;
+  
+        return {
+          name: attributeName.substring(8),
+          value: value,
+          type: this.guessPropertyType(value)
+        }
+      });
+  
+      let children: PageLayoutView[] = [];
+      
+      childWidgetNames.forEach((childWidgetName) => {
+        children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
+      });
+
+      return {
+        children: children || [],
+        id: ((attributes["android:id"] || "").substring(5)) || uuidv4(),
+        properties: properties || [],
+        widget: widget
+      }
+    });
+  }
+
+  /**
+   * Attempts to guess property type from given value. Method falls back to string
+   * 
+   * @param value value
+   * @return type
+   */
+  private guessPropertyType = (value: string): PageLayoutViewPropertyType => {
+    if (this.isNumber(value as any)) {
+      return PageLayoutViewPropertyType.Number;
+    }
+
+    if (value === "true" || value === "false") {
+      return PageLayoutViewPropertyType.Boolean;
+    }
+
+    return PageLayoutViewPropertyType.String;
+  }
+
+  /**
+   * Returns whether string contains valid number
+   * 
+   * @return whether string contains valid number
+   */
+  private isNumber = (value: string): boolean => {
+    return !!value.match(/^[0-9.]+$/);
+  }
+
+  /**
+   * Event handler for delete dialog delete button click event
+   */
+  private onDeleteDialogDeleteButtonClick = () => {
+    this.props.onDelete(this.props.layout);
+  }
+
+  /**
+   * Event handler for delete dialog close button click event
+   */
+  private onDeleteDialogCancelButtonClick = () => {
+    this.setState({
+      deleteOpen: false
+    });
+  }
+
+  /**
+   * Event handler for delete dialog close event
+   */
+  private onDeleteDialogClose = () => {
+    this.setState({
+      deleteOpen: false
+    });
   }
 
   /**
@@ -129,10 +242,19 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   }
 
   /**
-   * Handle toggle panel
+   * Event handler for import click event
    */
   private onImportClick = () => {
     alert("Clicked import");
+  }
+
+  /**
+   * Event handler for delete click event
+   */
+  private onDeleteClick = () => {
+    this.setState({
+      deleteOpen: true
+    });
   }
 
   /**
@@ -189,62 +311,6 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     }
   }
 
-  /**
-   * Converts widget XML into page layout view
-   * 
-   * @param widgetXmls array XML blocks
-   * @param widget widget name
-   */
-  private xmlToView(widgetXmls: any[], widget: string): ExhibitionPageLayoutView[] {
-    return widgetXmls.map(widgetXml => {
-      const attributes = widgetXml["@"] || {};
-
-      const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
-      const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
-  
-      const properties: ExhibitionPageLayoutViewProperty[] = attributeNames.map((attributeName) => {
-        const value = attributes[attributeName] as string;
-  
-        return {
-          name: attributeName.substring(8),
-          value: value,
-          type: this.guessPropertyType(value)
-        }
-      });
-  
-      let children: ExhibitionPageLayoutView[] = [];
-      
-      childWidgetNames.forEach((childWidgetName) => {
-        children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
-      });
-
-      return {
-        children: children || [],
-        id: ((attributes["android:id"] || "").substring(5)) || uuidv4(),
-        properties: properties || [],
-        widget: widget
-      }
-    });
-  }
-
-  /**
-   * Attempts to guess property type from given value. Method falls back to string
-   * 
-   * @param value value
-   * @return type
-   */
-  private guessPropertyType = (value: string): ExhibitionPageLayoutViewPropertyType => {
-    if (!isNaN(parseInt(value))) {
-      return ExhibitionPageLayoutViewPropertyType.Number;
-    }
-
-    if (value === "true" || value === "false") {
-      return ExhibitionPageLayoutViewPropertyType.Boolean;
-    }
-
-    return ExhibitionPageLayoutViewPropertyType.String;
-  }
-  
   /**
    * Event handler for save button click
    */

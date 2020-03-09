@@ -22,7 +22,6 @@ export enum ExhibitionPageEventType {
     Show = 'show',
     Setuservalue = 'setuservalue',
     Navigate = 'navigate',
-    Setstyle = 'setstyle',
     Setsrc = 'setsrc',
     Settext = 'settext'
 }

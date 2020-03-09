@@ -33,8 +33,13 @@ export interface IStrings extends LocalizedStringsMethods {
     editView: {
       xml: string,
       json: string,
-      saveButton: string
-      importButton: string
+      saveButton: string,
+      importButton: string,
+      deleteButton: string,
+      deleteConfirmTitle: string,
+      deleteConfirmText: string,
+      deleteConfirmDelete: string,
+      deleteConfirmCancel: string
     }
   }
 }

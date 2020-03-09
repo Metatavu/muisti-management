@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageLayout, ExhibitionPage, ExhibitionPageResourceFromJSON, ExhibitionPageEventType, ExhibitionPageResourceType, ExhibitionPageEventTrigger, ExhibitionPageEventPropertyType, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResource } from "../../generated/client";
+import { PageLayout, ExhibitionPage, ExhibitionPageResourceFromJSON, ExhibitionPageEventType, ExhibitionPageResourceType, ExhibitionPageEventTrigger, ExhibitionPageEventPropertyType, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResource } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as codemirror from "codemirror";
@@ -37,7 +37,7 @@ interface JsonLintParseErrorHash {
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  layouts: ExhibitionPageLayout[],
+  layouts: PageLayout[],
   page: ExhibitionPage,
   onSave: (page: ExhibitionPage) => void
 }
@@ -47,7 +47,7 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   name: string,
-  layout?: ExhibitionPageLayout,
+  layout?: PageLayout,
   toolbarOpen: boolean,
   jsonCode: string,
   layoutId: string,

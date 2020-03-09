@@ -14,82 +14,82 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ExhibitionPageLayoutView,
-    ExhibitionPageLayoutViewFromJSON,
-    ExhibitionPageLayoutViewFromJSONTyped,
-    ExhibitionPageLayoutViewToJSON,
+    PageLayoutView,
+    PageLayoutViewFromJSON,
+    PageLayoutViewFromJSONTyped,
+    PageLayoutViewToJSON,
 } from './';
 
 /**
- * Describes a layout for a page in an exhibition
+ * Describes a layout for a page
  * @export
- * @interface ExhibitionPageLayout
+ * @interface PageLayout
  */
-export interface ExhibitionPageLayout {
+export interface PageLayout {
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
      */
     readonly id?: string;
     /**
-     * Id of exhibition this layout belongs to
-     * @type {string}
-     * @memberof ExhibitionPageLayout
-     */
-    readonly exhibitionId?: string;
-    /**
      * Human readable name for the layout
      * @type {string}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
      */
     name: string;
     /**
      * 
-     * @type {ExhibitionPageLayoutView}
-     * @memberof ExhibitionPageLayout
+     * @type {PageLayoutView}
+     * @memberof PageLayout
      */
-    data: ExhibitionPageLayoutView;
+    data: PageLayoutView;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
+     */
+    thumbnailUrl?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PageLayout
      */
     readonly creatorId?: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
      */
     readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
      */
     readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof ExhibitionPageLayout
+     * @memberof PageLayout
      */
     readonly modifiedAt?: Date;
 }
 
-export function ExhibitionPageLayoutFromJSON(json: any): ExhibitionPageLayout {
-    return ExhibitionPageLayoutFromJSONTyped(json, false);
+export function PageLayoutFromJSON(json: any): PageLayout {
+    return PageLayoutFromJSONTyped(json, false);
 }
 
-export function ExhibitionPageLayoutFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageLayout {
+export function PageLayoutFromJSONTyped(json: any, ignoreDiscriminator: boolean): PageLayout {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
-        'data': ExhibitionPageLayoutViewFromJSON(json['data']),
+        'data': PageLayoutViewFromJSON(json['data']),
+        'thumbnailUrl': !exists(json, 'thumbnailUrl') ? undefined : json['thumbnailUrl'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -97,7 +97,7 @@ export function ExhibitionPageLayoutFromJSONTyped(json: any, ignoreDiscriminator
     };
 }
 
-export function ExhibitionPageLayoutToJSON(value?: ExhibitionPageLayout | null): any {
+export function PageLayoutToJSON(value?: PageLayout | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -107,7 +107,8 @@ export function ExhibitionPageLayoutToJSON(value?: ExhibitionPageLayout | null):
     return {
         
         'name': value.name,
-        'data': ExhibitionPageLayoutViewToJSON(value.data),
+        'data': PageLayoutViewToJSON(value.data),
+        'thumbnailUrl': value.thumbnailUrl,
     };
 }
 
