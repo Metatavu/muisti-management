@@ -1,6 +1,6 @@
 import * as React from "react";
-
-import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
+import { Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
 import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../generated/client";
@@ -20,20 +20,20 @@ import classNames from "classnames";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  layout: PageLayout,
-  onSave: (layout: PageLayout) => void,
-  onDelete: (layout: PageLayout) => void
+  layout: PageLayout;
+  onSave: (layout: PageLayout) => void;
+  onDelete: (layout: PageLayout) => void;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  name: string,
-  jsonCode: string,
-  xmlCode: string,
-  toolbarOpen: boolean,
-  deleteOpen: boolean
+  name: string;
+  jsonCode: string;
+  xmlCode: string;
+  toolbarOpen: boolean;
+  deleteOpen: boolean;
 }
 
 const minWidth = 320;
@@ -59,13 +59,6 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       toolbarOpen: true,
       deleteOpen: false
     };
-  }
-  
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = () => {
-
   }
 
   /**
@@ -104,18 +97,30 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           <div className={ classes.toolBar }>
-            <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}> { strings.exhibitionLayouts.editView.deleteButton } </Button>
-            <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}> { strings.exhibitionLayouts.editView.importButton } </Button>
-            <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+            <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
+              { strings.exhibitionLayouts.editView.deleteButton }
+            </Button>
+            <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
+              { strings.exhibitionLayouts.editView.importButton } 
+            </Button>
+            <Button variant="contained" color="primary" onClick={ this.onSaveClick }> 
+              { strings.exhibitionLayouts.editView.saveButton } 
+            </Button>
           </div>
           <div className={ classes.editors}>
             <div className={ classes.editorContainer }>
               <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-              <CodeMirror className={ classes.editor } value={ this.state.jsonCode } options={ jsonEditorOptions } onBeforeChange={ this.onBeforeJsonCodeChange } />
+              <CodeMirror className={ classes.editor } 
+                value={ this.state.jsonCode } 
+                options={ jsonEditorOptions } 
+                onBeforeChange={ this.onBeforeJsonCodeChange } />
             </div>
             <div className={ classes.editorContainer }>
               <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
-              <CodeMirror className={ classes.editor } value={ this.state.xmlCode } options={ xmlEditorOptions } onBeforeChange={ this.onBeforeXmlCodeChange } />
+              <CodeMirror className={ classes.editor } 
+                value={ this.state.xmlCode } 
+                options={ xmlEditorOptions } 
+                onBeforeChange={ this.onBeforeXmlCodeChange } />
             </div>
           </div>
         </div>
@@ -128,18 +133,21 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    * Renders delete dialog when needed
    */
   private renderDeleteDialog = () => {
+    const labelId = "alert-dialog-title";
+    const descriptionId = "alert-dialog-description";
+
     return (
-      <Dialog open={this.state.deleteOpen} onClose={ this.onDeleteDialogClose } aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-        <DialogTitle id="alert-dialog-title">{ strings.exhibitionLayouts.editView.deleteConfirmTitle }</DialogTitle>
+      <Dialog open={this.state.deleteOpen} onClose={ this.onDeleteDialogClose } aria-labelledby={ labelId } aria-describedby={ descriptionId }>
+        <DialogTitle id={ labelId }>{ strings.exhibitionLayouts.editView.deleteConfirmTitle }</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">{ strings.exhibitionLayouts.editView.deleteConfirmText }</DialogContentText>
+          <DialogContentText id={ descriptionId }>{ strings.exhibitionLayouts.editView.deleteConfirmText }</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={ this.onDeleteDialogCancelButtonClick } color="primary">{ strings.exhibitionLayouts.editView.deleteConfirmCancel }</Button>
           <Button onClick={ this.onDeleteDialogDeleteButtonClick } color="primary" autoFocus>{ strings.exhibitionLayouts.editView.deleteConfirmDelete }</Button>
         </DialogActions>
       </Dialog>
-    )
+    );
   }
 
   /**
@@ -155,19 +163,19 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
       const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
   
-      const properties: PageLayoutViewProperty[] = attributeNames.map((attributeName) => {
+      const properties: PageLayoutViewProperty[] = attributeNames.map(attributeName => {
         const value = attributes[attributeName] as string;
   
         return {
           name: attributeName.substring(8),
           value: value,
           type: this.guessPropertyType(value)
-        }
+        };
       });
   
       let children: PageLayoutView[] = [];
       
-      childWidgetNames.forEach((childWidgetName) => {
+      childWidgetNames.forEach(childWidgetName => {
         children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
       });
 
@@ -204,9 +212,9 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    * @return whether string contains valid number
    */
   private isNumber = (value: string): boolean => {
-    return !!value.match(/^[0-9.]+$/);
+    return !!/^[0-9.]+$/.exec(value);
   }
-
+  
   /**
    * Event handler for delete dialog delete button click event
    */
@@ -275,7 +283,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    * @param data editor data
    * @param value code
    */
-  private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
+  private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
     this.setState({
       jsonCode: value
     });
@@ -288,7 +296,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    * @param data editor data
    * @param value code
    */
-  private onBeforeXmlCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
+  private onBeforeXmlCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
     this.setState({
       xmlCode: value
     });

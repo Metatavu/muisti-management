@@ -11,11 +11,11 @@ import ErrorDialog from "./error-dialog";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  title: string,
-  keycloak?: KeycloakInstance,
-  error?: string | Error,
-  clearError?: () => void,
-  onBackButtonClick?: () => void
+  title: string;
+  keycloak?: KeycloakInstance;
+  error?: string | Error;
+  clearError?: () => void;
+  onBackButtonClick?: () => void;
 }
 
 /**

@@ -13,15 +13,15 @@ import Keycloak from "keycloak-js";
  * Component props
  */
 interface Props {
-  accessToken?: AccessToken,
-  onLogin: (keycloak: KeycloakInstance) => void
+  accessToken?: AccessToken;
+  onLogin: (keycloak: KeycloakInstance) => void;
 };
 
 /**
  * Component state
  */
 interface State {
-  error?: Error
+  error?: Error;
 }
 
 /**
@@ -118,10 +118,8 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    * Initializes Keycloak client
    */
   private keycloakInit = () => {
-    return new Promise((resolve) => {
-      this.keycloak.init({ onLoad: "login-required" }).success((auth) => {
-        resolve(auth);
-      });
+    return new Promise(resolve => {
+      this.keycloak.init({ onLoad: "login-required" }).success(resolve);
     });
   }
 }
@@ -131,6 +129,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
  * 
  * @param state store state
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     accessToken: state.auth.accessToken
@@ -142,6 +141,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
   return {
     onLogin: (keycloak: KeycloakInstance) => dispatch(login(keycloak))

@@ -33,13 +33,6 @@ class FloorPlan extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = () => {
-
-  }
-
-  /**
    * Render basic layout
    */
   public render() {

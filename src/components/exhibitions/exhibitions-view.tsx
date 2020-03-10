@@ -8,7 +8,8 @@ import { setExhibition } from "../../actions/exhibition";
 import { History } from "history";
 import styles from "../../styles/exhibitions-view";
 import strings from "../../localization/strings";
-import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
+import { Container, Typography, Grid, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import CardItem from "../generic/card-item";
 import { Exhibition } from "../../generated/client";
 import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
@@ -22,22 +23,22 @@ import { AccessToken } from "../../types";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  history: History,
-  keycloak: KeycloakInstance,
-  accessToken: AccessToken,
-  setExhibition: typeof setExhibition
+  history: History;
+  keycloak: KeycloakInstance;
+  accessToken: AccessToken;
+  setExhibition: typeof setExhibition;
 }
 
 /**
  * Component state
  */
 interface State {
-  error?: Error,
-  loading: boolean,
-  creating: boolean,
-  createDialogOpen: boolean,
-  createDialogName: string,
-  exhibitions: Exhibition[]
+  error?: Error;
+  loading: boolean;
+  creating: boolean;
+  createDialogOpen: boolean;
+  createDialogName: string;
+  exhibitions: Exhibition[];
 }
 
 /**
@@ -94,7 +95,7 @@ class ExhibitionsView extends React.Component<Props, State> {
   public render() {
     const { classes } = this.props;
 
-    const cards = this.state.exhibitions.map((exhibition) => this.renderCard(exhibition));
+    const cards = this.state.exhibitions.map(exhibition => this.renderCard(exhibition));
 
     return (
       <BasicLayout title="Alusta™" keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
@@ -105,7 +106,9 @@ class ExhibitionsView extends React.Component<Props, State> {
 
               <Grid container spacing={5} direction="row">
               <Grid item>
-                <CardItem key="new" title={ strings.exhibitions.newExhibitionLabel } icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
+                <CardItem key="new" 
+                  title={ strings.exhibitions.newExhibitionLabel } 
+                  icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
               </Grid>
                 {
                   cards
@@ -147,7 +150,12 @@ class ExhibitionsView extends React.Component<Props, State> {
           <DialogContentText>
             { strings.exhibitions.createExhibitionDialog.helpText }
           </DialogContentText>
-          <TextField value={ this.state.createDialogName } onChange={ (event ) => this.setState({ createDialogName: event.target.value }) } autoFocus margin="dense" id="name" label={ strings.exhibitions.createExhibitionDialog.nameLabel } type="text" fullWidth />
+          <TextField value={ this.state.createDialogName } 
+            onChange={event => this.setState({ createDialogName: event.target.value }) } 
+            autoFocus 
+            margin="dense" 
+            id="name" 
+            label={ strings.exhibitions.createExhibitionDialog.nameLabel } type="text" fullWidth />
         </DialogContent>
         <DialogActions>
           <Button onClick={ this.onCreateDialogCancelClick } color="primary">
@@ -250,6 +258,7 @@ class ExhibitionsView extends React.Component<Props, State> {
  * 
  * @param state store state
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
@@ -262,6 +271,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))

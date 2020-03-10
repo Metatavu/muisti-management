@@ -30,24 +30,24 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  history: History,
-  keycloak: KeycloakInstance,
-  accessToken: AccessToken,
-  exhibitionId: string,
-  exhibition?: Exhibition,
-  setExhibition: typeof setExhibition
+  history: History;
+  keycloak: KeycloakInstance;
+  accessToken: AccessToken;
+  exhibitionId: string;
+  exhibition?: Exhibition;
+  setExhibition: typeof setExhibition;
 }
 
 /**
  * Component state
  */
 interface State {
-  error?: Error,
-  loading: boolean,
-  layouts: PageLayout[],
-  pages: ExhibitionPage[],
-  editLayout?: PageLayout,
-  editPage?: ExhibitionPage
+  error?: Error;
+  loading: boolean;
+  layouts: PageLayout[];
+  pages: ExhibitionPage[];
+  editLayout?: PageLayout;
+  editPage?: ExhibitionPage;
 }
 
 /**
@@ -79,12 +79,12 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
       loading: true
     });
 
-    try {      
+    try {
       if (!exhibition || exhibitionId === exhibition.id) {
         const exhibitionsApi = Api.getExhibitionsApi(accessToken);
         this.props.setExhibition(await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId }));
-      } 
-      
+      }
+
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
 
@@ -97,7 +97,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
 
       this.setState({
         layouts: layouts,
-        pages: pages 
+        pages: pages
       });
 
     } catch (e) {
@@ -126,7 +126,13 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
     const locationPath = history.location.pathname;
 
     return (
-      <BasicLayout title={ exhibition.name } onBackButtonClick={() => this.onBackButtonClick() } keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+      <BasicLayout 
+        title={ exhibition.name } 
+        onBackButtonClick={() => this.onBackButtonClick() } 
+        keycloak={ this.props.keycloak } 
+        error={ this.state.error } 
+        clearError={ () => this.setState({ error: undefined }) }>
+
         <div className={ classes.editorLayout }>
           <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath } />
           <ElementNavigationPane title="Asetukset">
@@ -137,6 +143,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           </EditorView>
           <ElementSettingsPane title="Ominaisuudet" />
         </div>
+
       </BasicLayout>
     );
   }
@@ -232,7 +239,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
   private onLayoutDelete = async (layout: PageLayout) => {
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
-      const pageLayoutId = layout.id!!;
+      const pageLayoutId = layout.id!;
       
       await pageLayoutsApi.deletePageLayout({
         pageLayoutId: pageLayoutId
@@ -240,7 +247,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
 
       this.setState({
         editLayout: undefined,
-        layouts: this.state.layouts.filter(layout => layout.id !== pageLayoutId)
+        layouts: this.state.layouts.filter(item => item.id !== pageLayoutId)
       });
     } catch (e) {
       console.error(e);
@@ -259,13 +266,14 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
   private onLayoutSave = async (layout: PageLayout) => {
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
-      
+      const pageLayoutId = layout.id!;
+
       const updatedLayout = await pageLayoutsApi.updatePageLayout({
-        pageLayoutId: layout.id!!,
+        pageLayoutId: pageLayoutId,
         pageLayout: layout
       });
 
-      const layouts = this.state.layouts.filter(layout => layout.id !== updatedLayout.id);
+      const layouts = this.state.layouts.filter(item => item.id !== updatedLayout.id);
 
       this.setState({
         layouts: [ ...layouts, layout ]
@@ -352,7 +360,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           exhibitionPage: page
         });
 
-        const pages = this.state.pages.filter(page => page.id !== updatedPage.id);
+        const pages = this.state.pages.filter(item => item.id !== updatedPage.id);
 
         this.setState({
           pages: [ ...pages, updatedPage ]
@@ -411,6 +419,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
  * 
  * @param state store state
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
@@ -424,6 +433,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))

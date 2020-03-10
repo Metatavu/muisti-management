@@ -2,7 +2,10 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { PageLayout, ExhibitionPage, ExhibitionPageResourceFromJSON, ExhibitionPageEventType, ExhibitionPageResourceType, ExhibitionPageEventTrigger, ExhibitionPageEventPropertyType, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResource } from "../../generated/client";
+import { ExhibitionPageEventType, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageEventPropertyType } from "../../generated/client";
+import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
+import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as codemirror from "codemirror";
@@ -26,32 +29,32 @@ import * as jsonlint from "jsonlint-mod";
  */
 interface JsonLintParseErrorHash {
   loc: {
-    "first_line": number,
-    "first_column": number,
-    "last_line": number,
-    "last_column": number 
-  }
+    "first_line": number;
+    "first_column": number;
+    "last_line": number;
+    "last_column": number; 
+  };
 }
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  layouts: PageLayout[],
-  page: ExhibitionPage,
-  onSave: (page: ExhibitionPage) => void
+  layouts: PageLayout[];
+  page: ExhibitionPage;
+  onSave: (page: ExhibitionPage) => void;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  name: string,
-  layout?: PageLayout,
-  toolbarOpen: boolean,
-  jsonCode: string,
-  layoutId: string,
-  selectedNode?: ExhibitionPageResource | ExhibitionPageEventTrigger   
+  name: string;
+  layout?: PageLayout;
+  toolbarOpen: boolean;
+  jsonCode: string;
+  layoutId: string;
+  selectedNode?: ExhibitionPageResource | ExhibitionPageEventTrigger;
 }
 
 const minWidth = 320;
@@ -76,13 +79,6 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       layoutId: props.page.layoutId,
       jsonCode: this.toJsonCode(props.page)
     };
-  }
-  
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = () => {
-
   }
 
   /**
@@ -151,9 +147,9 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    * Renders layout select
    */
   private renderLayoutSelect = () => {
-    const layoutSelectItems = this.props.layouts.map((layout) => {
+    const layoutSelectItems = this.props.layouts.map(layout => {
       return (
-        <MenuItem value={ layout.id! }> { layout.name} </MenuItem>
+        <MenuItem value={ layout.id }> { layout.name} </MenuItem>
       );
     });
 
@@ -206,11 +202,11 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    * Code mirror lint method
    * 
    * @param content editor content
-   * @param options options
-   * @param codeMirror editor instance
+   * @param _options options
+   * @param _codeMirror editor instance
    * @returns annotations
    */
-  private jsonEditorGetAnnotations = (content: string, options: codemirror.LintStateOptions, codeMirror: codemirror.Editor): codemirror.Annotation[] | PromiseLike<codemirror.Annotation[]> => {
+  private jsonEditorGetAnnotations = (content: string, _options: codemirror.LintStateOptions, _codeMirror: codemirror.Editor): codemirror.Annotation[] => {
     const found: codemirror.Annotation[] = [];
     const parser = jsonlint.parser;
 
@@ -225,12 +221,13 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     try { 
       parser.parse(content); 
+      // eslint-disable-next-line no-empty
     } catch (e) {
 
     }
 
     if (found.length === 0) {
-      this.parseJsonCode((message: string, e?: SyntaxError) => {
+      this.parseJsonCode((message: string, _e?: SyntaxError) => {
         found.push({
           from: codemirror.Pos(0, 0),
           to: codemirror.Pos(0, 0),
@@ -304,7 +301,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       const events = parsedPage.eventTriggers[i].events || [];
       
       for (let j = 0; j < events.length; j++) {
-        if (eventTypes.indexOf(events[j].type) === -1) {
+        if (!eventTypes.includes(events[j].type)) {
           return errorHandler(`Event ${i} type ${events[j].type} is not valid (${eventTypes.join(", ")})`);
         }
 
@@ -338,7 +335,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     let index = 0;
     let id = idPrefix;
 
-    while (existingIds.indexOf(id) !== -1) {
+    while (existingIds.includes(id)) {
       index++;
       id = `${idPrefix}-${index}`; 
     }
@@ -449,11 +446,11 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   /**
    * Event handler for before JSON code change event
    * 
-   * @param editor editor instance
-   * @param data editor data
+   * @param _editor editor instance
+   * @param _data editor data
    * @param value code
    */
-  private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
+  private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
     this.setState({
       jsonCode: value
     });

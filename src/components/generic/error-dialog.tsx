@@ -8,8 +8,8 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
  * Interface representing component properties
  */
 interface Props {
-  error: string | Error,
-  onClose: () => void
+  error: string | Error;
+  onClose: () => void;
 }
 
 /**

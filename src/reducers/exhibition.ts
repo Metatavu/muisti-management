@@ -7,7 +7,7 @@ import { Exhibition } from '../generated/client';
  * Exhibition state
  */
 interface ExhibitionState {
-  exhibition?: Exhibition
+  exhibition?: Exhibition;
 }
 
 /**
@@ -23,6 +23,7 @@ const initialState: ExhibitionState = {
  * @param storeState store state of exhibition
  * @param action action of exhibition
  */
+// eslint-disable-next-line max-len
 export const exhibitionReducer: Reducer<ExhibitionState, ExhibitionAction> = (state: ExhibitionState = initialState, action: ExhibitionAction): ExhibitionState => {
   switch (action.type) {
     case SET_EXHIBITION:
