@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageEventType, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageEventActionType, ExhibitionPageResourceType } from "../../generated/client";
 import { ExhibitionPageEventPropertyType } from "../../generated/client";
 import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
 import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
@@ -285,7 +285,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       return errorHandler("Invalid event triggers");
     }
 
-    const eventTypes = Object.values(ExhibitionPageEventType);
+    const eventTypes = Object.values(ExhibitionPageEventActionType);
 
     for (let i = 0; i < parsedPage.resources.length; i++) {
       if (!parsedPage.resources[i].id) {
@@ -295,16 +295,25 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       if (!parsedPage.resources[i].data) {
         return errorHandler(`Resource ${i} requires data`);
       }
+
+      if (!parsedPage.resources[i].type) {
+        return errorHandler(`Resource ${i} requires type`);
+      }
     }
 
     for (let i = 0; i < parsedPage.eventTriggers.length; i++) {
       const events = parsedPage.eventTriggers[i].events || [];
       
       for (let j = 0; j < events.length; j++) {
-        if (!eventTypes.includes(events[j].type)) {
-          return errorHandler(`Event ${i} type ${events[j].type} is not valid (${eventTypes.join(", ")})`);
+        const eventAction = events[j].action;
+
+        if (!eventAction) {
+          return errorHandler(`Event ${i} requires an action`);
         }
 
+        if (!eventTypes.includes(eventAction)) {
+          return errorHandler(`Event ${i} action ${events[j].action} is not valid (${eventTypes.join(", ")})`);
+        }
       }
     }
 
@@ -373,7 +382,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       clickViewId: "",
       delay: 0,
       events: [{
-        type: ExhibitionPageEventType.Hide,
+        action: ExhibitionPageEventActionType.Hide,
         properties: [
           {
             name: "property name",

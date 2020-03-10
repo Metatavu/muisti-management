@@ -129,7 +129,6 @@ class AccessTokenRefresh extends React.Component<Props, State> {
  * 
  * @param state store state
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     accessToken: state.auth.accessToken
@@ -141,7 +140,6 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
   return {
     onLogin: (keycloak: KeycloakInstance) => dispatch(login(keycloak))
