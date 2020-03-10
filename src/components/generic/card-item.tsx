@@ -11,22 +11,22 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Card title
    */
-  title: string,
+  title: string;
 
   /**
    * Card image
    */
-  image?: string,
+  image?: string;
 
   /**
    * Card icon
    */
-  icon?: JSX.Element,
+  icon?: JSX.Element;
 
   /**
    * Handler for card click
    */
-  onClick: () => void
+  onClick: () => void;
 }
 
 /**

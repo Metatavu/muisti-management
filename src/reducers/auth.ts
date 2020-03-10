@@ -7,8 +7,8 @@ import { AccessToken } from '../types';
  * Redux auth state
  */
 export interface AuthState {
-  accessToken?: AccessToken,
-  keycloak?: KeycloakInstance
+  accessToken?: AccessToken;
+  keycloak?: KeycloakInstance;
 }
 
 /**
@@ -26,6 +26,7 @@ const initialState: AuthState = {
  * @param authAction auth action
  * @returns changed auth state
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function authReducer(authState: AuthState = initialState, action: AuthAction): AuthState {
   switch (action.type) {
     case LOGIN:

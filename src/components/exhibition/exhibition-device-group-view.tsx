@@ -22,20 +22,20 @@ import Api from "../../api/api";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  history: History,
-  keycloak: KeycloakInstance,
-  accessToken: AccessToken,
-  exhibitionId: string,
-  exhibition?: Exhibition,
-  setExhibition: typeof setExhibition
+  history: History;
+  keycloak: KeycloakInstance;
+  accessToken: AccessToken;
+  exhibitionId: string;
+  exhibition?: Exhibition;
+  setExhibition: typeof setExhibition;
 }
 
 /**
  * Component state
  */
 interface State {
-  error?: Error,
-  loading: boolean
+  error?: Error;
+  loading: boolean;
 }
 
 /**
@@ -82,7 +82,12 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
     const locationPath = history.location.pathname;
 
     return (
-      <BasicLayout title={ exhibition.name } onBackButtonClick={() => this.onBackButtonClick() } keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+      <BasicLayout title={ exhibition.name } 
+        onBackButtonClick={() => this.onBackButtonClick() } 
+        keycloak={ this.props.keycloak } 
+        error={ this.state.error } 
+        clearError={ () => this.setState({ error: undefined }) }>
+          
         <div className={ classes.editorLayout }>
           <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath } />
           <ElementNavigationPane title="Näyttelypiste" />
@@ -91,6 +96,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           </EditorView>
           <ElementSettingsPane title="Ominaisuudet" />
         </div>
+        
       </BasicLayout>
     );
   }
@@ -107,6 +113,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
  * 
  * @param state store state
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
@@ -120,6 +127,7 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))
