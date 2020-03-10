@@ -17,7 +17,7 @@
  * @export
  * @enum {string}
  */
-export enum ExhibitionPageEventType {
+export enum ExhibitionPageEventActionType {
     Hide = 'hide',
     Show = 'show',
     Setuservalue = 'setuservalue',
@@ -26,15 +26,15 @@ export enum ExhibitionPageEventType {
     Settext = 'settext'
 }
 
-export function ExhibitionPageEventTypeFromJSON(json: any): ExhibitionPageEventType {
-    return ExhibitionPageEventTypeFromJSONTyped(json, false);
+export function ExhibitionPageEventActionTypeFromJSON(json: any): ExhibitionPageEventActionType {
+    return ExhibitionPageEventActionTypeFromJSONTyped(json, false);
 }
 
-export function ExhibitionPageEventTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageEventType {
-    return json as ExhibitionPageEventType;
+export function ExhibitionPageEventActionTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionPageEventActionType {
+    return json as ExhibitionPageEventActionType;
 }
 
-export function ExhibitionPageEventTypeToJSON(value?: ExhibitionPageEventType | null): any {
+export function ExhibitionPageEventActionTypeToJSON(value?: ExhibitionPageEventActionType | null): any {
     return value as any;
 }
 

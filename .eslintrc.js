@@ -20,7 +20,6 @@ module.exports = {
         "import",
         "jsx-a11y",
         "flowtype",
-        "prefer-arrow",
         "@typescript-eslint",
         "@typescript-eslint/tslint"
     ],
@@ -583,7 +582,6 @@ module.exports = {
             "warn",
             "never"
         ],
-        "prefer-arrow/prefer-arrow-functions": "warn",
         "prefer-const": "warn",
         "radix": "warn",
         "spaced-comment": "warn",

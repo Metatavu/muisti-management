@@ -114,7 +114,6 @@ export class ExhibitionRoomView extends React.Component<Props, State> {
  * 
  * @param state store state
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
@@ -128,7 +127,6 @@ function mapStateToProps(state: ReduxState) {
  * 
  * @param dispatch dispatch method
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))

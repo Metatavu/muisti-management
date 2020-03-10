@@ -14,14 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    ExhibitionPageEventActionType,
+    ExhibitionPageEventActionTypeFromJSON,
+    ExhibitionPageEventActionTypeFromJSONTyped,
+    ExhibitionPageEventActionTypeToJSON,
     ExhibitionPageEventProperty,
     ExhibitionPageEventPropertyFromJSON,
     ExhibitionPageEventPropertyFromJSONTyped,
     ExhibitionPageEventPropertyToJSON,
-    ExhibitionPageEventType,
-    ExhibitionPageEventTypeFromJSON,
-    ExhibitionPageEventTypeFromJSONTyped,
-    ExhibitionPageEventTypeToJSON,
 } from './';
 
 /**
@@ -32,16 +32,16 @@ import {
 export interface ExhibitionPageEvent {
     /**
      * 
-     * @type {ExhibitionPageEventType}
+     * @type {ExhibitionPageEventActionType}
      * @memberof ExhibitionPageEvent
      */
-    type: ExhibitionPageEventType;
+    action: ExhibitionPageEventActionType;
     /**
      * 
      * @type {Array<ExhibitionPageEventProperty>}
      * @memberof ExhibitionPageEvent
      */
-    properties?: Array<ExhibitionPageEventProperty>;
+    properties: Array<ExhibitionPageEventProperty>;
 }
 
 export function ExhibitionPageEventFromJSON(json: any): ExhibitionPageEvent {
@@ -54,8 +54,8 @@ export function ExhibitionPageEventFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'type': ExhibitionPageEventTypeFromJSON(json['type']),
-        'properties': !exists(json, 'properties') ? undefined : ((json['properties'] as Array<any>).map(ExhibitionPageEventPropertyFromJSON)),
+        'action': ExhibitionPageEventActionTypeFromJSON(json['action']),
+        'properties': ((json['properties'] as Array<any>).map(ExhibitionPageEventPropertyFromJSON)),
     };
 }
 
@@ -68,8 +68,8 @@ export function ExhibitionPageEventToJSON(value?: ExhibitionPageEvent | null): a
     }
     return {
         
-        'type': ExhibitionPageEventTypeToJSON(value.type),
-        'properties': value.properties === undefined ? undefined : ((value.properties as Array<any>).map(ExhibitionPageEventPropertyToJSON)),
+        'action': ExhibitionPageEventActionTypeToJSON(value.action),
+        'properties': ((value.properties as Array<any>).map(ExhibitionPageEventPropertyToJSON)),
     };
 }
 
