@@ -6,6 +6,6 @@ export type ExhibitionState = Exhibition;
  * Interface describing an access token
  */
 export interface AccessToken {
-    token: string;
-    userId: string;
-  }
+  token: string;
+  userId: string;
+}
