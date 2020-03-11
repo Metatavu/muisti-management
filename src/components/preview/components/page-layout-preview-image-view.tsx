@@ -13,7 +13,7 @@ import ImageIcon from '@material-ui/icons/Image';
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
-  scale: number,
+  scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
@@ -65,7 +65,7 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
-  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: String) => {
+  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     console.log(`PageLayoutPreviewImageView: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 

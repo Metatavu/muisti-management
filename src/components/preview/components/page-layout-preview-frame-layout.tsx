@@ -85,7 +85,7 @@ class PageLayoutPreviewFrameLayout extends React.Component<Props, State> {
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
-  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: String) => {
+  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     console.log(`PageLayoutPreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
@@ -121,16 +121,16 @@ class PageLayoutPreviewFrameLayout extends React.Component<Props, State> {
   /**
    * Handles a child component layouting 
    * 
-   * @param child child component properties
-   * @param style child component styles
+   * @param childProperties child component properties
+   * @param childStyles child component styles
    * @return modified child component styles
    */
-  private onHandleLayoutProperties = (properties: PageLayoutViewProperty[], styles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...styles, 
+  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
+    const result: CSSProperties = { ...childStyles, 
       position: "absolute" 
     };
 
-    properties
+    childProperties
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
       switch (property.name) {
@@ -176,12 +176,13 @@ class PageLayoutPreviewFrameLayout extends React.Component<Props, State> {
               break;
               case "layout_marginLeft":
                 result.marginLeft = marginPx;
-                break;
+              break;
+              default:
             }
           }
         break;
         case "layout_gravity":
-          property.value.split("|").forEach((gravityValue) => {
+          property.value.split("|").forEach(gravityValue => {
             switch (gravityValue) {
               case "top":
                 result.top = 0;
@@ -195,6 +196,7 @@ class PageLayoutPreviewFrameLayout extends React.Component<Props, State> {
               case "left":
                 result.left = 0;
               break;
+              default:
             }
           });
         break;

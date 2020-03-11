@@ -71,15 +71,40 @@ class PageLayoutPreviewComponent extends React.Component<Props, State> {
 
     switch (this.props.view.widget) {
       case "FrameLayout":
-        return <PageLayoutPreviewFrameLayout onResize={ this.props.onResize } handleLayoutProperties={ this.props.handleLayoutProperties } view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale }/>
+        return <PageLayoutPreviewFrameLayout 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }/>
       case "TextView":
-        return <PageLayoutPreviewTextView onResize={ this.props.onResize } handleLayoutProperties={ this.props.handleLayoutProperties } view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale }/>
+        return <PageLayoutPreviewTextView 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }/>
       case "Button":
-        return <PageLayoutPreviewButton onResize={ this.props.onResize } handleLayoutProperties={ this.props.handleLayoutProperties } view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale }/>
+        return <PageLayoutPreviewButton 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }/>
       case "ImageView":
-        return <PageLayoutPreviewImageView onResize={ this.props.onResize } handleLayoutProperties={ this.props.handleLayoutProperties } view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale }/>          
+        return <PageLayoutPreviewImageView 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }/>          
       case "RelativeLayout":
-        return <PageLayoutPreviewRelativeLayout onResize={ this.props.onResize } handleLayoutProperties={ this.props.handleLayoutProperties } view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale }/>          
+        return <PageLayoutPreviewRelativeLayout 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }/>          
       default:
         return <Typography> Unsupported widget { this.props.view.widget } </Typography>
     }

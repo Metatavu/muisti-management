@@ -13,7 +13,7 @@ import AndroidUtils from "./android-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
-  scale: number,
+  scale: number;
   displayMetrics: DisplayMetrics;
 }
 
@@ -51,7 +51,11 @@ class PageLayoutPreview extends React.Component<Props, State> {
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
-        <PageLayoutPreviewComponentEditor view={ this.props.view } displayMetrics={ this.props.displayMetrics } scale={ this.props.scale } handleLayoutProperties={ this.onHandleLayoutProperties }/>
+        <PageLayoutPreviewComponentEditor 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale } 
+          handleLayoutProperties={ this.onHandleLayoutProperties }/>
       </div>
     );
   }
@@ -62,21 +66,21 @@ class PageLayoutPreview extends React.Component<Props, State> {
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
-  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: String) => {
+  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     console.log(`PageLayoutPreview: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
    * Handles a child component layouting 
    * 
-   * @param child child component properties
-   * @param style child component styles
+   * @param childProperties child component properties
+   * @param childStyles child component styles
    * @return modified child component styles
    */
-  private onHandleLayoutProperties = (properties: PageLayoutViewProperty[], styles: CSSProperties): CSSProperties => {
-    const result = { ...styles };
+  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
+    const result = { ...childStyles };
 
-    properties
+    childProperties
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
         switch (property.name) {

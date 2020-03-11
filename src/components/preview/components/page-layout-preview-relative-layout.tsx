@@ -26,8 +26,8 @@ type ChildBounds = { [id: string]: BoundingRect }
  * Interface representing component state
  */
 interface State {
-  rootBounds?: BoundingRect,
-  childBounds: ChildBounds
+  rootBounds?: BoundingRect;
+  childBounds: ChildBounds;
 }
 
 /**
@@ -94,7 +94,7 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
-  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: String) => {
+  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     console.log(`PageLayoutPreviewRelativeLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
@@ -106,7 +106,7 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
    */
   private resolveChildStyles = (child: PageLayoutView): CSSProperties  => {
     const rightOfChildId = child.properties
-      .find(child => child.name === "layout_toRightOf")
+      .find(item => item.name === "layout_toRightOf")
       ?.value;
     
     const result: CSSProperties = {
@@ -199,16 +199,16 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
   /**
    * Handles a child component layouting 
    * 
-   * @param child child component properties
-   * @param style child component styles
+   * @param childProperties child component properties
+   * @param childStyles child component styles
    * @return modified child component styles
    */
-  private onHandleLayoutProperties = (properties: PageLayoutViewProperty[], styles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...styles, 
+  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
+    const result: CSSProperties = { ...childStyles, 
       position: "absolute" 
     };
 
-    properties
+    childProperties
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
         switch (property.name) {

@@ -5,21 +5,21 @@ import DisplayMetrics from "./display-metrics";
  */
 export default class AndroidUtils {
 
-  private static DENSITY_DEFAULT: number = 160;
+  private static DENSITY_DEFAULT = 160;
 
   /**
    * Parses string to pixels
    * 
-   * @param string string
+   * @param value string
    * @returns parsed number of pixels or null if string could not be parsed
    */
-  public static stringToPx(displayMetrics: DisplayMetrics, string: String, scale: number): number | null {
-    const dp = AndroidUtils.dpToNumber(string);
+  public static stringToPx(displayMetrics: DisplayMetrics, value: string, scale: number): number | null {
+    const dp = AndroidUtils.dpToNumber(value);
     if (dp) {
       return this.convertDpToPixel(displayMetrics, dp, scale);
     }
 
-    const sp = AndroidUtils.spToNumber(string);
+    const sp = AndroidUtils.spToNumber(value);
     if (sp) {
       return AndroidUtils.convertSpToPixel(displayMetrics, sp, scale);
     }
@@ -30,22 +30,22 @@ export default class AndroidUtils {
   /**
    * Parses DP string into number
    * 
-   * @param string string
+   * @param value string
    * @returns parsed number or null if is not a DP string
    */
-  public static dpToNumber(string: String): number | null {
-    const match = string.match(/([0-9.]+)dp/);
+  public static dpToNumber(value: string): number | null {
+    const match = /([0-9.]+)dp/.exec(value);
     return match && match.length > 1 ? parseFloat(match[1]) : null;
   }
 
   /**
    * Parses SP string into number
    * 
-   * @param string string
+   * @param value string
    * @returns parsed number or null if is not a SP string
    */
-  public static spToNumber(string: String): number | null {
-    const match = string.match(/([0-9.]+)sp/);
+  public static spToNumber(value: string): number | null {
+    const match = /([0-9.]+)sp/.exec(value);
     return match && match.length > 1 ? parseFloat(match[1]) : null;
   }
 

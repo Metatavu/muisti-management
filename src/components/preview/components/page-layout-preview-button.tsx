@@ -13,7 +13,7 @@ import AndroidUtils from "../android-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
-  scale: number,
+  scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
@@ -67,7 +67,7 @@ class PageLayoutPreviewButton extends React.Component<Props, State> {
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
-  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: String) => {
+  private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     console.log(`PageLayoutPreviewButton: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
@@ -103,7 +103,7 @@ class PageLayoutPreviewButton extends React.Component<Props, State> {
 
     const properties = this.props.view.properties;
 
-    properties.forEach((property) => {
+    properties.forEach(property => {
       if (property.name.startsWith("inset")) {
         const margin = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
         if (!margin) {
@@ -122,7 +122,8 @@ class PageLayoutPreviewButton extends React.Component<Props, State> {
           break;
           case "insetLeft":
             result.marginLeft = margin;
-          break;        
+          break;
+          default:
         }
       }
     });
