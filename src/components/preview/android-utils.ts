@@ -16,7 +16,7 @@ export default class AndroidUtils {
   public static stringToPx(displayMetrics: DisplayMetrics, value: string, scale: number): number | null {
     const dp = AndroidUtils.dpToNumber(value);
     if (dp) {
-      return this.convertDpToPixel(displayMetrics, dp, scale);
+      return AndroidUtils.convertDpToPixel(displayMetrics, dp, scale);
     }
 
     const sp = AndroidUtils.spToNumber(value);
