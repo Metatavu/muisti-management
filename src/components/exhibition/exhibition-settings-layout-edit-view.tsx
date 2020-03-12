@@ -17,6 +17,8 @@ import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import classNames from "classnames";
 import PageLayoutPreview from "../preview/page-layout-preview";
 import AndroidUtils from "../../utils/android-utils";
+import ElementSettingsPane from "../editor-panes/element-settings-pane";
+import EditorView from "../editor/editor-view";
 
 type View = "CODE" | "VISUAL";
 
@@ -69,9 +71,23 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   }
 
   /**
-   * Render basic layout
+   * Render
    */
   public render() {
+    return (
+      <>
+        <EditorView>
+          { this.renderEditorView() }
+        </EditorView>
+        <ElementSettingsPane title="Ominaisuudet" />
+      </>
+    );
+  }
+
+  /**
+   * Render basic layout
+   */
+  public renderEditorView() {
     const { classes } = this.props;
 
     return (
@@ -93,7 +109,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           { this.renderToolbar() }
-          { this.renderEditorView() }
+          { this.renderEditor() }
         </div>
         { this.renderDeleteDialog() }
       </div>
@@ -129,12 +145,12 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders editor view
    */
-  private renderEditorView = () => {
+  private renderEditor = () => {
     switch (this.state.view) {
       case "CODE":
-        return this.renderCodeEditorView();
+        return this.renderCodeEditor();
       case "VISUAL":
-        return this.renderVisualEditorView();
+        return this.renderVisualEditor();
       default:
         return null;
     }
@@ -143,7 +159,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders code editor view
    */
-  private renderCodeEditorView = () => {
+  private renderCodeEditor = () => {
     const { classes } = this.props;
 
     const jsonEditorOptions = {
@@ -181,7 +197,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders a visual editor view
    */
-  private renderVisualEditorView = () => {
+  private renderVisualEditor = () => {
     const { classes } = this.props;
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
     // TODO: load from layout

@@ -145,10 +145,7 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
           <ElementNavigationPane title="Asetukset">
             { this.renderNavigation() }
           </ElementNavigationPane>
-          <EditorView>
-            { this.renderEditorView() }
-          </EditorView>
-          <ElementSettingsPane title="Ominaisuudet" />
+          { this.renderEditor() }
         </div>
 
       </BasicLayout>
@@ -203,9 +200,9 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
   }
 
   /**
-   * Renders editor view
+   * Renders an editor
    */
-  private renderEditorView = () => {
+  private renderEditor = () => {
     if (this.state.editLayout) {
       return (
         <ExhibitionSettingsLayoutEditView 
@@ -229,7 +226,12 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
     }
 
     return (
-      <Typography>Olen näyttelyn asetussivu</Typography>
+      <>
+        <EditorView>
+          <Typography>Olen näyttelyn asetussivu</Typography>
+        </EditorView>
+        <ElementSettingsPane title="Ominaisuudet" />
+      </>
     );
   }
 

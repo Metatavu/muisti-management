@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageEventActionType, ExhibitionPageResourceType, ExhibitionDeviceModel } from "../../generated/client";
+import { ExhibitionPageEventActionType, ExhibitionPageResourceType, ExhibitionDeviceModel, PageLayoutView } from "../../generated/client";
 import { ExhibitionPageEventPropertyType } from "../../generated/client";
 import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
 import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
@@ -25,6 +25,8 @@ import "codemirror/addon/lint/lint.css";
 import 'codemirror/addon/lint/lint';
 import * as jsonlint from "jsonlint-mod";
 import AndroidUtils from "../../utils/android-utils";
+import ElementSettingsPane from "../editor-panes/element-settings-pane";
+import EditorView from "../editor/editor-view";
 
 type View = "CODE" | "VISUAL";
 
@@ -59,7 +61,8 @@ interface State {
   toolbarOpen: boolean;
   jsonCode: string;
   layoutId: string;
-  selectedNode?: ExhibitionPageResource | ExhibitionPageEventTrigger;
+  selectedResource?: ExhibitionPageResource;
+  selectedEventTrigger?: ExhibitionPageEventTrigger;
 }
 
 const minWidth = 320;
@@ -88,9 +91,25 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   }
 
   /**
-   * Render basic layout
+   * Render
    */
   public render() {
+    return (
+      <>
+        <EditorView>
+          { this.renderEditorView() }
+        </EditorView>
+        <ElementSettingsPane title="Ominaisuudet">
+          { this.renderProperties() }
+        </ElementSettingsPane>
+      </>
+    );
+  }
+
+  /**
+   * Renders editor view
+   */
+  private renderEditorView = () => {
     const { classes } = this.props;
     
     return (
@@ -254,6 +273,53 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   }
 
   /**
+   * Renders properties
+   */
+  private renderProperties = () => {
+    if (this.state.selectedResource) {
+      return this.renderResourceEditor();
+    }
+
+    return null;
+  }
+
+  /**
+   * Renders resource editor
+   */
+  private renderResourceEditor = () => {
+    const selectedResource = this.state.selectedResource;
+    if (!selectedResource) {
+      return null;
+    }
+
+    const { classes } = this.props;
+
+    const widget = this.findResourceLayoutViewWidget(selectedResource.id!);
+
+    if ("ImageView" === widget) {
+      return (
+        <TextField 
+          type="url"
+          className={ classes.textResourceEditor } 
+          label={ this.state.selectedResource?.id } variant="outlined" 
+          value={ this.state.selectedResource?.data }
+          onChange={ this.onResourceDataChange }/>
+      );
+    } else if ("TextView" === widget) {
+      return (
+        <TextField 
+          multiline
+          className={ classes.textResourceEditor } 
+          label={ this.state.selectedResource?.id } variant="outlined" 
+          value={ this.state.selectedResource?.data }
+          onChange={ this.onResourceDataChange }/>
+      )
+    }
+
+    return <div> {selectedResource.id!} {widget} </div>;
+  }
+
+  /**
    * Code mirror lint method
    * 
    * @param content editor content
@@ -406,6 +472,61 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     return id;
   }
+  
+  /**
+   * Attempts to find a layout view widget for given resource
+   * 
+   * @param resourceId resource id
+   * @returns view widget or null if not found
+   */
+  private findResourceLayoutViewWidget(resourceId: string): string | null {
+    const view = this.findResourceLayoutView(resourceId);
+    return view?.widget || null;
+  }
+
+  /**
+   * Attempts to find a layout view for given resource
+   * 
+   * @param resourceId resource id
+   * @returns view or null if not found
+   */
+  private findResourceLayoutView(resourceId: string): PageLayoutView | null {
+    const layout = this.props.layouts.find(layout => layout.id === this.state.layoutId);
+    if (!layout) {
+      return null;
+    }
+
+    const propertyValue = `@resources/${resourceId}`;
+    const root = layout.data;
+    if (root.properties.findIndex(property => property.value === propertyValue) > -1) {
+      return root;
+    }
+
+    return this.findLayoutViewByPropertyValue(root, propertyValue);
+  }
+
+  /**
+   * Attempts to find a child view with given property value
+   * 
+   * @param view root view
+   * @param propertyValue property value
+   * @returns view or null if not found
+   */
+  private findLayoutViewByPropertyValue(view: PageLayoutView, propertyValue: string): PageLayoutView | null  {
+    for (let i = 0; i < view.children.length; i++) {
+      const child = view.children[i];
+      if (child.properties.findIndex(property => property.value === propertyValue) > -1) {
+        return child;
+      }
+
+      const result = this.findLayoutViewByPropertyValue(child, propertyValue);
+      if (result) {
+        return result;
+      }
+    }
+    
+    return null;
+  }
 
   /**
    * Event handler for resource add click
@@ -461,7 +582,8 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   private onResourceNodeClick = (resource: ExhibitionPageResource) => {
     this.setState({
-      selectedNode: resource
+      selectedEventTrigger: undefined,
+      selectedResource: resource
     });
   }
 
@@ -472,7 +594,8 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   private onEventTriggerNodeClick = (eventTrigger: ExhibitionPageEventTrigger) => {
     this.setState({
-      selectedNode: eventTrigger
+      selectedEventTrigger: eventTrigger,
+      selectedResource: undefined
     });
   }
 
@@ -483,6 +606,30 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     this.setState({
       toolbarOpen: !this.state.toolbarOpen
     });
+  }
+
+  /**
+   * Event handler for name input change
+   * 
+   * @param event event
+   */
+  private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedResource = this.state.selectedResource;
+    if (!selectedResource) {
+      return null;
+    }
+
+    const parsedCode = this.parseJsonCode();
+    parsedCode.resources = parsedCode.resources || [];
+    const index = parsedCode.resources.findIndex(resource => selectedResource.id === resource.id);
+    if (index > -1) {
+      parsedCode.resources[index].data = event.target.value;
+
+      this.setState({
+        selectedResource: parsedCode.resources[index],
+        jsonCode: this.toJsonCode(parsedCode)
+      });
+    }
   }
 
   /**

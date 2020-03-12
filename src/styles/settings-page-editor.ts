@@ -91,5 +91,9 @@ export default createStyles({
     "& .CodeMirror": {
       minHeight: "100%"
     }
+  },
+  textResourceEditor: {
+    width: "calc(100% - 10px)",
+    margin: "10px 5px 5px 5px"
   }
 });
