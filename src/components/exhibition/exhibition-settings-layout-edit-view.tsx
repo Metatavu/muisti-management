@@ -158,7 +158,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     };
 
     return (
-      <div className={ classes.editors}>
+      <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
           <CodeMirror className={ classes.editor } 
