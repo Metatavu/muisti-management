@@ -66,12 +66,12 @@ class PagePreviewImageView extends React.Component<Props, State> {
    */
   private renderImage = () => {
     const src = this.getImageSrc();
-    const styles = this.resolveImageViewStyles();
+    const imageStyles = this.resolveImageViewStyles();
 
     if (src) {
-      return <div style={{ ...styles, backgroundImage: `url(${src})`, backgroundSize: "cover" }}/>
+      return <div style={{ ...imageStyles, backgroundImage: `url(${src})`, backgroundSize: "cover" }}/>
     } else {
-      return <ImageIcon style={ styles }/>
+      return <ImageIcon style={ imageStyles }/>
     }
   }
 
