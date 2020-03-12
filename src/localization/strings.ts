@@ -34,6 +34,8 @@ export interface IStrings extends LocalizedStringsMethods {
       xml: string;
       json: string;
       saveButton: string;
+      switchToCodeButton: string;
+      switchToVisualButton: string;
       importButton: string;
       deleteButton: string;
       deleteConfirmTitle: string;

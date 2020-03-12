@@ -5,14 +5,16 @@ import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-layout-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import DisplayMetrics from "../display-metrics";
+import DisplayMetrics from "../../../types/display-metrics";
 import ImageIcon from '@material-ui/icons/Image';
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
@@ -52,11 +54,44 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
       <Measure onResize={ this.props.onResize } bounds={ true }>
         {({ measureRef }) => (
           <div ref={ measureRef } className={ classes.root } style={ this.resolveStyles() }>
-            <ImageIcon style={ this.resolveImageViewStyles() }/>
+            { this.renderImage() }
           </div>
         )}
       </Measure>
     );
+  }
+
+  /**
+   * Renders preview image
+   */
+  private renderImage = () => {
+    const src = this.getImageSrc();
+    const styles = this.resolveImageViewStyles();
+
+    if (src) {
+      return <div style={{ ...styles, backgroundImage: `url(${src})`, backgroundSize: "cover" }}/>
+    } else {
+      return <ImageIcon style={ styles }/>
+    }
+  }
+
+  /**
+   * Returns image src from resources or null if not found
+   * 
+   * @returns image src from resources or null if not found
+   */
+  private getImageSrc = () => {
+    const srcProperty = this.props.view.properties.find(property => property.name === "src");
+
+    const id = srcProperty?.value;
+    if (id && id.startsWith("@resources/")) {
+      const resource = this.props.resourceMap[id.substring(11)];
+      if (resource) {
+        return resource.data;
+      }
+    }
+
+    return null;
   }
 
   /**

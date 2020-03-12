@@ -10,14 +10,16 @@ import PageLayoutPreviewButton from "./page-layout-preview-button";
 import PageLayoutPreviewImageView from "./page-layout-preview-image-view";
 import PageLayoutPreviewRelativeLayout from "./page-layout-preview-relative-layout";
 
-import DisplayMetrics from "../display-metrics";
+import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  resourceMap: ResourceMap;
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
@@ -76,35 +78,40 @@ class PageLayoutPreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "TextView":
         return <PageLayoutPreviewTextView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "Button":
         return <PageLayoutPreviewButton 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "ImageView":
         return <PageLayoutPreviewImageView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>          
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>          
       case "RelativeLayout":
         return <PageLayoutPreviewRelativeLayout 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>          
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>          
       default:
         return <Typography> Unsupported widget { this.props.view.widget } </Typography>
     }

@@ -5,14 +5,16 @@ import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-layout-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import DisplayMetrics from "../display-metrics";
-import AndroidUtils from "../android-utils";
+import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;

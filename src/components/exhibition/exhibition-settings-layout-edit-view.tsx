@@ -3,7 +3,7 @@ import { WithStyles, withStyles, Select, MenuItem } from "@material-ui/core";
 import { Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, ExhibitionDeviceModel } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { v4 as uuidv4 } from "uuid";
@@ -16,7 +16,7 @@ import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import classNames from "classnames";
 import PageLayoutPreview from "../preview/page-layout-preview";
-import DisplayMetrics from "../preview/display-metrics";
+import AndroidUtils from "../../utils/android-utils";
 
 type View = "CODE" | "VISUAL";
 
@@ -25,6 +25,7 @@ type View = "CODE" | "VISUAL";
  */
 interface Props extends WithStyles<typeof styles> {
   layout: PageLayout;
+  deviceModels: ExhibitionDeviceModel[];
   onSave: (layout: PageLayout) => void;
   onDelete: (layout: PageLayout) => void;
 }
@@ -183,15 +184,8 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   private renderVisualEditorView = () => {
     const { classes } = this.props;
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
-    const displayMetrics: DisplayMetrics = {
-      heightPixels: 2924,
-      widthPixels: 1440,
-      densityDpi: 560,
-      density: 3.5,
-      xdpi: 515.154,
-      ydpi: 514.597
-    };
-
+    // TODO: load from layout
+    const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
     const scale = 0.25;
 
     return (

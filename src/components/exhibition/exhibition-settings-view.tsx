@@ -9,7 +9,7 @@ import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Typography, Button} from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, ExhibitionPage } from "../../generated/client";
+import { Exhibition, PageLayout, ExhibitionPage, ExhibitionDeviceModel } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
 import ViewSelectionBar from "../editor-panes/view-selection-bar";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -45,6 +45,7 @@ interface State {
   error?: Error;
   loading: boolean;
   layouts: PageLayout[];
+  deviceModels: ExhibitionDeviceModel[];
   pages: ExhibitionPage[];
   editLayout?: PageLayout;
   editPage?: ExhibitionPage;
@@ -64,6 +65,7 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
+      deviceModels: [],
       layouts: [],
       pages: []
     };
@@ -87,8 +89,12 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
 
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
-
-      const [ layouts, pages ] = await Promise.all([
+      const exhibitionDeviceModelsApi = Api.getExhibitionDeviceModelsApi(accessToken);
+      
+      const [ deviceModels, layouts, pages ] = await Promise.all([
+        exhibitionDeviceModelsApi.listExhibitionDeviceModels({
+          exhibitionId: exhibitionId
+        }),
         pageLayoutsApi.listPageLayouts(),
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId: exhibitionId
@@ -96,6 +102,7 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
       ]);
 
       this.setState({
+        deviceModels: deviceModels,
         layouts: layouts,
         pages: pages
       });
@@ -203,7 +210,8 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
       return (
         <ExhibitionSettingsLayoutEditView 
           key={ this.state.editLayout.id || "new-layout" } 
-          layout={ this.state.editLayout } 
+          layout={ this.state.editLayout }
+          deviceModels={ this.state.deviceModels }
           onSave={ this.onLayoutSave }
           onDelete={ this.onLayoutDelete }/>
       )
@@ -214,6 +222,7 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
         <ExhibitionSettingsPageEditView 
           key={ this.state.editPage.id || "new-page" }
           layouts={ this.state.layouts } 
+          deviceModels={ this.state.deviceModels }
           page={ this.state.editPage }
           onSave={ this.onPageSave }/>
       );

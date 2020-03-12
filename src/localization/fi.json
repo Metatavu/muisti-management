@@ -30,6 +30,8 @@
       "xml": "XML",
       "json": "JSON",
       "saveButton": "Tallenna",
+      "switchToCodeButton": "Näytä koodi",
+      "switchToVisualButton": "Näytä editori",
       "importButton": "Tuo",
       "deleteButton": "Poista",
       "deleteConfirmTitle": "Oletko varma?",

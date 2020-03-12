@@ -1,4 +1,4 @@
-import { Exhibition } from "../generated/client";
+import { Exhibition, ExhibitionPageResource } from "../generated/client";
 
 export type ExhibitionState = Exhibition;
 
@@ -9,3 +9,8 @@ export interface AccessToken {
   token: string;
   userId: string;
 }
+
+/**
+ * Map of resources with id as a key
+ */
+export type ResourceMap = { [key: string]: ExhibitionPageResource };

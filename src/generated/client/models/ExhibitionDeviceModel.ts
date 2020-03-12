@@ -22,10 +22,10 @@ import {
     ExhibitionDeviceModelDimensionsFromJSON,
     ExhibitionDeviceModelDimensionsFromJSONTyped,
     ExhibitionDeviceModelDimensionsToJSON,
-    ExhibitionDeviceModelResolution,
-    ExhibitionDeviceModelResolutionFromJSON,
-    ExhibitionDeviceModelResolutionFromJSONTyped,
-    ExhibitionDeviceModelResolutionToJSON,
+    ExhibitionDeviceModelDisplayMetrics,
+    ExhibitionDeviceModelDisplayMetricsFromJSON,
+    ExhibitionDeviceModelDisplayMetricsFromJSONTyped,
+    ExhibitionDeviceModelDisplayMetricsToJSON,
 } from './';
 
 /**
@@ -66,10 +66,10 @@ export interface ExhibitionDeviceModel {
     dimensions: ExhibitionDeviceModelDimensions;
     /**
      * 
-     * @type {ExhibitionDeviceModelResolution}
+     * @type {ExhibitionDeviceModelDisplayMetrics}
      * @memberof ExhibitionDeviceModel
      */
-    resolution: ExhibitionDeviceModelResolution;
+    displayMetrics: ExhibitionDeviceModelDisplayMetrics;
     /**
      * 
      * @type {ExhibitionDeviceModelCapabilities}
@@ -117,7 +117,7 @@ export function ExhibitionDeviceModelFromJSONTyped(json: any, ignoreDiscriminato
         'manufacturer': json['manufacturer'],
         'model': json['model'],
         'dimensions': ExhibitionDeviceModelDimensionsFromJSON(json['dimensions']),
-        'resolution': ExhibitionDeviceModelResolutionFromJSON(json['resolution']),
+        'displayMetrics': ExhibitionDeviceModelDisplayMetricsFromJSON(json['displayMetrics']),
         'capabilities': ExhibitionDeviceModelCapabilitiesFromJSON(json['capabilities']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -138,7 +138,7 @@ export function ExhibitionDeviceModelToJSON(value?: ExhibitionDeviceModel | null
         'manufacturer': value.manufacturer,
         'model': value.model,
         'dimensions': ExhibitionDeviceModelDimensionsToJSON(value.dimensions),
-        'resolution': ExhibitionDeviceModelResolutionToJSON(value.resolution),
+        'displayMetrics': ExhibitionDeviceModelDisplayMetricsToJSON(value.displayMetrics),
         'capabilities': ExhibitionDeviceModelCapabilitiesToJSON(value.capabilities),
     };
 }

@@ -2,10 +2,11 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageEventActionType, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageEventActionType, ExhibitionPageResourceType, ExhibitionDeviceModel } from "../../generated/client";
 import { ExhibitionPageEventPropertyType } from "../../generated/client";
 import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
 import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
+import PageLayoutPreview from "../preview/page-layout-preview";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as codemirror from "codemirror";
@@ -23,6 +24,9 @@ import "codemirror/mode/javascript/javascript"
 import "codemirror/addon/lint/lint.css";
 import 'codemirror/addon/lint/lint';
 import * as jsonlint from "jsonlint-mod";
+import AndroidUtils from "../../utils/android-utils";
+
+type View = "CODE" | "VISUAL";
 
 /**
  * JSON Lint parse error hash object
@@ -41,6 +45,7 @@ interface JsonLintParseErrorHash {
  */
 interface Props extends WithStyles<typeof styles> {
   layouts: PageLayout[];
+  deviceModels: ExhibitionDeviceModel[];
   page: ExhibitionPage;
   onSave: (page: ExhibitionPage) => void;
 }
@@ -49,8 +54,8 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
+  view: View;
   name: string;
-  layout?: PageLayout;
   toolbarOpen: boolean;
   jsonCode: string;
   layoutId: string;
@@ -74,6 +79,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     super(props);
 
     this.state = {
+      view: "VISUAL",
       name: props.page.name,
       toolbarOpen: true,
       layoutId: props.page.layoutId,
@@ -86,17 +92,6 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   public render() {
     const { classes } = this.props;
-    const jsonEditorOptions: codemirror.EditorConfiguration = {
-      mode: { name: "javascript", json: true },
-      theme: "material",
-      lineNumbers: true,
-      lint: {
-        getAnnotations: this.jsonEditorGetAnnotations
-      },
-      gutters: [
-        'CodeMirror-lint-markers',
-      ]
-    };
     
     return (
       <div className={ classes.root }>
@@ -126,19 +121,79 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           <div className={ classes.toolBar }>
+            <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}> 
+              { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton } 
+            </Button>
             <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
           </div>
           <div className={ classes.editors}>
-            <div className={ classes.editorContainer }>
-              <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-              <CodeMirror 
-                className={ classes.editor } 
-                value={ this.state.jsonCode } 
-                options={ jsonEditorOptions } 
-                onBeforeChange={ this.onBeforeJsonCodeChange } />
-            </div>
+            { this.renderEditor() }
           </div>
         </div>
+      </div>
+    );
+  }
+
+  /**
+   * Renders editor
+   */
+  private renderEditor = () => {
+    switch (this.state.view) {
+      case "CODE":
+        return this.renderCodeEditor();
+      case "VISUAL":
+        return this.renderVisualEditor();
+    }
+  }
+
+  /**
+   * Renders visual editor
+   */
+  private renderVisualEditor = () => {
+    const { classes } = this.props;
+
+    const parsedCode = this.parseJsonCode();
+
+    const resources = parsedCode.resources;
+    const layout = this.props.layouts.find(layout => layout.id === this.state.layoutId);
+
+    const view = layout?.data;
+    // TODO: load from layout
+    const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
+    const scale = 0.25;
+    
+    return (
+      <div className={ classes.visualEditorContainer }>
+        <PageLayoutPreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
+      </div>
+    );
+  }
+
+  /**
+   * Renders code editor
+   */
+  private renderCodeEditor = () => {
+    const { classes } = this.props;
+    const jsonEditorOptions: codemirror.EditorConfiguration = {
+      mode: { name: "javascript", json: true },
+      theme: "material",
+      lineNumbers: true,
+      lint: {
+        getAnnotations: this.jsonEditorGetAnnotations
+      },
+      gutters: [
+        'CodeMirror-lint-markers',
+      ]
+    };
+    
+    return (
+      <div className={ classes.codeEditorContainer }>
+        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
+        <CodeMirror 
+          className={ classes.editor } 
+          value={ this.state.jsonCode } 
+          options={ jsonEditorOptions } 
+          onBeforeChange={ this.onBeforeJsonCodeChange } />
       </div>
     );
   }
@@ -462,6 +517,15 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
     this.setState({
       jsonCode: value
+    });
+  }
+
+  /**
+   * Event listener for switch view button click
+   */
+  private onSwitchViewClick = () => {
+    this.setState({
+      view: this.state.view === "CODE" ? "VISUAL" : "CODE"
     });
   }
 
