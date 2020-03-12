@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Select, MenuItem } from "@material-ui/core";
 import { Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
@@ -15,6 +15,10 @@ import "codemirror/mode/xml/xml"
 import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import classNames from "classnames";
+import PageLayoutPreview from "../preview/page-layout-preview";
+import DisplayMetrics from "../preview/display-metrics";
+
+type View = "CODE" | "VISUAL";
 
 /**
  * Interface representing component properties
@@ -34,6 +38,7 @@ interface State {
   xmlCode: string;
   toolbarOpen: boolean;
   deleteOpen: boolean;
+  view: View;
 }
 
 const minWidth = 320;
@@ -57,7 +62,8 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       jsonCode: JSON.stringify(props.layout.data, null, 2),
       xmlCode: "",
       toolbarOpen: true,
-      deleteOpen: false
+      deleteOpen: false,
+      view: "VISUAL"
     };
   }
 
@@ -66,17 +72,6 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    */
   public render() {
     const { classes } = this.props;
-    const jsonEditorOptions = {
-      mode: "javascript",
-      theme: "material",
-      lineNumbers: true
-    };
-
-    const xmlEditorOptions = {
-      mode: "xml",
-      theme: "material",
-      lineNumbers: true
-    };
 
     return (
       <div className={ classes.root }>
@@ -96,35 +91,112 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
           </div>
         </div>
         <div className={ classes.content }>
-          <div className={ classes.toolBar }>
-            <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
-              { strings.exhibitionLayouts.editView.deleteButton }
-            </Button>
-            <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
-              { strings.exhibitionLayouts.editView.importButton } 
-            </Button>
-            <Button variant="contained" color="primary" onClick={ this.onSaveClick }> 
-              { strings.exhibitionLayouts.editView.saveButton } 
-            </Button>
-          </div>
-          <div className={ classes.editors}>
-            <div className={ classes.editorContainer }>
-              <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-              <CodeMirror className={ classes.editor } 
-                value={ this.state.jsonCode } 
-                options={ jsonEditorOptions } 
-                onBeforeChange={ this.onBeforeJsonCodeChange } />
-            </div>
-            <div className={ classes.editorContainer }>
-              <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
-              <CodeMirror className={ classes.editor } 
-                value={ this.state.xmlCode } 
-                options={ xmlEditorOptions } 
-                onBeforeChange={ this.onBeforeXmlCodeChange } />
-            </div>
-          </div>
+          { this.renderToolbar() }
+          { this.renderEditorView() }
         </div>
         { this.renderDeleteDialog() }
+      </div>
+    );
+  }
+
+  /**
+   * Renders a toolbar
+   */
+  private renderToolbar = () => {
+    const { classes } = this.props;
+
+    return (
+      <div className={ classes.toolBar }>
+        <Select value={ this.state.view } onChange={ this.onViewChange }>
+          <MenuItem value={ "CODE" }> Code </MenuItem>
+          <MenuItem value={ "VISUAL" }> Visual </MenuItem>
+        </Select>
+        <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
+          { strings.exhibitionLayouts.editView.deleteButton }
+        </Button>
+        <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
+          { strings.exhibitionLayouts.editView.importButton } 
+        </Button>
+        <Button variant="contained" color="primary" onClick={ this.onSaveClick }> 
+          { strings.exhibitionLayouts.editView.saveButton } 
+        </Button>
+      </div>
+    );
+
+  }
+
+  /**
+   * Renders editor view
+   */
+  private renderEditorView = () => {
+    switch (this.state.view) {
+      case "CODE":
+        return this.renderCodeEditorView();
+      case "VISUAL":
+        return this.renderVisualEditorView();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Renders code editor view
+   */
+  private renderCodeEditorView = () => {
+    const { classes } = this.props;
+
+    const jsonEditorOptions = {
+      mode: "javascript",
+      theme: "material",
+      lineNumbers: true
+    };
+
+    const xmlEditorOptions = {
+      mode: "xml",
+      theme: "material",
+      lineNumbers: true
+    };
+
+    return (
+      <div className={ classes.editors }>
+        <div className={ classes.editorContainer }>
+          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
+          <CodeMirror className={ classes.editor } 
+            value={ this.state.jsonCode } 
+            options={ jsonEditorOptions } 
+            onBeforeChange={ this.onBeforeJsonCodeChange } />
+        </div>
+        <div className={ classes.editorContainer }>
+          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
+          <CodeMirror className={ classes.editor } 
+            value={ this.state.xmlCode } 
+            options={ xmlEditorOptions } 
+            onBeforeChange={ this.onBeforeXmlCodeChange } />
+        </div>
+      </div>
+    )
+  }
+
+  /**
+   * Renders a visual editor view
+   */
+  private renderVisualEditorView = () => {
+    const { classes } = this.props;
+    const view: PageLayoutView = JSON.parse(this.state.jsonCode);
+    const displayMetrics: DisplayMetrics = {
+      heightPixels: 2924,
+      widthPixels: 1440,
+      densityDpi: 560,
+      density: 3.5,
+      xdpi: 515.154,
+      ydpi: 514.597
+    };
+
+    const scale = 0.25;
+
+    return (
+      <div className={ classes.editors }>
+        <PageLayoutPreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
   }
@@ -213,6 +285,17 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
    */
   private isNumber = (value: string): boolean => {
     return !!/^[0-9.]+$/.exec(value);
+  }
+
+  /**
+   * Event handler for view change
+   * 
+   * @param event event
+   */
+  private onViewChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    this.setState({
+      view: event.target.value as View
+    });
   }
   
   /**

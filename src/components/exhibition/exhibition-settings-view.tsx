@@ -53,7 +53,7 @@ interface State {
 /**
  * Component for exhibition view
  */
-export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
+export class ExhibitionSettingsView extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -170,7 +170,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private renderLayoutsNavigation = () => {
     const items = this.state.layouts.map(layout => {
-      return <TreeItem nodeId={ layout.id! } label={ layout.name } onClick={ () => this.onEditLayoutClick(layout) } />;
+      return <TreeItem key={ layout.id! } nodeId={ layout.id! } label={ layout.name } onClick={ () => this.onEditLayoutClick(layout) } />;
     });
 
     return (
@@ -185,7 +185,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
    */
   private renderPagesNavigation = () => {
     const items = this.state.pages.map(page => {
-      return <TreeItem nodeId={ page.id! } label={ page.name } onClick={ () => this.onEditPageClick(page) } />;
+      return <TreeItem key={ page.id! } nodeId={ page.id! } label={ page.name } onClick={ () => this.onEditPageClick(page) } />;
     });
 
     return (
@@ -409,9 +409,6 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
     });
   }
 
-
-  
-
 }
 
 /**
@@ -439,4 +436,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionDeviceGroupView));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionSettingsView));
