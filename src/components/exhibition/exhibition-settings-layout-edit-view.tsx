@@ -15,7 +15,7 @@ import "codemirror/mode/xml/xml"
 import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import classNames from "classnames";
-import PageLayoutPreview from "../preview/page-layout-preview";
+import PagePreview from "../preview/page-preview";
 import AndroidUtils from "../../utils/android-utils";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import EditorView from "../editor/editor-view";
@@ -206,7 +206,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.editors}>
-        <PageLayoutPreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
   }

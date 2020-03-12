@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Measure, { ContentRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
-import styles from "../../../styles/page-layout-preview";
+import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
@@ -30,7 +30,7 @@ interface State {
 /**
  * Component for TextView component preview
  */
-class PageLayoutPreviewTextView extends React.Component<Props, State> {
+class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -68,7 +68,7 @@ class PageLayoutPreviewTextView extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PageLayoutPreviewTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreviewTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
@@ -132,4 +132,4 @@ class PageLayoutPreviewTextView extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(PageLayoutPreviewTextView);
+export default withStyles(styles)(PagePreviewTextView);

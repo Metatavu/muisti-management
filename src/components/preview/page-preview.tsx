@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { WithStyles, withStyles } from '@material-ui/core';
-import styles from "../../styles/page-layout-preview";
-import PageLayoutPreviewComponentEditor from "./components/page-layout-preview-component";
+import styles from "../../styles/page-preview";
+import PagePreviewComponentEditor from "./components/page-preview-component";
 import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResource } from "../../generated/client";
 import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -28,7 +28,7 @@ interface State {
 /**
  * Component for page layout preview
  */
-class PageLayoutPreview extends React.Component<Props, State> {
+class PagePreview extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -53,7 +53,7 @@ class PageLayoutPreview extends React.Component<Props, State> {
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
-        <PageLayoutPreviewComponentEditor 
+        <PagePreviewComponentEditor 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
           scale={ this.props.scale } 
@@ -70,7 +70,7 @@ class PageLayoutPreview extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PageLayoutPreview: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreview: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
@@ -132,4 +132,4 @@ class PageLayoutPreview extends React.Component<Props, State> {
 
 }
 
-export default withStyles(styles)(PageLayoutPreview);
+export default withStyles(styles)(PagePreview);

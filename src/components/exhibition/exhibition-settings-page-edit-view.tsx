@@ -6,7 +6,7 @@ import { ExhibitionPageEventActionType, ExhibitionPageResourceType, ExhibitionDe
 import { ExhibitionPageEventPropertyType } from "../../generated/client";
 import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
 import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
-import PageLayoutPreview from "../preview/page-layout-preview";
+import PagePreview from "../preview/page-preview";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as codemirror from "codemirror";
@@ -183,7 +183,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     
     return (
       <div className={ classes.visualEditorContainer }>
-        <PageLayoutPreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
   }
