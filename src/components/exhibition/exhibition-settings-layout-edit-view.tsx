@@ -195,7 +195,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     const scale = 0.25;
 
     return (
-      <div className={ classes.editors}>
+      <div className={ classes.editors }>
         <PageLayoutPreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
