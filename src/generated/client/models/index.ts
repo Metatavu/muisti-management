@@ -4,7 +4,7 @@ export * from './ExhibitionDeviceGroup';
 export * from './ExhibitionDeviceModel';
 export * from './ExhibitionDeviceModelCapabilities';
 export * from './ExhibitionDeviceModelDimensions';
-export * from './ExhibitionDeviceModelResolution';
+export * from './ExhibitionDeviceModelDisplayMetrics';
 export * from './ExhibitionPage';
 export * from './ExhibitionPageEvent';
 export * from './ExhibitionPageEventActionType';

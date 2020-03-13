@@ -2,18 +2,20 @@ import * as React from "react";
 
 import Measure, { ContentRect, BoundingRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
-import styles from "../../../styles/page-layout-preview";
+import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import PageLayoutPreviewComponentEditor from "./page-layout-preview-component";
-import DisplayMetrics from "../display-metrics";
-import AndroidUtils from "../android-utils";
+import PagePreviewComponentEditor from "./page-preview-component";
+import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
@@ -33,7 +35,7 @@ interface State {
 /**
  * Component for rendering RelativeLayout views
  */
-class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
+class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -70,8 +72,9 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
   private renderChildren = () => {
     const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
       return (
-        <PageLayoutPreviewComponentEditor key={ `child-${index}` } 
+        <PagePreviewComponentEditor key={ `child-${index}` } 
           view={ child }
+          resourceMap={ this.props.resourceMap }
           displayMetrics={ this.props.displayMetrics } 
           scale={ this.props.scale }
           style={ this.resolveChildStyles(child) }
@@ -95,7 +98,7 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PageLayoutPreviewRelativeLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreviewRelativeLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
@@ -246,4 +249,4 @@ class PageLayoutPreviewRelativeLayout extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(PageLayoutPreviewRelativeLayout);
+export default withStyles(styles)(PagePreviewRelativeLayout);

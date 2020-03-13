@@ -2,22 +2,24 @@ import * as React from "react";
 
 import { ContentRect } from 'react-measure'
 import { WithStyles, withStyles, Typography } from '@material-ui/core';
-import styles from "../../../styles/page-layout-preview";
+import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
-import PageLayoutPreviewFrameLayout from "./page-layout-preview-frame-layout";
-import PageLayoutPreviewTextView from "./page-layout-preview-text-view";
-import PageLayoutPreviewButton from "./page-layout-preview-button";
-import PageLayoutPreviewImageView from "./page-layout-preview-image-view";
-import PageLayoutPreviewRelativeLayout from "./page-layout-preview-relative-layout";
+import PagePreviewFrameLayout from "./page-preview-frame-layout";
+import PagePreviewTextView from "./page-preview-text-view";
+import PagePreviewButton from "./page-preview-button";
+import PagePreviewImageView from "./page-preview-image-view";
+import PagePreviewRelativeLayout from "./page-preview-relative-layout";
 
-import DisplayMetrics from "../display-metrics";
+import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  resourceMap: ResourceMap;
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
@@ -34,7 +36,7 @@ interface State {
 /**
  * Wrapper component for all page layout components
  */
-class PageLayoutPreviewComponent extends React.Component<Props, State> {
+class PagePreviewComponent extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -71,44 +73,49 @@ class PageLayoutPreviewComponent extends React.Component<Props, State> {
 
     switch (this.props.view.widget) {
       case "FrameLayout":
-        return <PageLayoutPreviewFrameLayout 
+        return <PagePreviewFrameLayout 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "TextView":
-        return <PageLayoutPreviewTextView 
+        return <PagePreviewTextView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "Button":
-        return <PageLayoutPreviewButton 
+        return <PagePreviewButton 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
       case "ImageView":
-        return <PageLayoutPreviewImageView 
+        return <PagePreviewImageView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>          
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>          
       case "RelativeLayout":
-        return <PageLayoutPreviewRelativeLayout 
+        return <PagePreviewRelativeLayout 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
           displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }/>          
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>          
       default:
         return <Typography> Unsupported widget { this.props.view.widget } </Typography>
     }
   }
 }
 
-export default withStyles(styles)(PageLayoutPreviewComponent);
+export default withStyles(styles)(PagePreviewComponent);

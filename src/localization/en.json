@@ -30,6 +30,8 @@
       "xml": "XML",
       "json": "JSON",
       "saveButton": "Save",
+      "switchToCodeButton": "Switch to code",
+      "switchToVisualButton": "Switch to visual",
       "importButton": "Import",
       "deleteButton": "Delete",
       "deleteConfirmTitle": "Are you sure?", 

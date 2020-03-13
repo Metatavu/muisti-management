@@ -1,11 +1,32 @@
-import DisplayMetrics from "./display-metrics";
+import DisplayMetrics from "../types/display-metrics";
+import { ExhibitionDeviceModel } from "../generated/client";
 
 /**
- * Utilities for Android unit conversions
+ * Utilities for Android
  */
 export default class AndroidUtils {
 
   private static DENSITY_DEFAULT = 160;
+
+  /**
+   * Returns display metrics for a device model
+   * 
+   * @param deviceModel device model
+   */
+  public static getDisplayMetrics(deviceModel: ExhibitionDeviceModel) {
+    const displayMetrics = deviceModel.displayMetrics;
+
+    const result: DisplayMetrics = { 
+      density: displayMetrics.density || 0,
+      heightPixels: displayMetrics.heightPixels || 0,
+      widthPixels: displayMetrics.widthPixels || 0,
+      xdpi: displayMetrics.xdpi || 0,
+      ydpi: displayMetrics.ydpi || 0,
+      densityDpi: ((displayMetrics.density || 0) * AndroidUtils.DENSITY_DEFAULT)
+    }
+
+    return result;
+  }
 
   /**
    * Parses string to pixels

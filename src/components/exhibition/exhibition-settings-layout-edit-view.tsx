@@ -3,7 +3,7 @@ import { WithStyles, withStyles, Select, MenuItem } from "@material-ui/core";
 import { Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, ExhibitionDeviceModel } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { v4 as uuidv4 } from "uuid";
@@ -15,8 +15,10 @@ import "codemirror/mode/xml/xml"
 import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import classNames from "classnames";
-import PageLayoutPreview from "../preview/page-layout-preview";
-import DisplayMetrics from "../preview/display-metrics";
+import PagePreview from "../preview/page-preview";
+import AndroidUtils from "../../utils/android-utils";
+import ElementSettingsPane from "../editor-panes/element-settings-pane";
+import EditorView from "../editor/editor-view";
 
 type View = "CODE" | "VISUAL";
 
@@ -25,6 +27,7 @@ type View = "CODE" | "VISUAL";
  */
 interface Props extends WithStyles<typeof styles> {
   layout: PageLayout;
+  deviceModels: ExhibitionDeviceModel[];
   onSave: (layout: PageLayout) => void;
   onDelete: (layout: PageLayout) => void;
 }
@@ -68,9 +71,23 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   }
 
   /**
-   * Render basic layout
+   * Render
    */
   public render() {
+    return (
+      <>
+        <EditorView>
+          { this.renderEditorView() }
+        </EditorView>
+        <ElementSettingsPane title="Ominaisuudet" />
+      </>
+    );
+  }
+
+  /**
+   * Render basic layout
+   */
+  public renderEditorView() {
     const { classes } = this.props;
 
     return (
@@ -92,7 +109,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           { this.renderToolbar() }
-          { this.renderEditorView() }
+          { this.renderEditor() }
         </div>
         { this.renderDeleteDialog() }
       </div>
@@ -128,12 +145,12 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders editor view
    */
-  private renderEditorView = () => {
+  private renderEditor = () => {
     switch (this.state.view) {
       case "CODE":
-        return this.renderCodeEditorView();
+        return this.renderCodeEditor();
       case "VISUAL":
-        return this.renderVisualEditorView();
+        return this.renderVisualEditor();
       default:
         return null;
     }
@@ -142,7 +159,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders code editor view
    */
-  private renderCodeEditorView = () => {
+  private renderCodeEditor = () => {
     const { classes } = this.props;
 
     const jsonEditorOptions = {
@@ -180,23 +197,16 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
   /**
    * Renders a visual editor view
    */
-  private renderVisualEditorView = () => {
+  private renderVisualEditor = () => {
     const { classes } = this.props;
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
-    const displayMetrics: DisplayMetrics = {
-      heightPixels: 2924,
-      widthPixels: 1440,
-      densityDpi: 560,
-      density: 3.5,
-      xdpi: 515.154,
-      ydpi: 514.597
-    };
-
+    // TODO: load from layout
+    const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
     const scale = 0.25;
 
     return (
-      <div className={ classes.editors }>
-        <PageLayoutPreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
+      <div className={ classes.editors}>
+        <PagePreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
   }

@@ -2,17 +2,19 @@ import * as React from "react";
 
 import Measure, { ContentRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
-import styles from "../../../styles/page-layout-preview";
+import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import DisplayMetrics from "../display-metrics";
-import ImageIcon from '@material-ui/icons/Image';
+import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
+import { ResourceMap } from "../../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
@@ -26,9 +28,9 @@ interface State {
 }
 
 /**
- * Component for rendering Image views
+ * Component for TextView component preview
  */
-class PageLayoutPreviewImageView extends React.Component<Props, State> {
+class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -43,7 +45,7 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
   }
 
   /**
-   * Render
+   * Render basic layout
    */
   public render() {
     const { classes } = this.props;
@@ -52,7 +54,7 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
       <Measure onResize={ this.props.onResize } bounds={ true }>
         {({ measureRef }) => (
           <div ref={ measureRef } className={ classes.root } style={ this.resolveStyles() }>
-            <ImageIcon style={ this.resolveImageViewStyles() }/>
+            { this.getText() }      
           </div>
         )}
       </Measure>
@@ -66,23 +68,25 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PageLayoutPreviewImageView: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreviewTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
-   * Resolves image styles
+   * Returns text from view properties
    * 
-   * @returns image styles
+   * @return text from view properties
    */
-  private resolveImageViewStyles = (): CSSProperties => {
-    const result: CSSProperties = {
-      width: "100%",
-      height: "100%",
-      background: "#fff",
-      color: "rgb(188, 190, 192)"
-    };
-    
-    return result;
+  private getText = () => {
+    const textProperty = this.props.view.properties.find(property => property.name === "text");
+    const id = textProperty?.value;
+    if (id && id.startsWith("@resources/")) {
+      const resource = this.props.resourceMap[id.substring(11)];
+      if (resource) {
+        return resource.data;
+      }
+    }
+
+    return id;
   }
 
   /**
@@ -93,15 +97,31 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      
+      display: "inline-block"
     });
 
     properties.forEach(property => {
-      if (property.name === "text" || property.name.startsWith("layout_")) {
+      if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
         return;
       }
 
       switch (property.name) {
+        case "textSize":
+          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          if (px) {
+            result.fontSize = px
+          } else {
+            console.log("TextView: unknown layout_height", property.value);
+          }
+        break;
+        case "textAlignment":
+          switch (property.value) {
+            case "center": 
+              result.textAlign = property.value;
+            break;
+            default:
+          }
+        break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
         break; 
@@ -112,4 +132,4 @@ class PageLayoutPreviewImageView extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(PageLayoutPreviewImageView);
+export default withStyles(styles)(PagePreviewTextView);

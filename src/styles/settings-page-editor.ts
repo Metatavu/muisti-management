@@ -76,14 +76,24 @@ export default createStyles({
     gridGap: 10,
     gridTemplateColumns: "auto"
   },
-  editorContainer: {
+  codeEditorContainer: {
     display: "grid",
     gridTemplateRows: "auto 1fr",
     height: "100%"
+  },
+  visualEditorContainer: {
+    display: "grid",
+    gridTemplateRows: "auto 1fr",
+    height: "100%",
+    justifyItems: "center"
   },
   editor: {
     "& .CodeMirror": {
       minHeight: "100%"
     }
+  },
+  textResourceEditor: {
+    width: "calc(100% - 10px)",
+    margin: "10px 5px 5px 5px"
   }
 });
