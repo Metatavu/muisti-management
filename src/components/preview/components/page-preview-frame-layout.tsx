@@ -130,7 +130,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
     const result: CSSProperties = { ...childStyles, 
-      position: "absolute" 
+      position: "absolute",
+      overflow: "hidden"
     };
 
     childProperties
