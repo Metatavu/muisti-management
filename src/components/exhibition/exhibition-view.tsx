@@ -85,7 +85,8 @@ export class ExhibitionView extends React.Component<Props, State> {
     return (
       <BasicLayout 
         title={ exhibition.name } 
-        onBackButtonClick={() => this.onBackButtonClick() } 
+        onBackButtonClick={() => this.onBackButtonClick() }
+        onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak } 
         error={ this.state.error } 
         clearError={ () => this.setState({ error: undefined }) }>
@@ -107,6 +108,13 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onBackButtonClick = () => {
     this.props.history.push(`/`);
+  }
+
+  /**
+   * Handle dashboard click
+   */
+  private onDashboardButtonClick = () => {
+    this.props.history.push(`/dashboard`);
   }
 }
 

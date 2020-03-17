@@ -10,6 +10,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import ExhibitionsView from "./exhibitions/exhibitions-view";
 import AccessTokenRefresh from "./generic/access-token-refresh";
+import DashboardView from "./dashboard/dashboard-view";
 import ExhibitionView from "./exhibition/exhibition-view";
 import ExhibitionRoomView from "./exhibition/exhibition-room-view";
 import ExhibitionDeviceGroupView from "./exhibition/exhibition-device-group-view";
@@ -50,6 +51,13 @@ class App extends React.Component<Props, State> {
           <AccessTokenRefresh>
             <BrowserRouter>
               <div className="App">
+                <Route
+                  path="/dashboard"
+                  exact={true}
+                  render={ ({ history }) => (
+                    <DashboardView history={ history } />
+                  )}
+                />
                 <Route
                   path="/"
                   exact={true}
