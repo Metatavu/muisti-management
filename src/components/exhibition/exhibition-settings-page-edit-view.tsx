@@ -179,7 +179,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     const view = layout?.data;
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
-    const scale = 0.25;
+    const scale = 0.3;
     
     return (
       <div className={ classes.visualEditorContainer }>

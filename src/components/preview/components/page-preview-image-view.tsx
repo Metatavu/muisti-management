@@ -69,9 +69,15 @@ class PagePreviewImageView extends React.Component<Props, State> {
     const imageStyles = this.resolveImageViewStyles();
 
     if (src) {
-      return <div style={{ ...imageStyles, backgroundImage: `url(${src})`, backgroundSize: "cover" }}/>
+      return (
+        <div style={{ ...imageStyles, textAlign: "center" }}>
+          <img alt="preview" src={ src } style={{ maxWidth: "100%", maxHeight: "100%" }}/>
+        </div>
+      )
     } else {
-      return <ImageIcon style={ imageStyles }/>
+      return (
+        <ImageIcon style={{ ...imageStyles, background: "#fff", color: "rgb(188, 190, 192)" }}/>
+      )
     }
   }
 
@@ -112,9 +118,7 @@ class PagePreviewImageView extends React.Component<Props, State> {
   private resolveImageViewStyles = (): CSSProperties => {
     const result: CSSProperties = {
       width: "100%",
-      height: "100%",
-      background: "#fff",
-      color: "rgb(188, 190, 192)"
+      height: "100%"
     };
     
     return result;
