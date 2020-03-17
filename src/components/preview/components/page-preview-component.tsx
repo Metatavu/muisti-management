@@ -9,6 +9,8 @@ import PagePreviewTextView from "./page-preview-text-view";
 import PagePreviewButton from "./page-preview-button";
 import PagePreviewImageView from "./page-preview-image-view";
 import PagePreviewRelativeLayout from "./page-preview-relative-layout";
+import PagePreviewPlayerView from "./page-preview-player-view";
+import PagePreviewMediaView from "./page-preview-media-view";
 
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -98,6 +100,22 @@ class PagePreviewComponent extends React.Component<Props, State> {
           resourceMap={ this.props.resourceMap }/>
       case "ImageView":
         return <PagePreviewImageView 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>    
+      case "PlayerView":
+        return <PagePreviewPlayerView 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>    
+      case "MediaView":
+        return <PagePreviewMediaView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
