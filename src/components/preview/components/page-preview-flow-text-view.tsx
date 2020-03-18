@@ -5,10 +5,12 @@ import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap } from "../../../types";
+import PagePreviewComponentEditor from "./page-preview-component";
 import PagePreviewUtils from "./page-preview-utils";
+import ReactHtmlParser from "react-html-parser";
 
 /**
  * Interface representing component properties
@@ -29,9 +31,9 @@ interface State {
 }
 
 /**
- * Component for rendering FrameLayout views
+ * Component for FlowTextView component preview
  */
-class PagePreviewFrameLayout extends React.Component<Props, State> {
+class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -56,6 +58,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         {({ measureRef }) => (
           <div ref={ measureRef } className={ classes.root } style={ this.resolveStyles() }>
             { this.renderChildren() }
+            { this.renderText() }
+            { this.getText() }
           </div>
         )}
       </Measure>
@@ -71,15 +75,27 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         view={ child }
         resourceMap={ this.props.resourceMap }
         displayMetrics={ this.props.displayMetrics } 
-        scale={ this.props.scale }        
+        scale={ this.props.scale }
         handleLayoutProperties={ this.onHandleLayoutProperties }/>
     });
 
     return (
-      <div>
+      <>
         { result }
-      </div>
+      </>
     );
+  }
+
+  /**
+   * Renders text
+   */
+  private renderText = () => {
+    const text = this.getText();
+    if (!text) {
+      return null;
+    }
+
+    return ReactHtmlParser(text)
   }
 
   /**
@@ -89,7 +105,25 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreviewFlowTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
+  }
+
+  /**
+   * Returns text from view properties
+   * 
+   * @return text from view properties
+   */
+  private getText = () => {
+    const textProperty = this.props.view.properties.find(property => property.name === "text");
+    const id = textProperty?.value;
+    if (id && id.startsWith("@resources/")) {
+      const resource = this.props.resourceMap[id.substring(11)];
+      if (resource) {
+        return resource.data;
+      }
+    }
+
+    return id;
   }
 
   /**
@@ -100,24 +134,29 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      position: "absolute"
+      display: "inline-block"
     });
 
     properties.forEach(property => {
-      if (property.name.startsWith("layout_")) {
+      if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
         return;
       }
 
       switch (property.name) {
-        case "background":
-          result.backgroundColor = property.value;
+        case "textSize":
+          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          if (px) {
+            result.fontSize = px
+          } else {
+            console.log("FlowTextView: unknown layout_height", property.value);
+          }
         break;
         default:
-          this.handleUnknownProperty(property, "unknown property");
-        break;
+          this.handleUnknownProperty(property, "Unknown property");
+        break; 
       }
     });
-
+    
     return result;
   }
 
@@ -129,9 +168,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * @return modified child component styles
    */
   private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles, 
-      position: "absolute",
-      overflow: "hidden"
+    const result: CSSProperties = { ...childStyles,
+      shapeOutside: "content-box"
     };
 
     childProperties
@@ -159,33 +197,20 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
               result[property.name.substring(7)] = margin;
             }
           break;
-          case "layout_gravity":
-            property.value.split("|").forEach(gravityValue => {
-              switch (gravityValue) {
-                case "top":
-                  result.top = 0;
-                break;
-                case "bottom":
-                  result.bottom = 0;
-                break;
-                case "right":
-                  result.right = 0;
-                break;
-                case "left":
-                  result.left = 0;
-                break;
-                default:
-              }
-            });
+          case "layout_alignParentLeft":
+            result.float = "left";
           break;
+          case "layout_alignParentRight":
+            result.float = "right";
+          break; 
           default:
             this.handleUnknownProperty(property, "Unknown layout property");
           break;
         }
-    });
+      });
 
     return result;
   }
 }
 
-export default withStyles(styles)(PagePreviewFrameLayout);
+export default withStyles(styles)(PagePreviewFlowTextView);

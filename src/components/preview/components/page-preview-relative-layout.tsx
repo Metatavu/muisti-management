@@ -7,8 +7,8 @@ import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/clien
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
-import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap } from "../../../types";
+import PagePreviewUtils from "./page-preview-utils";
 
 /**
  * Interface representing component properties
@@ -216,27 +216,24 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       .forEach(property => {
         switch (property.name) {
           case "layout_width":
-            if ("match_parent" === property.value) {
-              result.width = "100%";
-            } else {
-              const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
-              if (px) {
-                result.width = px
-              } else {
-                this.handleUnknownProperty(property, "Unknown value");
-              }
+            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
+            if (width) {
+              result.width = width;
             }
           break;
           case "layout_height":
-            if ("match_parent" === property.value) {
-              result.height = "100%";
-            } else {
-              const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
-              if (px) {
-                result.height = px
-              } else {
-                this.handleUnknownProperty(property, "Unknown value");
-              }  
+            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
+            if (height) {
+              result.height = height;
+            }
+          break;
+          case "layout_marginTop":
+          case "layout_marginRight":
+          case "layout_marginBottom":
+          case "layout_marginLeft":
+            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
+            if (margin) {
+              result[property.name.substring(7)] = margin;
             }
           break;
           default:
