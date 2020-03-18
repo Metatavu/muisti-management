@@ -6,6 +6,7 @@ import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import PagePreviewFrameLayout from "./page-preview-frame-layout";
 import PagePreviewTextView from "./page-preview-text-view";
+import PagePreviewFlowTextView from "./page-preview-flow-text-view";
 import PagePreviewButton from "./page-preview-button";
 import PagePreviewImageView from "./page-preview-image-view";
 import PagePreviewRelativeLayout from "./page-preview-relative-layout";
@@ -84,6 +85,14 @@ class PagePreviewComponent extends React.Component<Props, State> {
           resourceMap={ this.props.resourceMap }/>
       case "TextView":
         return <PagePreviewTextView 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
+      case "FlowTextView":
+        return <PagePreviewFlowTextView 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 
