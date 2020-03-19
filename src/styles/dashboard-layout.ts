@@ -15,11 +15,11 @@ export default createStyles({
     position: "relative",
     gridArea: "header",
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
     background: "#fff",
     borderBottom: "1px solid #ddd",
-    height: 50
+    height: 50 
   },
 
   navigation: {
@@ -49,7 +49,6 @@ export default createStyles({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    borderBottom: "1px solid #ddd",
     height: 50,
     transition: "background-color 0.2s ease-in-out",
     "& h3": {
@@ -71,7 +70,7 @@ export default createStyles({
   },
 
   navigationContent: {
-
+    padding: 10
   },
 
   backBtn: {
@@ -85,7 +84,17 @@ export default createStyles({
   },
 
   content: {
-    gridArea: "content"
+    gridArea: "content",
+    paddingTop: 100
   },
+
+  newExhibitionBtn: {
+    marginRight: 20
+  },
+
+  navigationBtn: {
+    width: "100%",
+    padding: 10
+  }
 
 });

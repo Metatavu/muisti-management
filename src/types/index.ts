@@ -1,6 +1,4 @@
-import { Exhibition, ExhibitionPageResource } from "../generated/client";
-
-export type ExhibitionState = Exhibition;
+import { ExhibitionPageResource } from "../generated/client";
 
 /**
  * Interface describing an access token

@@ -3,48 +3,48 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxState, ReduxActions } from "../../store";
-import { setSelectedExhibition } from "../../actions/exhibitions";
+import { setExhibitions } from "../../actions/exhibitions";
 
+// eslint-disable-next-line max-len
+import { WithStyles, withStyles, Button, Divider, Container, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from "@material-ui/core";
+import styles from "../../styles/dashboard-layout";
 import { History } from "history";
-import styles from "../../styles/exhibitions-view";
 import strings from "../../localization/strings";
-import { Container, Typography, Grid, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
-import { WithStyles, withStyles } from "@material-ui/core";
-import CardItem from "../generic/card-item";
-import { Exhibition } from "../../generated/client";
-import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
-import Api from "../../api/api";
-import BasicLayout from "../generic/basic-layout";
+import DashboardNavigation from "./dashboard-navigation";
 import { KeycloakInstance } from "keycloak-js";
-import AddIcon from "@material-ui/icons/AddRounded";
 import { AccessToken } from "../../types";
+import Api from "../../api/api";
+import { Exhibition } from "../../generated/client";
+import ErrorDialog from "../generic/error-dialog";
 
 /**
- * Component props
+ * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  error?: string | Error;
+  clearError?: () => void;
   history: History;
+  children?: React.ReactNode;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  setSelectedExhibition: typeof setSelectedExhibition;
+  exhibitions?: Exhibition[];
+  setExhibitions: typeof setExhibitions;
 }
 
 /**
- * Component state
+ * Interface representing component state
  */
 interface State {
-  error?: Error;
   loading: boolean;
   creating: boolean;
   createDialogOpen: boolean;
   createDialogName: string;
-  exhibitions: Exhibition[];
 }
 
 /**
- * Component for exhibitions view
+ * Component for dashboard base layout
  */
-class ExhibitionsView extends React.Component<Props, State> {
+class DashboardLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -57,90 +57,58 @@ class ExhibitionsView extends React.Component<Props, State> {
       loading: false,
       creating: false,
       createDialogOpen: false,
-      createDialogName: "",
-      exhibitions: []
+      createDialogName: ""
     };
-  }
-
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = async () => {
-    this.setState({
-      loading: true
-    });
-
-    try {
-      const { accessToken } = this.props;
-      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-      const exhibitions: Exhibition[] = await exhibitionsApi.listExhibitions();
-
-      this.setState({
-        exhibitions: exhibitions
-      });
-    } catch (e) {
-      this.setState({
-        error: e
-      });
-    }
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
    * Component render method
    */
   public render() {
+    const { classes, history } = this.props;
+    const locationPath = history.location.pathname;
+
+    return (
+      <div className={ classes.root }>
+        <header className={ classes.header }>
+          {
+            this.renderHeader()
+          }
+        </header>
+        <div className={ classes.navigation }>
+          <div className={ classes.userElement }>
+              <div className={ classes.userAvatar }>TR</div>
+              <h3>Timo</h3>
+          </div>
+          <Divider variant="middle" color="#ddd" />
+          <div className={ classes.navigationContent }>
+            <DashboardNavigation locationPath={ locationPath } />
+          </div>
+        </div>
+        <div className={ classes.content }>
+          <Container >
+            { this.props.children }
+          </Container>
+        </div>
+        { this.renderCreateDialog() }
+        { this.renderErrorDialog() }
+      </div>
+    );
+  }
+
+  /**
+   * Render header
+   */
+  private renderHeader = () => {
     const { classes } = this.props;
 
-    const cards = this.state.exhibitions.map(exhibition => this.renderCard(exhibition));
-
     return (
-      <BasicLayout title="Alusta™" keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
-        <Container maxWidth="xl">
-          <Container maxWidth="md">
-            <Paper elevation={3} className={ classes.paper } >
-              <Typography className={ classes.title } variant="h2">{ strings.exhibitions.listTitle }</Typography>
-
-              <Grid container spacing={5} direction="row">
-              <Grid item>
-                <CardItem key="new"
-                  title={ strings.exhibitions.newExhibitionLabel }
-                  icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
-              </Grid>
-                {
-                  cards
-                }
-              </Grid>
-            </Paper>
-          </Container>
-        </Container>
-        { this.renderCreateDialog() }
-      </BasicLayout>
+      <Button className={ classes.newExhibitionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
     );
   }
 
   /**
-   * Card render method
-   */
-  private renderCard(exhibition: Exhibition) {
-    if (!exhibition || !exhibition.id) {
-      return;
-    }
-
-    const exhibitionId: string = exhibition.id;
-
-    return (
-      <Grid item>
-        <CardItem key={ exhibitionId } title={ exhibition.name } image={ defaultExhibitionImage } onClick={ () => this.openExhibition(exhibitionId) }/>
-      </Grid>
-    );
-  }
-
-  /**
-   * Renders create dialog
+   * Renders create exhibition dialog
    */
   private renderCreateDialog = () => {
     return (
@@ -170,6 +138,17 @@ class ExhibitionsView extends React.Component<Props, State> {
   }
 
   /**
+   * Renders error dialog
+   */
+  private renderErrorDialog = () => {
+    if (this.props.error && this.props.clearError) {
+      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />
+    }
+
+    return null;
+  }
+
+  /**
    * Creates new exhibition
    *
    * @param name exhibition name
@@ -187,24 +166,7 @@ class ExhibitionsView extends React.Component<Props, State> {
       }
     });
 
-    this.setState({
-      creating: false,
-      exhibitions: [ ...this.state.exhibitions, exhibition ]
-    });
-  }
-
-
-  /**
-   * Opens exhibition
-   *
-   * @param exhibitionId exhibition id
-   */
-  private openExhibition = async (exhibitionId: string) => {
-    const { accessToken } = this.props;
-    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-    const exhibition = await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId });
-    this.props.setSelectedExhibition(exhibition);
-    this.props.history.push(`/exhibitions/${exhibitionId}`);
+    this.props.setExhibitions([ ...this.props.exhibitions || [], exhibition ]);
   }
 
   /**
@@ -261,7 +223,8 @@ class ExhibitionsView extends React.Component<Props, State> {
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
+    accessToken: state.auth.accessToken as AccessToken,
+    exhibitions: state.exhibitions.exhibitions
   };
 }
 
@@ -272,8 +235,8 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
+    setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions))
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionsView));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DashboardLayout));

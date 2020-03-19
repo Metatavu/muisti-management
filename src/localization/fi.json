@@ -40,5 +40,82 @@
       "deleteConfirmCancel": "Peruuta"
     }
 
+  },
+
+  "dashboard": {
+
+    "newExhibitionButton": "Uusi näyttely",
+    "navigation": {
+      "overviewButton": "Työpöytä",
+      "recentButton": "Viimeisimmät",
+      "draftsButton": "Luonnokset",
+      "archivedButton": "Arkistoidut",
+      "settingsButton": "Asetukset",
+      "usersButton": "Käyttäjät",
+      "devicesButton": "Laitteet",
+      "layoutsButton": "Asettelut"
+    },
+    "overview": {
+      "onProduction": "Tuotannossa",
+      "lastModified": "Viimeksi muokattu",
+      "statistics": {
+        "title": "Tilastot",
+        "day": "Päivä",
+        "week": "Viikko",
+        "month": "Kuukausi",
+        "year": "Vuosi",
+        "visitors": "Kävijöitä",
+        "longTour": "Pitkä kierto",
+        "shortTour": "Lyhyt kierto"
+      }
+    },
+    "recent": {
+      "title": "Viimeisimmät",
+      "lastModified": "Viimeksi muokattu"
+    },
+    "drafts": {
+      "title": "Luonnokset"
+    },
+    "archived": {
+      "title": "Arkistoidut"
+    },
+    "settings": {
+      "title": "Asetukset"
+    },
+    "users": {
+      "title": "Käyttäjät"
+    },
+    "devices": {
+      "title": "Laitteet",
+      "dialog": {
+        "brand": "Merkki",
+        "model": "Malli",
+        "resolution": "Resoluutio",
+        "physicalSize": "Fyysinen koko",
+        "type": "Tyyppi",
+        "touchScreen": "Kosketusnyttö"
+      }
+    },
+    "layouts": {
+      "title": "Asettelut",
+      "lastModified": "Viimeksi muokattu"
+    }
+
+  },
+
+  "exhibition": {
+    "content": "Sisältö",
+    "tech": "Tekniikka"
+  },
+
+  "sorting": {
+
+    "exhibition": {
+      "recent": {
+        "byModifiedAt": "Viimeksi muokatut",
+        "byCreatedAt": "Viimeksi luotu"
+      }
+    }
+
   }
 }

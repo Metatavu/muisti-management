@@ -6,15 +6,27 @@ import { ReduxState, ReduxActions, rootReducer } from "../store";
 
 import { ThemeProvider } from "@material-ui/styles";
 import muistiTheme from "../styles/theme";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
-import ExhibitionsView from "./exhibitions/exhibitions-view";
+import strings from "../localization/strings";
 import AccessTokenRefresh from "./generic/access-token-refresh";
-import DashboardView from "./dashboard/dashboard-view";
-import ExhibitionView from "./exhibition/exhibition-view";
+import StoreInitializer from "./generic/store-initializer";
+import DashboardOverviewView from "./dashboard/dashboard-overview-view";
+import DashboardRecentView from "./dashboard/dashboard-recent-view";
+import DashboardDraftsView from "./dashboard/dashboard-drafts-view";
+import DashboardArchivedView from "./dashboard/dashboard-archived-view";
+import DashboardSettingsView from "./dashboard/dashboard-settings-view";
+import DashboardUsersView from "./dashboard/dashboard-users-view";
+import DashboardDevicesView from "./dashboard/dashboard-devices-view";
+import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
 import ExhibitionRoomView from "./exhibition/exhibition-room-view";
 import ExhibitionDeviceGroupView from "./exhibition/exhibition-device-group-view";
 import ExhibitionSettings from "./exhibition/exhibition-settings-view";
+import ExhibitionViewV3 from "./exhibition-v3/exhibition-view-v3";
+import LayoutEditorView from "./layout/layout-editor-view";
+import moment from "moment";
+import "moment/locale/fi";
+import "moment/locale/en-gb";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -41,6 +53,13 @@ const theme = responsiveFontSizes(muistiTheme);
 class App extends React.Component<Props, State> {
 
   /**
+   * Component did mount life cycle component
+   */
+  public componentDidMount = () => {
+    moment.locale(strings.getLanguage());
+  }
+
+  /**
    * Component render method
    */
   public render() {
@@ -49,52 +68,106 @@ class App extends React.Component<Props, State> {
         <CssBaseline />
         <Provider store={store}>
           <AccessTokenRefresh>
-            <BrowserRouter>
-              <div className="App">
-                <Route
-                  path="/dashboard"
-                  exact={true}
-                  render={ ({ history }) => (
-                    <DashboardView history={ history } />
-                  )}
-                />
-                <Route
-                  path="/"
-                  exact={true}
-                  render={ ({ history }) => (
-                    <ExhibitionsView history={ history } />
-                  )}
-                />
-                <Route
-                  path="/exhibitions/:exhibitionId"
-                  exact={true}
-                  render={ ({ match, history }) => (
-                    <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
-                  )}
-                />
-                <Route
-                  path="/exhibitions/:exhibitionId/room"
-                  exact={true}
-                  render={ ({ match, history }) => (
-                    <ExhibitionRoomView exhibitionId={ match.params.exhibitionId } history={ history } />
-                  )}
-                />
-                <Route
-                  path="/exhibitions/:exhibitionId/deviceGroup"
-                  exact={true}
-                  render={ ({ match, history }) => (
-                    <ExhibitionDeviceGroupView exhibitionId={ match.params.exhibitionId } history={ history } />
-                  )}
-                />
-                <Route
-                  path="/exhibitions/:exhibitionId/settings"
-                  exact={true}
-                  render={ ({ match, history }) => (
-                    <ExhibitionSettings exhibitionId={ match.params.exhibitionId } history={ history } />
-                  )}
-                />
-              </div>
-            </BrowserRouter>
+            <StoreInitializer>
+              <BrowserRouter>
+                <div className="App">
+                  <Switch>
+                    <Redirect exact from="/" to="/dashboard/overview" />
+                    <Route
+                      path="/dashboard/overview"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardOverviewView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/recent"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardRecentView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/drafts"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardDraftsView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/archived"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardArchivedView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/settings"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardSettingsView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/users"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardUsersView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/devices"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardDevicesView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/dashboard/layouts"
+                      exact={true}
+                      render={ ({ history }) => (
+                        <DashboardLayoutsView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId"
+                      exact={true}
+                      render={ ({ match, history }) => (
+                        <ExhibitionViewV3 exhibitionId={ match.params.exhibitionId } history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/room"
+                      exact={true}
+                      render={ ({ match, history }) => (
+                        <ExhibitionRoomView exhibitionId={ match.params.exhibitionId } history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/deviceGroup"
+                      exact={true}
+                      render={ ({ match, history }) => (
+                        <ExhibitionDeviceGroupView exhibitionId={ match.params.exhibitionId } history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/settings"
+                      exact={true}
+                      render={ ({ match, history }) => (
+                        <ExhibitionSettings exhibitionId={ match.params.exhibitionId } history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/layouts/:layoutId"
+                      exact={true}
+                      render={ ({ match, history }) => (
+                        <LayoutEditorView history={ history } layoutId={ match.params.layoutId } />
+                      )}
+                    />
+                  </Switch>
+                </div>
+              </BrowserRouter>
+            </StoreInitializer>
           </AccessTokenRefresh>
         </Provider>
       </ThemeProvider>
