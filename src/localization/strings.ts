@@ -1,10 +1,11 @@
 import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
-import { StringStream } from "codemirror";
 
 /**
  * Interface describing localized strings
  */
 export interface IStrings extends LocalizedStringsMethods {
+  comingSoon: string;
+
   exhibitions: {
     listTitle: string;
     newExhibitionLabel: string;
@@ -108,13 +109,57 @@ export interface IStrings extends LocalizedStringsMethods {
   exhibition: {
     content: string;
     tech: string;
+    newPage: string;
+    addPage: string;
+    onProduction: string;
+    properties: {
+      title: string;
+    };
+    resources: {
+      title: string;
+      imageView: {
+        properties: {
+          imageUrl: string;
+        };
+      };
+      textView: {
+        properties: {
+          text: string;
+        };
+      };
+    };
+  };
+
+  layout: {
+    title: string;
+    toolbar: {
+      visual: string;
+      code: string;
+      name: string;
+    };
+    settings: {
+      screenOrientation: string;
+      portrait: string;
+      landscape: string;
+    };
+    properties: {
+      title: string;
+    };
   };
 
   sorting: {
-    exhibition: {
+    dashboard: {
       recent: {
         byModifiedAt: string;
         byCreatedAt: string;
+      };
+    };
+  };
+
+  filtering: {
+    dashboard: {
+      devices: {
+        all: string;
       };
     };
   };

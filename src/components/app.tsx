@@ -19,9 +19,6 @@ import DashboardSettingsView from "./dashboard/dashboard-settings-view";
 import DashboardUsersView from "./dashboard/dashboard-users-view";
 import DashboardDevicesView from "./dashboard/dashboard-devices-view";
 import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
-import ExhibitionRoomView from "./exhibition/exhibition-room-view";
-import ExhibitionDeviceGroupView from "./exhibition/exhibition-device-group-view";
-import ExhibitionSettings from "./exhibition/exhibition-settings-view";
 import ExhibitionViewV3 from "./exhibition-v3/exhibition-view-v3";
 import LayoutEditorView from "./layout/layout-editor-view";
 import moment from "moment";
@@ -134,27 +131,6 @@ class App extends React.Component<Props, State> {
                       exact={true}
                       render={ ({ match, history }) => (
                         <ExhibitionViewV3 exhibitionId={ match.params.exhibitionId } history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/room"
-                      exact={true}
-                      render={ ({ match, history }) => (
-                        <ExhibitionRoomView exhibitionId={ match.params.exhibitionId } history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/deviceGroup"
-                      exact={true}
-                      render={ ({ match, history }) => (
-                        <ExhibitionDeviceGroupView exhibitionId={ match.params.exhibitionId } history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/settings"
-                      exact={true}
-                      render={ ({ match, history }) => (
-                        <ExhibitionSettings exhibitionId={ match.params.exhibitionId } history={ history } />
                       )}
                     />
                     <Route

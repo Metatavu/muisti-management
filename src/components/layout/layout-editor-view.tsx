@@ -9,18 +9,16 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, IconButton, TextField, Select, MenuItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, PageLayoutViewProperty, Exhibition, ExhibitionDeviceModel } from "../../generated/client";
-import BasicLayout from "../generic/basic-layout";
+// eslint-disable-next-line max-len
+import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, PageLayoutViewProperty, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
+import BasicLayoutV3 from "../generic/basic-layout-v3";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
 import { AccessToken } from '../../types';
-import classNames from "classnames";
-import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
-import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import strings from "../../localization/strings";
 import { v4 as uuidv4 } from "uuid";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -43,6 +41,7 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   exhibitions: Exhibition[];
   layouts: PageLayout[];
+  deviceModels: DeviceModel[];
   layout?: PageLayout;
   layoutId: string;
   setSelectedLayout: typeof setSelectedLayout;
@@ -57,15 +56,12 @@ interface State {
   loading: boolean;
   name: string;
   jsonCode: string;
+  screenOrientation: ScreenOrientation;
   xmlCode: string;
   toolbarOpen: boolean;
   deleteOpen: boolean;
   view: View;
-  deviceModels: ExhibitionDeviceModel[];
 }
-
-const minWidth = 320;
-const minimizedWidth = 50;
 
 /**
  * Component for exhibition view
@@ -82,19 +78,19 @@ export class LayoutEditorView extends React.Component<Props, State> {
     this.state = {
       loading: false,
       name: "",
-      jsonCode: "{}",
+      screenOrientation: ScreenOrientation.Portrait,
+      jsonCode: JSON.stringify({}, null, 2),
       xmlCode: "",
       toolbarOpen: true,
       deleteOpen: false,
-      view: "VISUAL",
-       deviceModels: []
+      view: "VISUAL"
     };
   }
 
   /**
    * Component did mount life-cycle handler
    */
-  public componentDidMount = async () => {
+  public async componentDidMount() {
     const { layout, layoutId, accessToken } = this.props;
 
     if (!layout || layoutId === layout.id) {
@@ -102,29 +98,22 @@ export class LayoutEditorView extends React.Component<Props, State> {
       this.props.setSelectedLayout(await layoutsApi.findPageLayout({ pageLayoutId: layoutId }));
     }
 
-    const exhibitionDeviceModelsApi = Api.getExhibitionDeviceModelsApi(accessToken);
-    const deviceModels = await exhibitionDeviceModelsApi.listExhibitionDeviceModels({ exhibitionId: this.props.exhibitions[0].id || "" });
-    this.setState({ deviceModels });
+    this.updateEditorData();
   }
 
   /**
    * Component did update life-cycle handler
    */
-  public componentDidUpdate = (prevProps: Props) => {
-    if (!prevProps || !this.props.layout || prevProps.layout) {
-      return;
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.layout !== this.props.layout) {
+      this.updateEditorData();
     }
-
-    this.setState({
-      name: this.props.layout.name,
-      jsonCode: JSON.stringify(this.props.layout.data, null, 2)
-    });
   }
 
   /**
    * Component render method
    */
-  public render = () => {
+  public render() {
     const { classes, layout } = this.props;
 
     if (!layout || !layout.id || this.state.loading ) {
@@ -134,55 +123,38 @@ export class LayoutEditorView extends React.Component<Props, State> {
     }
 
     return (
-      <BasicLayout
+      <BasicLayoutV3
         title={ layout.name }
-        onBackButtonClick={() => this.onBackButtonClick() }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>
 
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title="Asettelu" />
+          <ElementNavigationPane title={ strings.layout.title }>
+          </ElementNavigationPane>
           <EditorView>
-            { this.renderEditorView() }
+            { this.renderToolbar() }
+            { this.renderEditor() }
+            { this.renderDeleteDialog() }
           </EditorView>
-          <ElementSettingsPane title="Ominaisuudet" />
-        </div>
-
-      </BasicLayout>
-    );
-  }
-
-  /**
-   * Render editor view
-   */
-  public renderEditorView() {
-    const { classes } = this.props;
-
-    return (
-      <div className={ classes.root }>
-        <div className={ classes.panel } style={{ width: this.state.toolbarOpen ? minWidth : minimizedWidth }}>
-          <div className={ classes.btnContainer }>
-            <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
-              { this.state.toolbarOpen ? <CloseIcon /> : <OpenIcon /> }
-            </IconButton>
-          </div>
-          <div className={ classNames( classes.container, this.state.toolbarOpen ? "" : "closed" ) }>
-            <div className={ classes.header }>
-              <h3>Layout</h3>
-            </div>
+          <ElementSettingsPane title={ strings.layout.properties.title }>
             <div className={ classes.toolbarContent }>
-              <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+              <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
+              <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
+              <Select
+                labelId="screenOrientation"
+                value={ this.state.screenOrientation }
+                onChange={ this.onScreenOrientationChange }
+              >
+                <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
+                <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
+              </Select>
             </div>
-          </div>
+          </ElementSettingsPane>
         </div>
-        <div className={ classes.content }>
-          { this.renderToolbar() }
-          { this.renderEditor() }
-        </div>
-        { this.renderDeleteDialog() }
-      </div>
+
+      </BasicLayoutV3>
     );
   }
 
@@ -194,10 +166,9 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.toolBar }>
-        <Select value={ this.state.view } onChange={ this.onViewChange }>
-          <MenuItem value={ "CODE" }> Code </MenuItem>
-          <MenuItem value={ "VISUAL" }> Visual </MenuItem>
-        </Select>
+        <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+          { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
+        </Button>
         <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
           { strings.exhibitionLayouts.editView.deleteButton }
         </Button>
@@ -268,18 +239,18 @@ export class LayoutEditorView extends React.Component<Props, State> {
    * Renders a visual editor view
    */
   private renderVisualEditor = () => {
-    const { classes } = this.props;
-    const { deviceModels } = this.state;
+    const { classes, deviceModels } = this.props;
     if (deviceModels.length === 0) {
       return;
     }
+
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModels[0]);
     const scale = 0.3;
 
     return (
-      <div className={ classes.editors}>
+      <div className={ classes.editors }>
         <PagePreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
@@ -304,6 +275,19 @@ export class LayoutEditorView extends React.Component<Props, State> {
         </DialogActions>
       </Dialog>
     );
+  }
+
+  private updateEditorData = () => {
+    const { layout } = this.props;
+    if (!layout) {
+      return;
+    }
+
+    this.setState({
+      name: layout.name,
+      jsonCode: JSON.stringify(layout.data, null, 2),
+      screenOrientation: layout.screenOrientation
+    });
   }
 
   /**
@@ -372,17 +356,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for view change
-   *
-   * @param event event
-   */
-  private onViewChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
-    this.setState({
-      view: event.target.value as View
-    });
-  }
-
-  /**
    * Event handler for delete dialog delete button click event
    */
   private onDeleteDialogDeleteButtonClick = () => {
@@ -412,15 +385,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Handle toggle panel
-   */
-  private onToggleClick = () => {
-    this.setState({
-      toolbarOpen: !this.state.toolbarOpen
-    });
-  }
-
-  /**
    * Event handler for import click event
    */
   private onImportClick = () => {
@@ -444,6 +408,12 @@ export class LayoutEditorView extends React.Component<Props, State> {
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       name: event.target.value
+    });
+  }
+
+  private onScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+    this.setState({
+      screenOrientation: e.target.value as ScreenOrientation
     });
   }
 
@@ -497,7 +467,8 @@ export class LayoutEditorView extends React.Component<Props, State> {
     const layout = {
       ...this.props.layout,
       name: this.state.name,
-      data: JSON.parse(this.state.jsonCode)
+      data: JSON.parse(this.state.jsonCode),
+      screenOrientation: this.state.screenOrientation
     };
 
     this.onLayoutSave(layout);
@@ -558,10 +529,12 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Handle back
+   * Event listener for switch view button click
    */
-  private onBackButtonClick = () => {
-    this.props.history.push(`/`);
+  private onSwitchViewClick = () => {
+    this.setState({
+      view: this.state.view === "CODE" ? "VISUAL" : "CODE"
+    });
   }
 
   /**
@@ -583,7 +556,8 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     layout: state.layouts.selectedLayout as PageLayout,
     layouts: state.layouts.layouts,
-    exhibitions: state.exhibitions.exhibitions
+    exhibitions: state.exhibitions.exhibitions,
+    deviceModels: state.devices.deviceModels
   };
 }
 

@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, IconButton, Typography, Breadcrumbs } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
 import MenuIcon from "@material-ui/icons/MenuSharp";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
+import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -55,9 +56,13 @@ class BasicLayoutV3 extends React.Component<Props, State> {
               <MenuIcon />
             </IconButton>
           }
-          <Typography variant="h6" className={ classes.title }>
-            { this.props.title }
-          </Typography>
+          <Breadcrumbs>
+            <Typography variant="h6">{ strings.exhibition.onProduction }</Typography>
+            <Typography variant="h6" className={ classes.title }>
+              { this.props.title }
+            </Typography>
+          </Breadcrumbs>
+
           <IconButton size="small" className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
             <SignOutIcon />
           </IconButton>

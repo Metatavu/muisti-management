@@ -35,6 +35,12 @@ export const SET_DEVICE_GROUPS = "SET_DEVICE_GROUPS";
 export type SET_DEVICE_GROUPS = typeof SET_DEVICE_GROUPS;
 
 /**
+ * Set device models action
+ */
+export const SET_DEVICE_MODELS = "SET_DEVICE_MODELS";
+export type SET_DEVICE_MODELS = typeof SET_DEVICE_MODELS;
+
+/**
  * Set layouts action
  */
 export const SET_LAYOUTS = "SET_LAYOUTS";

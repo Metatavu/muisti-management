@@ -1,4 +1,5 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
 
@@ -26,7 +27,7 @@ export default createStyles({
 
   },
   title: {
-
+    color: theme.palette.text.primary
   },
   menuBtn: {
     position: "absolute",

@@ -87,7 +87,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
     const { classes, history } = this.props;
 
     const filterOptions = [
-      { name: "Kaikki", value: "all" }
+      { name: strings.filtering.dashboard.devices.all , value: "ALL" }
     ];
 
     const devices = this.state.devices && this.state.devices.map(device => this.renderDeviceListItem(device));
@@ -115,7 +115,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
               </Typography>
             </Grid>
             <Grid item key="list-functions">
-              <Select id="select-filtering" defaultValue="all">
+              <Select id="select-filtering" defaultValue="ALL">
                 { filterOptions.map(option =>
                   <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
                 )}

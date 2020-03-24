@@ -68,8 +68,8 @@ class DashboardRecentView extends React.Component<Props, State> {
     const { recentSortBy } = this.state;
 
     const sortOptions: ExhibitionRecentSortOption[] = [
-      { name: strings.sorting.exhibition.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
-      { name: strings.sorting.exhibition.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
+      { name: strings.sorting.dashboard.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
+      { name: strings.sorting.dashboard.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
     ];
 
     const exhibitions = this.props.exhibitions.length > 0 && this.sortExhibitions(this.props.exhibitions)
@@ -152,7 +152,7 @@ class DashboardRecentView extends React.Component<Props, State> {
             return 0;
           }
 
-          return moment(b.modifiedAt).unix() - moment(a.modifiedAt).unix();
+          return moment(a.modifiedAt).isAfter(b.modifiedAt) ? 1 : -1;
         });
       }
       case ExhibitionRecentSortBy.CREATED_AT: {
@@ -161,7 +161,7 @@ class DashboardRecentView extends React.Component<Props, State> {
             return 0;
           }
 
-          return moment(b.createdAt).unix() - moment(a.createdAt).unix();
+          return moment(a.createdAt).isAfter(b.createdAt) ? 1 : -1;
         });
       }
       default:

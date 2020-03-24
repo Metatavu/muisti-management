@@ -90,8 +90,8 @@ class DashboardDraftsView extends React.Component<Props, State> {
     const { classes, history } = this.props;
 
     const sortOptions: ExhibitionRecentSortOption[] = [
-      { name: strings.sorting.exhibition.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
-      { name: strings.sorting.exhibition.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
+      { name: strings.sorting.dashboard.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
+      { name: strings.sorting.dashboard.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
     ];
 
     const exhibitions = this.state.exhibitions && this.state.exhibitions.map(exhibition =>

@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, ExhibitionDeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -48,8 +48,8 @@ export default class Api {
    *
    * @param token access token
    */
-  public static getExhibitionDeviceModelsApi(accessToken: AccessToken) {
-    return new ExhibitionDeviceModelsApi(Api.getConfiguration(accessToken));
+  public static getDeviceModelsApi(accessToken: AccessToken) {
+    return new DeviceModelsApi(Api.getConfiguration(accessToken));
   }
 
   /**

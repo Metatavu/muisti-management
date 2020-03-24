@@ -3,7 +3,7 @@ import { WithStyles, withStyles, Select, MenuItem } from "@material-ui/core";
 import { Button, TextField, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import styles from "../../styles/settings-layout-editor";
 import { parse as parseXML } from "fast-xml-parser"
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, ExhibitionDeviceModel } from "../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, DeviceModel } from "../../generated/client";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +27,7 @@ type View = "CODE" | "VISUAL";
  */
 interface Props extends WithStyles<typeof styles> {
   layout: PageLayout;
-  deviceModels: ExhibitionDeviceModel[];
+  deviceModels: DeviceModel[];
   onSave: (layout: PageLayout) => void;
   onDelete: (layout: PageLayout) => void;
 }
@@ -54,7 +54,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -132,10 +132,10 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
           { strings.exhibitionLayouts.editView.deleteButton }
         </Button>
         <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
-          { strings.exhibitionLayouts.editView.importButton } 
+          { strings.exhibitionLayouts.editView.importButton }
         </Button>
-        <Button variant="contained" color="primary" onClick={ this.onSaveClick }> 
-          { strings.exhibitionLayouts.editView.saveButton } 
+        <Button variant="contained" color="primary" onClick={ this.onSaveClick }>
+          { strings.exhibitionLayouts.editView.saveButton }
         </Button>
       </div>
     );
@@ -178,16 +178,16 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-          <CodeMirror className={ classes.editor } 
-            value={ this.state.jsonCode } 
-            options={ jsonEditorOptions } 
+          <CodeMirror className={ classes.editor }
+            value={ this.state.jsonCode }
+            options={ jsonEditorOptions }
             onBeforeChange={ this.onBeforeJsonCodeChange } />
         </div>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
-          <CodeMirror className={ classes.editor } 
-            value={ this.state.xmlCode } 
-            options={ xmlEditorOptions } 
+          <CodeMirror className={ classes.editor }
+            value={ this.state.xmlCode }
+            options={ xmlEditorOptions }
             onBeforeChange={ this.onBeforeXmlCodeChange } />
         </div>
       </div>
@@ -234,7 +234,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Converts widget XML into page layout view
-   * 
+   *
    * @param widgetXmls array XML blocks
    * @param widget widget name
    */
@@ -244,19 +244,19 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
       const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
       const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
-  
+
       const properties: PageLayoutViewProperty[] = attributeNames.map(attributeName => {
         const value = attributes[attributeName] as string;
-  
+
         return {
           name: attributeName.substring(8),
           value: value,
           type: this.guessPropertyType(value)
         };
       });
-  
+
       let children: PageLayoutView[] = [];
-      
+
       childWidgetNames.forEach(childWidgetName => {
         children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
       });
@@ -272,7 +272,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Attempts to guess property type from given value. Method falls back to string
-   * 
+   *
    * @param value value
    * @return type
    */
@@ -290,7 +290,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Returns whether string contains valid number
-   * 
+   *
    * @return whether string contains valid number
    */
   private isNumber = (value: string): boolean => {
@@ -299,7 +299,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for view change
-   * 
+   *
    * @param event event
    */
   private onViewChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
@@ -307,7 +307,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
       view: event.target.value as View
     });
   }
-  
+
   /**
    * Event handler for delete dialog delete button click event
    */
@@ -360,7 +360,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for name input change
-   * 
+   *
    * @param event event
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -371,7 +371,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for before JSON code change event
-   * 
+   *
    * @param editor editor instance
    * @param data editor data
    * @param value code
@@ -384,7 +384,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for before XML code change event
-   * 
+   *
    * @param editor editor instance
    * @param data editor data
    * @param value code
@@ -423,7 +423,7 @@ class ExhibitionSettingsLayoutEditView extends React.Component<Props, State> {
     };
 
     this.props.onSave(layout);
-  } 
+  }
 
 }
 

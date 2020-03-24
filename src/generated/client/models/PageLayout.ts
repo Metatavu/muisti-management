@@ -18,6 +18,10 @@ import {
     PageLayoutViewFromJSON,
     PageLayoutViewFromJSONTyped,
     PageLayoutViewToJSON,
+    ScreenOrientation,
+    ScreenOrientationFromJSON,
+    ScreenOrientationFromJSONTyped,
+    ScreenOrientationToJSON,
 } from './';
 
 /**
@@ -50,6 +54,12 @@ export interface PageLayout {
      * @memberof PageLayout
      */
     thumbnailUrl?: string;
+    /**
+     * 
+     * @type {ScreenOrientation}
+     * @memberof PageLayout
+     */
+    screenOrientation: ScreenOrientation;
     /**
      * 
      * @type {string}
@@ -90,6 +100,7 @@ export function PageLayoutFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'name': json['name'],
         'data': PageLayoutViewFromJSON(json['data']),
         'thumbnailUrl': !exists(json, 'thumbnailUrl') ? undefined : json['thumbnailUrl'],
+        'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -109,6 +120,7 @@ export function PageLayoutToJSON(value?: PageLayout | null): any {
         'name': value.name,
         'data': PageLayoutViewToJSON(value.data),
         'thumbnailUrl': value.thumbnailUrl,
+        'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
     };
 }
 

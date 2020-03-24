@@ -90,8 +90,8 @@ class DashboardArchivedView extends React.Component<Props, State> {
     const { classes, history } = this.props;
 
     const sortOptions: ExhibitionRecentSortOption[] = [
-      { name: strings.sorting.exhibition.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
-      { name: strings.sorting.exhibition.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
+      { name: strings.sorting.dashboard.recent.byModifiedAt, value: ExhibitionRecentSortBy.MODIFIED_AT },
+      { name: strings.sorting.dashboard.recent.byCreatedAt, value: ExhibitionRecentSortBy.CREATED_AT }
     ];
 
     const exhibitions = this.state.exhibitions && this.state.exhibitions.map(exhibition =>
@@ -115,7 +115,7 @@ class DashboardArchivedView extends React.Component<Props, State> {
             <Grid item key="list-functions">
               <Select
                 id="select-sorting"
-                defaultValue=""
+                defaultValue={ ExhibitionRecentSortBy.MODIFIED_AT }
               >
                 { sortOptions.map(option =>
                   <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>

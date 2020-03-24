@@ -5,12 +5,12 @@ import { ReduxState, ReduxActions } from "../../store";
 import { Dispatch } from "redux";
 import { setExhibitions } from "../../actions/exhibitions";
 import { setLayouts } from "../../actions/layouts";
-import { setDevices } from "../../actions/devices";
+import { setDeviceModels } from "../../actions/devices";
 
 import { AccessToken } from "../../types"
 import ErrorDialog from "./error-dialog";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, ExhibitionDevice } from "../../generated/client";
+import { Exhibition, PageLayout, DeviceModel } from "../../generated/client";
 import Api from "../../api/api";
 
 
@@ -22,9 +22,10 @@ interface Props {
   accessToken: AccessToken;
   exhibitions?: Exhibition[];
   layouts?: PageLayout[];
+  deviceModels: DeviceModel[];
   setExhibitions: typeof setExhibitions;
   setLayouts: typeof setLayouts;
-  setDevices: typeof setDevices;
+  setDeviceModels: typeof setDeviceModels;
 };
 
 /**
@@ -57,14 +58,17 @@ class StoreInitializer extends React.Component<Props, State> {
       const { accessToken } = this.props;
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       const layoutsApi = Api.getPageLayoutsApi(accessToken);
+      const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
-      const [ exhibitions, layouts ] = await Promise.all([
+      const [ exhibitions, layouts, deviceModels ] = await Promise.all([
         exhibitionsApi.listExhibitions(),
-        layoutsApi.listPageLayouts()
+        layoutsApi.listPageLayouts(),
+        deviceModelsApi.listDeviceModels()
       ]);
 
       this.props.setExhibitions(exhibitions);
       this.props.setLayouts(layouts);
+      this.props.setDeviceModels(deviceModels);
     } catch (e) {
       this.setState({
         error: e
@@ -80,7 +84,12 @@ class StoreInitializer extends React.Component<Props, State> {
       return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
     }
 
-    return this.props.exhibitions && this.props.layouts ? this.props.children : null;
+    return (
+      this.props.exhibitions &&
+      this.props.layouts &&
+      this.props.deviceModels ?
+      this.props.children : null
+    );
   }
 }
 
@@ -94,7 +103,8 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     keycloak: state.auth.keycloak as KeycloakInstance,
     exhibitions: state.exhibitions.exhibitions,
-    layouts: state.layouts.layouts
+    layouts: state.layouts.layouts,
+    deviceModels: state.devices.deviceModels
   };
 }
 
@@ -107,7 +117,7 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions)),
     setLayouts: (layouts: PageLayout[]) => dispatch(setLayouts(layouts)),
-    setDevices: (devices: ExhibitionDevice[]) => dispatch(setDevices(devices))
+    setDeviceModels: (deviceModels: DeviceModel[]) => dispatch(setDeviceModels(deviceModels))
   };
 }
 

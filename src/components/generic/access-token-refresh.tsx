@@ -34,20 +34,20 @@ class AccessTokenRefresh extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props props
    */
   constructor(props: Props) {
     super(props);
-    
+
     this.keycloak = Keycloak({
       url: process.env.REACT_APP_KEYCLOAK_URL,
       realm: process.env.REACT_APP_KEYCLOAK_REALM || "",
       clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || ""
     });
 
-    this.state = { 
-      
+    this.state = {
+
     };
   }
 
@@ -63,9 +63,10 @@ class AccessTokenRefresh extends React.Component<Props, State> {
       const { token, tokenParsed } = this.keycloak;
 
       if (this.keycloak && tokenParsed && tokenParsed.sub && token) {
+        this.keycloak.loadUserProfile();
         this.props.onLogin(this.keycloak);
       }
-      
+
       this.refreshAccessToken();
 
       this.timer = setInterval(() => {
@@ -88,7 +89,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    */
   public render() {
     if (this.state.error) {
-      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } /> 
+      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
     }
 
     return this.props.accessToken ? this.props.children : null;
@@ -126,7 +127,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
 
 /**
  * Redux mapper for mapping store state to component props
- * 
+ *
  * @param state store state
  */
 function mapStateToProps(state: ReduxState) {
@@ -136,8 +137,8 @@ function mapStateToProps(state: ReduxState) {
 }
 
 /**
- * Redux mapper for mapping component dispatches 
- * 
+ * Redux mapper for mapping component dispatches
+ *
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {

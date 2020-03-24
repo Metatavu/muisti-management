@@ -65,8 +65,13 @@ class DashboardLayout extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history } = this.props;
+    const { classes, history, keycloak } = this.props;
     const locationPath = history.location.pathname;
+
+    const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
+    const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
+    const initials = `${ firstName.charAt(0).toUpperCase() }${ lastName.charAt(0).toUpperCase() }`;
+    const fullName = `${ firstName } ${ lastName }`;
 
     return (
       <div className={ classes.root }>
@@ -77,8 +82,8 @@ class DashboardLayout extends React.Component<Props, State> {
         </header>
         <div className={ classes.navigation }>
           <div className={ classes.userElement }>
-              <div className={ classes.userAvatar }>TR</div>
-              <h3>Timo</h3>
+              <div className={ classes.userAvatar }>{ initials }</div>
+          <h3>{ fullName }</h3>
           </div>
           <Divider variant="middle" color="#ddd" />
           <div className={ classes.navigationContent }>

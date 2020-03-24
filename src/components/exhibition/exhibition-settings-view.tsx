@@ -8,9 +8,9 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Typography, Button} from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Typography, Button } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, ExhibitionPage, ExhibitionDeviceModel } from "../../generated/client";
+import { Exhibition, PageLayout, ExhibitionPage, DeviceModel, ScreenOrientation } from "../../generated/client";
 import BasicLayout from "../generic/basic-layout";
 import ViewSelectionBar from "../editor-panes/view-selection-bar";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -45,7 +45,7 @@ interface State {
   error?: Error;
   loading: boolean;
   layouts: PageLayout[];
-  deviceModels: ExhibitionDeviceModel[];
+  deviceModels: DeviceModel[];
   pages: ExhibitionPage[];
   editLayout?: PageLayout;
   editPage?: ExhibitionPage;
@@ -89,12 +89,10 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
 
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
-      const exhibitionDeviceModelsApi = Api.getExhibitionDeviceModelsApi(accessToken);
+      const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
       const [ deviceModels, layouts, pages ] = await Promise.all([
-        exhibitionDeviceModelsApi.listExhibitionDeviceModels({
-          exhibitionId: exhibitionId
-        }),
+        deviceModelsApi.listDeviceModels(),
         pageLayoutsApi.listPageLayouts(),
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId: exhibitionId
@@ -321,7 +319,8 @@ export class ExhibitionSettingsView extends React.Component<Props, State> {
             children: [],
             properties: [],
             widget: "LinearLayout"
-          }
+          },
+          screenOrientation: ScreenOrientation.Portrait
         }
       });
 
