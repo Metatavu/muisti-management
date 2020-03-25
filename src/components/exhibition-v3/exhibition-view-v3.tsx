@@ -314,7 +314,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
   }
 
   /**
-   * Remders resources tree
+   * Renders resources tree
    */
   private renderResourcesTree = () => {
     const parsedCode = this.parseJsonCode();
@@ -432,7 +432,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
   }
 
   /**
-   * Parsers JSON code from the editor
+   * Parses JSON code from the editor
    *
    * @param errorHandler error handler for the parsing errors
    * @returns parsed JSON code from the editor
