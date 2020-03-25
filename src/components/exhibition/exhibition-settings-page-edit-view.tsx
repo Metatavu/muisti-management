@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { WithStyles, withStyles, Button, TextField, Typography, IconButton, Select, MenuItem } from "@material-ui/core";
 import styles from "../../styles/settings-page-editor";
-import { ExhibitionPageEventActionType, ExhibitionPageResourceType, ExhibitionDeviceModel, PageLayoutView } from "../../generated/client";
+import { ExhibitionPageEventActionType, ExhibitionPageResourceType, DeviceModel, PageLayoutView } from "../../generated/client";
 import { ExhibitionPageEventPropertyType } from "../../generated/client";
 import { ExhibitionPageResourceFromJSON, ExhibitionPageEventTriggerFromJSON } from "../../generated/client";
 import { PageLayout, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource } from "../../generated/client";
@@ -38,7 +38,7 @@ interface JsonLintParseErrorHash {
     "first_line": number;
     "first_column": number;
     "last_line": number;
-    "last_column": number; 
+    "last_column": number;
   };
 }
 
@@ -47,7 +47,7 @@ interface JsonLintParseErrorHash {
  */
 interface Props extends WithStyles<typeof styles> {
   layouts: PageLayout[];
-  deviceModels: ExhibitionDeviceModel[];
+  deviceModels: DeviceModel[];
   page: ExhibitionPage;
   onSave: (page: ExhibitionPage) => void;
 }
@@ -75,7 +75,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -111,7 +111,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   private renderEditorView = () => {
     const { classes } = this.props;
-    
+
     return (
       <div className={ classes.root }>
         <div className={ classes.panel } style={{ width: this.state.toolbarOpen ? minWidth : minimizedWidth }}>
@@ -140,8 +140,8 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
         </div>
         <div className={ classes.content }>
           <div className={ classes.toolBar }>
-            <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}> 
-              { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton } 
+            <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+              { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
             </Button>
             <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
           </div>
@@ -180,7 +180,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
     const scale = 0.3;
-    
+
     return (
       <div className={ classes.visualEditorContainer }>
         <PagePreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
@@ -204,14 +204,14 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
         'CodeMirror-lint-markers',
       ]
     };
-    
+
     return (
       <div className={ classes.codeEditorContainer }>
         <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-        <CodeMirror 
-          className={ classes.editor } 
-          value={ this.state.jsonCode } 
-          options={ jsonEditorOptions } 
+        <CodeMirror
+          className={ classes.editor }
+          value={ this.state.jsonCode }
+          options={ jsonEditorOptions }
           onBeforeChange={ this.onBeforeJsonCodeChange } />
       </div>
     );
@@ -239,7 +239,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   private renderResourcesTree = () => {
     const parsedCode = this.parseJsonCode();
-    
+
     const items = (parsedCode.resources || []).map((resource, index) => {
       const label = slugify(`${resource.id}`);
       return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => this.onResourceNodeClick(resource) } />;
@@ -258,7 +258,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
    */
   private renderEventTriggersTree = () => {
     const parsedCode = this.parseJsonCode();
-    
+
     const items = (parsedCode.eventTriggers || []).map((eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = `Event ${index + 1}`;
       return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => this.onEventTriggerNodeClick(eventTrigger) }/>;
@@ -298,19 +298,19 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     if ("ImageView" === widget) {
       return (
-        <TextField 
+        <TextField
           type="url"
           className={ classes.textResourceEditor } 
-          label={ this.state.selectedResource?.id } variant="outlined" 
+          label={ this.state.selectedResource?.id } variant="outlined"
           value={ this.state.selectedResource?.data }
           onChange={ this.onResourceDataChange }/>
       );
     } else if ("TextView" === widget) {
       return (
-        <TextField 
+        <TextField
           multiline
           className={ classes.textResourceEditor } 
-          label={ this.state.selectedResource?.id } variant="outlined" 
+          label={ this.state.selectedResource?.id } variant="outlined"
           value={ this.state.selectedResource?.data }
           onChange={ this.onResourceDataChange }/>
       )
@@ -321,7 +321,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Code mirror lint method
-   * 
+   *
    * @param content editor content
    * @param _options options
    * @param _codeMirror editor instance
@@ -340,8 +340,8 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       });
     };
 
-    try { 
-      parser.parse(content); 
+    try {
+      parser.parse(content);
       // eslint-disable-next-line no-empty
     } catch (e) {
 
@@ -354,7 +354,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
           to: codemirror.Pos(0, 0),
           message: message
         });
-      });      
+      });
     }
 
     return found;
@@ -362,7 +362,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Parsers JSON code from the editor
-   * 
+   *
    * @param errorHandler error handler for the parsing errors
    * @returns parsed JSON code from the editor
    */
@@ -386,14 +386,14 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       if (errorHandler) {
         errorHandler(e.message, e);
       }
-    } 
+    }
 
     return result;
   }
 
   /**
    * Validates parsed page
-   * 
+   *
    * @param parsedPage parsed page
    * @param errorHandler parser error handler
    */
@@ -401,7 +401,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     if (!parsedPage.resources) {
       return errorHandler("Invalid resources");
     }
-    
+
     if (!parsedPage.eventTriggers) {
       return errorHandler("Invalid event triggers");
     }
@@ -424,7 +424,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     for (let i = 0; i < parsedPage.eventTriggers.length; i++) {
       const events = parsedPage.eventTriggers[i].events || [];
-      
+
       for (let j = 0; j < events.length; j++) {
         const eventAction = events[j].action;
 
@@ -442,7 +442,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Serializes the page into JSON code
-   * 
+   *
    * @returns JSON
    */
   private toJsonCode = (page: Partial<ExhibitionPage>): string => {
@@ -456,7 +456,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Returns unique id
-   * 
+   *
    * @param idPrefix id prefix
    * @param existingIds existing ids
    * @return unique id
@@ -467,15 +467,15 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
     while (existingIds.includes(id)) {
       index++;
-      id = `${idPrefix}-${index}`; 
+      id = `${idPrefix}-${index}`;
     }
 
     return id;
   }
-  
+
   /**
    * Attempts to find a layout view widget for given resource
-   * 
+   *
    * @param resourceId resource id
    * @returns view widget or null if not found
    */
@@ -486,7 +486,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Attempts to find a layout view for given resource
-   * 
+   *
    * @param resourceId resource id
    * @returns view or null if not found
    */
@@ -507,7 +507,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Attempts to find a child view with given property value
-   * 
+   *
    * @param view root view
    * @param propertyValue property value
    * @returns view or null if not found
@@ -524,7 +524,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
         return result;
       }
     }
-    
+
     return null;
   }
 
@@ -535,7 +535,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
     const parsedCode = this.parseJsonCode();
     parsedCode.resources = (parsedCode.resources || []);
     const ids = parsedCode.resources.map(resource => resource.id);
-    
+
     parsedCode.resources.push({
       "id": this.getUniqueId("new", ids),
       "data": "https://example.com",
@@ -553,7 +553,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
   private onAddEventTriggerClick = () => {
     const parsedCode = this.parseJsonCode();
     parsedCode.eventTriggers = (parsedCode.eventTriggers || []);
-    
+
     parsedCode.eventTriggers.push({
       clickViewId: "",
       delay: 0,
@@ -577,7 +577,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for resource node click
-   * 
+   *
    * @param resource selected node
    */
   private onResourceNodeClick = (resource: ExhibitionPageResource) => {
@@ -589,7 +589,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for event trigger node click
-   * 
+   *
    * @param eventTrigger selected node
    */
   private onEventTriggerNodeClick = (eventTrigger: ExhibitionPageEventTrigger) => {
@@ -610,7 +610,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for name input change
-   * 
+   *
    * @param event event
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -634,7 +634,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for name input change
-   * 
+   *
    * @param event event
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -645,7 +645,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for layout change
-   * 
+   *
    * @param event event
    */
   private onLayoutChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
@@ -656,7 +656,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
 
   /**
    * Event handler for before JSON code change event
-   * 
+   *
    * @param _editor editor instance
    * @param _data editor data
    * @param value code
@@ -689,7 +689,7 @@ class ExhibitionSettingsPageEditView extends React.Component<Props, State> {
       eventTriggers: parsedCode.eventTriggers || [],
       resources: parsedCode.resources || []
     });
-  } 
+  }
 
 }
 

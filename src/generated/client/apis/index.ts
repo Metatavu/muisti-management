@@ -1,5 +1,5 @@
+export * from './DeviceModelsApi';
 export * from './ExhibitionDeviceGroupsApi';
-export * from './ExhibitionDeviceModelsApi';
 export * from './ExhibitionDevicesApi';
 export * from './ExhibitionPagesApi';
 export * from './ExhibitionRoomsApi';

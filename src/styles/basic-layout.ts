@@ -22,9 +22,13 @@ export default createStyles({
   title: {
 
   },
-  backBtn: {
+  menuBtn: {
     position: "absolute",
     left: 12
+  },
+  backBtn: {
+    position: "absolute",
+    left: 52
   },
   logoutBtn: {
     position: "absolute",

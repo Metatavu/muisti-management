@@ -18,6 +18,10 @@ import {
     PointFromJSON,
     PointFromJSONTyped,
     PointToJSON,
+    ScreenOrientation,
+    ScreenOrientationFromJSON,
+    ScreenOrientationFromJSONTyped,
+    ScreenOrientationToJSON,
 } from './';
 
 /**
@@ -64,6 +68,12 @@ export interface ExhibitionDevice {
     location?: Point;
     /**
      * 
+     * @type {ScreenOrientation}
+     * @memberof ExhibitionDevice
+     */
+    screenOrientation: ScreenOrientation;
+    /**
+     * 
      * @type {string}
      * @memberof ExhibitionDevice
      */
@@ -104,6 +114,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         'modelId': json['modelId'],
         'name': json['name'],
         'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
+        'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -124,6 +135,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
         'modelId': value.modelId,
         'name': value.name,
         'location': PointToJSON(value.location),
+        'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
     };
 }
 

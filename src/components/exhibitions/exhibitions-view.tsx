@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxState, ReduxActions } from "../../store";
-import { setExhibition } from "../../actions/exhibition";
+import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/exhibitions-view";
@@ -26,7 +26,7 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  setExhibition: typeof setExhibition;
+  setSelectedExhibition: typeof setSelectedExhibition;
 }
 
 /**
@@ -106,8 +106,8 @@ class ExhibitionsView extends React.Component<Props, State> {
 
               <Grid container spacing={5} direction="row">
               <Grid item>
-                <CardItem key="new" 
-                  title={ strings.exhibitions.newExhibitionLabel } 
+                <CardItem key="new"
+                  title={ strings.exhibitions.newExhibitionLabel }
                   icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
               </Grid>
                 {
@@ -138,7 +138,7 @@ class ExhibitionsView extends React.Component<Props, State> {
       </Grid>
     );
   }
-  
+
   /**
    * Renders create dialog
    */
@@ -150,11 +150,11 @@ class ExhibitionsView extends React.Component<Props, State> {
           <DialogContentText>
             { strings.exhibitions.createExhibitionDialog.helpText }
           </DialogContentText>
-          <TextField value={ this.state.createDialogName } 
-            onChange={event => this.setState({ createDialogName: event.target.value }) } 
-            autoFocus 
-            margin="dense" 
-            id="name" 
+          <TextField value={ this.state.createDialogName }
+            onChange={event => this.setState({ createDialogName: event.target.value }) }
+            autoFocus
+            margin="dense"
+            id="name"
             label={ strings.exhibitions.createExhibitionDialog.nameLabel } type="text" fullWidth />
         </DialogContent>
         <DialogActions>
@@ -171,7 +171,7 @@ class ExhibitionsView extends React.Component<Props, State> {
 
   /**
    * Creates new exhibition
-   * 
+   *
    * @param name exhibition name
    */
   private createExhibition = async (name: string) => {
@@ -180,7 +180,7 @@ class ExhibitionsView extends React.Component<Props, State> {
     });
 
     const exhibitionsApi = Api.getExhibitionsApi(this.props.accessToken);
-    
+
     const exhibition = await exhibitionsApi.createExhibition({
       exhibition: {
         name: name
@@ -196,14 +196,14 @@ class ExhibitionsView extends React.Component<Props, State> {
 
   /**
    * Opens exhibition
-   * 
+   *
    * @param exhibitionId exhibition id
    */
   private openExhibition = async (exhibitionId: string) => {
     const { accessToken } = this.props;
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibition = await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId });
-    this.props.setExhibition(exhibition);
+    this.props.setSelectedExhibition(exhibition);
     this.props.history.push(`/exhibitions/${exhibitionId}`);
   }
 
@@ -231,22 +231,22 @@ class ExhibitionsView extends React.Component<Props, State> {
   private onDialogCreateButtonClick = async () => {
     await this.createExhibition(this.state.createDialogName);
 
-    this.setState({ 
-      createDialogName: "" 
+    this.setState({
+      createDialogName: ""
     });
 
     this.closeCreateDialog();
   }
 
   /**
-   * Event handler for create dialog cancel button click 
+   * Event handler for create dialog cancel button click
    */
   private onCreateDialogCancelClick = () => {
     this.closeCreateDialog();
   }
 
   /**
-   * Event handler for create dialog close event 
+   * Event handler for create dialog close event
    */
   private onCreateDialogClose = () => {
     this.closeCreateDialog();
@@ -255,7 +255,7 @@ class ExhibitionsView extends React.Component<Props, State> {
 
 /**
  * Redux mapper for mapping store state to component props
- * 
+ *
  * @param state store state
  */
 function mapStateToProps(state: ReduxState) {
@@ -266,13 +266,13 @@ function mapStateToProps(state: ReduxState) {
 }
 
 /**
- * Redux mapper for mapping component dispatches 
- * 
+ * Redux mapper for mapping component dispatches
+ *
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))
+    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
   };
 }
 

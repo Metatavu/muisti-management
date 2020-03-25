@@ -3,6 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
+import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
@@ -15,7 +16,6 @@ import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken } from '../../types';
-import { setExhibition } from "../../actions/exhibition";
 import Api from "../../api/api";
 
 /**
@@ -27,7 +27,7 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   exhibitionId: string;
   exhibition?: Exhibition;
-  setExhibition: typeof setExhibition;
+  setSelectedExhibition: typeof setSelectedExhibition;
 }
 
 /**
@@ -63,7 +63,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
 
     if (!exhibition || exhibitionId === exhibition.id) {
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-      this.props.setExhibition(await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId }));
+      this.props.setSelectedExhibition(await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId }));
     }
   }
 
@@ -82,12 +82,13 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
     const locationPath = history.location.pathname;
 
     return (
-      <BasicLayout title={ exhibition.name } 
-        onBackButtonClick={() => this.onBackButtonClick() } 
-        keycloak={ this.props.keycloak } 
-        error={ this.state.error } 
+      <BasicLayout title={ exhibition.name }
+        onBackButtonClick={() => this.onBackButtonClick() }
+        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
+        keycloak={ this.props.keycloak }
+        error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>
-          
+
         <div className={ classes.editorLayout }>
           <ViewSelectionBar exhibitionId={ exhibition.id } locationPath={ locationPath } />
           <ElementNavigationPane title="Näyttelypiste" />
@@ -96,7 +97,7 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
           </EditorView>
           <ElementSettingsPane title="Ominaisuudet" />
         </div>
-        
+
       </BasicLayout>
     );
   }
@@ -106,29 +107,36 @@ export class ExhibitionDeviceGroupView extends React.Component<Props, State> {
   private onBackButtonClick = () => {
     this.props.history.push(`/`);
   }
+
+  /**
+   * Handle dashboard click
+   */
+  private onDashboardButtonClick = () => {
+    this.props.history.push(`/dashboard/overview`);
+  }
 }
 
 /**
  * Redux mapper for mapping store state to component props
- * 
+ *
  * @param state store state
  */
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibition: state.exhibition.exhibition as Exhibition
+    exhibition: state.exhibitions.selectedExhibition as Exhibition
   };
 }
 
 /**
- * Redux mapper for mapping component dispatches 
- * 
+ * Redux mapper for mapping component dispatches
+ *
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setExhibition: (exhibition: Exhibition) => dispatch(setExhibition(exhibition))
+    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
   };
 }
 

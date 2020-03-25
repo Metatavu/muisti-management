@@ -4,6 +4,7 @@ import { WithStyles, withStyles, IconButton, Typography } from "@material-ui/cor
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
 import BackIcon from "@material-ui/icons/ArrowBackSharp";
+import MenuIcon from "@material-ui/icons/MenuSharp";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
 
@@ -16,6 +17,7 @@ interface Props extends WithStyles<typeof styles> {
   error?: string | Error;
   clearError?: () => void;
   onBackButtonClick?: () => void;
+  onDashboardButtonClick?: () => void;
 }
 
 /**
@@ -50,6 +52,11 @@ class BasicLayout extends React.Component<Props, State> {
     return (
       <div className={ classes.root }>
         <header className={ classes.header }>
+          { this.props.onBackButtonClick &&
+            <IconButton size="small" className={ classes.menuBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
+              <MenuIcon />
+            </IconButton>
+          }
           { this.props.onBackButtonClick &&
             <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onBackButtonClick }>
               <BackIcon />

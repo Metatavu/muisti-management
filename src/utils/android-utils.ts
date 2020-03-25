@@ -1,5 +1,5 @@
 import DisplayMetrics from "../types/display-metrics";
-import { ExhibitionDeviceModel } from "../generated/client";
+import { DeviceModel } from "../generated/client";
 
 /**
  * Utilities for Android
@@ -10,13 +10,13 @@ export default class AndroidUtils {
 
   /**
    * Returns display metrics for a device model
-   * 
+   *
    * @param deviceModel device model
    */
-  public static getDisplayMetrics(deviceModel: ExhibitionDeviceModel) {
+  public static getDisplayMetrics(deviceModel: DeviceModel) {
     const displayMetrics = deviceModel.displayMetrics;
 
-    const result: DisplayMetrics = { 
+    const result: DisplayMetrics = {
       density: displayMetrics.density || 0,
       heightPixels: displayMetrics.heightPixels || 0,
       widthPixels: displayMetrics.widthPixels || 0,
@@ -30,7 +30,7 @@ export default class AndroidUtils {
 
   /**
    * Parses string to pixels
-   * 
+   *
    * @param value string
    * @returns parsed number of pixels or null if string could not be parsed
    */
@@ -50,7 +50,7 @@ export default class AndroidUtils {
 
   /**
    * Parses DP string into number
-   * 
+   *
    * @param value string
    * @returns parsed number or null if is not a DP string
    */
@@ -61,7 +61,7 @@ export default class AndroidUtils {
 
   /**
    * Parses SP string into number
-   * 
+   *
    * @param value string
    * @returns parsed number or null if is not a SP string
    */
@@ -72,11 +72,11 @@ export default class AndroidUtils {
 
   /**
    * Converts SPs to pixels
-   * 
-   * @param displayMetrics display metrics object 
+   *
+   * @param displayMetrics display metrics object
    * @param sp SPs
    * @param scale scale factor
-   * @returns pixels 
+   * @returns pixels
    */
   public static convertSpToPixel(displayMetrics: DisplayMetrics, sp: number, scale: number): number | null {
     return sp * displayMetrics.density * scale;
@@ -84,8 +84,8 @@ export default class AndroidUtils {
 
   /**
    * Converts DPs to pixels
-   * 
-   * @param displayMetrics display metrics object 
+   *
+   * @param displayMetrics display metrics object
    * @param dp DPs
    * @param scale scale factor
    * @returns pixels
@@ -96,8 +96,8 @@ export default class AndroidUtils {
 
   /**
    * Converts pixels to DPs
-   * 
-   * @param displayMetrics display metrics object 
+   *
+   * @param displayMetrics display metrics object
    * @param px pixels
    * @param scale scale factor
    * @returns pixels

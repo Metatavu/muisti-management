@@ -1,4 +1,5 @@
 {
+  "comingSoon": "Coming soon!",
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",
@@ -34,10 +35,133 @@
       "switchToVisualButton": "Switch to visual",
       "importButton": "Import",
       "deleteButton": "Delete",
-      "deleteConfirmTitle": "Are you sure?", 
+      "deleteConfirmTitle": "Are you sure?",
       "deleteConfirmText": "Are you sure that you wish to delete this layout?",
       "deleteConfirmDelete": "Delete",
       "deleteConfirmCancel": "Cancel"
+    }
+
+  },
+
+  "dashboard": {
+
+    "newExhibitionButton": "New exhibition",
+    "navigation": {
+      "overviewButton": "Overview",
+      "recentButton": "Recent",
+      "draftsButton": "Drafts",
+      "archivedButton": "Archived",
+      "settingsButton": "Settings",
+      "usersButton": "Users",
+      "devicesButton": "Devices",
+      "layoutsButton": "Layouts"
+    },
+    "overview": {
+      "onProduction": "On production",
+      "lastModified": "Last modified",
+      "statistics": {
+        "title": "Statistics",
+        "day": "Day",
+        "week": "Week",
+        "month": "Month",
+        "year": "Year",
+        "visitors": "Visitors",
+        "longTour": "Long tour",
+        "shortTour": "Short tour"
+      }
+    },
+    "recent": {
+      "title": "Most recent",
+      "lastModified": "Last modified"
+    },
+    "drafts": {
+      "title": "Drafts"
+    },
+    "archived": {
+      "title": "Archivec"
+    },
+    "settings": {
+      "title": "Settings"
+    },
+    "users": {
+      "title": "Users"
+    },
+    "devices": {
+      "title": "Devices",
+      "dialog": {
+        "brand": "Brand",
+        "model": "Model",
+        "resolution": "Resolution",
+        "physicalSize": "Physical size",
+        "type": "Type",
+        "touchScreen": "Touch screen"
+      }
+    },
+    "layouts": {
+      "title": "Layouts",
+      "lastModified": "Last modified"
+    }
+
+  },
+
+  "exhibition": {
+    "content": "Content",
+    "tech": "Tech",
+    "newPage": "New page",
+    "addPage": "Add page",
+    "onProduction": "On production",
+    "properties": {
+      "title": "Properties"
+    },
+    "resources": {
+      "title": "Resources",
+      "imageView": {
+        "properties": {
+          "imageUrl": "Image URL address"
+        }
+      },
+      "textView": {
+        "properties": {
+          "text": "Text"
+        }
+      }
+    }
+  },
+
+  "layout": {
+    "title": "Layout",
+    "toolbar": {
+      "visual": "Visual view",
+      "code": "Technical view",
+      "name": "Name"
+    },
+    "settings": {
+      "screenOrientation": "Ruudun suunta",
+      "portrait": "Pysty",
+      "landscape": "Vaaka"
+    },
+    "properties": {
+      "title": "Properties"
+    }
+  },
+
+  "sorting": {
+
+    "dashboard": {
+      "recent": {
+        "byModifiedAt": "Last modified",
+        "byCreatedAt": "Last created"
+      }
+    }
+
+  },
+
+  "filtering": {
+
+    "dashboard": {
+      "devices": {
+        "all": "All"
+      }
     }
 
   }
