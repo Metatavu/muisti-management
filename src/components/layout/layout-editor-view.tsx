@@ -277,6 +277,9 @@ export class LayoutEditorView extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Updates editor data
+   */
   private updateEditorData = () => {
     const { layout } = this.props;
     if (!layout) {
@@ -411,6 +414,12 @@ export class LayoutEditorView extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Event handler for screen orientation select change
+   *
+   * @param event event
+   * @param _child child node
+   */
   private onScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
     this.setState({
       screenOrientation: e.target.value as ScreenOrientation
