@@ -8,7 +8,8 @@ export default createStyles({
     gridTemplateColumns: "auto 1fr",
     gridTemplateRows: "auto 1fr",
     gridTemplateAreas: ' "navigation header" "navigation content" ',
-    height: "100vh"
+    height: "100vh",
+    backgroundColor: "#fff"
   },
 
   header: {
@@ -18,14 +19,15 @@ export default createStyles({
     justifyContent: "flex-end",
     alignItems: "center",
     background: "#fff",
-    borderBottom: "1px solid #ddd",
-    height: 50 
+    borderBottom: "1px solid rgba(0,0,0,0.1)",
+    height: 100,
+    marginLeft: 30,
+    marginRight: 30
   },
 
   navigation: {
     position: "relative",
     gridArea: "navigation",
-    borderRight: "1px solid #ddd",
     backgroundColor: "#fbfbfb",
     height: "100%",
     width: 320,
@@ -44,33 +46,39 @@ export default createStyles({
   },
 
   userElement: {
-    cursor: "pointer",
+    cursor: "default",
     display: "flex",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
     height: 50,
-    transition: "background-color 0.2s ease-in-out",
-    "& h3": {
+    "& h4": {
       whiteSpace: "nowrap",
       width: "calc(100% - 50px)",
       overflow: "hidden",
-      textOverflow: "ellipsis"
+      textOverflow: "ellipsis",
+      margin: 0
     },
-    "&:hover": {
-      backgroundColor: "rgba(0,0,0,0.1)"
-    }
   },
 
   userAvatar: {
-    padding: 8,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 30,
+    height: 30,
+    marginRight: 15,
     borderRadius: "50%",
     backgroundColor: theme.palette.secondary.main,
-    color: "#fff"
+    "& p": {
+      fontSize: 12,
+      color: "#fff",
+      margin: 0,
+      lineHeight: 1,
+      marginBottom: "-2px"
+    }
   },
 
   navigationContent: {
-    padding: 10
+    paddingTop: 22
   },
 
   backBtn: {
@@ -85,11 +93,16 @@ export default createStyles({
 
   content: {
     gridArea: "content",
-    paddingTop: 100
+    paddingTop: 100,
+    paddingLeft: 100,
+    paddingRight: 100,
+    backgroundColor: theme.palette.background.paper
   },
 
   newExhibitionBtn: {
-    marginRight: 20
+    marginRight: 20,
+    borderRadius: 100,
+    textTransform: "initial"
   },
 
   navigationBtn: {

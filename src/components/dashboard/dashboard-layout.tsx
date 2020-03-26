@@ -71,7 +71,6 @@ class DashboardLayout extends React.Component<Props, State> {
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
     const initials = `${ firstName.charAt(0).toUpperCase() }${ lastName.charAt(0).toUpperCase() }`;
-    const fullName = `${ firstName } ${ lastName }`;
 
     return (
       <div className={ classes.root }>
@@ -82,10 +81,10 @@ class DashboardLayout extends React.Component<Props, State> {
         </header>
         <div className={ classes.navigation }>
           <div className={ classes.userElement }>
-              <div className={ classes.userAvatar }>{ initials }</div>
-          <h3>{ fullName }</h3>
+              <div className={ classes.userAvatar }><p>{ initials }</p></div>
+          <h4>{ firstName }</h4>
           </div>
-          <Divider variant="middle" color="#ddd" />
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
           <div className={ classes.navigationContent }>
             <DashboardNavigation locationPath={ locationPath } />
           </div>
@@ -108,7 +107,7 @@ class DashboardLayout extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <Button className={ classes.newExhibitionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
+      <Button disableElevation variant="contained" className={ classes.newExhibitionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
     );
   }
 
