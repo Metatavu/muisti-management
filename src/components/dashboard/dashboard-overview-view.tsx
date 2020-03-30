@@ -16,6 +16,8 @@ import DashboardLayout from "./dashboard-layout";
 import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import moment from "moment";
 
+import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
+
 
 /**
  * Interface representing component properties
@@ -68,7 +70,7 @@ class DashboardOverviewView extends React.Component<Props, State> {
           { strings.dashboard.overview.onProduction }
         </Typography>
         <div className={ classes.exhibitionsGridList }>
-          <GridList cellHeight={ 180 }>
+          <GridList cellHeight={ 280 }>
             { exhibitions ?
               exhibitions.map(exhibition => this.renderExhibitionTile(exhibition)) : <div />
             }
@@ -87,6 +89,9 @@ class DashboardOverviewView extends React.Component<Props, State> {
           </Grid>
           <Grid item key="select">
             <Select
+              IconComponent={ props => (
+                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+              )}
               id="statistics-select"
               value={ statisticsInterval }
               onChange={ this.handleSelectChange }
@@ -98,7 +103,7 @@ class DashboardOverviewView extends React.Component<Props, State> {
             </Select>
           </Grid>
         </Grid>
-        <Divider />
+        <Divider style={{ marginTop: 30 }} />
       </DashboardLayout>
     );
   }
@@ -117,8 +122,8 @@ class DashboardOverviewView extends React.Component<Props, State> {
       <GridListTile key={ exhibition.id } onClick={ () => this.openExhibition(exhibition) }>
         <img src={ defaultExhibitionImage } alt={ exhibition.name }/>
         <GridListTileBar
-          title={ exhibition.name }
           subtitle={ `${ strings.dashboard.overview.lastModified } ${ moment(exhibition.modifiedAt).fromNow() }` }
+          title={ exhibition.name }
         />
       </GridListTile>
     );

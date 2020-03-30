@@ -85,7 +85,7 @@ class DashboardLayoutsView extends React.Component<Props, State> {
             </Grid>
           </Grid>
         </div>
-        <Divider />
+        <Divider style={{ marginTop: 30 }} />
         <div className={ classes.content }>
           <List>
             { layouts &&
@@ -103,14 +103,15 @@ class DashboardLayoutsView extends React.Component<Props, State> {
    * @param layout layout
    */
   private renderLayoutListItem = (layout: PageLayout) => {
+    const { classes } = this.props;
     const layoutId = layout.id;
     if (!layoutId) {
       return;
     }
 
     return (
-      <ListItem onClick={ () => this.openLayout(layout) }>
-        <ListItemAvatar>
+      <ListItem button onClick={ () => this.openLayout(layout) }>
+        <ListItemAvatar className={ classes.muistiAvatar }>
           <Avatar src={ defaultLayoutImage } />
         </ListItemAvatar>
         <ListItemText primary={ layout.name } secondary={ `${ strings.dashboard.layouts.lastModified } ${ moment(layout.modifiedAt).fromNow() }` } />
