@@ -7,7 +7,6 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, IconButton } from "@material-ui/core";
-import SearchIcon from '@material-ui/icons/Search';
 import styles from "../../styles/dashboard-recent-view";
 
 import { History } from "history";
@@ -20,6 +19,9 @@ import { ExhibitionRecentSortBy, ExhibitionRecentSortOption } from "../../types/
 import moment from "moment";
 import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
+
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
 
 
 /**
@@ -114,6 +116,9 @@ class DashboardArchivedView extends React.Component<Props, State> {
             </Grid>
             <Grid item key="list-functions">
               <Select
+                IconComponent={ props => (
+                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+                )}
                 id="select-sorting"
                 defaultValue={ ExhibitionRecentSortBy.MODIFIED_AT }
               >
@@ -122,7 +127,7 @@ class DashboardArchivedView extends React.Component<Props, State> {
                 )}
               </Select>
               <IconButton>
-                <SearchIcon />
+                <SearchIcon fontSize="small" />
               </IconButton>
             </Grid>
           </Grid>
@@ -143,15 +148,15 @@ class DashboardArchivedView extends React.Component<Props, State> {
    * Renders exhibition list item
    */
   private renderExhibitionListItem = (exhibition: Exhibition) => {
-
+    const { classes } = this.props;
     const exhibitionId = exhibition.id;
     if (!exhibitionId) {
       return;
     }
 
     return (
-      <ListItem onClick={ () => this.openExhibition(exhibitionId) }>
-        <ListItemAvatar>
+      <ListItem button onClick={ () => this.openExhibition(exhibitionId) }>
+        <ListItemAvatar className={ classes.muistiAvatar }>
           <Avatar src={ defaultExhibitionImage } />
         </ListItemAvatar>
         <ListItemText primary={ exhibition.name } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(exhibition.modifiedAt).fromNow() }` } />

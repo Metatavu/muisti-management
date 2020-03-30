@@ -24,6 +24,7 @@ import DashboardLayout from "./dashboard-layout";
 import moment from "moment";
 import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
+import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
 
 
 /**
@@ -126,7 +127,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
               </Typography>
             </Grid>
             <Grid item key="list-functions">
-              <Select id="select-filtering" defaultValue="ALL">
+              <Select
+                IconComponent={ props => (
+                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+                )}
+                id="select-filtering" 
+                defaultValue="ALL"
+              >
                 { filterOptions.map(option =>
                   <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
                 )}
