@@ -1,6 +1,5 @@
 {
   "comingSoon": "Tulossa pian!",
-
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
@@ -92,10 +91,21 @@
       "dialog": {
         "brand": "Merkki",
         "model": "Malli",
-        "resolution": "Resoluutio",
-        "physicalSize": "Fyysinen koko",
+        "displayMetrics": {
+          "displayInfo": "Näytön tiedot",
+          "resolution": "Resoluutio",
+          "displayWidth": "Näytön leveys (pikseliä)",
+          "displayHeight": "Näytön korkeus (pikseliä)",
+          "displayXDpi": "Pistettä tuumalle (x-akselilla)",
+          "displayYDpi": "Pistettä tuumalle (y-akselilla)"
+        },
+        "dimensions" : {
+          "physicalSize": "Fyysinen koko",
+          "width": "Laitteen leveys",
+          "height": "Laiteen korkeus"
+        },
         "type": "Tyyppi",
-        "touchScreen": "Kosketusnyttö"
+        "touchScreen": "Kosketusnäyttö"
       }
     },
     "layouts": {
@@ -126,6 +136,15 @@
           "text": "Teksti"
         }
       }
+    },
+    "eventTriggers": {
+      "title": "Event triggers",
+      "viewId": "Näkymä id",
+      "delay": "Viive",
+      "actions": "Tapahtumat",
+      "variableName": "Käyttäjän muuttujan nimi",
+      "variableValue": "Käyttäjän muuttujan arvo",
+      "selectPage": "Valitse sivu"
     }
   },
 

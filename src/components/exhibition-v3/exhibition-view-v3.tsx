@@ -14,6 +14,7 @@ import { TreeView, TreeItem } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType, ExhibitionPageEventPropertyType } from "../../generated/client";
+import EventTriggerEditor from "../right-panel-editors/event-trigger-editor"
 import BasicLayoutV3 from "../generic/basic-layout-v3";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
@@ -168,6 +169,10 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
             {
               this.state.selectedResource &&
               this.renderResourceEditor()
+            }
+            {
+              this.state.selectedEventTrigger &&
+              this.renderEventTriggerEditor()
             }
           </ElementSettingsPane>
         </div>
@@ -340,7 +345,9 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
 
     const items = (parsedCode.eventTriggers || []).map((eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = `Event ${index + 1}`;
-      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => this.onEventTriggerNodeClick(eventTrigger) }/>;
+      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => this.onEventTriggerNodeClick(eventTrigger) }>
+          {/* <Button onClick={ () => this.onEventTriggerNodeDeleteClick(eventTrigger) } >Delete</Button> */}
+      </TreeItem>;
     });
 
     return (
@@ -385,11 +392,36 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
           value={ this.state.selectedResource?.data }
           onChange={ this.onResourceDataChange }/>
       </>
+      
     }
 
     return <div>{ selectedResource.id } { widget }</div>;
   }
 
+    /**
+   * Renders resource editor
+   */
+  private renderEventTriggerEditor = () => {
+    const selectedEventTrigger = this.state.selectedEventTrigger;
+    if (!selectedEventTrigger) {
+      return null;
+    }
+    const title = <Typography variant="h6">{ strings.exhibition.eventTriggers.title }</Typography>
+
+      return <>
+        { title }
+        <EventTriggerEditor
+          history = { this.props.history }
+          classes = { this.props.classes }
+          selectedEventTrigger = { this.state.selectedEventTrigger! }
+          pages = { this.state.pages }
+          jsonCode = { this.state.jsonCode }
+          onParseJson = { this.parseJsonCode }
+          onSaveJson = { this.updateJsonFromChild }
+        />
+      </>
+  }
+  
   /**
    * Code mirror lint method
    *
@@ -611,18 +643,9 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     parsedCode.eventTriggers = (parsedCode.eventTriggers || []);
 
     parsedCode.eventTriggers.push({
-      clickViewId: "",
+      clickViewId: (parsedCode.eventTriggers.length + 1).toString(),
       delay: 0,
-      events: [{
-        action: ExhibitionPageEventActionType.Hide,
-        properties: [
-          {
-            name: "property name",
-            type: ExhibitionPageEventPropertyType.String,
-            value: "property value"
-          }
-        ]
-      }],
+      events: [],
       next: []
     });
 
@@ -649,10 +672,37 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
    * @param eventTrigger selected node
    */
   private onEventTriggerNodeClick = (eventTrigger: ExhibitionPageEventTrigger) => {
+
     this.setState({
       selectedEventTrigger: eventTrigger,
       selectedResource: undefined
     });
+  }
+
+    /**
+   * Event handler for event trigger node click
+   *
+   * @param eventTrigger selected node
+   */
+  private onEventTriggerNodeDeleteClick = (eventTrigger: ExhibitionPageEventTrigger) => {
+
+    const selectedEventTrigger = this.state.selectedEventTrigger;
+    if (!selectedEventTrigger) {
+      return null;
+    }
+
+    const parsedCode = this.parseJsonCode();
+    parsedCode.eventTriggers = parsedCode.eventTriggers || [];
+    const index = parsedCode.eventTriggers.findIndex(trigger => eventTrigger.clickViewId === trigger.clickViewId);
+    if (index > -1) {
+      parsedCode.eventTriggers.splice(index, 1);
+
+      this.setState({
+        jsonCode: this.toJsonCode(parsedCode),
+        selectedEventTrigger: undefined,
+        selectedResource: undefined
+      });
+    }
   }
 
   /**
@@ -688,6 +738,18 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     this.setState({
       name: event.target.value
     });
+  }
+
+  /**
+   * Update json from child component. Atm updated only event triggers
+   */
+  private updateJsonFromChild = (eventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) =>{
+    if(parsedCode !== undefined){
+      this.setState({
+        selectedEventTrigger: eventTrigger,
+        jsonCode: this.toJsonCode(parsedCode)
+      })
+    }
   }
 
   /**
@@ -742,7 +804,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     this.onPageSave({
       ...this.state.selectedElement,
       layoutId: selectedElement.layoutId,
-      name: this.state.name,
+      name: this.state.selectedElement?.name!,
       eventTriggers: parsedCode.eventTriggers || [],
       resources: parsedCode.resources || []
     });
@@ -792,7 +854,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
   private onPageSave = async (page: ExhibitionPage) => {
     try {
       const exhibitionPagesApi = Api.getExhibitionPagesApi(this.props.accessToken);
-
+      console.log(page)
       if (page.id) {
         const updatedPage = await exhibitionPagesApi.updateExhibitionPage({
           exhibitionId: this.props.exhibitionId,
@@ -839,6 +901,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
       jsonCode
     });
   }
+
 }
 
 /**

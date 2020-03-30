@@ -91,11 +91,23 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     devices: {
       title: string;
+      capabilities: string;
       dialog: {
         brand: string;
         model: string;
-        resolution: string;
-        physicalSize: string;
+        displayMetrics: {
+          displayInfo: string;
+          resolution: string;
+          displayWidth: string;
+          displayHeight: string;
+          displayXDpi: string;
+          displayYDpi: string;
+        }
+        dimensions: {
+          physicalSize: string;
+          width: string;
+          height: string;
+        }
         type: string;
         touchScreen: string;
       };
@@ -127,6 +139,15 @@ export interface IStrings extends LocalizedStringsMethods {
           text: string;
         };
       };
+    },
+    eventTriggers: {
+      title: string;
+      viewId: string;
+      delay: string;
+      actions: string;
+      variableName: string;
+      variableValue: string;
+      selectPage: string;
     };
   };
 

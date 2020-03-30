@@ -91,8 +91,19 @@
       "dialog": {
         "brand": "Brand",
         "model": "Model",
-        "resolution": "Resolution",
-        "physicalSize": "Physical size",
+        "displayMetrics": {
+          "displayInfo": "Screen info",
+          "resolution": "Resolution",
+          "displayWidth": "Screen width (pixels)",
+          "displayHeight": "Screen height (pixels)",
+          "displayXDpi": "Dots per inch (x-axis)",
+          "displayYDpi": "Dots per inch (y-axis)"
+        },
+        "dimensions" : {
+          "physicalSize": "Physical size",
+          "width": "Device width",
+          "height": "Device height"
+        },
         "type": "Type",
         "touchScreen": "Touch screen"
       }
@@ -125,6 +136,15 @@
           "text": "Text"
         }
       }
+    },
+    "eventTriggers": {
+      "title": "Event triggers",
+      "viewId": "View id",
+      "delay": "Delay",
+      "actions": "Actions",
+      "variableName": "User variable name",
+      "variableValue": "User variable value",
+      "selectPage": "Select page"
     }
   },
 
