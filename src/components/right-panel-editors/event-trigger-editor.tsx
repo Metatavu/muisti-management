@@ -342,7 +342,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     /**
      * TODO: If we assume that each event trigger contains only one event, do we want to clear the existing values on select? 
      */
-    this.clearEventActionFromJson(value)
+    this.clearEventActionFromJson(value);
 
     this.setState({
       selectedEventActionType: value,
