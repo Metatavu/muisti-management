@@ -238,7 +238,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       >
         { this.fetchPagesInExhibition() }
       </Select>
-    </>
+    </>;
   }
 
   /**
