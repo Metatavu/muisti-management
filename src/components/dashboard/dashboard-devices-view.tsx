@@ -209,7 +209,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           variant="outlined"
           name="dimensions.width"
           value={ selectedDevice ? selectedDevice.dimensions.width : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>{ this.onDeviceInfoChange(event) } }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
         /> 
 
         <TextField
