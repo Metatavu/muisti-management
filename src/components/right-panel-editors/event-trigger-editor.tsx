@@ -231,7 +231,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       <Select fullWidth
         name={ event }
         value={ this.state.selectedNavigationPage ? this.state.selectedNavigationPage.id: "" }
-        onChange={ (e: React.ChangeEvent<{ value: unknown, name?: unknown }>) => { this.onNavigationPageChange(e) } }
+        onChange={ (e: React.ChangeEvent<{ value: unknown, name?: unknown }>) => this.onNavigationPageChange(e) }
       >
         { this.fetchPagesInExhibition() }
       </Select>
