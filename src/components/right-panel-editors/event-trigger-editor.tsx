@@ -191,7 +191,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private renderSetUserValueSettings = () => {
     const { classes, selectedEventTrigger } = this.props;
 
-    return<>
+    return <>
       <h4>{ strings.exhibition.eventTriggers.variableName }</h4>
       <TextField
         type="name"
