@@ -395,7 +395,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           devices: devices,
           selectedDevice: undefined,
           deviceSettingsPanelOpen: false
-        })
+        });
       }
     }
   }
