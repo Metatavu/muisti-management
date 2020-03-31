@@ -218,7 +218,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           variant="outlined"
           name="dimensions.height"
           value={ selectedDevice ? selectedDevice.dimensions.height : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>this.onDeviceInfoChange(event) }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
         /> 
         
         <h4>{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</h4>
