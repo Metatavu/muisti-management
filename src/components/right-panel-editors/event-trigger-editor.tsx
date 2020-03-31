@@ -337,7 +337,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * On select event action handler
    */
   private onSelectEventAction = (event: React.ChangeEvent<{ value: unknown }>)=> {
-    const value = event.target.value as ExhibitionPageEventActionType
+    const value = event.target.value as ExhibitionPageEventActionType;
 
     /**
      * TODO: If we assume that each event trigger contains only one event, do we want to clear the existing values on select? 
