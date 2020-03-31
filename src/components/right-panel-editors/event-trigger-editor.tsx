@@ -262,7 +262,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
     if (!isNumber(newValue)) {
       newValue = "0";
-    };
+    }
 
     parsedCode.eventTriggers = parsedCode.eventTriggers || [];
     const index = parsedCode.eventTriggers.findIndex(eventTrigger => trigger.clickViewId === eventTrigger.clickViewId);
