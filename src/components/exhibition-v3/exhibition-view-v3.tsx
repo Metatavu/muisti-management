@@ -854,7 +854,6 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
   private onPageSave = async (page: ExhibitionPage) => {
     try {
       const exhibitionPagesApi = Api.getExhibitionPagesApi(this.props.accessToken);
-      console.log(page)
       if (page.id) {
         const updatedPage = await exhibitionPagesApi.updateExhibitionPage({
           exhibitionId: this.props.exhibitionId,
