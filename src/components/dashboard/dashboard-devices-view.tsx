@@ -344,7 +344,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           variableToUpdate = deviceToUpdate[key1] as DeviceModelCapabilities;
   
           if (hasKey(variableToUpdate, key2)) {
-            variableToUpdate[key2] = !checkboxValue
+            variableToUpdate[key2] = !checkboxValue;
           }
   
           deviceToUpdate[key1] = variableToUpdate;
