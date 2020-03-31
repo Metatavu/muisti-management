@@ -419,7 +419,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
           onParseJson = { this.parseJsonCode }
           onSaveJson = { this.updateJsonFromChild }
         />
-      </>
+      </>;
   }
   
   /**
