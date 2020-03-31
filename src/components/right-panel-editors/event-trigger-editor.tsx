@@ -120,7 +120,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
           this.renderEventActionSettings()
         }
       </TreeView>
-    </>
+    </>;
   }
 
   /**
