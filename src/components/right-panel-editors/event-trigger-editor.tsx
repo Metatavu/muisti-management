@@ -355,7 +355,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    */
   private clearEventActionFromJson = (actionType: ExhibitionPageEventActionType) => {
 
-    const parsedCode = this.props.onParseJson()
+    const parsedCode = this.props.onParseJson();
     const trigger = this.props.selectedEventTrigger;
 
     parsedCode.eventTriggers = parsedCode.eventTriggers || [];
