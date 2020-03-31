@@ -149,7 +149,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     const event = this.state.selectedEventActionType?.toLowerCase();
 
     if (event == ExhibitionPageEventActionType.Hide) {
-    return<h5>{ strings.comingSoon }</h5>
+    return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
        */
