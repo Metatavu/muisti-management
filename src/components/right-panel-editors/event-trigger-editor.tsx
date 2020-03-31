@@ -40,8 +40,8 @@ interface Props extends WithStyles<typeof styles> {
   interface State {
     error?: Error;
     loading: boolean;
-    selectedEventActionType?: ExhibitionPageEventActionType
-    selectedNavigationPage?: ExhibitionPage
+    selectedEventActionType?: ExhibitionPageEventActionType;
+    selectedNavigationPage?: ExhibitionPage;
   }
 
 export class EventTriggerEditor extends React.Component<Props, State> {
