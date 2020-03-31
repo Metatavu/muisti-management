@@ -748,7 +748,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
       this.setState({
         selectedEventTrigger: eventTrigger,
         jsonCode: this.toJsonCode(parsedCode)
-      })
+      });
     }
   }
 
