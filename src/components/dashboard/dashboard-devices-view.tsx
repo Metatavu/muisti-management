@@ -449,7 +449,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
       const updatedDevice = await deviceModelsApi.updateDeviceModel({
         deviceModel: selectedDevice,
         deviceModelId: selectedDevice.id!
-      })
+      });
 
       const devices = [...this.state.devices];
       const index = devices.findIndex(device => updatedDevice.id === device.id);
