@@ -169,7 +169,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
     }
 
     return (
-      <ListItem button onClick={ () => { this.onDeviceClick(device) } } >
+      <ListItem button onClick={ () => this.onDeviceClick(device) } >
         <ListItemAvatar>
           <Avatar src={ defaultExhibitionImage } />
         </ListItemAvatar>
