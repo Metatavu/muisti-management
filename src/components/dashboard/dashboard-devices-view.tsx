@@ -512,7 +512,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
  * @param key key to check from object
  */
 function hasKey<T>(obj: T, key: keyof T): key is keyof T {
-  return key in obj
+  return key in obj;
 }
 
 /**
