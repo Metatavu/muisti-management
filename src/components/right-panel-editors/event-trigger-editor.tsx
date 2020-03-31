@@ -323,7 +323,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       
       if (eventIndex > -1) {
         parsedCode.eventTriggers[index].events![eventIndex].properties[0].value= newValue
-        const newSelectedPage =  this.props.pages.find(page => page.id === newValue);
+        const newSelectedPage = this.props.pages.find(page => page.id === newValue);
         this.setState({
           selectedNavigationPage: newSelectedPage
         })
