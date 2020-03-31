@@ -256,7 +256,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    */
   private onDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
-    const parsedCode = this.props.onParseJson()
+    const parsedCode = this.props.onParseJson();
     const trigger = this.props.selectedEventTrigger;
     let newValue = event.target.value;
 
