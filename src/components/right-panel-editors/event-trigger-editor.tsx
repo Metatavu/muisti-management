@@ -211,7 +211,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[1].value) ? selectedEventTrigger.events![0].properties[1].value : "" }
         onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableValueChange(event) }
       />
-    </>
+    </>;
   }
 
   /**
