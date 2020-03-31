@@ -296,6 +296,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for changing delay
+   * @param event react change event
    */
   private onUserVariableValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedCode = this.props.onParseJson();
@@ -313,6 +314,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for navigation page change
+   * @param event react change event
    */
   private onNavigationPageChange = (event: React.ChangeEvent<{ value: unknown, name?: unknown }>) => {
     const parsedCode = this.props.onParseJson();
@@ -340,6 +342,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * On select event action handler
+   * @param event react change event
    */
   private onSelectEventAction = (event: React.ChangeEvent<{ value: unknown }>)=> {
     const value = event.target.value as ExhibitionPageEventActionType;
@@ -357,6 +360,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Clear event action from json handler
+   * @param event react change event
    */
   private clearEventActionFromJson = (actionType: ExhibitionPageEventActionType) => {
 
@@ -385,6 +389,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Get correct action name
+   * @param actionType ExhibitionPageEventActionType
    * TODO: Make this a bit more nice
    */
   private getActionName = (actionType: ExhibitionPageEventActionType): string => {
@@ -400,6 +405,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Create action based on the given values
+   * @param nameValue name value
+   * @param actionType given action type
+   * @param propertyType exhibition page event property type
    */
   private createAction = (nameValue: string, actionType: ExhibitionPageEventActionType, propertyType : ExhibitionPageEventPropertyType) => { 
 
@@ -419,6 +427,10 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Create setUserAction event with given params
+   * @param variableName variable name
+   * @param variableNameType type of the variable name
+   * @param variableValue value of the variable
+   * @param variableValueType type of the given variable
    */
   private createSetUserAction = (variableName: string, variableNameType: ExhibitionPageEventPropertyType, variableValue: string, variableValueType :ExhibitionPageEventPropertyType) => { 
 
