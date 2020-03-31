@@ -135,7 +135,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
     return <>
       <Select fullWidth value={ selectedAction ? selectedAction : "hide" }
-        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => { this.onSelectEventAction(event) } }
+        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventAction(event) }
       >
         { eventList }
       </Select>
