@@ -127,7 +127,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * Render event trigger list
    */
   private renderEventTriggerList = () => {
-    const selectedAction = this.state.selectedEventActionType
+    const selectedAction = this.state.selectedEventActionType;
 
     const eventList = Object.keys(ExhibitionPageEventActionType).map((event, index) => {
       return <MenuItem key={ `eventAction-${index}` } value={ event.toLowerCase() }> { event }</MenuItem>
