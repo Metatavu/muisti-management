@@ -373,7 +373,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     
     if (index > -1) {
         parsedCode.eventTriggers[index].events! = [newAction];
-        this.props.onSaveJson(trigger, parsedCode)
+        this.props.onSaveJson(trigger, parsedCode);
     }
   }
 
