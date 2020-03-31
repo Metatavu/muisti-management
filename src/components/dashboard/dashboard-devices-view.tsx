@@ -242,7 +242,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
         /> 
       </TreeView>
-      <Button onClick={ () => { this.onSaveDeviceClick() } } ><SaveIcon/></Button>
+      <Button onClick={ () => this.onSaveDeviceClick() } ><SaveIcon/></Button>
     </>
   }
 
