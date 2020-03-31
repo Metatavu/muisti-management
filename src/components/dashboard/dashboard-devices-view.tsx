@@ -364,7 +364,6 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * @param device selected device
    */
   private onDeviceClick = async (device: DeviceModel) => {
-
     this.setState({
       deviceSettingsPanelOpen: true,
       newDevice: false,
