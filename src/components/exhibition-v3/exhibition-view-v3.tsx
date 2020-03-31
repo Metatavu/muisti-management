@@ -744,7 +744,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
    * Update json from child component. Atm updated only event triggers
    */
   private updateJsonFromChild = (eventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) =>{
-    if(parsedCode !== undefined){
+    if (parsedCode !== undefined) {
       this.setState({
         selectedEventTrigger: eventTrigger,
         jsonCode: this.toJsonCode(parsedCode)
