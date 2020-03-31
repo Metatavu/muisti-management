@@ -109,7 +109,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         label={ strings.exhibition.eventTriggers.delay }
         variant="outlined"
         value={ this.props.selectedEventTrigger?.delay }
-        onChange={ ( event: React.ChangeEvent<HTMLInputElement>) => { this.onDelayChange(event) } }
+        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDelayChange(event) }
       />
       <h4> { strings.exhibition.eventTriggers.actions }</h4>
       <TreeView>
