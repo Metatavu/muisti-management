@@ -217,7 +217,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private doesEventTypeMatch = (): boolean => {
     const { selectedEventTrigger } = this.props;
     const selectedEventActionType = this.state.selectedEventActionType?.toLowerCase();
-    return (selectedEventTrigger.events?.length !== 0 && selectedEventTrigger.events![0].action === selectedEventActionType)
+    return (selectedEventTrigger.events?.length !== 0 && selectedEventTrigger.events![0].action === selectedEventActionType);
   }
 
   /**
