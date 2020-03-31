@@ -71,7 +71,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       if (events !== undefined && events.length > 0) {
         this.setState({
           selectedEventActionType: events[0].action
-        })
+        });
       }
     } 
   }
