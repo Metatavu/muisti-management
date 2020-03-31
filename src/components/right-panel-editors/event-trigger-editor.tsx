@@ -214,6 +214,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     </>
   }
 
+  /**
+   * Check if selected event action type matches the selected event trigger from parent 
+   */
   private doesEventTypeMatch = (): boolean => {
     const { selectedEventTrigger } = this.props;
     const selectedEventActionType = this.state.selectedEventActionType?.toLowerCase();
@@ -253,6 +256,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for changing delay
+   * @param event react change event
    */
   private onDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -274,6 +278,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for changing delay
+   * @param event react change event
    */
   private onUserVariableChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedCode = this.props.onParseJson();
