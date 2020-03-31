@@ -356,7 +356,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     this.setState({
       selectedDevice : deviceToUpdate
-    })
+    });
   }
 
   /**
