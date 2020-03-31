@@ -495,7 +495,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
       displayMetrics: newDeviceDisplayMetrics,
       manufacturer: "Company",
       model: "Model"
-    }
+    };
 
     this.setState({
       deviceSettingsPanelOpen: true,
