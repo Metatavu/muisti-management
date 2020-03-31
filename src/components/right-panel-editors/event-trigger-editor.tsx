@@ -328,7 +328,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
           selectedNavigationPage: newSelectedPage
         });
         
-        this.props.onSaveJson(trigger, parsedCode)
+        this.props.onSaveJson(trigger, parsedCode);
       }
     }
   }
