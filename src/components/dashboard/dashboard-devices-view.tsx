@@ -152,7 +152,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
             }
           </List>
         </div>
-        <Button onClick={ () => { this.onAddDeviceClick() } } ><AddCircleIcon/></Button>
+        <Button onClick={ () => this.onAddDeviceClick() } ><AddCircleIcon/></Button>
         { this.state.deviceSettingsPanelOpen && this.renderModifyDevice() }
     </DashboardLayout>
     )
