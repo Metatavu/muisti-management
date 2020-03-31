@@ -294,7 +294,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         label={ strings.dashboard.devices.dialog.displayMetrics.displayYDpi } variant="outlined"
         value={ selectedDevice ? selectedDevice.displayMetrics.ydpi : "" }
         name="displayMetrics.ydpi"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>{ this.onDeviceInfoChange(event) } }
+        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
       /> 
     </>
   }
