@@ -479,7 +479,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
     const newDeviceDimensions: DeviceModelDimensions = {
       width: 100,
       height: 100
-    }
+    };
 
     const newDeviceDisplayMetrics: DeviceModelDisplayMetrics = {
       density: 100,
