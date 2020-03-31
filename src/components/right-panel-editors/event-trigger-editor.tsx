@@ -31,7 +31,7 @@ interface Props extends WithStyles<typeof styles> {
     pages: ExhibitionPage[];
     jsonCode: string;
     onParseJson: (errorHandler?: ((message: string, e?: SyntaxError | undefined) => void) | undefined) => Partial<ExhibitionPage>;
-    onSaveJson: ((selectedEventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) => void)
+    onSaveJson: ((selectedEventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) => void);
   }
   
   /**
