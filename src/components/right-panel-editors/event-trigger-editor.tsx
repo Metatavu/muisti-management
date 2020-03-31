@@ -83,7 +83,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     if (prevProps.selectedEventTrigger !== this.props.selectedEventTrigger) {
       this.setState({
         selectedNavigationPage: undefined
-      })
+      });
     }
   }
 
