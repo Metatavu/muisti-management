@@ -487,7 +487,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
       widthPixels: 100,
       xdpi: 100,
       ydpi: 100
-    }
+    };
 
     const newDeviceModel: DeviceModel = {
       capabilities: newDeviceCapabilities,
