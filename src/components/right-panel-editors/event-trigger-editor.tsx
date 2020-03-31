@@ -310,9 +310,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * Event handler for navigation page change
    */
   private onNavigationPageChange = (event: React.ChangeEvent<{ value: unknown, name?: unknown }>) => {
-    const parsedCode = this.props.onParseJson()
-    const newValue = event.target.value as string
-    const action = event.target.name as string
+    const parsedCode = this.props.onParseJson();
+    const newValue = event.target.value as string;
+    const action = event.target.name as string;
     const trigger = this.props.selectedEventTrigger;
 
     parsedCode.eventTriggers = parsedCode.eventTriggers || [];
