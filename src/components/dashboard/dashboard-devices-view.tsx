@@ -474,7 +474,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     const newDeviceCapabilities: DeviceModelCapabilities = {
       touch: true
-    }
+    };
 
     const newDeviceDimensions: DeviceModelDimensions = {
       width: 100,
