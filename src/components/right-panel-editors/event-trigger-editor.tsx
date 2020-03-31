@@ -382,28 +382,14 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * TODO: Make this a bit more nice
    */
   private getActionName = (actionType: ExhibitionPageEventActionType): string => {
-
-    if (actionType == ExhibitionPageEventActionType.Hide) {
-      return ""
+    switch (actionType) {
+      case ExhibitionPageEventActionType.Hide: return "";
+      case ExhibitionPageEventActionType.Show: return "";
+      case ExhibitionPageEventActionType.Navigate: return "pageId";
+      case ExhibitionPageEventActionType.Setsrc: return "";
+      case ExhibitionPageEventActionType.Settext: return "";
+      default: return "";
     }
-
-    if (actionType == ExhibitionPageEventActionType.Show) {
-      return ""
-    }
-
-    if (actionType == ExhibitionPageEventActionType.Navigate) {
-      return "pageId"
-    }
-
-    if (actionType == ExhibitionPageEventActionType.Setsrc) {
-      return ""
-    }
-
-    if (actionType == ExhibitionPageEventActionType.Settext) {
-      return ""
-    }
-    return ""
-
   }
 
   /**
