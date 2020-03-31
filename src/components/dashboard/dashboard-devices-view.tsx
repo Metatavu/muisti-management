@@ -175,7 +175,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         </ListItemAvatar>
         <ListItemText primary={ device.model } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete" onClick={() => { this.onDeleteDeviceClick(device) } }>
+          <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDeviceClick(device) }>
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
