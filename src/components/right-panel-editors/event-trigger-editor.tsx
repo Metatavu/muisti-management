@@ -167,7 +167,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     if (event == ExhibitionPageEventActionType.Navigate) {
-      return this.renderNavigateSettings() 
+      return this.renderNavigateSettings();
     }
 
     if (event == ExhibitionPageEventActionType.Setsrc) {
