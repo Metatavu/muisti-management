@@ -406,7 +406,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     if (!selectedEventTrigger) {
       return null;
     }
-    const title = <Typography variant="h6">{ strings.exhibition.eventTriggers.title }</Typography>
+    const title = <Typography variant="h6">{ strings.exhibition.eventTriggers.title }</Typography>;
 
       return <>
         { title }
