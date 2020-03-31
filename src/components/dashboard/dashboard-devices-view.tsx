@@ -196,7 +196,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         <h5>{ strings.dashboard.devices.dialog.touchScreen }</h5>
         <Switch
           checked={ selectedDevice?.capabilities.touch }
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>{ this.onDeviceInfoChange(event, selectedDevice?.capabilities.touch) } }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event, selectedDevice?.capabilities.touch) }
           color="primary"
           name="capabilities.touch"
           inputProps={{ 'aria-label': 'primary checkbox' }}
