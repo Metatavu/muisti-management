@@ -178,7 +178,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     if (event == ExhibitionPageEventActionType.Settext) {
-      return<h5>{ strings.comingSoon }</h5>
+      return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
        */
