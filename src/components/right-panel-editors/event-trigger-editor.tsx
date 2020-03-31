@@ -226,7 +226,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private renderNavigateSettings = () => {
     const event = this.state.selectedEventActionType?.toLowerCase();
 
-    return<>
+    return <>
       <h4>{ strings.exhibition.eventTriggers.selectPage }</h4>
       <Select fullWidth
         name={ event }
