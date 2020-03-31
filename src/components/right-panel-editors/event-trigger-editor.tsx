@@ -163,7 +163,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     if (event == ExhibitionPageEventActionType.Setuservalue) {
-      return this.renderSetUserValueSettings()
+      return this.renderSetUserValueSettings();
     }
 
     if (event == ExhibitionPageEventActionType.Navigate) {
