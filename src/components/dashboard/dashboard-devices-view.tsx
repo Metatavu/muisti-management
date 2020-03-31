@@ -410,7 +410,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
       this.createNewDevice();
     } 
     else {
-      this.updateDevice()
+      this.updateDevice();
     }
   }
 
