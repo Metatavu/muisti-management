@@ -361,7 +361,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     const index = parsedCode.eventTriggers.findIndex(eventTrigger => trigger.clickViewId === eventTrigger.clickViewId);
 
     if (index > -1 && parsedCode.eventTriggers[index].events?.length !== 0 && parsedCode.eventTriggers[index].events![0].action === actionType) {
-      return
+      return;
     }
 
     var newAction;
