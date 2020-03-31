@@ -209,7 +209,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         label={ strings.exhibition.eventTriggers.variableValue }
         variant="outlined"
         value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[1].value) ? selectedEventTrigger.events![0].properties[1].value : "" }
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => { this.onUserVariableValueChange(event) } }
+        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableValueChange(event) }
       />
     </>
   }
