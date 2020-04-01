@@ -12,6 +12,16 @@
     }
   },
 
+  "confirmDialog": {
+    "cancel": "Peruuta",
+    "delete": "Poista"
+  },
+
+  "editorDialog": {
+    "cancel": "Peruuta",
+    "save": "Tallenna"
+  },
+
   "errorDialog": {
     "title": "Hups! Jokin meni pieleen",
     "reloadPage": "Kokeile ladata sivu uudelleen.",
@@ -87,6 +97,8 @@
       "title": "Käyttäjät"
     },
     "devices": {
+      "deleteDeviceTitle": "Poista laite",
+      "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
       "title": "Laitteet",
       "capabilities": "Ominaisuudet",
       "newDevice": "Uusi laite",

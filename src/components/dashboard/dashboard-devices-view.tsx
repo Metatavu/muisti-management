@@ -187,13 +187,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
       return (
         <ConfirmDialog
           open={ this.state.deleteDialogOpen }
-          title="Poista laite?"
-          text="Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa"
+          title={ strings.dashboard.devices.dialog.deleteDeviceTitle }
+          text={ strings.dashboard.devices.dialog.deleteDeviceText }
           onClose={ () => this.onDeleteDialogClose() }
           onCancel={ () => this.onDeleteDialogClose() }
           onConfirm={ () => this.onDeleteDeviceClick(selectedDevice) }
-          positiveButtonText="Poista"
-          cancelButtonText="Peruuta"
+          positiveButtonText={ strings.confirmDialog.delete }
+          cancelButtonText={ strings.confirmDialog.cancel }
         />
       );
     }
@@ -215,12 +215,12 @@ class DashboardDevicesView extends React.Component<Props, State> {
     return (
       <EditorDialog
         open={ deviceDialogOpen }
-        title={ newDevice ? "Uusi laite" : selectedDevice ? `${selectedDevice.manufacturer} ${selectedDevice.model}` : "Virhe, ei valittua laitetta" }
+        title={ newDevice ? `${ strings.dashboard.devices.newDevice }` : selectedDevice ? `${selectedDevice.manufacturer} ${selectedDevice.model}` : "" }
         onClose={ () => this.onDeviceDialogClose() }
         onCancel={ () => this.onDeviceDialogClose() }
         onConfirm={ () => this.onSaveDeviceClick() }
-        positiveButtonText="Tallenna"
-        cancelButtonText="Peruuta"
+        positiveButtonText={ strings.editorDialog.save }
+        cancelButtonText={ strings.editorDialog.cancel }
       >
         <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.dashboard.devices.dialog.dimensions.physicalSize }</Typography>
         <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }} >

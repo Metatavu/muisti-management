@@ -12,6 +12,16 @@
     }
   },
 
+  "confirmDialog": {
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+
+  "editorDialog": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+
   "errorDialog": {
     "title": "Whoops! Something went wrong",
     "reloadPage": "Try reloading the page.",
@@ -91,6 +101,8 @@
       "capabilities": "Capabilities",
       "newDevice": "New device",
       "dialog": {
+        "deleteDeviceTitle": "Delete device",
+        "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
         "brand": "Brand",
         "model": "Model",
         "displayMetrics": {

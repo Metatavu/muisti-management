@@ -18,6 +18,16 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  confirmDialog: {
+    cancel: string;
+    delete: string;
+  };
+
+  editorDialog: {
+    cancel: string;
+    save: string;
+  };
+
   errorDialog: {
     title: string;
     reloadPage: string;
@@ -94,6 +104,8 @@ export interface IStrings extends LocalizedStringsMethods {
       capabilities: string;
       newDevice: string;
       dialog: {
+        deleteDeviceTitle: string;
+        deleteDeviceText: string;
         brand: string;
         model: string;
         displayMetrics: {
