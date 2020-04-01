@@ -9,32 +9,26 @@ export default createStyles({
   root: {
     display: "grid",
     gridTemplateColumns: "auto 1fr",
-    gridTemplateRows: "auto 1fr",
-    gridTemplateAreas: ' "navigation header" "navigation content" ',
+    gridTemplateRows: "1fr",
+    gridTemplateAreas: ' "navigation content" ',
     height: "100vh",
     backgroundColor: "#fff"
   },
 
-  header: {
-    position: "relative",
-    gridArea: "header",
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    background: "#fff",
-    borderBottom: "1px solid rgba(0,0,0,0.1)",
-    height: 100,
-    marginLeft: 30,
-    marginRight: 30
-  },
-
   navigation: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
     position: "relative",
     gridArea: "navigation",
     backgroundColor: "#fbfbfb",
     height: "100%",
-    width: 320,
-    padding: 30
+    width: 260,
+    padding: 35
+  },
+
+  navigationTopContent: {
+
   },
 
   btnContainer: {
@@ -80,10 +74,6 @@ export default createStyles({
     }
   },
 
-  navigationContent: {
-    paddingTop: 22
-  },
-
   backBtn: {
     position: "absolute",
     left: 12
@@ -103,7 +93,6 @@ export default createStyles({
   },
 
   actionBtn: {
-    marginRight: 20,
     borderRadius: 100,
     textTransform: "initial"
   },

@@ -102,12 +102,16 @@
           "displayYDpi": "Pistettä tuumalle (y-akselilla)"
         },
         "dimensions" : {
-          "physicalSize": "Fyysinen koko",
-          "width": "Laitteen leveys",
-          "height": "Laiteen korkeus"
+          "physicalSize": "Fyysinen koko (mm)",
+          "width": "Leveys",
+          "height": "Korkeus",
+          "depth": "Syvyys"
         },
         "type": "Tyyppi",
-        "touchScreen": "Kosketusnäyttö"
+        "orientation": "Orientation",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "touchscreen": "Kosketusnäyttö"
       }
     },
     "layouts": {
@@ -158,7 +162,7 @@
       "name": "Nimi"
     },
     "settings": {
-      "screenOrientation": "Ruudun suunta",
+      "screenOrientation": "Näytön suunta",
       "portrait": "Pysty",
       "landscape": "Vaaka"
     },
@@ -175,6 +179,13 @@
         "byCreatedAt": "Viimeksi luotu"
       }
     }
+
+  },
+
+  "deviceTypes": {
+
+    "screen": "Näyttö",
+    "projector": "Projektori"
 
   },
 

@@ -57,7 +57,7 @@ export default class EditorDialog extends React.Component<Props, State> {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogTitle disableTypography id="alert-dialog-title">{ title }</DialogTitle>
           <DialogContent>
             { this.props.children }
           </DialogContent>
@@ -65,7 +65,7 @@ export default class EditorDialog extends React.Component<Props, State> {
             <Button onClick={() => onCancel() } color="primary">
               { cancelButtonText }
             </Button>
-            <Button onClick={() => onConfirm() } color="primary" autoFocus>
+            <Button disableElevation variant="contained" onClick={() => onConfirm() } color="secondary" autoFocus>
               { positiveButtonText }
             </Button>
           </DialogActions>

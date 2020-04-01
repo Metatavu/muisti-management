@@ -108,9 +108,10 @@ export interface IStrings extends LocalizedStringsMethods {
           physicalSize: string;
           width: string;
           height: string;
+          depth: string;
         }
+        touchscreen: string;
         type: string;
-        touchScreen: string;
       };
     };
     layouts: {
@@ -168,6 +169,11 @@ export interface IStrings extends LocalizedStringsMethods {
       title: string;
     };
   };
+
+  deviceTypes: {
+    screen: string;
+    projector: string;
+  }
 
   sorting: {
     dashboard: {

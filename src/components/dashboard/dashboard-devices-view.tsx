@@ -6,7 +6,7 @@ import { ReduxState, ReduxActions } from "../../store";
 import { setDeviceModels } from "../../actions/devices";
 
 // eslint-disable-next-line max-len
-import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton } from '@material-ui/core';
+import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton, FormControlLabel } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -18,14 +18,18 @@ import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, Device
 import strings from "../../localization/strings";
 import DashboardLayout from "./dashboard-layout";
 import moment from "moment";
-import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
 
 import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
+import ProjectorIcon from "../../resources/gfx/svg-paths/projektori";
+import PortraitIcon from "../../resources/gfx/svg-paths/pystytaso";
+import LandscapeIcon from "../../resources/gfx/svg-paths/vaakataso";
+
 import EditorDialog from '../generic/editor-dialog';
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
+import SelectionGroup from '../generic/selection-group';
 
 
 /**
@@ -128,14 +132,14 @@ class DashboardDevicesView extends React.Component<Props, State> {
                     id="select-filtering"
                     defaultValue="ALL"
                   >
-                  { filterOptions.map(option =>
-                    <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
-                  )}
-                </Select>
+                    { filterOptions.map(option =>
+                      <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+                    )}
+                  </Select>
               </Grid>
             </Grid>
           </Grid>
-        <Divider />
+        <Divider style={{ marginTop: 20 }} />
         <div className={ classes.content }>
           <List>
             { devices &&
@@ -162,9 +166,9 @@ class DashboardDevicesView extends React.Component<Props, State> {
     return (
       <ListItem button onClick={ () => this.onDeviceClick( device ) } >
         <ListItemAvatar className={ classes.muistiAvatar }>
-          <Avatar src={ defaultExhibitionImage } />
+          <ProjectorIcon />
         </ListItemAvatar>
-        <ListItemText primary={ device.model } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
+        <ListItemText primary={ `${device.manufacturer} ${device.model}` } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
         <ListItemSecondaryAction>
           <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDialogOpen(device) }>
             <DeleteIcon />
@@ -203,63 +207,118 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     const { selectedDevice, newDevice, deviceDialogOpen } = this.state;
 
+    const typeOptions = [
+      { name: strings.deviceTypes.screen , value: "SCREEN" },
+      { name: strings.deviceTypes.projector , value: "PROJECTOR" },
+    ];
+    
     return (
       <EditorDialog
         open={ deviceDialogOpen }
-        title={ newDevice ? "Uusi laite" : selectedDevice ? `Muokkaa laitetta - ${selectedDevice.model}` : "Muokkaa laitetta" }
+        title={ newDevice ? "Uusi laite" : selectedDevice ? `${selectedDevice.manufacturer} ${selectedDevice.model}` : "Virhe, ei valittua laitetta" }
         onClose={ () => this.onDeviceDialogClose() }
         onCancel={ () => this.onDeviceDialogClose() }
         onConfirm={ () => this.onSaveDeviceClick() }
         positiveButtonText="Tallenna"
         cancelButtonText="Peruuta"
       >
-        <h5>{ strings.dashboard.devices.dialog.touchScreen }</h5>
-        <Switch
-          checked={ selectedDevice?.capabilities.touch }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event, selectedDevice?.capabilities.touch) }
-          color="primary"
-          name="capabilities.touch"
-          inputProps={{ 'aria-label': 'primary checkbox' }}
-        />
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.dashboard.devices.dialog.dimensions.physicalSize }</Typography>
+        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }} >
+          <Grid item xs={ 4 }>
+            <TextField
+              fullWidth
+              type="height"
+              label={ strings.dashboard.devices.dialog.dimensions.height }
+              variant="filled"
+              name="dimensions.height"
+              value={ selectedDevice ? selectedDevice.dimensions.height : "" }
+              onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+            />
+          </Grid>
+          <Grid item xs={ 4 }>
+            <TextField
+              fullWidth
+              type="width"
+              label={ strings.dashboard.devices.dialog.dimensions.width }
+              variant="filled"
+              name="dimensions.width"
+              value={ selectedDevice ? selectedDevice.dimensions.width : "" }
+              onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+            />
+          </Grid>
+          <Grid item xs={ 4 }>
+            <TextField
+              disabled
+              fullWidth
+              type="depth"
+              label={ strings.dashboard.devices.dialog.dimensions.depth }
+              variant="filled"
+              name="dimensions.depth"
+              value={ "" }
+              onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+            />
+          </Grid>
+        </Grid>
 
-        <h4>{ strings.dashboard.devices.dialog.dimensions.physicalSize }</h4>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</Typography>
+        { 
+          this.renderDisplayMetricOptions()
+        }
         <TextField
-          type="width"
-          label={ strings.dashboard.devices.dialog.dimensions.width }
-          variant="outlined"
-          name="dimensions.width"
-          value={ selectedDevice ? selectedDevice.dimensions.width : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        />
-
-        <TextField
-          type="height"
-          label={ strings.dashboard.devices.dialog.dimensions.height }
-          variant="outlined"
-          name="dimensions.height"
-          value={ selectedDevice ? selectedDevice.dimensions.height : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        />
-
-        <h4>{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</h4>
-        { this.renderDisplayMetricOptions() }
-        <h4>{ strings.dashboard.devices.dialog.brand }</h4>
-        <TextField
+          style={{ marginTop: theme.spacing(4) }} 
+          fullWidth
           type="manufacturer"
           label={ strings.dashboard.devices.dialog.brand }
-          variant="outlined"
+          variant="filled"
           name="manufacturer"
           value={ selectedDevice ? selectedDevice.manufacturer : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
         />
-        <h4>{ strings.dashboard.devices.dialog.model }</h4>
         <TextField
+          style={{ marginTop: theme.spacing(3) }} 
+          fullWidth
           type="model"
           label={ strings.dashboard.devices.dialog.model }
-          variant="outlined"
+          variant="filled"
           name="model"
           value={ selectedDevice ? selectedDevice.model : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+        />
+        <Typography style={{ marginTop: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.type }</Typography>
+        <Select
+          variant="filled"
+          fullWidth
+          IconComponent={ props => (
+            <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+          )}
+          id="select-filtering"
+          defaultValue="SCREEN"
+        >
+          { typeOptions.map(option =>
+            <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+          )}
+        </Select>
+        <Typography style={{ marginTop: theme.spacing(2) }} variant="h6">{ strings.layout.settings.screenOrientation }</Typography>
+        <SelectionGroup 
+          firstOptionSelected={ false }
+          firstOptionIcon={ <PortraitIcon /> }
+          onFirstOptionClick={ () => {} }
+          secondOptionSelected={ true }
+          secondOptionIcon={ <LandscapeIcon /> }
+          onSecondOptionClick={ () => {} }
+        />
+        <FormControlLabel
+          style={{ marginTop: theme.spacing(2) }}
+          control={ 
+            <Switch
+              checked={ selectedDevice?.capabilities.touch }
+              onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event, selectedDevice?.capabilities.touch) }
+              color="secondary"
+              name="capabilities.touch"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+          label={ strings.dashboard.devices.dialog.touchscreen }
         />
       </EditorDialog>
     );
@@ -271,44 +330,55 @@ class DashboardDevicesView extends React.Component<Props, State> {
   private renderDisplayMetricOptions = () => {
     const { selectedDevice } = this.state;
 
-    return <>
-      <TextField
-        type="heightPixels"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayHeight }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.heightPixels : "" }
-        name="displayMetrics.heightPixels"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-
-      <TextField
-        type="widthPixels"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayWidth }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.widthPixels : "" }
-        name="displayMetrics.widthPixels"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-
-      <TextField
-        disabled
-        type="xdpi"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayXDpi }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.xdpi : "" }
-        name="displayMetrics.xdpi"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-
-      <TextField
-        disabled
-        type="ydpi"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayYDpi } variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.ydpi : "" }
-        name="displayMetrics.ydpi"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-    </>
+    return (
+      <Grid container spacing={ 2 }>
+        <Grid item xs={ 6 }>
+          <TextField
+            fullWidth
+            type="heightPixels"
+            label={ strings.dashboard.devices.dialog.displayMetrics.displayHeight }
+            variant="outlined"
+            value={ selectedDevice ? selectedDevice.displayMetrics.heightPixels : "" }
+            name="displayMetrics.heightPixels"
+            onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+          />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            fullWidth
+            type="widthPixels"
+            label={ strings.dashboard.devices.dialog.displayMetrics.displayWidth }
+            variant="outlined"
+            value={ selectedDevice ? selectedDevice.displayMetrics.widthPixels : "" }
+            name="displayMetrics.widthPixels"
+            onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+            />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            fullWidth
+            disabled
+            type="xdpi"
+            label={ strings.dashboard.devices.dialog.displayMetrics.displayXDpi }
+            variant="outlined"
+            value={ selectedDevice ? selectedDevice.displayMetrics.xdpi : "" }
+            name="displayMetrics.xdpi"
+            onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+          />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            fullWidth
+            disabled
+            type="ydpi"
+            label={ strings.dashboard.devices.dialog.displayMetrics.displayYDpi } variant="outlined"
+            value={ selectedDevice ? selectedDevice.displayMetrics.ydpi : "" }
+            name="displayMetrics.ydpi"
+            onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
+          />
+        </Grid>
+      </Grid>
+    );
   }
 
   /**

@@ -102,12 +102,16 @@
           "displayYDpi": "Dots per inch (y-axis)"
         },
         "dimensions" : {
-          "physicalSize": "Physical size",
-          "width": "Device width",
-          "height": "Device height"
+          "physicalSize": "Physical size (mm)",
+          "width": "Width",
+          "height": "Height",
+          "depth": "Depth"
         },
         "type": "Type",
-        "touchScreen": "Touch screen"
+        "orientation": "Orientation",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "touchscreen": "Touchscreen"
       }
     },
     "layouts": {
@@ -158,9 +162,9 @@
       "name": "Name"
     },
     "settings": {
-      "screenOrientation": "Ruudun suunta",
-      "portrait": "Pysty",
-      "landscape": "Vaaka"
+      "screenOrientation": "Device orientation",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
     },
     "properties": {
       "title": "Properties"
@@ -175,6 +179,13 @@
         "byCreatedAt": "Last created"
       }
     }
+
+  },
+
+  "deviceTypes": {
+
+    "screen": "Screen",
+    "projector": "Projector"
 
   },
 
