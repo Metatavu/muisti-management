@@ -6,13 +6,13 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mate
  * Interface representing component properties
  */
 interface Props {
-  title: string,
-  positiveButtonText: string,
-  cancelButtonText: string,
+  title: string;
+  positiveButtonText: string;
+  cancelButtonText: string;
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;
-  open: boolean
+  open: boolean;
 }
 
 /**
@@ -29,7 +29,7 @@ export default class EditorDialog extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -37,11 +37,11 @@ export default class EditorDialog extends React.Component<Props, State> {
     this.state = { };
   }
 
-  /** 
+  /**
    * Component render method
    */
   public render() {
-    const { 
+    const {
       open,
       positiveButtonText,
       cancelButtonText,

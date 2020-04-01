@@ -3,10 +3,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxState, ReduxActions } from "../../store";
-import { setSelectedExhibition } from "../../actions/exhibitions";
+import { setDeviceModels } from "../../actions/devices";
 
 // eslint-disable-next-line max-len
-import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton, Dialog } from '@material-ui/core';
+import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -14,7 +14,7 @@ import styles from "../../styles/dashboard-component-styles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken } from "../../types";
-import { Exhibition, DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions } from "../../generated/client";
+import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions } from "../../generated/client";
 import strings from "../../localization/strings";
 import DashboardLayout from "./dashboard-layout";
 import moment from "moment";
@@ -35,7 +35,8 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  setSelectedExhibition: typeof setSelectedExhibition;
+  devices: DeviceModel[];
+  setDeviceModels: typeof setDeviceModels;
 }
 
 /**
@@ -43,12 +44,11 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   error?: string | Error;
-  devices: DeviceModel[];
   loading: boolean;
   deviceSettingsPanelOpen: boolean;
   newDevice: boolean;
   selectedDevice?: DeviceModel;
-  addDeviceDialogOpen: boolean;
+  deviceDialogOpen: boolean;
   deleteDialogOpen: boolean;
 }
 
@@ -66,36 +66,11 @@ class DashboardDevicesView extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      devices: [],
       newDevice: false,
       deviceSettingsPanelOpen: false,
-      addDeviceDialogOpen: false,
+      deviceDialogOpen: false,
       deleteDialogOpen: false
     };
-  }
-
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = async () => {
-    this.setState({
-      loading: true
-    });
-
-    try {
-      const { accessToken } = this.props;
-
-      const exhibitionDeviceModelsApi = Api.getDeviceModelsApi(accessToken);
-      const devices = await exhibitionDeviceModelsApi.listDeviceModels();
-
-      this.setState({ devices });
-    } catch (error) {
-      this.setState({ error });
-    }
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
@@ -108,7 +83,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
       { name: strings.filtering.dashboard.devices.all , value: "ALL" }
     ];
 
-    const devices = this.state.devices && this.state.devices.map(device => this.renderDeviceListItem(device));
+    const devices = this.props.devices && this.props.devices.map(device => this.renderDeviceListItem(device));
     if (this.state.loading) {
       return (
         <DashboardLayout history={ history }>
@@ -129,7 +104,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
               <Typography variant="h2" component="span">
                 { strings.dashboard.devices.title }
               </Typography>
-              <Button 
+              <Button
                 disableElevation
                 variant="contained"
                 className={ classes.actionBtn }
@@ -150,7 +125,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
                     IconComponent={ props => (
                       <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
                     )}
-                    id="select-filtering" 
+                    id="select-filtering"
                     defaultValue="ALL"
                   >
                   { filterOptions.map(option =>
@@ -169,7 +144,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           </List>
         </div>
         { this.renderModifyDeviceDialog() }
-        {/* { this.renderConfirmDeleteDialog() } */}
+        { this.renderConfirmDeleteDialog() }
     </DashboardLayout>
     );
   }
@@ -191,7 +166,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         </ListItemAvatar>
         <ListItemText primary={ device.model } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete" onClick={ () => this.setState({ deleteDialogOpen: true }) }>
+          <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDialogOpen(device) }>
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -202,19 +177,22 @@ class DashboardDevicesView extends React.Component<Props, State> {
   /**
    * Render device delete confirmation dialog
    */
-  private renderConfirmDeleteDialog = ( device: DeviceModel ) => {
-    return (
-      <ConfirmDialog
-        open={ this.state.deleteDialogOpen }
-        title="Poista laite?"
-        text="Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa"
-        onClose={() => {}} 
-        onCancel={() => this.setState({ deleteDialogOpen: false })}
-        onConfirm={() => this.onDeleteDeviceClick( device )}
-        positiveButtonText="Poista"
-        cancelButtonText="Peruuta"
-      /> 
-    )
+  private renderConfirmDeleteDialog = () => {
+    const { selectedDevice } = this.state;
+    if (selectedDevice) {
+      return (
+        <ConfirmDialog
+          open={ this.state.deleteDialogOpen }
+          title="Poista laite?"
+          text="Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa"
+          onClose={ () => this.onDeleteDialogClose() }
+          onCancel={ () => this.onDeleteDialogClose() }
+          onConfirm={ () => this.onDeleteDeviceClick(selectedDevice) }
+          positiveButtonText="Poista"
+          cancelButtonText="Peruuta"
+        />
+      );
+    }
   }
 
 
@@ -223,15 +201,15 @@ class DashboardDevicesView extends React.Component<Props, State> {
    */
   private renderModifyDeviceDialog = () => {
 
-    const { selectedDevice, newDevice, addDeviceDialogOpen } = this.state;
+    const { selectedDevice, newDevice, deviceDialogOpen } = this.state;
 
     return (
       <EditorDialog
-        open={ addDeviceDialogOpen }
+        open={ deviceDialogOpen }
         title={ newDevice ? "Uusi laite" : selectedDevice ? `Muokkaa laitetta - ${selectedDevice.model}` : "Muokkaa laitetta" }
-        onClose={() => {}}  
-        onCancel={() => this.setState({ addDeviceDialogOpen:false })}
-        onConfirm={() => this.onSaveDeviceClick()}
+        onClose={ () => this.onDeviceDialogClose() }
+        onCancel={ () => this.onDeviceDialogClose() }
+        onConfirm={ () => this.onSaveDeviceClick() }
         positiveButtonText="Tallenna"
         cancelButtonText="Peruuta"
       >
@@ -252,7 +230,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           name="dimensions.width"
           value={ selectedDevice ? selectedDevice.dimensions.width : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
+        />
 
         <TextField
           type="height"
@@ -261,8 +239,8 @@ class DashboardDevicesView extends React.Component<Props, State> {
           name="dimensions.height"
           value={ selectedDevice ? selectedDevice.dimensions.height : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
-        
+        />
+
         <h4>{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</h4>
         { this.renderDisplayMetricOptions() }
         <h4>{ strings.dashboard.devices.dialog.brand }</h4>
@@ -273,7 +251,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           name="manufacturer"
           value={ selectedDevice ? selectedDevice.manufacturer : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
+        />
         <h4>{ strings.dashboard.devices.dialog.model }</h4>
         <TextField
           type="model"
@@ -295,15 +273,6 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     return <>
       <TextField
-        type="density"
-        label={ strings.dashboard.devices.dialog.displayMetrics.resolution }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.density : "" }
-        name="displayMetrics.density"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
-
-      <TextField
         type="heightPixels"
         label={ strings.dashboard.devices.dialog.displayMetrics.displayHeight }
         variant="outlined"
@@ -319,9 +288,10 @@ class DashboardDevicesView extends React.Component<Props, State> {
         value={ selectedDevice ? selectedDevice.displayMetrics.widthPixels : "" }
         name="displayMetrics.widthPixels"
         onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
+      />
 
       <TextField
+        disabled
         type="xdpi"
         label={ strings.dashboard.devices.dialog.displayMetrics.displayXDpi }
         variant="outlined"
@@ -331,21 +301,22 @@ class DashboardDevicesView extends React.Component<Props, State> {
       />
 
       <TextField
+        disabled
         type="ydpi"
         label={ strings.dashboard.devices.dialog.displayMetrics.displayYDpi } variant="outlined"
         value={ selectedDevice ? selectedDevice.displayMetrics.ydpi : "" }
         name="displayMetrics.ydpi"
         onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
+      />
     </>
   }
 
   /**
    * Device info change handler
    * @param event React changeevent
-   * @param checkboxValue checkbox value 
+   * @param checkboxValue checkbox value
    */
-  private onDeviceInfoChange = async (event: React.ChangeEvent<HTMLInputElement>, checkboxValue?: boolean) => {
+  private onDeviceInfoChange = (event: React.ChangeEvent<HTMLInputElement>, checkboxValue?: boolean) => {
     const { name, value } = event.target;
 
     const variable = name.split(".");
@@ -364,7 +335,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         let variableToUpdate;
         if (key1 === "dimensions") {
           variableToUpdate = deviceToUpdate[key1] as DeviceModelDimensions;
-  
+
           if (hasKey(variableToUpdate, key2)) {
             variableToUpdate[key2] = Number(value);
           }
@@ -373,26 +344,26 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
         if (key1 === "displayMetrics") {
           variableToUpdate = deviceToUpdate[key1] as DeviceModelDisplayMetrics;
-  
+
           if (hasKey(variableToUpdate, key2)) {
             variableToUpdate[key2] = Number(value);
           }
-  
+
           deviceToUpdate[key1] = variableToUpdate;
         }
 
         if (key1 === "capabilities") {
           variableToUpdate = deviceToUpdate[key1] as DeviceModelCapabilities;
-  
+
           if (hasKey(variableToUpdate, key2)) {
             variableToUpdate[key2] = !checkboxValue;
           }
-  
+
           deviceToUpdate[key1] = variableToUpdate;
         }
       }
     } else {
-      deviceToUpdate = { ...this.state.selectedDevice, [name]: value } as DeviceModel; 
+      deviceToUpdate = { ...this.state.selectedDevice, [name]: value } as DeviceModel;
     }
 
     this.setState({
@@ -404,9 +375,9 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * On device click handler
    * @param device selected device
    */
-  private onDeviceClick = async (device: DeviceModel) => {
+  private onDeviceClick = (device: DeviceModel) => {
     this.setState({
-      addDeviceDialogOpen: true,
+      deviceDialogOpen: true,
       newDevice: false,
       selectedDevice: device
     });
@@ -418,7 +389,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
    */
   private onDeleteDeviceClick = async (deviceToDelete: DeviceModel) => {
     const { accessToken } = this.props;
- 
+
     if (deviceToDelete) {
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
@@ -426,17 +397,14 @@ class DashboardDevicesView extends React.Component<Props, State> {
         deviceModelId: deviceToDelete.id!
       });
 
-      const devices = [...this.state.devices];
+      const devices = [...this.props.devices];
       const index = devices.findIndex(device => deviceToDelete.id === device.id);
 
       if (index > -1) {
         devices.splice(index, 1);
 
-        this.setState({
-          devices: devices,
-          selectedDevice: undefined,
-          deleteDialogOpen: false
-        });
+        this.props.setDeviceModels(devices);
+        this.onDeleteDialogClose();
       }
     }
   }
@@ -444,12 +412,12 @@ class DashboardDevicesView extends React.Component<Props, State> {
   /**
    * On save device click handler
    */
-  private onSaveDeviceClick = async () => {
+  private onSaveDeviceClick = () => {
     const { newDevice } = this.state;
 
     if (newDevice) {
       this.createNewDevice();
-    } 
+    }
     else {
       this.updateDevice();
     }
@@ -461,19 +429,16 @@ class DashboardDevicesView extends React.Component<Props, State> {
   private createNewDevice = async () => {
     const { accessToken } = this.props;
     const { selectedDevice } = this.state;
- 
+
     if (selectedDevice) {
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
       const createdDevice = await deviceModelsApi.createDeviceModel({
         deviceModel: selectedDevice
       });
-  
-      this.setState({
-        devices: [...this.state.devices, createdDevice],
-        selectedDevice: createdDevice,
-        deviceSettingsPanelOpen: false
-      });
+
+      this.props.setDeviceModels([...this.props.devices, createdDevice]);
+      this.onDeviceDialogClose();
     }
   }
 
@@ -483,26 +448,23 @@ class DashboardDevicesView extends React.Component<Props, State> {
   private updateDevice = async () => {
     const { accessToken } = this.props;
     const { selectedDevice } = this.state;
- 
+
     if (selectedDevice) {
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
-    
+
       const updatedDevice = await deviceModelsApi.updateDeviceModel({
         deviceModel: selectedDevice,
         deviceModelId: selectedDevice.id!
       });
 
-      const devices = [...this.state.devices];
+      const devices = [...this.props.devices];
       const index = devices.findIndex(device => updatedDevice.id === device.id);
 
       if (index > -1) {
         devices.splice(index, 1);
 
-        this.setState({
-          devices: [...devices, updatedDevice],
-          selectedDevice: updatedDevice,
-          deviceSettingsPanelOpen: false
-        });
+        this.props.setDeviceModels([...devices, updatedDevice]);
+        this.onDeviceDialogClose();
       }
     }
   }
@@ -539,10 +501,42 @@ class DashboardDevicesView extends React.Component<Props, State> {
     };
 
     this.setState({
-      addDeviceDialogOpen: true,
+      deviceDialogOpen: true,
       deviceSettingsPanelOpen: true,
       newDevice: true,
       selectedDevice: newDeviceModel,
+    });
+  }
+
+  /**
+   * On device dialog close handler
+   */
+  private onDeviceDialogClose = () => {
+    this.setState({
+      selectedDevice: undefined,
+      deviceDialogOpen: false
+    });
+  }
+
+  /**
+   * On delete device dialog open handler
+   *
+   * @param selectedDevice selected device
+   */
+  private onDeleteDialogOpen = (selectedDevice: DeviceModel) => {
+    this.setState({
+      selectedDevice,
+      deleteDialogOpen: true
+    });
+  }
+
+  /**
+   * On delete device dialog close handler
+   */
+  private onDeleteDialogClose = () => {
+    this.setState({
+      selectedDevice: undefined,
+      deleteDialogOpen: false
     });
   }
 }
@@ -566,7 +560,7 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    devices: state.devices.deviceModels
   };
 }
 
@@ -577,7 +571,7 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
+    setDeviceModels: (deviceModels: DeviceModel[]) => dispatch(setDeviceModels(deviceModels))
   };
 }
 
