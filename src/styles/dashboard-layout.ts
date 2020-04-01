@@ -1,6 +1,9 @@
 import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
+/**
+ * Dashboard layout styles
+ */
 export default createStyles({
   
   root: {
@@ -99,7 +102,7 @@ export default createStyles({
     backgroundColor: theme.palette.background.paper
   },
 
-  newExhibitionBtn: {
+  actionBtn: {
     marginRight: 20,
     borderRadius: 100,
     textTransform: "initial"

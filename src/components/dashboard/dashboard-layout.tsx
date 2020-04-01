@@ -107,7 +107,7 @@ class DashboardLayout extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <Button disableElevation variant="contained" className={ classes.newExhibitionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
+      <Button disableElevation variant="contained" className={ classes.actionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
     );
   }
 

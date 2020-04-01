@@ -6,15 +6,11 @@ import { ReduxState, ReduxActions } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 // eslint-disable-next-line max-len
-import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton } from "@material-ui/core";
-import { TreeView } from "@material-ui/lab";
+import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton, Dialog } from '@material-ui/core';
 
-import SearchIcon from '@material-ui/icons/Search';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
 
-import styles from "../../styles/dashboard-recent-view";
+import styles from "../../styles/dashboard-component-styles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken } from "../../types";
@@ -24,7 +20,12 @@ import DashboardLayout from "./dashboard-layout";
 import moment from "moment";
 import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
+
 import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
+import EditorDialog from '../generic/editor-dialog';
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import theme from "../../styles/theme";
+import ConfirmDialog from "../generic/confirm-dialog";
 
 
 /**
@@ -47,6 +48,8 @@ interface State {
   deviceSettingsPanelOpen: boolean;
   newDevice: boolean;
   selectedDevice?: DeviceModel;
+  addDeviceDialogOpen: boolean;
+  deleteDialogOpen: boolean;
 }
 
 /**
@@ -66,6 +69,8 @@ class DashboardDevicesView extends React.Component<Props, State> {
       devices: [],
       newDevice: false,
       deviceSettingsPanelOpen: false,
+      addDeviceDialogOpen: false,
+      deleteDialogOpen: false
     };
   }
 
@@ -114,36 +119,47 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     return (
       <DashboardLayout history={ history }>
-        <div className={ classes.titleGrid }>
           <Grid
             container
             direction="row"
             justify="space-between"
             alignItems="center"
           >
-            <Grid item key="title">
+            <Grid container key="title" justify="space-between" direction="row" alignItems="center" >
               <Typography variant="h2" component="span">
                 { strings.dashboard.devices.title }
               </Typography>
+              <Button 
+                disableElevation
+                variant="contained"
+                className={ classes.actionBtn }
+                onClick={ () => this.onAddDeviceClick() }
+                >
+                { strings.dashboard.devices.newDevice }
+              </Button>
             </Grid>
-            <Grid item key="list-functions">
-              <Select
-                IconComponent={ props => (
-                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
-                )}
-                id="select-filtering" 
-                defaultValue="ALL"
-              >
-                { filterOptions.map(option =>
-                  <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
-                )}
-              </Select>
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
+            <Grid container key="search" justify="space-between" alignItems="center" direction="row" style={{ marginTop: theme.spacing(4) }} >
+              <Grid item>
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <SearchIcon fontSize="small" color="primary" style={{ marginRight: theme.spacing(1) }} />
+                  <TextField id="search-input" label="Hae..." />
+                </div>
+              </Grid>
+                <Grid item key="list-functions">
+                  <Select
+                    IconComponent={ props => (
+                      <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+                    )}
+                    id="select-filtering" 
+                    defaultValue="ALL"
+                  >
+                  { filterOptions.map(option =>
+                    <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+                  )}
+                </Select>
+              </Grid>
             </Grid>
           </Grid>
-        </div>
         <Divider />
         <div className={ classes.content }>
           <List>
@@ -152,8 +168,8 @@ class DashboardDevicesView extends React.Component<Props, State> {
             }
           </List>
         </div>
-        <Button onClick={ () => this.onAddDeviceClick() }><AddCircleIcon/></Button>
-        { this.state.deviceSettingsPanelOpen && this.renderModifyDevice() }
+        { this.renderModifyDeviceDialog() }
+        {/* { this.renderConfirmDeleteDialog() } */}
     </DashboardLayout>
     );
   }
@@ -162,20 +178,20 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * Renders device list item
    */
   private renderDeviceListItem = (device: DeviceModel) => {
-
+    const { classes } = this.props;
     const deviceId = device.id;
     if (!deviceId) {
       return;
     }
 
     return (
-      <ListItem button onClick={ () => this.onDeviceClick(device) } >
-        <ListItemAvatar>
+      <ListItem button onClick={ () => this.onDeviceClick( device ) } >
+        <ListItemAvatar className={ classes.muistiAvatar }>
           <Avatar src={ defaultExhibitionImage } />
         </ListItemAvatar>
         <ListItemText primary={ device.model } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDeviceClick(device) }>
+          <IconButton edge="end" aria-label="delete" onClick={ () => this.setState({ deleteDialogOpen: true }) }>
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -184,15 +200,41 @@ class DashboardDevicesView extends React.Component<Props, State> {
   }
 
   /**
+   * Render device delete confirmation dialog
+   */
+  private renderConfirmDeleteDialog = ( device: DeviceModel ) => {
+    return (
+      <ConfirmDialog
+        open={ this.state.deleteDialogOpen }
+        title="Poista laite?"
+        text="Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa"
+        onClose={() => {}} 
+        onCancel={() => this.setState({ deleteDialogOpen: false })}
+        onConfirm={() => this.onDeleteDeviceClick( device )}
+        positiveButtonText="Poista"
+        cancelButtonText="Peruuta"
+      /> 
+    )
+  }
+
+
+  /**
    * Render device settings view
    */
-  private renderModifyDevice = () => {
+  private renderModifyDeviceDialog = () => {
 
-    const { selectedDevice } = this.state;
+    const { selectedDevice, newDevice, addDeviceDialogOpen } = this.state;
 
-    return <>
-      <TreeView>
-        <h4>{ strings.dashboard.devices.capabilities }</h4>
+    return (
+      <EditorDialog
+        open={ addDeviceDialogOpen }
+        title={ newDevice ? "Uusi laite" : selectedDevice ? `Muokkaa laitetta - ${selectedDevice.model}` : "Muokkaa laitetta" }
+        onClose={() => {}}  
+        onCancel={() => this.setState({ addDeviceDialogOpen:false })}
+        onConfirm={() => this.onSaveDeviceClick()}
+        positiveButtonText="Tallenna"
+        cancelButtonText="Peruuta"
+      >
         <h5>{ strings.dashboard.devices.dialog.touchScreen }</h5>
         <Switch
           checked={ selectedDevice?.capabilities.touch }
@@ -240,10 +282,9 @@ class DashboardDevicesView extends React.Component<Props, State> {
           name="model"
           value={ selectedDevice ? selectedDevice.model : "" }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
-      </TreeView>
-      <Button onClick={ () => this.onSaveDeviceClick() } ><SaveIcon/></Button>
-    </>
+        />
+      </EditorDialog>
+    );
   }
 
   /**
@@ -365,7 +406,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
    */
   private onDeviceClick = async (device: DeviceModel) => {
     this.setState({
-      deviceSettingsPanelOpen: true,
+      addDeviceDialogOpen: true,
       newDevice: false,
       selectedDevice: device
     });
@@ -394,7 +435,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         this.setState({
           devices: devices,
           selectedDevice: undefined,
-          deviceSettingsPanelOpen: false
+          deleteDialogOpen: false
         });
       }
     }
@@ -498,6 +539,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
     };
 
     this.setState({
+      addDeviceDialogOpen: true,
       deviceSettingsPanelOpen: true,
       newDevice: true,
       selectedDevice: newDeviceModel,

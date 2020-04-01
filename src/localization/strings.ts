@@ -92,6 +92,7 @@ export interface IStrings extends LocalizedStringsMethods {
     devices: {
       title: string;
       capabilities: string;
+      newDevice: string;
       dialog: {
         brand: string;
         model: string;

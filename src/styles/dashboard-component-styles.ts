@@ -1,6 +1,9 @@
 import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
+/**
+ * Dashboard commonly used component stylings
+ */
 export default createStyles({
 
   muistiAvatar: {
@@ -15,12 +18,12 @@ export default createStyles({
     }
   },
 
-  titleGrid: {
-    marginBottom: 50
-  },
-
   content: {
     marginTop: 50
-  }
+  },
 
+  actionBtn: {
+    borderRadius: 100,
+    textTransform: "initial"
+  },
 });

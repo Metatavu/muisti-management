@@ -7,7 +7,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, IconButton } from "@material-ui/core";
-import styles from "../../styles/dashboard-recent-view";
+import styles from "../../styles/dashboard-component-styles";
 
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
@@ -79,37 +79,35 @@ class DashboardRecentView extends React.Component<Props, State> {
 
     return (
       <DashboardLayout history={ history }>
-        <div className={ classes.titleGrid }>
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="center"
-          >
-            <Grid item key="title">
-              <Typography variant="h2" component="span">
-                { strings.dashboard.recent.title }
-              </Typography>
-            </Grid>
-            <Grid item key="list-functions">
-              <Select
-                IconComponent={ props => (
-                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
-                )}
-                id="select-sorting"
-                value={ recentSortBy }
-                onChange={ this.handleSortChange }
-              >
-                { sortOptions.map(option =>
-                  <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
-                )}
-              </Select>
-              <IconButton>
-                <SearchIcon fontSize="small" />
-              </IconButton>
-            </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+        >
+          <Grid item key="title">
+            <Typography variant="h2" component="span">
+              { strings.dashboard.recent.title }
+            </Typography>
           </Grid>
-        </div>
+          <Grid item key="list-functions">
+            <Select
+              IconComponent={ props => (
+                <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+              )}
+              id="select-sorting"
+              value={ recentSortBy }
+              onChange={ this.handleSortChange }
+            >
+              { sortOptions.map(option =>
+                <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+              )}
+            </Select>
+            <IconButton>
+              <SearchIcon fontSize="small" />
+            </IconButton>
+          </Grid>
+        </Grid>
         <Divider />
         <div className={ classes.content }>
           <List>

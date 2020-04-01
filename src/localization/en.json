@@ -88,6 +88,8 @@
     },
     "devices": {
       "title": "Devices",
+      "capabilities": "Capabilities",
+      "newDevice": "New device",
       "dialog": {
         "brand": "Brand",
         "model": "Model",

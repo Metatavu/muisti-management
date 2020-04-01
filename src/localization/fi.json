@@ -88,6 +88,8 @@
     },
     "devices": {
       "title": "Laitteet",
+      "capabilities": "Ominaisuudet",
+      "newDevice": "Uusi laite",
       "dialog": {
         "brand": "Merkki",
         "model": "Malli",

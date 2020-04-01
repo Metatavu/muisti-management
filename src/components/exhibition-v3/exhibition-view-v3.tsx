@@ -13,7 +13,7 @@ import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typograp
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType, ExhibitionPageEventPropertyType } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import BasicLayoutV3 from "../generic/basic-layout-v3";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
