@@ -5,14 +5,19 @@ export default createStyles({
   
   root: {
     backgroundColor: "#f3f3f3",
-    borderRadius: 4,
-    padding: 4
+    borderRadius: 4
   },
 
   button: {
     width: "100%",
     borderRadius: 4,
     height: 30,
+    color: "#888",
+    "&.no-text": {
+      "& .MuiButton-startIcon": {
+        margin: 0
+      },
+    },
     "&.selected": {
       color: theme.palette.secondary.main,
       backgroundColor: "#fff",

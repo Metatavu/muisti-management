@@ -7,13 +7,37 @@ import styles from "../../styles/selection-group";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  /**
+   * Icon for the first option
+   */
   firstOptionIcon?: React.ReactElement,
+  /**
+   * Text for the first option
+   */
   firstOptionText?: string,
+  /**
+   * Icon for the second option
+   */
   secondOptionIcon?: React.ReactElement,
+  /**
+   * Text for the first option
+   */
   secondOptionText?: string,
+  /**
+   * First element selection
+   */
   firstOptionSelected?: boolean,
+  /**
+   * Second element selection
+   */
   secondOptionSelected?: boolean,
+  /**
+   * First element click handler
+   */
   onFirstOptionClick: () => void,
+  /**
+   * Second element click handler
+   */
   onSecondOptionClick: () => void
 }
 
@@ -55,39 +79,23 @@ class SelectionGroup extends React.Component<Props, State> {
       onSecondOptionClick
     } = this.props;
     return (
-      <Grid container className={ classes.root } xs={ 6 } justify="space-between">
-        {
-          firstOptionText &&
-          <Grid item xs={ 6 }>
-            <Button className={ classNames( classes.button, firstOptionSelected ? "selected" : "" ) } variant="contained" onClick={() => onFirstOptionClick() } >
-              { firstOptionText }
-            </Button>
-          </Grid>
-        }
-        {
-          secondOptionText &&
-          <Grid item xs={ 6 }>
-            <Button className={ classNames( classes.button, secondOptionSelected ? "selected" : "" ) } variant="contained" onClick={() => onSecondOptionClick() } >
-              { secondOptionText }
-            </Button>
-          </Grid>
-        }
-        {
-          firstOptionIcon &&
-          <Grid item xs={ 6 }>
-            <IconButton className={ classNames( classes.button, firstOptionSelected ? "selected" : "" ) } onClick={() => onFirstOptionClick() } >
-              { firstOptionIcon }
-            </IconButton>
-          </Grid>
-        }
-        {
-          secondOptionIcon &&
-          <Grid item xs={ 6 }>
-            <IconButton className={ classNames( classes.button, secondOptionSelected ? "selected" : "" ) } onClick={() => onSecondOptionClick() } >
-              { secondOptionIcon }
-            </IconButton>
-          </Grid>
-        }
+      <Grid container className={ classes.root } xs={ 6 } spacing={ 1 } justify="space-between">
+        <Grid item xs={ 6 }>
+          <Button 
+            startIcon={ firstOptionIcon ? firstOptionIcon : "" }
+            className={ classNames( classes.button, !firstOptionText ? "no-text": "", firstOptionSelected ? "selected" : "" ) }
+            onClick={() => onFirstOptionClick() } >
+            { firstOptionText }
+          </Button>
+        </Grid>
+        <Grid item xs={ 6 }>
+          <Button 
+            startIcon={ secondOptionIcon ? secondOptionIcon : "" }
+            className={ classNames( classes.button, !secondOptionText ? "no-text": "", secondOptionSelected ? "selected" : "" ) }
+            onClick={() => onSecondOptionClick() } >
+            { secondOptionText }
+          </Button>
+        </Grid>
       </Grid>
     );
   }
