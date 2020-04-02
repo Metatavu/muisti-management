@@ -61,11 +61,12 @@ export default createMuiTheme({
     },
     MuiPaper: {
       rounded: {
-        borderRadius: 8
+        borderRadius: 10
       }
     },
     MuiButton: {
       root: {
+        fontFamily: "TTNorms-Medium",
         textTransform: "initial",
       },
       textPrimary: {

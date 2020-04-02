@@ -318,11 +318,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
           )}
         </Select>
         <Typography style={{ marginTop: theme.spacing(2) }} variant="h6">{ strings.layout.settings.screenOrientation }</Typography>
-        <SelectionGroup
-          options={ selectOptions }
-          selectedIndex={ selectedIndex }
-          onChange={ this.onSelectChange }
-        />
+        <Grid style={{ marginTop: theme.spacing(1), marginLeft: 4 }} container xs={ 6 }>
+          <SelectionGroup
+            options={ selectOptions }
+            selectedIndex={ selectedIndex }
+            onChange={ this.onSelectChange }
+            />
+        </Grid>
         <FormControlLabel
           style={{ marginTop: theme.spacing(2) }}
           control={
