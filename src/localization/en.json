@@ -107,7 +107,7 @@
         "model": "Model",
         "displayMetrics": {
           "displayInfo": "Screen info",
-          "resolution": "Resolution",
+          "density": "Screen content size multiplier",
           "displayWidth": "Screen width (pixels)",
           "displayHeight": "Screen height (pixels)",
           "displayXDpi": "Dots per inch (x-axis)",

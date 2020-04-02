@@ -110,7 +110,7 @@ export interface IStrings extends LocalizedStringsMethods {
         model: string;
         displayMetrics: {
           displayInfo: string;
-          resolution: string;
+          density: string;
           displayWidth: string;
           displayHeight: string;
           displayXDpi: string;

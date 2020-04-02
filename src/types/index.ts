@@ -1,4 +1,4 @@
-import { ExhibitionPageResource } from "../generated/client";
+import { ExhibitionPageResource, DeviceModelCapabilities, DeviceModelDimensions, DeviceModelDisplayMetrics } from "../generated/client";
 
 /**
  * Interface describing an access token
@@ -24,3 +24,13 @@ export interface JsonLintParseErrorHash {
     "last_column": number;
   };
 }
+
+/**
+ * Union type for device model sub properties
+ */
+export type DeviceSubProperty = DeviceModelDimensions | DeviceModelDisplayMetrics | DeviceModelCapabilities;
+
+/**
+ * Union type for keys of device model sub properties
+ */
+export type DeviceSubPropertyKey = keyof DeviceModelDimensions | keyof DeviceModelDisplayMetrics | keyof DeviceModelCapabilities;

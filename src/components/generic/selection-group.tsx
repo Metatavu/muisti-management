@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Button, Grid, IconButton, WithStyles, withStyles } from '@material-ui/core';
+import { Button, Grid, WithStyles, withStyles } from '@material-ui/core';
 import classNames from "classnames";
 import styles from "../../styles/selection-group";
 /**
@@ -8,97 +8,64 @@ import styles from "../../styles/selection-group";
  */
 interface Props extends WithStyles<typeof styles> {
   /**
-   * Icon for the first option
+   * Options
    */
-  firstOptionIcon?: React.ReactElement,
+  options: SelectOptions;
   /**
-   * Text for the first option
+   * Selected index
    */
-  firstOptionText?: string,
+  selectedIndex: number;
   /**
-   * Icon for the second option
+   * Click handler
+   *
+   * @param optionIndex selected index
    */
-  secondOptionIcon?: React.ReactElement,
-  /**
-   * Text for the first option
-   */
-  secondOptionText?: string,
-  /**
-   * First element selection
-   */
-  firstOptionSelected?: boolean,
-  /**
-   * Second element selection
-   */
-  secondOptionSelected?: boolean,
-  /**
-   * First element click handler
-   */
-  onFirstOptionClick: () => void,
-  /**
-   * Second element click handler
-   */
-  onSecondOptionClick: () => void
+  onChange: (optionIndex: number) => void;
 }
 
 /**
- * Interface representing component state
+ * Interface representing component options
  */
-interface State {
+export interface SelectOptions {
+  data: OptionData[];
+}
 
+/**
+ * Interface representing component optionData
+ */
+export interface OptionData {
+  icon?: React.ReactElement;
+  text?: string;
 }
 
 /**
  * React custom selection component
  */
-class SelectionGroup extends React.Component<Props, State> {
-
-  /**
-   * Constructor
-   * 
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = { };
-  }
-
-  /** 
-   * Component render method
-   */
-  public render() {
-    const {
-      classes,
-      firstOptionIcon,
-      firstOptionText,
-      firstOptionSelected,
-      secondOptionIcon,
-      secondOptionText,
-      secondOptionSelected,
-      onFirstOptionClick,
-      onSecondOptionClick
-    } = this.props;
-    return (
-      <Grid container className={ classes.root } xs={ 6 } spacing={ 1 } justify="space-between">
-        <Grid item xs={ 6 }>
-          <Button 
-            startIcon={ firstOptionIcon ? firstOptionIcon : "" }
-            className={ classNames( classes.button, !firstOptionText ? "no-text": "", firstOptionSelected ? "selected" : "" ) }
-            onClick={() => onFirstOptionClick() } >
-            { firstOptionText }
-          </Button>
-        </Grid>
-        <Grid item xs={ 6 }>
-          <Button 
-            startIcon={ secondOptionIcon ? secondOptionIcon : "" }
-            className={ classNames( classes.button, !secondOptionText ? "no-text": "", secondOptionSelected ? "selected" : "" ) }
-            onClick={() => onSecondOptionClick() } >
-            { secondOptionText }
-          </Button>
-        </Grid>
-      </Grid>
-    );
-  }
+const SelectionGroup: React.FC<Props> = (props: Props) => {
+  return (
+    <Grid
+      container
+      className={ props.classes.root }
+      spacing={ 1 }
+      justify="space-between"
+    >
+      {
+        props.options.data.map((dataItem, index) => {
+          return (
+            <Grid item xs={ 6 }>
+              <Button
+                startIcon={ dataItem.icon }
+                className={ classNames( props.classes.button, !dataItem.text ? "no-text": "", props.selectedIndex === index ? "selected" : "" ) }
+                onClick={() => props.onChange(index) }
+              >
+                { dataItem.text }
+              </Button>
+            </Grid>
+          );
+        })
+      }
+    </Grid>
+  );
 }
 
 export default withStyles(styles)(SelectionGroup);

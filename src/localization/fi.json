@@ -107,7 +107,7 @@
         "model": "Malli",
         "displayMetrics": {
           "displayInfo": "Näytön tiedot",
-          "resolution": "Resoluutio",
+          "density": "Näytön sisällön kokokerroin",
           "displayWidth": "Näytön leveys (pikseliä)",
           "displayHeight": "Näytön korkeus (pikseliä)",
           "displayXDpi": "Pistettä tuumalle (x-akselilla)",
