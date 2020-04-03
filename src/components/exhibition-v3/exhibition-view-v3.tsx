@@ -47,7 +47,7 @@ interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
   exhibitionId: string;
-  exhibition?: Exhibition;
+  exhibition: Exhibition;
   layouts: PageLayout[];
   deviceModels: DeviceModel[];
   setSelectedExhibition: typeof setSelectedExhibition;
@@ -61,6 +61,7 @@ interface State {
   loading: boolean;
   pages: ExhibitionPage[];
   selectedElement?: ExhibitionPage;
+  pageLayout?: PageLayout;
   selectedResource?: ExhibitionPageResource;
   selectedEventTrigger?: ExhibitionPageEventTrigger;
   view: View;
@@ -220,7 +221,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
    */
   private renderVisualEditor = () => {
     const { classes } = this.props;
-    const { selectedElement } = this.state;
+    const { selectedElement, pageLayout } = this.state;
 
     if (!selectedElement) {
       return;
@@ -229,9 +230,8 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     const parsedCode = this.parseJsonCode();
 
     const resources = parsedCode.resources;
-    const layout = this.props.layouts.find(item => item.id === selectedElement.layoutId);
 
-    const view = layout?.data;
+    const view = pageLayout?.data;
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
     const scale = 0.3;
@@ -392,18 +392,18 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
           value={ this.state.selectedResource?.data }
           onChange={ this.onResourceDataChange }/>
       </>
-      
+
     }
 
     return <div>{ selectedResource.id } { widget }</div>;
   }
 
-    /**
+  /**
    * Renders resource editor
    */
   private renderEventTriggerEditor = () => {
-    const selectedEventTrigger = this.state.selectedEventTrigger;
-    if (!selectedEventTrigger) {
+    const { selectedEventTrigger, pageLayout } = this.state;
+    if (!selectedEventTrigger || !pageLayout) {
       return null;
     }
     const title = <Typography variant="h6">{ strings.exhibition.eventTriggers.title }</Typography>;
@@ -413,15 +413,16 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
         <EventTriggerEditor
           history = { this.props.history }
           classes = { this.props.classes }
-          selectedEventTrigger = { this.state.selectedEventTrigger! }
+          selectedEventTrigger = { selectedEventTrigger }
           pages = { this.state.pages }
+          layout = { pageLayout }
           jsonCode = { this.state.jsonCode }
           onParseJson = { this.parseJsonCode }
           onSaveJson = { this.updateJsonFromChild }
         />
       </>;
   }
-  
+
   /**
    * Code mirror lint method
    *
@@ -679,7 +680,7 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     });
   }
 
-    /**
+  /**
    * Event handler for event trigger node click
    *
    * @param eventTrigger selected node
@@ -895,9 +896,11 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
 
   private onSelectTreeItem = (selectedElement: ExhibitionPage) => {
     const jsonCode = this.toJsonCode(selectedElement);
+    const pageLayout = this.props.layouts.find(item => item.id === selectedElement.layoutId);
     this.setState({
       selectedElement,
-      jsonCode
+      jsonCode,
+      pageLayout
     });
   }
 

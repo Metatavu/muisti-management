@@ -156,7 +156,9 @@ export interface IStrings extends LocalizedStringsMethods {
     },
     eventTriggers: {
       title: string;
-      viewId: string;
+      clickViewIdTitle: string;
+      clickViewId: string;
+      delayTitle: string;
       delay: string;
       actions: string;
       variableName: string;

@@ -156,10 +156,12 @@
       }
     },
     "eventTriggers": {
-      "title": "Event triggers",
-      "viewId": "Näkymä id",
-      "delay": "Viive",
-      "actions": "Tapahtumat",
+      "title": "Tapahtumat",
+      "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
+      "clickViewId": "Elementti",
+      "delayTitle": "Tapahtuu viiveen jälkeen",
+      "delay": "Viive (millisekunneissa)",
+      "actions": "Toiminnot",
       "variableName": "Käyttäjän muuttujan nimi",
       "variableValue": "Käyttäjän muuttujan arvo",
       "selectPage": "Valitse sivu"

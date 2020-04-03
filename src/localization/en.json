@@ -156,9 +156,11 @@
       }
     },
     "eventTriggers": {
-      "title": "Event triggers",
-      "viewId": "View id",
-      "delay": "Delay",
+      "title": "Events",
+      "clickViewIdTitle": "Triggers when element is clicked",
+      "clickViewId": "Element",
+      "delayTitle": "Triggers after delay",
+      "delay": "Viive (in milliseconds)",
       "actions": "Actions",
       "variableName": "User variable name",
       "variableValue": "User variable value",
