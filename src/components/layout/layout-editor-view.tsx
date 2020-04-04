@@ -248,10 +248,11 @@ export class LayoutEditorView extends React.Component<Props, State> {
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModels[0]);
     const scale = 0.3;
+    const screenOrientation = this.state.screenOrientation;
 
     return (
       <div className={ classes.editors }>
-        <PagePreview view={ view } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview view={ view } displayMetrics={ displayMetrics } scale={ scale } screenOrientation={ screenOrientation }/>
       </div>
     );
   }
