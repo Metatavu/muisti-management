@@ -232,13 +232,14 @@ export class ExhibitionViewV3 extends React.Component<Props, State> {
     const layout = this.props.layouts.find(item => item.id === selectedElement.layoutId);
 
     const view = layout?.data;
+    const screenOrientation = layout?.screenOrientation;
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
     const scale = 0.3;
-
+    
     return (
       <div className={ classes.visualEditorContainer }>
-        <PagePreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale } screenOrientation={ screenOrientation }/>
       </div>
     );
   }
