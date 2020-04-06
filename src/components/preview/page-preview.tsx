@@ -47,22 +47,22 @@ class PagePreview extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, screenOrientation } = this.props;
+    const { classes, screenOrientation, displayMetrics, scale, view } = this.props;
 
-    let height = this.props.displayMetrics.heightPixels * this.props.scale;
-    let width = this.props.displayMetrics.widthPixels * this.props.scale;
+    let height = displayMetrics.heightPixels * scale;
+    let width = displayMetrics.widthPixels * scale;
 
     if(screenOrientation && screenOrientation === ScreenOrientation.Landscape){
-      height = this.props.displayMetrics.widthPixels * this.props.scale;
-      width = this.props.displayMetrics.heightPixels * this.props.scale;
+      height = displayMetrics.widthPixels * scale;
+      width = displayMetrics.heightPixels * scale;
     }
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
         <PagePreviewComponentEditor 
-          view={ this.props.view } 
-          displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale } 
+          view={ view } 
+          displayMetrics={ displayMetrics } 
+          scale={ scale } 
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }/>
       </div>
