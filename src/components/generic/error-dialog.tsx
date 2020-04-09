@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import strings from "../../localization/strings";
 import * as moment from "moment";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
@@ -7,8 +8,8 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
  * Interface representing component properties
  */
 interface Props {
-  error: string | Error,
-  onClose: () => void
+  error: string | Error;
+  onClose: () => void;
 }
 
 /**

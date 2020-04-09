@@ -24,7 +24,7 @@ export interface Exhibition {
      * @type {string}
      * @memberof Exhibition
      */
-    id?: string;
+    readonly id?: string;
     /**
      * 
      * @type {string}
@@ -36,25 +36,25 @@ export interface Exhibition {
      * @type {string}
      * @memberof Exhibition
      */
-    creator_id?: string;
+    readonly creatorId?: string;
     /**
      * 
      * @type {string}
      * @memberof Exhibition
      */
-    last_modifier_id?: string;
+    readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
      * @memberof Exhibition
      */
-    created_at?: Date;
+    readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
      * @memberof Exhibition
      */
-    modified_at?: Date;
+    readonly modifiedAt?: Date;
 }
 
 export function ExhibitionFromJSON(json: any): Exhibition {
@@ -69,10 +69,10 @@ export function ExhibitionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
-        'creator_id': !exists(json, 'creatorId') ? undefined : json['creatorId'],
-        'last_modifier_id': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
-        'created_at': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'modified_at': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
+        'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
+        'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
+        'modifiedAt': !exists(json, 'modifiedAt') ? undefined : (new Date(json['modifiedAt'])),
     };
 }
 
@@ -85,12 +85,7 @@ export function ExhibitionToJSON(value?: Exhibition | null): any {
     }
     return {
         
-        'id': value.id,
         'name': value.name,
-        'creatorId': value.creator_id,
-        'lastModifierId': value.last_modifier_id,
-        'createdAt': value.created_at === undefined ? undefined : (value.created_at.toISOString()),
-        'modifiedAt': value.modified_at === undefined ? undefined : (value.modified_at.toISOString()),
     };
 }
 

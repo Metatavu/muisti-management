@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Typography, Card, CardMedia, withStyles, WithStyles, CardActionArea } from "@material-ui/core";
-import styles from "../../styles/card-item";
+
+import { Typography, Card, CardMedia, withStyles, WithStyles } from "@material-ui/core";
+import styles from "../../styles/exhibitions-view";
 
 /**
  * Component props
@@ -10,17 +11,22 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Card title
    */
-  title: string,
+  title: string;
 
   /**
    * Card image
    */
-  img: string,
+  image?: string;
+
+  /**
+   * Card icon
+   */
+  icon?: JSX.Element;
 
   /**
    * Handler for card click
    */
-  onClick: () => void
+  onClick: () => void;
 }
 
 /**
@@ -52,20 +58,44 @@ class CardItem extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-        <Card elevation={10} variant="outlined">
-          <CardActionArea onClick={ this.props.onClick }>
-            <CardMedia image={ this.props.img }></CardMedia>
-            <div>
-              <Typography variant="h3">
-                { this.props.title }
-              </Typography>
-            </div>
-          </CardActionArea>
+      <div className={ classes.cardItem } onClick={ this.props.onClick }>
+        <Card elevation={10} variant="outlined" className={ classes.card }>
+          <div className={ classes.imageContainer }>
+            { this.renderImage() }
+          </div>
         </Card>
+
+        <Typography variant="subtitle1" className={ classes.cardTitle }>
+          { this.props.title }
+        </Typography>
       </div>
     );
+  }
+
+  /**
+   * Renders card image
+   */
+  private renderImage = () => {
+    const { classes } = this.props;
+
+    if (this.props.icon) {
+      return (
+        <CardMedia className={ classes.media }>
+          { this.props.icon }
+        </CardMedia>
+      )
+    }
+
+    if (this.props.image) {
+      return ( 
+        <CardMedia className={ classes.media } image={ this.props.image }></CardMedia>
+      )
+    }
+
+    return null;
   }
 }
 

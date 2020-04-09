@@ -1,7 +1,10 @@
 import * as React from "react";
+
 import { connect } from "react-redux";
-import { StoreState, AccessToken } from "../../types";
-import * as actions from "../../actions";
+import { ReduxState, ReduxActions } from "../../store";
+import { login } from "../../actions/auth";
+
+import { AccessToken } from "../../types"
 import ErrorDialog from "./error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
@@ -10,15 +13,15 @@ import Keycloak from "keycloak-js";
  * Component props
  */
 interface Props {
-  accessToken?: AccessToken,
-  onLogin: (keycloak: KeycloakInstance) => void
+  accessToken?: AccessToken;
+  onLogin: (keycloak: KeycloakInstance) => void;
 };
 
 /**
  * Component state
  */
 interface State {
-  error?: Error
+  error?: Error;
 }
 
 /**
@@ -31,20 +34,20 @@ class AccessTokenRefresh extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props props
    */
   constructor(props: Props) {
     super(props);
-    
+
     this.keycloak = Keycloak({
       url: process.env.REACT_APP_KEYCLOAK_URL,
       realm: process.env.REACT_APP_KEYCLOAK_REALM || "",
       clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || ""
     });
 
-    this.state = { 
-      
+    this.state = {
+
     };
   }
 
@@ -60,26 +63,16 @@ class AccessTokenRefresh extends React.Component<Props, State> {
       const { token, tokenParsed } = this.keycloak;
 
       if (this.keycloak && tokenParsed && tokenParsed.sub && token) {
+        this.keycloak.loadUserProfile();
         this.props.onLogin(this.keycloak);
       }
-      
+
       this.refreshAccessToken();
 
       this.timer = setInterval(() => {
         this.refreshAccessToken();
       }, 1000 * 60);
     };
-  }
-
-  /**
-   * Initializes Keycloak client
-   */
-  private keycloakInit = () => {
-    return new Promise((resolve) => {
-      this.keycloak.init({ onLoad: "login-required" }).success((auth) => {
-        resolve(auth);
-      });
-    });
   }
 
   /**
@@ -96,7 +89,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    */
   public render() {
     if (this.state.error) {
-      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } /> 
+      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
     }
 
     return this.props.accessToken ? this.props.children : null;
@@ -122,27 +115,35 @@ class AccessTokenRefresh extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Initializes Keycloak client
+   */
+  private keycloakInit = () => {
+    return new Promise(resolve => {
+      this.keycloak.init({ onLoad: "login-required" }).success(resolve);
+    });
+  }
 }
 
 /**
  * Redux mapper for mapping store state to component props
- * 
+ *
  * @param state store state
  */
-function mapStateToProps(state: StoreState) {
+function mapStateToProps(state: ReduxState) {
   return {
-    accessToken: state.accessToken
+    accessToken: state.auth.accessToken
   };
 }
 
 /**
- * Redux mapper for mapping component dispatches 
- * 
+ * Redux mapper for mapping component dispatches
+ *
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<actions.AppAction>) {
+function mapDispatchToProps(dispatch: React.Dispatch<ReduxActions>) {
   return {
-    onLogin: (keycloak: KeycloakInstance) => dispatch(actions.login(keycloak))
+    onLogin: (keycloak: KeycloakInstance) => dispatch(login(keycloak))
   };
 }
 

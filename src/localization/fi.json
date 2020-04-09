@@ -1,6 +1,8 @@
 {
+  "comingSoon": "Tulossa pian!",
   "exhibitions": {
     "listTitle": "Näyttelyt",
+    "newExhibitionLabel": "Uusi näyttely",
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
       "helpText": "Voit luoda uuden näyttelyn täyttämällä nimi-kentän ja painamalla luo-nappulaa",
@@ -21,5 +23,166 @@
     "errorMessage": "Virheilmoitus: ",
     "close": "Sulje",
     "reload": "Lataa uudelleen"
+  },
+
+  "exhibitionLayouts": {
+
+    "editView": {
+      "xml": "XML",
+      "json": "JSON",
+      "saveButton": "Tallenna",
+      "switchToCodeButton": "Näytä koodi",
+      "switchToVisualButton": "Näytä editori",
+      "importButton": "Tuo",
+      "deleteButton": "Poista",
+      "deleteConfirmTitle": "Oletko varma?",
+      "deleteConfirmText": "Oletko varma, että haluat poistaa asettelun?",
+      "deleteConfirmDelte": "Poista",
+      "deleteConfirmCancel": "Peruuta"
+    }
+
+  },
+
+  "dashboard": {
+
+    "newExhibitionButton": "Uusi näyttely",
+    "navigation": {
+      "overviewButton": "Työpöytä",
+      "recentButton": "Viimeisimmät",
+      "draftsButton": "Luonnokset",
+      "archivedButton": "Arkistoidut",
+      "settingsButton": "Asetukset",
+      "usersButton": "Käyttäjät",
+      "devicesButton": "Laitteet",
+      "layoutsButton": "Asettelut"
+    },
+    "overview": {
+      "onProduction": "Tuotannossa",
+      "lastModified": "Viimeksi muokattu",
+      "statistics": {
+        "title": "Tilastot",
+        "day": "Päivä",
+        "week": "Viikko",
+        "month": "Kuukausi",
+        "year": "Vuosi",
+        "visitors": "Kävijöitä",
+        "longTour": "Pitkä kierto",
+        "shortTour": "Lyhyt kierto"
+      }
+    },
+    "recent": {
+      "title": "Viimeisimmät",
+      "lastModified": "Viimeksi muokattu"
+    },
+    "drafts": {
+      "title": "Luonnokset"
+    },
+    "archived": {
+      "title": "Arkistoidut"
+    },
+    "settings": {
+      "title": "Asetukset"
+    },
+    "users": {
+      "title": "Käyttäjät"
+    },
+    "devices": {
+      "title": "Laitteet",
+      "dialog": {
+        "brand": "Merkki",
+        "model": "Malli",
+        "displayMetrics": {
+          "displayInfo": "Näytön tiedot",
+          "resolution": "Resoluutio",
+          "displayWidth": "Näytön leveys (pikseliä)",
+          "displayHeight": "Näytön korkeus (pikseliä)",
+          "displayXDpi": "Pistettä tuumalle (x-akselilla)",
+          "displayYDpi": "Pistettä tuumalle (y-akselilla)"
+        },
+        "dimensions" : {
+          "physicalSize": "Fyysinen koko",
+          "width": "Laitteen leveys",
+          "height": "Laiteen korkeus"
+        },
+        "type": "Tyyppi",
+        "touchScreen": "Kosketusnäyttö"
+      }
+    },
+    "layouts": {
+      "title": "Asettelut",
+      "lastModified": "Viimeksi muokattu"
+    }
+
+  },
+
+  "exhibition": {
+    "content": "Sisältö",
+    "tech": "Tekniikka",
+    "newPage": "Uusi sivu",
+    "addPage": "Lisää sivu",
+    "onProduction": "Tuotannossa",
+    "properties": {
+      "title": "Ominaisuudet"
+    },
+    "resources": {
+      "title": "Resurssit",
+      "imageView": {
+        "properties": {
+          "imageUrl": "Kuvan URL-osoite"
+        }
+      },
+      "textView": {
+        "properties": {
+          "text": "Teksti"
+        }
+      }
+    },
+    "eventTriggers": {
+      "title": "Event triggers",
+      "viewId": "Näkymä id",
+      "delay": "Viive",
+      "actions": "Tapahtumat",
+      "variableName": "Käyttäjän muuttujan nimi",
+      "variableValue": "Käyttäjän muuttujan arvo",
+      "selectPage": "Valitse sivu"
+    }
+  },
+
+  "layout": {
+    "title": "Asettelu",
+    "toolbar": {
+      "visual": "Visuaalinen näkymä",
+      "code": "Tekninen näkymä",
+      "name": "Nimi"
+    },
+    "settings": {
+      "screenOrientation": "Ruudun suunta",
+      "portrait": "Pysty",
+      "landscape": "Vaaka"
+    },
+    "properties": {
+      "title": "Ominaisuudet"
+    }
+  },
+
+  "sorting": {
+
+    "dashboard": {
+      "recent": {
+        "byModifiedAt": "Viimeksi muokatut",
+        "byCreatedAt": "Viimeksi luotu"
+      }
+    }
+
+  },
+
+  "filtering": {
+
+    "dashboard": {
+      "devices": {
+        "all": "Kaikki"
+      }
+    }
+
   }
 }

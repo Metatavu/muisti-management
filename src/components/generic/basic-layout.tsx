@@ -1,7 +1,10 @@
 import * as React from "react";
-import { WithStyles, withStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
+
+import { WithStyles, withStyles, IconButton, Typography } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
 import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
+import BackIcon from "@material-ui/icons/ArrowBackSharp";
+import MenuIcon from "@material-ui/icons/MenuSharp";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
 
@@ -9,9 +12,12 @@ import ErrorDialog from "./error-dialog";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  keycloak?: KeycloakInstance,
-  error?: string | Error,
-  clearError?: () => void
+  title: string;
+  keycloak?: KeycloakInstance;
+  error?: string | Error;
+  clearError?: () => void;
+  onBackButtonClick?: () => void;
+  onDashboardButtonClick?: () => void;
 }
 
 /**
@@ -21,7 +27,7 @@ interface State {
 }
 
 /**
- * React component for basic application layout
+ * Component for basic application layout
  */
 class BasicLayout extends React.Component<Props, State> {
 
@@ -41,18 +47,32 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-        <AppBar position="static">
-          <Toolbar variant="dense">
-            <IconButton edge="end" onClick={this.onLogOutClick}>
-              <SignOutIcon />
+      <div className={ classes.root }>
+        <header className={ classes.header }>
+          { this.props.onBackButtonClick &&
+            <IconButton size="small" className={ classes.menuBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
+              <MenuIcon />
             </IconButton>
-          </Toolbar>
-        </AppBar>
-        
+          }
+          { this.props.onBackButtonClick &&
+            <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onBackButtonClick }>
+              <BackIcon />
+            </IconButton>
+          }
+          <Typography variant="h6" className={ classes.title }>
+            { this.props.title }
+          </Typography>
+          <IconButton size="small" className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
+            <SignOutIcon />
+          </IconButton>
+        </header>
+        <div className={ classes.content }>
+          { this.props.children }
+        </div>
         { this.renderErrorDialog() }
-        { this.props.children }
       </div>
     );
   }

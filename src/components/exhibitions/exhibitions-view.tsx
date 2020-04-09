@@ -1,42 +1,48 @@
 import * as React from "react";
-import { Container, Typography, Grid, WithStyles, withStyles, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Card, CardActionArea, CardContent, Icon, CardMedia } from "@material-ui/core";
-import styles from "../../styles/card-item";
-import { History } from "history";
-import CardItem from "../generic/card-item";
-import strings from "../../localization/strings";
-import { Exhibition } from "../../generated/client";
-import defaultExhibitionImage from "../../resources/gfx/logo.png";
-import { StoreState, AccessToken } from "../../types";
-import * as actions from "../../actions";
+
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { ReduxState, ReduxActions } from "../../store";
+import { setSelectedExhibition } from "../../actions/exhibitions";
+
+import { History } from "history";
+import styles from "../../styles/exhibitions-view";
+import strings from "../../localization/strings";
+import { Container, Typography, Grid, Dialog, DialogTitle, DialogContent, TextField, DialogContentText, DialogActions, Button, Paper } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
+import CardItem from "../generic/card-item";
+import { Exhibition } from "../../generated/client";
+import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
 import BasicLayout from "../generic/basic-layout";
 import { KeycloakInstance } from "keycloak-js";
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@material-ui/icons/AddRounded";
+import { AccessToken } from "../../types";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  history: History,
-  keycloak: KeycloakInstance,
-  accessToken: AccessToken
+  history: History;
+  keycloak: KeycloakInstance;
+  accessToken: AccessToken;
+  setSelectedExhibition: typeof setSelectedExhibition;
 }
 
 /**
  * Component state
  */
 interface State {
-  error?: Error,
-  loading: boolean,
-  creating: boolean,
-  createDialogOpen: boolean,
-  createDialogName: string,
-  exhibitions: Exhibition[]
+  error?: Error;
+  loading: boolean;
+  creating: boolean;
+  createDialogOpen: boolean;
+  createDialogName: string;
+  exhibitions: Exhibition[];
 }
 
 /**
- * Exhibitions view
+ * Component for exhibitions view
  */
 class ExhibitionsView extends React.Component<Props, State> {
 
@@ -65,7 +71,8 @@ class ExhibitionsView extends React.Component<Props, State> {
     });
 
     try {
-      const exhibitionsApi = Api.getExhibitionsApi(this.props.accessToken);
+      const { accessToken } = this.props;
+      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       const exhibitions: Exhibition[] = await exhibitionsApi.listExhibitions();
 
       this.setState({
@@ -86,27 +93,28 @@ class ExhibitionsView extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const cards = this.state.exhibitions.map((exhibition) => this.renderCard(exhibition));
+    const { classes } = this.props;
+
+    const cards = this.state.exhibitions.map(exhibition => this.renderCard(exhibition));
 
     return (
-      <BasicLayout keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
+      <BasicLayout title="Alusta™" keycloak={ this.props.keycloak } error={ this.state.error } clearError={ () => this.setState({ error: undefined }) }>
         <Container maxWidth="xl">
-          <Typography variant="h2">{ strings.exhibitions.listTitle }</Typography>
-          <Container maxWidth="md" style={{ background: "#fff" }}>
-            <Grid container spacing={5} direction="row">
+          <Container maxWidth="md">
+            <Paper elevation={3} className={ classes.paper } >
+              <Typography className={ classes.title } variant="h2">{ strings.exhibitions.listTitle }</Typography>
+
+              <Grid container spacing={5} direction="row">
               <Grid item>
-                <Card elevation={10} variant="outlined">
-                  <CardActionArea onClick={ this.onCreateButtonClick }>
-                    <CardMedia>
-                      <AddIcon style={{ fontSize: "60px" }}/>
-                    </CardMedia>
-                  </CardActionArea>
-                </Card>
+                <CardItem key="new"
+                  title={ strings.exhibitions.newExhibitionLabel }
+                  icon={ <AddIcon fontSize="large" /> } onClick={ this.onCreateButtonClick }/>
               </Grid>
-              {
-                cards
-              }
-            </Grid>
+                {
+                  cards
+                }
+              </Grid>
+            </Paper>
           </Container>
         </Container>
         { this.renderCreateDialog() }
@@ -118,17 +126,19 @@ class ExhibitionsView extends React.Component<Props, State> {
    * Card render method
    */
   private renderCard(exhibition: Exhibition) {
+    if (!exhibition || !exhibition.id) {
+      return;
+    }
+
+    const exhibitionId: string = exhibition.id;
+
     return (
-    <Grid item>
-      <CardItem
-        title={ exhibition.name }
-        img={ defaultExhibitionImage }
-        onClick={() => {} }>
-      </CardItem>
-    </Grid>
+      <Grid item>
+        <CardItem key={ exhibitionId } title={ exhibition.name } image={ defaultExhibitionImage } onClick={ () => this.openExhibition(exhibitionId) }/>
+      </Grid>
     );
   }
-  
+
   /**
    * Renders create dialog
    */
@@ -140,7 +150,12 @@ class ExhibitionsView extends React.Component<Props, State> {
           <DialogContentText>
             { strings.exhibitions.createExhibitionDialog.helpText }
           </DialogContentText>
-          <TextField value={ this.state.createDialogName } onChange={ (event ) => this.setState({ createDialogName: event.target.value }) } autoFocus margin="dense" id="name" label={ strings.exhibitions.createExhibitionDialog.nameLabel } type="text" fullWidth />
+          <TextField value={ this.state.createDialogName }
+            onChange={event => this.setState({ createDialogName: event.target.value }) }
+            autoFocus
+            margin="dense"
+            id="name"
+            label={ strings.exhibitions.createExhibitionDialog.nameLabel } type="text" fullWidth />
         </DialogContent>
         <DialogActions>
           <Button onClick={ this.onCreateDialogCancelClick } color="primary">
@@ -156,7 +171,7 @@ class ExhibitionsView extends React.Component<Props, State> {
 
   /**
    * Creates new exhibition
-   * 
+   *
    * @param name exhibition name
    */
   private createExhibition = async (name: string) => {
@@ -165,7 +180,7 @@ class ExhibitionsView extends React.Component<Props, State> {
     });
 
     const exhibitionsApi = Api.getExhibitionsApi(this.props.accessToken);
-    
+
     const exhibition = await exhibitionsApi.createExhibition({
       exhibition: {
         name: name
@@ -174,8 +189,22 @@ class ExhibitionsView extends React.Component<Props, State> {
 
     this.setState({
       creating: false,
-      exhibitions: [ ... this.state.exhibitions, exhibition ]
+      exhibitions: [ ...this.state.exhibitions, exhibition ]
     });
+  }
+
+
+  /**
+   * Opens exhibition
+   *
+   * @param exhibitionId exhibition id
+   */
+  private openExhibition = async (exhibitionId: string) => {
+    const { accessToken } = this.props;
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const exhibition = await exhibitionsApi.findExhibition({ exhibitionId: exhibitionId });
+    this.props.setSelectedExhibition(exhibition);
+    this.props.history.push(`/exhibitions/${exhibitionId}`);
   }
 
   /**
@@ -202,22 +231,22 @@ class ExhibitionsView extends React.Component<Props, State> {
   private onDialogCreateButtonClick = async () => {
     await this.createExhibition(this.state.createDialogName);
 
-    this.setState({ 
-      createDialogName: "" 
+    this.setState({
+      createDialogName: ""
     });
 
     this.closeCreateDialog();
   }
 
   /**
-   * Event handler for create dialog cancel button click 
+   * Event handler for create dialog cancel button click
    */
   private onCreateDialogCancelClick = () => {
     this.closeCreateDialog();
   }
 
   /**
-   * Event handler for create dialog close event 
+   * Event handler for create dialog close event
    */
   private onCreateDialogClose = () => {
     this.closeCreateDialog();
@@ -226,23 +255,24 @@ class ExhibitionsView extends React.Component<Props, State> {
 
 /**
  * Redux mapper for mapping store state to component props
- * 
+ *
  * @param state store state
  */
-function mapStateToProps(state: StoreState) {
+function mapStateToProps(state: ReduxState) {
   return {
-    keycloak: state.keycloak as KeycloakInstance,
-    accessToken: state.accessToken as AccessToken
+    keycloak: state.auth.keycloak as KeycloakInstance,
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 
 /**
- * Redux mapper for mapping component dispatches 
- * 
+ * Redux mapper for mapping component dispatches
+ *
  * @param dispatch dispatch method
  */
-function mapDispatchToProps(dispatch: React.Dispatch<actions.AppAction>) {
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
+    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
   };
 }
 
