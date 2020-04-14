@@ -13,7 +13,7 @@ import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, 
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, PageLayoutViewProperty, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
-import BasicLayoutV3 from "../generic/basic-layout-v3";
+import BasicLayoutV3 from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";

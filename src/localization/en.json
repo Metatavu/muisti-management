@@ -107,17 +107,16 @@
         "model": "Model",
         "displayMetrics": {
           "displayInfo": "Screen info",
-          "density": "Screen content size multiplier",
-          "displayWidth": "Screen width (pixels)",
-          "displayHeight": "Screen height (pixels)",
-          "displayXDpi": "Dots per inch (x-axis)",
-          "displayYDpi": "Dots per inch (y-axis)"
+          "widthPixels": "Screen pixel width",
+          "heightPixels": "Screen pixel height"
         },
         "dimensions" : {
-          "physicalSize": "Physical size (mm)",
+          "physicalSize": "Device physical size",
           "width": "Width",
           "height": "Height",
-          "depth": "Depth"
+          "depth": "Depth",
+          "screenWidth": "Screen physical width",
+          "screenHeight": "Screen physical height"
         },
         "type": "Type",
         "orientation": "Orientation",
@@ -136,6 +135,9 @@
   "exhibition": {
     "content": "Content",
     "tech": "Tech",
+    "navigation": {
+      "search": "Find.."
+    },
     "newPage": "New page",
     "addPage": "Add page",
     "onProduction": "On production",
@@ -159,6 +161,9 @@
       "title": "Events",
       "clickViewIdTitle": "Triggers when element is clicked",
       "clickViewId": "Element",
+      "physicalButtonDownTitle": "Triggers when button is pressed",
+      "physicalButtonUpTitle": "Triggers when button is released",
+      "physicalButton": "Button",
       "delayTitle": "Triggers after delay",
       "delay": "Viive (in milliseconds)",
       "actions": "Actions",
@@ -186,31 +191,25 @@
   },
 
   "sorting": {
-
     "dashboard": {
       "recent": {
         "byModifiedAt": "Last modified",
         "byCreatedAt": "Last created"
       }
     }
-
   },
 
   "deviceTypes": {
-
     "screen": "Screen",
     "projector": "Projector"
-
   },
 
   "filtering": {
-
     "dashboard": {
       "devices": {
         "all": "All"
       }
     }
-
   }
 
 }

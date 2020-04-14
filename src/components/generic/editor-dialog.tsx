@@ -13,6 +13,7 @@ interface Props {
   onCancel: () => void;
   onConfirm: () => void;
   open: boolean;
+  error: boolean;
 }
 
 /**
@@ -48,7 +49,9 @@ export default class EditorDialog extends React.Component<Props, State> {
       onClose,
       onCancel,
       title,
-      onConfirm} = this.props;
+      onConfirm,
+      error
+    } = this.props;
     return (
       <>
         <Dialog
@@ -65,7 +68,7 @@ export default class EditorDialog extends React.Component<Props, State> {
             <Button onClick={() => onCancel() } color="primary">
               { cancelButtonText }
             </Button>
-            <Button disableElevation variant="contained" onClick={() => onConfirm() } color="secondary" autoFocus>
+            <Button disableElevation variant="contained" disabled={ error } onClick={() => onConfirm() } color="secondary" autoFocus>
               { positiveButtonText }
             </Button>
           </DialogActions>

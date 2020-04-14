@@ -13,13 +13,14 @@ import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout } from "../../generated/client";
-import { AccessToken } from '../../types';
+import { AccessToken, PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript"
 import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
+import _ from "lodash";
 
 /**
  * Component props
@@ -42,6 +43,8 @@ interface Props extends WithStyles<typeof styles> {
     error?: Error;
     loading: boolean;
     selectedClickViewId: string;
+    selectedPhysicalButtonDown?: PhysicalButton;
+    selectedPhysicalButtonUp?: PhysicalButton;
     selectedEventActionType?: ExhibitionPageEventActionType;
     selectedNavigationPage?: ExhibitionPage;
   }
@@ -57,7 +60,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      selectedClickViewId: props.selectedEventTrigger.clickViewId || ""
+      selectedClickViewId: props.selectedEventTrigger.clickViewId || "",
+      selectedPhysicalButtonDown: props.selectedEventTrigger.keyDown as PhysicalButton,
+      selectedPhysicalButtonUp: props.selectedEventTrigger.keyUp as PhysicalButton
     };
   }
 
@@ -98,17 +103,8 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     const classes = this.props.classes;
 
     return<>
-      {/* <TextField
-        type="viewId"
-        className={ classes.textResourceEditor } 
-        label={ strings.exhibition.eventTriggers.viewId }
-        variant="outlined"
-        value={ this.props.selectedEventTrigger?.clickViewId }
-      /> */}
-
-      <h4> { strings.exhibition.eventTriggers.clickViewIdTitle }</h4>
       { this.renderClickViewIdSelect() }
-
+      { this.renderPhysicalButtonSelections() }
       <h4> { strings.exhibition.eventTriggers.delayTitle }</h4>
       <TextField
         type="delay"
@@ -120,8 +116,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       />
       <h4> { strings.exhibition.eventTriggers.actions }</h4>
       <TreeView>
-        { this.renderEventTriggerSelect() }
-
+        { this.renderEventActionTypeSelect() }
         <Divider variant="inset" component="li" />
         { this.props.selectedEventTrigger &&
           this.renderEventActionSettings()
@@ -130,6 +125,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     </>;
   }
 
+  /**
+   * Render click view id select
+   */
   private renderClickViewIdSelect = () => {
     const { selectedClickViewId } = this.state;
     const clickViewIdList = this.props.layout.data.children.map((pageLayoutView, index) => {
@@ -137,6 +135,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return <>
+      <h4> { strings.exhibition.eventTriggers.clickViewIdTitle }</h4>
       <Select
         label={ strings.exhibition.eventTriggers.clickViewId }
         fullWidth
@@ -149,20 +148,64 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render event trigger list
+   * Render physical button selections
    */
-  private renderEventTriggerSelect = () => {
-    const selectedAction = this.state.selectedEventActionType;
+  private renderPhysicalButtonSelections = () => {
+    const { selectedPhysicalButtonDown, selectedPhysicalButtonUp } = this.state;
+    const physicalButtons: PhysicalButtonData[] = [];
 
-    const eventList = Object.keys(ExhibitionPageEventActionType).map((event, index) => {
-      return <MenuItem key={ `eventAction-${index}` } value={ event.toLowerCase() }> { event }</MenuItem>
+    _.forIn(PhysicalButton, value => {
+      physicalButtons.push({
+        name: `${strings.exhibition.eventTriggers.physicalButton} ${value}`,
+        value
+      });
+    });
+
+    const menuItems = physicalButtons.map((button, index) => {
+      return <MenuItem key={ `physicalButtonDown-${index}` } value={ button.value }> { button.name }</MenuItem>
+    });
+
+    return (
+      <>
+        <h4>{ strings.exhibition.eventTriggers.physicalButtonDownTitle }</h4>
+        <Select
+          label={ strings.exhibition.eventTriggers.physicalButton }
+          fullWidth
+          name="DOWN"
+          value={ selectedPhysicalButtonDown || "" }
+          onChange={ this.onSelectPhysicalButton }
+        >
+          { menuItems }
+        </Select>
+        <h4>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</h4>
+        <Select
+          label={ strings.exhibition.eventTriggers.physicalButton }
+          fullWidth
+          name="UP"
+          value={ selectedPhysicalButtonUp || "" }
+          onChange={ this.onSelectPhysicalButton }
+        >
+          { menuItems }
+        </Select>
+      </>
+    );
+  }
+
+  /**
+   * Render event action type list
+   */
+  private renderEventActionTypeSelect = () => {
+    const selectedActionType = this.state.selectedEventActionType;
+
+    const eventActionTypeList = Object.keys(ExhibitionPageEventActionType).map((actionType, index) => {
+      return <MenuItem key={ `eventActionType-${index}` } value={ actionType.toLowerCase() }> { actionType }</MenuItem>
     });
 
     return <>
-      <Select fullWidth value={ selectedAction ? selectedAction : "hide" }
-        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventAction(event) }
+      <Select fullWidth value={ selectedActionType ? selectedActionType : "hide" }
+        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventActionType(event) }
       >
-        { eventList }
+        { eventActionTypeList }
       </Select>
     </>;
   }
@@ -365,6 +408,10 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * On select click view id action handler
+   * @param event react change event
+   */
   private onSelectClickViewId = (event: React.ChangeEvent<{ value: unknown }>) => {
     const parsedCode = this.props.onParseJson();
     const trigger = this.props.selectedEventTrigger;
@@ -381,11 +428,28 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     this.setState({ selectedClickViewId: event.target.value as string });
   }
 
+  private onSelectPhysicalButton = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+    const name = event.target.name;
+    const value = event.target.value as PhysicalButton;
+    switch (name) {
+      case "DOWN": {
+        this.setState({ selectedPhysicalButtonDown: value });
+        break;
+      }
+      case "UP": {
+        this.setState({ selectedPhysicalButtonUp: value });
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
   /**
    * On select event action handler
    * @param event react change event
    */
-  private onSelectEventAction = (event: React.ChangeEvent<{ value: unknown }>)=> {
+  private onSelectEventActionType = (event: React.ChangeEvent<{ value: unknown }>)=> {
     const value = event.target.value as ExhibitionPageEventActionType;
 
     /**

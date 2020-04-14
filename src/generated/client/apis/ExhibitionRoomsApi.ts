@@ -37,6 +37,7 @@ export interface FindExhibitionRoomRequest {
 
 export interface ListExhibitionRoomsRequest {
     exhibitionId: string;
+    floorId?: string;
 }
 
 export interface UpdateExhibitionRoomRequest {
@@ -194,6 +195,10 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.floorId !== undefined) {
+            queryParameters['floorId'] = requestParameters.floorId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

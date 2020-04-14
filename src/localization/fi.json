@@ -107,17 +107,16 @@
         "model": "Malli",
         "displayMetrics": {
           "displayInfo": "Näytön tiedot",
-          "density": "Näytön sisällön kokokerroin",
-          "displayWidth": "Näytön leveys (pikseliä)",
-          "displayHeight": "Näytön korkeus (pikseliä)",
-          "displayXDpi": "Pistettä tuumalle (x-akselilla)",
-          "displayYDpi": "Pistettä tuumalle (y-akselilla)"
+          "widthPixels": "Ruudun pikselileveys",
+          "heightPixels": "Ruudun pikselikorkeus"
         },
         "dimensions" : {
-          "physicalSize": "Fyysinen koko (mm)",
+          "physicalSize": "Laitteen fyysinen koko",
           "width": "Leveys",
           "height": "Korkeus",
-          "depth": "Syvyys"
+          "depth": "Syvyys",
+          "screenWidth": "Ruudun fyysinen leveys",
+          "screenHeight": "Ruudun fyysinen korkeus"
         },
         "type": "Tyyppi",
         "orientation": "Orientation",
@@ -136,6 +135,9 @@
   "exhibition": {
     "content": "Sisältö",
     "tech": "Tekniikka",
+    "navigation": {
+      "search": "Etsi.."
+    },
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
     "onProduction": "Tuotannossa",
@@ -159,6 +161,9 @@
       "title": "Tapahtumat",
       "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
       "clickViewId": "Elementti",
+      "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
+      "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
+      "physicalButton": "Nappi",
       "delayTitle": "Tapahtuu viiveen jälkeen",
       "delay": "Viive (millisekunneissa)",
       "actions": "Toiminnot",
@@ -186,30 +191,24 @@
   },
 
   "sorting": {
-
     "dashboard": {
       "recent": {
         "byModifiedAt": "Viimeksi muokatut",
         "byCreatedAt": "Viimeksi luotu"
       }
     }
-
   },
 
   "deviceTypes": {
-
     "screen": "Näyttö",
     "projector": "Projektori"
-
   },
 
   "filtering": {
-
     "dashboard": {
       "devices": {
         "all": "Kaikki"
       }
     }
-
   }
 }

@@ -110,18 +110,17 @@ export interface IStrings extends LocalizedStringsMethods {
         model: string;
         displayMetrics: {
           displayInfo: string;
-          density: string;
-          displayWidth: string;
-          displayHeight: string;
-          displayXDpi: string;
-          displayYDpi: string;
-        }
+          widthPixels: string;
+          heightPixels: string;
+        };
         dimensions: {
           physicalSize: string;
           width: string;
           height: string;
           depth: string;
-        }
+          screenWidth: string;
+          screenHeight: string;
+        };
         touchscreen: string;
         type: string;
       };
@@ -135,6 +134,9 @@ export interface IStrings extends LocalizedStringsMethods {
   exhibition: {
     content: string;
     tech: string;
+    navigation: {
+      search: string;
+    };
     newPage: string;
     addPage: string;
     onProduction: string;
@@ -153,11 +155,14 @@ export interface IStrings extends LocalizedStringsMethods {
           text: string;
         };
       };
-    },
+    };
     eventTriggers: {
       title: string;
       clickViewIdTitle: string;
       clickViewId: string;
+      physicalButtonDownTitle: string;
+      physicalButtonUpTitle: string;
+      physicalButton: string;
       delayTitle: string;
       delay: string;
       actions: string;
@@ -187,7 +192,7 @@ export interface IStrings extends LocalizedStringsMethods {
   deviceTypes: {
     screen: string;
     projector: string;
-  }
+  };
 
   sorting: {
     dashboard: {
