@@ -57,6 +57,8 @@ class DashboardNavigation extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+    const { classes } = this.props;
+
     const overviewButton = { postfix: "overview", text: strings.dashboard.navigation.overviewButton, icon: <DashboardIcon /> };
     const recentButton = { postfix: "recent", text: strings.dashboard.navigation.recentButton, icon: <LatestIcon /> };
     const draftsButton = { postfix: "drafts", text: strings.dashboard.navigation.draftsButton, icon: <DraftsIcon /> };
@@ -66,17 +68,19 @@ class DashboardNavigation extends React.Component<Props, State> {
     const devicesButton = { postfix: "devices", text: strings.dashboard.navigation.devicesButton, icon: <DevicesIcon /> };
     const layoutsButton = { postfix: "layouts", text: strings.dashboard.navigation.layoutsButton, icon: <TableChartIcon /> };
 
-    return <>
-      { this.renderNavigationButton(overviewButton) }
-      { this.renderNavigationButton(recentButton) }
-      { this.renderNavigationButton(draftsButton) }
-      { this.renderNavigationButton(archivedButton) }
-      <Divider color="rgba(0,0,0,0.1)" variant="fullWidth" style={{ marginTop: 30, marginBottom: 30 }} />
-      { this.renderNavigationButton(settingsButton) }
-      { this.renderNavigationButton(usersButton) }
-      { this.renderNavigationButton(devicesButton) }
-      { this.renderNavigationButton(layoutsButton) }
-    </>;
+    return (
+      <div className={ classes.navigationContent }>
+        { this.renderNavigationButton(overviewButton) }
+        { this.renderNavigationButton(recentButton) }
+        { this.renderNavigationButton(draftsButton) }
+        { this.renderNavigationButton(archivedButton) }
+        <Divider color="rgba(0,0,0,0.1)" variant="fullWidth" style={{ marginTop: 30, marginBottom: 30 }} />
+        { this.renderNavigationButton(settingsButton) }
+        { this.renderNavigationButton(usersButton) }
+        { this.renderNavigationButton(devicesButton) }
+        { this.renderNavigationButton(layoutsButton) }
+      </div>
+    );
   }
 
   /**s

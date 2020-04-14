@@ -32,6 +32,11 @@ export interface FindPageLayoutRequest {
     pageLayoutId: string;
 }
 
+export interface ListPageLayoutsRequest {
+    deviceModelId?: string;
+    screenOrientation?: string;
+}
+
 export interface UpdatePageLayoutRequest {
     pageLayout: PageLayout;
     pageLayoutId: string;
@@ -168,8 +173,16 @@ export class PageLayoutsApi extends runtime.BaseAPI {
      * List page layouts
      * List page layouts
      */
-    async listPageLayoutsRaw(): Promise<runtime.ApiResponse<Array<PageLayout>>> {
+    async listPageLayoutsRaw(requestParameters: ListPageLayoutsRequest): Promise<runtime.ApiResponse<Array<PageLayout>>> {
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.deviceModelId !== undefined) {
+            queryParameters['deviceModelId'] = requestParameters.deviceModelId;
+        }
+
+        if (requestParameters.screenOrientation !== undefined) {
+            queryParameters['screenOrientation'] = requestParameters.screenOrientation;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -195,8 +208,8 @@ export class PageLayoutsApi extends runtime.BaseAPI {
      * List page layouts
      * List page layouts
      */
-    async listPageLayouts(): Promise<Array<PageLayout>> {
-        const response = await this.listPageLayoutsRaw();
+    async listPageLayouts(requestParameters: ListPageLayoutsRequest): Promise<Array<PageLayout>> {
+        const response = await this.listPageLayoutsRaw(requestParameters);
         return await response.value();
     }
 

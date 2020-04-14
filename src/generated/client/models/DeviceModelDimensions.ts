@@ -24,13 +24,31 @@ export interface DeviceModelDimensions {
      * @type {number}
      * @memberof DeviceModelDimensions
      */
-    width?: number;
+    deviceWidth?: number;
     /**
      * 
      * @type {number}
      * @memberof DeviceModelDimensions
      */
-    height?: number;
+    deviceHeight?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeviceModelDimensions
+     */
+    deviceDepth?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeviceModelDimensions
+     */
+    screenWidth?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeviceModelDimensions
+     */
+    screenHeight?: number;
 }
 
 export function DeviceModelDimensionsFromJSON(json: any): DeviceModelDimensions {
@@ -43,8 +61,11 @@ export function DeviceModelDimensionsFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'width': !exists(json, 'width') ? undefined : json['width'],
-        'height': !exists(json, 'height') ? undefined : json['height'],
+        'deviceWidth': !exists(json, 'deviceWidth') ? undefined : json['deviceWidth'],
+        'deviceHeight': !exists(json, 'deviceHeight') ? undefined : json['deviceHeight'],
+        'deviceDepth': !exists(json, 'deviceDepth') ? undefined : json['deviceDepth'],
+        'screenWidth': !exists(json, 'screenWidth') ? undefined : json['screenWidth'],
+        'screenHeight': !exists(json, 'screenHeight') ? undefined : json['screenHeight'],
     };
 }
 
@@ -57,8 +78,11 @@ export function DeviceModelDimensionsToJSON(value?: DeviceModelDimensions | null
     }
     return {
         
-        'width': value.width,
-        'height': value.height,
+        'deviceWidth': value.deviceWidth,
+        'deviceHeight': value.deviceHeight,
+        'deviceDepth': value.deviceDepth,
+        'screenWidth': value.screenWidth,
+        'screenHeight': value.screenHeight,
     };
 }
 

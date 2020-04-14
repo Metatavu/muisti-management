@@ -12,6 +12,16 @@
     }
   },
 
+  "confirmDialog": {
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+
+  "editorDialog": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+
   "errorDialog": {
     "title": "Whoops! Something went wrong",
     "reloadPage": "Try reloading the page.",
@@ -88,24 +98,31 @@
     },
     "devices": {
       "title": "Devices",
+      "capabilities": "Capabilities",
+      "newDevice": "New device",
       "dialog": {
+        "deleteDeviceTitle": "Delete device",
+        "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
         "brand": "Brand",
         "model": "Model",
         "displayMetrics": {
           "displayInfo": "Screen info",
-          "resolution": "Resolution",
-          "displayWidth": "Screen width (pixels)",
-          "displayHeight": "Screen height (pixels)",
-          "displayXDpi": "Dots per inch (x-axis)",
-          "displayYDpi": "Dots per inch (y-axis)"
+          "widthPixels": "Screen pixel width",
+          "heightPixels": "Screen pixel height"
         },
         "dimensions" : {
-          "physicalSize": "Physical size",
-          "width": "Device width",
-          "height": "Device height"
+          "physicalSize": "Device physical size",
+          "width": "Width",
+          "height": "Height",
+          "depth": "Depth",
+          "screenWidth": "Screen physical width",
+          "screenHeight": "Screen physical height"
         },
         "type": "Type",
-        "touchScreen": "Touch screen"
+        "orientation": "Orientation",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "touchscreen": "Touchscreen"
       }
     },
     "layouts": {
@@ -118,6 +135,9 @@
   "exhibition": {
     "content": "Content",
     "tech": "Tech",
+    "navigation": {
+      "search": "Find.."
+    },
     "newPage": "New page",
     "addPage": "Add page",
     "onProduction": "On production",
@@ -138,9 +158,14 @@
       }
     },
     "eventTriggers": {
-      "title": "Event triggers",
-      "viewId": "View id",
-      "delay": "Delay",
+      "title": "Events",
+      "clickViewIdTitle": "Triggers when element is clicked",
+      "clickViewId": "Element",
+      "physicalButtonDownTitle": "Triggers when button is pressed",
+      "physicalButtonUpTitle": "Triggers when button is released",
+      "physicalButton": "Button",
+      "delayTitle": "Triggers after delay",
+      "delay": "Viive (in milliseconds)",
       "actions": "Actions",
       "variableName": "User variable name",
       "variableValue": "User variable value",
@@ -156,9 +181,9 @@
       "name": "Name"
     },
     "settings": {
-      "screenOrientation": "Ruudun suunta",
-      "portrait": "Pysty",
-      "landscape": "Vaaka"
+      "screenOrientation": "Device orientation",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
     },
     "properties": {
       "title": "Properties"
@@ -166,24 +191,25 @@
   },
 
   "sorting": {
-
     "dashboard": {
       "recent": {
         "byModifiedAt": "Last modified",
         "byCreatedAt": "Last created"
       }
     }
+  },
 
+  "deviceTypes": {
+    "screen": "Screen",
+    "projector": "Projector"
   },
 
   "filtering": {
-
     "dashboard": {
       "devices": {
         "all": "All"
       }
     }
-
   }
 
 }

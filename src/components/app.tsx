@@ -19,7 +19,7 @@ import DashboardSettingsView from "./dashboard/dashboard-settings-view";
 import DashboardUsersView from "./dashboard/dashboard-users-view";
 import DashboardDevicesView from "./dashboard/dashboard-devices-view";
 import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
-import ExhibitionViewV3 from "./exhibition-v3/exhibition-view-v3";
+import ExhibitionView from "./exhibition/exhibition-view";
 import LayoutEditorView from "./layout/layout-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
@@ -130,7 +130,7 @@ class App extends React.Component<Props, State> {
                       path="/exhibitions/:exhibitionId"
                       exact={true}
                       render={ ({ match, history }) => (
-                        <ExhibitionViewV3 exhibitionId={ match.params.exhibitionId } history={ history } />
+                        <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
                       )}
                     />
                     <Route

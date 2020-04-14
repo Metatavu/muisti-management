@@ -42,4 +42,4 @@ export const setSelectedLayout: ActionCreator<SetSelectedLayoutAction> = (layout
   };
 };
 
-export type LayoutsAction =  SetLayoutsAction | SetSelectedLayoutAction;
+export type LayoutsAction = SetLayoutsAction | SetSelectedLayoutAction;

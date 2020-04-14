@@ -7,7 +7,7 @@ import { setSelectedLayout } from "../../actions/layouts";
 
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, Typography, Grid, Divider, CircularProgress, List, ListItem, ListItemAvatar, Avatar, ListItemText } from "@material-ui/core";
-import styles from "../../styles/dashboard-recent-view";
+import styles from "../../styles/dashboard-component-styles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken } from "../../types";
@@ -71,20 +71,18 @@ class DashboardLayoutsView extends React.Component<Props, State> {
 
     return (
       <DashboardLayout history={ history }>
-        <div className={ classes.titleGrid }>
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="center"
-          >
-            <Grid item key="title">
-              <Typography variant="h2" component="span">
-                { strings.dashboard.layouts.title }
-              </Typography>
-            </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+        >
+          <Grid item key="title">
+            <Typography variant="h2" component="span">
+              { strings.dashboard.layouts.title }
+            </Typography>
           </Grid>
-        </div>
+        </Grid>
         <Divider style={{ marginTop: 30 }} />
         <div className={ classes.content }>
           <List>

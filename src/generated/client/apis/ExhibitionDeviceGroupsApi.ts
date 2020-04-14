@@ -37,6 +37,7 @@ export interface FindExhibitionDeviceGroupRequest {
 
 export interface ListExhibitionDeviceGroupsRequest {
     exhibitionId: string;
+    roomId?: string;
 }
 
 export interface UpdateExhibitionDeviceGroupRequest {
@@ -194,6 +195,10 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.roomId !== undefined) {
+            queryParameters['roomId'] = requestParameters.roomId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

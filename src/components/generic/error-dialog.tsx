@@ -61,7 +61,7 @@ export default class ErrorDialog extends React.Component<Props, State> {
           <Button onClick={ this.onReloadClick } color="primary">
             { strings.errorDialog.reload }
           </Button>
-          <Button onClick={ this.props.onClose } color="primary" autoFocus>
+          <Button disableElevation variant="contained" onClick={ this.props.onClose } color="secondary" autoFocus>
             { strings.errorDialog.close }
           </Button>
         </DialogActions>

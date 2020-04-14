@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ExhibitionContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -14,6 +14,24 @@ export default class Api {
    */
   public static getExhibitionsApi(accessToken: AccessToken) {
     return new ExhibitionsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized exhibition content types api
+   *
+   * @param token access token
+   */
+  public static getExhibitionContentVersionsApi(accessToken: AccessToken) {
+    return new ExhibitionContentVersionsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized exhibition floors api
+   *
+   * @param token access token
+   */
+  public static getExhibitionFloorsApi(accessToken: AccessToken) {
+    return new ExhibitionFloorsApi(Api.getConfiguration(accessToken));
   }
 
   /**

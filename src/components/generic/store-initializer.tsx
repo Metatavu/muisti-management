@@ -62,7 +62,7 @@ class StoreInitializer extends React.Component<Props, State> {
 
       const [ exhibitions, layouts, deviceModels ] = await Promise.all([
         exhibitionsApi.listExhibitions(),
-        layoutsApi.listPageLayouts(),
+        layoutsApi.listPageLayouts({}),
         deviceModelsApi.listDeviceModels()
       ]);
 
