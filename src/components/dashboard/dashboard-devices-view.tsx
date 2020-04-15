@@ -202,7 +202,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
           title={ strings.dashboard.devices.dialog.deleteDeviceTitle }
           text={ strings.dashboard.devices.dialog.deleteDeviceText }
           onClose={ () => this.onDeleteDialogClose() }
-          onCancel={ () => this.onDeleteDialogClose() }
+          onCancel={ this.onDeleteDialogClose }
           onConfirm={ () => this.onDeleteDeviceClick(selectedDevice) }
           positiveButtonText={ strings.confirmDialog.delete }
           cancelButtonText={ strings.confirmDialog.cancel }
