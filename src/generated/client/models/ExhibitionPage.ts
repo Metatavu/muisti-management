@@ -47,7 +47,7 @@ export interface ExhibitionPage {
      * @type {string}
      * @memberof ExhibitionPage
      */
-    readonly deviceId: string;
+    deviceId: string;
     /**
      * Id of page layout
      * @type {string}
@@ -138,6 +138,7 @@ export function ExhibitionPageToJSON(value?: ExhibitionPage | null): any {
     }
     return {
         
+        'deviceId': value.deviceId,
         'layoutId': value.layoutId,
         'contentVersionId': value.contentVersionId,
         'name': value.name,

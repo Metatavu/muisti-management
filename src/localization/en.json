@@ -140,6 +140,7 @@
     },
     "newPage": "New page",
     "addPage": "Add page",
+    "addDevice": "Add device",
     "onProduction": "On production",
     "properties": {
       "title": "Properties"
@@ -157,6 +158,12 @@
         }
       }
     },
+    
+    "pageEditor": {
+      "pageLayoutLabel": "Page layout",
+      "pageDeviceLabel": "Page device"  
+    },
+
     "eventTriggers": {
       "title": "Events",
       "clickViewIdTitle": "Triggers when element is clicked",
@@ -170,6 +177,16 @@
       "variableName": "User variable name",
       "variableValue": "User variable value",
       "selectPage": "Select page"
+    },
+    "addDeviceEditor": {
+      "title": "Add new device",
+      "defaultName": "New device",
+      "nameLabel": "Device name",
+      "deviceModelLabel": "Device model",
+      "screenOrientationLabel": "Device orientation",
+      "screenOrientationPortrait": "Portrait",
+      "screenOrientationLandscape": "Landscape",
+      "saveButton": "Save"
     }
   },
 
