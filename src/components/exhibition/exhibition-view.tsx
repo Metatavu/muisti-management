@@ -18,6 +18,7 @@ import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import BasicLayout from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
+import ElementContentsPane from "../editor-panes/element-contents-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken, JsonLintParseErrorHash, ExhibitionElementType, ExhibitionElement } from '../../types';
 import strings from "../../localization/strings";
@@ -143,7 +144,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition } = this.props;
-    const { selectedElement, treeData } = this.state;
+    const { selectedElement, treeData, selectedResource, selectedEventTrigger } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -188,10 +189,12 @@ export class ExhibitionView extends React.Component<Props, State> {
             </div>
             { this.renderEditor() }
           </EditorView>
-          <ElementSettingsPane title={ selectedElement ? selectedElement.name : "" }>
+          <ElementContentsPane title={ selectedElement ? selectedElement.name : "" }>
             { this.state.selectedElement &&
               this.renderElementSettingsContent()
             }
+          </ElementContentsPane>
+          <ElementSettingsPane title={ "" }>
             {
               this.state.selectedResource &&
               this.renderResourceEditor()

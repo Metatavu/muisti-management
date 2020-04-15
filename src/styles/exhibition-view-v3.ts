@@ -21,7 +21,7 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ' "view-selection navigation editor settings" ',
+    gridTemplateAreas: ' "navigation contents editor-view properties" ',
   },
 
   codeEditorContainer: {

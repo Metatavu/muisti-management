@@ -3,7 +3,7 @@ import { createStyles } from "@material-ui/core";
 export default createStyles({
 
   root: {
-    gridArea: "editor",
+    gridArea: "editor-view",
     backgroundColor: "#eee",
     overflowY: "initial",
     overflowX: "auto"
