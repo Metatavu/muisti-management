@@ -157,7 +157,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     _.forIn(PhysicalButton, value => {
       physicalButtons.push({
         name: `${strings.exhibition.eventTriggers.physicalButton} ${value}`,
-        value
+        value: value
       });
     });
 
