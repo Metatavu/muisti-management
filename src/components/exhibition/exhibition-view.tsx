@@ -235,7 +235,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   private renderToolbarContentsAddDevice = () => {
     return (
       <>
-        <Button variant="contained" color="primary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
+        <Button variant="contained" color="secondary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
       </>
     );
   }

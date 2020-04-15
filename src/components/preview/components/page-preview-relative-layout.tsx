@@ -54,11 +54,11 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    */
   public render() {
     const { classes } = this.props;
-    
+
     return (
       <Measure onResize={ this.onRootResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } className={ classes.root } style={ this.resolveStyles() }>
+          <div ref={ measureRef } className={ classes.relativeLayout } style={ this.resolveStyles() }>
             { this.renderChildren() }
           </div>
         )}

@@ -4,9 +4,9 @@ export default createStyles({
 
   root: {
     gridArea: "editor-view",
-    backgroundColor: "#eee",
-    overflowY: "initial",
-    overflowX: "auto"
+    backgroundColor: "#f2f2f2",
+    gridAutoRows: "auto 1fr",
+    overflow: "hidden"
   }
 
 });

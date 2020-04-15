@@ -31,10 +31,12 @@ export default createStyles({
   },
 
   visualEditorContainer: {
-    display: "grid",
-    gridTemplateRows: "auto 1fr",
     height: "100%",
-    justifyItems: "center"
+    display: "flex",
+    justifyItems: "center",
+    alignItems: "center",
+    position: "relative",
+    overflowY: "auto"
   },
 
   editor: {
@@ -53,7 +55,7 @@ export default createStyles({
     borderBottom: "1px solid #ddd",
     display: "flex",
     justifyContent: "flex-end",
-    height: 58,
+    height: 55,
     padding: "0 16px",
     alignItems: "center",
   },
