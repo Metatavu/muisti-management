@@ -788,7 +788,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * Updates hidden display metrics values
    *
    * @param displayMetrics display metrics
-   * * @param dimensions dimensions
+   * @param dimensions dimensions
    * @returns device model display metrics
    */
   private updateHiddenDisplayMetricsValues = (displayMetrics: DeviceModelDisplayMetrics, dimensions: DeviceModelDimensions): DeviceModelDisplayMetrics => {
