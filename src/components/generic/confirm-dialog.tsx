@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;
-  open: boolean
+  open: boolean;
 }
 
 /**
