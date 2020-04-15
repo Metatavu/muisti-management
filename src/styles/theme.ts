@@ -43,6 +43,11 @@ export default createMuiTheme({
       fontSize: "16px",
       fontWeight: "normal"
     },
+    h5: {
+      fontFamily: "TTNorms-Bold",
+      fontSize: "14px",
+      fontWeight: "normal"
+    },
     h6: {
       fontFamily: "TTNorms-Regular",
       fontSize: "14px",
@@ -75,18 +80,18 @@ export default createMuiTheme({
       containedPrimary: {
         color: "#fff",
         textTransform: "initial",
-        borderRadius: 6
+        borderRadius: 100
       },
       containedSecondary: {
         color: "#fff",
         textTransform: "initial",
-        borderRadius: 6
+        borderRadius: 100
       },
       contained: {
         color: "#fff",
         backgroundColor: "rgba(138,192,203, 1)",
         textTransform: "initial",
-        borderRadius: 6,
+        borderRadius: 100,
         "&:hover": {
           backgroundColor: "rgba(138,192,203, 0.8)"
         },
@@ -114,6 +119,9 @@ export default createMuiTheme({
       input: {
         padding: "10px 12px"
       },
+      multiline: {
+        paddingTop: 10
+      },
       underline: {
         "&::before": {
           borderBottom: "0px solid rgba(0,0,0,0)"
@@ -136,6 +144,9 @@ export default createMuiTheme({
       }
     },
     MuiSelect: {
+      filled: {
+        padding: "10px 12px"
+      },
       select: {
         lineHeight: 1,
         padding: 5,

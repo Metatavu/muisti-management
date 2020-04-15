@@ -58,7 +58,7 @@ class BasicLayout extends React.Component<Props, State> {
           }
           <Breadcrumbs>
             <Typography variant="h6">{ strings.exhibition.onProduction }</Typography>
-            <Typography variant="h6" className={ classes.title }>
+            <Typography color="textPrimary" variant="h5" className={ classes.title }>
               { this.props.title }
             </Typography>
           </Breadcrumbs>

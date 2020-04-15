@@ -118,7 +118,9 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
-        <CircularProgress></CircularProgress>
+        <div className={ classes.loader }>
+          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        </div>
       );
     }
 
@@ -132,17 +134,12 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
-          </ElementNavigationPane>
-          <EditorView>
-            { this.renderToolbar() }
-            { this.renderEditor() }
-            { this.renderDeleteDialog() }
-          </EditorView>
-          <ElementSettingsPane title={ strings.layout.properties.title }>
             <div className={ classes.toolbarContent }>
               <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
               <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
               <Select
+                fullWidth
+                variant="filled"
                 labelId="screenOrientation"
                 value={ this.state.screenOrientation }
                 onChange={ this.onScreenOrientationChange }
@@ -151,6 +148,15 @@ export class LayoutEditorView extends React.Component<Props, State> {
                 <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
               </Select>
             </div>
+          </ElementNavigationPane>
+          <EditorView>
+            { this.renderToolbar() }
+            { this.renderEditor() }
+            { this.renderDeleteDialog() }
+          </EditorView>
+
+          <ElementSettingsPane title={ strings.layout.properties.title }>
+
           </ElementSettingsPane>
         </div>
 
@@ -166,18 +172,20 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.toolBar }>
-        <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
           { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
         </Button>
-        <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
-          { strings.exhibitionLayouts.editView.deleteButton }
-        </Button>
-        <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
-          { strings.exhibitionLayouts.editView.importButton }
-        </Button>
-        <Button variant="contained" color="primary" onClick={ this.onSaveClick }>
-          { strings.exhibitionLayouts.editView.saveButton }
-        </Button>
+        <div>
+          <Button disableElevation variant="contained" color="secondary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
+            { strings.exhibitionLayouts.editView.importButton }
+          </Button>
+          <Button disableElevation variant="contained" color="secondary" onClick={ this.onSaveClick } style={{ marginRight: 8 }}>
+            { strings.exhibitionLayouts.editView.saveButton }
+          </Button>
+          <Button disableElevation variant="contained" color="primary" onClick={ this.onDeleteClick }>
+            { strings.exhibitionLayouts.editView.deleteButton }
+          </Button>
+        </div>
       </div>
     );
 

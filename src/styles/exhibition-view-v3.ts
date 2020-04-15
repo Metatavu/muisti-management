@@ -2,6 +2,18 @@ import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
 export default createStyles({
+  
+  loader: {
+    height: "100%",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   navigationTabs: {
     marginTop: 5,
@@ -9,10 +21,16 @@ export default createStyles({
   },
 
   searchBar: {
-    marginBottom: 20
+  },
+
+  treeView: {
+    "& > div:focus": {
+      outline: "none"
+    }
   },
 
   navigationTree: {
+    marginTop: theme.spacing(2),
     marginBottom: 20
   },
 
@@ -61,7 +79,21 @@ export default createStyles({
   },
 
   toolbarContent: {
-    padding: theme.spacing(2)
-  }
+    paddingTop: theme.spacing(2)
+  },
 
+  listItem: {
+    cursor: 'pointer',
+    position: 'relative',
+    transition: "background-color 0.2s ease-out, color 0.2s ease-out",
+    "&:hover": {
+      backgroundColor: "#f2f2f2"
+    },
+
+    "&.focused": {
+      backgroundColor: theme.palette.secondary.main,
+      color: "#fff",
+      zIndex: 999,
+    }
+  }
 })
