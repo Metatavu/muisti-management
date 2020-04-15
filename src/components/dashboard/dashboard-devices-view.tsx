@@ -232,7 +232,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
         title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
         onClose={ this.onDeviceDialogClose }
         onCancel={ this.onDeviceDialogClose }
-        onConfirm={ () => this.onSaveDeviceClick() }
+        onConfirm={ this.onSaveDeviceClick }
         positiveButtonText={ strings.editorDialog.save }
         cancelButtonText={ strings.editorDialog.cancel }
       >
