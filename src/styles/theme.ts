@@ -1,4 +1,4 @@
-import { createMuiTheme, SvgIcon, GridListTileBar } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
 export default createMuiTheme({
@@ -43,25 +43,88 @@ export default createMuiTheme({
       fontSize: "16px",
       fontWeight: "normal"
     },
+    h6: {
+      fontFamily: "TTNorms-Regular",
+      fontSize: "14px",
+      fontWeight: "normal",
+      color: "#999999"
+    },
     body1: {
       fontSize: "14px"
     }
   },
   overrides: {
+    MuiBackdrop: {
+      root: {
+        backgroundColor: "rgba(0,0,0,0.1)"
+      }
+    },
     MuiPaper: {
       rounded: {
-        borderRadius: 8
+        borderRadius: 10
       }
     },
     MuiButton: {
+      root: {
+        fontFamily: "TTNorms-Medium",
+        textTransform: "initial",
+      },
+      textPrimary: {
+        fontFamily: "TTNorms-Medium",
+      },
+      containedPrimary: {
+        color: "#fff",
+        textTransform: "initial",
+        borderRadius: 6
+      },
+      containedSecondary: {
+        color: "#fff",
+        textTransform: "initial",
+        borderRadius: 6
+      },
       contained: {
         color: "#fff",
         backgroundColor: "rgba(138,192,203, 1)",
+        textTransform: "initial",
+        borderRadius: 6,
         "&:hover": {
           backgroundColor: "rgba(138,192,203, 0.8)"
         },
         "&:active": {
           backgroundColor: "rgba(138,192,203, 0.7)"
+        }
+      }
+    },
+    MuiInputLabel: {
+      filled: {
+        transform: "translate(12px, 13px) scale(1)",
+        "&.MuiInputLabel-shrink": {
+          transform: "translate(0px, -16px) scale(0.9)"
+        }
+      }
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: "#f3f3f3",
+        borderRadius: 4,
+        "& .MuiSelect-select": {
+          color: "#222"
+        },
+      },
+      input: {
+        padding: "10px 12px"
+      },
+      underline: {
+        "&::before": {
+          borderBottom: "0px solid rgba(0,0,0,0)"
+        },
+        "&::after": {
+          borderBottomColor: "rgba(138,192,203, 1)"
+        },
+        "&:hover": {
+          "&::before": {
+            borderBottomColor: "rgba(138,192,203, 1)"
+          }
         }
       }
     },
@@ -147,6 +210,14 @@ export default createMuiTheme({
     MuiGridListTileBar: {
       root: {
         backgroundColor: "transparent"
+      }
+    },
+    MuiDialogTitle: {
+      root: {
+        fontFamily: "TTNorms-Medium",
+        fontSize: "16px",
+        fontWeight: "normal",
+        color: "#000"
       }
     }
   }

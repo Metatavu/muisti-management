@@ -12,14 +12,15 @@ import { WithStyles, withStyles, Divider, MenuItem, Select, TextField} from "@ma
 import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType } from "../../generated/client";
-import { AccessToken } from '../../types';
+import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout } from "../../generated/client";
+import { AccessToken, PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript"
 import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
+import _ from "lodash";
 
 /**
  * Component props
@@ -29,17 +30,21 @@ interface Props extends WithStyles<typeof styles> {
     accessToken: AccessToken;
     selectedEventTrigger: ExhibitionPageEventTrigger;
     pages: ExhibitionPage[];
+    layout: PageLayout;
     jsonCode: string;
     onParseJson: (errorHandler?: ((message: string, e?: SyntaxError | undefined) => void) | undefined) => Partial<ExhibitionPage>;
     onSaveJson: ((selectedEventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) => void);
   }
-  
+
   /**
    * Component state
    */
   interface State {
     error?: Error;
     loading: boolean;
+    selectedClickViewId: string;
+    selectedPhysicalButtonDown?: PhysicalButton;
+    selectedPhysicalButtonUp?: PhysicalButton;
     selectedEventActionType?: ExhibitionPageEventActionType;
     selectedNavigationPage?: ExhibitionPage;
   }
@@ -55,14 +60,17 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
+      selectedClickViewId: props.selectedEventTrigger.clickViewId || "",
+      selectedPhysicalButtonDown: props.selectedEventTrigger.keyDown as PhysicalButton,
+      selectedPhysicalButtonUp: props.selectedEventTrigger.keyUp as PhysicalButton
     };
   }
 
   /**
    * Component did mount handler
    */
-  public componentDidMount = async () => {
-    
+  public componentDidMount = () => {
+
     const selectedTrigger = this.props.selectedEventTrigger;
 
     if (selectedTrigger !== undefined) {
@@ -73,13 +81,13 @@ export class EventTriggerEditor extends React.Component<Props, State> {
           selectedEventActionType: events[0].action
         });
       }
-    } 
+    }
   }
 
   /**
    * Component did update handler
    */
-  public componentDidUpdate = async (prevProps: Props) => {
+  public componentDidUpdate = (prevProps: Props) => {
     if (prevProps.selectedEventTrigger !== this.props.selectedEventTrigger) {
       this.setState({
         selectedNavigationPage: undefined
@@ -95,14 +103,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     const classes = this.props.classes;
 
     return<>
-      <TextField
-        type="viewId"
-        className={ classes.textResourceEditor } 
-        label={ strings.exhibition.eventTriggers.viewId }
-        variant="outlined"
-        value={ this.props.selectedEventTrigger?.clickViewId }
-      />
-
+      { this.renderClickViewIdSelect() }
+      { this.renderPhysicalButtonSelections() }
+      <h4> { strings.exhibition.eventTriggers.delayTitle }</h4>
       <TextField
         type="delay"
         className={ classes.textResourceEditor } 
@@ -113,10 +116,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       />
       <h4> { strings.exhibition.eventTriggers.actions }</h4>
       <TreeView>
-        { this.renderEventTriggerList() }
-
+        { this.renderEventActionTypeSelect() }
         <Divider variant="inset" component="li" />
-        { this.props.selectedEventTrigger && 
+        { this.props.selectedEventTrigger &&
           this.renderEventActionSettings()
         }
       </TreeView>
@@ -124,20 +126,86 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render event trigger list
+   * Render click view id select
    */
-  private renderEventTriggerList = () => {
-    const selectedAction = this.state.selectedEventActionType;
-
-    const eventList = Object.keys(ExhibitionPageEventActionType).map((event, index) => {
-      return <MenuItem key={ `eventAction-${index}` } value={ event.toLowerCase() }> { event }</MenuItem>
+  private renderClickViewIdSelect = () => {
+    const { selectedClickViewId } = this.state;
+    const clickViewIdList = this.props.layout.data.children.map((pageLayoutView, index) => {
+      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }> { pageLayoutView.id }</MenuItem>
     });
 
     return <>
-      <Select fullWidth value={ selectedAction ? selectedAction : "hide" }
-        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventAction(event) }
+      <h4> { strings.exhibition.eventTriggers.clickViewIdTitle }</h4>
+      <Select
+        label={ strings.exhibition.eventTriggers.clickViewId }
+        fullWidth
+        value={ selectedClickViewId || "" }
+        onChange={ this.onSelectClickViewId }
       >
-        { eventList }
+        { clickViewIdList }
+      </Select>
+    </>;
+  }
+
+  /**
+   * Render physical button selections
+   */
+  private renderPhysicalButtonSelections = () => {
+    const { selectedPhysicalButtonDown, selectedPhysicalButtonUp } = this.state;
+    const physicalButtons: PhysicalButtonData[] = [];
+
+    _.forIn(PhysicalButton, value => {
+      physicalButtons.push({
+        name: `${strings.exhibition.eventTriggers.physicalButton} ${value}`,
+        value: value
+      });
+    });
+
+    const menuItems = physicalButtons.map((button, index) => {
+      return <MenuItem key={ `physicalButtonDown-${index}` } value={ button.value }> { button.name }</MenuItem>
+    });
+
+    return (
+      <>
+        <h4>{ strings.exhibition.eventTriggers.physicalButtonDownTitle }</h4>
+        <Select
+          label={ strings.exhibition.eventTriggers.physicalButton }
+          fullWidth
+          name="DOWN"
+          value={ selectedPhysicalButtonDown || "" }
+          onChange={ this.onSelectPhysicalButton }
+        >
+          { menuItems }
+        </Select>
+        <h4>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</h4>
+        <Select
+          label={ strings.exhibition.eventTriggers.physicalButton }
+          fullWidth
+          name="UP"
+          value={ selectedPhysicalButtonUp || "" }
+          onChange={ this.onSelectPhysicalButton }
+        >
+          { menuItems }
+        </Select>
+      </>
+    );
+  }
+
+  /**
+   * Render event action type list
+   */
+  private renderEventActionTypeSelect = () => {
+    const selectedActionType = this.state.selectedEventActionType;
+
+    const eventActionTypeList = Object.keys(ExhibitionPageEventActionType).map((actionType, index) => {
+      return <MenuItem key={ `eventActionType-${index}` } value={ actionType.toLowerCase() }> { actionType }</MenuItem>
+    });
+
+    return <>
+      <Select fullWidth value={ selectedActionType ? selectedActionType : "hide" }
+        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventActionType(event) }
+      >
+        { eventActionTypeList }
       </Select>
     </>;
   }
@@ -148,36 +216,36 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private renderEventActionSettings = () => {
     const event = this.state.selectedEventActionType?.toLowerCase();
 
-    if (event == ExhibitionPageEventActionType.Hide) {
+    if (event === ExhibitionPageEventActionType.Hide) {
     return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
        */
     }
 
-    if (event == ExhibitionPageEventActionType.Show) {
+    if (event === ExhibitionPageEventActionType.Show) {
       return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
        */
     }
 
-    if (event == ExhibitionPageEventActionType.Setuservalue) {
+    if (event === ExhibitionPageEventActionType.Setuservalue) {
       return this.renderSetUserValueSettings();
     }
 
-    if (event == ExhibitionPageEventActionType.Navigate) {
+    if (event === ExhibitionPageEventActionType.Navigate) {
       return this.renderNavigateSettings();
     }
 
-    if (event == ExhibitionPageEventActionType.Setsrc) {
+    if (event === ExhibitionPageEventActionType.Setsrc) {
       return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
        */
     }
 
-    if (event == ExhibitionPageEventActionType.Settext) {
+    if (event === ExhibitionPageEventActionType.Settext) {
       return <h5>{ strings.comingSoon }</h5>;
       /**
        * TODO: Needs implementation
@@ -201,7 +269,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[0].value) ? selectedEventTrigger.events![0].properties[0].value : ""  }
         onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableChange(event) }
       />
-      
+
       <h4>{ strings.exhibition.eventTriggers.variableValue }</h4>
       <TextField
         type="name"
@@ -215,7 +283,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Check if selected event action type matches the selected event trigger from parent 
+   * Check if selected event action type matches the selected event trigger from parent
    */
   private doesEventTypeMatch = (): boolean => {
     const { selectedEventTrigger } = this.props;
@@ -234,7 +302,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       <Select fullWidth
         name={ event }
         value={ this.state.selectedNavigationPage ? this.state.selectedNavigationPage.id: "" }
-        onChange={ (e: React.ChangeEvent<{ value: unknown, name?: unknown }>) => this.onNavigationPageChange(e) }
+        onChange={ (e: React.ChangeEvent<{ value: unknown; name?: unknown }>) => this.onNavigationPageChange(e) }
       >
         { this.fetchPagesInExhibition() }
       </Select>
@@ -283,7 +351,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private onUserVariableChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedCode = this.props.onParseJson();
     const trigger = this.props.selectedEventTrigger;
-    let newValue = event.target.value;
+    const newValue = event.target.value;
 
     parsedCode.eventTriggers = parsedCode.eventTriggers || [];
     const index = parsedCode.eventTriggers.findIndex(eventTrigger => trigger.clickViewId === eventTrigger.clickViewId);
@@ -301,7 +369,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private onUserVariableValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedCode = this.props.onParseJson();
     const trigger = this.props.selectedEventTrigger;
-    let newValue = event.target.value;
+    const newValue = event.target.value;
 
     parsedCode.eventTriggers = parsedCode.eventTriggers || [];
     const index = parsedCode.eventTriggers.findIndex(eventTrigger => trigger.clickViewId === eventTrigger.clickViewId);
@@ -316,7 +384,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * Event handler for navigation page change
    * @param event react change event
    */
-  private onNavigationPageChange = (event: React.ChangeEvent<{ value: unknown, name?: unknown }>) => {
+  private onNavigationPageChange = (event: React.ChangeEvent<{ value: unknown; name?: unknown }>) => {
     const parsedCode = this.props.onParseJson();
     const newValue = event.target.value as string;
     const action = event.target.name as string;
@@ -327,16 +395,56 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
     if (index > -1) {
       const eventIndex = parsedCode.eventTriggers[index].events!.findIndex(e => action === e.action);
-      
+
       if (eventIndex > -1) {
         parsedCode.eventTriggers[index].events![eventIndex].properties[0].value= newValue
         const newSelectedPage = this.props.pages.find(page => page.id === newValue);
         this.setState({
           selectedNavigationPage: newSelectedPage
         });
-        
+
         this.props.onSaveJson(trigger, parsedCode);
       }
+    }
+  }
+
+  /**
+   * On select click view id action handler
+   * @param event react change event
+   */
+  private onSelectClickViewId = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const parsedCode = this.props.onParseJson();
+    const trigger = this.props.selectedEventTrigger;
+    const value = event.target.value as string;
+
+    parsedCode.eventTriggers = parsedCode.eventTriggers || [];
+    const index = parsedCode.eventTriggers.findIndex(eventTrigger => trigger.clickViewId === eventTrigger.clickViewId);
+
+    if (index > -1) {
+      parsedCode.eventTriggers[index].clickViewId = value;
+      this.props.onSaveJson(parsedCode.eventTriggers[index], parsedCode);
+    }
+
+    this.setState({ selectedClickViewId: event.target.value as string });
+  }
+
+  /**
+   * Physical button select event hadler
+   *
+   * @param event React changeEvent
+   */
+  private onSelectPhysicalButton = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+    const name = event.target.name;
+    const value = event.target.value as PhysicalButton;
+    switch (name) {
+      case "DOWN":
+        this.setState({ selectedPhysicalButtonDown: value });
+      break;
+      case "UP":
+        this.setState({ selectedPhysicalButtonUp: value });
+      break;
+      default:
+      break;
     }
   }
 
@@ -344,11 +452,11 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * On select event action handler
    * @param event react change event
    */
-  private onSelectEventAction = (event: React.ChangeEvent<{ value: unknown }>)=> {
+  private onSelectEventActionType = (event: React.ChangeEvent<{ value: unknown }>)=> {
     const value = event.target.value as ExhibitionPageEventActionType;
 
     /**
-     * TODO: If we assume that each event trigger contains only one event, do we want to clear the existing values on select? 
+     * TODO: If we assume that each event trigger contains only one event, do we want to clear the existing values on select?
      */
     this.clearEventActionFromJson(value);
 
@@ -374,13 +482,13 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       return;
     }
 
-    var newAction;
+    let newAction;
     if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
         newAction = this.createAction(this.getActionName(actionType), actionType, ExhibitionPageEventPropertyType.String);
     } else {
       newAction = this.createSetUserAction("testVariable", ExhibitionPageEventPropertyType.String, "testValue", ExhibitionPageEventPropertyType.String);
     }
-    
+
     if (index > -1) {
         parsedCode.eventTriggers[index].events! = [newAction];
         this.props.onSaveJson(trigger, parsedCode);
@@ -409,7 +517,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * @param actionType given action type
    * @param propertyType exhibition page event property type
    */
-  private createAction = (nameValue: string, actionType: ExhibitionPageEventActionType, propertyType : ExhibitionPageEventPropertyType) => { 
+  private createAction = (nameValue: string, actionType: ExhibitionPageEventActionType, propertyType: ExhibitionPageEventPropertyType) => {
 
     const newAction = {
       action: actionType,
@@ -432,7 +540,11 @@ export class EventTriggerEditor extends React.Component<Props, State> {
    * @param variableValue value of the variable
    * @param variableValueType type of the given variable
    */
-  private createSetUserAction = (variableName: string, variableNameType: ExhibitionPageEventPropertyType, variableValue: string, variableValueType :ExhibitionPageEventPropertyType) => { 
+  private createSetUserAction = (
+    variableName: string,
+    variableNameType: ExhibitionPageEventPropertyType,
+    variableValue: string,
+    variableValueType: ExhibitionPageEventPropertyType) => {
 
     const newAction = {
       action: ExhibitionPageEventActionType.Setuservalue,
@@ -451,7 +563,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     };
     return newAction;
   }
-    
+
 }
 
 /**
@@ -471,7 +583,7 @@ function isNumber(value: string): boolean {
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken,
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 

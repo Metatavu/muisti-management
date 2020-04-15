@@ -18,6 +18,16 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  confirmDialog: {
+    cancel: string;
+    delete: string;
+  };
+
+  editorDialog: {
+    cancel: string;
+    save: string;
+  };
+
   errorDialog: {
     title: string;
     reloadPage: string;
@@ -92,24 +102,27 @@ export interface IStrings extends LocalizedStringsMethods {
     devices: {
       title: string;
       capabilities: string;
+      newDevice: string;
       dialog: {
+        deleteDeviceTitle: string;
+        deleteDeviceText: string;
         brand: string;
         model: string;
         displayMetrics: {
           displayInfo: string;
-          resolution: string;
-          displayWidth: string;
-          displayHeight: string;
-          displayXDpi: string;
-          displayYDpi: string;
-        }
+          widthPixels: string;
+          heightPixels: string;
+        };
         dimensions: {
           physicalSize: string;
           width: string;
           height: string;
-        }
+          depth: string;
+          screenWidth: string;
+          screenHeight: string;
+        };
+        touchscreen: string;
         type: string;
-        touchScreen: string;
       };
     };
     layouts: {
@@ -121,6 +134,9 @@ export interface IStrings extends LocalizedStringsMethods {
   exhibition: {
     content: string;
     tech: string;
+    navigation: {
+      search: string;
+    };
     newPage: string;
     addPage: string;
     onProduction: string;
@@ -139,10 +155,15 @@ export interface IStrings extends LocalizedStringsMethods {
           text: string;
         };
       };
-    },
+    };
     eventTriggers: {
       title: string;
-      viewId: string;
+      clickViewIdTitle: string;
+      clickViewId: string;
+      physicalButtonDownTitle: string;
+      physicalButtonUpTitle: string;
+      physicalButton: string;
+      delayTitle: string;
       delay: string;
       actions: string;
       variableName: string;
@@ -166,6 +187,11 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
+  };
+
+  deviceTypes: {
+    screen: string;
+    projector: string;
   };
 
   sorting: {

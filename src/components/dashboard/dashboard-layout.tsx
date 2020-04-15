@@ -74,20 +74,16 @@ class DashboardLayout extends React.Component<Props, State> {
 
     return (
       <div className={ classes.root }>
-        <header className={ classes.header }>
-          {
-            this.renderHeader()
-          }
-        </header>
         <div className={ classes.navigation }>
-          <div className={ classes.userElement }>
-              <div className={ classes.userAvatar }><p>{ initials }</p></div>
-          <h4>{ firstName }</h4>
-          </div>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
-          <div className={ classes.navigationContent }>
+          <div className={ classes.navigationTopContent }>
+            <div className={ classes.userElement }>
+                <div className={ classes.userAvatar }><p>{ initials }</p></div>
+            <h4>{ firstName }</h4>
+            </div>
+            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
             <DashboardNavigation locationPath={ locationPath } />
           </div>
+          <Button disableElevation variant="contained" className={ classes.actionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
         </div>
         <div className={ classes.content }>
           <Container >
@@ -101,23 +97,12 @@ class DashboardLayout extends React.Component<Props, State> {
   }
 
   /**
-   * Render header
-   */
-  private renderHeader = () => {
-    const { classes } = this.props;
-
-    return (
-      <Button disableElevation variant="contained" className={ classes.newExhibitionBtn } onClick={ this.onCreateButtonClick }>{ strings.dashboard.newExhibitionButton }</Button>
-    );
-  }
-
-  /**
    * Renders create exhibition dialog
    */
   private renderCreateDialog = () => {
     return (
       <Dialog open={ this.state.createDialogOpen } onClose={ this.onCreateDialogClose }>
-        <DialogTitle>{ strings.exhibitions.createExhibitionDialog.title }</DialogTitle>
+        <DialogTitle disableTypography >{ strings.exhibitions.createExhibitionDialog.title }</DialogTitle>
         <DialogContent>
           <DialogContentText>
             { strings.exhibitions.createExhibitionDialog.helpText }
@@ -133,7 +118,7 @@ class DashboardLayout extends React.Component<Props, State> {
           <Button onClick={ this.onCreateDialogCancelClick } color="primary">
             { strings.exhibitions.createExhibitionDialog.cancelButton }
           </Button>
-          <Button onClick={ this.onDialogCreateButtonClick } color="primary">
+          <Button disableElevation variant="contained" onClick={ this.onDialogCreateButtonClick } color="secondary">
             { strings.exhibitions.createExhibitionDialog.createButton }
           </Button>
         </DialogActions>

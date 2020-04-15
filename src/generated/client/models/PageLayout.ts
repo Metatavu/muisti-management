@@ -55,6 +55,12 @@ export interface PageLayout {
      */
     thumbnailUrl?: string;
     /**
+     * Device model id
+     * @type {string}
+     * @memberof PageLayout
+     */
+    modelId?: string;
+    /**
      * 
      * @type {ScreenOrientation}
      * @memberof PageLayout
@@ -100,6 +106,7 @@ export function PageLayoutFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'name': json['name'],
         'data': PageLayoutViewFromJSON(json['data']),
         'thumbnailUrl': !exists(json, 'thumbnailUrl') ? undefined : json['thumbnailUrl'],
+        'modelId': !exists(json, 'modelId') ? undefined : json['modelId'],
         'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -120,6 +127,7 @@ export function PageLayoutToJSON(value?: PageLayout | null): any {
         'name': value.name,
         'data': PageLayoutViewToJSON(value.data),
         'thumbnailUrl': value.thumbnailUrl,
+        'modelId': value.modelId,
         'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
     };
 }

@@ -14,66 +14,60 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * 
+ * Content version (e.g. language) of an exhibition.
  * @export
- * @interface ExhibitionDeviceGroup
+ * @interface ExhibitionContentVersion
  */
-export interface ExhibitionDeviceGroup {
+export interface ExhibitionContentVersion {
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly id?: string;
     /**
-     * 
+     * Id of exhibition this page belongs to
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly exhibitionId?: string;
     /**
-     * 
+     * Human readable name of the content version
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
-     */
-    roomId?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     name: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly creatorId?: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof ExhibitionContentVersion
      */
     readonly modifiedAt?: Date;
 }
 
-export function ExhibitionDeviceGroupFromJSON(json: any): ExhibitionDeviceGroup {
-    return ExhibitionDeviceGroupFromJSONTyped(json, false);
+export function ExhibitionContentVersionFromJSON(json: any): ExhibitionContentVersion {
+    return ExhibitionContentVersionFromJSONTyped(json, false);
 }
 
-export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionDeviceGroup {
+export function ExhibitionContentVersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionContentVersion {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -81,7 +75,6 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'roomId': !exists(json, 'roomId') ? undefined : json['roomId'],
         'name': json['name'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -90,7 +83,7 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null): any {
+export function ExhibitionContentVersionToJSON(value?: ExhibitionContentVersion | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -99,7 +92,6 @@ export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null
     }
     return {
         
-        'roomId': value.roomId,
         'name': value.name,
     };
 }
