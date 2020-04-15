@@ -71,7 +71,7 @@ interface State {
   devices: ExhibitionDevice[];
   pages: ExhibitionPage[];
   treeData?: TreeNodeInArray[];
-  selectedElement?: ExhibitionContentVersion | ExhibitionFloor | ExhibitionDevice | ExhibitionPage;
+  selectedElement?: ExhibitionElement;
   pageLayout?: PageLayout;
   selectedRoomId?: string;
   selectedDeviceGroupId?: string;
@@ -193,7 +193,7 @@ export class ExhibitionView extends React.Component<Props, State> {
             </div>
             { this.renderEditor() }
           </EditorView>
-          <ElementContentsPane title={ selectedElement ? selectedElement.name : "" }>
+          <ElementContentsPane title={ selectedElement ? selectedElement.data.name : "" }>
             { this.state.selectedElement &&
               this.renderElementSettingsContent()
             }
@@ -264,7 +264,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       <TreeMenu
         data={ treeData }
         onClickItem={({ key, label, ...props }) => {
-          this.onSelectElementFromTree(props.element, props.elementType);
+          this.onSelectElementFromTree(props.element);
         }}
       >
         {({ search, items }) => (
@@ -431,14 +431,55 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders element settings pane content
    */
   private renderElementSettingsContent = () => {
-    const { classes } = this.props;
+    const { selectedElement } = this.state;
+    if (!selectedElement) {
+      return;
+    }
 
+    switch (selectedElement.type) {
+      case ExhibitionElementType.DEVICE:
+        return this.renderDeviceSettings(selectedElement.data as ExhibitionDevice);
+      case ExhibitionElementType.PAGE:
+        return this.renderPageSettings(selectedElement.data as ExhibitionPage);
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Renders device settings
+   */
+  private renderDeviceSettings = (deviceData: ExhibitionDevice) => {
+    const { classes } = this.props;
+    const devicePages = this.state.pages.filter(page => page.deviceId === deviceData.id);
+    const selectIndexPageItems = devicePages.map(page => {
+      return (
+        <MenuItem value={ page.id }>{ page.name }</MenuItem>
+      );
+    });
+    
+    return (
+      <div className={ classes.toolbarContent }>
+        <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+        <InputLabel id="indexPageId">{ strings.exhibition.deviceEditor.indexPageId }</InputLabel>
+        <Select labelId="pageLayoutId" fullWidth value={ deviceData.indexPageId } onChange={ this.onIndexPageChange }>
+          { selectIndexPageItems }
+        </Select>
+      </div>
+    );
+  }
+
+  /**
+   * Renders page settings
+   */
+  private renderPageSettings = (pageData: ExhibitionPage) => {
+    const { classes } = this.props;
     return (
       <div className={ classes.toolbarContent }>
         <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
         <div className={ classes.toolbarContent }>
-          { this.renderDeviceSelect() }
-          { this.renderLayoutSelect() }
+          { this.renderDeviceSelect(pageData) }
+          { this.renderLayoutSelect(pageData) }
         </div>
         <TreeView
           className={ classes.navigationTree }
@@ -455,12 +496,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   /**
    * Renders layout select
    */
-  private renderLayoutSelect = () => {
-    const { selectedElement } = this.state;
-    if (!selectedElement) {
-      return;
-    }
-
+  private renderLayoutSelect = (pageData: ExhibitionPage) => {
     const layoutSelectItems = this.props.layouts.map(layout => {
       return (
         <MenuItem value={ layout.id }>{ layout.name }</MenuItem>
@@ -470,7 +506,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     return (
       <>
         <InputLabel id="pageLayoutId">{ strings.exhibition.pageEditor.pageLayoutLabel }</InputLabel>
-        <Select labelId="pageLayoutId" fullWidth value={ (selectedElement as ExhibitionPage).layoutId } onChange={ this.onLayoutChange }>
+        <Select labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ this.onLayoutChange }>
           { layoutSelectItems }
         </Select>
       </>
@@ -480,12 +516,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   /**
    * Renders device select
    */
-  private renderDeviceSelect = () => {
-    const { selectedElement } = this.state;
-    if (!selectedElement) {
-      return;
-    }
-
+  private renderDeviceSelect = (pageData: ExhibitionPage) => {
     const selectItems = this.state.devices.map(device => {
       return (
         <MenuItem value={ device.id }>{ device.name }</MenuItem>
@@ -495,7 +526,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     return (
       <>
         <InputLabel id="pageDeviceId">{ strings.exhibition.pageEditor.pageDeviceLabel }</InputLabel>
-        <Select labelId="pageDeviceId" fullWidth value={ (selectedElement as ExhibitionPage).deviceId } onChange={ this.onDeviceChange }>
+        <Select labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ this.onDeviceChange }>
           { selectItems }
         </Select>
       </>
@@ -810,10 +841,12 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private findResourceLayoutView(resourceId: string): PageLayoutView | null {
     const { selectedElement } = this.state;
-    if (!selectedElement) {
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
       return null;
     }
-    const layout = this.props.layouts.find(item => item.id === (selectedElement as ExhibitionPage).layoutId);
+
+    const pageData = selectedElement.data as ExhibitionPage;
+    const layout = this.props.layouts.find(item => item.id === pageData.layoutId);
     if (!layout) {
       return null;
     }
@@ -938,6 +971,24 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for index page select change
+   * 
+   * @param event event
+   */
+  private onIndexPageChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { selectedElement } = this.state;
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.DEVICE) {
+      return;
+    }
+
+    const data: ExhibitionDevice = { ...selectedElement.data as ExhibitionDevice, indexPageId: event.target.value };
+
+    this.setState({
+      selectedElement: { ...selectedElement, data }
+    });
+  }
+
+  /**
    * Event handler for name input change
    *
    * @param event event
@@ -967,12 +1018,14 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onLayoutChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
     const { selectedElement } = this.state;
-    if (!selectedElement) {
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
       return;
     }
 
+    const data: ExhibitionPage = { ...selectedElement.data as ExhibitionPage, layoutId: event.target.value };
+
     this.setState({
-      selectedElement: { ...selectedElement, layoutId: event.target.value }
+      selectedElement: { ...selectedElement, data }
     });
   }
 
@@ -983,12 +1036,14 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onDeviceChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
     const { selectedElement } = this.state;
-    if (!selectedElement) {
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
       return;
     }
 
+    const data = { ...selectedElement.data, deviceId: event.target.value };
+
     this.setState({
-      selectedElement: { ...selectedElement, deviceId: event.target.value }
+      selectedElement: { ...selectedElement, data }
     });
   }
 
@@ -1022,18 +1077,31 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (!selectedElement) {
       return;
     }
-    const updatedPageData = selectedElement as ExhibitionPage;
-    const parsedCode = this.parseJsonCode();
 
-    this.onPageSave({
-      ...updatedPageData,
-      layoutId: updatedPageData.layoutId,
-      deviceId: updatedPageData.deviceId,
-      name: updatedPageData.name,
-      contentVersionId: updatedPageData.contentVersionId,
-      eventTriggers: parsedCode.eventTriggers || [],
-      resources: parsedCode.resources || []
-    });
+    switch (selectedElement.type) {
+      case ExhibitionElementType.DEVICE:
+        const updatedDeviceData = selectedElement.data as ExhibitionDevice;
+        this.onDeviceSave({
+          ...updatedDeviceData,
+          indexPageId: updatedDeviceData.indexPageId,
+          groupId: updatedDeviceData.groupId,
+          name: updatedDeviceData.name
+        });
+      break;
+      case ExhibitionElementType.PAGE:
+        const updatedPageData = selectedElement.data as ExhibitionPage;
+        const parsedCode = this.parseJsonCode();
+        this.onPageSave({
+          ...updatedPageData,
+          layoutId: updatedPageData.layoutId,
+          deviceId: updatedPageData.deviceId,
+          name: updatedPageData.name,
+          contentVersionId: updatedPageData.contentVersionId,
+          eventTriggers: parsedCode.eventTriggers || [],
+          resources: parsedCode.resources || []
+        });
+      break;
+    }
   }
 
   /**
@@ -1070,8 +1138,13 @@ export class ExhibitionView extends React.Component<Props, State> {
       resources: []
     }
 
+    const newElement: ExhibitionElement = {
+      data: newPage,
+      type: ExhibitionElementType.PAGE
+    }
+
     this.setState({
-      selectedElement: newPage
+      selectedElement: newElement
     });
   }
 
@@ -1087,6 +1160,50 @@ export class ExhibitionView extends React.Component<Props, State> {
         screenOrientation: ScreenOrientation.Portrait
       }
     }); 
+  }
+
+  /**
+   * Event handler for device save
+   *
+   * @param page page
+   */
+  private onDeviceSave = async (device: ExhibitionDevice) => {
+    try {
+      const exhibitionDevicesApi = Api.getExhibitionDevicesApi(this.props.accessToken);
+      if (device.id) {
+        const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
+          exhibitionId: this.props.exhibitionId,
+          deviceId: device.id,
+          exhibitionDevice: device
+        });
+
+        const devices = this.state.devices.filter(item => item.id !== updatedDevice.id) || [];
+
+        this.setState({
+          devices: [ ...devices, updatedDevice ]
+        }, () => {
+          this.setState({
+            treeData: this.reconstructTreeData()
+          });
+        });
+
+      } else {
+        const createdDevice = await exhibitionDevicesApi.createExhibitionDevice({
+          exhibitionId: this.props.exhibitionId,
+          exhibitionDevice: device
+        });
+
+        this.setState({
+          devices: [ ...this.state.devices || [], createdDevice ]
+        });
+      }
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
   }
 
   /**
@@ -1146,14 +1263,15 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param element selected element
    * @param elementType selected element type
    */
-  private onSelectElementFromTree = (element: ExhibitionElement, elementType: ExhibitionElementType) => {
+  private onSelectElementFromTree = (element: ExhibitionElement) => {
     this.setState({ 
       selectedDeviceGroupId: undefined,
       selectedRoomId: undefined,
-      addDevice: undefined
+      addDevice: undefined,
+      jsonCode: "{}"
     });
 
-    switch (elementType) {
+    switch (element.type) {
       case ExhibitionElementType.EXHIBITION:
       break;
       case ExhibitionElementType.CONTENT_VERSION:
@@ -1161,7 +1279,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       case ExhibitionElementType.FLOOR:
       break;
       case ExhibitionElementType.ROOM:
-        const selectedRoom = element as ExhibitionDevice;
+        const selectedRoom = element.data as ExhibitionDevice;
         const selectedDeviceGroup = this.state.deviceGroups.find(item => item.roomId === selectedRoom.id); 
 
         this.setState({
@@ -1171,16 +1289,22 @@ export class ExhibitionView extends React.Component<Props, State> {
 
       break;
       case ExhibitionElementType.DEVICE:
+        this.setState({
+          selectedElement: element
+        });
+
       break;
       case ExhibitionElementType.PAGE:
-        const selectedElement = element as ExhibitionPage;
-        const jsonCode = this.toJsonCode(selectedElement);
-        const pageLayout = this.props.layouts.find(item => item.id === selectedElement.layoutId);
+        const pageData = element.data as ExhibitionPage;
+        const jsonCode = this.toJsonCode(pageData);
+        const pageLayout = this.props.layouts.find(item => item.id === pageData.layoutId);
+
         this.setState({
-          selectedElement,
-          jsonCode,
-          pageLayout
+          selectedElement: element,
+          jsonCode: jsonCode,
+          pageLayout: pageLayout
         });
+
       break;
       default:
       break;
@@ -1264,38 +1388,50 @@ export class ExhibitionView extends React.Component<Props, State> {
     const treeData = [{
       key: exhibitionId,
       label: exhibition.name,
-      element: exhibition,
-      elementType: ExhibitionElementType.EXHIBITION,
+      element: {
+        data: exhibition,
+        type: ExhibitionElementType.EXHIBITION
+      },
       nodes: contentVersions.map(contentVersion => {
         return {
           key: contentVersion.id!,
           label: contentVersion.name,
-          element: contentVersion,
-          elementType: ExhibitionElementType.CONTENT_VERSION,
+          element: {
+            data: contentVersion,
+            type: ExhibitionElementType.CONTENT_VERSION
+          },
           nodes: floors.map(floor => {
             return {
               key: floor.id!,
               label: floor.name,
-              element: floor,
-              elementType: ExhibitionElementType.FLOOR,
+              element: {
+                data: floor,
+                type: ExhibitionElementType.FLOOR
+              },
               nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
                 return {
                   key: room.id!,
                   label: room.name,
-                  element: room,
-                  elementType: ExhibitionElementType.ROOM,
+                  element: {
+                    data: room,
+                    type: ExhibitionElementType.ROOM
+                  },
                   nodes: devices.map(device => {
                     return {
                       key: device.id!,
                       label: device.name,
-                      element: device,
-                      elementType: ExhibitionElementType.DEVICE,
+                      element: {
+                        data: device,
+                        type: ExhibitionElementType.DEVICE
+                      },
                       nodes: pages.filter(page => page.deviceId === device.id).map(page => {
                         return {
                           key: page.id!,
                           label: page.name,
-                          element: page,
-                          elementType: ExhibitionElementType.PAGE,
+                          element: {
+                            data: page,
+                            type: ExhibitionElementType.PAGE
+                          },
                           nodes: []
                         }
                       })

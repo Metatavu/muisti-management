@@ -163,6 +163,10 @@ export interface IStrings extends LocalizedStringsMethods {
       pageDeviceLabel: string; 
     },
 
+    deviceEditor: {
+      indexPageId: string;
+    },
+
     eventTriggers: {
       title: string;
       clickViewIdTitle: string;

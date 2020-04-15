@@ -164,6 +164,10 @@
       "pageDeviceLabel": "Page device"  
     },
 
+    "deviceEditor": {
+      "indexPageId": "Device front page"
+    },
+
     "eventTriggers": {
       "title": "Events",
       "clickViewIdTitle": "Triggers when element is clicked",
