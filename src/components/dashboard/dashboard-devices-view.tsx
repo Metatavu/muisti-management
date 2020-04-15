@@ -121,7 +121,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
                 disableElevation
                 variant="contained"
                 className={ classes.actionBtn }
-                onClick={ () => this.onAddDeviceClick() }
+                onClick={ this.onAddDeviceClick }
                 >
                 { strings.dashboard.devices.newDevice }
               </Button>
