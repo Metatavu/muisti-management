@@ -212,7 +212,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
   }
 
   /**
-   * Render device settings view
+   * Renders device modification dialog
    */
   private renderModifyDeviceDialog = () => {
     const { selectedDevice, newDevice, deviceDialogOpen, deviceData, formError } = this.state;
