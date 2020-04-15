@@ -139,6 +139,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     newPage: string;
     addPage: string;
+    addDevice: string;
     onProduction: string;
     properties: {
       title: string;
@@ -156,6 +157,12 @@ export interface IStrings extends LocalizedStringsMethods {
         };
       };
     };
+
+    pageEditor: {
+      pageLayoutLabel: string;
+      pageDeviceLabel: string; 
+    },
+
     eventTriggers: {
       title: string;
       clickViewIdTitle: string;
@@ -170,6 +177,18 @@ export interface IStrings extends LocalizedStringsMethods {
       variableValue: string;
       selectPage: string;
     };
+    
+    addDeviceEditor: {
+      title: string;
+      defaultName: string;
+      nameLabel: string;
+      deviceModelLabel: string;
+      screenOrientationLabel: string;
+      screenOrientationPortrait: string;
+      screenOrientationLandscape: string;
+      saveButton: string;
+    };
+    
   };
 
   layout: {

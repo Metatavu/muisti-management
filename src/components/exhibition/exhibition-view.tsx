@@ -9,11 +9,11 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/exhibition-view-v3";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Input } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Input, Grid, InputLabel } from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import BasicLayout from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -39,6 +39,7 @@ import slugify from "slugify";
 import SearchIcon from '@material-ui/icons/Search';
 import TreeMenu, { TreeMenuItem } from "react-simple-tree-menu";
 import { TreeNodeInArray } from "react-simple-tree-menu";
+import theme from "../../styles/theme";
 
 type View = "CODE" | "VISUAL";
 
@@ -66,16 +67,20 @@ interface State {
   contentVersions: ExhibitionContentVersion[];
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
+  deviceGroups: ExhibitionDeviceGroup[];
   devices: ExhibitionDevice[];
   pages: ExhibitionPage[];
   treeData?: TreeNodeInArray[];
   selectedElement?: ExhibitionContentVersion | ExhibitionFloor | ExhibitionDevice | ExhibitionPage;
   pageLayout?: PageLayout;
+  selectedRoomId?: string;
+  selectedDeviceGroupId?: string;
   selectedResource?: ExhibitionPageResource;
   selectedEventTrigger?: ExhibitionPageEventTrigger;
   view: View;
   name: string;
   jsonCode: string;
+  addDevice?: Partial<ExhibitionDevice>;
 }
 
 /**
@@ -109,6 +114,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       rooms: [],
       devices: [],
       pages: [],
+      deviceGroups: [],
       view: "VISUAL",
       name: "",
       jsonCode: "{}"
@@ -179,13 +185,11 @@ export class ExhibitionView extends React.Component<Props, State> {
               this.renderTreeMenu(treeData)
             }
             <Button variant="outlined" color="primary" onClick={ this.onAddPageClick } startIcon={ <AddIcon />  }>{ strings.exhibition.addPage }</Button>
+            <Button variant="outlined" disabled={ !this.state.selectedDeviceGroupId } color="primary" onClick={ this.onAddDeviceClick } startIcon={ <AddIcon />  }>{ strings.exhibition.addDevice }</Button>
           </ElementNavigationPane>
           <EditorView>
             <div className={ classes.toolBar }>
-              <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
-                { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
-              </Button>
-              <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+              { this.renderToolbarContents() }
             </div>
             { this.renderEditor() }
           </EditorView>
@@ -207,6 +211,46 @@ export class ExhibitionView extends React.Component<Props, State> {
         </div>
 
       </BasicLayout>
+    );
+  }
+
+  /**
+   * Renders toolbar contents
+   */
+  private renderToolbarContents = () => {
+    if (this.state.addDevice) {
+      return this.renderToolbarContentsAddDevice();
+    }
+
+    if (this.state.selectedElement) {
+      return this.renderToolbarContentsPageEditor();
+    }
+
+    return null;
+  }
+
+  /**
+   * Renders add device view toolbar contents
+   */
+  private renderToolbarContentsAddDevice = () => {
+    return (
+      <>
+        <Button variant="contained" color="primary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
+      </>
+    );
+  }
+
+  /**
+   * Renders page editor toolbar contents
+   */
+  private renderToolbarContentsPageEditor = () => {
+    return (
+      <>
+        <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+          { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
+        </Button>
+        <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+      </>
     );
   }
 
@@ -278,6 +322,10 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders editor
    */
   private renderEditor = () => {
+    if (this.state.addDevice) {
+      return this.renderAddDeviceEditor();
+    }
+
     switch (this.state.view) {
       case "CODE":
         return this.renderCodeEditor();
@@ -286,6 +334,41 @@ export class ExhibitionView extends React.Component<Props, State> {
       default:
         return null;
     }
+  }
+
+  /**
+   * Renders add device editor
+   */
+  private renderAddDeviceEditor = () => {
+    if (!this.state.addDevice) {
+      return null;
+    }
+
+    const modelSelectItems = this.props.deviceModels.map((deviceModel) => {
+      return <MenuItem value={ deviceModel.id }>{ `${deviceModel.manufacturer} ${deviceModel.model}` }</MenuItem>;
+    });
+
+    return (
+      <>
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.addDeviceEditor.title }</Typography>
+        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+          <Grid item xs={ 4 }>
+            <TextField fullWidth type="text" label={ strings.exhibition.addDeviceEditor.nameLabel } name="name" value={ this.state.addDevice.name || "" } onChange={ this.onAddDeviceNameChange } />
+            
+            <InputLabel id="model">{ strings.exhibition.addDeviceEditor.deviceModelLabel }</InputLabel>
+            <Select labelId="model" value={ this.state.addDevice.modelId } onChange={ this.onAddDeviceModelChange } >
+              { modelSelectItems }
+            </Select>
+
+            <InputLabel id="screenOrientation">{ strings.exhibition.addDeviceEditor.screenOrientationLabel }</InputLabel>
+            <Select labelId="screenOrientation" value={ this.state.addDevice.screenOrientation } onChange={ this.onAddDeviceScreenOrientationChange } >
+              <MenuItem value={ ScreenOrientation.Portrait }>{ strings.exhibition.addDeviceEditor.screenOrientationPortrait }</MenuItem>
+              <MenuItem value={ ScreenOrientation.Landscape }>{ strings.exhibition.addDeviceEditor.screenOrientationLandscape }</MenuItem>
+            </Select>
+          </Grid>
+        </Grid>
+      </>
+    );
   }
 
   /**
@@ -349,10 +432,12 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private renderElementSettingsContent = () => {
     const { classes } = this.props;
+
     return (
       <div className={ classes.toolbarContent }>
         <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
         <div className={ classes.toolbarContent }>
+          { this.renderDeviceSelect() }
           { this.renderLayoutSelect() }
         </div>
         <TreeView
@@ -383,9 +468,37 @@ export class ExhibitionView extends React.Component<Props, State> {
     });
 
     return (
-      <Select fullWidth value={ (selectedElement as ExhibitionPage).layoutId } onChange={ this.onLayoutChange }>
-        { layoutSelectItems }
-      </Select>
+      <>
+        <InputLabel id="pageLayoutId">{ strings.exhibition.pageEditor.pageLayoutLabel }</InputLabel>
+        <Select labelId="pageLayoutId" fullWidth value={ (selectedElement as ExhibitionPage).layoutId } onChange={ this.onLayoutChange }>
+          { layoutSelectItems }
+        </Select>
+      </>
+    );
+  }
+
+  /**
+   * Renders device select
+   */
+  private renderDeviceSelect = () => {
+    const { selectedElement } = this.state;
+    if (!selectedElement) {
+      return;
+    }
+
+    const selectItems = this.state.devices.map(device => {
+      return (
+        <MenuItem value={ device.id }>{ device.name }</MenuItem>
+      );
+    });
+
+    return (
+      <>
+        <InputLabel id="pageDeviceId">{ strings.exhibition.pageEditor.pageDeviceLabel }</InputLabel>
+        <Select labelId="pageDeviceId" fullWidth value={ (selectedElement as ExhibitionPage).deviceId } onChange={ this.onDeviceChange }>
+          { selectItems }
+        </Select>
+      </>
     );
   }
 
@@ -507,11 +620,14 @@ export class ExhibitionView extends React.Component<Props, State> {
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
-    const [ contentVersions, floors, rooms, devices, pages ] =
-      await Promise.all<ExhibitionContentVersion[], ExhibitionFloor[], ExhibitionRoom[], ExhibitionDevice[], ExhibitionPage[]>([
+    const exhibitionDeviceGroupApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+
+    const [ contentVersions, floors, rooms, deviceGroups, devices, pages ] =
+      await Promise.all<ExhibitionContentVersion[], ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[], ExhibitionPage[]>([
         exhibitionContentVersionsApi.listExhibitionContentVersions({ exhibitionId }),
         exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
         exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
+        exhibitionDeviceGroupApi.listExhibitionDeviceGroups({ exhibitionId: exhibitionId }),
         exhibitionDevicesApi.listExhibitionDevices({ exhibitionId }),
         exhibitionPagesApi.listExhibitionPages({ exhibitionId })
       ]);
@@ -526,12 +642,13 @@ export class ExhibitionView extends React.Component<Props, State> {
     });
 
     this.setState({
-      contentVersions,
-      floors,
-      rooms,
-      devices,
-      pages,
-      treeData
+      contentVersions: contentVersions,
+      floors: floors,
+      rooms: rooms,
+      deviceGroups: deviceGroups,
+      devices: devices,
+      pages: pages,
+      treeData: treeData
     });
   }
 
@@ -797,32 +914,6 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for event trigger node click
-   *
-   * @param eventTrigger selected node
-   */
-  private onEventTriggerNodeDeleteClick = (eventTrigger: ExhibitionPageEventTrigger) => {
-
-    const selectedEventTrigger = this.state.selectedEventTrigger;
-    if (!selectedEventTrigger) {
-      return null;
-    }
-
-    const parsedCode = this.parseJsonCode();
-    parsedCode.eventTriggers = parsedCode.eventTriggers || [];
-    const index = parsedCode.eventTriggers.findIndex(trigger => eventTrigger.clickViewId === trigger.clickViewId);
-    if (index > -1) {
-      parsedCode.eventTriggers.splice(index, 1);
-
-      this.setState({
-        jsonCode: this.toJsonCode(parsedCode),
-        selectedEventTrigger: undefined,
-        selectedResource: undefined
-      });
-    }
-  }
-
-  /**
    * Event handler for name input change
    *
    * @param event event
@@ -882,6 +973,22 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     this.setState({
       selectedElement: { ...selectedElement, layoutId: event.target.value }
+    });
+  }
+
+  /**
+   * Event handler for device change
+   *
+   * @param event event
+   */
+  private onDeviceChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { selectedElement } = this.state;
+    if (!selectedElement) {
+      return;
+    }
+
+    this.setState({
+      selectedElement: { ...selectedElement, deviceId: event.target.value }
     });
   }
 
@@ -969,6 +1076,20 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for add device click
+   */
+  private onAddDeviceClick = () => {
+    this.setState({
+      addDevice: {
+        name: strings.exhibition.addDeviceEditor.defaultName,
+        modelId: this.props.deviceModels[0]?.id,
+        groupId: this.state.selectedDeviceGroupId,
+        screenOrientation: ScreenOrientation.Portrait
+      }
+    }); 
+  }
+
+  /**
    * Event handler for page save
    *
    * @param page page
@@ -987,6 +1108,10 @@ export class ExhibitionView extends React.Component<Props, State> {
 
         this.setState({
           pages: [ ...pages, updatedPage ]
+        }, () => {
+          this.setState({
+            treeData: this.reconstructTreeData()
+          });
         });
 
       } else {
@@ -1022,6 +1147,12 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param elementType selected element type
    */
   private onSelectElementFromTree = (element: ExhibitionElement, elementType: ExhibitionElementType) => {
+    this.setState({ 
+      selectedDeviceGroupId: undefined,
+      selectedRoomId: undefined,
+      addDevice: undefined
+    });
+
     switch (elementType) {
       case ExhibitionElementType.EXHIBITION:
       break;
@@ -1030,6 +1161,14 @@ export class ExhibitionView extends React.Component<Props, State> {
       case ExhibitionElementType.FLOOR:
       break;
       case ExhibitionElementType.ROOM:
+        const selectedRoom = element as ExhibitionDevice;
+        const selectedDeviceGroup = this.state.deviceGroups.find(item => item.roomId === selectedRoom.id); 
+
+        this.setState({
+          selectedDeviceGroupId: selectedDeviceGroup?.id,
+          selectedRoomId: selectedRoom?.id
+        });
+
       break;
       case ExhibitionElementType.DEVICE:
       break;
@@ -1046,6 +1185,72 @@ export class ExhibitionView extends React.Component<Props, State> {
       default:
       break;
     }
+  }
+
+  /**
+   * Event handler for device save button click
+   */
+  private onAddDeviceSaveClick = async () => {
+    const { addDevice } = this.state;
+    if (!addDevice) {
+      return;
+    }
+
+    const { groupId, modelId, name, screenOrientation } = addDevice; 
+    if (!groupId || !modelId || !name || !screenOrientation) {
+      // TODO: Better error handling
+      return;
+    }
+
+    const payload: ExhibitionDevice = { ...addDevice, groupId: groupId, modelId: modelId, name: name, screenOrientation: screenOrientation };
+    const exhibitionDevicesApi = Api.getExhibitionDevicesApi(this.props.accessToken);
+    const createdDevice = await exhibitionDevicesApi.createExhibitionDevice({exhibitionId : this.props.exhibitionId, exhibitionDevice: payload });
+
+    this.setState({
+      addDevice: undefined,
+      devices: [ ...this.state.devices, createdDevice ]
+    }, () => {
+      this.setState({
+        treeData: this.reconstructTreeData()
+      });
+    });
+  }
+
+  /**
+   * Event handler for device name changes
+   * 
+   * @param event event
+   */
+  private onAddDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    const value: string = target.value;
+    this.setState({
+      addDevice: { ...this.state.addDevice, name: value } 
+    });
+  }
+
+  /**
+   * Event handler for screen orientation select change
+   *
+   * @param event event
+   * @param _child child node
+   */
+  private onAddDeviceScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+    this.setState({
+      addDevice: { ...this.state.addDevice, screenOrientation: e.target.value as ScreenOrientation }
+    });
+  }
+
+  /**
+   * Event handler for screen orientation select change
+   *
+   * @param event event
+   * @param _child child node
+   */
+  private onAddDeviceModelChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+    this.setState({
+      addDevice: { ...this.state.addDevice, modelId: e.target.value as string }
+    });
   }
 
   /**
@@ -1106,6 +1311,22 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return treeData;
   }
+
+  /**
+   * Reconstructs tree data from state and props
+   * 
+   * @return reconstructed tree data
+   */
+  private reconstructTreeData = () => {
+    return this.constructTreeData({
+      exhibition: this.props.exhibition,
+      contentVersions: this.state.contentVersions,
+      floors: this.state.floors,
+      rooms: this.state.rooms,
+      devices: this.state.devices,
+      pages: this.state.pages
+    });
+  } 
 
 }
 
