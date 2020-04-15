@@ -17,7 +17,7 @@ export default class Api {
   }
 
   /**
-   * Gets initialized exhibition content types api
+   * Gets initialized exhibition content versions api
    *
    * @param token access token
    */
