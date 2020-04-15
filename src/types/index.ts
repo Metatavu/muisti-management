@@ -61,9 +61,12 @@ export interface PhysicalButtonData {
 };
 
 /**
- * Union type for different exhibition elements
+ * Interface describing exhibition element in exhibition editor
  */
-export type ExhibitionElement = Exhibition | ExhibitionContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
+export interface ExhibitionElement {
+  data: Exhibition | ExhibitionContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
+  type: ExhibitionElementType;
+}
 
 /**
  * Enum for different exhibition element types

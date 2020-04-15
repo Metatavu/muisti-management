@@ -163,6 +163,10 @@
       "pageLayoutLabel": "Sivun asettelu",
       "pageDeviceLabel": "Sivun laite"  
     },
+
+    "deviceEditor": {
+      "indexPageId": "Laitteen etusivu"
+    },
     
     "eventTriggers": {
       "title": "Tapahtumat",
