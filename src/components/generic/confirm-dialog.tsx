@@ -66,7 +66,7 @@ export default class ConfirmDialog extends React.Component<Props, State> {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => onCancel() } color="primary">
+            <Button onClick={ onCancel } color="primary">
               { cancelButtonText }
             </Button>
             <Button disableElevation variant="contained" onClick={() => onConfirm() } color="secondary" autoFocus>
