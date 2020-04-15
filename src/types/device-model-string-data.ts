@@ -1,5 +1,8 @@
 import { DeviceModelCapabilities } from "../generated/client";
 
+/**
+ * Interface describing device model display metrics data as string values
+ */
 export interface DeviceModelDisplayMetricsData {
   heightPixels: string;
   widthPixels: string;
@@ -8,6 +11,9 @@ export interface DeviceModelDisplayMetricsData {
   ydpi: string;
 }
 
+/**
+ * Interface describing device model dimensions data as string values
+ */
 export interface DeviceModelDimensionsData {
   deviceWidth: string;
   deviceHeight: string;
@@ -16,6 +22,9 @@ export interface DeviceModelDimensionsData {
   screenHeight: string;
 }
 
+/**
+ * Interface describing device model data as string values
+ */
 export interface DeviceModelData {
   manufacturer: string;
   model: string;

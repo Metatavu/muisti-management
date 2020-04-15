@@ -456,6 +456,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Determines if text field value is invalid
+   *
+   * @param devicePropertyValue device property value
+   * @param deviceDataPropertyValue device data property value
+   * @returns true if values are not equal
+   */
   private fieldIsInvalid = (devicePropertyValue: number | undefined, deviceDataPropertyValue: string) => {
     return devicePropertyValue !== undefined && devicePropertyValue.toString() !== deviceDataPropertyValue;
   }

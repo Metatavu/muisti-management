@@ -177,15 +177,6 @@ export class ExhibitionView extends React.Component<Props, State> {
             { treeData &&
               this.renderTreeMenu(treeData)
             }
-            {/* <TreeView
-              className={ classes.navigationTree }
-              defaultCollapseIcon={ <ExpandMoreIcon /> }
-              defaultExpandIcon={ <ChevronRightIcon /> }
-            >
-              <TreeItem nodeId={ exhibition.id } label={ exhibition.name }>
-                { this.renderPagesNavigation() }
-              </TreeItem>
-            </TreeView> */}
             <Button variant="outlined" color="primary" onClick={ this.onAddPageClick } startIcon={ <AddIcon />  }>{ strings.exhibition.addPage }</Button>
           </ElementNavigationPane>
           <EditorView>
@@ -1029,22 +1020,17 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onSelectElementFromTree = (element: ExhibitionElement, elementType: ExhibitionElementType) => {
     switch (elementType) {
-      case ExhibitionElementType.EXHIBITION: {
-        break;
-      }
-      case ExhibitionElementType.CONTENT_VERSION: {
-        break;
-      }
-      case ExhibitionElementType.FLOOR: {
-        break;
-      }
-      case ExhibitionElementType.ROOM: {
-        break;
-      }
-      case ExhibitionElementType.DEVICE: {
-        break;
-      }
-      case ExhibitionElementType.PAGE: {
+      case ExhibitionElementType.EXHIBITION:
+      break;
+      case ExhibitionElementType.CONTENT_VERSION:
+      break;
+      case ExhibitionElementType.FLOOR:
+      break;
+      case ExhibitionElementType.ROOM:
+      break;
+      case ExhibitionElementType.DEVICE:
+      break;
+      case ExhibitionElementType.PAGE:
         const selectedElement = element as ExhibitionPage;
         const jsonCode = this.toJsonCode(selectedElement);
         const pageLayout = this.props.layouts.find(item => item.id === selectedElement.layoutId);
@@ -1053,12 +1039,10 @@ export class ExhibitionView extends React.Component<Props, State> {
           jsonCode,
           pageLayout
         });
-      }
-      default: {
-        break;
-      }
+      break;
+      default:
+      break;
     }
-
   }
 
   /**

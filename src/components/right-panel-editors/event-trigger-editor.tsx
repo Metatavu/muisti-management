@@ -428,20 +428,23 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     this.setState({ selectedClickViewId: event.target.value as string });
   }
 
+  /**
+   * Physical button select event hadler
+   *
+   * @param event React changeEvent
+   */
   private onSelectPhysicalButton = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     const name = event.target.name;
     const value = event.target.value as PhysicalButton;
     switch (name) {
-      case "DOWN": {
+      case "DOWN":
         this.setState({ selectedPhysicalButtonDown: value });
-        break;
-      }
-      case "UP": {
+      break;
+      case "UP":
         this.setState({ selectedPhysicalButtonUp: value });
-      }
-      default: {
-        break;
-      }
+      break;
+      default:
+      break;
     }
   }
 
