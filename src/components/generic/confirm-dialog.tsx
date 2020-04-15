@@ -55,7 +55,7 @@ export default class ConfirmDialog extends React.Component<Props, State> {
       <>
         <Dialog
           open={ open }
-          onClose={ () => onClose() }
+          onClose={ onClose }
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
