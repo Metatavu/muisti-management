@@ -1,4 +1,4 @@
-import { createMuiTheme, InputLabel } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
 export default createMuiTheme({

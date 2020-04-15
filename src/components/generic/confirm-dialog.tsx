@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;
-  open: boolean
+  open: boolean;
 }
 
 /**
@@ -55,7 +55,7 @@ export default class ConfirmDialog extends React.Component<Props, State> {
       <>
         <Dialog
           open={ open }
-          onClose={ () => onClose() }
+          onClose={ onClose }
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -66,10 +66,10 @@ export default class ConfirmDialog extends React.Component<Props, State> {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => onCancel() } color="primary">
+            <Button onClick={ onCancel } color="primary">
               { cancelButtonText }
             </Button>
-            <Button disableElevation variant="contained" onClick={() => onConfirm() } color="secondary" autoFocus>
+            <Button disableElevation variant="contained" onClick={ onConfirm } color="secondary" autoFocus>
               { positiveButtonText }
             </Button>
           </DialogActions>

@@ -140,6 +140,7 @@
     },
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
+    "addDevice": "Lisää laite",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"
@@ -157,6 +158,12 @@
         }
       }
     },
+
+    "pageEditor": {
+      "pageLayoutLabel": "Sivun asettelu",
+      "pageDeviceLabel": "Sivun laite"  
+    },
+    
     "eventTriggers": {
       "title": "Tapahtumat",
       "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
@@ -170,6 +177,16 @@
       "variableName": "Käyttäjän muuttujan nimi",
       "variableValue": "Käyttäjän muuttujan arvo",
       "selectPage": "Valitse sivu"
+    },
+    "addDeviceEditor": {
+      "title": "Lisää uusi laite",
+      "defaultName": "Uusi laite",
+      "nameLabel": "Laitteen nimi",
+      "deviceModelLabel": "Laitteen malli",
+      "screenOrientationLabel": "Näytön suunta",
+      "screenOrientationPortrait": "Pysty",
+      "screenOrientationLandscape": "Vaaka",
+      "saveButton": "Tallenna"
     }
   },
 

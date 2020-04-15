@@ -65,10 +65,10 @@ export default class EditorDialog extends React.Component<Props, State> {
             { this.props.children }
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => onCancel() } color="primary">
+            <Button onClick={ onCancel } color="primary">
               { cancelButtonText }
             </Button>
-            <Button disableElevation variant="contained" disabled={ error } onClick={() => onConfirm() } color="secondary" autoFocus>
+            <Button disableElevation variant="contained" disabled={ error } onClick={ onConfirm } color="secondary" autoFocus>
               { positiveButtonText }
             </Button>
           </DialogActions>

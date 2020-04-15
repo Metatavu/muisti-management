@@ -121,7 +121,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
                 disableElevation
                 variant="contained"
                 className={ classes.actionBtn }
-                onClick={ () => this.onAddDeviceClick() }
+                onClick={ this.onAddDeviceClick }
                 >
                 { strings.dashboard.devices.newDevice }
               </Button>
@@ -201,8 +201,8 @@ class DashboardDevicesView extends React.Component<Props, State> {
           open={ this.state.deleteDialogOpen }
           title={ strings.dashboard.devices.dialog.deleteDeviceTitle }
           text={ strings.dashboard.devices.dialog.deleteDeviceText }
-          onClose={ () => this.onDeleteDialogClose() }
-          onCancel={ () => this.onDeleteDialogClose() }
+          onClose={ this.onDeleteDialogClose }
+          onCancel={ this.onDeleteDialogClose }
           onConfirm={ () => this.onDeleteDeviceClick(selectedDevice) }
           positiveButtonText={ strings.confirmDialog.delete }
           cancelButtonText={ strings.confirmDialog.cancel }
@@ -212,7 +212,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
   }
 
   /**
-   * Render device settings view
+   * Renders device modification dialog
    */
   private renderModifyDeviceDialog = () => {
     const { selectedDevice, newDevice, deviceDialogOpen, deviceData, formError } = this.state;
@@ -230,9 +230,9 @@ class DashboardDevicesView extends React.Component<Props, State> {
         open={ deviceDialogOpen }
         error={ formError }
         title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
-        onClose={ () => this.onDeviceDialogClose() }
-        onCancel={ () => this.onDeviceDialogClose() }
-        onConfirm={ () => this.onSaveDeviceClick() }
+        onClose={ this.onDeviceDialogClose }
+        onCancel={ this.onDeviceDialogClose }
+        onConfirm={ this.onSaveDeviceClick }
         positiveButtonText={ strings.editorDialog.save }
         cancelButtonText={ strings.editorDialog.cancel }
       >
@@ -456,6 +456,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Determines if text field value is invalid
+   *
+   * @param devicePropertyValue device property value
+   * @param deviceDataPropertyValue device data property value
+   * @returns true if values are not equal
+   */
   private fieldIsInvalid = (devicePropertyValue: number | undefined, deviceDataPropertyValue: string) => {
     return devicePropertyValue !== undefined && devicePropertyValue.toString() !== deviceDataPropertyValue;
   }
@@ -788,7 +795,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * Updates hidden display metrics values
    *
    * @param displayMetrics display metrics
-   * * @param dimensions dimensions
+   * @param dimensions dimensions
    * @returns device model display metrics
    */
   private updateHiddenDisplayMetricsValues = (displayMetrics: DeviceModelDisplayMetrics, dimensions: DeviceModelDimensions): DeviceModelDisplayMetrics => {
