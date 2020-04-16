@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/exhibition-view-v3";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, Divider, MenuItem, Select, TextField, Typography} from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
 import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len

@@ -9,7 +9,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/exhibition-view-v3";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Input, Grid, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Grid, InputLabel } from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
@@ -151,7 +151,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition } = this.props;
-    const { selectedElement, treeData, selectedResource, selectedEventTrigger } = this.state;
+    const { selectedElement, treeData, selectedResource } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
