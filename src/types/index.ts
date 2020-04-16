@@ -41,15 +41,15 @@ export type DeviceModelDataSubPropertyKey = keyof DeviceModelDimensionsData | ke
  * Enum for physical event trigger button values
  */
 export enum PhysicalButton {
-  BUTTON_1 = "1",
-  BUTTON_2 = "2",
-  BUTTON_3 = "3",
-  BUTTON_4 = "4",
-  BUTTON_5 = "5",
-  BUTTON_6 = "6",
-  BUTTON_7 = "7",
-  BUTTON_8 = "8",
-  BUTTON_9 = "9"
+  BUTTON_1 = "F1",
+  BUTTON_2 = "F2",
+  BUTTON_3 = "F3",
+  BUTTON_4 = "F4",
+  BUTTON_5 = "F5",
+  BUTTON_6 = "F6",
+  BUTTON_7 = "F7",
+  BUTTON_8 = "F8",
+  BUTTON_9 = "F9"
 };
 
 /**
