@@ -4,8 +4,8 @@ import theme from "./theme";
 export default createStyles({
   root: {
     position: "relative",
-    gridArea: "properties",
-    borderLeft: "1px solid #ddd",
+    gridArea: "contents",
+    borderRight: "1px solid #ddd",
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
   },

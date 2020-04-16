@@ -9,7 +9,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/exhibition-view-v3";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Input, Grid, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Grid, InputLabel } from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
@@ -18,11 +18,12 @@ import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import BasicLayout from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
+import ElementContentsPane from "../editor-panes/element-contents-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken, JsonLintParseErrorHash, ExhibitionElementType, ExhibitionElement } from '../../types';
 import strings from "../../localization/strings";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
+import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import AddIcon from "@material-ui/icons/AddSharp";
 import AndroidUtils from "../../utils/android-utils";
 import PagePreview from "../preview/page-preview";
@@ -39,6 +40,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import TreeMenu, { TreeMenuItem } from "react-simple-tree-menu";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import theme from "../../styles/theme";
+import classNames from "classnames";
 
 type View = "CODE" | "VISUAL";
 
@@ -149,11 +151,13 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition } = this.props;
-    const { selectedElement, treeData } = this.state;
+    const { selectedElement, treeData, selectedResource } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
-        <CircularProgress></CircularProgress>
+        <div className={ classes.loader }>
+          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        </div>
       );
     }
 
@@ -167,35 +171,50 @@ export class ExhibitionView extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title="">
-            <ButtonGroup className={ classes.navigationTabs }>
+            <ButtonGroup fullWidth className={ classes.navigationTabs }>
               <Button>{ strings.exhibition.content }</Button>
               <Button>{ strings.exhibition.tech }</Button>
             </ButtonGroup>
-            <FilledInput
-              className={ classes.searchBar }
-              fullWidth
-              endAdornment={
-                <InputAdornment position="end">
-                  <SearchIcon/>
-                </InputAdornment>
-              }
-            />
             { treeData &&
               this.renderTreeMenu(treeData)
             }
-            <Button variant="outlined" color="primary" onClick={ this.onAddPageClick } startIcon={ <AddIcon />  }>{ strings.exhibition.addPage }</Button>
-            <Button variant="outlined" disabled={ !this.state.selectedDeviceGroupId } color="primary" onClick={ this.onAddDeviceClick } startIcon={ <AddIcon />  }>{ strings.exhibition.addDevice }</Button>
+            <div style={{ display: "grid", gridAutoFlow: "column", gridGap: theme.spacing(1) }}>
+              <Button
+                disableElevation
+                variant="contained"
+                color="secondary"
+                onClick={ this.onAddPageClick }
+                startIcon={ <AddIcon />  }
+              >
+                { strings.exhibition.addPage }
+              </Button>
+              <Button
+                disableElevation
+                variant="contained"
+                color="secondary"
+                disabled={ !this.state.selectedDeviceGroupId }
+                onClick={ this.onAddDeviceClick }
+                startIcon={ <AddIcon />  }
+              >
+                { strings.exhibition.addDevice }
+              </Button>
+            </div>
           </ElementNavigationPane>
+
+          <ElementContentsPane title={ selectedElement ? selectedElement.data.name : "" }>
+            { this.state.selectedElement &&
+              this.renderElementSettingsContent()
+            }
+          </ElementContentsPane>
+
           <EditorView>
             <div className={ classes.toolBar }>
               { this.renderToolbarContents() }
             </div>
             { this.renderEditor() }
           </EditorView>
-          <ElementSettingsPane title={ selectedElement ? selectedElement.data.name : "" }>
-            { this.state.selectedElement &&
-              this.renderElementSettingsContent()
-            }
+
+          <ElementSettingsPane title={ selectedResource ? selectedResource.id : "" }>
             {
               this.state.selectedResource &&
               this.renderResourceEditor()
@@ -232,7 +251,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   private renderToolbarContentsAddDevice = () => {
     return (
       <>
-        <Button variant="contained" color="primary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
+        <Button disableElevation variant="contained" color="secondary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
       </>
     );
   }
@@ -243,10 +262,10 @@ export class ExhibitionView extends React.Component<Props, State> {
   private renderToolbarContentsPageEditor = () => {
     return (
       <>
-        <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
           { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
         </Button>
-        <Button variant="contained" color="primary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
+        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
       </>
     );
   }
@@ -257,22 +276,35 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param treeData tree data
    */
   private renderTreeMenu = (treeData: TreeNodeInArray[]) => {
+    const { classes } = this.props;
     return (
-      <TreeMenu
-        data={ treeData }
-        onClickItem={({ key, label, ...props }) => {
-          this.onSelectElementFromTree(props.element);
-        }}
-      >
-        {({ search, items }) => (
-          <>
-            <Input onChange={ e => search && search(e.target.value) } placeholder={ strings.exhibition.navigation.search }></Input>
-            <List>
-              { items.map(item => this.renderTreeMenuItem(item)) }
-            </List>
-          </>
-        )}
-      </TreeMenu>
+      <div className={ classes.treeView }>
+        <TreeMenu
+          data={ treeData }
+          onClickItem={({ key, label, ...props }) => {
+            this.onSelectElementFromTree(props.element);
+          }}
+        >
+          {({ search, items }) => (
+            <>
+              <FilledInput 
+                onChange={ e => search && search(e.target.value) }
+                placeholder={ strings.exhibition.navigation.search }
+                className={ classes.searchBar }
+                fullWidth
+                endAdornment={
+                  <InputAdornment position="end">
+                    <SearchIcon/>
+                  </InputAdornment>
+                }
+              />
+              <List>
+                { items.map(item => this.renderTreeMenuItem(item)) }
+              </List>
+            </>
+          )}
+        </TreeMenu>
+      </div>
     );
   }
 
@@ -282,17 +314,15 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param item tree menu item
    */
   private renderTreeMenuItem = (item: TreeMenuItem) => {
-    const toggleIcon = (on: boolean) => on ? <ExpandMoreIcon/> : <ChevronRightIcon/>;
+    const { classes } = this.props;
+    const toggleIcon = (on: boolean) => on ? <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> : <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
     const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
 
     return (
       <ListItem { ...item }
+        className={ classNames( classes.listItem, focused ? "focused" : "" ) }
         style={{
-          paddingLeft: level * 20,
-          cursor: 'pointer',
-          boxShadow: focused ? '0px 0px 5px 0px #222' : 'none',
-          zIndex: focused ? 999 : 'unset',
-          position: 'relative',
+          paddingLeft: level * 20
         }}
       >
         { hasNodes &&
@@ -353,12 +383,12 @@ export class ExhibitionView extends React.Component<Props, State> {
             <TextField fullWidth type="text" label={ strings.exhibition.addDeviceEditor.nameLabel } name="name" value={ this.state.addDevice.name || "" } onChange={ this.onAddDeviceNameChange } />
             
             <InputLabel id="model">{ strings.exhibition.addDeviceEditor.deviceModelLabel }</InputLabel>
-            <Select labelId="model" value={ this.state.addDevice.modelId } onChange={ this.onAddDeviceModelChange } >
+            <Select variant="filled" labelId="model" value={ this.state.addDevice.modelId } onChange={ this.onAddDeviceModelChange } >
               { modelSelectItems }
             </Select>
 
             <InputLabel id="screenOrientation">{ strings.exhibition.addDeviceEditor.screenOrientationLabel }</InputLabel>
-            <Select labelId="screenOrientation" value={ this.state.addDevice.screenOrientation } onChange={ this.onAddDeviceScreenOrientationChange } >
+            <Select variant="filled" labelId="screenOrientation" value={ this.state.addDevice.screenOrientation } onChange={ this.onAddDeviceScreenOrientationChange } >
               <MenuItem value={ ScreenOrientation.Portrait }>{ strings.exhibition.addDeviceEditor.screenOrientationPortrait }</MenuItem>
               <MenuItem value={ ScreenOrientation.Landscape }>{ strings.exhibition.addDeviceEditor.screenOrientationLandscape }</MenuItem>
             </Select>
@@ -457,9 +487,9 @@ export class ExhibitionView extends React.Component<Props, State> {
     
     return (
       <div className={ classes.toolbarContent }>
-        <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+        <TextField style={{ marginBottom: theme.spacing(2) }} variant="filled" fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
         <InputLabel id="indexPageId">{ strings.exhibition.deviceEditor.indexPageId }</InputLabel>
-        <Select labelId="pageLayoutId" fullWidth value={ deviceData.indexPageId } onChange={ this.onIndexPageChange }>
+        <Select variant="filled" labelId="pageLayoutId" fullWidth value={ deviceData.indexPageId } onChange={ this.onIndexPageChange }>
           { selectIndexPageItems }
         </Select>
       </div>
@@ -473,15 +503,15 @@ export class ExhibitionView extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <div className={ classes.toolbarContent }>
-        <TextField fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+        <TextField fullWidth variant="filled" label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
         <div className={ classes.toolbarContent }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
         </div>
         <TreeView
           className={ classes.navigationTree }
-          defaultCollapseIcon={ <ExpandMoreIcon /> }
-          defaultExpandIcon={ <ChevronRightIcon /> }
+          defaultCollapseIcon={ <ExpandMoreIcon htmlColor="#888" /> }
+          defaultExpandIcon={ <ChevronRightIcon htmlColor="#888" /> }
         >
           { this.renderResourcesTree() }
           { this.renderEventTriggersTree() }
@@ -501,12 +531,12 @@ export class ExhibitionView extends React.Component<Props, State> {
     });
 
     return (
-      <>
+      <div style={{ marginTop: theme.spacing(2) }}>
         <InputLabel id="pageLayoutId">{ strings.exhibition.pageEditor.pageLayoutLabel }</InputLabel>
-        <Select labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ this.onLayoutChange }>
+        <Select variant="filled"  labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ this.onLayoutChange }>
           { layoutSelectItems }
         </Select>
-      </>
+      </div>
     );
   }
 
@@ -523,7 +553,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     return (
       <>
         <InputLabel id="pageDeviceId">{ strings.exhibition.pageEditor.pageDeviceLabel }</InputLabel>
-        <Select labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ this.onDeviceChange }>
+        <Select variant="filled" labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ this.onDeviceChange }>
           { selectItems }
         </Select>
       </>
@@ -581,33 +611,40 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     const { classes } = this.props;
 
-    const title = <Typography variant="h6">{ selectedResource.id }: { strings.exhibition.properties.title }</Typography>
+    const title = <Typography variant="h4" style={{ marginBottom: theme.spacing(2) }}>{ strings.exhibition.properties.title }</Typography>
     const widget = this.findResourceLayoutViewWidget(selectedResource.id);
 
     if ("ImageView" === widget) {
-      return <>
+      return (
+      <>
         { title }
         <TextField
           type="url"
           className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.imageView.properties.imageUrl } variant="outlined"
+          label={ strings.exhibition.resources.imageView.properties.imageUrl }
+          variant="filled"
           value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }/>
-      </>;
+          onChange={ this.onResourceDataChange }
+        />
+      </>
+      );
     } else if ("TextView" === widget) {
-      return <>
+      return (
+      <>
         { title }
         <TextField
           multiline
           className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.textView.properties.text } variant="outlined"
+          label={ strings.exhibition.resources.textView.properties.text }
+          variant="filled"
           value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }/>
+          onChange={ this.onResourceDataChange }
+        />
       </>
-
+      );
     }
 
-    return <div>{ selectedResource.id } { widget }</div>;
+    return <div>{ title }{ widget }</div>;
   }
 
   /**
@@ -618,7 +655,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (!selectedEventTrigger || !pageLayout) {
       return null;
     }
-    const title = <Typography variant="h6">{ strings.exhibition.eventTriggers.title }</Typography>;
+    const title = <Typography variant="h4">{ strings.exhibition.eventTriggers.title }</Typography>;
 
     return <>
       { title }

@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/exhibition-view-v3";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, Divider, MenuItem, Select, TextField} from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
 import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
@@ -21,6 +21,7 @@ import "codemirror/mode/javascript/javascript"
 import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
 import _ from "lodash";
+import theme from "../../styles/theme";
 
 /**
  * Component props
@@ -102,27 +103,28 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
     const classes = this.props.classes;
 
-    return<>
-      { this.renderClickViewIdSelect() }
-      { this.renderPhysicalButtonSelections() }
-      <h4> { strings.exhibition.eventTriggers.delayTitle }</h4>
-      <TextField
-        type="delay"
-        className={ classes.textResourceEditor } 
-        label={ strings.exhibition.eventTriggers.delay }
-        variant="outlined"
-        value={ this.props.selectedEventTrigger?.delay }
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDelayChange(event) }
-      />
-      <h4> { strings.exhibition.eventTriggers.actions }</h4>
-      <TreeView>
-        { this.renderEventActionTypeSelect() }
-        <Divider variant="inset" component="li" />
-        { this.props.selectedEventTrigger &&
-          this.renderEventActionSettings()
-        }
-      </TreeView>
-    </>;
+    return(
+      <div style={{ marginTop: theme.spacing(2) }}>
+        { this.renderClickViewIdSelect() }
+        { this.renderPhysicalButtonSelections() }
+        <Typography variant="h6" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.delayTitle }</Typography>
+        <TextField
+          type="delay"
+          className={ classes.textResourceEditor } 
+          label={ strings.exhibition.eventTriggers.delay }
+          variant="filled"
+          value={ this.props.selectedEventTrigger?.delay }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDelayChange(event) }
+        />
+        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.actions }</Typography>
+        <TreeView>
+          { this.renderEventActionTypeSelect() }
+          { this.props.selectedEventTrigger &&
+            this.renderEventActionSettings()
+          }
+        </TreeView>
+      </div>
+    );
   }
 
   /**
@@ -134,17 +136,20 @@ export class EventTriggerEditor extends React.Component<Props, State> {
       return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }> { pageLayoutView.id }</MenuItem>
     });
 
-    return <>
-      <h4> { strings.exhibition.eventTriggers.clickViewIdTitle }</h4>
-      <Select
-        label={ strings.exhibition.eventTriggers.clickViewId }
-        fullWidth
-        value={ selectedClickViewId || "" }
-        onChange={ this.onSelectClickViewId }
-      >
-        { clickViewIdList }
-      </Select>
-    </>;
+    return (
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">{ strings.exhibition.eventTriggers.clickViewIdTitle }</Typography>
+        <Select
+          variant="filled"
+          label={ strings.exhibition.eventTriggers.clickViewId }
+          fullWidth
+          value={ selectedClickViewId || "" }
+          onChange={ this.onSelectClickViewId }
+        >
+          { clickViewIdList }
+        </Select>
+      </div>
+    );
   }
 
   /**
@@ -166,9 +171,10 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return (
-      <>
-        <h4>{ strings.exhibition.eventTriggers.physicalButtonDownTitle }</h4>
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">{ strings.exhibition.eventTriggers.physicalButtonDownTitle }</Typography>
         <Select
+          variant="filled"
           label={ strings.exhibition.eventTriggers.physicalButton }
           fullWidth
           name="DOWN"
@@ -177,8 +183,9 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         >
           { menuItems }
         </Select>
-        <h4>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</h4>
+        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</Typography>
         <Select
+          variant="filled"
           label={ strings.exhibition.eventTriggers.physicalButton }
           fullWidth
           name="UP"
@@ -187,7 +194,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
         >
           { menuItems }
         </Select>
-      </>
+      </div>
     );
   }
 
@@ -198,16 +205,21 @@ export class EventTriggerEditor extends React.Component<Props, State> {
     const selectedActionType = this.state.selectedEventActionType;
 
     const eventActionTypeList = Object.keys(ExhibitionPageEventActionType).map((actionType, index) => {
-      return <MenuItem key={ `eventActionType-${index}` } value={ actionType.toLowerCase() }> { actionType }</MenuItem>
+      return <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>{ actionType }</MenuItem>
     });
 
-    return <>
-      <Select fullWidth value={ selectedActionType ? selectedActionType : "hide" }
-        onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventActionType(event) }
-      >
-        { eventActionTypeList }
-      </Select>
-    </>;
+    return (
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Select
+          variant="filled"
+          fullWidth
+          value={ selectedActionType ? selectedActionType : "hide" }
+          onChange={ (event: React.ChangeEvent<{ value: unknown }>) => this.onSelectEventActionType(event) }
+        >
+          { eventActionTypeList }
+        </Select>
+      </div>
+    );
   }
 
   /**
@@ -259,27 +271,29 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private renderSetUserValueSettings = () => {
     const { classes, selectedEventTrigger } = this.props;
 
-    return <>
-      <h4>{ strings.exhibition.eventTriggers.variableName }</h4>
-      <TextField
-        type="name"
-        className={ classes.textResourceEditor } 
-        label={ strings.exhibition.eventTriggers.variableName }
-        variant="outlined"
-        value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[0].value) ? selectedEventTrigger.events![0].properties[0].value : ""  }
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableChange(event) }
-      />
+    return (
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">{ strings.exhibition.eventTriggers.variableName }</Typography>
+        <TextField
+          type="name"
+          className={ classes.textResourceEditor } 
+          label={ strings.exhibition.eventTriggers.variableName }
+          variant="filled"
+          value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[0].value) ? selectedEventTrigger.events![0].properties[0].value : ""  }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableChange(event) }
+        />
 
-      <h4>{ strings.exhibition.eventTriggers.variableValue }</h4>
-      <TextField
-        type="name"
-        className={ classes.textResourceEditor } 
-        label={ strings.exhibition.eventTriggers.variableValue }
-        variant="outlined"
-        value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[1].value) ? selectedEventTrigger.events![0].properties[1].value : "" }
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableValueChange(event) }
-      />
-    </>;
+        <Typography variant="h6">{ strings.exhibition.eventTriggers.variableValue }</Typography>
+        <TextField
+          type="name"
+          className={ classes.textResourceEditor } 
+          label={ strings.exhibition.eventTriggers.variableValue }
+          variant="filled"
+          value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[1].value) ? selectedEventTrigger.events![0].properties[1].value : "" }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onUserVariableValueChange(event) }
+        />
+      </div>
+    );
   }
 
   /**
@@ -297,16 +311,20 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   private renderNavigateSettings = () => {
     const event = this.state.selectedEventActionType?.toLowerCase();
 
-    return <>
-      <h4>{ strings.exhibition.eventTriggers.selectPage }</h4>
-      <Select fullWidth
-        name={ event }
-        value={ this.state.selectedNavigationPage ? this.state.selectedNavigationPage.id: "" }
-        onChange={ (e: React.ChangeEvent<{ value: unknown; name?: unknown }>) => this.onNavigationPageChange(e) }
-      >
-        { this.fetchPagesInExhibition() }
-      </Select>
-    </>;
+    return (
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">{ strings.exhibition.eventTriggers.selectPage }</Typography>
+        <Select
+          variant="filled"
+          fullWidth
+          name={ event }
+          value={ this.state.selectedNavigationPage ? this.state.selectedNavigationPage.id: "" }
+          onChange={ (e: React.ChangeEvent<{ value: unknown; name?: unknown }>) => this.onNavigationPageChange(e) }
+        >
+          { this.fetchPagesInExhibition() }
+        </Select>
+      </div>
+    );
   }
 
   /**

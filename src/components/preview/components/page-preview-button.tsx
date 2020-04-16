@@ -48,12 +48,10 @@ class PagePreviewButton extends React.Component<Props, State> {
    * Render
    */
   public render() {
-    const { classes } = this.props;
-    
     return (
       <Measure onResize={ this.props.onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } className={ classes.root } style={ this.resolveStyles() }>
+          <div ref={ measureRef } style={ this.resolveStyles() }>
             <div style={ this.resolveButtonStyles() }>
               { this.getText() }
             </div>  

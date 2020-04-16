@@ -13,7 +13,7 @@ export default createStyles({
     position: "relative",
     gridArea: "header",
     display: "flex",
-    justifyContent: "center",
+    paddingLeft: 60,
     alignItems: "center",
     background: "#fff",
     borderBottom: "1px solid #ddd",
