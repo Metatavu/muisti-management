@@ -39,6 +39,11 @@ export default createStyles({
     transition: "width 0.4s ease-in-out"
   },
 
+  select: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
   toolBar: {
     backgroundColor: "#fbfbfb",
     borderBottom: "1px solid #ddd",

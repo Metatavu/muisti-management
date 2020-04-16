@@ -45,6 +45,12 @@ export interface ExhibitionPageEventTrigger {
      */
     clickViewId?: string;
     /**
+     * Name of triggering device group event
+     * @type {string}
+     * @memberof ExhibitionPageEventTrigger
+     */
+    deviceGroupEvent?: string;
+    /**
      * 
      * @type {string}
      * @memberof ExhibitionPageEventTrigger
@@ -77,6 +83,7 @@ export function ExhibitionPageEventTriggerFromJSONTyped(json: any, ignoreDiscrim
         'events': !exists(json, 'events') ? undefined : ((json['events'] as Array<any>).map(ExhibitionPageEventFromJSON)),
         'delay': !exists(json, 'delay') ? undefined : json['delay'],
         'clickViewId': !exists(json, 'clickViewId') ? undefined : json['clickViewId'],
+        'deviceGroupEvent': !exists(json, 'deviceGroupEvent') ? undefined : json['deviceGroupEvent'],
         'keyUp': !exists(json, 'keyUp') ? undefined : json['keyUp'],
         'keyDown': !exists(json, 'keyDown') ? undefined : json['keyDown'],
         'next': !exists(json, 'next') ? undefined : ((json['next'] as Array<any>).map(ExhibitionPageEventTriggerFromJSON)),
@@ -95,6 +102,7 @@ export function ExhibitionPageEventTriggerToJSON(value?: ExhibitionPageEventTrig
         'events': value.events === undefined ? undefined : ((value.events as Array<any>).map(ExhibitionPageEventToJSON)),
         'delay': value.delay,
         'clickViewId': value.clickViewId,
+        'deviceGroupEvent': value.deviceGroupEvent,
         'keyUp': value.keyUp,
         'keyDown': value.keyDown,
         'next': value.next === undefined ? undefined : ((value.next as Array<any>).map(ExhibitionPageEventTriggerToJSON)),

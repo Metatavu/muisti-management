@@ -27,6 +27,7 @@ export * from './MqttExhibitionVisitorSessionUpdate';
 export * from './MqttLayoutCreate';
 export * from './MqttLayoutDelete';
 export * from './MqttLayoutUpdate';
+export * from './MqttTriggerDeviceGroupEvent';
 export * from './PageLayout';
 export * from './PageLayoutView';
 export * from './PageLayoutViewProperty';
