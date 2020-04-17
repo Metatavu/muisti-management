@@ -203,6 +203,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
     };
     settings: {
+      deviceModelId: string;
       screenOrientation: string;
       portrait: string;
       landscape: string;

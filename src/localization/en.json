@@ -202,6 +202,7 @@
       "name": "Name"
     },
     "settings": {
+      "deviceModelId": "Device model",
       "screenOrientation": "Device orientation",
       "portrait": "Portrait",
       "landscape": "Landscape"

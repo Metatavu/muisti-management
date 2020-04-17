@@ -202,6 +202,7 @@
       "name": "Nimi"
     },
     "settings": {
+      "deviceModelId": "Laitemalli",
       "screenOrientation": "Näytön suunta",
       "portrait": "Pysty",
       "landscape": "Vaaka"
