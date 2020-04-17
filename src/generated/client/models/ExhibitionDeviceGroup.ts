@@ -36,6 +36,12 @@ export interface ExhibitionDeviceGroup {
      * @type {string}
      * @memberof ExhibitionDeviceGroup
      */
+    roomId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionDeviceGroup
+     */
     name: string;
     /**
      * 
@@ -75,6 +81,7 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'roomId': !exists(json, 'roomId') ? undefined : json['roomId'],
         'name': json['name'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -92,6 +99,7 @@ export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null
     }
     return {
         
+        'roomId': value.roomId,
         'name': value.name,
     };
 }

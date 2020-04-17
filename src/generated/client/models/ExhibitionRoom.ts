@@ -36,6 +36,12 @@ export interface ExhibitionRoom {
      * @type {string}
      * @memberof ExhibitionRoom
      */
+    floorId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionRoom
+     */
     name: string;
     /**
      * 
@@ -75,6 +81,7 @@ export function ExhibitionRoomFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'floorId': json['floorId'],
         'name': json['name'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -92,6 +99,7 @@ export function ExhibitionRoomToJSON(value?: ExhibitionRoom | null): any {
     }
     return {
         
+        'floorId': value.floorId,
         'name': value.name,
     };
 }

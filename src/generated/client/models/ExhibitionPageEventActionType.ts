@@ -23,7 +23,8 @@ export enum ExhibitionPageEventActionType {
     Setuservalue = 'setuservalue',
     Navigate = 'navigate',
     Setsrc = 'setsrc',
-    Settext = 'settext'
+    Settext = 'settext',
+    Triggerdevicegroupevent = 'triggerdevicegroupevent'
 }
 
 export function ExhibitionPageEventActionTypeFromJSON(json: any): ExhibitionPageEventActionType {

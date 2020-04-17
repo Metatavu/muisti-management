@@ -13,7 +13,7 @@ import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, 
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, PageLayoutViewProperty, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
-import BasicLayoutV3 from "../generic/basic-layout-v3";
+import BasicLayoutV3 from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -56,6 +56,7 @@ interface State {
   loading: boolean;
   name: string;
   jsonCode: string;
+  deviceModelId: string;
   screenOrientation: ScreenOrientation;
   xmlCode: string;
   toolbarOpen: boolean;
@@ -78,6 +79,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
     this.state = {
       loading: false,
       name: "",
+      deviceModelId: "",
       screenOrientation: ScreenOrientation.Portrait,
       jsonCode: JSON.stringify({}, null, 2),
       xmlCode: "",
@@ -118,7 +120,9 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
-        <CircularProgress></CircularProgress>
+        <div className={ classes.loader }>
+          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        </div>
       );
     }
 
@@ -132,29 +136,72 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
+            <div className={ classes.toolbarContent }>
+              <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
+              { this.renderdeviceModelSelect() }
+              { this.renderScreenOrientationSelect() }
+            </div>
           </ElementNavigationPane>
           <EditorView>
             { this.renderToolbar() }
             { this.renderEditor() }
             { this.renderDeleteDialog() }
           </EditorView>
+
           <ElementSettingsPane title={ strings.layout.properties.title }>
-            <div className={ classes.toolbarContent }>
-              <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
-              <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
-              <Select
-                labelId="screenOrientation"
-                value={ this.state.screenOrientation }
-                onChange={ this.onScreenOrientationChange }
-              >
-                <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-                <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
-              </Select>
-            </div>
+
           </ElementSettingsPane>
         </div>
 
       </BasicLayoutV3>
+    );
+  }
+
+  /**
+   * Renders device model select
+   */
+  private renderdeviceModelSelect = () => {
+    const { deviceModels, classes } = this.props;
+    const deviceModelSelectItems = deviceModels.map(model => 
+      <MenuItem value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
+    );
+
+    return (
+      <div className={ classes.select }>
+        <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
+        <Select
+          fullWidth
+          variant="filled"
+          labelId="deviceModelId"
+          value={ this.state.deviceModelId }
+          onChange={ this.onDeviceModelChange }
+        >
+        { deviceModelSelectItems }
+        </Select>
+      </div>
+    );
+  }
+
+  /**
+   * Renders screen orientation select
+   */
+  private renderScreenOrientationSelect = () => {
+    const { classes } = this.props;
+
+    return (
+      <div className={ classes.select }>
+        <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
+        <Select
+          fullWidth
+          variant="filled"
+          labelId="screenOrientation"
+          value={ this.state.screenOrientation }
+          onChange={ this.onScreenOrientationChange }
+        >
+          <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
+          <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
+        </Select>
+      </div>
     );
   }
 
@@ -166,18 +213,20 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.toolBar }>
-        <Button variant="contained" color="primary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
+        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
           { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
         </Button>
-        <Button variant="contained" color="primary" onClick={ this.onDeleteClick } style={{ marginRight: 8 }}>
-          { strings.exhibitionLayouts.editView.deleteButton }
-        </Button>
-        <Button variant="contained" color="primary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
-          { strings.exhibitionLayouts.editView.importButton }
-        </Button>
-        <Button variant="contained" color="primary" onClick={ this.onSaveClick }>
-          { strings.exhibitionLayouts.editView.saveButton }
-        </Button>
+        <div>
+          <Button disableElevation variant="contained" color="secondary" onClick={ this.onImportClick } style={{ marginRight: 8 }}>
+            { strings.exhibitionLayouts.editView.importButton }
+          </Button>
+          <Button disableElevation variant="contained" color="secondary" onClick={ this.onSaveClick } style={{ marginRight: 8 }}>
+            { strings.exhibitionLayouts.editView.saveButton }
+          </Button>
+          <Button disableElevation variant="contained" color="primary" onClick={ this.onDeleteClick }>
+            { strings.exhibitionLayouts.editView.deleteButton }
+          </Button>
+        </div>
       </div>
     );
 
@@ -290,7 +339,8 @@ export class LayoutEditorView extends React.Component<Props, State> {
     this.setState({
       name: layout.name,
       jsonCode: JSON.stringify(layout.data, null, 2),
-      screenOrientation: layout.screenOrientation
+      screenOrientation: layout.screenOrientation,
+      deviceModelId: layout.modelId || ""
     });
   }
 
@@ -428,6 +478,18 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for device model select change
+   *
+   * @param event event
+   * @param _child child node
+   */
+  private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    this.setState({
+      deviceModelId: event.target.value as string
+    });
+  }
+
+  /**
    * Event handler for before JSON code change event
    *
    * @param editor editor instance
@@ -478,6 +540,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
       ...this.props.layout,
       name: this.state.name,
       data: JSON.parse(this.state.jsonCode),
+      modelId: this.state.deviceModelId,
       screenOrientation: this.state.screenOrientation
     };
 

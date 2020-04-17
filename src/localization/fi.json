@@ -12,6 +12,16 @@
     }
   },
 
+  "confirmDialog": {
+    "cancel": "Peruuta",
+    "delete": "Poista"
+  },
+
+  "editorDialog": {
+    "cancel": "Peruuta",
+    "save": "Tallenna"
+  },
+
   "errorDialog": {
     "title": "Hups! Jokin meni pieleen",
     "reloadPage": "Kokeile ladata sivu uudelleen.",
@@ -87,25 +97,32 @@
       "title": "Käyttäjät"
     },
     "devices": {
+      "deleteDeviceTitle": "Poista laite",
+      "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
       "title": "Laitteet",
+      "capabilities": "Ominaisuudet",
+      "newDevice": "Uusi laite",
       "dialog": {
         "brand": "Merkki",
         "model": "Malli",
         "displayMetrics": {
           "displayInfo": "Näytön tiedot",
-          "resolution": "Resoluutio",
-          "displayWidth": "Näytön leveys (pikseliä)",
-          "displayHeight": "Näytön korkeus (pikseliä)",
-          "displayXDpi": "Pistettä tuumalle (x-akselilla)",
-          "displayYDpi": "Pistettä tuumalle (y-akselilla)"
+          "widthPixels": "Ruudun pikselileveys",
+          "heightPixels": "Ruudun pikselikorkeus"
         },
         "dimensions" : {
-          "physicalSize": "Fyysinen koko",
-          "width": "Laitteen leveys",
-          "height": "Laiteen korkeus"
+          "physicalSize": "Laitteen fyysinen koko",
+          "width": "Leveys",
+          "height": "Korkeus",
+          "depth": "Syvyys",
+          "screenWidth": "Ruudun fyysinen leveys",
+          "screenHeight": "Ruudun fyysinen korkeus"
         },
         "type": "Tyyppi",
-        "touchScreen": "Kosketusnäyttö"
+        "orientation": "Orientation",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "touchscreen": "Kosketusnäyttö"
       }
     },
     "layouts": {
@@ -118,8 +135,12 @@
   "exhibition": {
     "content": "Sisältö",
     "tech": "Tekniikka",
+    "navigation": {
+      "search": "Etsi.."
+    },
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
+    "addDevice": "Lisää laite",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"
@@ -137,14 +158,39 @@
         }
       }
     },
+
+    "pageEditor": {
+      "pageLayoutLabel": "Sivun asettelu",
+      "pageDeviceLabel": "Sivun laite"  
+    },
+
+    "deviceEditor": {
+      "indexPageId": "Laitteen etusivu"
+    },
+    
     "eventTriggers": {
-      "title": "Event triggers",
-      "viewId": "Näkymä id",
-      "delay": "Viive",
-      "actions": "Tapahtumat",
+      "title": "Tapahtumat",
+      "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
+      "clickViewId": "Elementti",
+      "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
+      "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
+      "physicalButton": "Nappi",
+      "delayTitle": "Tapahtuu viiveen jälkeen",
+      "delay": "Viive (millisekunneissa)",
+      "actions": "Toiminnot",
       "variableName": "Käyttäjän muuttujan nimi",
       "variableValue": "Käyttäjän muuttujan arvo",
       "selectPage": "Valitse sivu"
+    },
+    "addDeviceEditor": {
+      "title": "Lisää uusi laite",
+      "defaultName": "Uusi laite",
+      "nameLabel": "Laitteen nimi",
+      "deviceModelLabel": "Laitteen malli",
+      "screenOrientationLabel": "Näytön suunta",
+      "screenOrientationPortrait": "Pysty",
+      "screenOrientationLandscape": "Vaaka",
+      "saveButton": "Tallenna"
     }
   },
 
@@ -156,7 +202,8 @@
       "name": "Nimi"
     },
     "settings": {
-      "screenOrientation": "Ruudun suunta",
+      "deviceModelId": "Laitemalli",
+      "screenOrientation": "Näytön suunta",
       "portrait": "Pysty",
       "landscape": "Vaaka"
     },
@@ -166,23 +213,24 @@
   },
 
   "sorting": {
-
     "dashboard": {
       "recent": {
         "byModifiedAt": "Viimeksi muokatut",
         "byCreatedAt": "Viimeksi luotu"
       }
     }
+  },
 
+  "deviceTypes": {
+    "screen": "Näyttö",
+    "projector": "Projektori"
   },
 
   "filtering": {
-
     "dashboard": {
       "devices": {
         "all": "Kaikki"
       }
     }
-
   }
 }

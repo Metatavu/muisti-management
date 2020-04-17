@@ -1,9 +1,10 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
   root: {
     position: "relative",
-    gridArea: "settings",
+    gridArea: "properties",
     borderLeft: "1px solid #ddd",
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
@@ -42,6 +43,6 @@ export default createStyles({
     }
   },
   content: {   
-
+    padding: theme.spacing(2)
   },
 });

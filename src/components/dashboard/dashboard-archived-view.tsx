@@ -7,7 +7,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, IconButton } from "@material-ui/core";
-import styles from "../../styles/dashboard-recent-view";
+import styles from "../../styles/dashboard-component-styles";
 
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
@@ -102,7 +102,6 @@ class DashboardArchivedView extends React.Component<Props, State> {
 
     return (
       <DashboardLayout history={ history }>
-        <div className={ classes.titleGrid }>
           <Grid
             container
             direction="row"
@@ -131,7 +130,6 @@ class DashboardArchivedView extends React.Component<Props, State> {
               </IconButton>
             </Grid>
           </Grid>
-        </div>
         <Divider />
         <div className={ classes.content }>
           <List>

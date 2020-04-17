@@ -43,6 +43,12 @@ export interface ExhibitionDevice {
      */
     readonly exhibitionId?: string;
     /**
+     * Index page for a device
+     * @type {string}
+     * @memberof ExhibitionDevice
+     */
+    indexPageId?: string;
+    /**
      * Device group id
      * @type {string}
      * @memberof ExhibitionDevice
@@ -110,6 +116,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'indexPageId': !exists(json, 'indexPageId') ? undefined : json['indexPageId'],
         'groupId': json['groupId'],
         'modelId': json['modelId'],
         'name': json['name'],
@@ -131,6 +138,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
     }
     return {
         
+        'indexPageId': value.indexPageId,
         'groupId': value.groupId,
         'modelId': value.modelId,
         'name': value.name,

@@ -3,29 +3,32 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxState, ReduxActions } from "../../store";
-import { setSelectedExhibition } from "../../actions/exhibitions";
+import { setDeviceModels } from "../../actions/devices";
 
 // eslint-disable-next-line max-len
-import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, Avatar, List, ListItemText, CircularProgress, IconButton } from "@material-ui/core";
-import { TreeView } from "@material-ui/lab";
+import { ListItemSecondaryAction, TextField, Switch, Button, WithStyles, withStyles, Typography, Select, MenuItem, Grid, Divider, ListItemAvatar, ListItem, List, ListItemText, CircularProgress, IconButton, FormControlLabel, InputAdornment } from '@material-ui/core';
 
-import SearchIcon from '@material-ui/icons/Search';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
 
-import styles from "../../styles/dashboard-recent-view";
+import styles from "../../styles/dashboard-component-styles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken } from "../../types";
-import { Exhibition, DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions } from "../../generated/client";
+import { AccessToken, DeviceModelDataProperty, DeviceModelDataSubPropertyKey } from "../../types";
+import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions, ScreenOrientation } from "../../generated/client";
 import strings from "../../localization/strings";
 import DashboardLayout from "./dashboard-layout";
 import moment from "moment";
-import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
-import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
 
+import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
+import ProjectorIcon from "../../resources/gfx/svg-paths/projektori";
+
+import EditorDialog from '../generic/editor-dialog';
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import theme from "../../styles/theme";
+import ConfirmDialog from "../generic/confirm-dialog";
+import { DeviceModelData, DeviceModelDisplayMetricsData, DeviceModelDimensionsData } from "../../types/device-model-string-data";
+import { isTypeOfDeviceModelDimensionsData, isTypeOfDeviceModelDisplayMetricsData, isTypeOfDeviceModelCapabilitiesData } from "../../types/type-guards";
 
 /**
  * Interface representing component properties
@@ -34,7 +37,8 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  setSelectedExhibition: typeof setSelectedExhibition;
+  devices: DeviceModel[];
+  setDeviceModels: typeof setDeviceModels;
 }
 
 /**
@@ -42,11 +46,15 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   error?: string | Error;
-  devices: DeviceModel[];
+  formError: boolean;
   loading: boolean;
   deviceSettingsPanelOpen: boolean;
   newDevice: boolean;
   selectedDevice?: DeviceModel;
+  deviceData?: DeviceModelData;
+  deviceScreenOrientation: ScreenOrientation;
+  deviceDialogOpen: boolean;
+  deleteDialogOpen: boolean;
 }
 
 /**
@@ -63,34 +71,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      devices: [],
+      formError: false,
       newDevice: false,
       deviceSettingsPanelOpen: false,
+      deviceDialogOpen: false,
+      deleteDialogOpen: false,
+      deviceScreenOrientation: ScreenOrientation.Landscape
     };
-  }
-
-  /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = async () => {
-    this.setState({
-      loading: true
-    });
-
-    try {
-      const { accessToken } = this.props;
-
-      const exhibitionDeviceModelsApi = Api.getDeviceModelsApi(accessToken);
-      const devices = await exhibitionDeviceModelsApi.listDeviceModels();
-
-      this.setState({ devices });
-    } catch (error) {
-      this.setState({ error });
-    }
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
@@ -103,7 +90,13 @@ class DashboardDevicesView extends React.Component<Props, State> {
       { name: strings.filtering.dashboard.devices.all , value: "ALL" }
     ];
 
-    const devices = this.state.devices && this.state.devices.map(device => this.renderDeviceListItem(device));
+    const deviceSort = (a: DeviceModel, b: DeviceModel): number => {
+      return moment(a.modifiedAt).isAfter(b.modifiedAt) ? -1 : 1;
+    };
+    const devices = this.props.devices && this.props.devices
+      .sort((a, b) => deviceSort(a, b))
+      .map(device => this.renderDeviceListItem(device));
+
     if (this.state.loading) {
       return (
         <DashboardLayout history={ history }>
@@ -114,37 +107,48 @@ class DashboardDevicesView extends React.Component<Props, State> {
 
     return (
       <DashboardLayout history={ history }>
-        <div className={ classes.titleGrid }>
           <Grid
             container
             direction="row"
             justify="space-between"
             alignItems="center"
           >
-            <Grid item key="title">
+            <Grid container key="title" justify="space-between" direction="row" alignItems="center" >
               <Typography variant="h2" component="span">
                 { strings.dashboard.devices.title }
               </Typography>
+              <Button
+                disableElevation
+                variant="contained"
+                className={ classes.actionBtn }
+                onClick={ this.onAddDeviceClick }
+                >
+                { strings.dashboard.devices.newDevice }
+              </Button>
             </Grid>
-            <Grid item key="list-functions">
-              <Select
-                IconComponent={ props => (
-                  <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
-                )}
-                id="select-filtering" 
-                defaultValue="ALL"
-              >
-                { filterOptions.map(option =>
-                  <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
-                )}
-              </Select>
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
+            <Grid container key="search" justify="space-between" alignItems="center" direction="row" style={{ marginTop: theme.spacing(4) }} >
+              <Grid item>
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <SearchIcon fontSize="small" color="primary" style={{ marginRight: theme.spacing(1) }} />
+                  <TextField id="search-input" label="Hae..." />
+                </div>
+              </Grid>
+                <Grid item key="list-functions">
+                  <Select
+                    IconComponent={ props => (
+                      <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+                    )}
+                    id="select-filtering"
+                    defaultValue="ALL"
+                  >
+                    { filterOptions.map(option =>
+                      <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+                    )}
+                  </Select>
+              </Grid>
             </Grid>
           </Grid>
-        </div>
-        <Divider />
+        <Divider style={{ marginTop: 20 }} />
         <div className={ classes.content }>
           <List>
             { devices &&
@@ -152,8 +156,8 @@ class DashboardDevicesView extends React.Component<Props, State> {
             }
           </List>
         </div>
-        <Button onClick={ () => this.onAddDeviceClick() }><AddCircleIcon/></Button>
-        { this.state.deviceSettingsPanelOpen && this.renderModifyDevice() }
+        { this.renderModifyDeviceDialog() }
+        { this.renderConfirmDeleteDialog() }
     </DashboardLayout>
     );
   }
@@ -162,20 +166,23 @@ class DashboardDevicesView extends React.Component<Props, State> {
    * Renders device list item
    */
   private renderDeviceListItem = (device: DeviceModel) => {
-
+    const { classes } = this.props;
     const deviceId = device.id;
     if (!deviceId) {
       return;
     }
 
     return (
-      <ListItem button onClick={ () => this.onDeviceClick(device) } >
-        <ListItemAvatar>
-          <Avatar src={ defaultExhibitionImage } />
+      <ListItem button onClick={ () => this.onDeviceClick( device ) } >
+        <ListItemAvatar className={ classes.muistiAvatar }>
+          <ProjectorIcon />
         </ListItemAvatar>
-        <ListItemText primary={ device.model } secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` } />
+        <ListItemText
+          primary={ `${device.manufacturer} ${device.model}` }
+          secondary={ `${ strings.dashboard.recent.lastModified } ${ moment(device.modifiedAt).fromNow() }` }
+        />
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDeviceClick(device) }>
+          <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteDialogOpen(device) }>
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -184,200 +191,304 @@ class DashboardDevicesView extends React.Component<Props, State> {
   }
 
   /**
-   * Render device settings view
+   * Render device delete confirmation dialog
    */
-  private renderModifyDevice = () => {
-
+  private renderConfirmDeleteDialog = () => {
     const { selectedDevice } = this.state;
-
-    return <>
-      <TreeView>
-        <h4>{ strings.dashboard.devices.capabilities }</h4>
-        <h5>{ strings.dashboard.devices.dialog.touchScreen }</h5>
-        <Switch
-          checked={ selectedDevice?.capabilities.touch }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event, selectedDevice?.capabilities.touch) }
-          color="primary"
-          name="capabilities.touch"
-          inputProps={{ 'aria-label': 'primary checkbox' }}
+    if (selectedDevice) {
+      return (
+        <ConfirmDialog
+          open={ this.state.deleteDialogOpen }
+          title={ strings.dashboard.devices.dialog.deleteDeviceTitle }
+          text={ strings.dashboard.devices.dialog.deleteDeviceText }
+          onClose={ this.onDeleteDialogClose }
+          onCancel={ this.onDeleteDialogClose }
+          onConfirm={ () => this.onDeleteDeviceClick(selectedDevice) }
+          positiveButtonText={ strings.confirmDialog.delete }
+          cancelButtonText={ strings.confirmDialog.cancel }
         />
+      );
+    }
+  }
 
-        <h4>{ strings.dashboard.devices.dialog.dimensions.physicalSize }</h4>
-        <TextField
-          type="width"
-          label={ strings.dashboard.devices.dialog.dimensions.width }
-          variant="outlined"
-          name="dimensions.width"
-          value={ selectedDevice ? selectedDevice.dimensions.width : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
+  /**
+   * Renders device modification dialog
+   */
+  private renderModifyDeviceDialog = () => {
+    const { selectedDevice, newDevice, deviceDialogOpen, deviceData, formError } = this.state;
+    const typeOptions = [
+      { name: strings.deviceTypes.screen, value: "SCREEN" },
+      { name: strings.deviceTypes.projector, value: "PROJECTOR" },
+    ];
 
+    if (!deviceData || !selectedDevice) {
+      return;
+    }
+
+    return (
+      <EditorDialog
+        open={ deviceDialogOpen }
+        error={ formError }
+        title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
+        onClose={ this.onDeviceDialogClose }
+        onCancel={ this.onDeviceDialogClose }
+        onConfirm={ this.onSaveDeviceClick }
+        positiveButtonText={ strings.editorDialog.save }
+        cancelButtonText={ strings.editorDialog.cancel }
+      >
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.dashboard.devices.dialog.dimensions.physicalSize }</Typography>
+        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+          <Grid item xs={ 4 }>
+            <TextField
+              error={ this.fieldIsInvalid(selectedDevice.dimensions.deviceWidth, deviceData.dimensions.deviceWidth) }
+              fullWidth
+              type="width"
+              label={ strings.dashboard.devices.dialog.dimensions.width }
+              InputProps={{
+                endAdornment: <InputAdornment position="end">mm</InputAdornment>
+              }}
+              variant="filled"
+              name="dimensions.deviceWidth"
+              value={ deviceData ? deviceData.dimensions.deviceWidth : "" }
+              onChange={ this.onDeviceInfoChange }
+            />
+          </Grid>
+          <Grid item xs={ 4 }>
+            <TextField
+              error={ this.fieldIsInvalid(selectedDevice.dimensions.deviceHeight, deviceData.dimensions.deviceHeight) }
+              fullWidth
+              type="height"
+              label={ strings.dashboard.devices.dialog.dimensions.height }
+              InputProps={{
+                endAdornment: <InputAdornment position="end">mm</InputAdornment>
+              }}
+              variant="filled"
+              name="dimensions.deviceHeight"
+              value={ deviceData ? deviceData.dimensions.deviceHeight : "" }
+              onChange={ this.onDeviceInfoChange }
+            />
+          </Grid>
+          <Grid item xs={ 4 }>
+            <TextField
+              error={ this.fieldIsInvalid(selectedDevice.dimensions.deviceDepth, deviceData.dimensions.deviceDepth) }
+              fullWidth
+              type="depth"
+              label={ strings.dashboard.devices.dialog.dimensions.depth }
+              InputProps={{
+                endAdornment: <InputAdornment position="end">mm</InputAdornment>
+              }}
+              variant="filled"
+              name="dimensions.deviceDepth"
+              value={ deviceData ? deviceData.dimensions.deviceDepth : "" }
+              onChange={ this.onDeviceInfoChange }
+            />
+          </Grid>
+        </Grid>
+
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</Typography>
+        {
+          this.renderDisplayMetricOptions()
+        }
         <TextField
-          type="height"
-          label={ strings.dashboard.devices.dialog.dimensions.height }
-          variant="outlined"
-          name="dimensions.height"
-          value={ selectedDevice ? selectedDevice.dimensions.height : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
-        
-        <h4>{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</h4>
-        { this.renderDisplayMetricOptions() }
-        <h4>{ strings.dashboard.devices.dialog.brand }</h4>
-        <TextField
+          style={{ marginTop: theme.spacing(4) }}
+          fullWidth
           type="manufacturer"
           label={ strings.dashboard.devices.dialog.brand }
-          variant="outlined"
+          variant="filled"
           name="manufacturer"
-          value={ selectedDevice ? selectedDevice.manufacturer : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
-        <h4>{ strings.dashboard.devices.dialog.model }</h4>
+          value={ deviceData ? deviceData.manufacturer : "" }
+          onChange={ this.onDeviceInfoChange }
+        />
         <TextField
+          style={{ marginTop: theme.spacing(3) }}
+          fullWidth
           type="model"
           label={ strings.dashboard.devices.dialog.model }
-          variant="outlined"
+          variant="filled"
           name="model"
-          value={ selectedDevice ? selectedDevice.model : "" }
-          onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-        /> 
-      </TreeView>
-      <Button onClick={ () => this.onSaveDeviceClick() } ><SaveIcon/></Button>
-    </>
+          value={ deviceData ? deviceData.model : "" }
+          onChange={ this.onDeviceInfoChange }
+        />
+        <Typography style={{ marginTop: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.type }</Typography>
+        <Select
+          variant="filled"
+          fullWidth
+          IconComponent={ props => (
+            <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+          )}
+          id="select-filtering"
+          defaultValue="SCREEN"
+        >
+          { typeOptions.map(option =>
+            <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+          )}
+        </Select>
+        <FormControlLabel
+          style={{ marginTop: theme.spacing(2) }}
+          control={
+            <Switch
+              checked={ selectedDevice?.capabilities.touch }
+              onChange={ this.onDeviceInfoChange }
+              color="secondary"
+              name="capabilities.touch"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+          label={ strings.dashboard.devices.dialog.touchscreen }
+        />
+      </EditorDialog>
+    );
   }
 
   /**
    * Render display metric options
    */
   private renderDisplayMetricOptions = () => {
-    const { selectedDevice } = this.state;
+    const { deviceData, selectedDevice } = this.state;
 
-    return <>
-      <TextField
-        type="density"
-        label={ strings.dashboard.devices.dialog.displayMetrics.resolution }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.density : "" }
-        name="displayMetrics.density"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
+    if (!selectedDevice || !deviceData) {
+      return;
+    }
 
-      <TextField
-        type="heightPixels"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayHeight }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.heightPixels : "" }
-        name="displayMetrics.heightPixels"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-
-      <TextField
-        type="widthPixels"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayWidth }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.widthPixels : "" }
-        name="displayMetrics.widthPixels"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
-
-      <TextField
-        type="xdpi"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayXDpi }
-        variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.xdpi : "" }
-        name="displayMetrics.xdpi"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      />
-
-      <TextField
-        type="ydpi"
-        label={ strings.dashboard.devices.dialog.displayMetrics.displayYDpi } variant="outlined"
-        value={ selectedDevice ? selectedDevice.displayMetrics.ydpi : "" }
-        name="displayMetrics.ydpi"
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDeviceInfoChange(event) }
-      /> 
-    </>
+    return (
+      <Grid container spacing={ 2 }>
+        <Grid item xs={ 6 }>
+          <TextField
+            error={ this.fieldIsInvalid(selectedDevice.dimensions.screenWidth, deviceData.dimensions.screenWidth) }
+            fullWidth
+            type="screenWidth"
+            label={ strings.dashboard.devices.dialog.dimensions.screenWidth }
+            InputProps={{
+              endAdornment: <InputAdornment position="end">mm</InputAdornment>
+            }}
+            variant="outlined"
+            value={ deviceData ? deviceData.dimensions.screenWidth : "" }
+            name="dimensions.screenWidth"
+            onChange={ this.onDeviceInfoChange }
+            />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            error={ this.fieldIsInvalid(selectedDevice.dimensions.screenHeight, deviceData.dimensions.screenHeight) }
+            fullWidth
+            type="screenHeight"
+            label={ strings.dashboard.devices.dialog.dimensions.screenHeight }
+            InputProps={{
+              endAdornment: <InputAdornment position="end">mm</InputAdornment>
+            }}
+            variant="outlined"
+            value={ deviceData ? deviceData.dimensions.screenHeight : "" }
+            name="dimensions.screenHeight"
+            onChange={ this.onDeviceInfoChange }
+            />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            error={ this.fieldIsInvalid(selectedDevice.displayMetrics.widthPixels, deviceData.displayMetrics.widthPixels) }
+            fullWidth
+            type="widthPixels"
+            label={ strings.dashboard.devices.dialog.displayMetrics.widthPixels }
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>
+            }}
+            variant="outlined"
+            value={ deviceData ? deviceData.displayMetrics.widthPixels : "" }
+            name="displayMetrics.widthPixels"
+            onChange={ this.onDeviceInfoChange }
+            />
+        </Grid>
+        <Grid item xs={ 6 }>
+          <TextField
+            error={ this.fieldIsInvalid(selectedDevice.displayMetrics.heightPixels, deviceData.displayMetrics.heightPixels) }
+            fullWidth
+            type="heightPixels"
+            label={ strings.dashboard.devices.dialog.displayMetrics.heightPixels }
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>
+            }}
+            variant="outlined"
+            value={ deviceData ? deviceData.displayMetrics.heightPixels : "" }
+            name="displayMetrics.heightPixels"
+            onChange={ this.onDeviceInfoChange }
+          />
+        </Grid>
+      </Grid>
+    );
   }
 
   /**
    * Device info change handler
-   * @param event React changeevent
-   * @param checkboxValue checkbox value 
+   *
+   * @param event React change event
    */
-  private onDeviceInfoChange = async (event: React.ChangeEvent<HTMLInputElement>, checkboxValue?: boolean) => {
-    const { name, value } = event.target;
-
-    const variable = name.split(".");
-    let deviceToUpdate;
-
-    if (variable.length > 1) {
-      /**
-       * As a fast work around will use type any.
-       */
-      const key1 = variable[0] as any;
-      const key2 = variable[1] as any;
-
-      deviceToUpdate = { ...this.state.selectedDevice } as DeviceModel;
-
-      if (hasKey(deviceToUpdate, key1)) {
-        let variableToUpdate;
-        if (key1 === "dimensions") {
-          variableToUpdate = deviceToUpdate[key1] as DeviceModelDimensions;
-  
-          if (hasKey(variableToUpdate, key2)) {
-            variableToUpdate[key2] = Number(value);
-          }
-          deviceToUpdate[key1] = variableToUpdate;
-        }
-
-        if (key1 === "displayMetrics") {
-          variableToUpdate = deviceToUpdate[key1] as DeviceModelDisplayMetrics;
-  
-          if (hasKey(variableToUpdate, key2)) {
-            variableToUpdate[key2] = Number(value);
-          }
-  
-          deviceToUpdate[key1] = variableToUpdate;
-        }
-
-        if (key1 === "capabilities") {
-          variableToUpdate = deviceToUpdate[key1] as DeviceModelCapabilities;
-  
-          if (hasKey(variableToUpdate, key2)) {
-            variableToUpdate[key2] = !checkboxValue;
-          }
-  
-          deviceToUpdate[key1] = variableToUpdate;
-        }
-      }
-    } else {
-      deviceToUpdate = { ...this.state.selectedDevice, [name]: value } as DeviceModel; 
+  private onDeviceInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { selectedDevice } = this.state;
+    if (!selectedDevice) {
+      return;
     }
 
-    this.setState({
-      selectedDevice : deviceToUpdate
-    });
+    const { target } = event;
+    const value: string | boolean = target.name === "capabilities.touch" ? target.checked : target.value;
+
+    const keys = target.name.split(".");
+
+    if (keys.length > 1) {
+      const key1 = keys[0] as keyof DeviceModelData;
+      const key2 = keys[1] as DeviceModelDataSubPropertyKey;
+      const deviceData = { ...this.state.deviceData } as DeviceModelData;
+      const propertyToUpdate = deviceData[key1] as DeviceModelDataProperty;
+      const updatedProperty = this.updateSubProperty(propertyToUpdate, key2, value);
+      const updatedDeviceData = { ...deviceData, [key1]: updatedProperty } as DeviceModelData;
+      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDevice);
+      this.setState({
+        selectedDevice: updatedDevice,
+        deviceData: updatedDeviceData,
+        formError: JSON.stringify(this.translateDeviceToDeviceData(updatedDevice)) !== JSON.stringify(updatedDeviceData)
+      });
+    } else {
+      const updatedDeviceData = { ...this.state.deviceData, [target.name]: value } as DeviceModelData;
+      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDevice);
+      this.setState({
+        selectedDevice: updatedDevice,
+        deviceData: updatedDeviceData,
+        formError: JSON.stringify(this.translateDeviceToDeviceData(updatedDevice)) !== JSON.stringify(updatedDeviceData)
+      });
+    }
+  }
+
+  /**
+   * Determines if text field value is invalid
+   *
+   * @param devicePropertyValue device property value
+   * @param deviceDataPropertyValue device data property value
+   * @returns true if values are not equal
+   */
+  private fieldIsInvalid = (devicePropertyValue: number | undefined, deviceDataPropertyValue: string) => {
+    return devicePropertyValue !== undefined && devicePropertyValue.toString() !== deviceDataPropertyValue;
   }
 
   /**
    * On device click handler
+   *
    * @param device selected device
    */
-  private onDeviceClick = async (device: DeviceModel) => {
+  private onDeviceClick = (device: DeviceModel) => {
     this.setState({
-      deviceSettingsPanelOpen: true,
+      deviceDialogOpen: true,
       newDevice: false,
-      selectedDevice: device
+      selectedDevice: device,
+      deviceData: this.translateDeviceToDeviceData(device)
     });
   }
 
   /**
    * Delete device click handler
+   *
    * @param deviceToDelete device to delete
    */
   private onDeleteDeviceClick = async (deviceToDelete: DeviceModel) => {
     const { accessToken } = this.props;
- 
+
     if (deviceToDelete) {
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
@@ -385,17 +496,14 @@ class DashboardDevicesView extends React.Component<Props, State> {
         deviceModelId: deviceToDelete.id!
       });
 
-      const devices = [...this.state.devices];
+      const devices = [...this.props.devices];
       const index = devices.findIndex(device => deviceToDelete.id === device.id);
 
       if (index > -1) {
         devices.splice(index, 1);
 
-        this.setState({
-          devices: devices,
-          selectedDevice: undefined,
-          deviceSettingsPanelOpen: false
-        });
+        this.props.setDeviceModels(devices);
+        this.onDeleteDialogClose();
       }
     }
   }
@@ -403,66 +511,55 @@ class DashboardDevicesView extends React.Component<Props, State> {
   /**
    * On save device click handler
    */
-  private onSaveDeviceClick = async () => {
-    const { newDevice } = this.state;
+  private onSaveDeviceClick = () => {
+    const { newDevice, deviceData, selectedDevice } = this.state;
+    if (!deviceData || !selectedDevice) {
+      return;
+    }
 
+    this.setState({ formError: false });
+    const device = this.assignDeviceDataToDevice(deviceData, selectedDevice);
+    const updatedHiddenDisplayMetrics = this.updateHiddenDisplayMetricsValues(device.displayMetrics, device.dimensions);
+    device.displayMetrics = updatedHiddenDisplayMetrics;
     if (newDevice) {
-      this.createNewDevice();
-    } 
+      this.createNewDevice(device);
+    }
     else {
-      this.updateDevice();
+      this.updateDevice(device);
     }
   }
 
   /**
    * Create new device with default values handler
    */
-  private createNewDevice = async () => {
+  private createNewDevice = async (deviceModel: DeviceModel) => {
     const { accessToken } = this.props;
-    const { selectedDevice } = this.state;
- 
-    if (selectedDevice) {
-      const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
-
-      const createdDevice = await deviceModelsApi.createDeviceModel({
-        deviceModel: selectedDevice
-      });
-  
-      this.setState({
-        devices: [...this.state.devices, createdDevice],
-        selectedDevice: createdDevice,
-        deviceSettingsPanelOpen: false
-      });
-    }
+    const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
+    const createdDevice = await deviceModelsApi.createDeviceModel({ deviceModel });
+    this.props.setDeviceModels([...this.props.devices, createdDevice]);
+    this.onDeviceDialogClose();
   }
 
   /**
    * Update device handler
    */
-  private updateDevice = async () => {
+  private updateDevice = async (deviceModel: DeviceModel) => {
     const { accessToken } = this.props;
     const { selectedDevice } = this.state;
- 
-    if (selectedDevice) {
-      const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
-    
-      const updatedDevice = await deviceModelsApi.updateDeviceModel({
-        deviceModel: selectedDevice,
-        deviceModelId: selectedDevice.id!
-      });
+    if (!selectedDevice || !selectedDevice.id) {
+      return;
+    }
 
-      const devices = [...this.state.devices];
-      const index = devices.findIndex(device => updatedDevice.id === device.id);
+    const deviceModelId = selectedDevice.id;
+    const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
+    const updatedDevice = await deviceModelsApi.updateDeviceModel({ deviceModel, deviceModelId });
+    const devices = [...this.props.devices];
+    const index = devices.findIndex(device => updatedDevice.id === device.id);
 
-      if (index > -1) {
-        devices.splice(index, 1);
-
-        this.setState({
-          devices: [...devices, updatedDevice],
-          selectedDevice: updatedDevice,
-          deviceSettingsPanelOpen: false
-        });
-      }
+    if (index > -1) {
+      devices.splice(index, 1);
+      this.props.setDeviceModels([...devices, updatedDevice]);
+      this.onDeviceDialogClose();
     }
   }
 
@@ -477,8 +574,11 @@ class DashboardDevicesView extends React.Component<Props, State> {
     };
 
     const newDeviceDimensions: DeviceModelDimensions = {
-      width: 100,
-      height: 100
+      deviceWidth: 100,
+      deviceHeight: 100,
+      deviceDepth: 100,
+      screenWidth: 1000,
+      screenHeight: 1000
     };
 
     const newDeviceDisplayMetrics: DeviceModelDisplayMetrics = {
@@ -498,21 +598,221 @@ class DashboardDevicesView extends React.Component<Props, State> {
     };
 
     this.setState({
+      deviceDialogOpen: true,
       deviceSettingsPanelOpen: true,
       newDevice: true,
       selectedDevice: newDeviceModel,
+      deviceData: this.translateDeviceToDeviceData(newDeviceModel)
     });
   }
-}
 
-/**
- * Check if given key can be found from the given object.
- * This is needed for updating nested objects in state
- * @param obj object to check from
- * @param key key to check from object
- */
-function hasKey<T>(obj: T, key: keyof T): key is keyof T {
-  return key in obj;
+  /**
+   * On device dialog close handler
+   */
+  private onDeviceDialogClose = () => {
+    this.setState({
+      selectedDevice: undefined,
+      deviceData: undefined,
+      deviceDialogOpen: false,
+      formError: false
+    });
+  }
+
+  /**
+   * On delete device dialog open handler
+   *
+   * @param selectedDevice selected device
+   */
+  private onDeleteDialogOpen = (selectedDevice: DeviceModel) => {
+    this.setState({
+      selectedDevice,
+      deleteDialogOpen: true
+    });
+  }
+
+  /**
+   * On delete device dialog close handler
+   */
+  private onDeleteDialogClose = () => {
+    this.setState({
+      selectedDevice: undefined,
+      deleteDialogOpen: false
+    });
+  }
+
+  /**
+   * Checks deviceModel subproperty type and updates its value
+   *
+   * @param propertyToUpdate property to update
+   * @param key property key
+   * @param value new value
+   * @returns updated property
+   */
+  private updateSubProperty = (property: DeviceModelDataProperty, key: DeviceModelDataSubPropertyKey, value: string | boolean): DeviceModelDataProperty => {
+    if (isTypeOfDeviceModelDimensionsData(property)) {
+      property[key as keyof DeviceModelDimensionsData] = value as string;
+    } else if (isTypeOfDeviceModelDisplayMetricsData(property)) {
+      property[key as keyof DeviceModelDisplayMetricsData] = value as string;
+    } else if (isTypeOfDeviceModelCapabilitiesData(property)) {
+      property[key as keyof DeviceModelCapabilities] = value as boolean;
+    }
+
+    return property;
+  }
+
+  /**
+   * Calculates device dpi in X and Y axis.
+   * Based on device physical width, physical height and pixel amount in Y and X axis.
+   *
+   * @param physicalWidth physical width
+   * @param physicalHeight physical height
+   * @param pixelAmountX pixel amount in X axis
+   * @param pixelAmountY pixel amount in Y axis
+   * @returns calculated X and Y axis dpi in array
+   */
+  private calculatePixelDensity = (physicalWidth: number, physicalHeight: number, pixelAmountX: number, pixelAmountY: number): number[] => {
+    const conversionDivider = 25.4;
+    const widthInInches = physicalWidth / conversionDivider;
+    const heightInInches = physicalHeight / conversionDivider;
+    const densityX = pixelAmountX / heightInInches;
+    const densityY = pixelAmountY / widthInInches;
+
+    return [Math.ceil(densityX), Math.ceil(densityY)];
+  }
+
+  /**
+   * Calculates device overall dpi.
+   * Needed in resolving device pixel density.
+   * Based on device physical width, physical height and pixel amount in Y and X axis.
+   *
+   * @param physicalWidth physical width
+   * @param physicalHeight physical height
+   * @param pixelAmountX pixel amount in X axis
+   * @param pixelAmountY pixel amount in Y axis
+   * @returns calculated X and Y axis pixel densities in array
+   */
+  private calculateOverallDpi = (physicalWidth: number, physicalHeight: number, pixelAmountX: number, pixelAmountY: number) => {
+    const conversionDivider = 25.4;
+    const widthInInches = physicalWidth / conversionDivider;
+    const heightInInches = physicalHeight / conversionDivider;
+    const diagonalScreenSize = Math.sqrt(Math.pow(widthInInches, 2) + Math.pow(heightInInches, 2));
+    const screenResolution = Math.sqrt(Math.pow(pixelAmountX , 2) + Math.pow(pixelAmountY, 2));
+    const overallDpi = screenResolution / diagonalScreenSize;
+    return Math.ceil(overallDpi);
+  }
+
+  /**
+   * Resolves device pixel density value.
+   * Based on device overall screen dpi.
+   *
+   * @param overallDpi overall dpi
+   * @returns density value based on ranges between approximated dpi values
+   */
+  private resolveDensity = (overallDpi: number): number => {
+    if (overallDpi > 0 && overallDpi <= 140) {
+      return 0.75;
+    } else if (overallDpi > 140 && overallDpi <= 200) {
+      return 1.0;
+    } else if (overallDpi > 200 && overallDpi <= 280) {
+      return 1.5;
+    } else if (overallDpi > 280 && overallDpi <= 400) {
+      return 2.0;
+    } else if (overallDpi > 400 && overallDpi <= 560) {
+      return 3.0;
+    } else {
+      return 4.0;
+    }
+  }
+
+  /**
+   * Translates device model to device model data
+   *
+   * @param device device model
+   * @returns device model data
+   */
+  private translateDeviceToDeviceData = (device: DeviceModel): DeviceModelData => {
+    const { displayMetrics, dimensions } = device;
+    const deviceDisplayMetricsData: DeviceModelDisplayMetricsData = {
+      density: (displayMetrics.density || 0).toString(),
+      widthPixels: (displayMetrics.widthPixels || 0).toString(),
+      heightPixels: (displayMetrics.heightPixels || 0).toString(),
+      xdpi: (displayMetrics.xdpi || 0).toString(),
+      ydpi: (displayMetrics.ydpi || 0).toString()
+    };
+    const deviceDimensionsData: DeviceModelDimensionsData = {
+      deviceWidth: (dimensions.deviceWidth || 0).toString(),
+      deviceHeight: (dimensions.deviceHeight || 0).toString(),
+      deviceDepth: (dimensions.deviceDepth || 0).toString(),
+      screenWidth: (dimensions.screenWidth || 0).toString(),
+      screenHeight: (dimensions.screenHeight || 0).toString()
+    };
+    const deviceData: DeviceModelData = {
+      manufacturer: device.manufacturer,
+      model: device.model,
+      capabilities: device.capabilities,
+      displayMetrics: deviceDisplayMetricsData,
+      dimensions: deviceDimensionsData
+    }
+
+    return deviceData;
+  }
+
+  /**
+   * Assigns device model data to device model
+   *
+   * @param deviceData device model data
+   * @param device device model
+   * @returns device model
+   */
+  private assignDeviceDataToDevice = (deviceData: DeviceModelData, device: DeviceModel): DeviceModel => {
+    const { displayMetrics, dimensions, manufacturer, model, capabilities } = deviceData;
+    const deviceDimensions: DeviceModelDimensions = {
+      deviceWidth: Number(dimensions.deviceWidth),
+      deviceHeight: Number(dimensions.deviceHeight),
+      deviceDepth: Number(dimensions.deviceDepth),
+      screenWidth: Number(dimensions.screenWidth),
+      screenHeight: Number(dimensions.screenHeight)
+    };
+    const deviceDisplayMetrics: DeviceModelDisplayMetrics = {
+      density: Number(displayMetrics.density),
+      widthPixels: Number(displayMetrics.widthPixels),
+      heightPixels: Number(displayMetrics.heightPixels),
+      xdpi: Number(displayMetrics.xdpi),
+      ydpi: Number(displayMetrics.ydpi)
+    };
+
+    return {
+      ...device,
+      manufacturer,
+      model,
+      capabilities,
+      dimensions: deviceDimensions,
+      displayMetrics: deviceDisplayMetrics
+    } as DeviceModel;
+  }
+
+  /**
+   * Updates hidden display metrics values
+   *
+   * @param displayMetrics display metrics
+   * @param dimensions dimensions
+   * @returns device model display metrics
+   */
+  private updateHiddenDisplayMetricsValues = (displayMetrics: DeviceModelDisplayMetrics, dimensions: DeviceModelDimensions): DeviceModelDisplayMetrics => {
+    const { screenWidth, screenHeight } = dimensions;
+    const { heightPixels, widthPixels } = displayMetrics;
+    const pixelDensities = this.calculatePixelDensity(screenWidth || 0, screenHeight || 0, heightPixels || 0, widthPixels || 0);
+    const overallDpi = this.calculateOverallDpi(screenWidth || 0, screenHeight || 0, heightPixels || 0, widthPixels || 0);
+    const density = this.resolveDensity(overallDpi);
+    const updatedDisplayMetrics = {
+      ...displayMetrics,
+      density: density,
+      xdpi: pixelDensities[0],
+      ydpi: pixelDensities[1]
+    }
+
+    return updatedDisplayMetrics;
+  }
 }
 
 /**
@@ -524,7 +824,7 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    devices: state.devices.deviceModels
   };
 }
 
@@ -535,7 +835,7 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition))
+    setDeviceModels: (deviceModels: DeviceModel[]) => dispatch(setDeviceModels(deviceModels))
   };
 }
 

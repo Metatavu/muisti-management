@@ -43,11 +43,23 @@ export interface ExhibitionPage {
      */
     readonly exhibitionId?: string;
     /**
+     * Id of device this page belongs to
+     * @type {string}
+     * @memberof ExhibitionPage
+     */
+    deviceId: string;
+    /**
      * Id of page layout
      * @type {string}
      * @memberof ExhibitionPage
      */
     layoutId: string;
+    /**
+     * Id of content version
+     * @type {string}
+     * @memberof ExhibitionPage
+     */
+    contentVersionId: string;
     /**
      * Human readable name for the layout
      * @type {string}
@@ -104,7 +116,9 @@ export function ExhibitionPageFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
+        'deviceId': json['deviceId'],
         'layoutId': json['layoutId'],
+        'contentVersionId': json['contentVersionId'],
         'name': json['name'],
         'resources': ((json['resources'] as Array<any>).map(ExhibitionPageResourceFromJSON)),
         'eventTriggers': ((json['eventTriggers'] as Array<any>).map(ExhibitionPageEventTriggerFromJSON)),
@@ -124,7 +138,9 @@ export function ExhibitionPageToJSON(value?: ExhibitionPage | null): any {
     }
     return {
         
+        'deviceId': value.deviceId,
         'layoutId': value.layoutId,
+        'contentVersionId': value.contentVersionId,
         'name': value.name,
         'resources': ((value.resources as Array<any>).map(ExhibitionPageResourceToJSON)),
         'eventTriggers': ((value.eventTriggers as Array<any>).map(ExhibitionPageEventTriggerToJSON)),

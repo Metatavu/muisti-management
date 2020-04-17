@@ -2,13 +2,25 @@ import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
 export default createStyles({
+  
+  loader: {
+    height: "100%",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   editorLayout: {
     height: "100%",
     display: "grid",
     gridTemplateRows: "1fr",
-    gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ' "view-selection navigation editor settings" ',
+    gridTemplateColumns: "auto 1fr auto",
+    gridTemplateAreas: ' "navigation editor-view properties" ',
   },
 
   root: {
@@ -18,6 +30,7 @@ export default createStyles({
     gridTemplateRows: "1fr",
     gridTemplateAreas: "'panel content' 'panel content'",
   },
+
   panel: {
     position: "relative",
     gridArea: "panel",
@@ -25,18 +38,26 @@ export default createStyles({
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
   },
+
+  select: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
   toolBar: {
     backgroundColor: "#fbfbfb",
     borderBottom: "1px solid #ddd",
     display: "flex",
-    justifyContent: "flex-end",
-    height: 58,
+    justifyContent: "space-between",
+    height: 55,
     padding: "0 16px",
     alignItems: "center",
   },
+
   toolbarContent: {
     padding: theme.spacing(2)
   },
+
   btnContainer: {
     position: "absolute",
     zIndex: 1,
@@ -47,6 +68,7 @@ export default createStyles({
     height: 55,
     width: 50
   },
+
   container: {
     backgroundColor: "#fbfbfb",
     height: "100%",
@@ -56,6 +78,7 @@ export default createStyles({
       opacity: 0
     }
   },
+
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -70,6 +93,7 @@ export default createStyles({
       textOverflow: "ellipsis"
     }
   },
+
   content: {
     gridArea: "content",
     display: "flex",
@@ -77,6 +101,7 @@ export default createStyles({
     width: "100%",
     flexDirection: "column"
   },
+
   editors: {
     display: "grid",
     width: "100%",
@@ -84,12 +109,15 @@ export default createStyles({
     gridGap: 10,
     gridTemplateColumns: "1fr 1fr"
   },
+
   editorContainer: {
     display: "grid",
     gridTemplateRows: "auto 1fr",
     height: "100%"
   },
+
   editor: {
+    paddingBottom: theme.spacing(2),
     "& .CodeMirror": {
       minHeight: "100%"
     }
