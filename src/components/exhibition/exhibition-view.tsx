@@ -329,7 +329,7 @@ export class ExhibitionView extends React.Component<Props, State> {
           paddingLeft: level * 20
         }}
       >
-        {/* { hasNodes && */
+        {
           (
             <div
               style={{ display: 'inline-block' }}
@@ -1296,6 +1296,9 @@ export class ExhibitionView extends React.Component<Props, State> {
     this.props.history.push(`/dashboard/overview`);
   }
 
+  /**
+   * Finds selected exhibition content version from tree
+   */
   private findSelectedExhibitionContentVersion = (parents: ExhibitionElement[]): ExhibitionContentVersion | null => {
     const element = parents.find((parent) => {
       return parent.type === ExhibitionElementType.CONTENT_VERSION
