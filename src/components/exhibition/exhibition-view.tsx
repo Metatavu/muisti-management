@@ -76,6 +76,8 @@ interface State {
   pageLayout?: PageLayout;
   selectedRoomId?: string;
   selectedDeviceGroupId?: string;
+  selectedContentVersionId?: string;
+  selectedDeviceId?: string;
   selectedResource?: ExhibitionPageResource;
   selectedEventTrigger?: ExhibitionPageEventTrigger;
   view: View;
@@ -183,6 +185,7 @@ export class ExhibitionView extends React.Component<Props, State> {
                 disableElevation
                 variant="contained"
                 color="secondary"
+                disabled={ !this.state.selectedDeviceId || !this.state.selectedContentVersionId }
                 onClick={ this.onAddPageClick }
                 startIcon={ <AddIcon />  }
               >
@@ -277,12 +280,13 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private renderTreeMenu = (treeData: TreeNodeInArray[]) => {
     const { classes } = this.props;
+
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeData }
           onClickItem={({ key, label, ...props }) => {
-            this.onSelectElementFromTree(props.element);
+            this.onSelectElementFromTree(props.parents, props.element);
           }}
         >
           {({ search, items }) => (
@@ -325,7 +329,7 @@ export class ExhibitionView extends React.Component<Props, State> {
           paddingLeft: level * 20
         }}
       >
-        { hasNodes &&
+        {/* { hasNodes && */
           (
             <div
               style={{ display: 'inline-block' }}
@@ -420,7 +424,7 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.visualEditorContainer }>
-        <PagePreview view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview screenOrientation={ pageLayout?.screenOrientation } view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
       </div>
     );
   }
@@ -1157,17 +1161,18 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onAddPageClick = () => {
     const layoutId = this.props.layouts && this.props.layouts.length ? this.props.layouts[0].id : null;
-    const deviceId = this.props.devices && this.props.devices.length ? this.props.devices[0].id : null;
+    const deviceId = this.state.selectedDeviceId;
+    const contentVersionId = this.state.selectedContentVersionId;
 
-    if (!layoutId || !deviceId) {
+    if (!layoutId || !deviceId || !contentVersionId) {
       return null;
     }
 
     const newPage: ExhibitionPage = {
       layoutId: layoutId,
       deviceId: deviceId,
+      contentVersionId: contentVersionId,
       name: strings.exhibition.newPage,
-      contentVersionId: "",
       eventTriggers: [],
       resources: []
     }
@@ -1291,15 +1296,31 @@ export class ExhibitionView extends React.Component<Props, State> {
     this.props.history.push(`/dashboard/overview`);
   }
 
+  private findSelectedExhibitionContentVersion = (parents: ExhibitionElement[]): ExhibitionContentVersion | null => {
+    const element = parents.find((parent) => {
+      return parent.type === ExhibitionElementType.CONTENT_VERSION
+    });
+
+    if (!element || !element.data) {
+      return null;
+    }
+
+    return element.data as ExhibitionContentVersion;
+  }
+
   /**
    * Handles element selected from navigation tree
    *
+   * @param parents selected element parents
    * @param element selected element
    * @param elementType selected element type
    */
-  private onSelectElementFromTree = (element: ExhibitionElement) => {
+  private onSelectElementFromTree = (parents: ExhibitionElement[], element: ExhibitionElement) => {
+
     this.setState({ 
       selectedDeviceGroupId: undefined,
+      selectedDeviceId: undefined,
+      selectedContentVersionId: this.findSelectedExhibitionContentVersion(parents)?.id,
       selectedRoomId: undefined,
       addDevice: undefined,
       jsonCode: "{}"
@@ -1323,8 +1344,11 @@ export class ExhibitionView extends React.Component<Props, State> {
 
       break;
       case ExhibitionElementType.DEVICE:
+        const selectedDevice = element.data as ExhibitionDevice;
+        
         this.setState({
-          selectedElement: element
+          selectedElement: element,
+          selectedDeviceId: selectedDevice?.id 
         });
 
       break;
@@ -1419,45 +1443,60 @@ export class ExhibitionView extends React.Component<Props, State> {
   private constructTreeData = (dataParams: TreeDataParams) => {
     const { exhibitionId } = this.props;
     const { exhibition, contentVersions, floors, rooms, devices, pages } = dataParams;
+    const exhibitionElement = {
+      data: exhibition,
+      type: ExhibitionElementType.EXHIBITION
+    };
+
     const treeData = [{
       key: exhibitionId,
       label: exhibition.name,
-      element: {
-        data: exhibition,
-        type: ExhibitionElementType.EXHIBITION
-      },
+      element: exhibitionElement,
+      parents: [ ],
       nodes: contentVersions.map(contentVersion => {
+        const contentVersionElement = {
+          data: contentVersion,
+          type: ExhibitionElementType.CONTENT_VERSION
+        };
+
         return {
           key: contentVersion.id!,
           label: contentVersion.name,
-          element: {
-            data: contentVersion,
-            type: ExhibitionElementType.CONTENT_VERSION
-          },
+          element: contentVersionElement,
+          parents: [ exhibitionElement ],
           nodes: floors.map(floor => {
+            const floorElement = {
+              data: floor,
+              type: ExhibitionElementType.FLOOR
+            };
+
             return {
               key: floor.id!,
               label: floor.name,
-              element: {
-                data: floor,
-                type: ExhibitionElementType.FLOOR
-              },
+              element: floorElement,
+              parents: [ exhibitionElement, contentVersionElement ],
               nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
+                const roomElement = {
+                  data: room,
+                  type: ExhibitionElementType.ROOM
+                }; 
+                
                 return {
                   key: room.id!,
                   label: room.name,
-                  element: {
-                    data: room,
-                    type: ExhibitionElementType.ROOM
-                  },
+                  element: roomElement,
+                  parents: [ exhibitionElement, contentVersionElement, floorElement ],
                   nodes: devices.map(device => {
+                    const deviceElement = {
+                      data: device,
+                      type: ExhibitionElementType.DEVICE
+                    };
+
                     return {
                       key: device.id!,
                       label: device.name,
-                      element: {
-                        data: device,
-                        type: ExhibitionElementType.DEVICE
-                      },
+                      element: deviceElement,
+                      parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement ],
                       nodes: pages.filter(page => page.deviceId === device.id).map(page => {
                         return {
                           key: page.id!,
@@ -1466,6 +1505,7 @@ export class ExhibitionView extends React.Component<Props, State> {
                             data: page,
                             type: ExhibitionElementType.PAGE
                           },
+                          parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement, deviceElement ],
                           nodes: []
                         }
                       })
