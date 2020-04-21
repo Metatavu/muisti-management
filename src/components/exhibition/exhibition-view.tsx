@@ -507,7 +507,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <div className={ classes.toolbarContent }>
-        <TextField fullWidth variant="filled" label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
+        <TextField fullWidth variant="filled" label="Name" value={ pageData.name } onChange={ this.onPageNameChange }/>
         <div className={ classes.toolbarContent }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
@@ -1034,6 +1034,25 @@ export class ExhibitionView extends React.Component<Props, State> {
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       name: event.target.value
+    });
+  }
+
+  /**
+   * Event handler for name input change
+   *
+   * @param event event
+   */
+  private onPageNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { selectedElement } = this.state;
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
+      return;
+    }
+
+
+    const page = selectedElement.data as ExhibitionPage;
+
+    this.setState({
+      selectedElement: { ...selectedElement, data: { ...page, name: event.target.value }}
     });
   }
 
