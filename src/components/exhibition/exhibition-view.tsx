@@ -1345,6 +1345,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       selectedContentVersionId: this.findSelectedExhibitionContentVersion(parents)?.id,
       selectedRoomId: undefined,
       addDevice: undefined,
+      selectedEventTrigger: undefined,
       jsonCode: "{}"
     });
 
