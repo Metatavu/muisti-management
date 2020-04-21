@@ -79,8 +79,10 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
       if (events !== undefined && events.length > 0) {
         this.setState({
-          selectedEventActionType: events[0].action
+          selectedEventActionType: events[0].action,
+          selectedNavigationPage: this.findPageById(this.resolveSelectedPageId())
         });
+
       }
     }
   }
@@ -91,7 +93,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   public componentDidUpdate = (prevProps: Props) => {
     if (prevProps.selectedEventTrigger !== this.props.selectedEventTrigger) {
       this.setState({
-        selectedNavigationPage: undefined
+        selectedNavigationPage: this.findPageById(this.resolveSelectedPageId())
       });
     }
   }
@@ -341,6 +343,30 @@ export class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Finds a page by it's id
+   * 
+   * @returns page by page id or undefined if not found
+   */
+  private findPageById = (id?: string | null): ExhibitionPage | undefined => {
+    return id ? this.props.pages.find(page => page.id === id) : undefined;
+  }
+
+  /**
+   * Resolves selected navigate event page id 
+   * 
+   * @return selected navigate event page id or null if not found
+   */
+  private resolveSelectedPageId = (): string | null => {
+    const navigateEvent = (this.props.selectedEventTrigger.events || []).find(event => event.action === ExhibitionPageEventActionType.Navigate);
+    if (navigateEvent) {
+      const pageIdProperty =  navigateEvent.properties.find(property => property.name === "pageId");
+      return pageIdProperty?.value || null;
+    }
+
+    return null;
+  }
+
+  /**
    * Event handler for changing delay
    * @param event react change event
    */
@@ -416,7 +442,7 @@ export class EventTriggerEditor extends React.Component<Props, State> {
 
       if (eventIndex > -1) {
         parsedCode.eventTriggers[index].events![eventIndex].properties[0].value= newValue
-        const newSelectedPage = this.props.pages.find(page => page.id === newValue);
+        const newSelectedPage = this.findPageById(newValue);
         this.setState({
           selectedNavigationPage: newSelectedPage
         });
