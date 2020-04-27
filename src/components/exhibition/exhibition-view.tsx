@@ -655,7 +655,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders resource editor
    */
   private renderEventTriggerEditor = () => {
-    const { selectedEventTrigger, pageLayout } = this.state;
+    const { selectedEventTrigger, pageLayout, selectedDeviceId } = this.state;
     if (!selectedEventTrigger || !pageLayout) {
       return null;
     }
@@ -667,7 +667,7 @@ export class ExhibitionView extends React.Component<Props, State> {
         history = { this.props.history }
         classes = { this.props.classes }
         selectedEventTrigger = { selectedEventTrigger }
-        pages = { this.state.pages }
+        pages = { this.getSortedPages(this.state.pages.filter(page => page.deviceId === selectedDeviceId)) }
         layout = { pageLayout }
         jsonCode = { this.state.jsonCode }
         onParseJson = { this.parseJsonCode }
@@ -1317,17 +1317,34 @@ export class ExhibitionView extends React.Component<Props, State> {
 
   /**
    * Finds selected exhibition content version from tree
+   * 
+   * @param elements tree elements
+   * @return content version or null if not found
    */
-  private findSelectedExhibitionContentVersion = (parents: ExhibitionElement[]): ExhibitionContentVersion | null => {
-    const element = parents.find((parent) => {
-      return parent.type === ExhibitionElementType.CONTENT_VERSION
-    });
+  private findSelectedExhibitionContentVersion = (elements: ExhibitionElement[]): ExhibitionContentVersion | null => {
+    const element = elements.find(item => item.type === ExhibitionElementType.CONTENT_VERSION);
 
     if (!element || !element.data) {
       return null;
     }
 
     return element.data as ExhibitionContentVersion;
+  }
+
+  /**
+   * Finds selected exhibition device from tree
+   * 
+   * @param elements tree elements
+   * @return device or null if not found
+   */
+  private findSelectedExhibitionDevice = (elements: ExhibitionElement[]): ExhibitionDevice | null => {
+    const element = elements.find(item => item.type === ExhibitionElementType.DEVICE);
+
+    if (!element || !element.data) {
+      return null;
+    }
+
+    return element.data as ExhibitionDevice;
   }
 
   /**
@@ -1338,11 +1355,12 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param elementType selected element type
    */
   private onSelectElementFromTree = (parents: ExhibitionElement[], element: ExhibitionElement) => {
+    const elements = [ ...parents, element ];
 
     this.setState({ 
       selectedDeviceGroupId: undefined,
-      selectedDeviceId: undefined,
-      selectedContentVersionId: this.findSelectedExhibitionContentVersion(parents)?.id,
+      selectedDeviceId: this.findSelectedExhibitionDevice(elements)?.id,
+      selectedContentVersionId: this.findSelectedExhibitionContentVersion(elements)?.id,
       selectedRoomId: undefined,
       addDevice: undefined,
       selectedEventTrigger: undefined,
@@ -1367,13 +1385,9 @@ export class ExhibitionView extends React.Component<Props, State> {
 
       break;
       case ExhibitionElementType.DEVICE:
-        const selectedDevice = element.data as ExhibitionDevice;
-        
         this.setState({
-          selectedElement: element,
-          selectedDeviceId: selectedDevice?.id 
+          selectedElement: element
         });
-
       break;
       case ExhibitionElementType.PAGE:
         const pageData = element.data as ExhibitionPage;
