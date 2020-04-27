@@ -602,4 +602,4 @@ module.exports = {
             "version": "detect"
         }
     }
-}
+};
