@@ -42,6 +42,8 @@ describe("Android utils tests", () => {
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel);
 
     expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 1)).toEqual(30);
+    expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 2)).toEqual(60);
+    expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 0.5)).toEqual(15);
   });
 
 })
