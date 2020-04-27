@@ -590,10 +590,8 @@ module.exports = {
             "error",
             {
                 "rules": {
-                    "import-sources-order": true,
                     "jsdoc-format": true,
-                    "no-reference-import": true,
-                    "no-unused-variable": true
+                    "no-reference-import": true
                 }
             }
         ],
