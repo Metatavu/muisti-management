@@ -103,7 +103,7 @@ export default class AndroidUtils {
    * @returns pixels
    */
   public static convertPixelsToDp(displayMetrics: DisplayMetrics, px: number, scale: number): number {
-    return (px * scale) / (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT);
+    return (px / scale) / (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT);
   }
 
 }
