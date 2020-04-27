@@ -1520,7 +1520,7 @@ export class ExhibitionView extends React.Component<Props, State> {
                       label: device.name,
                       element: deviceElement,
                       parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement ],
-                      nodes: pages.filter(page => page.deviceId === device.id).map(page => {
+                      nodes: this.getSortedPages(pages.filter(page => page.deviceId === device.id)).map(page => {
                         return {
                           key: page.id!,
                           label: page.name,
@@ -1543,6 +1543,22 @@ export class ExhibitionView extends React.Component<Props, State> {
     }];
 
     return treeData;
+  }
+
+  /**
+   * Returns pages sorted in alphabetical order
+   * 
+   * @param pages pages
+   * @return pages sorted in alphabetical order
+   */
+  private getSortedPages = (pages: ExhibitionPage[]): ExhibitionPage[] => {
+    const result = [ ...pages ];
+    
+    result.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+
+    return result;
   }
 
   /**
