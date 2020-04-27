@@ -44,6 +44,9 @@ describe("Android utils tests", () => {
     expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 1)).toEqual(30);
     expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 2)).toEqual(60);
     expect(AndroidUtils.stringToPx(displayMetrics, "10dp", 0.5)).toEqual(15);
+    expect(AndroidUtils.stringToPx(displayMetrics, "10sp", 1)).toEqual(30);
+    expect(AndroidUtils.stringToPx(displayMetrics, "10sp", 2)).toEqual(60);
+    expect(AndroidUtils.stringToPx(displayMetrics, "10sp", 0.5)).toEqual(15);
   });
 
 })
