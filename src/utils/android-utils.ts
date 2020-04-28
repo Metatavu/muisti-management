@@ -1,5 +1,6 @@
 import DisplayMetrics from "../types/display-metrics";
 import { DeviceModel } from "../generated/client";
+import tinycolor from "tinycolor2";
 
 /**
  * Utilities for Android
@@ -26,6 +27,22 @@ export default class AndroidUtils {
     }
 
     return result;
+  }
+
+  /**
+   * Converts Android color into CSS color
+   * 
+   * @param androidColor Android color
+   * @returns CSS color
+   */
+  public static toCssColor(androidColor: string) {
+    if (androidColor.length === 9) {
+      const rgb = androidColor.substring(3);
+      const a = androidColor.substring(1, 3);
+      return tinycolor(`#${rgb}${a}`).toRgbString();
+    }
+
+    return tinycolor(androidColor).toRgbString();
   }
 
   /**

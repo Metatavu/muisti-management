@@ -211,7 +211,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       position: "absolute" 
     };
 
-    childProperties
+    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
         switch (property.name) {

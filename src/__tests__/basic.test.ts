@@ -57,4 +57,9 @@ describe("Android utils tests", () => {
     expect(AndroidUtils.convertPixelsToDp(displayMetrics, 60, 2)).toEqual(10);
   });
 
+  it("test toCssColor", () => {
+    expect(AndroidUtils.toCssColor("#E600FFFF")).toEqual("rgba(0, 255, 255, 0.9)");
+    expect(AndroidUtils.toCssColor("#B00020")).toEqual("rgb(176, 0, 32)");
+  });
+
 })
