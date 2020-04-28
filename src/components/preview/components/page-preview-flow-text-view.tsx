@@ -170,7 +170,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       shapeOutside: "content-box"
     };
 
-    childProperties
+    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
         switch (property.name) {

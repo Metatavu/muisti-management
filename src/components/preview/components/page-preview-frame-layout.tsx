@@ -132,7 +132,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       overflow: "hidden"
     };
 
-    childProperties
+    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
       .filter(property => property.name.startsWith("layout_"))
       .forEach(property => {
         switch (property.name) {
