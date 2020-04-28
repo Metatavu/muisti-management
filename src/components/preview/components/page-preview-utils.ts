@@ -1,4 +1,4 @@
-import { PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
 import AndroidUtils from "../../../utils/android-utils";
 import DisplayMetrics from "../../../types/display-metrics";
 
@@ -46,6 +46,34 @@ export default class PagePreviewUtils {
     }
 
     return `${margin}px`;
+  }
+
+  /**
+   * Adds default layout properties into child properties
+   * 
+   * @param childProperties child properties
+   * @returns childProperties with default values
+   */
+  public static withDefaultLayoutProperties = (childProperties: PageLayoutViewProperty[]) => {
+    const result = [ ...childProperties ];
+
+    if (!result.find(childProperty => childProperty.name === "layout_height")) {
+      result.push({
+        name: "layout_height",
+        type: PageLayoutViewPropertyType.String,
+        value: "match_parent"
+      });
+    }
+
+    if (!result.find(childProperty => childProperty.name === "layout_width")) {
+      result.push({
+        name: "layout_width",
+        type: PageLayoutViewPropertyType.String,
+        value: "match_parent"
+      });
+    }
+
+    return result;
   }
 
   /**

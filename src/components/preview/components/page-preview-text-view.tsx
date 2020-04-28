@@ -104,6 +104,14 @@ class PagePreviewTextView extends React.Component<Props, State> {
       }
 
       switch (property.name) {
+        case "background":
+          const color = AndroidUtils.toCssColor(property.value);
+          if (color) {
+            result.background = color;
+          } else {
+            this.handleUnknownProperty(property, "Unknown background");
+          }
+        break;
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
           if (px) {
