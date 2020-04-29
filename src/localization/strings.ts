@@ -6,6 +6,11 @@ import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
 export interface IStrings extends LocalizedStringsMethods {
   comingSoon: string;
 
+  fileUpload: {
+    upload: string;
+    cancel: string;
+  };
+
   exhibitions: {
     listTitle: string;
     newExhibitionLabel: string;
@@ -68,6 +73,7 @@ export interface IStrings extends LocalizedStringsMethods {
       usersButton: string;
       devicesButton: string;
       layoutsButton: string;
+      floorPlansButton: string;
     };
     overview: {
       onProduction: string;
@@ -129,6 +135,9 @@ export interface IStrings extends LocalizedStringsMethods {
       title: string;
       lastModified: string;
     };
+    floorPlans: {
+      title: string;
+    }
   };
 
   exhibition: {
@@ -210,6 +219,21 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     properties: {
       title: string;
+    };
+  };
+
+  floorPlan: {
+    title: string;
+    toolbar: {
+      save: string;
+      upload: string;
+    },
+    properties: {
+      title: string;
+      imageHeight: string;
+      imageWidth: string;
+      physicalWidth: string;
+      physicalHeight: string;
     };
   };
 
