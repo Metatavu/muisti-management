@@ -42,6 +42,12 @@ export interface ExhibitionFloor {
      * @type {string}
      * @memberof ExhibitionFloor
      */
+    floorPlanUrl?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionFloor
+     */
     readonly creatorId?: string;
     /**
      * 
@@ -76,6 +82,7 @@ export function ExhibitionFloorFromJSONTyped(json: any, ignoreDiscriminator: boo
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
+        'floorPlanUrl': !exists(json, 'floorPlanUrl') ? undefined : json['floorPlanUrl'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -93,6 +100,7 @@ export function ExhibitionFloorToJSON(value?: ExhibitionFloor | null): any {
     return {
         
         'name': value.name,
+        'floorPlanUrl': value.floorPlanUrl,
     };
 }
 

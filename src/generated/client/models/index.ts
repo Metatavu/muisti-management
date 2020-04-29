@@ -1,3 +1,4 @@
+export * from './CoordinatePoint';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';
 export * from './DeviceModelDimensions';
@@ -33,6 +34,7 @@ export * from './PageLayoutView';
 export * from './PageLayoutViewProperty';
 export * from './PageLayoutViewPropertyType';
 export * from './Point';
+export * from './Polygon';
 export * from './ScreenOrientation';
 export * from './VisitorSession';
 export * from './VisitorSessionState';
