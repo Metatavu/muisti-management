@@ -98,7 +98,6 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
    */
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
-    console.log(properties)
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
     });
 
