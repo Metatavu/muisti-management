@@ -128,7 +128,6 @@ class DashboardFloorPlansView extends React.Component<Props, State> {
       });
     });
 
-
     return result;
   }
 
