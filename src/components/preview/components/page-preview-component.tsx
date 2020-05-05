@@ -12,6 +12,7 @@ import PagePreviewImageView from "./page-preview-image-view";
 import PagePreviewRelativeLayout from "./page-preview-relative-layout";
 import PagePreviewPlayerView from "./page-preview-player-view";
 import PagePreviewMediaView from "./page-preview-media-view";
+import PagePreviewLinearLayout from "./page-preview-linear-layout";
 
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -73,10 +74,17 @@ class PagePreviewComponent extends React.Component<Props, State> {
     if (!this.props.view) {
       return null;
     }
-
     switch (this.props.view.widget) {
       case "FrameLayout":
         return <PagePreviewFrameLayout 
+          onResize={ this.props.onResize } 
+          handleLayoutProperties={ this.props.handleLayoutProperties } 
+          view={ this.props.view } 
+          displayMetrics={ this.props.displayMetrics } 
+          scale={ this.props.scale }
+          resourceMap={ this.props.resourceMap }/>
+      case "LinearLayout":
+        return <PagePreviewLinearLayout 
           onResize={ this.props.onResize } 
           handleLayoutProperties={ this.props.handleLayoutProperties } 
           view={ this.props.view } 

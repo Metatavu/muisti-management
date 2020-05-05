@@ -9,6 +9,7 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import PagePreviewUtils from "./page-preview-utils";
+import AndroidUtils from "../../../utils/android-utils";
 
 /**
  * Interface representing component properties
@@ -31,7 +32,7 @@ interface State {
 /**
  * Component for rendering FrameLayout views
  */
-class PagePreviewFrameLayout extends React.Component<Props, State> {
+class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -74,9 +75,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     });
 
     return (
-      <div>
+      <>
         { result }
-      </div>
+      </>
     );
   }
 
@@ -87,7 +88,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    console.log(`PagePreviewLinearLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
@@ -98,7 +99,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      position: "absolute"
     });
 
     properties.forEach(property => {
@@ -109,14 +109,27 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-        break;
+          break;
+        case "padding":
+          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale)
+          if (px) {
+            result.padding = px;
+          }
+          break;
+        case "orientation":
+          if (property.value === "vertical") {
+            result.flexDirection = "column"
+          } else if (property.value === "horizontal") {
+            result.flexDirection = "row"
+          }
+          break;
         default:
           this.handleUnknownProperty(property, "unknown property");
         break;
       }
     });
     result.boxSizing = "border-box"
-
+    result.display = "flex"
     return result;
   }
 
@@ -129,7 +142,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
     const result: CSSProperties = { ...childStyles, 
-      position: "absolute",
       overflow: "hidden"
     };
 
@@ -182,9 +194,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           break;
         }
     });
-
     return result;
   }
 }
 
-export default withStyles(styles)(PagePreviewFrameLayout);
+export default withStyles(styles)(PagePreviewLinearLayout);

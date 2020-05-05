@@ -117,7 +117,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
           if (px) {
             result.fontSize = px
           } else {
-            console.log("TextView: unknown layout_height", property.value);
+            console.log("TextView: unknown textSize", property.value);
           }
         break;
         case "textAlignment":
