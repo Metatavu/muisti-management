@@ -307,7 +307,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const { cropImageDetails } = this.state;
 
     if (!cropImageDetails) {
-      return
+      return;
     }
 
     const swCorner: Coordinates = {
