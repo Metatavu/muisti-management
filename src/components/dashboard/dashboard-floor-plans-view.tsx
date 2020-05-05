@@ -16,7 +16,10 @@ import DashboardFloorPlan from "./dashboard-floor-plan";
 import defaultFloorPlanImage from "../../resources/gfx/muisti-logo.png";
 import Api from "../../api/api";
 
-type ExhibitionFloorMap = { [key: string] : ExhibitionFloor[] };
+/**
+ * Exhibition floor map
+ */
+type ExhibitionFloorMap = { [key: string]: ExhibitionFloor[] };
 
 /**
  * Interface representing component properties
