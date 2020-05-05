@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Bounds,
+    BoundsFromJSON,
+    BoundsFromJSONTyped,
+    BoundsToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -43,6 +50,12 @@ export interface ExhibitionFloor {
      * @memberof ExhibitionFloor
      */
     floorPlanUrl?: string;
+    /**
+     * 
+     * @type {Bounds}
+     * @memberof ExhibitionFloor
+     */
+    floorPlanBounds?: Bounds;
     /**
      * 
      * @type {string}
@@ -83,6 +96,7 @@ export function ExhibitionFloorFromJSONTyped(json: any, ignoreDiscriminator: boo
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
         'floorPlanUrl': !exists(json, 'floorPlanUrl') ? undefined : json['floorPlanUrl'],
+        'floorPlanBounds': !exists(json, 'floorPlanBounds') ? undefined : BoundsFromJSON(json['floorPlanBounds']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -101,6 +115,7 @@ export function ExhibitionFloorToJSON(value?: ExhibitionFloor | null): any {
         
         'name': value.name,
         'floorPlanUrl': value.floorPlanUrl,
+        'floorPlanBounds': BoundsToJSON(value.floorPlanBounds),
     };
 }
 

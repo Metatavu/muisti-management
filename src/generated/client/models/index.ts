@@ -1,4 +1,6 @@
+export * from './Bounds';
 export * from './CoordinatePoint';
+export * from './Coordinates';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';
 export * from './DeviceModelDimensions';

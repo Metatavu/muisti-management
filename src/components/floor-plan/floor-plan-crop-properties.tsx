@@ -9,14 +9,17 @@ import { TextField } from "@material-ui/core";
 interface Props {
   imageWidth?: number;
   imageHeight?: number;
+  naturalWidth?: number;
+  naturalHeight?: number;
+  onCropPropertyChange: (key: string, value: number) => void;
 }
 
 /**
  * Component state
  */
 interface State {
-  physicalWidth: string;
-  physicalHeight: string;
+  physicalWidth: number;
+  physicalHeight: number;
 }
 
 /**
@@ -32,9 +35,44 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
   constructor(props: Props) {
     super(props);
     this.state = {
-      physicalWidth: "0",
-      physicalHeight: "0"
+      physicalWidth: 0.0,
+      physicalHeight: 0.0
     };
+  }
+
+  /**
+   * Component did mount handler
+   */
+  public componentDidMount = () => {
+    this.updateMeasurements();
+  }
+
+  /**
+   * Component did update handler
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+    if (prevProps !== this.props) {
+      this.updateMeasurements();
+    }
+  } 
+
+  /**
+   * Update measurements
+   */
+  private updateMeasurements() {
+    const { naturalWidth, naturalHeight } = this.props;
+    let physicalWidth = 0.0;
+    let physicalHeight = 0.0;
+    if (naturalWidth) {
+      physicalWidth = naturalWidth;
+    }
+    if (naturalHeight) {
+      physicalHeight = naturalHeight;
+    }
+    this.setState({
+      physicalHeight,
+      physicalWidth
+    });
   }
 
   /**
@@ -58,23 +96,19 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
    */
   private onPhysicalWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
-    const value: string = target.value;
-    this.setState({
-      physicalWidth: value
-    });
+    const value = Number(target.value);
+    this.props.onCropPropertyChange("naturalWidth", value)
   }
 
 
   /**
-   * Event handler for width changes
+   * Event handler for height changes
    * 
    * @param event event
    */
   private onPhysicalHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
-    const value: string = target.value;
-    this.setState({
-      physicalHeight: value
-    });
+    const value = Number(target.value);
+    this.props.onCropPropertyChange("naturalHeight", value)
   }
 }

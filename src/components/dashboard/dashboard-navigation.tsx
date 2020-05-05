@@ -85,7 +85,7 @@ class DashboardNavigation extends React.Component<Props, State> {
     );
   }
 
-  /**s
+  /**
    * Renders navigation button
    *
    * @param navigationButton navigation button

@@ -10,7 +10,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress, Button } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds } from "../../generated/client";
 import BasicLayoutV3 from "../generic/basic-layout";
 import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
@@ -23,8 +23,8 @@ import FloorPlanCrop from "./floor-plan-crop";
 import FloorPlanCropProperties from "./floor-plan-crop-properties";
 import * as cropperjs from 'cropperjs';
 import FileUpload from "../../utils/file-upload";
-import FloorMap from "../generic/floor-plan-map";
 import { LatLngExpression, LatLngBounds } from "leaflet";
+import FloorPlanMap from "../generic/floor-plan-map";
 
 /**
  * Component props
@@ -51,7 +51,7 @@ interface State {
   cropping: boolean;
   cropImageDataUrl?: string;
   cropImageData?: Blob;
-  cropImageDetails?: cropperjs.default.Data;
+  cropImageDetails?: cropperjs.default.ImageData;
 }
 
 /**
@@ -161,19 +161,22 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
+    const { exhibitionFloor } = this.state;
     if (this.state.cropping && this.state.cropImageDataUrl ) {
       return (
         <FloorPlanCrop imageDataUrl={ this.state.cropImageDataUrl } onDetailsUpdate={ this.onCropDetailsUpdate } onDataUpdate={ this.onCropDataUpdate } />
       );
     }
 
-    if (this.state.exhibitionFloor && this.state.exhibitionFloor.floorPlanUrl) {
-      const sw: LatLngExpression = [ 0, 0 ];
-      const ne: LatLngExpression = [ 13.3, 18.0 ];
+    if (exhibitionFloor && exhibitionFloor.floorPlanUrl && exhibitionFloor.floorPlanBounds) {
+      const floorBounds = exhibitionFloor.floorPlanBounds
+      const swCorner = floorBounds.southWestCorner
+      const neCorner = floorBounds.northEastCorner
+      const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
+      const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
-      return <FloorMap bounds={ bounds } url={ this.state.exhibitionFloor.floorPlanUrl } imageHeight={ 965 } imageWidth={ 1314 }/>
+      return <FloorPlanMap bounds={ bounds } url={ exhibitionFloor.floorPlanUrl } imageHeight={ 965 } imageWidth={ 1314 }/>
     }
-
     return null;
   }
 
@@ -184,7 +187,11 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     if (this.state.cropping && this.state.cropImageDataUrl) {
       return <FloorPlanCropProperties 
         imageHeight={ this.state.cropImageDetails?.height } 
-        imageWidth={ this.state.cropImageDetails?.width }/>;
+        imageWidth={ this.state.cropImageDetails?.width }
+        naturalWidth={ this.state.cropImageDetails?.naturalWidth } 
+        naturalHeight={ this.state.cropImageDetails?.naturalHeight }
+        onCropPropertyChange={ this.onCropPropertyChange }
+      />;
     }
 
     return null;
@@ -204,7 +211,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
     const exhibition = await this.loadExhibition();
     const exhibitionFloor = exhibition ? await this.loadExhibitionFloor(exhibition, this.props.exhibitionFloorId) : undefined;
-
     this.setState({
       exhibition: exhibition,
       exhibitionFloor: exhibitionFloor
@@ -248,16 +254,17 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     if (!exhibitionFloor || !exhibitionFloor.id || !exhibitionFloor.exhibitionId) {
       return;
     }
-
     const exhibitionFloorsApi = Api.getExhibitionFloorsApi(this.props.accessToken);
     const uploadedFile = await FileUpload.uploadFile(data, `/floorplans/${exhibitionFloor.exhibitionId}`);
-    
+
+    const floorPlanToUpdate = { ...exhibitionFloor,
+      floorPlanUrl: uploadedFile.uri,
+      floorPlanBounds : this.getBounds()
+    }
     await exhibitionFloorsApi.updateExhibitionFloor({
       floorId: exhibitionFloor.id,
       exhibitionId: exhibitionFloor.exhibitionId,
-      exhibitionFloor: { ...exhibitionFloor, 
-        floorPlanUrl: uploadedFile.uri
-      }
+      exhibitionFloor: floorPlanToUpdate
     });
   }
 
@@ -266,7 +273,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * 
    * @param details details
    */
-  private onCropDetailsUpdate = (details: cropperjs.default.Data) => {
+  private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
     this.setState({
       cropImageDetails: details
     });
@@ -279,8 +286,47 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private onCropDataUpdate = (data: Blob) => {
     this.setState({
-      cropImageData: data
+      cropImageData: data,
     });
+  }
+
+  /**
+   * Event handler for property data change
+   */
+  private onCropPropertyChange = (key: string, value: number) => {
+    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value }
+    console.log(updatedDetails)
+    this.setState({
+      cropImageDetails : updatedDetails
+    })
+  }
+
+  /**
+   * Get bounds from cropImageDetails
+   */
+  private getBounds = (): Bounds | undefined => {
+    const { cropImageDetails } = this.state;
+
+    if (!cropImageDetails) {
+      return
+    }
+
+    const swCorner: Coordinates = {
+      latitude: 0.0,
+      longitude: 0.0
+    }
+
+    const neCorner: Coordinates = {
+      latitude: cropImageDetails.naturalWidth,
+      longitude: cropImageDetails.naturalHeight
+    }
+
+    const floorBounds: Bounds = { 
+      northEastCorner : neCorner,
+      southWestCorner : swCorner
+    }
+
+    return floorBounds
   }
 
   /**

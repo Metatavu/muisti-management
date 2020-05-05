@@ -9,7 +9,7 @@ import 'cropperjs/dist/cropper.css';
  */
 interface Props {
   imageDataUrl: string;
-  onDetailsUpdate: (details: cropperjs.default.Data) => void;
+  onDetailsUpdate: (details: cropperjs.default.ImageData) => void;
   onDataUpdate: (data: Blob) => void;
 }
 
