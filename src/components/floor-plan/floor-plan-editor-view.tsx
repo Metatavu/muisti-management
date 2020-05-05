@@ -295,7 +295,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private onCropPropertyChange = (key: string, value: number) => {
     const updatedDetails = { ...this.state.cropImageDetails!, [key] : value }
-    console.log(updatedDetails)
     this.setState({
       cropImageDetails : updatedDetails
     })
