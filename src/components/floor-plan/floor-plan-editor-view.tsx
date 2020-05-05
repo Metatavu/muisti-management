@@ -169,9 +169,9 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     }
 
     if (exhibitionFloor && exhibitionFloor.floorPlanUrl && exhibitionFloor.floorPlanBounds) {
-      const floorBounds = exhibitionFloor.floorPlanBounds
-      const swCorner = floorBounds.southWestCorner
-      const neCorner = floorBounds.northEastCorner
+      const floorBounds = exhibitionFloor.floorPlanBounds;
+      const swCorner = floorBounds.southWestCorner;
+      const neCorner = floorBounds.northEastCorner;
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
@@ -325,7 +325,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       southWestCorner : swCorner
     }
 
-    return floorBounds
+    return floorBounds;
   }
 
   /**

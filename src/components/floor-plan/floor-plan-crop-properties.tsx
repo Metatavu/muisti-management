@@ -97,7 +97,7 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
   private onPhysicalWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const value = Number(target.value);
-    this.props.onCropPropertyChange("naturalWidth", value)
+    this.props.onCropPropertyChange("naturalWidth", value);
   }
 
 
@@ -109,6 +109,6 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
   private onPhysicalHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const value = Number(target.value);
-    this.props.onCropPropertyChange("naturalHeight", value)
+    this.props.onCropPropertyChange("naturalHeight", value);
   }
 }
