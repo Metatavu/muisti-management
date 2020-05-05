@@ -20,6 +20,7 @@ import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import ElementContentsPane from "../editor-panes/element-contents-pane";
 import EditorView from "../editor/editor-view";
+import ResourceEditor from "./resource-editor";
 import { AccessToken, JsonLintParseErrorHash, ExhibitionElementType, ExhibitionElement } from '../../types';
 import strings from "../../localization/strings";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
@@ -220,7 +221,10 @@ export class ExhibitionView extends React.Component<Props, State> {
           <ElementSettingsPane title={ selectedResource ? selectedResource.id : "" }>
             {
               this.state.selectedResource &&
-              this.renderResourceEditor()
+              <ResourceEditor 
+                resource={ this.state.selectedResource }
+                selectedElement={ this.state.selectedElement }
+                onChange={ this.onResourceDataChange} />
             }
             {
               this.state.selectedEventTrigger &&
@@ -605,54 +609,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Renders resource editor
-   */
-  private renderResourceEditor = () => {
-    const selectedResource = this.state.selectedResource;
-    if (!selectedResource) {
-      return null;
-    }
-
-    const { classes } = this.props;
-
-    const title = <Typography variant="h4" style={{ marginBottom: theme.spacing(2) }}>{ strings.exhibition.properties.title }</Typography>
-    const widget = this.findResourceLayoutViewWidget(selectedResource.id);
-
-    if ("ImageView" === widget) {
-      return (
-      <>
-        { title }
-        <TextField
-          type="url"
-          className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.imageView.properties.imageUrl }
-          variant="filled"
-          value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }
-        />
-      </>
-      );
-    } else if ("TextView" === widget) {
-      return (
-      <>
-        { title }
-        <TextField
-          multiline
-          className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.textView.properties.text }
-          variant="filled"
-          value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }
-        />
-      </>
-      );
-    }
-
-    return <div>{ title }{ widget }</div>;
-  }
-
-  /**
-   * Renders resource editor
+   * Renders trigger editor
    */
   private renderEventTriggerEditor = () => {
     const { selectedEventTrigger, pageLayout, selectedDeviceId } = this.state;
@@ -858,67 +815,6 @@ export class ExhibitionView extends React.Component<Props, State> {
     }
 
     return id;
-  }
-
-  /**
-   * Attempts to find a layout view widget for given resource
-   *
-   * @param resourceId resource id
-   * @returns view widget or null if not found
-   */
-  private findResourceLayoutViewWidget(resourceId: string): string | null {
-    const view = this.findResourceLayoutView(resourceId);
-    return view?.widget || null;
-  }
-
-  /**
-   * Attempts to find a layout view for given resource
-   *
-   * @param resourceId resource id
-   * @returns view or null if not found
-   */
-  private findResourceLayoutView(resourceId: string): PageLayoutView | null {
-    const { selectedElement } = this.state;
-    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
-      return null;
-    }
-
-    const pageData = selectedElement.data as ExhibitionPage;
-    const layout = this.props.layouts.find(item => item.id === pageData.layoutId);
-    if (!layout) {
-      return null;
-    }
-
-    const propertyValue = `@resources/${resourceId}`;
-    const root = layout.data;
-    if (root.properties.findIndex(property => property.value === propertyValue) > -1) {
-      return root;
-    }
-
-    return this.findLayoutViewByPropertyValue(root, propertyValue);
-  }
-
-  /**
-   * Attempts to find a child view with given property value
-   *
-   * @param view root view
-   * @param propertyValue property value
-   * @returns view or null if not found
-   */
-  private findLayoutViewByPropertyValue(view: PageLayoutView, propertyValue: string): PageLayoutView | null  {
-    for (let i = 0; i < view.children.length; i++) {
-      const child = view.children[i];
-      if (child.properties.findIndex(property => property.value === propertyValue) > -1) {
-        return child;
-      }
-
-      const result = this.findLayoutViewByPropertyValue(child, propertyValue);
-      if (result) {
-        return result;
-      }
-    }
-
-    return null;
   }
 
   /**
