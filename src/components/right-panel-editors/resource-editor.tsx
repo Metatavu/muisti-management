@@ -3,7 +3,7 @@ import { ExhibitionPageResource, PageLayoutView, ExhibitionPage, PageLayout } fr
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, Typography, TextField } from "@material-ui/core";
 import { ExhibitionElement, ExhibitionElementType } from '../../types';
-import styles from "../../styles/exhibition-view-v3";
+import styles from "../../styles/exhibition-view";
 import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -13,10 +13,10 @@ import { Dispatch } from "redux"
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  resource: ExhibitionPageResource,
-  selectedElement?: ExhibitionElement,
-  layouts: PageLayout[],
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  resource: ExhibitionPageResource;
+  selectedElement?: ExhibitionElement;
+  layouts: PageLayout[];
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -43,14 +43,7 @@ class ResourceEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
-   */
-  public componentDidMount = () => {
-
-  }
-
-  /**
-   * Render basic layout
+   * Component render method
    */
   public render() {
     const { classes, resource, onChange } = this.props;

@@ -6,10 +6,10 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
  * Interface representing component properties
  */
 interface Props {
-  title: string,
-  text: string,
-  positiveButtonText: string,
-  cancelButtonText: string,
+  title: string;
+  text: string;
+  positiveButtonText: string;
+  cancelButtonText: string;
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;

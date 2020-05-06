@@ -21,6 +21,9 @@ export default createStyles({
   },
   container: {
     backgroundColor: "#fbfbfb",
+    display: "grid",
+    gridTemplateRows: "auto 1fr",
+    overflow: "hidden",
     height: "100%",
     width: 320,
     transition: "opacity 0.2s 0.2s ease-in-out",
@@ -43,6 +46,7 @@ export default createStyles({
     }
   },
   content: {   
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    overflowY: "auto"
   },
 });
