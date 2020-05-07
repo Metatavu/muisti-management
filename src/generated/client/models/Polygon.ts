@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    CoordinatePoint,
-    CoordinatePointFromJSON,
-    CoordinatePointFromJSONTyped,
-    CoordinatePointToJSON,
-} from './';
-
 /**
  * GeoJson polygon object
  * @export
@@ -28,10 +21,16 @@ import {
 export interface Polygon {
     /**
      * 
-     * @type {Array<Array<CoordinatePoint>>}
+     * @type {string}
      * @memberof Polygon
      */
-    shapes?: Array<Array<CoordinatePoint>>;
+    type?: string;
+    /**
+     * Polygon shapes
+     * @type {Array<Array<Array<number>>>}
+     * @memberof Polygon
+     */
+    coordinates?: Array<Array<Array<number>>>;
 }
 
 export function PolygonFromJSON(json: any): Polygon {
@@ -44,7 +43,8 @@ export function PolygonFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
     }
     return {
         
-        'shapes': !exists(json, 'shapes') ? undefined : json['shapes'],
+        'type': !exists(json, 'type') ? undefined : json['type'],
+        'coordinates': !exists(json, 'coordinates') ? undefined : json['coordinates'],
     };
 }
 
@@ -57,7 +57,8 @@ export function PolygonToJSON(value?: Polygon | null): any {
     }
     return {
         
-        'shapes': value.shapes,
+        'type': value.type,
+        'coordinates': value.coordinates,
     };
 }
 

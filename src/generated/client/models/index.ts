@@ -2,7 +2,6 @@ export * from './Animation';
 export * from './AnimationOption';
 export * from './AnimationTimeInterpolation';
 export * from './Bounds';
-export * from './CoordinatePoint';
 export * from './Coordinates';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';

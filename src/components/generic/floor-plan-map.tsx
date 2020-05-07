@@ -1,14 +1,16 @@
 import * as React from "react";
-import { Map, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent } from "leaflet";
+import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, LayerGroup, LatLngExpression } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 import Api from "../../api/api";
 import { AccessToken } from "../../types";
-import { ExhibitionRoom, Polygon } from "../../generated/client";
-import { GeometryCollection, FeatureCollection, Geometry, Feature, MultiPoint } from "geojson";
+import { ExhibitionRoom, Polygon as ApiPolygon } from "../../generated/client";
+import { FeatureCollection, Polygon } from "geojson";
+import PolygonDialog from "./polygon-dialog";
+import strings from "../../localization/strings";
 
 /**
  * Component props
@@ -31,6 +33,12 @@ interface Props {
 interface State {
   zoom: number;
   cursorPosition?: LatLng;
+  polygonCreated: boolean;
+  roomName?: string;
+  layer?: any;
+  geoShapeMap: Map<number, string>;
+  roomsToDelete: number[];
+  roomsToAdd: number[];
 }
 
 /**
@@ -42,6 +50,18 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   private mapInstance?: MapInstance;
 
   /**
+   * This feature group contains all layers that are displayed
+   */
+  private layersToShow = new L.FeatureGroup();
+
+  /**
+   * This feature group is used only for storing new geometries because
+   * inidividual feature group objects can be cast to polygon objects
+   */
+  private addedLayers = new L.FeatureGroup();
+
+
+  /**
    * Constructor
    *
    * @param props component properties
@@ -49,16 +69,27 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      zoom: 2
+      zoom: 2,
+      polygonCreated: false,
+      geoShapeMap: new Map(),
+      roomsToDelete: [],
+      roomsToAdd: []
     };
+  }
+
+  /**
+   * Component did mount handler
+   */
+  public componentDidMount = () => {
+    this.loadGeoShapes();
   }
 
   /**
    * Component render method
    */
   public render = () => {
-    return (
-      <Map ref={ this.setMapRef } 
+    return (<>
+      <LeafletMap ref={ this.setMapRef } 
         crs={ CRS.Simple } 
         center={ [0, 0] } 
         bounds={ this.props.bounds }
@@ -68,7 +99,20 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         style={{ width: "100%", height: "100%" }}
         onmousemove={ this.onMapMouseMove }>
           { this.renderMapChildren() }
-      </Map>
+      </LeafletMap>
+      <PolygonDialog
+        cancelButtonText={ strings.editorDialog.cancel }
+        positiveButtonText={ strings.editorDialog.save }
+        onCancel={ this.onCancel }
+        onClose={ this.onCancel }
+        onConfirm={ this.onPolygonSave }
+        onNameChange={ this.onRoomNameChange }
+        open={ this.state.polygonCreated }
+        text={ strings.map.properties.roomName }
+        roomName={ this.state.roomName }
+        title={ strings.map.properties.dialogTitle }
+      />
+      </>
     )
   }
 
@@ -80,13 +124,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       <>
         <ImageOverlay url={ this.props.url } bounds={ this.props.bounds }/>
         <ScaleControl imperial={ false }/>
-
       </>
     );
   }
 
   /**
-   * Updates Leaflet instance 
+   * Updates Leaflet instance and adds handlers
    */
   private setMapRef = (mapRef: any) => {
     this.mapInstance = mapRef ? mapRef.leafletElement : undefined;
@@ -94,8 +137,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!this.mapInstance) {
       return;
     }
-    const featureGroup = new L.FeatureGroup();
-    this.mapInstance.addLayer(featureGroup);
+    this.mapInstance.addLayer(this.layersToShow);
     const polygonOption: L.DrawOptions.PolygonOptions = {}
     const controls = new L.Control.Draw({
       position: 'topleft',
@@ -103,15 +145,15 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         polygon: polygonOption
       },
       edit: {
-        featureGroup: featureGroup,
+        featureGroup: this.layersToShow,
       },
     });
     this.mapInstance.addControl(controls)
-    this.mapInstance.on(L.Draw.Event.CREATED, event => {
-      const layer = event.layer;
-      featureGroup.addLayer(layer);
-      this.saveGeoJson(featureGroup)
-    })
+    this.addDrawHandler();
+    this.addOnLayerRemovedHandler();
+    this.mapInstance.on(L.Draw.Event.DELETED, event => {
+      this.onDeletePolygons()
+    });
   }
 
   /**
@@ -125,29 +167,197 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     });
   }
 
-  private saveGeoJson = async (geoShape: L.FeatureGroup<any>) => {
-    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
-    console.log(accessToken, exhibitionId, exhibitionFloorId)
-    if (!accessToken || !exhibitionId || !exhibitionFloorId) {
+  /**
+   * Add draw handler
+   */
+  private addDrawHandler = () => {
+    if (!this.mapInstance) {
       return;
     }
 
-    const test = geoShape.toGeoJSON() as FeatureCollection;
-    const roomPolygon = test.features[0].geometry as Polygon;
+    this.mapInstance.on(L.Draw.Event.CREATED, event => {
+      const layer = event.layer;
+      this.addedLayers.addLayer(layer);
+      this.setState({
+        polygonCreated: true,
+        layer: layer
+      });
+    });
+  }
+
+  /**
+   * Add on layer remove handler
+   */
+  private addOnLayerRemovedHandler() {
+    if (!this.mapInstance) {
+      return;
+    }
+
+    this.mapInstance.on('layerremove', event => {
+      const layerId = this.layersToShow.getLayerId(event.layer);
+      this.setState({
+        roomsToDelete: [...this.state.roomsToDelete, layerId]
+      });
+    });
+  }
+
+  /**
+   * On polygon save handler
+   */
+  private onPolygonSave = () => {
+    this.savePolygon()
+    this.setState({
+      polygonCreated : false,
+      roomName: ""
+    });
+  }
+
+  /**
+   * On cancel handler
+   */
+  private onCancel = () => {
+    this.setState({
+      polygonCreated: false,
+      roomName: ""
+    });
+    this.addedLayers = new L.FeatureGroup();
+  }
+
+  /**
+   * Save polygon to API handler
+   */
+  private savePolygon = async () => {
+    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
+    const { roomName, layer } = this.state;
+    if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomName || !layer) {
+      return;
+    }
+    
+    const geoShape = this.addedLayers;
+    const geoJson = geoShape.toGeoJSON() as FeatureCollection;
+    if (geoJson.features[0].geometry.type !== "Polygon") {
+      this.addedLayers = new L.FeatureGroup();
+      return;
+    }
+    const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
     const roomsApi = Api.getExhibitionRoomsApi(accessToken)
     const exhibitionRoomToCreate: ExhibitionRoom = {
       floorId: exhibitionFloorId,
-      name: "Huone 1",
+      name: roomName,
       geoShape: roomPolygon
     }
-    console.log(exhibitionRoomToCreate)
-    const newRoom = await roomsApi.createExhibitionRoom({
+
+    await roomsApi.createExhibitionRoom({
       exhibitionId: exhibitionId,
       exhibitionRoom: exhibitionRoomToCreate
-    })
-
-    console.log(newRoom);
-
+    });
+    this.addedLayers = new L.FeatureGroup();
+    this.layersToShow.addLayer(layer);
   }
 
+  /**
+   * Delete n amount of rooms from API
+   * TODO: Add confimation dialog
+   */
+  private onDeletePolygons = async () => {
+    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
+    const { geoShapeMap, roomsToDelete } = this.state;
+    if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomsToDelete) {
+      return;
+    }
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken)
+    const tempMap = geoShapeMap;
+    roomsToDelete.map(async room => {
+      const roomToDelete = tempMap.get(room);
+      if (roomToDelete) {
+        await roomsApi.deleteExhibitionRoom({
+          exhibitionId: exhibitionId,
+          roomId: roomToDelete
+        });
+        tempMap.delete(room);
+      }
+    });
+
+    this.setState({
+      roomsToDelete: [],
+      geoShapeMap: tempMap
+    });
+  }
+
+  /**
+   * On polygon name change handler
+   */
+  private onRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      roomName : event.target.value
+    });
+  }
+
+  /**
+   * Load geo shape data from API
+   */
+  private loadGeoShapes = async () => {
+    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
+    if (!accessToken || !exhibitionId || !exhibitionFloorId) {
+      return;
+    }
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken)
+    const foundRooms = await roomsApi.listExhibitionRooms({
+      exhibitionId: exhibitionId,
+      floorId: exhibitionFloorId
+    });
+
+    this.addLayers(foundRooms);
+  }
+
+  /**
+   * Add layers to leaflet map
+   * @param rooms list of exhibition rooms
+   */
+  private addLayers = (rooms: ExhibitionRoom[]) => {
+
+    if (!rooms) {
+      return;
+    }
+    const tempMap = new Map<number, string>();
+    rooms.map(room => {
+      const geoShape = room.geoShape;
+      if (geoShape && this.mapInstance && this.layersToShow) {
+        const geoJson = geoShape as Polygon;
+        try {
+          const geoShapesToAdd: Layer[] = [];
+          L.geoJSON(geoJson, {
+            onEachFeature(feature, layer) {
+              geoShapesToAdd.push(layer);
+            }
+          });
+
+          this.addLayersToMap(geoShapesToAdd, room, tempMap);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+    this.setState({
+      geoShapeMap : tempMap
+    });
+  }
+
+  
+
+  /**
+   * Adds all geo shapes found from api to leaflet map
+   * @param layerList list of geo shapes
+   * @param room 
+   * @param tempMap 
+   */
+  private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, string>) {
+    geoShapesToAdd.map(shape => {
+      if (room.id) {
+        this.layersToShow.addLayer(shape);
+        const layerId = this.layersToShow.getLayerId(shape);
+        tempMap.set(layerId, room.id);
+      }
+    });
+  }
 };

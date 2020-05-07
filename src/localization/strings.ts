@@ -170,11 +170,11 @@ export interface IStrings extends LocalizedStringsMethods {
     pageEditor: {
       pageLayoutLabel: string;
       pageDeviceLabel: string; 
-    },
+    };
 
     deviceEditor: {
       indexPageId: string;
-    },
+    };
 
     eventTriggers: {
       title: string;
@@ -256,6 +256,13 @@ export interface IStrings extends LocalizedStringsMethods {
       devices: {
         all: string;
       };
+    };
+  };
+
+  map: {
+    properties: {
+      roomName: string;
+      dialogTitle: string;
     };
   };
 

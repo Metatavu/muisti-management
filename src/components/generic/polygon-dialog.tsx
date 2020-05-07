@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from "@material-ui/core";
 
 /**
  * Interface representing component properties
@@ -8,11 +8,13 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
 interface Props {
   title: string;
   text: string;
+  roomName?: string;
   positiveButtonText: string;
   cancelButtonText: string;
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;
+  onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   open: boolean;
 }
 
@@ -26,7 +28,7 @@ interface State {
 /**
  * React component displaying confirm dialogs
  */
-export default class ConfirmDialog extends React.Component<Props, State> {
+export default class PolygonDialog extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -50,7 +52,8 @@ export default class ConfirmDialog extends React.Component<Props, State> {
       onClose,
       onCancel,
       title,
-      onConfirm} = this.props;
+      onConfirm,
+      roomName} = this.props;
     return (
       <>
         <Dialog
@@ -59,11 +62,9 @@ export default class ConfirmDialog extends React.Component<Props, State> {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle disableTypography id="alert-dialog-title">{ title }</DialogTitle>
+          <DialogTitle disableTypography id="polygon-dialog-title">{ title }</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              { text }
-            </DialogContentText>
+            <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>        
           </DialogContent>
           <DialogActions>
             <Button onClick={ onCancel } color="primary">

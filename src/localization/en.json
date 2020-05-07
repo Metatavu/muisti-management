@@ -257,6 +257,13 @@
         "all": "All"
       }
     }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Room name",
+      "dialogTitle" : "Type room name"
+    }
   }
 
 }
