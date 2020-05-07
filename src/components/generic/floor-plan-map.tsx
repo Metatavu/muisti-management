@@ -112,8 +112,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         roomName={ this.state.roomName }
         title={ strings.map.properties.dialogTitle }
       />
-      </>
-    )
+    </>);
   }
 
   /**
@@ -138,7 +137,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
     this.mapInstance.addLayer(this.layersToShow);
-    const polygonOption: L.DrawOptions.PolygonOptions = {}
+    const polygonOption: L.DrawOptions.PolygonOptions = {};
     const controls = new L.Control.Draw({
       position: 'topleft',
       draw: {
@@ -240,12 +239,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
     const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken)
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionRoomToCreate: ExhibitionRoom = {
       floorId: exhibitionFloorId,
       name: roomName,
       geoShape: roomPolygon
-    }
+    };
 
     await roomsApi.createExhibitionRoom({
       exhibitionId: exhibitionId,
@@ -265,7 +264,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomsToDelete) {
       return;
     }
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken)
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const tempMap = geoShapeMap;
     roomsToDelete.map(async room => {
       const roomToDelete = tempMap.get(room);
@@ -301,7 +300,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!accessToken || !exhibitionId || !exhibitionFloorId) {
       return;
     }
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken)
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const foundRooms = await roomsApi.listExhibitionRooms({
       exhibitionId: exhibitionId,
       floorId: exhibitionFloorId
@@ -347,7 +346,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Adds all geo shapes found from api to leaflet map
-   * @param layerList list of geo shapes
+   * @param geoShapesToAdd list of geo shapes
    * @param room 
    * @param tempMap 
    */
