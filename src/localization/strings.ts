@@ -149,6 +149,8 @@ export interface IStrings extends LocalizedStringsMethods {
     newPage: string;
     addPage: string;
     addDevice: string;
+    addResource: string;
+    addEventTrigger: string;
     onProduction: string;
     properties: {
       title: string;
@@ -167,12 +169,12 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
 
-    pageEditor: {
+    pageSettingsEditor: {
       pageLayoutLabel: string;
-      pageDeviceLabel: string; 
+      pageDeviceLabel: string;
     };
 
-    deviceEditor: {
+    deviceSettingsEditor: {
       indexPageId: string;
     };
 

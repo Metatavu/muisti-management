@@ -1,7 +1,8 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
-  
+
   root: {
     display: "grid",
     gridTemplateColumns: "1fr",
@@ -19,8 +20,14 @@ export default createStyles({
     borderBottom: "1px solid #ddd",
     height: 50
   },
-  title: {
+  headerLeft: {
 
+  },
+  headerRight: {
+
+  },
+  title: {
+    color: theme.palette.text.primary
   },
   menuBtn: {
     position: "absolute",
@@ -35,6 +42,7 @@ export default createStyles({
     right: 12
   },
   content: {
-    gridArea: "content"
+    gridArea: "content",
+    overflow: "hidden"
   },
 });

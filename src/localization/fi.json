@@ -151,6 +151,8 @@
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
     "addDevice": "Lisää laite",
+    "addResource": "Lisää resurssi",
+    "addEventTrigger": "Lisää tapahtuma",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"
@@ -169,12 +171,12 @@
       }
     },
 
-    "pageEditor": {
+    "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
       "pageDeviceLabel": "Sivun laite"  
     },
 
-    "deviceEditor": {
+    "deviceSettingsEditor": {
       "indexPageId": "Laitteen etusivu"
     },
     

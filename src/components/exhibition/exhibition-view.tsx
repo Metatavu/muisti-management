@@ -7,40 +7,31 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import Api from "../../api/api";
 
 import { History } from "history";
-import styles from "../../styles/exhibition-view-v3";
+import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography, MenuItem, Select, TextField, FilledInput, InputAdornment, List, ListItem, Grid, InputLabel } from "@material-ui/core";
-import { TreeView, TreeItem } from "@material-ui/lab";
+import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageEventTriggerFromJSON, ExhibitionPageEventActionType, ExhibitionPageResourceFromJSON, PageLayoutView, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
+import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../generic/basic-layout";
+import GenericButton from "../generic/generic-button";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import ElementContentsPane from "../editor-panes/element-contents-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, JsonLintParseErrorHash, ExhibitionElementType, ExhibitionElement } from '../../types';
+import CodeEditor from "../editor/code-editor";
+import ResourceEditor from "../right-panel-editors/resource-editor";
+import PageSettingsEditor from "../left-middle-panel-editors/page-settings-editor";
+import DeviceSettingsEditor from "../left-middle-panel-editors/device-settings-editor";
+import AddDeviceEditor from "../left-middle-panel-editors/add-device-editor";
+import { AccessToken, ExhibitionElementType, ExhibitionElement } from '../../types';
 import strings from "../../localization/strings";
-import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
-import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import AddIcon from "@material-ui/icons/AddSharp";
 import AndroidUtils from "../../utils/android-utils";
 import PagePreview from "../preview/page-preview";
-import { Controlled as CodeMirror } from "react-codemirror2";
-import * as codemirror from "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript"
-import "codemirror/addon/lint/lint.css";
-import 'codemirror/addon/lint/lint';
-import * as jsonlint from "jsonlint-mod";
-import slugify from "slugify";
-import SearchIcon from '@material-ui/icons/Search';
-import TreeMenu, { TreeMenuItem } from "react-simple-tree-menu";
-import { TreeNodeInArray } from "react-simple-tree-menu";
-import theme from "../../styles/theme";
-import classNames from "classnames";
+import PageUtils from "../../utils/page-utils";
 
 type View = "CODE" | "VISUAL";
 
@@ -71,7 +62,6 @@ interface State {
   deviceGroups: ExhibitionDeviceGroup[];
   devices: ExhibitionDevice[];
   pages: ExhibitionPage[];
-  treeData?: TreeNodeInArray[];
   selectedElement?: ExhibitionElement;
   pageLayout?: PageLayout;
   selectedRoomId?: string;
@@ -79,23 +69,11 @@ interface State {
   selectedContentVersionId?: string;
   selectedDeviceId?: string;
   selectedResource?: ExhibitionPageResource;
-  selectedEventTrigger?: ExhibitionPageEventTrigger;
+  selectedEventTriggerIndex?: number;
   view: View;
   name: string;
   jsonCode: string;
-  addDevice?: Partial<ExhibitionDevice>;
-}
-
-/**
- * Interface for tree data parameters
- */
-interface TreeDataParams {
-  exhibition: Exhibition;
-  contentVersions: ExhibitionContentVersion[];
-  floors: ExhibitionFloor[];
-  rooms: ExhibitionRoom[];
-  devices: ExhibitionDevice[];
-  pages: ExhibitionPage[];
+  newDevice?: Partial<ExhibitionDevice>;
 }
 
 /**
@@ -153,7 +131,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition } = this.props;
-    const { selectedElement, treeData, selectedResource } = this.state;
+    const { selectedElement, selectedResource } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -177,36 +155,28 @@ export class ExhibitionView extends React.Component<Props, State> {
               <Button>{ strings.exhibition.content }</Button>
               <Button>{ strings.exhibition.tech }</Button>
             </ButtonGroup>
-            { treeData &&
-              this.renderTreeMenu(treeData)
-            }
-            <div style={{ display: "grid", gridAutoFlow: "column", gridGap: theme.spacing(1) }}>
-              <Button
-                disableElevation
-                variant="contained"
+            { this.renderTreeMenu() }
+            <div className={ classes.actionButtons }>
+              <GenericButton
+                text={ strings.exhibition.addPage }
                 color="secondary"
                 disabled={ !this.state.selectedDeviceId || !this.state.selectedContentVersionId }
                 onClick={ this.onAddPageClick }
-                startIcon={ <AddIcon />  }
-              >
-                { strings.exhibition.addPage }
-              </Button>
-              <Button
-                disableElevation
-                variant="contained"
+                icon={ <AddIcon /> }
+              />
+              <GenericButton
+                text={ strings.exhibition.addDevice }
                 color="secondary"
                 disabled={ !this.state.selectedDeviceGroupId }
                 onClick={ this.onAddDeviceClick }
-                startIcon={ <AddIcon />  }
-              >
-                { strings.exhibition.addDevice }
-              </Button>
+                icon={ <AddIcon /> }
+              />
             </div>
           </ElementNavigationPane>
 
           <ElementContentsPane title={ selectedElement ? selectedElement.data.name : "" }>
             { this.state.selectedElement &&
-              this.renderElementSettingsContent()
+              this.renderElementContents()
             }
           </ElementContentsPane>
 
@@ -220,10 +190,13 @@ export class ExhibitionView extends React.Component<Props, State> {
           <ElementSettingsPane title={ selectedResource ? selectedResource.id : "" }>
             {
               this.state.selectedResource &&
-              this.renderResourceEditor()
+              <ResourceEditor 
+                resource={ this.state.selectedResource }
+                selectedElement={ this.state.selectedElement }
+                onChange={ this.onResourceDataChange} />
             }
             {
-              this.state.selectedEventTrigger &&
+              this.state.selectedEventTriggerIndex !== undefined &&
               this.renderEventTriggerEditor()
             }
           </ElementSettingsPane>
@@ -237,126 +210,62 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders toolbar contents
    */
   private renderToolbarContents = () => {
-    if (this.state.addDevice) {
-      return this.renderToolbarContentsAddDevice();
+    if (this.state.newDevice) {
+      return (
+        <GenericButton
+          text={ strings.exhibition.addDeviceEditor.saveButton }
+          color="secondary"
+          onClick={ this.onSaveNewDeviceClick }
+        />
+      );
     }
 
     if (this.state.selectedElement) {
-      return this.renderToolbarContentsPageEditor();
+      return (
+        <>
+          <GenericButton
+            text={ this.state.view === "CODE" ?
+              strings.exhibitionLayouts.editView.switchToVisualButton :
+              strings.exhibitionLayouts.editView.switchToCodeButton
+            }
+            color="secondary"
+            onClick={ this.onSwitchViewClick }
+            style={{ marginRight: 8 }}
+          />
+          <GenericButton
+            text={ strings.exhibitionLayouts.editView.saveButton }
+            color="secondary"
+            onClick={ this.onSaveClick }
+          />
+        </>
+      );
     }
 
     return null;
   }
 
   /**
-   * Renders add device view toolbar contents
-   */
-  private renderToolbarContentsAddDevice = () => {
-    return (
-      <>
-        <Button disableElevation variant="contained" color="secondary" onClick={ this.onAddDeviceSaveClick }> { strings.exhibition.addDeviceEditor.saveButton  } </Button>
-      </>
-    );
-  }
-
-  /**
-   * Renders page editor toolbar contents
-   */
-  private renderToolbarContentsPageEditor = () => {
-    return (
-      <>
-        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSwitchViewClick } style={{ marginRight: 8 }}>
-          { this.state.view === "CODE" ? strings.exhibitionLayouts.editView.switchToVisualButton : strings.exhibitionLayouts.editView.switchToCodeButton }
-        </Button>
-        <Button disableElevation variant="contained" color="secondary" onClick={ this.onSaveClick }> { strings.exhibitionLayouts.editView.saveButton } </Button>
-      </>
-    );
-  }
-
-  /**
    * Renders tree menu
-   *
-   * @param treeData tree data
    */
-  private renderTreeMenu = (treeData: TreeNodeInArray[]) => {
-    const { classes } = this.props;
-
+  private renderTreeMenu = () => {
+    const { contentVersions, floors, rooms, devices, pages } = this.state;
     return (
-      <div className={ classes.treeView }>
-        <TreeMenu
-          data={ treeData }
-          onClickItem={({ key, label, ...props }) => {
-            this.onSelectElementFromTree(props.parents, props.element);
-          }}
-        >
-          {({ search, items }) => (
-            <>
-              <FilledInput 
-                onChange={ e => search && search(e.target.value) }
-                placeholder={ strings.exhibition.navigation.search }
-                className={ classes.searchBar }
-                fullWidth
-                endAdornment={
-                  <InputAdornment position="end">
-                    <SearchIcon/>
-                  </InputAdornment>
-                }
-              />
-              <List>
-                { items.map(item => this.renderTreeMenuItem(item)) }
-              </List>
-            </>
-          )}
-        </TreeMenu>
-      </div>
-    );
+      <ExhibitionTreeMenu 
+        contentVersions={ contentVersions }
+        devices={ devices }
+        floors={ floors }
+        rooms={ rooms }
+        pages={ pages }
+        onSelect={ this.onSelectElementFromTree }
+      />
+    )
   }
 
-  /**
-   * Renders tree menu item
-   *
-   * @param item tree menu item
-   */
-  private renderTreeMenuItem = (item: TreeMenuItem) => {
-    const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ? <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> : <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
-
-    return (
-      <ListItem { ...item }
-        className={ classNames( classes.listItem, focused ? "focused" : "" ) }
-        style={{
-          paddingLeft: level * 20
-        }}
-      >
-        {
-          (
-            <div
-              style={{ display: 'inline-block' }}
-              onClick={ e => {
-                if (hasNodes && toggleNode) {
-                  toggleNode();
-                }
-                e.stopPropagation();
-              }}
-            >
-              { toggleIcon(isOpen) }
-            </div>
-          )
-        }
-        { label }
-      </ListItem>
-    );
-  }
 
   /**
    * Renders editor
    */
   private renderEditor = () => {
-    if (this.state.addDevice) {
-      return this.renderAddDeviceEditor();
-    }
-
     switch (this.state.view) {
       case "CODE":
         return this.renderCodeEditor();
@@ -371,34 +280,18 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders add device editor
    */
   private renderAddDeviceEditor = () => {
-    if (!this.state.addDevice) {
+    const { newDevice } = this.state;
+    if (!newDevice) {
       return null;
     }
 
-    const modelSelectItems = this.props.deviceModels.map((deviceModel) => {
-      return <MenuItem value={ deviceModel.id }>{ `${deviceModel.manufacturer} ${deviceModel.model}` }</MenuItem>;
-    });
-
     return (
-      <>
-        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.addDeviceEditor.title }</Typography>
-        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-          <Grid item xs={ 4 }>
-            <TextField fullWidth type="text" label={ strings.exhibition.addDeviceEditor.nameLabel } name="name" value={ this.state.addDevice.name || "" } onChange={ this.onAddDeviceNameChange } />
-            
-            <InputLabel id="model">{ strings.exhibition.addDeviceEditor.deviceModelLabel }</InputLabel>
-            <Select variant="filled" labelId="model" value={ this.state.addDevice.modelId } onChange={ this.onAddDeviceModelChange } >
-              { modelSelectItems }
-            </Select>
-
-            <InputLabel id="screenOrientation">{ strings.exhibition.addDeviceEditor.screenOrientationLabel }</InputLabel>
-            <Select variant="filled" labelId="screenOrientation" value={ this.state.addDevice.screenOrientation } onChange={ this.onAddDeviceScreenOrientationChange } >
-              <MenuItem value={ ScreenOrientation.Portrait }>{ strings.exhibition.addDeviceEditor.screenOrientationPortrait }</MenuItem>
-              <MenuItem value={ ScreenOrientation.Landscape }>{ strings.exhibition.addDeviceEditor.screenOrientationLandscape }</MenuItem>
-            </Select>
-          </Grid>
-        </Grid>
-      </>
+      <AddDeviceEditor
+        newDevice={ newDevice }
+        onModelChange={ this.onNewDeviceModelChange }
+        onNameChange={ this.onNewDeviceNameChange }
+        onScreenOrientationChange={ this.onNewDeviceScreenOrientationChange }
+      />
     );
   }
 
@@ -414,9 +307,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     }
 
     const parsedCode = this.parseJsonCode();
-
     const resources = parsedCode.resources;
-
     const view = pageLayout?.data;
     // TODO: load from layout
     const displayMetrics = AndroidUtils.getDisplayMetrics(this.props.deviceModels[0]);
@@ -424,7 +315,13 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return (
       <div className={ classes.visualEditorContainer }>
-        <PagePreview screenOrientation={ pageLayout?.screenOrientation } view={ view } resources={ resources } displayMetrics={ displayMetrics } scale={ scale }/>
+        <PagePreview
+          screenOrientation={ pageLayout?.screenOrientation }
+          view={ view }
+          resources={ resources }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+        />
       </div>
     );
   }
@@ -433,38 +330,27 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Renders code editor
    */
   private renderCodeEditor = () => {
-    const { classes } = this.props;
-    const jsonEditorOptions: codemirror.EditorConfiguration = {
-      mode: { name: "javascript", json: true },
-      theme: "material",
-      lineNumbers: true,
-      lint: {
-        getAnnotations: this.jsonEditorGetAnnotations
-      },
-      gutters: [
-        'CodeMirror-lint-markers',
-      ]
-    };
-
+    const { jsonCode } = this.state;
     return (
-      <div className={ classes.codeEditorContainer }>
-        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-        <CodeMirror
-          className={ classes.editor }
-          value={ this.state.jsonCode }
-          options={ jsonEditorOptions }
-          onBeforeChange={ this.onBeforeJsonCodeChange } />
-      </div>
+      <CodeEditor
+        json={ jsonCode }
+        parseJson={ this.parseJsonCode }
+        onChange={ (json: string) => this.setState({jsonCode: json}) }
+      />
     );
   }
 
   /**
-   * Renders element settings pane content
+   * Renders element contents pane content
    */
-  private renderElementSettingsContent = () => {
-    const { selectedElement } = this.state;
+  private renderElementContents = () => {
+    const { selectedElement, newDevice } = this.state;
+    if (newDevice) {
+      return this.renderAddDeviceEditor();
+    }
+
     if (!selectedElement) {
-      return;
+      return null;
     }
 
     switch (selectedElement.type) {
@@ -483,19 +369,14 @@ export class ExhibitionView extends React.Component<Props, State> {
   private renderDeviceSettings = (deviceData: ExhibitionDevice) => {
     const { classes } = this.props;
     const devicePages = this.state.pages.filter(page => page.deviceId === deviceData.id);
-    const selectIndexPageItems = devicePages.map(page => {
-      return (
-        <MenuItem value={ page.id }>{ page.name }</MenuItem>
-      );
-    });
-    
     return (
       <div className={ classes.toolbarContent }>
-        <TextField style={{ marginBottom: theme.spacing(2) }} variant="filled" fullWidth label="Name" value={ this.state.name } onChange={ this.onNameChange }/>
-        <InputLabel id="indexPageId">{ strings.exhibition.deviceEditor.indexPageId }</InputLabel>
-        <Select variant="filled" labelId="pageLayoutId" fullWidth value={ deviceData.indexPageId } onChange={ this.onIndexPageChange }>
-          { selectIndexPageItems }
-        </Select>
+        <DeviceSettingsEditor
+          deviceData={ deviceData }
+          devicePages={ devicePages }
+          onNameChange={ this.onDeviceNameChange }
+          onIndexPageChange={ this.onDeviceIndexPageChange }
+        />
       </div>
     );
   }
@@ -505,173 +386,55 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private renderPageSettings = (pageData: ExhibitionPage) => {
     const { classes } = this.props;
+    const { resources, eventTriggers } = this.parseJsonCode();
+
     return (
       <div className={ classes.toolbarContent }>
-        <TextField fullWidth variant="filled" label="Name" value={ pageData.name } onChange={ this.onPageNameChange }/>
-        <div className={ classes.toolbarContent }>
-          { this.renderDeviceSelect(pageData) }
-          { this.renderLayoutSelect(pageData) }
-        </div>
-        <TreeView
-          className={ classes.navigationTree }
-          defaultCollapseIcon={ <ExpandMoreIcon htmlColor="#888" /> }
-          defaultExpandIcon={ <ChevronRightIcon htmlColor="#888" /> }
-        >
-          { this.renderResourcesTree() }
-          { this.renderEventTriggersTree() }
-        </TreeView>
+        <PageSettingsEditor
+          devices={ this.state.devices }
+          resources={ resources || [] }
+          eventTriggers={ eventTriggers || [] }
+          pageData={ pageData }
+          onPageNameChange={ this.onPageNameChange }
+          onLayoutChange={ this.onLayoutChange }
+          onDeviceChange={ this.onDeviceChange }
+          onAddResourceClick={ this.onAddResourceClick }
+          onAddEventTriggerClick={ this.onAddEventTriggerClick }
+          onResourceClick={ this.onResourceNodeClick }
+          onEventTriggerClick={ this.onEventTriggerNodeClick }
+        />
       </div>
     );
   }
 
   /**
-   * Renders layout select
-   */
-  private renderLayoutSelect = (pageData: ExhibitionPage) => {
-    const layoutSelectItems = this.props.layouts.map(layout => {
-      return (
-        <MenuItem value={ layout.id }>{ layout.name }</MenuItem>
-      );
-    });
-
-    return (
-      <div style={{ marginTop: theme.spacing(2) }}>
-        <InputLabel id="pageLayoutId">{ strings.exhibition.pageEditor.pageLayoutLabel }</InputLabel>
-        <Select variant="filled"  labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ this.onLayoutChange }>
-          { layoutSelectItems }
-        </Select>
-      </div>
-    );
-  }
-
-  /**
-   * Renders device select
-   */
-  private renderDeviceSelect = (pageData: ExhibitionPage) => {
-    const selectItems = this.state.devices.map(device => {
-      return (
-        <MenuItem value={ device.id }>{ device.name }</MenuItem>
-      );
-    });
-
-    return (
-      <>
-        <InputLabel id="pageDeviceId">{ strings.exhibition.pageEditor.pageDeviceLabel }</InputLabel>
-        <Select variant="filled" labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ this.onDeviceChange }>
-          { selectItems }
-        </Select>
-      </>
-    );
-  }
-
-  /**
-   * Renders resources tree
-   */
-  private renderResourcesTree = () => {
-    const parsedCode = this.parseJsonCode();
-
-    const items = (parsedCode.resources || []).map((resource, index) => {
-      const label = slugify(`${resource.id}`);
-      return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => this.onResourceNodeClick(resource) } />;
-    });
-
-    return (
-      <TreeItem nodeId="resources" label="Resources">
-        { items }
-        <TreeItem nodeId={ "resource-new" } label={ "+ Add resource" } onClick={ this.onAddResourceClick }/>
-      </TreeItem>
-    );
-  }
-
-  /**
-   * Renders event triggers tree
-   */
-  private renderEventTriggersTree = () => {
-    const parsedCode = this.parseJsonCode();
-
-    const items = (parsedCode.eventTriggers || []).map((eventTrigger: ExhibitionPageEventTrigger, index) => {
-      const label = `Event ${index + 1}`;
-      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => this.onEventTriggerNodeClick(eventTrigger) }>
-          {/* <Button onClick={ () => this.onEventTriggerNodeDeleteClick(eventTrigger) } >Delete</Button> */}
-      </TreeItem>;
-    });
-
-    return (
-      <TreeItem nodeId="event-triggers" label="Event Triggers">
-        { items }
-        <TreeItem nodeId={ "event-trigger-new" } label={ "+ Add event trigger" } onClick={ this.onAddEventTriggerClick }/>
-      </TreeItem>
-    );
-  }
-
-  /**
-   * Renders resource editor
-   */
-  private renderResourceEditor = () => {
-    const selectedResource = this.state.selectedResource;
-    if (!selectedResource) {
-      return null;
-    }
-
-    const { classes } = this.props;
-
-    const title = <Typography variant="h4" style={{ marginBottom: theme.spacing(2) }}>{ strings.exhibition.properties.title }</Typography>
-    const widget = this.findResourceLayoutViewWidget(selectedResource.id);
-
-    if ("ImageView" === widget) {
-      return (
-      <>
-        { title }
-        <TextField
-          type="url"
-          className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.imageView.properties.imageUrl }
-          variant="filled"
-          value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }
-        />
-      </>
-      );
-    } else if ("TextView" === widget) {
-      return (
-      <>
-        { title }
-        <TextField
-          multiline
-          className={ classes.textResourceEditor } 
-          label={ strings.exhibition.resources.textView.properties.text }
-          variant="filled"
-          value={ this.state.selectedResource?.data }
-          onChange={ this.onResourceDataChange }
-        />
-      </>
-      );
-    }
-
-    return <div>{ title }{ widget }</div>;
-  }
-
-  /**
-   * Renders resource editor
+   * Renders event trigger editor
    */
   private renderEventTriggerEditor = () => {
-    const { selectedEventTrigger, pageLayout, selectedDeviceId } = this.state;
-    if (!selectedEventTrigger || !pageLayout) {
+    const { selectedEventTriggerIndex, pageLayout, selectedDeviceId } = this.state;
+    if (selectedEventTriggerIndex === undefined || !pageLayout) {
       return null;
     }
-    const title = <Typography variant="h4">{ strings.exhibition.eventTriggers.title }</Typography>;
+
+    const { eventTriggers } = this.parseJsonCode();
+    if (!eventTriggers) {
+      return null;
+    }
+    
+    const selectedEventTrigger = eventTriggers.length > selectedEventTriggerIndex ? eventTriggers[selectedEventTriggerIndex] : undefined;
+    if (!selectedEventTrigger) {
+      return null;
+    }
 
     return <>
-      { title }
+      <Typography variant="h4">{ strings.exhibition.eventTriggers.title }</Typography>
       <EventTriggerEditor
-        history = { this.props.history }
-        classes = { this.props.classes }
-        selectedEventTrigger = { selectedEventTrigger }
-        pages = { this.getSortedPages(this.state.pages.filter(page => page.deviceId === selectedDeviceId)) }
-        layout = { pageLayout }
-        jsonCode = { this.state.jsonCode }
-        onParseJson = { this.parseJsonCode }
-        onSaveJson = { this.updateJsonFromChild }
+        history={ this.props.history }
+        classes={ this.props.classes }
+        selectedEventTrigger={ selectedEventTrigger }
+        pages={ PageUtils.getSortedPages(this.state.pages.filter(page => page.deviceId === selectedDeviceId)) }
+        layout={ pageLayout }
+        onSave={ this.updateJsonFromChild }
       />
     </>;
   }
@@ -701,15 +464,6 @@ export class ExhibitionView extends React.Component<Props, State> {
         exhibitionPagesApi.listExhibitionPages({ exhibitionId })
       ]);
 
-    const treeData = this.constructTreeData({
-      exhibition,
-      contentVersions,
-      floors,
-      rooms,
-      devices,
-      pages
-    });
-
     this.setState({
       contentVersions: contentVersions,
       floors: floors,
@@ -717,49 +471,26 @@ export class ExhibitionView extends React.Component<Props, State> {
       deviceGroups: deviceGroups,
       devices: devices,
       pages: pages,
-      treeData: treeData
     });
   }
 
   /**
-   * Code mirror lint method
+   * Returns unique id
    *
-   * @param content editor content
-   * @param _options options
-   * @param _codeMirror editor instance
-   * @returns annotations
+   * @param idPrefix id prefix
+   * @param existingIds existing ids
+   * @return unique id
    */
-  private jsonEditorGetAnnotations = (content: string, _options: codemirror.LintStateOptions, _codeMirror: codemirror.Editor): codemirror.Annotation[] => {
-    const found: codemirror.Annotation[] = [];
-    const parser = jsonlint.parser;
+  private getUniqueId = (idPrefix: string, existingIds: string[]) => {
+    let index = 0;
+    let id = idPrefix;
 
-    parser.parseError = (message: string, hash: JsonLintParseErrorHash) => {
-      const loc = hash.loc;
-      found.push({
-        from: codemirror.Pos(loc.first_line - 1, loc.first_column),
-        to: codemirror.Pos(loc.last_line - 1, loc.last_column),
-        message: message
-      });
-    };
-
-    try {
-      parser.parse(content);
-      // eslint-disable-next-line no-empty
-    } catch (e) {
-
+    while (existingIds.includes(id)) {
+      index++;
+      id = `${idPrefix}-${index}`;
     }
 
-    if (found.length === 0) {
-      this.parseJsonCode((message: string, _e?: SyntaxError) => {
-        found.push({
-          from: codemirror.Pos(0, 0),
-          to: codemirror.Pos(0, 0),
-          message: message
-        });
-      });
-    }
-
-    return found;
+    return id;
   }
 
   /**
@@ -842,86 +573,6 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Returns unique id
-   *
-   * @param idPrefix id prefix
-   * @param existingIds existing ids
-   * @return unique id
-   */
-  private getUniqueId = (idPrefix: string, existingIds: string[]) => {
-    let index = 0;
-    let id = idPrefix;
-
-    while (existingIds.includes(id)) {
-      index++;
-      id = `${idPrefix}-${index}`;
-    }
-
-    return id;
-  }
-
-  /**
-   * Attempts to find a layout view widget for given resource
-   *
-   * @param resourceId resource id
-   * @returns view widget or null if not found
-   */
-  private findResourceLayoutViewWidget(resourceId: string): string | null {
-    const view = this.findResourceLayoutView(resourceId);
-    return view?.widget || null;
-  }
-
-  /**
-   * Attempts to find a layout view for given resource
-   *
-   * @param resourceId resource id
-   * @returns view or null if not found
-   */
-  private findResourceLayoutView(resourceId: string): PageLayoutView | null {
-    const { selectedElement } = this.state;
-    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
-      return null;
-    }
-
-    const pageData = selectedElement.data as ExhibitionPage;
-    const layout = this.props.layouts.find(item => item.id === pageData.layoutId);
-    if (!layout) {
-      return null;
-    }
-
-    const propertyValue = `@resources/${resourceId}`;
-    const root = layout.data;
-    if (root.properties.findIndex(property => property.value === propertyValue) > -1) {
-      return root;
-    }
-
-    return this.findLayoutViewByPropertyValue(root, propertyValue);
-  }
-
-  /**
-   * Attempts to find a child view with given property value
-   *
-   * @param view root view
-   * @param propertyValue property value
-   * @returns view or null if not found
-   */
-  private findLayoutViewByPropertyValue(view: PageLayoutView, propertyValue: string): PageLayoutView | null  {
-    for (let i = 0; i < view.children.length; i++) {
-      const child = view.children[i];
-      if (child.properties.findIndex(property => property.value === propertyValue) > -1) {
-        return child;
-      }
-
-      const result = this.findLayoutViewByPropertyValue(child, propertyValue);
-      if (result) {
-        return result;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Event handler for resource add click
    */
   private onAddResourceClick = () => {
@@ -966,7 +617,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onResourceNodeClick = (resource: ExhibitionPageResource) => {
     this.setState({
-      selectedEventTrigger: undefined,
+      selectedEventTriggerIndex: undefined,
       selectedResource: resource
     });
   }
@@ -976,10 +627,10 @@ export class ExhibitionView extends React.Component<Props, State> {
    *
    * @param eventTrigger selected node
    */
-  private onEventTriggerNodeClick = (eventTrigger: ExhibitionPageEventTrigger) => {
+  private onEventTriggerNodeClick = (eventTriggerIndex: number) => {
 
     this.setState({
-      selectedEventTrigger: eventTrigger,
+      selectedEventTriggerIndex: eventTriggerIndex,
       selectedResource: undefined
     });
   }
@@ -1013,7 +664,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    * 
    * @param event event
    */
-  private onIndexPageChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+  private onDeviceIndexPageChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
     const { selectedElement } = this.state;
     if (!selectedElement || selectedElement.type !== ExhibitionElementType.DEVICE) {
       return;
@@ -1027,18 +678,25 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for name input change
+   * Event handler for device name change
    *
    * @param event event
    */
-  private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private onDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { selectedElement } = this.state;
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.DEVICE) {
+      return;
+    }
+    
+    const device = selectedElement.data as ExhibitionDevice;
+
     this.setState({
-      name: event.target.value
+      selectedElement: { ...selectedElement, data: { ...device, name: event.target.value }}
     });
   }
 
   /**
-   * Event handler for name input change
+   * Event handler for page name change
    *
    * @param event event
    */
@@ -1059,13 +717,21 @@ export class ExhibitionView extends React.Component<Props, State> {
   /**
    * Update json from child component. Atm updated only event triggers
    */
-  private updateJsonFromChild = (eventTrigger?: ExhibitionPageEventTrigger, parsedCode?: Partial<ExhibitionPage>) => {
-    if (parsedCode !== undefined) {
-      this.setState({
-        selectedEventTrigger: eventTrigger,
-        jsonCode: this.toJsonCode(parsedCode)
-      });
+  private updateJsonFromChild = (eventTrigger: ExhibitionPageEventTrigger) => {
+    const { selectedEventTriggerIndex } = this.state;
+    if (selectedEventTriggerIndex === undefined) {
+      return;
     }
+
+    const parsedCode = this.parseJsonCode();
+    if (!parsedCode || !parsedCode.eventTriggers || parsedCode.eventTriggers.length <= selectedEventTriggerIndex) {
+      return;
+    }
+    
+    parsedCode.eventTriggers[selectedEventTriggerIndex] = eventTrigger;
+    this.setState({
+      jsonCode: this.toJsonCode(parsedCode)
+    });
   }
 
   /**
@@ -1101,19 +767,6 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     this.setState({
       selectedElement: { ...selectedElement, data }
-    });
-  }
-
-  /**
-   * Event handler for before JSON code change event
-   *
-   * @param _editor editor instance
-   * @param _data editor data
-   * @param value code
-   */
-  private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
-    this.setState({
-      jsonCode: value
     });
   }
 
@@ -1157,6 +810,8 @@ export class ExhibitionView extends React.Component<Props, State> {
           eventTriggers: parsedCode.eventTriggers || [],
           resources: parsedCode.resources || []
         });
+      break;
+      default:
       break;
     }
   }
@@ -1213,7 +868,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private onAddDeviceClick = () => {
     this.setState({
-      addDevice: {
+      newDevice: {
         name: strings.exhibition.addDeviceEditor.defaultName,
         modelId: this.props.deviceModels[0]?.id,
         groupId: this.state.selectedDeviceGroupId,
@@ -1241,10 +896,6 @@ export class ExhibitionView extends React.Component<Props, State> {
 
         this.setState({
           devices: [ ...devices, updatedDevice ]
-        }, () => {
-          this.setState({
-            treeData: this.reconstructTreeData()
-          });
         });
 
       } else {
@@ -1285,10 +936,6 @@ export class ExhibitionView extends React.Component<Props, State> {
 
         this.setState({
           pages: [ ...pages, updatedPage ]
-        }, () => {
-          this.setState({
-            treeData: this.reconstructTreeData()
-          });
         });
 
       } else {
@@ -1359,13 +1006,13 @@ export class ExhibitionView extends React.Component<Props, State> {
   private onSelectElementFromTree = (parents: ExhibitionElement[], element: ExhibitionElement) => {
     const elements = [ ...parents, element ];
 
-    this.setState({ 
+    this.setState({
       selectedDeviceGroupId: undefined,
       selectedDeviceId: this.findSelectedExhibitionDevice(elements)?.id,
       selectedContentVersionId: this.findSelectedExhibitionContentVersion(elements)?.id,
       selectedRoomId: undefined,
-      addDevice: undefined,
-      selectedEventTrigger: undefined,
+      newDevice: undefined,
+      selectedEventTriggerIndex: undefined,
       jsonCode: "{}"
     });
 
@@ -1409,190 +1056,66 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for device save button click
+   * Event handler for new device save button click
    */
-  private onAddDeviceSaveClick = async () => {
-    const { addDevice } = this.state;
-    if (!addDevice) {
+  private onSaveNewDeviceClick = async () => {
+    const { newDevice } = this.state;
+    if (!newDevice) {
       return;
     }
 
-    const { groupId, modelId, name, screenOrientation } = addDevice; 
+    const { groupId, modelId, name, screenOrientation } = newDevice; 
     if (!groupId || !modelId || !name || !screenOrientation) {
       // TODO: Better error handling
       return;
     }
 
-    const payload: ExhibitionDevice = { ...addDevice, groupId: groupId, modelId: modelId, name: name, screenOrientation: screenOrientation };
+    const payload: ExhibitionDevice = { ...newDevice, groupId: groupId, modelId: modelId, name: name, screenOrientation: screenOrientation };
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(this.props.accessToken);
     const createdDevice = await exhibitionDevicesApi.createExhibitionDevice({exhibitionId : this.props.exhibitionId, exhibitionDevice: payload });
 
     this.setState({
-      addDevice: undefined,
+      newDevice: undefined,
       devices: [ ...this.state.devices, createdDevice ]
-    }, () => {
-      this.setState({
-        treeData: this.reconstructTreeData()
-      });
     });
   }
 
   /**
-   * Event handler for device name changes
+   * Event handler for new device name change
    * 
    * @param event event
    */
-  private onAddDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private onNewDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const value: string = target.value;
     this.setState({
-      addDevice: { ...this.state.addDevice, name: value } 
+      newDevice: { ...this.state.newDevice, name: value } 
     });
   }
 
   /**
-   * Event handler for screen orientation select change
+   * Event handler for new device screen orientation select change
    *
    * @param event event
    * @param _child child node
    */
-  private onAddDeviceScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+  private onNewDeviceScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
     this.setState({
-      addDevice: { ...this.state.addDevice, screenOrientation: e.target.value as ScreenOrientation }
+      newDevice: { ...this.state.newDevice, screenOrientation: e.target.value as ScreenOrientation }
     });
   }
 
   /**
-   * Event handler for screen orientation select change
+   * Event handler for new device model select change
    *
    * @param event event
    * @param _child child node
    */
-  private onAddDeviceModelChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+  private onNewDeviceModelChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
     this.setState({
-      addDevice: { ...this.state.addDevice, modelId: e.target.value as string }
+      newDevice: { ...this.state.newDevice, modelId: e.target.value as string }
     });
   }
-
-  /**
-   * Constructs tree data
-   *
-   * @param dataParams tree data params
-   */
-  private constructTreeData = (dataParams: TreeDataParams) => {
-    const { exhibitionId } = this.props;
-    const { exhibition, contentVersions, floors, rooms, devices, pages } = dataParams;
-    const exhibitionElement = {
-      data: exhibition,
-      type: ExhibitionElementType.EXHIBITION
-    };
-
-    const treeData = [{
-      key: exhibitionId,
-      label: exhibition.name,
-      element: exhibitionElement,
-      parents: [ ],
-      nodes: contentVersions.map(contentVersion => {
-        const contentVersionElement = {
-          data: contentVersion,
-          type: ExhibitionElementType.CONTENT_VERSION
-        };
-
-        return {
-          key: contentVersion.id!,
-          label: contentVersion.name,
-          element: contentVersionElement,
-          parents: [ exhibitionElement ],
-          nodes: floors.map(floor => {
-            const floorElement = {
-              data: floor,
-              type: ExhibitionElementType.FLOOR
-            };
-
-            return {
-              key: floor.id!,
-              label: floor.name,
-              element: floorElement,
-              parents: [ exhibitionElement, contentVersionElement ],
-              nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
-                const roomElement = {
-                  data: room,
-                  type: ExhibitionElementType.ROOM
-                }; 
-                
-                return {
-                  key: room.id!,
-                  label: room.name,
-                  element: roomElement,
-                  parents: [ exhibitionElement, contentVersionElement, floorElement ],
-                  nodes: devices.map(device => {
-                    const deviceElement = {
-                      data: device,
-                      type: ExhibitionElementType.DEVICE
-                    };
-
-                    return {
-                      key: device.id!,
-                      label: device.name,
-                      element: deviceElement,
-                      parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement ],
-                      nodes: this.getSortedPages(pages.filter(page => page.deviceId === device.id)).map(page => {
-                        return {
-                          key: page.id!,
-                          label: page.name,
-                          element: {
-                            data: page,
-                            type: ExhibitionElementType.PAGE
-                          },
-                          parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement, deviceElement ],
-                          nodes: []
-                        }
-                      })
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
-      })
-    }];
-
-    return treeData;
-  }
-
-  /**
-   * Returns pages sorted in alphabetical order
-   * 
-   * @param pages pages
-   * @return pages sorted in alphabetical order
-   */
-  private getSortedPages = (pages: ExhibitionPage[]): ExhibitionPage[] => {
-    const result = [ ...pages ];
-    
-    result.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    });
-
-    return result;
-  }
-
-  /**
-   * Reconstructs tree data from state and props
-   * 
-   * @return reconstructed tree data
-   */
-  private reconstructTreeData = () => {
-    return this.constructTreeData({
-      exhibition: this.props.exhibition,
-      contentVersions: this.state.contentVersions,
-      floors: this.state.floors,
-      rooms: this.state.rooms,
-      devices: this.state.devices,
-      pages: this.state.pages
-    });
-  } 
-
 }
 
 /**

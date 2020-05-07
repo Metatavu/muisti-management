@@ -98,9 +98,9 @@ class AccessTokenRefresh extends React.Component<Props, State> {
   /**
    * Refreshes access token
    */
-  private async refreshAccessToken() {
+  private refreshAccessToken() {
     try {
-      const refreshed = await this.keycloak.updateToken(70);
+      const refreshed = this.keycloak.updateToken(70);
       if (refreshed) {
         const { token, tokenParsed } = this.keycloak;
 
