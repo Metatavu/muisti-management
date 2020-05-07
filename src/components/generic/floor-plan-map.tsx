@@ -3,8 +3,8 @@ import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
 import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, LayerGroup, LatLngExpression } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
-import "leaflet-draw"
-import "leaflet-draw/dist/leaflet.draw.css"
+import "leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
 import Api from "../../api/api";
 import { AccessToken } from "../../types";
 import { ExhibitionRoom, Polygon as ApiPolygon } from "../../generated/client";
