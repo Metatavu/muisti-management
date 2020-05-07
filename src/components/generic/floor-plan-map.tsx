@@ -38,7 +38,6 @@ interface State {
   layer?: any;
   geoShapeMap: Map<number, string>;
   roomsToDelete: number[];
-  roomsToAdd: number[];
 }
 
 /**
@@ -73,7 +72,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       polygonCreated: false,
       geoShapeMap: new Map(),
       roomsToDelete: [],
-      roomsToAdd: []
     };
   }
 
