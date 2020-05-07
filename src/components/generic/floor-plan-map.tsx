@@ -320,7 +320,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
     const tempMap = new Map<number, string>();
-    rooms.map(room => {
+    rooms.forEach(room => {
       const geoShape = room.geoShape;
       if (geoShape && this.mapInstance && this.layersToShow) {
         const geoJson = geoShape as Polygon;
@@ -352,7 +352,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param tempMap 
    */
   private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, string>) {
-    geoShapesToAdd.map(shape => {
+    geoShapesToAdd.forEach(shape => {
       if (room.id) {
         this.layersToShow.addLayer(shape);
         const layerId = this.layersToShow.getLayerId(shape);
