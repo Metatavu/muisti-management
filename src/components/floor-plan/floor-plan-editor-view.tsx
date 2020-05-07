@@ -162,6 +162,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private renderEditor = () => {
     const { exhibitionFloor } = this.state;
+    const { exhibitionId, accessToken } = this.props;
     if (this.state.cropping && this.state.cropImageDataUrl ) {
       return (
         <FloorPlanCrop imageDataUrl={ this.state.cropImageDataUrl } onDetailsUpdate={ this.onCropDetailsUpdate } onDataUpdate={ this.onCropDataUpdate } />
@@ -175,7 +176,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
-      return <FloorPlanMap bounds={ bounds } url={ exhibitionFloor.floorPlanUrl } imageHeight={ 965 } imageWidth={ 1314 }/>
+      return <FloorPlanMap accessToken={ accessToken } exhibitionFloorId={ exhibitionFloor.id } exhibitionId={ exhibitionId } bounds={ bounds } url={ exhibitionFloor.floorPlanUrl } imageHeight={ 965 } imageWidth={ 1314 }/>
     }
     return null;
   }

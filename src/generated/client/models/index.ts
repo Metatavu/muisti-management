@@ -1,5 +1,7 @@
+export * from './Animation';
+export * from './AnimationOption';
+export * from './AnimationTimeInterpolation';
 export * from './Bounds';
-export * from './CoordinatePoint';
 export * from './Coordinates';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';
@@ -38,6 +40,7 @@ export * from './PageLayoutViewPropertyType';
 export * from './Point';
 export * from './Polygon';
 export * from './ScreenOrientation';
+export * from './Transition';
 export * from './VisitorSession';
 export * from './VisitorSessionState';
 export * from './VisitorSessionUser';

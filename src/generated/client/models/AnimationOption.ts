@@ -14,41 +14,41 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * GeoJson polygon object
+ * 
  * @export
- * @interface Polygon
+ * @interface AnimationOption
  */
-export interface Polygon {
+export interface AnimationOption {
     /**
      * 
      * @type {string}
-     * @memberof Polygon
+     * @memberof AnimationOption
      */
-    type?: string;
+    name: string;
     /**
-     * Polygon shapes
-     * @type {Array<Array<Array<number>>>}
-     * @memberof Polygon
+     * 
+     * @type {Array<string>}
+     * @memberof AnimationOption
      */
-    coordinates?: Array<Array<Array<number>>>;
+    values: Array<string>;
 }
 
-export function PolygonFromJSON(json: any): Polygon {
-    return PolygonFromJSONTyped(json, false);
+export function AnimationOptionFromJSON(json: any): AnimationOption {
+    return AnimationOptionFromJSONTyped(json, false);
 }
 
-export function PolygonFromJSONTyped(json: any, ignoreDiscriminator: boolean): Polygon {
+export function AnimationOptionFromJSONTyped(json: any, ignoreDiscriminator: boolean): AnimationOption {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'type': !exists(json, 'type') ? undefined : json['type'],
-        'coordinates': !exists(json, 'coordinates') ? undefined : json['coordinates'],
+        'name': json['name'],
+        'values': json['values'],
     };
 }
 
-export function PolygonToJSON(value?: Polygon | null): any {
+export function AnimationOptionToJSON(value?: AnimationOption | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,8 +57,8 @@ export function PolygonToJSON(value?: Polygon | null): any {
     }
     return {
         
-        'type': value.type,
-        'coordinates': value.coordinates,
+        'name': value.name,
+        'values': value.values,
     };
 }
 

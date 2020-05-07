@@ -257,5 +257,12 @@
         "all": "Kaikki"
       }
     }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Huoneen nimi",
+      "dialogTitle" : "Anna huoneen nimi"
+    }
   }
 }
