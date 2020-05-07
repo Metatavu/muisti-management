@@ -148,7 +148,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         featureGroup: this.layersToShow,
       },
     });
-    this.mapInstance.addControl(controls)
+    this.mapInstance.addControl(controls);
     this.addDrawHandler();
     this.addOnLayerRemovedHandler();
     this.mapInstance.on(L.Draw.Event.DELETED, event => {
