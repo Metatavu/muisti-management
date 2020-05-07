@@ -1,5 +1,11 @@
 {
   "comingSoon": "Coming soon!",
+
+  "fileUpload": {
+    "upload": "Upload",
+    "cancel": "Cancel"
+  },
+
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",
@@ -64,7 +70,8 @@
       "settingsButton": "Settings",
       "usersButton": "Users",
       "devicesButton": "Devices",
-      "layoutsButton": "Layouts"
+      "layoutsButton": "Layouts",
+      "floorPlansButton": "Floor Plans"
     },
     "overview": {
       "onProduction": "On production",
@@ -128,6 +135,9 @@
     "layouts": {
       "title": "Layouts",
       "lastModified": "Last modified"
+    },
+    "floorPlans": {
+      "title": "Floor Plans"
     }
 
   },
@@ -214,6 +224,21 @@
     }
   },
 
+  "floorPlan": {
+    "title": "Floor Plan",
+    "toolbar": {
+      "save": "Save",
+      "upload": "Upload image"
+    },
+    "properties": {
+      "title": "Properties",
+      "imageHeight": "Image Height",
+      "imageWidth": "Image Hidth",
+      "physicalWidth": "Physical Width",
+      "physicalHeight": "Physical Height"
+    }
+  },
+
   "sorting": {
     "dashboard": {
       "recent": {
@@ -233,6 +258,13 @@
       "devices": {
         "all": "All"
       }
+    }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Room name",
+      "dialogTitle" : "Type room name"
     }
   }
 

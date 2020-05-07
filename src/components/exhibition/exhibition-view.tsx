@@ -848,7 +848,9 @@ export class ExhibitionView extends React.Component<Props, State> {
       contentVersionId: contentVersionId,
       name: strings.exhibition.newPage,
       eventTriggers: [],
-      resources: []
+      resources: [],
+      enterTransitions: [],
+      exitTransitions: []
     }
 
     const newElement: ExhibitionElement = {

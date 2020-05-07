@@ -67,6 +67,7 @@ class DashboardNavigation extends React.Component<Props, State> {
     const usersButton = { postfix: "users", text: strings.dashboard.navigation.usersButton, icon: <GroupIcon /> };
     const devicesButton = { postfix: "devices", text: strings.dashboard.navigation.devicesButton, icon: <DevicesIcon /> };
     const layoutsButton = { postfix: "layouts", text: strings.dashboard.navigation.layoutsButton, icon: <TableChartIcon /> };
+    const floorPlansButton = { postfix: "floorplans", text: strings.dashboard.navigation.floorPlansButton, icon: <TableChartIcon /> };
 
     return (
       <div className={ classes.navigationContent }>
@@ -79,11 +80,12 @@ class DashboardNavigation extends React.Component<Props, State> {
         { this.renderNavigationButton(usersButton) }
         { this.renderNavigationButton(devicesButton) }
         { this.renderNavigationButton(layoutsButton) }
+        { this.renderNavigationButton(floorPlansButton) }
       </div>
     );
   }
 
-  /**s
+  /**
    * Renders navigation button
    *
    * @param navigationButton navigation button

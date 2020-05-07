@@ -1,5 +1,11 @@
 {
   "comingSoon": "Tulossa pian!",
+
+  "fileUpload": {
+    "upload": "Lähetä",
+    "cancel": "Peruuta"
+  },
+
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
@@ -64,7 +70,8 @@
       "settingsButton": "Asetukset",
       "usersButton": "Käyttäjät",
       "devicesButton": "Laitteet",
-      "layoutsButton": "Asettelut"
+      "layoutsButton": "Asettelut",
+      "floorPlansButton": "Pohjapiirrustukset"
     },
     "overview": {
       "onProduction": "Tuotannossa",
@@ -128,6 +135,9 @@
     "layouts": {
       "title": "Asettelut",
       "lastModified": "Viimeksi muokattu"
+    },
+    "floorPlans": {
+      "title": "Pohjapiirrokset"
     }
 
   },
@@ -214,6 +224,21 @@
     }
   },
 
+  "floorPlan": {
+    "title": "Pohjapiirrustus",
+    "toolbar": {
+      "save": "Tallenna",
+      "upload": "Lataa kuva"
+    },
+    "properties": {
+      "title": "Ominaisuudet",
+      "imageHeight": "Kuvan korkeus",
+      "imageWidth": "Kuvan leveys",
+      "physicalWidth": "Fyysinen leveys",
+      "physicalHeight": "Fyysinen korkeus"
+    }
+  },
+
   "sorting": {
     "dashboard": {
       "recent": {
@@ -233,6 +258,13 @@
       "devices": {
         "all": "Kaikki"
       }
+    }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Huoneen nimi",
+      "dialogTitle" : "Anna huoneen nimi"
     }
   }
 }
