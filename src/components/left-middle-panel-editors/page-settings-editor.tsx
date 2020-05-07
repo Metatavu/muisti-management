@@ -11,6 +11,7 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import slugify from "slugify";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import theme from "../../styles/theme";
+import AddIcon from '@material-ui/icons/Add';
 
 /**
  * Interface representing component properties
@@ -82,17 +83,24 @@ class PageSettingsEditor extends React.Component<Props, State> {
    * Renders resources tree
    */
   private renderResourcesTree = () => {
-    const { onResourceClick, onAddResourceClick, resources } = this.props;
+    const { onResourceClick, onAddResourceClick, resources, classes } = this.props;
 
     const items = resources.map((resource, index) => {
       const label = slugify(`${resource.id}`);
       return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => onResourceClick(resource) } />;
     });
 
+    const addResourceLabel = (
+      <div className={ classes.addNewLabel }>
+        <AddIcon fontSize="small" />
+        { strings.exhibition.addResource }
+      </div>
+    );
+
     return (
-      <TreeItem nodeId="resources" label="Resources">
+      <TreeItem nodeId="resources" label={ strings.exhibition.resources.title }>
         { items }
-        <TreeItem nodeId={ "resource-new" } label={ "+ Add resource" } onClick={ onAddResourceClick }/>
+        <TreeItem nodeId={ "resource-new" } label={ addResourceLabel } onClick={ onAddResourceClick } />
       </TreeItem>
     );
   }
@@ -101,17 +109,24 @@ class PageSettingsEditor extends React.Component<Props, State> {
    * Renders event triggers tree
    */
   private renderEventTriggersTree = () => {
-    const { onEventTriggerClick, onAddEventTriggerClick, eventTriggers } = this.props;
+    const { onEventTriggerClick, onAddEventTriggerClick, eventTriggers, classes } = this.props;
 
     const items = eventTriggers.map((_eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = `Event ${index + 1}`;
       return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => onEventTriggerClick(index) } />
     });
 
+    const addEventTriggerLabel = (
+      <div className={ classes.addNewLabel }>
+        <AddIcon fontSize="small" />
+        { strings.exhibition.addEventTrigger }
+      </div>
+    );
+
     return (
-      <TreeItem nodeId="event-triggers" label="Event Triggers">
+      <TreeItem nodeId="event-triggers" label={ strings.exhibition.eventTriggers.title }>
         { items }
-        <TreeItem nodeId={ "event-trigger-new" } label={ "+ Add event trigger" } onClick={ onAddEventTriggerClick }/>
+        <TreeItem nodeId={ "event-trigger-new" } label={ addEventTriggerLabel } onClick={ onAddEventTriggerClick }/>
       </TreeItem>
     );
   }
@@ -129,7 +144,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <InputLabel id="pageLayoutId">{ strings.exhibition.pageEditor.pageLayoutLabel }</InputLabel>
+        <InputLabel id="pageLayoutId">{ strings.exhibition.pageSettingsEditor.pageLayoutLabel }</InputLabel>
         <Select variant="filled" labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ onLayoutChange }>
           { layoutSelectItems }
         </Select>
@@ -150,7 +165,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
     return (
       <>
-        <InputLabel id="pageDeviceId">{ strings.exhibition.pageEditor.pageDeviceLabel }</InputLabel>
+        <InputLabel id="pageDeviceId">{ strings.exhibition.pageSettingsEditor.pageDeviceLabel }</InputLabel>
         <Select variant="filled" labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ onDeviceChange }>
           { selectItems }
         </Select>

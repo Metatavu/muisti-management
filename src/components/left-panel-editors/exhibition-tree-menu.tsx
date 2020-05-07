@@ -3,7 +3,7 @@ import { ExhibitionPage, Exhibition, ExhibitionContentVersion, ExhibitionFloor, 
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem } from "@material-ui/core";
 import { ExhibitionElement, ExhibitionElementType } from '../../types';
-import styles from "../../styles/exhibition-view";
+import styles from "../../styles/exhibition-tree-menu";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux"
@@ -131,25 +131,11 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
     return (
       <ListItem { ...item }
         className={ classNames( classes.listItem, focused ? "focused" : "" ) }
-        style={{
-          paddingLeft: level * 20
-        }}
+        style={{ paddingLeft: level * 20 }}
       >
-        {
-          (
-            <div
-              style={{ display: 'inline-block' }}
-              onClick={ e => {
-                if (hasNodes && toggleNode) {
-                  toggleNode();
-                }
-                e.stopPropagation();
-              }}
-            >
-              { toggleIcon(isOpen) }
-            </div>
-          )
-        }
+        <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
+          { toggleIcon(isOpen) }
+        </div>
         { label }
       </ListItem>
     );
@@ -239,6 +225,18 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
     }];
 
     return treeData;
+  }
+
+  /**
+   * Handler for on node click event
+   * @param hasNodes has nodes
+   * @param toggleNode handler method for toggle node
+   */
+  private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (hasNodes && toggleNode) {
+      toggleNode();
+    }
+    event.stopPropagation();
   }
 }
 

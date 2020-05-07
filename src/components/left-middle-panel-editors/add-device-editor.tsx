@@ -26,9 +26,9 @@ interface State {
 }
 
 /**
- * Component for device settings editor
+ * Component for add device editor
  */
-class DeviceSettingsEditor extends React.Component<Props, State> {
+class AddDeviceEditor extends React.Component<Props, State> {
 
   /**
    * Component render method
@@ -41,11 +41,13 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
             onScreenOrientationChange,
             deviceModels } = this.props;
 
-    const modelSelectItems = deviceModels.map(deviceModel => 
-      <MenuItem value={ deviceModel.id }>
-        { `${deviceModel.manufacturer} ${deviceModel.model}` }
-      </MenuItem>
-    );
+    const modelSelectItems = deviceModels.map(deviceModel => {
+      return (
+        <MenuItem value={ deviceModel.id }>
+          { `${deviceModel.manufacturer} ${deviceModel.model}` }
+        </MenuItem>
+      );
+    });
     
     return (
       <>
@@ -117,4 +119,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return { };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DeviceSettingsEditor));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AddDeviceEditor));

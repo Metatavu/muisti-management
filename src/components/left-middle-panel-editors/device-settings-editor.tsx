@@ -61,7 +61,7 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
           onChange={ this.props.onNameChange }
         />
         <InputLabel id="indexPageId">
-          { strings.exhibition.deviceEditor.indexPageId }
+          { strings.exhibition.deviceSettingsEditor.indexPageId }
         </InputLabel>
         <Select 
           variant="filled"

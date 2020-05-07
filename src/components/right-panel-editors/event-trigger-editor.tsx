@@ -82,7 +82,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           className={ classes.textResourceEditor } 
           label={ strings.exhibition.eventTriggers.delay }
           variant="filled"
-          value={ this.props.selectedEventTrigger?.delay }
+          value={ this.props.selectedEventTrigger?.delay || 0 }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) => this.onDelayChange(event) }
         />
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.actions }</Typography>
@@ -239,29 +239,32 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderSetUserValueSettings = () => {
     const { classes, selectedEventTrigger } = this.props;
+    const actionType = this.getSelectedEventActionType();
+    if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
+      return;
+    }
+    const event = (selectedEventTrigger.events && selectedEventTrigger.events.length) ? selectedEventTrigger.events[0] : undefined;
+    const userValuePropertyName = event ? event.properties.find(property => property.name === "name") : undefined;
+    const userValuePropertyValue = event ? event.properties.find(property => property.name === "value") : undefined;
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">{ strings.exhibition.eventTriggers.variableName }</Typography>
         <TextField
-          type="name"
+          name="name"
           className={ classes.textResourceEditor } 
           variant="filled"
-          value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[0].value) ?
-            selectedEventTrigger.events![0].properties[0].value : ""
-          }
-          onChange={ this.onUserVariableChange }
+          value={ userValuePropertyName?.value || "" }
+          onChange={ this.onUserValueChange }
         />
 
         <Typography variant="h6">{ strings.exhibition.eventTriggers.variableValue }</Typography>
         <TextField
-          type="name"
-          className={ classes.textResourceEditor } 
+          name="value"
+          className={ classes.textResourceEditor }
           variant="filled"
-          value={ (this.doesEventTypeMatch() && selectedEventTrigger.events![0].properties[1].value) ?
-            selectedEventTrigger.events![0].properties[1].value : ""
-          }
-          onChange={ this.onUserVariableValueChange }
+          value={ userValuePropertyValue?.value || "" }
+          onChange={ this.onUserValueChange }
         />
       </div>
     );
@@ -274,15 +277,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { selectedEventTrigger } = this.props;
     const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? selectedEventTrigger.events[0] : undefined;
     return event ? event.action : undefined;
-  } 
-  
-  /**
-   * Check if selected event action type matches the selected event trigger from parent
-   */
-  private doesEventTypeMatch = (): boolean => {
-    const { selectedEventTrigger } = this.props;
-    const selectedEventActionType = this.getSelectedEventActionType();
-    return (selectedEventTrigger.events?.length !== 0 && selectedEventTrigger.events![0].action === selectedEventActionType);
   }
 
   /**
@@ -329,7 +323,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private resolveSelectedPageId = (): string | null => {
     const navigateEvent = (this.props.selectedEventTrigger.events || []).find(event => event.action === ExhibitionPageEventActionType.Navigate);
     if (navigateEvent) {
-      const pageIdProperty =  navigateEvent.properties.find(property => property.name === "pageId");
+      const pageIdProperty = navigateEvent.properties.find(property => property.name === "pageId");
       return pageIdProperty?.value || null;
     }
 
@@ -341,7 +335,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param event react change event
    */
   private onDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const trigger = this.props.selectedEventTrigger;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
     let newValue = event.target.value;
 
     if (!isNumber(newValue)) {
@@ -353,25 +347,33 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for changing delay
+   * Event handler for changing user value
    * @param event react change event
    */
-  private onUserVariableChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const trigger = this.props.selectedEventTrigger;
-    const newValue = event.target.value;
-    trigger.events![0].properties[0].value = newValue;
-    this.props.onSave(trigger);
-  }
+  private onUserValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
+    const propertyName = event.target.name;
+    const propertyValue = event.target.value;
+    if (!trigger.events || !trigger.events.length) {
+      return;
+    }
 
-  /**
-   * Event handler for changing delay
-   * @param event react change event
-   */
-  private onUserVariableValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const trigger = this.props.selectedEventTrigger;
-    const newValue = event.target.value;
-    trigger.events![0].properties[1].value = newValue;
-    this.props.onSave(trigger); 
+    if (!trigger.events[0].properties || !trigger.events[0].properties.length) {
+      return;
+    }
+
+    const propertyIndex = trigger.events[0].properties.findIndex(property => property.name === propertyName);
+    if (propertyIndex === -1) {
+      trigger.events[0].properties.push({
+        name: propertyName,
+        value: propertyValue,
+        type: ExhibitionPageEventPropertyType.String
+      });
+    } else {
+      trigger.events[0].properties[propertyIndex].value = propertyValue;
+    }
+    
+    this.props.onSave(trigger);
   }
 
   /**
@@ -380,7 +382,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private onNavigationPageChange = (event: React.ChangeEvent<{ value: unknown; name?: unknown }>) => {
     const newValue = event.target.value as string;
-    const trigger = this.props.selectedEventTrigger;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
     if (this.getSelectedEventActionType() !== ExhibitionPageEventActionType.Navigate) {
       return;
     }
@@ -394,7 +396,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param event react change event
    */
   private onSelectClickViewId = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const trigger = this.props.selectedEventTrigger;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
     const value = event.target.value as string;
     trigger.clickViewId = value;
 
@@ -409,7 +411,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private onSelectPhysicalButton = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     const name = event.target.name;
     const value = event.target.value as PhysicalButton;
-    const trigger = this.props.selectedEventTrigger;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
     switch (name) {
       case "DOWN":
         trigger.keyDown = value;
@@ -442,7 +444,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param actionType new event action type
    */
   private overwriteEventInJson = (actionType: ExhibitionPageEventActionType) => {
-    const trigger = this.props.selectedEventTrigger;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
     if (trigger.events?.length !== 0 && trigger.events![0].action === actionType) {
       return;
     }

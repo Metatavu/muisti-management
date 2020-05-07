@@ -20,15 +20,6 @@ export default createStyles({
     marginBottom: 10
   },
 
-  searchBar: {
-  },
-
-  treeView: {
-    "& > div:focus": {
-      outline: "none"
-    }
-  },
-
   editorLayout: {
     height: "100%",
     overflow: "hidden",
@@ -64,21 +55,6 @@ export default createStyles({
 
   toolbarContent: {
     paddingTop: theme.spacing(2)
-  },
-
-  listItem: {
-    cursor: 'pointer',
-    position: 'relative',
-    transition: "background-color 0.2s ease-out, color 0.2s ease-out",
-    "&:hover": {
-      backgroundColor: "#f2f2f2"
-    },
-
-    "&.focused": {
-      backgroundColor: theme.palette.secondary.main,
-      color: "#fff",
-      zIndex: 999,
-    }
   },
 
   actionButtons: {

@@ -141,6 +141,8 @@
     "newPage": "New page",
     "addPage": "Add page",
     "addDevice": "Add device",
+    "addResource": "Add resource",
+    "addEventTrigger": "Add event trigger",
     "onProduction": "On production",
     "properties": {
       "title": "Properties"
@@ -159,12 +161,12 @@
       }
     },
     
-    "pageEditor": {
+    "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
       "pageDeviceLabel": "Page device"  
     },
 
-    "deviceEditor": {
+    "deviceSettingsEditor": {
       "indexPageId": "Device front page"
     },
 
