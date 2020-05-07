@@ -205,7 +205,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * On polygon save handler
    */
   private onPolygonSave = () => {
-    this.savePolygon()
+    this.savePolygon();
     this.setState({
       polygonCreated : false,
       roomName: ""
