@@ -173,7 +173,23 @@
 
     "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
-      "pageDeviceLabel": "Sivun laite"  
+      "pageDeviceLabel": "Sivun laite",
+      "enterTransitions": "Tulo transitiot",
+      "exitTransitions": "Lähtö transitiot",
+      "addTransition": "Lisää transitio",
+      "removeTransition": "Poista transitio",
+
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Time interpolation",
+        "duration": "Duration",
+        "elements": "Elements",
+        "addOption": "Add animation option",
+        "addOptionParam": "Add animation option parameter",
+        "startOfTransition": "From element",
+        "endOfTransition" : "To element",
+        "availablePages": "Available target pages"
+      }
     },
 
     "deviceSettingsEditor": {

@@ -173,7 +173,23 @@
     
     "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
-      "pageDeviceLabel": "Page device"  
+      "pageDeviceLabel": "Page device",
+      "enterTransitions": "Enter transitions",
+      "exitTransitions": "Exit transitions",
+      "addTransition": "Add transition",
+      "removeTransition": "Remove transition",
+
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Time interpolation",
+        "duration": "Duration",
+        "elements": "Elements",
+        "addOption": "Add animation option",
+        "addElementPair": "Add element pair",
+        "startOfTransition": "From element",
+        "endOfTransition" : "To element",
+        "availablePages": "Available target pages"
+      }
     },
 
     "deviceSettingsEditor": {

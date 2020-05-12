@@ -172,6 +172,22 @@ export interface IStrings extends LocalizedStringsMethods {
     pageSettingsEditor: {
       pageLayoutLabel: string;
       pageDeviceLabel: string;
+      enterTransitions: string;
+      exitTransitions: string;
+      addTransition: string;
+      removeTransition: string;
+      
+      dialog: {
+        animation: string;
+        timeInterpolation: string;
+        duration: string;
+        addOption: string;
+        addElementPair: string;
+        elements: string;
+        startOfTransition: string;
+        endOfTransition: string;
+        availablePages: string;
+      };
     };
 
     deviceSettingsEditor: {
