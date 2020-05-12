@@ -187,6 +187,8 @@
       "physicalButtonDownTitle": "Triggers when button is pressed",
       "physicalButtonUpTitle": "Triggers when button is released",
       "physicalButton": "Button",
+      "deviceGroupEventTitle": "Triggers when device group event is detected",
+      "deviceGroupEvent": "Device group event name",
       "delayTitle": "Triggers after delay",
       "delay": "Viive (in milliseconds)",
       "actions": "Actions",
