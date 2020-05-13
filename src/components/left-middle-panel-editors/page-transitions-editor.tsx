@@ -1,10 +1,10 @@
 import * as React from "react";
-import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, Transition, Animation, AnimationTimeInterpolation, AnimationOption } from "../../generated/client";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, List, ListItem, ListItemIcon, ListItemText, Grid, Divider, ListItemSecondaryAction } from "@material-ui/core";
+import { ExhibitionPage, ExhibitionDevice, Transition, Animation, AnimationTimeInterpolation, AnimationOption } from "../../generated/client";
+import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
-import { Dispatch } from "redux"
+import { Dispatch } from "redux";
 import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
 import AddIcon from "@material-ui/icons/AddSharp";
@@ -34,7 +34,7 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   transitionDialogOpen: boolean;
-  selectedTransition?: Transition; 
+  selectedTransition?: Transition;
   selectedTransitionType?: string;
   selectedTransitionIndex?: number;
   selectedAnimationOption?: AnimationOption;
@@ -90,12 +90,12 @@ class PageTransitionsEditor extends React.Component<Props, State> {
         <ListItem button onClick={ () => this.onTransitionClick(transitionType, transition, transitionIndex) }>
           <Typography variant="h6">{ transition.animation }</Typography>
           <ListItemSecondaryAction>
-            <GenericButton
-              color="secondary"
-              icon={ <DeleteIcon /> }
-              style={{ float: "right" }}
+            <IconButton
+              color="primary"
               onClick={ () => this.onDeleteTransitionClick(transitionType, transitionIndex) }
-            />
+            >
+              <DeleteIcon />
+            </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
 
@@ -124,7 +124,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
       <EditorDialog
         open={ transitionDialogOpen }
         error={ false }
-        title={ strings.exhibition.pageSettingsEditor.addTransition }
+        title={ strings.exhibition.pageSettingsEditor.editTransition }
         onClose={ this.onTransitionDialogClose }
         onCancel={ this.onTransitionDialogClose }
         onConfirm={ this.onTransitionDialogConfirm }
@@ -180,7 +180,6 @@ class PageTransitionsEditor extends React.Component<Props, State> {
             />
           </Grid>
           <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.availablePages }</Typography>
             { selectedTransition?.animation !== Animation.Fade &&
               this.renderTransitionElementEditor()
             }
@@ -189,16 +188,19 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     </>);
   }
 
+  /**
+   * Render transition animation options editor
+   */
   private renderTransitionElementEditor = () => {
-    const { exhibitionDevices, exhibitionPages, exhibitionPage } = this.props;
+    const { exhibitionPage } = this.props;
     const { selectedTargetPageId, selectedTransition } = this.state;
 
     return (<>
+      <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.availablePages }</Typography>
       { this.renderAvailablePages() }
       <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
       <PageTransitionElementsEditor
-        exhibitionDevices={ exhibitionDevices }
-        exhibitionPages={ exhibitionPages }
+        exhibitionPages={ this.getCorrectPages() }
         exhibitionPage={ exhibitionPage }
         selectedTargetPageId={ selectedTargetPageId || this.getTargetPageId() }
         animationOptions={ selectedTransition?.options }
@@ -207,21 +209,12 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     </>);
   }
 
+  /**
+   * Render available pages dropdown
+   */
   private renderAvailablePages = () => {
-    const { exhibitionDevices, exhibitionPage, exhibitionPages } = this.props;
+    const foundPages: ExhibitionPage[] = this.getCorrectPages();
     const { selectedTargetPageId } = this.state;
-
-    const foundDevice = exhibitionDevices.find(device => device.id === exhibitionPage.deviceId);
-
-    if (!foundDevice) {
-      return;
-    }
-
-    const foundPages = exhibitionPages.filter(page => page.deviceId === foundDevice.id);
-
-    if (!foundPages) {
-      return;
-    }
 
     return (
       <Select
@@ -231,11 +224,10 @@ class PageTransitionsEditor extends React.Component<Props, State> {
         onChange={ this.handleSelectedPage }
         name="targetTransitionPage"
         value={ selectedTargetPageId || this.getTargetPageId() }
-        >
-          { this.getPossiblePages(foundPages) }
+      >
+        { this.getPossiblePages(foundPages) }
       </Select>
     );
-
   }
 
   /**
@@ -253,17 +245,18 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Handle animation option change
+   */
   private handleAnimationOptionChange = (animationOptions: AnimationOption[]) => {
 
     const { selectedTransition } = this.state;
-    console.log(selectedTransition);
     if (!selectedTransition) {
       return;
     }
 
     const transitionToUpdate = { ...selectedTransition }
     transitionToUpdate.options = animationOptions;
-    console.log(transitionToUpdate);
     this.setState({
       selectedTransition: transitionToUpdate
     });
@@ -283,11 +276,11 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     };
     let index = 0;
     if (type === "enter") {
-      index = this.props.exhibitionPage.enterTransitions.length
+      index = this.props.exhibitionPage.enterTransitions.length;
     }
 
     if (type === "exit") {
-      index = this.props.exhibitionPage.exitTransitions.length
+      index = this.props.exhibitionPage.exitTransitions.length;
     }
 
     this.setState({
@@ -305,7 +298,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    */
   private onDeleteTransitionClick = (type: string, transitionIndex: number) => {
     const { exhibitionPage } = this.props;
-    
+
     const pageToUpdate = { ...exhibitionPage };
     if (!pageToUpdate.exhibitionId || !pageToUpdate.id) {
       this.resetValues();
@@ -324,10 +317,12 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     this.resetValues();
   }
 
+  /**
+   * Get target page id
+   */
   private getTargetPageId = (): string => {
     const { selectedTransition } = this.state;
 
-    console.log(selectedTransition);
     if (selectedTransition && selectedTransition.options[0] && selectedTransition.options[0].values[0]) {
       const firstElementPair = selectedTransition.options[0].values[0].split(":");
       const id = firstElementPair[1].split(",")[0];
@@ -336,9 +331,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
       });
       return id;
     }
-
     return "";
-
   }
 
   /**
@@ -374,7 +367,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   private handleSelectedPage = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
     const { selectedTargetPageId } = this.state;
     const value = event.target.value as string;
-    const newTransition = this.state.selectedTransition
+    const newTransition = this.state.selectedTransition;
 
     if (selectedTargetPageId === value) {
       return;
@@ -396,10 +389,9 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   private onTransitionDialogConfirm = () => {
     const { exhibitionPage } = this.props;
     const { selectedTransition, selectedTransitionType, selectedTransitionIndex } = this.state;
-    
+
     const pageToUpdate = { ...exhibitionPage };
     if (!selectedTransition || !selectedTransitionType || !pageToUpdate.exhibitionId || !pageToUpdate.id) {
-      this.resetValues();
       return;
     }
 
@@ -411,7 +403,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
       }
       this.props.onPageTransitionChange(pageToUpdate.enterTransitions, selectedTransitionType);
     }
-    
+
     if (selectedTransitionType === "exit") {
       if (selectedTransitionIndex === undefined) {
         pageToUpdate.exitTransitions = [ ...pageToUpdate.exitTransitions, selectedTransition];
@@ -425,11 +417,26 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Get all pages of exhibition device
+   * Return empty list or list of found exhibition pages
+   */
+  private getCorrectPages = (): ExhibitionPage[] => {
+    const { exhibitionDevices, exhibitionPage, exhibitionPages } = this.props;
+
+    const foundDevice = exhibitionDevices.find(device => device.id === exhibitionPage.deviceId);
+    if (!foundDevice) {
+      return [];
+    }
+
+    return exhibitionPages.filter(page => page.deviceId === foundDevice.id);
+  }
+
+  /**
    * Generate select items
    */
   private getSelectItems = (keys: string[]) => {
     return keys.map(key => {
-      return <MenuItem value={ key.toLocaleLowerCase() }>{ key }</MenuItem>;
+      return <MenuItem key={ key } value={ key.toLocaleLowerCase() }>{ key }</MenuItem>;
     });
   }
 
@@ -438,7 +445,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    */
   private getPossiblePages = (pages: ExhibitionPage[]) => {
     return pages.map(page => {
-      return <MenuItem value={ page.id }>{ page.name }</MenuItem>;
+      return <MenuItem key={ page.id } value={ page.id }>{ page.name }</MenuItem>;
     });
   }
 
@@ -462,8 +469,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
  * @param state store state
  */
 function mapStateToProps(state: ReduxState) {
-  return {
-  };
+  return { };
 }
 
 /**

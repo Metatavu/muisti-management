@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, Transition } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
-import { Dispatch } from "redux"
+import { Dispatch } from "redux";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import slugify from "slugify";
@@ -47,7 +47,6 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
    * @param props component properties
    */
   constructor(props: Props) {
@@ -57,16 +56,12 @@ class PageSettingsEditor extends React.Component<Props, State> {
     };
   }
 
-  public componentDidMount = async () => {
-    
-  }
-
   /**
    * Component render method
    */
   public render() {
     const { classes, pageData, onPageNameChange } = this.props;
-    
+
     return (
       <>
         <TextField fullWidth variant="filled" label="Name" value={ pageData.name } onChange={ onPageNameChange }/>
@@ -121,7 +116,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
     const items = eventTriggers.map((_eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = `Event ${index + 1}`;
-      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => onEventTriggerClick(index) } />
+      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => onEventTriggerClick(index) } />;
     });
 
     const addEventTriggerLabel = (

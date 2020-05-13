@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, Transition, Animation, AnimationTimeInterpolation, AnimationOption } from "../../generated/client";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, List, ListItem, ListItemIcon, ListItemText, Grid, Divider } from "@material-ui/core";
+import { ExhibitionPage, ExhibitionPageResource, AnimationOption } from "../../generated/client";
+import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, Divider, IconButton } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -9,7 +9,6 @@ import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
 import AddIcon from "@material-ui/icons/AddSharp";
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditorDialog from "../generic/editor-dialog";
 import theme from "../../styles/theme";
 
 /**
@@ -17,13 +16,20 @@ import theme from "../../styles/theme";
  */
 interface Props extends WithStyles<typeof styles> {
   exhibitionPage: ExhibitionPage;
-  exhibitionDevices: ExhibitionDevice[];
   exhibitionPages: ExhibitionPage[];
   selectedTargetPageId: string;
   animationOptions?: AnimationOption[];
+
+  /**
+   * On animation option change handler
+   * @param animationOptions list of animation options
+   */
   onAnimationOptionChange: (animationOptions: AnimationOption[]) => void;
 }
 
+/**
+ * Interface for storing animation options
+ */
 interface AnimationOptionPairsHolder {
   startPageId: string;
   startPageResource: string;
@@ -56,28 +62,9 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     };
   }
 
-  public componentDidUpdate = (prevProps: Props) => {
-    
-    if (prevProps.animationOptions !== this.props.animationOptions) {
-      const { animationOptions } = this.props;
-      if (!animationOptions || !animationOptions[0]) {
-        this.setState({
-          animationOptionPairs : []
-        });
-        return;
-      }
-  
-      const options = animationOptions[0];
-      const tempList: AnimationOptionPairsHolder[] = [];
-      this.updateOptionPairs(options, tempList);
-  
-      this.setState({
-        animationOptionPairs : tempList
-      });
-    }
-
-  }
-
+  /**
+   * Component did mount life cycle handler
+   */
   public componentDidMount = () => {
     const { animationOptions } = this.props;
 
@@ -94,6 +81,36 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Component did update life cycle handler
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+
+    if (prevProps.animationOptions !== this.props.animationOptions) {
+      const { animationOptions } = this.props;
+      if (!animationOptions || !animationOptions[0]) {
+        this.setState({
+          animationOptionPairs : []
+        });
+        return;
+      }
+
+      const options = animationOptions[0];
+      const tempList: AnimationOptionPairsHolder[] = [];
+      this.updateOptionPairs(options, tempList);
+
+      this.setState({
+        animationOptionPairs : tempList
+      });
+    }
+
+  }
+
+  /**
+   * Update option pairs handler
+   * @param options animation option to update
+   * @param tempList temporary list for storing animation option pairs data
+   */
   private updateOptionPairs(options: AnimationOption, tempList: AnimationOptionPairsHolder[]) {
     options.values.map(element => {
       const split = element.split(":");
@@ -119,10 +136,12 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render transition animation options
+   */
   private renderTransitionAnimationOptions() {
     const { exhibitionPage } = this.props;
     const { animationOptionPairs } = this.state;
-    console.log(animationOptionPairs)
     if (!animationOptionPairs) {
       return (
         <div/>
@@ -158,12 +177,12 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
           </Select>
         </Grid>
         <Grid item xs={ 2 }>
-          <GenericButton
-            color="secondary"
-            icon={ <DeleteIcon /> }
-            style={{ float: "right" }}
-            onClick={ () => this.onDeleteOption(index) }
-          />
+          <IconButton
+            color="primary"
+            onClick={ () => this.onDeleteElementPair(index) }
+          >
+            <DeleteIcon />
+          </IconButton>
         </Grid>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
       </>);
@@ -171,7 +190,6 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
 
     return (<>
       <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.elements }</Typography>
-      
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
         { elementPairs }
       </Grid>
@@ -179,27 +197,17 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
         text={ strings.exhibition.pageSettingsEditor.dialog.addElementPair }
         color="secondary"
         icon={ <AddIcon /> }
-        onClick={ () => this.onAddOptionParamClick() }
+        onClick={ () => this.onAddElementPairClick() }
       />
    </>);
   }
 
+  /**
+   * Get exhibition pages for device
+   */
   private getPages = (): ExhibitionPage[] => {
-    const { exhibitionDevices, exhibitionPage, exhibitionPages, selectedTargetPageId } = this.props;
-
-    const foundDevice = exhibitionDevices.find(device => device.id === exhibitionPage.deviceId);
-
-    if (!foundDevice || !selectedTargetPageId) {
-      return [];
-    }
-
-    const foundPages = exhibitionPages.filter(page => page.id === selectedTargetPageId);
-
-    if (!foundPages) {
-      return [];
-    }
-
-    return foundPages;
+    const { exhibitionPages, selectedTargetPageId } = this.props;
+    return exhibitionPages.filter(page => page.id === selectedTargetPageId);
   }
 
   /**
@@ -225,52 +233,87 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     this.updateAnimationOptions(newList);
   }
 
-  private onAddOptionParamClick = () => {
+  /**
+   * On add element pair click handler
+   */
+  private onAddElementPairClick = () => {
     const { animationOptionPairs } = this.state;
     if (!animationOptionPairs) {
       return;
     }
-    const optionToAdd: AnimationOptionPairsHolder = {
+
+    const elementPairToAdd: AnimationOptionPairsHolder = {
       startPageId: this.props.exhibitionPage.id || "",
       startPageResource: "",
       endPageId: this.props.selectedTargetPageId || "",
       endPageResource: "",
-    } 
-    const tempList = [ ...this.state.animationOptionPairs, optionToAdd ];
-    this.setState({
-      animationOptionPairs : tempList
-    });
+    };
 
-    const optionsToUpdate: AnimationOption[] = [];
-    const asd: AnimationOption = {
-      name: "elements",
-      values: []
-    }
-
-    tempList.map(item => {
-      const temp: string = item.startPageId + "," + item.startPageResource + ":" + item.endPageId + "," + item.endPageResource
-      asd.values.push(temp);
-    });
-    optionsToUpdate.push(asd);
-
-    this.props.onAnimationOptionChange(optionsToUpdate);
+    const animationElementPairList = [ ...this.state.animationOptionPairs, elementPairToAdd ];
+    this.createNewOption(animationElementPairList);
   }
 
-  private onDeleteOption = (index: number) => {
-
+  /**
+   * On delete element pair handler
+   * @param index element pair to delete
+   */
+  private onDeleteElementPair = (index: number) => {
     const { animationOptionPairs } = this.state;
 
     if (!animationOptionPairs || !animationOptionPairs[index]) {
       return;
     }
 
-    const test = animationOptionPairs;
-    test.splice(index, 1);
-    this.setState({
-      animationOptionPairs : test
-    });
+    const optionPairs = animationOptionPairs;
+    optionPairs.splice(index, 1);
 
-    this.updateAnimationOptions(test);
+    this.updateAnimationOptions(optionPairs);
+  }
+
+  /**
+   * Create new animation option handler
+   * @param animationElementPairList list of element pairs
+   */
+  private createNewOption(animationElementPairList: AnimationOptionPairsHolder[]) {
+    const optionsToUpdate: AnimationOption[] = [];
+    const animationOption: AnimationOption = {
+      name: "elements",
+      values: []
+    };
+    animationElementPairList.map(item => {
+      const value: string = item.startPageId + "," + item.startPageResource + ":" + item.endPageId + "," + item.endPageResource;
+      animationOption.values.push(value);
+    });
+    optionsToUpdate.push(animationOption);
+    this.props.onAnimationOptionChange(optionsToUpdate);
+
+    this.setState({
+      animationOptionPairs : animationElementPairList
+    });
+  }
+
+  /**
+   * Update animation options handler
+   * @param optionPairs list of 
+   */
+  private updateAnimationOptions(animationElementPairList: AnimationOptionPairsHolder[]) {
+    const { animationOptions } = this.props;
+    if ( !animationOptions || !animationOptions[0]) {
+      return;
+    }
+    const optionsToUpdate: AnimationOption[] = [];
+    const animationOption = { ...animationOptions[0] };
+    animationOption.values = [];
+    animationElementPairList.map(item => {
+      const temp: string = item.startPageId + "," + item.startPageResource + ":" + item.endPageId + "," + item.endPageResource;
+      animationOption.values.push(temp);
+    });
+    optionsToUpdate.push(animationOption);
+    this.props.onAnimationOptionChange(optionsToUpdate);
+
+    this.setState({
+      animationOptionPairs : animationElementPairList
+    });
   }
 
   /**
@@ -291,23 +334,6 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
         return <MenuItem value={ key.id }>{ key.id }</MenuItem>;
       });
     });
-  }
-
-
-  private updateAnimationOptions(newList: AnimationOptionPairsHolder[]) {
-    const { animationOptions } = this.props;
-    if ( !animationOptions || !animationOptions[0]) {
-      return;
-    }
-    const optionsToUpdate: AnimationOption[] = [];
-    const asd = { ...animationOptions[0] };
-    asd.values = [];
-    newList.map(item => {
-      const temp: string = item.startPageId + "," + item.startPageResource + ":" + item.endPageId + "," + item.endPageResource;
-      asd.values.push(temp);
-    });
-    optionsToUpdate.push(asd);
-    this.props.onAnimationOptionChange(optionsToUpdate);
   }
 }
 

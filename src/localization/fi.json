@@ -177,18 +177,19 @@
       "enterTransitions": "Tulo transitiot",
       "exitTransitions": "Lähtö transitiot",
       "addTransition": "Lisää transitio",
+      "editTransition": "Muokkaa transitiota",
       "removeTransition": "Poista transitio",
 
       "dialog": {
         "animation": "Animation",
-        "timeInterpolation": "Time interpolation",
-        "duration": "Duration",
-        "elements": "Elements",
-        "addOption": "Add animation option",
-        "addOptionParam": "Add animation option parameter",
-        "startOfTransition": "From element",
-        "endOfTransition" : "To element",
-        "availablePages": "Available target pages"
+        "timeInterpolation": "Interpolointi",
+        "duration": "Kesto",
+        "elements": "Elementit",
+        "addOption": "Lisää animointi asetus",
+        "addOptionParam": "Lisää elementtipari",
+        "startOfTransition": "Elementistä",
+        "endOfTransition" : "Elementille",
+        "availablePages": "Valittavat kohdesivut"
       }
     },
 

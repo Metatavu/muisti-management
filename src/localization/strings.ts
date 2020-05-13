@@ -175,8 +175,9 @@ export interface IStrings extends LocalizedStringsMethods {
       enterTransitions: string;
       exitTransitions: string;
       addTransition: string;
+      editTransition: string;
       removeTransition: string;
-      
+
       dialog: {
         animation: string;
         timeInterpolation: string;

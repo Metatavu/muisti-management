@@ -177,6 +177,7 @@
       "enterTransitions": "Enter transitions",
       "exitTransitions": "Exit transitions",
       "addTransition": "Add transition",
+      "editTransition": "Edit transition",
       "removeTransition": "Remove transition",
 
       "dialog": {
