@@ -211,7 +211,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       loading: true
     });
 
-    const exhibition = await this.loadExhibition();
+    const exhibition = this.loadExhibition();
     const exhibitionFloor = exhibition ? await this.loadExhibitionFloor(exhibition, this.props.exhibitionFloorId) : undefined;
     this.setState({
       exhibition: exhibition,
@@ -228,7 +228,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * 
    * @returns loads exhibition
    */
-  private loadExhibition = async () => {
+  private loadExhibition = () => {
     return this.props.exhibitions.find(exhibition => exhibition.id === this.props.exhibitionId);    
   }
 
@@ -336,12 +336,12 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * @param files files
    * @param key  upload key
    */
-  private onUploadSave = (files: File[], key?: string) => {
+  private onUploadSave = (files: File[], _key?: string) => {
     const file = files[0];
     if (file) {
       const reader = new FileReader();
 
-      reader.onload = (event) => {
+      reader.onload = event => {
         const dataUrl = event.target?.result;
         if (dataUrl) {
           this.setState({
@@ -385,7 +385,7 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions as Exhibition[]
+    exhibitions: state.exhibitions.exhibitions
   };
 }
 

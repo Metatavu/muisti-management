@@ -15,6 +15,7 @@
   },
 
   "comingSoon": "Tulossa pian!",
+  "removeSelection": "Poista valinta",
 
   "fileUpload": {
     "upload": "Lähetä",
@@ -167,6 +168,7 @@
     "addDevice": "Lisää laite",
     "addResource": "Lisää resurssi",
     "addEventTrigger": "Lisää tapahtuma",
+    "eventTrigger": "Tapahtuma {0}",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"

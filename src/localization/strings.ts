@@ -5,6 +5,7 @@ import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
  */
 export interface IStrings extends LocalizedStringsMethods {
   comingSoon: string;
+  removeSelection: string;
 
   fileUpload: {
     upload: string;
@@ -165,6 +166,7 @@ export interface IStrings extends LocalizedStringsMethods {
     addDevice: string;
     addResource: string;
     addEventTrigger: string;
+    eventTrigger: string;
     onProduction: string;
     properties: {
       title: string;

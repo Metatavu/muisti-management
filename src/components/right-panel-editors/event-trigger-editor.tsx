@@ -9,7 +9,6 @@ import { History } from "history";
 import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
-import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty } from "../../generated/client";
@@ -70,13 +69,12 @@ class EventTriggerEditor extends React.Component<Props, State> {
         { this.renderPhysicalButtonSelects() }
         { this.renderDeviceGroupEventNameField() }
         { this.renderDelayField() }
+
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.actions }</Typography>
-        <TreeView>
-          { this.renderEventActionTypeSelect() }
-          { this.props.selectedEventTrigger &&
-            this.renderEventActionSettings()
-          }
-        </TreeView>
+        { this.renderEventActionTypeSelect() }
+        { this.props.selectedEventTrigger &&
+          this.renderEventActionSettings()
+        }
       </div>
     );
   }
@@ -88,7 +86,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { selectedEventTrigger } = this.props;
     const clickViewId = selectedEventTrigger.clickViewId;
     const clickViewIdList = this.props.layout.data.children.map((pageLayoutView, index) => {
-      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }> { pageLayoutView.id }</MenuItem>
+      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>{ pageLayoutView.id }</MenuItem>
     });
 
     return (
@@ -102,6 +100,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ clickViewId || "" }
           onChange={ this.onEventTriggerChange }
         >
+          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
           { clickViewIdList }
         </Select>
       </div>
@@ -137,6 +136,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ trigger.keyDown || "" }
           onChange={ this.onEventTriggerChange }
         >
+          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
           { menuItems }
         </Select>
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</Typography>
@@ -148,6 +148,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ trigger.keyUp || "" }
           onChange={ this.onEventTriggerChange }
         >
+          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
           { menuItems }
         </Select>
       </div>
@@ -385,7 +386,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private onEventTriggerChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { selectedEventTrigger, onSave } = this.props;
     const propertyName = event.target.name as keyof ExhibitionPageEventTrigger;
-    const value = event.target.value;
+    const value = event.target.value as string === "" ? undefined : event.target.value;
     
     switch (propertyName) {
       case "delay":
@@ -404,7 +405,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
         onSave({ ...selectedEventTrigger, [propertyName]: value as PhysicalButton });
       break;
       default:
-        console.log("Error in onEventTriggerChange: Unknown or invalid property name");
+        console.warn("Error in onEventTriggerChange: Unknown or invalid property name");
       break;
     }
   }

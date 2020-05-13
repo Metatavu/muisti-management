@@ -15,6 +15,7 @@
   },
 
   "comingSoon": "Coming soon!",
+  "removeSelection": "Remove selection",
 
   "fileUpload": {
     "upload": "Upload",
@@ -168,6 +169,7 @@
     "addDevice": "Add device",
     "addResource": "Add resource",
     "addEventTrigger": "Add event trigger",
+    "eventTrigger": "Event trigger {0}",
     "onProduction": "On production",
     "properties": {
       "title": "Properties"
