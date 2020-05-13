@@ -116,7 +116,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, layout } = this.props;
+    const { classes, layout, history } = this.props;
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
@@ -128,6 +128,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     return (
       <BasicLayoutV3
+        history={ history }
         title={ layout.name }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }

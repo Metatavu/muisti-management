@@ -130,7 +130,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-    const { classes, exhibition } = this.props;
+    const { classes, exhibition, history } = this.props;
     const { selectedElement, selectedResource } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
@@ -143,6 +143,7 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return (
       <BasicLayout
+        history={ history }
         title={ exhibition.name }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }

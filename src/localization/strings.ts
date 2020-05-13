@@ -62,6 +62,20 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  header: {
+    navigation: {
+      exhibitionsButton: string;
+      usersButton: string;
+      devicesButton: string;
+      layoutsButton: string;
+      floorPlansButton: string;
+    }
+    tabs: {
+      floorPlanTab: string;
+      exhibitionContentsTab: string;
+    }
+  }
+
   dashboard: {
     newExhibitionButton: string;
     navigation: {

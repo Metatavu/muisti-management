@@ -1,4 +1,19 @@
 {
+
+  "header": {
+    "navigation": {
+      "exhibitionsButton": "Exhibitions",
+      "usersButton": "Users",
+      "devicesButton": "Devices",
+      "layoutsButton": "Layouts",
+      "floorPlansButton": "Floorplans"
+    },
+    "tabs": {
+      "floorPlanTab": "Pohjapiirros",
+      "exhibitionContentsTab": "Näyttelysisällöt"
+    }
+  },
+
   "comingSoon": "Coming soon!",
 
   "fileUpload": {
