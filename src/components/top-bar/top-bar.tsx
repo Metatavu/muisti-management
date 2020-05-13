@@ -101,7 +101,7 @@ class TopBar extends React.Component<Props, State> {
               <ArrowLeftIcon />
             </IconButton>
           }
-          <Typography variant="h1">{ this.props.title }</Typography>
+          <Typography variant="h1" className={ classes.title }>{ this.props.title }</Typography>
 
         </div>
         <div className={ classes.bottomRow }>
