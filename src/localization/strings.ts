@@ -202,6 +202,8 @@ export interface IStrings extends LocalizedStringsMethods {
       physicalButtonDownTitle: string;
       physicalButtonUpTitle: string;
       physicalButton: string;
+      deviceGroupEventTitle: string;
+      deviceGroupEvent: string;
       delayTitle: string;
       delay: string;
       actions: string;

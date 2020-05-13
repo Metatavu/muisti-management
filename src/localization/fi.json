@@ -204,6 +204,8 @@
       "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
       "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
       "physicalButton": "Nappi",
+      "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
+      "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
       "delayTitle": "Tapahtuu viiveen jälkeen",
       "delay": "Viive (millisekunneissa)",
       "actions": "Toiminnot",
