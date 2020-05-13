@@ -58,7 +58,7 @@ class TopBar extends React.Component<Props, State> {
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
-    const initials = `${ firstName.charAt(0).toUpperCase() }${ lastName.charAt(0).toUpperCase() }`;
+    const initials = `${ firstName.charAt(0).toUpperCase() }`;
 
     return (
       <header className={ classes.root }>
@@ -86,7 +86,7 @@ class TopBar extends React.Component<Props, State> {
 
           <div className={ classes.user }>
             {/* User */}
-            <Typography variant="body1">Matti Meikäläinen</Typography>
+            <Typography variant="body1">{ firstName } { lastName}</Typography>
             <div className={ classes.userAvatar } onClick={ this.onLogOutClick }>
               <p>{ initials }</p>
             </div>
@@ -95,12 +95,13 @@ class TopBar extends React.Component<Props, State> {
         </div>
         <div className={ classes.middleRow }>
 
-          {/* Takaisin painike ja sivun title */}
+          {/* Takaisin painike */}
           { this.props.onDashboardButtonClick &&
             <IconButton size="small" className={ classes.homeBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
               <ArrowLeftIcon />
             </IconButton>
           }
+          {/* Sivun title */}
           <Typography variant="h1" className={ classes.title }>{ this.props.title }</Typography>
 
         </div>
@@ -208,7 +209,10 @@ class TopBar extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <Button>Save</Button>
+      <div className={ classes.toolbar }>
+        <Button variant="contained" disableElevation color="primary">Hide properties</Button>
+        <Button variant="contained" disableElevation color="primary">Save</Button>
+      </div>
     );
   }
 

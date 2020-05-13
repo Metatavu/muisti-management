@@ -93,4 +93,13 @@ export default createStyles({
   logoutBtn: {
 
   },
+
+  toolbar: {
+    display: "flex",
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    "& button": {
+      marginRight: theme.spacing(1)
+    }
+  }
 })
