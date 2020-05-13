@@ -154,7 +154,7 @@
     "addDevice": "Lisää laite",
     "addResource": "Lisää resurssi",
     "addEventTrigger": "Lisää tapahtuma",
-    "eventTrigger": "Tapahtuma",
+    "eventTrigger": "Tapahtuma {0}",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"

@@ -9,7 +9,6 @@ import { History } from "history";
 import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
-import { TreeView } from "@material-ui/lab";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty } from "../../generated/client";

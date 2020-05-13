@@ -154,7 +154,7 @@
     "addDevice": "Add device",
     "addResource": "Add resource",
     "addEventTrigger": "Add event trigger",
-    "eventTrigger": "Event trigger",
+    "eventTrigger": "Event trigger {0}",
     "onProduction": "On production",
     "properties": {
       "title": "Properties"

@@ -112,7 +112,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
     const { onEventTriggerClick, onAddEventTriggerClick, eventTriggers, classes } = this.props;
 
     const items = eventTriggers.map((_eventTrigger: ExhibitionPageEventTrigger, index) => {
-      const label = `${ strings.exhibition.eventTrigger } ${ index + 1 }`;
+      const label = strings.formatString(strings.exhibition.eventTrigger, index + 1);
       return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => onEventTriggerClick(index) } />
     });
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, LayerGroup, LatLngExpression } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
@@ -148,7 +148,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.mapInstance.addControl(controls);
     this.addDrawHandler();
     this.addOnLayerRemovedHandler();
-    this.mapInstance.on(L.Draw.Event.DELETED, event => {
+    this.mapInstance.on(L.Draw.Event.DELETED, _event => {
       this.onDeletePolygons()
     });
   }
@@ -256,7 +256,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Delete n amount of rooms from API
    * TODO: Add confimation dialog
    */
-  private onDeletePolygons = async () => {
+  private onDeletePolygons = () => {
     const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
     const { geoShapeMap, roomsToDelete } = this.state;
     if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomsToDelete) {
@@ -324,7 +324,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         try {
           const geoShapesToAdd: Layer[] = [];
           L.geoJSON(geoJson, {
-            onEachFeature(feature, layer) {
+            onEachFeature(_feature, layer) {
               geoShapesToAdd.push(layer);
             }
           });
