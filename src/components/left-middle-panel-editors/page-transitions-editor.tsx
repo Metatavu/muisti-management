@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ExhibitionPage, ExhibitionDevice, Transition, Animation, AnimationTimeInterpolation, AnimationOption } from "../../generated/client";
+import { ExhibitionPage, ExhibitionDevice, Animation, AnimationTimeInterpolation, ExhibitionPageTransition } from "../../generated/client";
 import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
@@ -12,6 +12,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditorDialog from "../generic/editor-dialog";
 import theme from "../../styles/theme";
 import PageTransitionElementsEditor from "../left-middle-panel-editors/page-transition-elements-editor";
+import { AnimationOption } from "../../generated/client/models/AnimationOption";
 
 /**
  * Interface representing component properties
@@ -26,7 +27,7 @@ interface Props extends WithStyles<typeof styles> {
    * @param transitions list of transitions to update
    * @param transitionType transition type ("exit" or "enter")
    */
-  onPageTransitionChange: (transitions: Transition[], transitionType: string) => void;
+  onPageTransitionChange: (transitions: ExhibitionPageTransition[], transitionType: string) => void;
 }
 
 /**
@@ -34,11 +35,9 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   transitionDialogOpen: boolean;
-  selectedTransition?: Transition;
+  selectedTransition?: ExhibitionPageTransition;
   selectedTransitionType?: string;
   selectedTransitionIndex?: number;
-  selectedAnimationOption?: AnimationOption;
-  selectedTargetPageId?: string;
 }
 
 /**
@@ -83,12 +82,12 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    * @param transitionType transition type
    * @param transitions list of transitions
    */
-  private renderPageTransitions(transitionType: string, transitions: Transition[]) {
+  private renderPageTransitions(transitionType: string, transitions: ExhibitionPageTransition[]) {
 
     const transitionItems = transitions.map((transition, transitionIndex) => {
       return (<>
         <ListItem button onClick={ () => this.onTransitionClick(transitionType, transition, transitionIndex) }>
-          <Typography variant="h6">{ transition.animation }</Typography>
+          <Typography variant="h6">{ transition.transition.animation }</Typography>
           <ListItemSecondaryAction>
             <IconButton
               color="primary"
@@ -151,10 +150,11 @@ class PageTransitionsEditor extends React.Component<Props, State> {
               id="transitionDialogAnimation"
               onChange={ this.handleSelectChange }
               name="animation"
-              value={ selectedTransition?.animation }
+              value={ selectedTransition?.transition.animation }
             >
               { this.getSelectItems(Object.keys(Animation)) }
             </Select>
+            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
           <Grid item xs={ 12 }>
             <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.timeInterpolation }</Typography>
@@ -164,10 +164,11 @@ class PageTransitionsEditor extends React.Component<Props, State> {
               id="transitionDialogTimeInterpolation"
               onChange={ this.handleSelectChange }
               name="timeInterpolation"
-              value={ selectedTransition?.timeInterpolation }
-              >
-                { this.getSelectItems(Object.keys(AnimationTimeInterpolation)) }
-              </Select>
+              value={ selectedTransition?.transition.timeInterpolation }
+            >
+              { this.getSelectItems(Object.keys(AnimationTimeInterpolation)) }
+            </Select>
+            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
           <Grid item xs={ 12 }>
             <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.duration }</Typography>
@@ -175,12 +176,13 @@ class PageTransitionsEditor extends React.Component<Props, State> {
               fullWidth
               type="number"
               name="duration"
-              value={ selectedTransition?.duration }
+              value={ selectedTransition?.transition.duration }
               onChange={ this.handleSelectChange }
             />
+            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
           <Grid item xs={ 12 }>
-            { selectedTransition?.animation !== Animation.Fade &&
+            { selectedTransition?.transition.animation !== Animation.Fade &&
               this.renderTransitionElementEditor()
             }
           </Grid>
@@ -193,41 +195,19 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    */
   private renderTransitionElementEditor = () => {
     const { exhibitionPage } = this.props;
-    const { selectedTargetPageId, selectedTransition } = this.state;
+    const { selectedTransition } = this.state;
 
+    if (!selectedTransition) {
+      return <div/>;
+    }
     return (<>
-      <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.availablePages }</Typography>
-      { this.renderAvailablePages() }
-      <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
       <PageTransitionElementsEditor
         exhibitionPages={ this.getCorrectPages() }
         exhibitionPage={ exhibitionPage }
-        selectedTargetPageId={ selectedTargetPageId || this.getTargetPageId() }
-        animationOptions={ selectedTransition?.options }
-        onAnimationOptionChange={ this.handleAnimationOptionChange }
+        selectedTransition={ selectedTransition }
+        onTransitionUpdate={ this.onTransitionUpdate }
       />
     </>);
-  }
-
-  /**
-   * Render available pages dropdown
-   */
-  private renderAvailablePages = () => {
-    const foundPages: ExhibitionPage[] = this.getCorrectPages();
-    const { selectedTargetPageId } = this.state;
-
-    return (
-      <Select
-        fullWidth
-        label={ "" }
-        id="transitionDialogTargetPage"
-        onChange={ this.handleSelectedPage }
-        name="targetTransitionPage"
-        value={ selectedTargetPageId || this.getTargetPageId() }
-      >
-        { this.getPossiblePages(foundPages) }
-      </Select>
-    );
   }
 
   /**
@@ -236,7 +216,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    * @param clickedTransition clicked transition from list
    * @param transitionIndex clicked transition list index
    */
-  private onTransitionClick = (type: string, clickedTransition: Transition, transitionIndex: number) => {
+  private onTransitionClick = (type: string, clickedTransition: ExhibitionPageTransition, transitionIndex: number) => {
     this.setState({
       selectedTransition: clickedTransition,
       transitionDialogOpen: true,
@@ -248,17 +228,9 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   /**
    * Handle animation option change
    */
-  private handleAnimationOptionChange = (animationOptions: AnimationOption[]) => {
-
-    const { selectedTransition } = this.state;
-    if (!selectedTransition) {
-      return;
-    }
-
-    const transitionToUpdate = { ...selectedTransition }
-    transitionToUpdate.options = animationOptions;
+  private onTransitionUpdate = (transition: ExhibitionPageTransition) => {
     this.setState({
-      selectedTransition: transitionToUpdate
+      selectedTransition: transition
     });
   }
 
@@ -268,12 +240,15 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    */
   private onAddTransitionClick = (type: string) => {
 
-    const newTransition: Transition = {
-      animation: Animation.Fade,
-      duration: 0,
-      timeInterpolation: AnimationTimeInterpolation.Acceleratedecelerate,
-      options: []
+    const newTransition: ExhibitionPageTransition = {
+      transition : {
+        animation: Animation.Fade,
+        duration: 0,
+        timeInterpolation: AnimationTimeInterpolation.Acceleratedecelerate,
+      },
+      sourceLayoutId: this.props.exhibitionPage.layoutId
     };
+
     let index = 0;
     if (type === "enter") {
       index = this.props.exhibitionPage.enterTransitions.length;
@@ -292,13 +267,12 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Delete transition click even handler
+   * Delete transition click event handler
    * @param type transition type
    * @param transitionIndex clicked transition list index
    */
   private onDeleteTransitionClick = (type: string, transitionIndex: number) => {
     const { exhibitionPage } = this.props;
-
     const pageToUpdate = { ...exhibitionPage };
     if (!pageToUpdate.exhibitionId || !pageToUpdate.id) {
       this.resetValues();
@@ -318,23 +292,6 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Get target page id
-   */
-  private getTargetPageId = (): string => {
-    const { selectedTransition } = this.state;
-
-    if (selectedTransition && selectedTransition.options[0] && selectedTransition.options[0].values[0]) {
-      const firstElementPair = selectedTransition.options[0].values[0].split(":");
-      const id = firstElementPair[1].split(",")[0];
-      this.setState({
-        selectedTargetPageId : id
-      });
-      return id;
-    }
-    return "";
-  }
-
-  /**
    * Transition dialog close handler
    */
   private onTransitionDialogClose = () => {
@@ -345,7 +302,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
    * Select change event handler
    * @param event change event
    */
-  private handleSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  private handleSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
     const { selectedTransition } = this.state;
 
     const key = event.target.name;
@@ -356,30 +313,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedTransition : { ...selectedTransition, [key] : value }
-    });
-  }
-
-  /**
-   * Select change event handler
-   * @param event change event
-   */
-  private handleSelectedPage = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
-    const { selectedTargetPageId } = this.state;
-    const value = event.target.value as string;
-    const newTransition = this.state.selectedTransition;
-
-    if (selectedTargetPageId === value) {
-      return;
-    }
-
-    if (newTransition) {
-      newTransition.options = [];
-    }
-
-    this.setState({
-      selectedTargetPageId : value,
-      selectedTransition : newTransition
+      selectedTransition : { ...selectedTransition, transition : { ...selectedTransition.transition, [key] : value }  }
     });
   }
 
@@ -418,7 +352,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
 
   /**
    * Get all pages of exhibition device
-   * Return empty list or list of found exhibition pages
+   * @returns empty list or list of found exhibition pages
    */
   private getCorrectPages = (): ExhibitionPage[] => {
     const { exhibitionDevices, exhibitionPage, exhibitionPages } = this.props;
@@ -441,15 +375,6 @@ class PageTransitionsEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Generate select items
-   */
-  private getPossiblePages = (pages: ExhibitionPage[]) => {
-    return pages.map(page => {
-      return <MenuItem key={ page.id } value={ page.id }>{ page.name }</MenuItem>;
-    });
-  }
-
-  /**
    * Reset state values
    */
   private resetValues() {
@@ -457,8 +382,6 @@ class PageTransitionsEditor extends React.Component<Props, State> {
       transitionDialogOpen: false,
       selectedTransition: undefined,
       selectedTransitionType: undefined,
-      selectedAnimationOption: undefined,
-      selectedTargetPageId: undefined
     });
   }
 }

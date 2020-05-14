@@ -137,7 +137,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     floorPlans: {
       title: string;
-    }
+    };
   };
 
   exhibition: {
@@ -182,12 +182,10 @@ export interface IStrings extends LocalizedStringsMethods {
         animation: string;
         timeInterpolation: string;
         duration: string;
-        addOption: string;
         addElementPair: string;
-        elements: string;
+        elementPairs: string;
         startOfTransition: string;
         endOfTransition: string;
-        availablePages: string;
       };
     };
 
@@ -211,7 +209,7 @@ export interface IStrings extends LocalizedStringsMethods {
       variableValue: string;
       selectPage: string;
     };
-    
+
     addDeviceEditor: {
       title: string;
       defaultName: string;
@@ -222,7 +220,6 @@ export interface IStrings extends LocalizedStringsMethods {
       screenOrientationLandscape: string;
       saveButton: string;
     };
-    
   };
 
   layout: {
@@ -248,7 +245,7 @@ export interface IStrings extends LocalizedStringsMethods {
     toolbar: {
       save: string;
       upload: string;
-    },
+    };
     properties: {
       title: string;
       imageHeight: string;

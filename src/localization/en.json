@@ -183,13 +183,11 @@
       "dialog": {
         "animation": "Animation",
         "timeInterpolation": "Time interpolation",
-        "duration": "Duration",
-        "elements": "Elements",
-        "addOption": "Add animation option",
+        "duration": "Duration (milliseconds)",
+        "elementPairs": "Element pairs",
         "addElementPair": "Add element pair",
         "startOfTransition": "From element",
-        "endOfTransition" : "To element",
-        "availablePages": "Available target pages"
+        "endOfTransition" : "To element"
       }
     },
 

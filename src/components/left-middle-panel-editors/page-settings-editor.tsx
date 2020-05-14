@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, Transition } from "../../generated/client";
+import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, ExhibitionPageTransition } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
@@ -25,7 +25,7 @@ interface Props extends WithStyles<typeof styles> {
   eventTriggers: ExhibitionPageEventTrigger[];
   resources: ExhibitionPageResource[];
   onPageNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onPageTransitionChange: (transition: Transition[], transitionType: string) => void;
+  onPageTransitionChange: (transition: ExhibitionPageTransition[], transitionType: string) => void;
   onLayoutChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onDeviceChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onResourceClick: (resource: ExhibitionPageResource) => void;

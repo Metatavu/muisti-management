@@ -12,7 +12,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, Transition } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, Transition, ExhibitionPageTransition } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../generic/basic-layout";
@@ -719,13 +719,11 @@ export class ExhibitionView extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onTransitionChange = (transitions: Transition[], transitionType: string) => {
+  private onTransitionChange = (transitions: ExhibitionPageTransition[], transitionType: string) => {
     const { selectedElement } = this.state;
     if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
       return;
     }
-
-
     const page = selectedElement.data as ExhibitionPage;
     let elementToUpdate;
     if (transitionType === "enter") {
@@ -734,7 +732,6 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (transitionType === "exit") {
       elementToUpdate =  { ...selectedElement, data: { ...page, exitTransitions: transitions }}
     }
-
     this.setState({
       selectedElement: elementToUpdate
     });
