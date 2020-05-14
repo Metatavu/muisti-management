@@ -18,10 +18,6 @@ import {
     AnimationFromJSON,
     AnimationFromJSONTyped,
     AnimationToJSON,
-    AnimationOption,
-    AnimationOptionFromJSON,
-    AnimationOptionFromJSONTyped,
-    AnimationOptionToJSON,
     AnimationTimeInterpolation,
     AnimationTimeInterpolationFromJSON,
     AnimationTimeInterpolationFromJSONTyped,
@@ -52,12 +48,6 @@ export interface Transition {
      * @memberof Transition
      */
     duration: number;
-    /**
-     * 
-     * @type {Array<AnimationOption>}
-     * @memberof Transition
-     */
-    options: Array<AnimationOption>;
 }
 
 export function TransitionFromJSON(json: any): Transition {
@@ -73,7 +63,6 @@ export function TransitionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'animation': AnimationFromJSON(json['animation']),
         'timeInterpolation': AnimationTimeInterpolationFromJSON(json['timeInterpolation']),
         'duration': json['duration'],
-        'options': ((json['options'] as Array<any>).map(AnimationOptionFromJSON)),
     };
 }
 
@@ -89,7 +78,6 @@ export function TransitionToJSON(value?: Transition | null): any {
         'animation': AnimationToJSON(value.animation),
         'timeInterpolation': AnimationTimeInterpolationToJSON(value.timeInterpolation),
         'duration': value.duration,
-        'options': ((value.options as Array<any>).map(AnimationOptionToJSON)),
     };
 }
 

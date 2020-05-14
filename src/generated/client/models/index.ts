@@ -1,5 +1,4 @@
 export * from './Animation';
-export * from './AnimationOption';
 export * from './AnimationTimeInterpolation';
 export * from './Bounds';
 export * from './Coordinates';
@@ -21,6 +20,10 @@ export * from './ExhibitionPageEventTransition';
 export * from './ExhibitionPageEventTrigger';
 export * from './ExhibitionPageResource';
 export * from './ExhibitionPageResourceType';
+export * from './ExhibitionPageTransition';
+export * from './ExhibitionPageTransitionOptions';
+export * from './ExhibitionPageTransitionOptionsMorph';
+export * from './ExhibitionPageTransitionOptionsMorphView';
 export * from './ExhibitionRoom';
 export * from './ModelError';
 export * from './MqttExhibitionPageCreate';
