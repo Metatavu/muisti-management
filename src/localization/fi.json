@@ -175,7 +175,22 @@
 
     "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
-      "pageDeviceLabel": "Sivun laite"  
+      "pageDeviceLabel": "Sivun laite",
+      "enterTransitions": "Tulo transitiot",
+      "exitTransitions": "Lähtö transitiot",
+      "addTransition": "Lisää transitio",
+      "editTransition": "Muokkaa transitiota",
+      "removeTransition": "Poista transitio",
+
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Interpolointi",
+        "duration": "Kesto (millisekunttia)",
+        "viewPairs": "Elementtiparit",
+        "addViewPair": "Lisää elementtipari",
+        "startOfTransition": "Elementistä",
+        "endOfTransition" : "Elementille"
+      }
     },
 
     "deviceSettingsEditor": {

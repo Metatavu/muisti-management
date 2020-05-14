@@ -1,17 +1,18 @@
 import * as React from "react";
-import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice } from "../../generated/client";
+import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, ExhibitionPageTransition } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
-import { Dispatch } from "redux"
+import { Dispatch } from "redux";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import slugify from "slugify";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import theme from "../../styles/theme";
 import AddIcon from '@material-ui/icons/Add';
+import PageTransitionsEditor from "../left-middle-panel-editors/page-transitions-editor";
 
 /**
  * Interface representing component properties
@@ -19,10 +20,12 @@ import AddIcon from '@material-ui/icons/Add';
 interface Props extends WithStyles<typeof styles> {
   layouts: PageLayout[];
   devices: ExhibitionDevice[];
+  pages: ExhibitionPage[];
   pageData: ExhibitionPage;
   eventTriggers: ExhibitionPageEventTrigger[];
   resources: ExhibitionPageResource[];
   onPageNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPageTransitionChange: (transition: ExhibitionPageTransition[], transitionType: string) => void;
   onLayoutChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onDeviceChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onResourceClick: (resource: ExhibitionPageResource) => void;
@@ -44,7 +47,6 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
    * @param props component properties
    */
   constructor(props: Props) {
@@ -59,13 +61,14 @@ class PageSettingsEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes, pageData, onPageNameChange } = this.props;
-    
+
     return (
       <>
         <TextField fullWidth variant="filled" label="Name" value={ pageData.name } onChange={ onPageNameChange }/>
         <div className={ classes.selectFields }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
+          { this.renderTransitions(pageData) }
         </div>
         <TreeView
           className={ classes.navigationTree }
@@ -151,6 +154,23 @@ class PageSettingsEditor extends React.Component<Props, State> {
       </div>
     );
   }
+
+  /**
+   * Renders layout select
+   * @param pageData selected exhibition page
+   */
+  private renderTransitions = (pageData: ExhibitionPage) => {
+    const { onPageTransitionChange, devices, pages } = this.props;
+    return (
+      <PageTransitionsEditor
+        exhibitionPage={ pageData }
+        onPageTransitionChange={ onPageTransitionChange }
+        exhibitionDevices={ devices }
+        exhibitionPages={ pages }
+      />
+    );
+  }
+
 
   /**
    * Renders device select

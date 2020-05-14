@@ -12,7 +12,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, Transition, ExhibitionPageTransition } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../generic/basic-layout";
@@ -387,15 +387,16 @@ export class ExhibitionView extends React.Component<Props, State> {
   private renderPageSettings = (pageData: ExhibitionPage) => {
     const { classes } = this.props;
     const { resources, eventTriggers } = this.parseJsonCode();
-
     return (
       <div className={ classes.toolbarContent }>
         <PageSettingsEditor
           devices={ this.state.devices }
+          pages={ this.state.pages }
           resources={ resources || [] }
           eventTriggers={ eventTriggers || [] }
           pageData={ pageData }
           onPageNameChange={ this.onPageNameChange }
+          onPageTransitionChange={ this.onTransitionChange }
           onLayoutChange={ this.onLayoutChange }
           onDeviceChange={ this.onDeviceChange }
           onAddResourceClick={ this.onAddResourceClick }
@@ -706,12 +707,36 @@ export class ExhibitionView extends React.Component<Props, State> {
       return;
     }
 
-
     const page = selectedElement.data as ExhibitionPage;
 
     this.setState({
       selectedElement: { ...selectedElement, data: { ...page, name: event.target.value }}
     });
+  }
+
+  /**
+   * Event handler for transition change
+   *
+   * @param transitions transition list to be updated
+   * @param transitionType transition type to update
+   */
+  private onTransitionChange = (transitions: ExhibitionPageTransition[], transitionType: string) => {
+    const { selectedElement } = this.state;
+    if (!selectedElement || selectedElement.type !== ExhibitionElementType.PAGE) {
+      return;
+    }
+    const page = selectedElement.data as ExhibitionPage;
+    let elementToUpdate;
+    if (transitionType === "enter") {
+      elementToUpdate =  { ...selectedElement, data: { ...page, enterTransitions: transitions }}
+    }
+    if (transitionType === "exit") {
+      elementToUpdate =  { ...selectedElement, data: { ...page, exitTransitions: transitions }}
+    }
+    this.setState({
+      selectedElement: elementToUpdate
+    });
+
   }
 
   /**
