@@ -715,9 +715,10 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for page name change
+   * Event handler for transition change
    *
-   * @param event event
+   * @param transitions transition list to be updated
+   * @param transitionType transition type to update
    */
   private onTransitionChange = (transitions: ExhibitionPageTransition[], transitionType: string) => {
     const { selectedElement } = this.state;
