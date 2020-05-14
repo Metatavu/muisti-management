@@ -72,16 +72,6 @@ class BasicLayout extends React.Component<Props, State> {
     return null;
   }
 
-  /**
-   * Handle logout
-   */
-  private onLogOutClick = () => {
-    const { keycloak } = this.props;
-    if (keycloak) {
-      keycloak.logout();
-    }
-  }
-
 }
 
 export default withStyles(styles)(BasicLayout);
