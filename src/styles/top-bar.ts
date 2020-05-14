@@ -25,7 +25,8 @@ export default createStyles({
 
   middleRow: {
     paddingLeft: theme.spacing(2),
-    display: "flex",
+    // FIXME: Hide these from first version
+    display: "none",
     flex: 1,
     alignItems: "center",
     width: "100%",
@@ -33,7 +34,8 @@ export default createStyles({
 
   bottomRow: {
     paddingLeft: theme.spacing(8),
-    display: "flex",
+    // FIXME: Hide these from first version
+    display: "none",
     flex: 1,
     alignItems: "center",
     justifyContent: "space-between",

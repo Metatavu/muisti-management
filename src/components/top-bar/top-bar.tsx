@@ -19,6 +19,7 @@ interface Props extends WithStyles<typeof styles> {
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
   locationPath: string;
+  exhibitionId?: string;
 }
 
 /**
@@ -148,13 +149,19 @@ class TopBar extends React.Component<Props, State> {
    * @param navigationButton navigation button
    */
   private renderNavigationButton = (navigationButton: NavigationButton) => {
-    const { locationPath } = this.props;
+    const { locationPath, exhibitionId } = this.props;
+
+    // If there's no selected exhibition, direct to dashboard overview
+    const exhibitionPath = !exhibitionId ? "/dashboard/overview" : `/${ navigationButton.postfix }/${ exhibitionId }`;
+
+    const targetUrl = navigationButton.postfix === "exhibitions" ? exhibitionPath : `/dashboard/${ navigationButton.postfix }`;
+    const selected = navigationButton.postfix === "exhibitions" ? locationPath === exhibitionPath : locationPath === `/dashboard/${ navigationButton.postfix }`;
     return (
       <ListItem
         button
-        selected={ locationPath === `/exhibitions/${ navigationButton.postfix }` }
+        selected={ selected }
         component={ RouterLink }
-        to={ `/exhibitions/${ navigationButton.postfix }` }
+        to={ targetUrl }
       >
         <Typography>{ navigationButton.text }</Typography>
       </ListItem>

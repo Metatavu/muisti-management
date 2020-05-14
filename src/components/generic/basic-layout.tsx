@@ -17,6 +17,7 @@ interface Props extends WithStyles<typeof styles> {
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
+  exhibitionId?: string;
 }
 
 /**
@@ -46,12 +47,12 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history } = this.props;
+    const { classes, history, exhibitionId } = this.props;
     const locationPath = history.location.pathname;
 
     return (
       <div className={ classes.root }>
-        <TopBar locationPath={ locationPath } title={ this.props.title } keycloak={ this.props.keycloak } onDashboardButtonClick={ this.props.onDashboardButtonClick } />
+        <TopBar exhibitionId={ exhibitionId } locationPath={ locationPath } title={ this.props.title } keycloak={ this.props.keycloak } onDashboardButtonClick={ this.props.onDashboardButtonClick } />
         <div className={ classes.content }>
           { this.props.children }
         </div>
