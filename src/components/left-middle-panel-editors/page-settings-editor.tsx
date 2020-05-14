@@ -12,7 +12,7 @@ import slugify from "slugify";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import theme from "../../styles/theme";
 import AddIcon from '@material-ui/icons/Add';
-import PageTransitionsEditor from "../left-middle-panel-editors/page-transitions-editor"
+import PageTransitionsEditor from "../left-middle-panel-editors/page-transitions-editor";
 
 /**
  * Interface representing component properties
