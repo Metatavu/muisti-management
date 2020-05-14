@@ -156,6 +156,7 @@ class TopBar extends React.Component<Props, State> {
 
     const targetUrl = navigationButton.postfix === "exhibitions" ? exhibitionPath : `/dashboard/${ navigationButton.postfix }`;
     const selected = navigationButton.postfix === "exhibitions" ? locationPath === exhibitionPath : locationPath === `/dashboard/${ navigationButton.postfix }`;
+    
     return (
       <ListItem
         button
@@ -196,6 +197,7 @@ class TopBar extends React.Component<Props, State> {
    */
   private renderTabButton = (tabButton: NavigationButton) => {
     const { locationPath } = this.props;
+
     return (
       <ListItem
         button
@@ -228,6 +230,7 @@ class TopBar extends React.Component<Props, State> {
    */
   private onLogOutClick = () => {
     const { keycloak } = this.props;
+    
     if (keycloak) {
       keycloak.logout();
     }
