@@ -428,7 +428,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     }
 
     return <>
-      <Typography variant="h4">{ strings.exhibition.eventTriggers.title }</Typography>
+      <Typography variant="h4">{ strings.formatString(strings.exhibition.eventTrigger, selectedEventTriggerIndex + 1) }</Typography>
       <EventTriggerEditor
         history={ this.props.history }
         classes={ this.props.classes }
