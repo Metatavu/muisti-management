@@ -35,7 +35,7 @@ interface State { }
 /**
  * Component for page settings editor
  */
-class PageTransitionsElementsEditor extends React.Component<Props, State> {
+class PageTransitionsViewsEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -66,32 +66,32 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     if (!selectedTransition) {
       return (
         <GenericButton
-          text={ strings.exhibition.pageSettingsEditor.dialog.addElementPair }
+          text={ strings.exhibition.pageSettingsEditor.dialog.addViewPair }
           color="secondary"
           icon={ <AddIcon /> }
-          onClick={ () => this.onAddElementPairClick() }
+          onClick={ () => this.onAddViewPairClick() }
         />
       );
     }
 
     return (<>
-      <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.elementPairs }</Typography>
+      <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.viewPairs }</Typography>
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        { this.getElementPairs() }
+        { this.getViewPairs() }
       </Grid>
       <GenericButton
-        text={ strings.exhibition.pageSettingsEditor.dialog.addElementPair }
+        text={ strings.exhibition.pageSettingsEditor.dialog.addViewPair }
         color="secondary"
         icon={ <AddIcon /> }
-        onClick={ () => this.onAddElementPairClick() }
+        onClick={ () => this.onAddViewPairClick() }
       />
-   </>);
+    </>);
   }
 
   /**
-   * Get element pair elements
+   * Get view pair views
    */
-  private getElementPairs() {
+  private getViewPairs() {
     const { selectedTransition } = this.props;
 
     const sourcePageLayout = this.findSourceLayout();
@@ -104,16 +104,16 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
         return <div/>;
     }
 
-    return selectedTransition.options.morph.views.map((element, index) => {
+    return selectedTransition.options.morph.views.map((view, index) => {
       return (<>
         <Grid item xs={ 5 }>
-          { this.renderSourceSelect(element, index, sourcePageLayout) }
+          { this.renderSourceSelect(view, index, sourcePageLayout) }
         </Grid>
         <Grid item xs={ 5 }>
-          { this.renderTargetSelect(element, index, targetLayouts) }
+          { this.renderTargetSelect(view, index, targetLayouts) }
         </Grid>
         <Grid item xs={ 2 }>
-          <IconButton color="primary" onClick={ () => this.onDeleteElementPair(index) }>
+          <IconButton color="primary" onClick={ () => this.onDeleteViewPair(index) }>
             <DeleteIcon />
           </IconButton>
         </Grid>
@@ -124,55 +124,55 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
 
   /**
    * Render source select
-   * @param element exhibition page transition options morph view
+   * @param view exhibition page transition options morph view
    * @param index view index
    * @param sourcePageLayout source page layout
    */
-  private renderSourceSelect = (element: ExhibitionPageTransitionOptionsMorphView, index: number, sourcePageLayout: PageLayout) => {
+  private renderSourceSelect = (view: ExhibitionPageTransitionOptionsMorphView, index: number, sourcePageLayout: PageLayout) => {
 
     return (<>
       <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.startOfTransition }</Typography>
       <Select
         fullWidth
-        label={ element.sourceId }
+        label={ view.sourceId }
         id="sourceId"
-        onChange={ e => this.handleResourceSelectChange(e, index) }
+        onChange={ this.handleViewSelectChange(index) }
         name="sourceId"
-        value={ element.sourceId }
+        value={ view.sourceId }
       >
-        { this.getSourceLayoutElements(sourcePageLayout) }
+        { this.getSourceLayoutViews(sourcePageLayout) }
       </Select>
     </>);
   }
 
   /**
    * Render target select
-   * @param element exhibition page transition options morph view
+   * @param view exhibition page transition options morph view
    * @param index view index
    * @param sourcePageLayout list of target page layouts
    */
-  private renderTargetSelect = (element: ExhibitionPageTransitionOptionsMorphView, index: number, targetLayouts: PageLayout[]) => {
+  private renderTargetSelect = (view: ExhibitionPageTransitionOptionsMorphView, index: number, targetLayouts: PageLayout[]) => {
     const { selectedTransition } = this.props;
     return (<>
       <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.exhibition.pageSettingsEditor.dialog.endOfTransition }</Typography>
       <Select
         fullWidth
-        label={ element.targetId }
+        label={ view.targetId }
         id="targetId"
-        onChange={ e => this.handleResourceSelectChange(e, index) }
+        onChange={ this.handleViewSelectChange(index) }
         name="targetId"
-        value={ selectedTransition.targetLayoutId + ":" + element.targetId }
+        value={ `${selectedTransition.targetLayoutId}:${view.targetId}` }
       >
-        { this.getTargetLayoutElements(targetLayouts) }
+        { this.getTargetLayoutViews(targetLayouts) }
       </Select>
     </>);
   }
 
   /**
-   * Select change event handler
-   * @param event change event
+   * Select view change event handler
+   * @param index view index
    */
-  private handleResourceSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>, index: number) => {
+  private handleViewSelectChange = (index: number) => (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
     const { selectedTransition } = this.props;
 
     const key = event.target.name as string;
@@ -184,23 +184,22 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
     }
 
     if (value.includes(":")) {
-      const split = value.split(":");
-      const targetLayoutId = split[0];
-      const targetElement = split[1];
+      const valuePair = value.split(":");
+      const targetLayoutId = valuePair[0];
+      const targetView = valuePair[1];
       transitionToUpdate.targetLayoutId = targetLayoutId;
-      transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : targetElement};
+      transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : targetView};
       this.props.onTransitionUpdate(transitionToUpdate);
-      return;
+    } else {
+      transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : value};
+      this.props.onTransitionUpdate(transitionToUpdate); 
     }
-
-    transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : value};
-    this.props.onTransitionUpdate(transitionToUpdate);
   }
 
   /**
-   * On add element pair click handler
+   * On add view pair click handler
    */
-  private onAddElementPairClick = () => {
+  private onAddViewPairClick = () => {
     const { selectedTransition } = this.props;
 
     const transitionToUpdate = selectedTransition;
@@ -228,10 +227,10 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
   }
 
   /**
-   * On delete element pair handler
-   * @param index element pair to delete
+   * On delete view pair handler
+   * @param index view pair to delete
    */
-  private onDeleteElementPair = (index: number) => {
+  private onDeleteViewPair = (index: number) => {
     const { selectedTransition } = this.props;
 
     const transitionToUpdate = selectedTransition;
@@ -247,11 +246,10 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
   /**
    * Generate target layout select menu items
    */
-  private getTargetLayoutElements = (layouts: PageLayout[]) => {
+  private getTargetLayoutViews = (layouts: PageLayout[]) => {
     return layouts.map(layout => {
-      return layout.data.children.map(element => {
-        const value = layout.id + ":" + element.id;
-        return <MenuItem value={ value }>{ layout.name + " : " + element.id }</MenuItem>;
+      return layout.data.children.map(view => {
+        return <MenuItem value={ `${layout.id}:${view.id}` }>{ layout.name + " : " + view.id }</MenuItem>;
       });
     });
   }
@@ -259,9 +257,9 @@ class PageTransitionsElementsEditor extends React.Component<Props, State> {
   /**
    * Generate source layout select menu items
    */
-  private getSourceLayoutElements = (layout: PageLayout) => {
-    return layout.data.children.map(element => {
-      return <MenuItem value={ element.id }>{ element.id }</MenuItem>;
+  private getSourceLayoutViews = (layout: PageLayout) => {
+    return layout.data.children.map(view => {
+      return <MenuItem value={ view.id }>{ view.id }</MenuItem>;
     });
   }
 
@@ -314,4 +312,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return { };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PageTransitionsElementsEditor));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PageTransitionsViewsEditor));

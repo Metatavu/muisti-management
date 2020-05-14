@@ -186,8 +186,8 @@
         "animation": "Animation",
         "timeInterpolation": "Time interpolation",
         "duration": "Duration (milliseconds)",
-        "elementPairs": "Element pairs",
-        "addElementPair": "Add element pair",
+        "viewPairs": "Element pairs",
+        "addViewPair": "Add element pair",
         "startOfTransition": "From element",
         "endOfTransition" : "To element"
       }

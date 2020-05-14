@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionDevice, Animation, AnimationTimeInterpolation, ExhibitionPageTransition } from "../../generated/client";
+// eslint-disable-next-line max-len
 import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
@@ -11,8 +12,7 @@ import AddIcon from "@material-ui/icons/AddSharp";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditorDialog from "../generic/editor-dialog";
 import theme from "../../styles/theme";
-import PageTransitionElementsEditor from "../left-middle-panel-editors/page-transition-elements-editor";
-import { AnimationOption } from "../../generated/client/models/AnimationOption";
+import PageTransitionViewsEditor from "../left-middle-panel-editors/page-transition-elements-editor";
 
 /**
  * Interface representing component properties
@@ -201,7 +201,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
       return <div/>;
     }
     return (<>
-      <PageTransitionElementsEditor
+      <PageTransitionViewsEditor
         exhibitionPages={ this.getCorrectPages() }
         exhibitionPage={ exhibitionPage }
         selectedTransition={ selectedTransition }

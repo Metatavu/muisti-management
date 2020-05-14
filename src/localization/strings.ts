@@ -184,8 +184,8 @@ export interface IStrings extends LocalizedStringsMethods {
         animation: string;
         timeInterpolation: string;
         duration: string;
-        addElementPair: string;
-        elementPairs: string;
+        viewPairs: string;
+        addViewPair: string;
         startOfTransition: string;
         endOfTransition: string;
       };

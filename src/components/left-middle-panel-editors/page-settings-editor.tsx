@@ -157,6 +157,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
   /**
    * Renders layout select
+   * @param pageData selected exhibition page
    */
   private renderTransitions = (pageData: ExhibitionPage) => {
     const { onPageTransitionChange, devices, pages } = this.props;

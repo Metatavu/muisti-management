@@ -186,8 +186,8 @@
         "animation": "Animation",
         "timeInterpolation": "Interpolointi",
         "duration": "Kesto (millisekunttia)",
-        "elementPairs": "Elementtiparit",
-        "addOptionParam": "Lisää elementtipari",
+        "viewPairs": "Elementtiparit",
+        "addViewPair": "Lisää elementtipari",
         "startOfTransition": "Elementistä",
         "endOfTransition" : "Elementille"
       }
