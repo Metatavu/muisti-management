@@ -187,7 +187,7 @@ export class ExhibitionView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane title={ selectedResource ? selectedResource.id : "" }>
+          <ElementSettingsPane minWidth={ 320 } title={ selectedResource ? selectedResource.id : "" }>
             {
               this.state.selectedResource &&
               <ResourceEditor 

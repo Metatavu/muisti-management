@@ -29,6 +29,7 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 import { parse as parseXML } from "fast-xml-parser";
 import AndroidUtils from "../../utils/android-utils";
+import CommonLayoutPropertiesEditor from "../layout/editor-components/common-properties-editor";
 
 type View = "CODE" | "VISUAL";
 
@@ -138,7 +139,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.layout.title }>
             <div className={ classes.toolbarContent }>
               <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
-              { this.renderdeviceModelSelect() }
+              { this.renderDeviceModelSelect() }
               { this.renderScreenOrientationSelect() }
             </div>
           </ElementNavigationPane>
@@ -148,8 +149,11 @@ export class LayoutEditorView extends React.Component<Props, State> {
             { this.renderDeleteDialog() }
           </EditorView>
 
-          <ElementSettingsPane title={ strings.layout.properties.title }>
-
+          <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
+            <CommonLayoutPropertiesEditor
+              pageLayoutView={ layout.data }
+              onLayoutPropertyChange={ this.onPropertyChange }
+            />
           </ElementSettingsPane>
         </div>
 
@@ -160,7 +164,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
   /**
    * Renders device model select
    */
-  private renderdeviceModelSelect = () => {
+  private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
     const deviceModelSelectItems = deviceModels.map(model => 
       <MenuItem value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
@@ -258,12 +262,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
       lineNumbers: true
     };
 
-    const xmlEditorOptions = {
-      mode: "xml",
-      theme: "material",
-      lineNumbers: true
-    };
-
     return (
       <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
@@ -272,13 +270,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
             value={ this.state.jsonCode }
             options={ jsonEditorOptions }
             onBeforeChange={ this.onBeforeJsonCodeChange } />
-        </div>
-        <div className={ classes.editorContainer }>
-          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.xml }</Typography>
-          <CodeMirror className={ classes.editor }
-            value={ this.state.xmlCode }
-            options={ xmlEditorOptions }
-            onBeforeChange={ this.onBeforeXmlCodeChange } />
         </div>
       </div>
     )
@@ -340,8 +331,25 @@ export class LayoutEditorView extends React.Component<Props, State> {
       name: layout.name,
       jsonCode: JSON.stringify(layout.data, null, 2),
       screenOrientation: layout.screenOrientation,
-      deviceModelId: layout.modelId || ""
+      deviceModelId: layout.modelId || "",
     });
+  }
+
+  private onPropertyChange = (layoutView: PageLayoutView) => {
+    // this.setState({
+    //   name: layout.name,
+    //   // jsonCode: JSON.stringify(layout.data, null, 2),
+    //   screenOrientation: layout.screenOrientation,
+    //   deviceModelId: layout.modelId || "",
+    //   stateLayout: layout
+    // });
+    const temp = JSON.parse(JSON.stringify(this.props.layout)) as PageLayout;
+    if (!temp) {
+      return;
+    }
+
+    temp.data = layoutView;
+    this.props.setSelectedLayout(temp);
   }
 
   /**

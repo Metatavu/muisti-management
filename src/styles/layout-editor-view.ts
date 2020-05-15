@@ -2,7 +2,7 @@ import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
 export default createStyles({
-  
+
   loader: {
     height: "100%",
     position: "absolute",
@@ -103,17 +103,16 @@ export default createStyles({
   },
 
   editors: {
-    display: "grid",
+    display: "flex",
     width: "100%",
     height: "100%",
-    gridGap: 10,
-    gridTemplateColumns: "1fr 1fr"
   },
 
   editorContainer: {
     display: "grid",
     gridTemplateRows: "auto 1fr",
-    height: "100%"
+    height: "100%",
+    width: "100%"
   },
 
   editor: {

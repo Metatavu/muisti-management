@@ -286,6 +286,33 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  layoutEditor: {
+    commonComponents: {
+      id: string;
+      layoutWidth: string;
+      layoutHeight: string;
+      backgroundColor: string;
+      paddings: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      margins: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      layoutGravity: string;
+      layoutAlign: string;
+    };
+  };
+
 }
 
 const strings: IStrings = new LocalizedStrings({
