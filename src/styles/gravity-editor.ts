@@ -3,6 +3,7 @@ import theme from "./theme";
 
 export default createStyles({
   gravitySelector: {
+    marginTop: theme.spacing(2),
     display: "flex",
     flexDirection: "column"
   },
@@ -19,10 +20,13 @@ export default createStyles({
     flexDirection: "row"
   },
   button: {
-    width: 30,
-    height: 30,
+    minWidth: 50,
+    height: 50,
+    padding: 0,
+    border: "1px solid rgba(0,0,0,0.2)",
     "&.selected": {
-      backgroundColor: theme.palette.secondary.main
+      backgroundColor: theme.palette.secondary.main,
+      color: "#fff"
     }
   }
 });
