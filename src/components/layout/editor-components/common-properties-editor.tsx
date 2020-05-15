@@ -68,6 +68,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           { this.renderLayoutPadding() }
           { this.renderLayoutMargin() }
         </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
         { this.renderLayoutGravity() }
       </>
     );
@@ -76,13 +77,20 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutWidth = () => {
     return (
       <>
-        <Typography variant="h4">{ strings.layoutEditor.commonComponents.layoutWidth }</Typography>
-        <GenericPropertySelect
-          property={ this.getProperty(LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String) }
-          onSelectChange={ this.onSingleValueChange }
-          selectItemType={ LayoutWidthValues }
-        />
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+              { strings.layoutEditor.commonComponents.layoutWidth }:
+          </Typography>
+          <GenericPropertySelect
+            property={ this.getProperty(LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String) }
+            onSelectChange={ this.onSingleValueChange }
+            selectItemType={ LayoutWidthValues }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
     );
   }
@@ -90,13 +98,20 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutHeight = () => {
     return (
       <>
-        <Typography variant="h4">{ strings.layoutEditor.commonComponents.layoutHeight }</Typography>
-        <GenericPropertySelect
-          property={ this.getProperty(LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String) }
-          onSelectChange={ this.onSingleValueChange }
-          selectItemType={ LayoutHeightValues }
-        />
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+            { strings.layoutEditor.commonComponents.layoutHeight }:
+          </Typography>
+          <GenericPropertySelect
+            property={ this.getProperty(LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String) }
+            onSelectChange={ this.onSingleValueChange }
+            selectItemType={ LayoutHeightValues }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
     );
   }
@@ -110,7 +125,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           property={ this.getProperty(LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color) }
           onColorChange={ this.onSingleValueChange }
         />
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
   }
@@ -145,14 +160,14 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
   private renderLayoutGravity = () => {
     return (
-      <>
+      <div style={{ padding: theme.spacing(1) }}>
         <Typography variant="h4">{ strings.layoutEditor.commonComponents.layoutGravity }</Typography>
         <GravityEditor
           property={ this.getProperty(LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.onSingleValueChange }
         />
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
-      </>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </div>
     );
   }
 
