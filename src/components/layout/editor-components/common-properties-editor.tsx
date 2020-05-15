@@ -82,7 +82,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h4"
           >
-              { strings.layoutEditor.commonComponents.layoutWidth }:
+            { strings.layoutEditor.commonComponents.layoutWidth }:
           </Typography>
           <GenericPropertySelect
             property={ this.getProperty(LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String) }

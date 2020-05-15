@@ -2,12 +2,13 @@ import * as React from "react";
 import { ExhibitionDevice, ScreenOrientation, DeviceModel, PageLayoutViewPropertyType, PageLayoutViewProperty } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid } from "@material-ui/core";
-import styles from "../../../styles/add-device-editor";
+import styles from "../../../styles/color-picker";
 import { ReduxActions, ReduxState } from "../../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
 import { SketchPicker, ColorChangeHandler, ColorResult } from 'react-color';
+import theme from "../../../styles/theme";
 
 
 /**
@@ -48,25 +49,25 @@ class GenericPropertySelect extends React.Component<Props, State> {
     };
   }
 
-  public componentDidMount = () => {
-  }
+  public componentDidMount = () => {}
 
   /**
    * Component render method
    */
   public render() {
-    const { property } = this.props;
+    const { classes, property } = this.props;
     const { showColorPicker } = this.state;
     return (
-      <>
-        <div style={{ width: "50px", height: "50px", backgroundColor: property.value }} onClick={ this.onColorBoxClick }></div>
-        { showColorPicker && 
+      <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+        <div className={ classes.color } style={{ backgroundColor: property.value }} onClick={ this.onColorBoxClick }></div>
+        { showColorPicker &&
           <SketchPicker
             color={ property.value }
             onChangeComplete={ this.handleChangeComplete }
           />
         }
-    </>
+        <TextField disabled style={{ marginLeft: theme.spacing(2) }} variant="outlined" value={ property.value }/>
+    </div>
   );
   }
 

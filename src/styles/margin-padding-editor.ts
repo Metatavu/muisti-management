@@ -54,11 +54,12 @@ export default createStyles({
     }
   },
   toggleLink: {
-    width: 50,
-    minWidth: 50,
-    height: 30,
+    width: 40,
+    height: 40,
     padding: 0,
-    borderRadius: 0,
+    margin: "0 5px",
+    minWidth: 40,
+    borderRadius: "50%",
     backgroundColor: "transparent"
   }
 });

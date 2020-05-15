@@ -6,7 +6,7 @@ import styles from "../../../styles/add-device-editor";
 import { ReduxActions, ReduxState } from "../../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
+import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs } from "../editor-constants/values";
 
 
 /**
@@ -14,7 +14,7 @@ import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/value
  */
 interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
-  selectItemType: typeof LayoutWidthValues | typeof LayoutHeightValues;
+  selectItemType: typeof LayoutWidthValues | typeof LayoutHeightValues | typeof LayoutGravityValuePairs;
 
   /**
    * On select change handler
@@ -64,7 +64,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
    */
   public render() {
     const { property } = this.props;
-    return (<>
+    return (
       <Select
         fullWidth
         // labelId={  }
@@ -75,7 +75,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
       >
         { this.getSelectItems() }
       </Select>
-    </>);
+    );
   }
 
   private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
@@ -98,7 +98,6 @@ class GenericPropertySelect extends React.Component<Props, State> {
    */
   private getSelectItems = () => {
     const { itemKeyList, itemValueList } = this.state;
-
     return itemKeyList.map((key, index) => {
       return <MenuItem key={ key } value={ itemValueList[index] }>{ key }</MenuItem>;
     });

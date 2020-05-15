@@ -324,7 +324,21 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       layoutGravity: string;
       layoutAlign: string;
+
+      layoutGravityValues: {
+        leftTop: string;
+        top: string;
+        rightTop: string;
+        leftCenter: string;
+        center: string;
+        rightCenter: string;
+        leftBottom: string;
+        bottom: string;
+        rightBottom: string;
+      };
     };
+
+
   };
 
 }

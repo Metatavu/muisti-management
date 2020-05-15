@@ -6,7 +6,9 @@ export default createStyles({
     position: "relative",
     "& .sketch-picker": {
       position: "absolute",
-      zIndex: 1000
+      zIndex: 1000,
+      top: 87,
+      left: 50
     }
   }
 });

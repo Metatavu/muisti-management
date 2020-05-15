@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import LinkIcon from '@material-ui/icons/Link';
 import UnLinkIcon from '@material-ui/icons/LinkOff';
+import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
 
 /**
  * Interface representing component properties
@@ -31,6 +32,7 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   valuesLinked: boolean;
+  controllingType: string;
 }
 
 /**
@@ -46,7 +48,8 @@ class MarginPaddingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      valuesLinked: false
+      valuesLinked: false,
+      controllingType: (props.itemKey === "layout_padding" ? "padding" : "margin")
     };
   }
 
@@ -65,77 +68,55 @@ class MarginPaddingEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes, properties, itemKey } = this.props;
-    const { valuesLinked } = this.state;
-    console.log(properties)
+    const { valuesLinked, controllingType } = this.state;
     if (properties.length !== 4) {
       return (<div/>);
     }
-    // const gridItems = properties.map(property => {
-    //   return (
-    //     <div key={ property.name }>
-    //       <TextField
-    //         className={ classes.input }
-    //         id="outlined-basic"
-    //         name={ property.name }
-    //         variant="outlined"
-    //         type="number"
-    //         value={ property.value.substring(0, property.value.length - 2) }
-    //         onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
-    //       />
-    //     </div>
-    //   );
-    // });
+
     return (
       <div className={ itemKey === "layout_padding" ? classes.paddingContainer : classes.marginContainer } key={ itemKey }>
         <div className={ itemKey === "layout_padding" ? classes.paddingInnerContainer : classes.marginInnerContainer } >
           <div className={ classes.topRow }>
-            <TextField
-              className={ classes.input }
-              id="outlined-basic"
-              name={ properties[0].name }
-              variant="standard"
-              type="number"
-              value={ properties[0].value.substring(0, properties[0].value.length - 2) }
-              onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
-            />
+            { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingTop : LayoutMarginPropKeys.LayoutMarginTop) }
           </div>
           <div className={ classes.middleRow }>
-          <TextField
-              className={ classes.input }
-              id="outlined-basic"
-              name={ properties[1].name }
-              variant="standard"
-              type="number"
-              value={ properties[1].value.substring(1, properties[1].value.length - 2) }
-              onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
-            />
+          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingLeft : LayoutMarginPropKeys.LayoutMarginLeft) }
           <Button className={ classes.toggleLink } disableElevation variant="contained" color="inherit" onClick={ this.onLinkValuesClick }>
             { valuesLinked ? <LinkIcon color="secondary" /> : <UnLinkIcon color="primary" /> }
           </Button>
-          <TextField
-              className={ classes.input }
-              id="outlined-basic"
-              name={ properties[2].name }
-              variant="standard"
-              type="number"
-              value={ properties[2].value.substring(2, properties[2].value.length - 2) }
-              onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
-            />
+          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingRight : LayoutMarginPropKeys.LayoutMarginRight) }
           </div>
           <div className={ classes.bottomRow }>
-          <TextField
-              className={ classes.input }
-              id="outlined-basic"
-              name={ properties[3].name }
-              variant="standard"
-              type="number"
-              value={ properties[3].value.substring(3, properties[3].value.length - 2) }
-              onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
-            />
+          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingBottom : LayoutMarginPropKeys.LayoutMarginBottom) }
           </div>
         </div>
       </div>
     );
+  }
+
+  private renderTextField = (propertyName: string) => {
+    const { classes } = this.props;
+    const { valuesLinked } = this.state;
+    const foundProperty = this.getPropertyToDisplay(propertyName);
+
+    if (!foundProperty) {
+      return (
+        <div/>
+      );
+    }
+
+    return (
+      <TextField
+        className={ classes.input }
+        id="outlined-basic"
+        name={ foundProperty.name }
+        variant="standard"
+        type="number"
+        value={ foundProperty.value.substring(0, foundProperty.value.length - 2) }
+        onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
+      />
+    );
+    
   }
 
   private onLinkedTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,6 +157,11 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     this.setState({
       valuesLinked: !this.state.valuesLinked
     });
+  }
+
+  private getPropertyToDisplay = (propertyName: string): PageLayoutViewProperty | undefined => {
+    const { properties } = this.props;
+    return properties.find(property => property.name === propertyName);
   }
 }
 

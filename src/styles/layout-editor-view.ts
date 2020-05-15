@@ -106,13 +106,14 @@ export default createStyles({
     display: "flex",
     width: "100%",
     height: "100%",
+    position: "relative"
   },
 
   editorContainer: {
     display: "grid",
     gridTemplateRows: "auto 1fr",
     height: "100%",
-    width: "100%"
+    width: "100%",
   },
 
   editor: {

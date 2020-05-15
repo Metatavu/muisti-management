@@ -10,9 +10,10 @@ import classNames from "classnames";
 import ArrowIcon from '@material-ui/icons/ArrowLeft';
 import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
 
-import HorizontalIcon from '@material-ui/icons/SwapHoriz';
-import VerticalIcon from '@material-ui/icons/SwapVert';
+import GravityIcon from '@material-ui/icons/OpenWith';
 import theme from "../../../styles/theme";
+import { LayoutGravityValues, LayoutGravityValuePairs } from "../editor-constants/values";
+import GenericPropertySelect from "./generic-property-select";
 
 /**
  * Interface representing component properties
@@ -65,46 +66,62 @@ class GravityEditor extends React.Component<Props, State> {
       <div style={{ display: "flex" }}>
         <div className={ classes.gravitySelector } key={ property.name + "-grid" }>
           <div className={ classes.topRow }>
-            <Button className={ classNames( classes.button, "selected" ) }><ArrowIcon style={{ transform: "rotate(45deg)" }} /></Button>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(90deg)" }} /></Button>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(135deg)" }} /></Button>
+            { this.renderGravityButton(LayoutGravityValuePairs.LeftTop, { transform: "rotate(45deg)" } as React.CSSProperties) }
+            { this.renderGravityButton(LayoutGravityValuePairs.Top, { transform: "rotate(90deg)" } as React.CSSProperties) }
+            { this.renderGravityButton(LayoutGravityValuePairs.RightTop, { transform: "rotate(135deg)" } as React.CSSProperties) }
           </div>
           <div className={ classes.middleRow }>
-            <Button className={ classes.button }><ArrowIcon /></Button>
-            <Button className={ classes.button }><CenterIcon /></Button>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(180deg)" }} /></Button>
+            { this.renderGravityButton(LayoutGravityValuePairs.LeftCenter) }
+            <Button
+              className={ classNames( classes.button, property.value === LayoutGravityValuePairs.Center ? "selected" : "") }
+              onClick={ () => this.onGravityClick(LayoutGravityValuePairs.Center) }
+            >
+              <CenterIcon />
+            </Button>
+            { this.renderGravityButton(LayoutGravityValuePairs.RightCenter, { transform: "rotate(180deg)" } as React.CSSProperties) }
           </div>
           <div className={ classes.bottomRow }>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(-45deg)" }} /></Button>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(-90deg)" }} /></Button>
-            <Button className={ classes.button }><ArrowIcon style={{ transform: "rotate(-135deg)" }} /></Button>
+            { this.renderGravityButton(LayoutGravityValuePairs.LeftBottom, { transform: "rotate(-45deg)" } as React.CSSProperties) }
+            { this.renderGravityButton(LayoutGravityValuePairs.Bottom, { transform: "rotate(-90deg)" } as React.CSSProperties) }
+            { this.renderGravityButton(LayoutGravityValuePairs.RightBottom, { transform: "rotate(-135deg)" } as React.CSSProperties) }
           </div>
         </div>
-        <div style={{ marginLeft: theme.spacing(4), marginTop: theme.spacing(2) }}>
-          <div style={{ display: "flex", marginBottom: theme.spacing(4) }}>
-            <HorizontalIcon />
-            {/* Select tähän */}
-          </div>
+        <div style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(4), display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ display: "flex" }}>
-            <VerticalIcon />
-            {/* Select tähän */}
+            <GravityIcon />
+            <GenericPropertySelect
+              property={ property }
+              onSelectChange={ this.props.onSingleValueChange }
+              selectItemType={ LayoutGravityValuePairs }
+            />
           </div>
         </div>
       </div>
     );
   }
 
-  private onValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private renderGravityButton = (value: string, cssProp?: React.CSSProperties ) => {
+    const { classes, property } = this.props;
+    return (
+      <Button
+        className={ classNames( classes.button, property.value === value ? "selected" : "") }
+        onClick={ () => this.onGravityClick(value) }
+      >
+        <ArrowIcon style={ cssProp } />
+      </Button>
+    );
+  }
+
+  private onGravityClick = (value: string) => {
     const { onSingleValueChange, property } = this.props;
 
-    const key = event.target.name;
-    const value = event.target.value;
-    if (!key || !value) {
+    if (!value) {
       return;
     }
 
     const propertyToUpdate = property;
     propertyToUpdate.value = value;
+    console.log(propertyToUpdate);
     onSingleValueChange(propertyToUpdate);
   }
 }
