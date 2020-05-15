@@ -1,22 +1,23 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton, Typography, Breadcrumbs } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/basic-layout";
-import SignOutIcon from "@material-ui/icons/ExitToAppSharp";
-import MenuIcon from "@material-ui/icons/MenuSharp";
+import TopBar from "../top-bar/top-bar";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
-import strings from "../../localization/strings";
+import { History } from "history";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   title: string;
-  keycloak?: KeycloakInstance;
+  keycloak: KeycloakInstance;
+  history: History;
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
+  exhibitionId?: string;
 }
 
 /**
@@ -46,27 +47,12 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, history, exhibitionId } = this.props;
+    const locationPath = history.location.pathname;
 
     return (
       <div className={ classes.root }>
-        <header className={ classes.header }>
-          { this.props.onDashboardButtonClick &&
-            <IconButton size="small" className={ classes.menuBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
-              <MenuIcon />
-            </IconButton>
-          }
-          <Breadcrumbs>
-            <Typography variant="h6">{ strings.exhibition.onProduction }</Typography>
-            <Typography color="textPrimary" variant="h5" className={ classes.title }>
-              { this.props.title }
-            </Typography>
-          </Breadcrumbs>
-
-          <IconButton size="small" className={ classes.logoutBtn } edge="start" onClick={ this.onLogOutClick }>
-            <SignOutIcon />
-          </IconButton>
-        </header>
+        <TopBar exhibitionId={ exhibitionId } locationPath={ locationPath } title={ this.props.title } keycloak={ this.props.keycloak } onDashboardButtonClick={ this.props.onDashboardButtonClick } />
         <div className={ classes.content }>
           { this.props.children }
         </div>
@@ -84,16 +70,6 @@ class BasicLayout extends React.Component<Props, State> {
     }
 
     return null;
-  }
-
-  /**
-   * Handle logout
-   */
-  private onLogOutClick = () => {
-    const { keycloak } = this.props;
-    if (keycloak) {
-      keycloak.logout();
-    }
   }
 
 }

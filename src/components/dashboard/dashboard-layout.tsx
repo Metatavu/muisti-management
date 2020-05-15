@@ -77,8 +77,8 @@ class DashboardLayout extends React.Component<Props, State> {
         <div className={ classes.navigation }>
           <div className={ classes.navigationTopContent }>
             <div className={ classes.userElement }>
-                <div className={ classes.userAvatar }><p>{ initials }</p></div>
-            <h4>{ firstName }</h4>
+              <div className={ classes.userAvatar }><p>{ initials }</p></div>
+              <h4>{ firstName }</h4>
             </div>
             <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
             <DashboardNavigation locationPath={ locationPath } />
