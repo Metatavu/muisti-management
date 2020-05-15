@@ -94,7 +94,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     const { exhibition } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
@@ -107,6 +107,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
     return (
       <BasicLayoutV3
+        history={ history }
         title={ exhibition.name }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }

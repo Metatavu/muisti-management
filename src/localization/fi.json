@@ -1,4 +1,19 @@
 {
+
+  "header": {
+    "navigation": {
+      "exhibitionsButton": "Näyttelyt",
+      "usersButton": "Käyttäjät",
+      "devicesButton": "Laitteet",
+      "layoutsButton": "Asettelut",
+      "floorPlansButton": "Pohjapiirrustukset"
+    },
+    "tabs": {
+      "floorPlanTab": "Pohjapiirros",
+      "exhibitionContentsTab": "Näyttelysisällöt"
+    }
+  },
+
   "comingSoon": "Tulossa pian!",
   "removeSelection": "Poista valinta",
 
@@ -61,7 +76,6 @@
   },
 
   "dashboard": {
-
     "newExhibitionButton": "Uusi näyttely",
     "navigation": {
       "overviewButton": "Työpöytä",
