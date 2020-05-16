@@ -1,15 +1,9 @@
 import * as React from "react";
-import { ExhibitionDevice, ScreenOrientation, DeviceModel, PageLayoutViewPropertyType, PageLayoutViewProperty } from "../../../generated/client";
-import strings from "../../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid } from "@material-ui/core";
+import { PageLayoutViewProperty } from "../../../generated/client";
+import { WithStyles, withStyles, TextField } from "@material-ui/core";
 import styles from "../../../styles/color-picker";
-import { ReduxActions, ReduxState } from "../../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
-import { SketchPicker, ColorChangeHandler, ColorResult } from 'react-color';
+import { SketchPicker, ColorResult } from 'react-color';
 import theme from "../../../styles/theme";
-
 
 /**
  * Interface representing component properties
@@ -18,9 +12,8 @@ interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
 
   /**
-   * On select change handler
-   * @param key property key
-   * @param value property value
+   * On color change handler
+   * @param propertyToUpdate page layout view property to update
    */
   onColorChange: (propertyToUpdate: PageLayoutViewProperty) => void;
 }
@@ -33,7 +26,7 @@ interface State {
 }
 
 /**
- * Component for add device editor
+ * Component for add generic layout property select
  */
 class GenericPropertySelect extends React.Component<Props, State> {
 
@@ -48,8 +41,6 @@ class GenericPropertySelect extends React.Component<Props, State> {
       showColorPicker: false
     };
   }
-
-  public componentDidMount = () => {}
 
   /**
    * Component render method
@@ -67,10 +58,14 @@ class GenericPropertySelect extends React.Component<Props, State> {
           />
         }
         <TextField disabled style={{ marginLeft: theme.spacing(2) }} variant="outlined" value={ property.value }/>
-    </div>
-  );
+      </div>
+    );
   }
 
+  /**
+   * On color change complete handler
+   * @param color selected color
+   */
   private handleChangeComplete = (color: ColorResult) => {
     const { onColorChange, property } = this.props;
     const propertyToUpdate = property;
@@ -78,6 +73,9 @@ class GenericPropertySelect extends React.Component<Props, State> {
     onColorChange(propertyToUpdate);
   };
 
+  /**
+   * On color box click handler
+   */
   private onColorBoxClick = () => {
     this.setState({
       showColorPicker: !this.state.showColorPicker
@@ -86,22 +84,4 @@ class GenericPropertySelect extends React.Component<Props, State> {
 
 }
 
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return { };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GenericPropertySelect));
+export default (withStyles(styles)(GenericPropertySelect));

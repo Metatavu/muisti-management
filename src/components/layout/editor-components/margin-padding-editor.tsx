@@ -1,11 +1,7 @@
 import * as React from "react";
-import { ExhibitionDevice, ScreenOrientation, DeviceModel, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
-import strings from "../../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid, Button } from "@material-ui/core";
+import { PageLayoutViewProperty } from "../../../generated/client";
+import { WithStyles, withStyles, TextField, Button } from "@material-ui/core";
 import styles from "../../../styles/margin-padding-editor";
-import { ReduxActions, ReduxState } from "../../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import LinkIcon from '@material-ui/icons/Link';
 import UnLinkIcon from '@material-ui/icons/LinkOff';
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
@@ -18,13 +14,16 @@ interface Props extends WithStyles<typeof styles> {
   itemKey: string;
 
   /**
-   * On select change handler
-   * @param key property key
-   * @param value property value
+   * On singe page layout view property change handler
+   * @param propertyToUpdate property to update
    */
   onSingleValueChange: (propertyToUpdate: PageLayoutViewProperty) => void;
-  onMultipleValueChange: (propertiesToUpdate: PageLayoutViewProperty[]) => void;
 
+  /**
+   * On multiple page layout view property change handler
+   * @param propertyToUpdate list of properties to update
+   */
+  onMultipleValueChange: (propertiesToUpdate: PageLayoutViewProperty[]) => void;
 }
 
 /**
@@ -36,7 +35,7 @@ interface State {
 }
 
 /**
- * Component for add device editor
+ * Component for editing layout margins and paddings
  */
 class MarginPaddingEditor extends React.Component<Props, State> {
 
@@ -53,25 +52,12 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     };
   }
 
-  public componentDidMount = () => {
-  }
-
-  public componentDidUpdate = (prevProps: Props) => {
-
-    if (prevProps.properties !== this.props.properties) {
-      console.log(this.props.properties)
-    }
-  }
-
   /**
    * Component render method
    */
   public render() {
-    const { classes, properties, itemKey } = this.props;
+    const { classes, itemKey } = this.props;
     const { valuesLinked, controllingType } = this.state;
-    if (properties.length !== 4) {
-      return (<div/>);
-    }
 
     return (
       <div className={ itemKey === "layout_padding" ? classes.paddingContainer : classes.marginContainer } key={ itemKey }>
@@ -94,6 +80,10 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render text field
+   * @param propertyName name of the property
+   */
   private renderTextField = (propertyName: string) => {
     const { classes } = this.props;
     const { valuesLinked } = this.state;
@@ -116,9 +106,12 @@ class MarginPaddingEditor extends React.Component<Props, State> {
         onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
       />
     );
-    
   }
 
+  /**
+   * Handler when linked value changed is enabled
+   * @param event react change event
+   */
   private onLinkedTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onMultipleValueChange, properties } = this.props;
     const key = event.target.name;
@@ -136,6 +129,10 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     onMultipleValueChange(propertiesToUpdate);
   }
 
+  /**
+   * Handler when linked value changed is disabled (single filed is updated)
+   * @param event react change event
+   */
   private onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onSingleValueChange, properties } = this.props;
 
@@ -153,35 +150,24 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     onSingleValueChange(propertyToUpdate);
   }
 
+  /**
+   * On link values click handler
+   */
   private onLinkValuesClick = () => {
     this.setState({
       valuesLinked: !this.state.valuesLinked
     });
   }
 
+  /**
+   * Get property to display handler
+   * @param propertyName property name (key) to find
+   * @returns found page layout view property of undefined
+   */
   private getPropertyToDisplay = (propertyName: string): PageLayoutViewProperty | undefined => {
     const { properties } = this.props;
     return properties.find(property => property.name === propertyName);
   }
 }
 
-
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return { };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MarginPaddingEditor));
+export default (withStyles(styles)(MarginPaddingEditor));

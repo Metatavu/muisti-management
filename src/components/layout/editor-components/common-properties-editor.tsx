@@ -1,27 +1,27 @@
 import * as React from "react";
-import { ExhibitionDevice, ScreenOrientation, DeviceModel, PageLayout, PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../generated/client";
 import strings from "../../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
-import { ReduxActions, ReduxState } from "../../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import GenericPropertySelect from "./generic-property-select";
 import MarginPaddingEditor from "./margin-padding-editor";
 import GravityEditor from "./gravity-editor";
 import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
 import { LayoutPropKeys, LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
-
 import ColorPicker from "./color-picker";
 import theme from "../../../styles/theme";
-
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
-  onLayoutPropertyChange: (layout: PageLayoutView) => void;
+
+  /**
+   * On page layout view update handler
+   * @param propertyToUpdate page layout view property to update
+   */
+  onLayoutViewChange: (layout: PageLayoutView) => void;
 }
 
 /**
@@ -31,7 +31,7 @@ interface State {
 }
 
 /**
- * Component for add device editor
+ * Component for editing layout properties
  */
 class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
@@ -44,14 +44,6 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
     };
-  }
-
-  public componentDidMount = () => {
-  }
-
-  public componentDidUpdate = (prevProps: Props) => {
-    // if (prevProps.pageLayout !== this.props.pageLayout) {
-    // }
   }
 
   /**
@@ -74,6 +66,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout width editor
+   */
   private renderLayoutWidth = () => {
     return (
       <>
@@ -95,6 +90,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout width editor
+   */
   private renderLayoutHeight = () => {
     return (
       <>
@@ -116,6 +114,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout background color editor
+   */
   private renderLayoutBackgroundColor = () => {
     const { classes } = this.props;
     return (
@@ -130,6 +131,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout padding editor
+   */
   private renderLayoutPadding = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
@@ -144,6 +148,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout margin editor
+   */
   private renderLayoutMargin = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
@@ -158,6 +165,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render layout gravity editor
+   */
   private renderLayoutGravity = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
@@ -172,32 +182,32 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Generic handler for page layout property value changes
+   * Generic handler for single page layout property value changes
    */
   private onSingleValueChange = (updatedPageLayoutView: PageLayoutViewProperty) => {
-    const { onLayoutPropertyChange, pageLayoutView } = this.props;
+    const { onLayoutViewChange, pageLayoutView } = this.props;
     const layoutViewToUpdate = JSON.parse(JSON.stringify(pageLayoutView)) as PageLayoutView;
-    this.doUpdate(updatedPageLayoutView, layoutViewToUpdate);
-    onLayoutPropertyChange(layoutViewToUpdate);
+    this.updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
+    onLayoutViewChange(layoutViewToUpdate);
   }
 
   /**
-   * Generic handler for page layout property value changes
+   * Generic handler for multiple page layout property value changes
    */
   private onMultipleValueChange = (updatedPageLayoutViews: PageLayoutViewProperty[]) => {
-    const { onLayoutPropertyChange, pageLayoutView } = this.props;
+    const { onLayoutViewChange, pageLayoutView } = this.props;
     const layoutViewToUpdate = JSON.parse(JSON.stringify(pageLayoutView)) as PageLayoutView;
 
     updatedPageLayoutViews.forEach(updatedPageLayoutView => {
-      this.doUpdate(updatedPageLayoutView, layoutViewToUpdate);
+      this.updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
     });
-    onLayoutPropertyChange(layoutViewToUpdate);
+    onLayoutViewChange(layoutViewToUpdate);
   }
 
   /**
-   * Generic handler for page layout property value changes
-   * @param key property key to update
-   * @returns empty string or found value
+   * Find property with given key
+   * @param key property to find
+   * @returns Found property or new property to be modified
    */
   private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
     const { pageLayoutView } = this.props;
@@ -215,6 +225,11 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     return layoutProps[foundIndex];
   }
 
+  /**
+   * Get padding and margin properties
+   * @param enumObject enum object that is used to find/generate property
+   * @returns list of page layout view properties
+   */
   private getPaddingOrMarginProperties = (enumObject: typeof LayoutPaddingPropKeys | typeof LayoutMarginPropKeys): PageLayoutViewProperty[] => {
     const { pageLayoutView } = this.props;
     const propertyList: PageLayoutViewProperty[] = [];
@@ -237,12 +252,17 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     return propertyList;
   }
 
-  private doUpdate(updatedPageLayoutView: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView {
-    const name = updatedPageLayoutView.name;
-    const value = updatedPageLayoutView.value;
-    const type = updatedPageLayoutView.type;
+  /**
+   * Update layout view with property
+   * @param updatedPageLayoutViewProperty updated layout view property
+   * @param layoutViewToUpdate layout view to update
+   */
+  private updateLayoutView(updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView {
+    const name = updatedPageLayoutViewProperty.name;
+    const value = updatedPageLayoutViewProperty.value;
+    const type = updatedPageLayoutViewProperty.type;
 
-    const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === updatedPageLayoutView.name);
+    const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
     if (foundIndex < 0) {
       const propertyToCreate: PageLayoutViewProperty = {
         name: name,
@@ -260,22 +280,4 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 }
 
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return { };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CommonLayoutPropertiesEditor));
+export default (withStyles(styles)(CommonLayoutPropertiesEditor));

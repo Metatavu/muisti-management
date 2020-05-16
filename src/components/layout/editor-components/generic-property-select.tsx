@@ -1,13 +1,8 @@
 import * as React from "react";
-import { ExhibitionDevice, ScreenOrientation, DeviceModel, PageLayoutViewPropertyType, PageLayoutViewProperty } from "../../../generated/client";
-import strings from "../../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid } from "@material-ui/core";
+import { PageLayoutViewProperty } from "../../../generated/client";
+import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
-import { ReduxActions, ReduxState } from "../../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs } from "../editor-constants/values";
-
 
 /**
  * Interface representing component properties
@@ -31,7 +26,7 @@ interface State {
 }
 
 /**
- * Component for add device editor
+ * Component for generic layout editor select
  */
 class GenericPropertySelect extends React.Component<Props, State> {
 
@@ -48,6 +43,9 @@ class GenericPropertySelect extends React.Component<Props, State> {
     };
   }
 
+  /**
+   * Component did mount life cycle handler
+   */
   public componentDidMount = () => {
     const { selectItemType } = this.props;
     const values = enumValues(selectItemType);
@@ -67,7 +65,6 @@ class GenericPropertySelect extends React.Component<Props, State> {
     return (
       <Select
         fullWidth
-        // labelId={  }
         id={ property.name }
         onChange={ this.handleSelectChange }
         name={ property.name }
@@ -78,6 +75,10 @@ class GenericPropertySelect extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Handle select value change
+   * @param event react change event
+   */
   private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
     const { onSelectChange, property } = this.props;
 
@@ -89,7 +90,6 @@ class GenericPropertySelect extends React.Component<Props, State> {
 
     const propertyToUpdate = property;
     property.value = value;
-    console.log(propertyToUpdate);
     onSelectChange(propertyToUpdate);
   }
 
@@ -103,32 +103,21 @@ class GenericPropertySelect extends React.Component<Props, State> {
     });
   }
 }
-  
+
+/**
+ * Get any enum keys
+ * @param enumObject enum object
+ */
 function enumKeys<T>(enumObject: T) {
   return Object.keys(enumObject);
 }
 
+/**
+ * Get any enum values
+ * @param enumObject enum object
+ */
 function enumValues<T>(enumObject: T) {
   return Object.values(enumObject);
 }
 
-
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return { };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GenericPropertySelect));
+export default (withStyles(styles)(GenericPropertySelect));

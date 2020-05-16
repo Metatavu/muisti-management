@@ -1,3 +1,6 @@
+/**
+ * Common page layout view property keys
+ */
 export enum LayoutPropKeys {
   LayoutWidth = "layout_width",
   LayoutHeight = "layout_height",
@@ -5,6 +8,9 @@ export enum LayoutPropKeys {
   LayoutGravity = "layout_gravity"
 }
 
+/**
+ * Page layout view property margin keys
+ */
 export enum LayoutMarginPropKeys {
   LayoutMarginTop = "layout_marginTop",
   LayoutMarginLeft = "layout_marginLeft",
@@ -12,6 +18,9 @@ export enum LayoutMarginPropKeys {
   LayoutMarginBottom = "layout_marginBottom",
 }
 
+/**
+ * Page layout view property padding keys
+ */
 export enum LayoutPaddingPropKeys {
   LayoutPaddingTop = "paddingTop",
   LayoutPaddingLeft = "paddingLeft",

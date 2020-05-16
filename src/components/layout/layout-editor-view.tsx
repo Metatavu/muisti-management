@@ -153,7 +153,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
           <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
             <CommonLayoutPropertiesEditor
               pageLayoutView={ layout.data }
-              onLayoutPropertyChange={ this.onPropertyChange }
+              onLayoutViewChange={ this.onPropertyChange }
             />
           </ElementSettingsPane>
         </div>
@@ -336,14 +336,10 @@ export class LayoutEditorView extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Updated page layout view to selected page layout
+   */
   private onPropertyChange = (layoutView: PageLayoutView) => {
-    // this.setState({
-    //   name: layout.name,
-    //   // jsonCode: JSON.stringify(layout.data, null, 2),
-    //   screenOrientation: layout.screenOrientation,
-    //   deviceModelId: layout.modelId || "",
-    //   stateLayout: layout
-    // });
     const temp = JSON.parse(JSON.stringify(this.props.layout)) as PageLayout;
     if (!temp) {
       return;

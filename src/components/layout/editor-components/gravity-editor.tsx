@@ -1,18 +1,15 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, Button, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, Button } from "@material-ui/core";
 import styles from "../../../styles/gravity-editor";
-import { ReduxActions, ReduxState } from "../../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import classNames from "classnames";
 
 import ArrowIcon from '@material-ui/icons/ArrowLeft';
 import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
-
 import GravityIcon from '@material-ui/icons/OpenWith';
+
 import theme from "../../../styles/theme";
-import { LayoutGravityValues, LayoutGravityValuePairs } from "../editor-constants/values";
+import { LayoutGravityValuePairs } from "../editor-constants/values";
 import GenericPropertySelect from "./generic-property-select";
 
 /**
@@ -22,9 +19,8 @@ interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
 
   /**
-   * On select change handler
-   * @param key property key
-   * @param value property value
+   * On singe page layout view property change handler
+   * @param propertyToUpdate property to update
    */
   onSingleValueChange: (propertyToUpdate: PageLayoutViewProperty) => void;
 
@@ -37,7 +33,7 @@ interface State {
 }
 
 /**
- * Component for add device editor
+ * Component for editing layout gravities
  */
 class GravityEditor extends React.Component<Props, State> {
 
@@ -51,10 +47,6 @@ class GravityEditor extends React.Component<Props, State> {
     this.state = {
     };
   }
-
-  public componentDidMount = () => {}
-
-  public componentDidUpdate = (prevProps: Props) => {}
 
   /**
    * Component render method
@@ -100,6 +92,11 @@ class GravityEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render gravity button
+   * @param value current property value
+   * @param cssProp css property for rotating the arrow icon
+   */
   private renderGravityButton = (value: string, cssProp?: React.CSSProperties ) => {
     const { classes, property } = this.props;
     return (
@@ -112,6 +109,10 @@ class GravityEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * On gravity icon click handler
+   * @param value button element value
+   */
   private onGravityClick = (value: string) => {
     const { onSingleValueChange, property } = this.props;
 
@@ -121,28 +122,8 @@ class GravityEditor extends React.Component<Props, State> {
 
     const propertyToUpdate = property;
     propertyToUpdate.value = value;
-    console.log(propertyToUpdate);
     onSingleValueChange(propertyToUpdate);
   }
 }
 
-
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return { };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GravityEditor));
+export default (withStyles(styles)(GravityEditor));
