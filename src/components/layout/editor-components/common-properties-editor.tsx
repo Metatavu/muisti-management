@@ -91,7 +91,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render layout width editor
+   * Render layout height editor
    */
   private renderLayoutHeight = () => {
     return (
