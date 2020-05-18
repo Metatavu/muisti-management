@@ -207,6 +207,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   /**
    * Find property with given key
    * @param key property to find
+   * @param type page layout view property type
    * @returns Found property or new property to be modified
    */
   private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
@@ -256,6 +257,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Update layout view with property
    * @param updatedPageLayoutViewProperty updated layout view property
    * @param layoutViewToUpdate layout view to update
+   * @returns Updated page layout view
    */
   private updateLayoutView(updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView {
     const name = updatedPageLayoutViewProperty.name;
