@@ -26,7 +26,7 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
-  navigationButtons: NavigationButton[];
+  navigationButtons?: NavigationButton[];
 }
 
 /**
@@ -49,6 +49,9 @@ class TopBar extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
+    this.state = {
+
+    }
   }
 
   /**
