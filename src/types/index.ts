@@ -79,3 +79,10 @@ export enum ExhibitionElementType {
   DEVICE = "DEVICE",
   PAGE = "PAGE"
 }
+
+/**
+ * Enum for different exhibition element types
+ */
+export enum PageLayoutElementType {
+  ROOT = "ROOT",
+}

@@ -18,7 +18,7 @@ import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
-import { AccessToken } from '../../types';
+import { AccessToken, PageLayoutElementType } from '../../types';
 import strings from "../../localization/strings";
 import { v4 as uuidv4 } from "uuid";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -30,6 +30,8 @@ import "codemirror/mode/xml/xml";
 import { parse as parseXML } from "fast-xml-parser";
 import AndroidUtils from "../../utils/android-utils";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/common-properties-editor";
+import LayoutEditorTreeMenu from "./layout-tree-menu";
+import { TreeNodeInArray } from "react-simple-tree-menu";
 
 type View = "CODE" | "VISUAL";
 
@@ -63,6 +65,7 @@ interface State {
   toolbarOpen: boolean;
   deleteOpen: boolean;
   view: View;
+  pageLayoutView?: PageLayoutView;
 }
 
 /**
@@ -118,6 +121,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
    */
   public render() {
     const { classes, layout, history } = this.props;
+    const { pageLayoutView } = this.state;
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
@@ -142,6 +146,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
               <TextField fullWidth label={ strings.layout.toolbar.name } value={ this.state.name } onChange={ this.onNameChange }/>
               { this.renderDeviceModelSelect() }
               { this.renderScreenOrientationSelect() }
+              { this.renderPageLayoutComponentStructure() }
             </div>
           </ElementNavigationPane>
           <EditorView>
@@ -151,10 +156,12 @@ export class LayoutEditorView extends React.Component<Props, State> {
           </EditorView>
 
           <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
-            <CommonLayoutPropertiesEditor
-              pageLayoutView={ layout.data }
-              onLayoutViewChange={ this.onPropertyChange }
-            />
+            { pageLayoutView &&
+              <CommonLayoutPropertiesEditor
+                pageLayoutView={ pageLayoutView }
+                onLayoutViewChange={ this.onPropertyChange }
+              />
+            }
           </ElementSettingsPane>
         </div>
 
@@ -209,6 +216,21 @@ export class LayoutEditorView extends React.Component<Props, State> {
       </div>
     );
   }
+
+  private renderPageLayoutComponentStructure = () => {
+    const { layout } = this.props;
+
+    if (!layout) {
+      return (<div/>);
+    }
+
+    return (
+      <LayoutEditorTreeMenu
+        pageLayout={ layout }
+        onSelect={ this.onLayoutPageViewSelect }
+      />
+    );
+  } 
 
   /**
    * Renders a toolbar
@@ -337,6 +359,20 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
+   * Handles element selected from navigation tree
+   *
+   * @param parents selected element parents
+   * @param element selected element
+   * @param elementType selected element type
+   */
+  private onLayoutPageViewSelect = (parents: PageLayoutView[], element: PageLayoutView, type: PageLayoutElementType) => {
+    const elements = [ ...parents, element ];
+    this.setState({
+      pageLayoutView : element
+    });
+  }
+
+  /**
    * Updated page layout view to selected page layout
    */
   private onPropertyChange = (layoutView: PageLayoutView) => {
@@ -345,8 +381,51 @@ export class LayoutEditorView extends React.Component<Props, State> {
       return;
     }
 
-    temp.data = layoutView;
+    const test = this.constructTreeData(temp, layoutView);
+    temp.data = test;
     this.props.setSelectedLayout(temp);
+  }
+
+  /**
+   * Constructs tree data
+   *
+   * @param dataParams tree data params
+   */
+  private constructTreeData = (pageLayout: PageLayout, layoutViewToFind: PageLayoutView) => {
+
+    if (pageLayout.data.id === layoutViewToFind.id) {
+      pageLayout.data = layoutViewToFind;
+      return pageLayout.data;
+    } else {
+      const treeData: PageLayoutView = {
+        id: pageLayout.data.id,
+        widget: pageLayout.data.widget,
+        properties: pageLayout.data.properties,
+        children: pageLayout.data.children.map(childPageLayoutView => {
+          if (childPageLayoutView.id === layoutViewToFind.id) {
+            childPageLayoutView = layoutViewToFind;
+          }
+          return this.getNode(childPageLayoutView, layoutViewToFind);
+        })
+      };
+      return treeData;
+    }
+
+  }
+
+  private getNode = (layoutView: PageLayoutView, layoutViewToFind: PageLayoutView): PageLayoutView => {
+
+    return {
+      id: layoutView.id,
+      widget: layoutView.widget,
+      properties: layoutView.properties,
+      children : layoutView.children.map(child => {
+        if (child.id === layoutViewToFind.id) {
+          child = layoutViewToFind;
+        }
+        return this.getNode(child, layoutViewToFind);
+      })
+    }
   }
 
   /**
@@ -505,36 +584,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
     this.setState({
       jsonCode: value
     });
-  }
-
-  /**
-   * Event handler for before XML code change event
-   *
-   * @param editor editor instance
-   * @param data editor data
-   * @param value code
-   */
-  private onBeforeXmlCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
-    this.setState({
-      xmlCode: value
-    });
-
-    try {
-      const xml = parseXML(value, {
-        attributeNamePrefix : "",
-        attrNodeName: "@",
-        textNodeName : "#text",
-        ignoreAttributes : false,
-        arrayMode: true
-      });
-
-      const widgets = Object.keys(xml);
-      this.setState({
-        jsonCode: JSON.stringify(this.xmlToView(xml[widgets[0]], widgets[0])[0] || {}, null, 2)
-      });
-    } catch (e) {
-      console.warn("Failed to parse", e);
-    }
   }
 
   /**

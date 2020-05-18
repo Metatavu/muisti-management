@@ -211,7 +211,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    */
   private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
     const { pageLayoutView } = this.props;
-
+    console.log(pageLayoutView);
     const layoutProps = pageLayoutView.properties;
     const foundIndex = layoutProps.findIndex(prop => prop.name === key);
     if (foundIndex < 0) {
