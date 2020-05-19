@@ -66,6 +66,7 @@ interface State {
   deleteOpen: boolean;
   view: View;
   pageLayoutView?: PageLayoutView;
+  selectedPropertyPath? : string;
 }
 
 /**
@@ -121,7 +122,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
    */
   public render() {
     const { classes, layout, history } = this.props;
-    const { pageLayoutView } = this.state;
+    const { pageLayoutView, selectedPropertyPath } = this.state;
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
@@ -156,15 +157,14 @@ export class LayoutEditorView extends React.Component<Props, State> {
           </EditorView>
 
           <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
-            { pageLayoutView &&
+            { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }
-                onLayoutViewChange={ this.onPropertyChange }
+                selectedElementPath={ selectedPropertyPath }
               />
             }
           </ElementSettingsPane>
         </div>
-
       </BasicLayoutV3>
     );
   }
@@ -175,7 +175,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
     const deviceModelSelectItems = deviceModels.map(model => 
-      <MenuItem value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
+      <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
     );
 
     return (
@@ -226,7 +226,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
 
     return (
       <LayoutEditorTreeMenu
-        pageLayout={ layout }
         onSelect={ this.onLayoutPageViewSelect }
       />
     );
@@ -359,112 +358,22 @@ export class LayoutEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Handles element selected from navigation tree
+   * Handles element selected from layout navigation tree
    *
-   * @param parents selected element parents
-   * @param element selected element
-   * @param elementType selected element type
+   * @param element selected page layout view item
+   * @param type type of the element
+   * @param path path to the selected element inside the tree structure
+   *
+   * TODO: Add type handling for all the custom views the layout editor supports
    */
-  private onLayoutPageViewSelect = (parents: PageLayoutView[], element: PageLayoutView, type: PageLayoutElementType) => {
-    const elements = [ ...parents, element ];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
+  private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutElementType, path: string) => {
     this.setState({
-      pageLayoutView : element
+      pageLayoutView : element,
+      selectedPropertyPath: path
     });
   }
 
-  /**
-   * Updated page layout view to selected page layout
-   */
-  private onPropertyChange = (layoutView: PageLayoutView) => {
-    const temp = JSON.parse(JSON.stringify(this.props.layout)) as PageLayout;
-    if (!temp) {
-      return;
-    }
-
-    const test = this.constructTreeData(temp, layoutView);
-    temp.data = test;
-    this.props.setSelectedLayout(temp);
-  }
-
-  /**
-   * Constructs tree data
-   *
-   * @param dataParams tree data params
-   */
-  private constructTreeData = (pageLayout: PageLayout, layoutViewToFind: PageLayoutView) => {
-
-    if (pageLayout.data.id === layoutViewToFind.id) {
-      pageLayout.data = layoutViewToFind;
-      return pageLayout.data;
-    } else {
-      const treeData: PageLayoutView = {
-        id: pageLayout.data.id,
-        widget: pageLayout.data.widget,
-        properties: pageLayout.data.properties,
-        children: pageLayout.data.children.map(childPageLayoutView => {
-          if (childPageLayoutView.id === layoutViewToFind.id) {
-            childPageLayoutView = layoutViewToFind;
-          }
-          return this.getNode(childPageLayoutView, layoutViewToFind);
-        })
-      };
-      return treeData;
-    }
-
-  }
-
-  private getNode = (layoutView: PageLayoutView, layoutViewToFind: PageLayoutView): PageLayoutView => {
-
-    return {
-      id: layoutView.id,
-      widget: layoutView.widget,
-      properties: layoutView.properties,
-      children : layoutView.children.map(child => {
-        if (child.id === layoutViewToFind.id) {
-          child = layoutViewToFind;
-        }
-        return this.getNode(child, layoutViewToFind);
-      })
-    }
-  }
-
-  /**
-   * Converts widget XML into page layout view
-   *
-   * @param widgetXmls array XML blocks
-   * @param widget widget name
-   */
-  private xmlToView(widgetXmls: any[], widget: string): PageLayoutView[] {
-    return widgetXmls.map(widgetXml => {
-      const attributes = widgetXml["@"] || {};
-
-      const attributeNames = Object.keys(attributes).filter(name => name.startsWith("android:") && name !== "android:id");
-      const childWidgetNames = Object.keys(widgetXml).filter(name => name !== "@");
-
-      const properties: PageLayoutViewProperty[] = attributeNames.map(attributeName => {
-        const value = attributes[attributeName] as string;
-
-        return {
-          name: attributeName.substring(8),
-          value: value,
-          type: this.guessPropertyType(value)
-        };
-      });
-
-      let children: PageLayoutView[] = [];
-
-      childWidgetNames.forEach(childWidgetName => {
-        children = children.concat(this.xmlToView(widgetXml[childWidgetName], childWidgetName));
-      });
-
-      return {
-        children: children || [],
-        id: ((attributes["android:id"] || "").substring(5)) || uuidv4(),
-        properties: properties || [],
-        widget: widget
-      }
-    });
-  }
 
   /**
    * Attempts to guess property type from given value. Method falls back to string

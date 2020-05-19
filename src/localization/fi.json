@@ -323,7 +323,14 @@
       },
       "layoutGravity": "Layout gravity",
       "layoutAlign": "Layout align"
+    },
 
+    "addLayoutViewDialog": {
+      "title": "Lisää asettelun elementti",
+      "id": "Id",
+      "widget": "Widget",
+      "confirm": "Tallenna",
+      "cancel": "Peruuta"
     }
   }
 }

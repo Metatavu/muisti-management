@@ -326,6 +326,14 @@
       },
       "layoutGravity": "Layout gravity",
       "layoutAlign": "Layout align"
+    },
+
+    "addLayoutViewDialog": {
+      "title": "Add layout view element",
+      "id": "Id",
+      "widget": "Widget",
+      "confirm": "Save",
+      "cancel": "Cancel"
     }
   }
 

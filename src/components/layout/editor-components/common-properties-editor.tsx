@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
@@ -11,17 +11,20 @@ import { LayoutPropKeys, LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../
 import ColorPicker from "./color-picker";
 import theme from "../../../styles/theme";
 
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { setSelectedLayout } from "../../../actions/layouts";
+import { ReduxActions, ReduxState } from "../../../store";
+import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-utils";
+
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
-
-  /**
-   * On page layout view update handler
-   * @param propertyToUpdate page layout view property to update
-   */
-  onLayoutViewChange: (layout: PageLayoutView) => void;
+  selectedElementPath: string;
+  pageLayout: PageLayout;
+  setSelectedLayout: typeof setSelectedLayout;
 }
 
 /**
@@ -185,23 +188,28 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Generic handler for single page layout property value changes
    */
   private onSingleValueChange = (updatedPageLayoutView: PageLayoutViewProperty) => {
-    const { onLayoutViewChange, pageLayoutView } = this.props;
-    const layoutViewToUpdate = JSON.parse(JSON.stringify(pageLayoutView)) as PageLayoutView;
-    this.updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
-    onLayoutViewChange(layoutViewToUpdate);
+    const { selectedElementPath } = this.props;
+    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+    const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
+    updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
+    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
+    this.props.setSelectedLayout(pageLayoutToUpdate);
   }
 
   /**
    * Generic handler for multiple page layout property value changes
    */
   private onMultipleValueChange = (updatedPageLayoutViews: PageLayoutViewProperty[]) => {
-    const { onLayoutViewChange, pageLayoutView } = this.props;
-    const layoutViewToUpdate = JSON.parse(JSON.stringify(pageLayoutView)) as PageLayoutView;
+    const { selectedElementPath } = this.props;
+    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+    const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
 
     updatedPageLayoutViews.forEach(updatedPageLayoutView => {
-      this.updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
+      updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
     });
-    onLayoutViewChange(layoutViewToUpdate);
+
+    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
+    this.props.setSelectedLayout(pageLayoutToUpdate);
   }
 
   /**
@@ -211,7 +219,6 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    */
   private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
     const { pageLayoutView } = this.props;
-    console.log(pageLayoutView);
     const layoutProps = pageLayoutView.properties;
     const foundIndex = layoutProps.findIndex(prop => prop.name === key);
     if (foundIndex < 0) {
@@ -251,33 +258,28 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     return propertyList;
   }
-
-  /**
-   * Update layout view with property
-   * @param updatedPageLayoutViewProperty updated layout view property
-   * @param layoutViewToUpdate layout view to update
-   */
-  private updateLayoutView(updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView {
-    const name = updatedPageLayoutViewProperty.name;
-    const value = updatedPageLayoutViewProperty.value;
-    const type = updatedPageLayoutViewProperty.type;
-
-    const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
-    if (foundIndex < 0) {
-      const propertyToCreate: PageLayoutViewProperty = {
-        name: name,
-        value: value,
-        type: type
-      };
-      layoutViewToUpdate.properties.push(propertyToCreate);
-    }
-    else {
-      const propToUpdate = { ...layoutViewToUpdate.properties[foundIndex] };
-      propToUpdate.value = value;
-      layoutViewToUpdate.properties.splice(foundIndex, 1, propToUpdate);
-    }
-    return layoutViewToUpdate;
-  }
 }
 
-export default (withStyles(styles)(CommonLayoutPropertiesEditor));
+/**
+ * Redux mapper for mapping store state to component props
+ *
+ * @param state store state
+ */
+function mapStateToProps(state: ReduxState) {
+  return {
+    pageLayout: state.layouts.selectedLayout as PageLayout,
+  };
+}
+
+/**
+ * Redux mapper for mapping component dispatches
+ *
+ * @param dispatch dispatch method
+ */
+function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
+  return {
+    setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CommonLayoutPropertiesEditor));
