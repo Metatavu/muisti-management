@@ -12,7 +12,7 @@ import styles from "../../styles/layout-editor-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, PageLayoutViewProperty, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
 import BasicLayoutV3 from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
@@ -20,18 +20,15 @@ import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
 import { AccessToken, PageLayoutElementType } from '../../types';
 import strings from "../../localization/strings";
-import { v4 as uuidv4 } from "uuid";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
-import { parse as parseXML } from "fast-xml-parser";
 import AndroidUtils from "../../utils/android-utils";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/common-properties-editor";
 import LayoutEditorTreeMenu from "./layout-tree-menu";
-import { TreeNodeInArray } from "react-simple-tree-menu";
 
 type View = "CODE" | "VISUAL";
 
@@ -381,6 +378,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
    * @param value value
    * @return type
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
   private guessPropertyType = (value: string): PageLayoutViewPropertyType => {
     if (this.isNumber(value as any)) {
       return PageLayoutViewPropertyType.Number;
