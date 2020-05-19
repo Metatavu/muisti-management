@@ -133,9 +133,13 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
         className={ classNames( classes.listItem, focused ? "focused" : "" ) }
         style={{ paddingLeft: level * 20 }}
       >
-        <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
-          { toggleIcon(isOpen) }
-        </div>
+        { hasNodes ?
+          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
+            { toggleIcon(isOpen) }
+          </div>
+          :
+          <div style={{ display: 'inline-block', marginLeft: 25 }} />
+        }
         { label }
       </ListItem>
     );
