@@ -186,6 +186,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
   /**
    * Generic handler for single page layout property value changes
+   * @param updatedPageLayoutView page layout view property object to update
    */
   private onSingleValueChange = (updatedPageLayoutView: PageLayoutViewProperty) => {
     const { selectedElementPath } = this.props;
@@ -198,6 +199,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
   /**
    * Generic handler for multiple page layout property value changes
+   * @param updatedPageLayoutViews list of page layout view property objects to update
    */
   private onMultipleValueChange = (updatedPageLayoutViews: PageLayoutViewProperty[]) => {
     const { selectedElementPath } = this.props;
@@ -215,6 +217,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   /**
    * Find property with given key
    * @param key property to find
+   * @param type page layout view property type
    * @returns Found property or new property to be modified
    */
   private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
