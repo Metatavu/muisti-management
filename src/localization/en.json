@@ -328,6 +328,18 @@
       "layoutAlign": "Layout align"
     },
 
+    "textView": {
+      "width": "Width",
+      "height": "Height",
+      "color": "Text color",
+      "textResource": "Text resource",
+      "fontStyle": "Font style",
+      "textAlign": "Text align",
+      "textGravity": "Text gravity",
+      "textSize": "Text size (dp)",
+      "typeface": "Typeface"
+    },
+
     "addLayoutViewDialog": {
       "title": "Add layout view element",
       "id": "Id",

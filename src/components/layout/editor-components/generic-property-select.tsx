@@ -2,14 +2,14 @@ import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
-import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs } from "../editor-constants/values";
+import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues } from "../editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
-  selectItemType: typeof LayoutWidthValues | typeof LayoutHeightValues | typeof LayoutGravityValuePairs;
+  selectItemType: typeof LayoutWidthValues | typeof LayoutHeightValues | typeof LayoutGravityValuePairs | typeof TextViewTextStyleValues | typeof TextViewTextAlignValues;
 
   /**
    * On select change handler

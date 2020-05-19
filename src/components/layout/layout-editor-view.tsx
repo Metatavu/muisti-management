@@ -27,7 +27,8 @@ import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 import AndroidUtils from "../../utils/android-utils";
-import CommonLayoutPropertiesEditor from "../layout/editor-components/common-properties-editor";
+import CommonLayoutPropertiesEditor from "./editor-components/layout-common-properties-editor";
+import LayoutWidgetSpecificPropertiesEditor from "./editor-components/layout-widget-specific-properties-editor";
 import LayoutEditorTreeMenu from "./layout-tree-menu";
 
 type View = "CODE" | "VISUAL";
@@ -64,6 +65,7 @@ interface State {
   view: View;
   pageLayoutView?: PageLayoutView;
   selectedPropertyPath? : string;
+  selectedWidgetType?: PageLayoutElementType;
 }
 
 /**
@@ -119,7 +121,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
    */
   public render() {
     const { classes, layout, history } = this.props;
-    const { pageLayoutView, selectedPropertyPath } = this.state;
+    const { pageLayoutView, selectedPropertyPath, selectedWidgetType } = this.state;
 
     if (!layout || !layout.id || this.state.loading ) {
       return (
@@ -154,10 +156,17 @@ export class LayoutEditorView extends React.Component<Props, State> {
           </EditorView>
 
           <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
-            { pageLayoutView && selectedPropertyPath &&
+            { pageLayoutView && selectedPropertyPath && 
               <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
+              />
+            }
+            { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
+              <LayoutWidgetSpecificPropertiesEditor
+                pageLayoutView={ pageLayoutView }
+                selectedElementPath={ selectedPropertyPath }
+                selectedWidgetType={ selectedWidgetType }
               />
             }
           </ElementSettingsPane>
@@ -360,14 +369,13 @@ export class LayoutEditorView extends React.Component<Props, State> {
    * @param element selected page layout view item
    * @param type type of the element
    * @param path path to the selected element inside the tree structure
-   *
-   * TODO: Add type handling for all the custom views the layout editor supports
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
   private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutElementType, path: string) => {
     this.setState({
       pageLayoutView : element,
-      selectedPropertyPath: path
+      selectedPropertyPath: path,
+      selectedWidgetType: type
     });
   }
 

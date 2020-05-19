@@ -326,6 +326,18 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutAlign: string;
     };
 
+    textView: {
+      width: string;
+      height: string;
+      color: string;
+      textResource: string;
+      fontStyle: string;
+      textAlign: string;
+      textGravity: string;
+      textSize: string;
+      typeface: string;
+    };
+
     addLayoutViewDialog: {
       title: string;
       id: string;

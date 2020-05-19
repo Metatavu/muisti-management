@@ -304,25 +304,37 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
-      "layoutWidth": "Layout width",
-      "layoutHeight": "Layout height",
-      "backgroundColor": "Layout background color",
+      "layoutWidth": "Asettelun leveys",
+      "layoutHeight": "Asettelun korkeus",
+      "backgroundColor": "Asettelun taustaväri",
       "paddings": {
-        "left": "Padding left",
-        "right": "Padding right",
-        "top": "Padding top",
-        "bottom": "Padding bottom",
-        "link": "Link paddings"
+        "left": "Täyte vasemmalla",
+        "right": "Täyte oikealla",
+        "top": "Täyte yläpuolella",
+        "bottom": "Täyte alapuolella",
+        "link": "Linkkien täytteet"
       },
       "margins": {
-        "left": "Margin left",
-        "right": "Margin right",
-        "top": "Margin top",
-        "bottom": "Margin bottom",
-        "link": "Link margins"
+        "left": "Marginaali vasemmalla",
+        "right": "Marginaali oikealla",
+        "top": "Marginaali yläpuolella",
+        "bottom": "Marginaali alapuolella",
+        "link": "Linkkien marginaalit"
       },
-      "layoutGravity": "Layout gravity",
-      "layoutAlign": "Layout align"
+      "layoutGravity": "Asettelun painotus",
+      "layoutAlign": "Asettelun tasaus"
+    },
+
+    "textView": {
+      "width": "Leveys",
+      "height": "Korkeus",
+      "color": "Tekstin väri",
+      "textResource": "Teksti",
+      "fontStyle": "Fontin tyyli",
+      "textAlign": "Tekstin tasaus",
+      "textGravity": "Tekstin painotus",
+      "textSize": "Tekstin koko (dp)",
+      "typeface": "Fontti"
     },
 
     "addLayoutViewDialog": {

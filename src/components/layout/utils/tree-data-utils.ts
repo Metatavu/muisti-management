@@ -1,4 +1,5 @@
-import { PageLayout, PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
+import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
 
 /**
  * Delete item from tree structure while keeping rest of there data
@@ -100,33 +101,6 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
 };
 
 /**
- * Update layout view with property
- * @param updatedPageLayoutViewProperty updated layout view property
- * @param layoutViewToUpdate layout view to update
- */
-export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
-  const name = updatedPageLayoutViewProperty.name;
-  const value = updatedPageLayoutViewProperty.value;
-  const type = updatedPageLayoutViewProperty.type;
-
-  const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
-  if (foundIndex < 0) {
-    const propertyToCreate: PageLayoutViewProperty = {
-      name: name,
-      value: value,
-      type: type
-    };
-    layoutViewToUpdate.properties.push(propertyToCreate);
-  }
-  else {
-    const propToUpdate = { ...layoutViewToUpdate.properties[foundIndex] };
-    propToUpdate.value = value;
-    layoutViewToUpdate.properties.splice(foundIndex, 1, propToUpdate);
-  }
-  return layoutViewToUpdate;
-};
-
-/**
  * Adds new item to tree structure while keeping rest of there data
  * @param pageLayout exhibition page layout
  * @param pageLayoutView new page layout view
@@ -177,4 +151,79 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
     }
   }
   return treeData;
+};
+
+
+/**
+ * Update layout view with property
+ * @param updatedPageLayoutViewProperty updated layout view property
+ * @param layoutViewToUpdate layout view to update
+ */
+export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+  const name = updatedPageLayoutViewProperty.name;
+  const value = updatedPageLayoutViewProperty.value;
+  const type = updatedPageLayoutViewProperty.type;
+
+  const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
+  if (foundIndex < 0) {
+    const propertyToCreate: PageLayoutViewProperty = {
+      name: name,
+      value: value,
+      type: type
+    };
+    layoutViewToUpdate.properties.push(propertyToCreate);
+  }
+  else {
+    const propToUpdate = { ...layoutViewToUpdate.properties[foundIndex] };
+    propToUpdate.value = value;
+    layoutViewToUpdate.properties.splice(foundIndex, 1, propToUpdate);
+  }
+  return layoutViewToUpdate;
+};
+
+/**
+ * Find property with given key
+ * @param key property to find
+ * @param type page layout view property type
+ * @returns Found property or new property to be modified
+ */
+export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
+  const layoutProps = pageLayoutView.properties;
+  const foundIndex = layoutProps.findIndex(prop => prop.name === key);
+  if (foundIndex < 0) {
+    const createdSingleProperty: PageLayoutViewProperty = {
+      name: key,
+      value: "",
+      type: type
+    };
+    return createdSingleProperty;
+  }
+  return layoutProps[foundIndex];
+};
+
+/**
+ * Get padding and margin properties
+ * @param enumObject enum object that is used to find/generate property
+ * @returns list of page layout view properties
+ */
+// eslint-disable-next-line max-len
+export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enumObject: typeof LayoutPaddingPropKeys | typeof LayoutMarginPropKeys): PageLayoutViewProperty[] => {
+  const propertyList: PageLayoutViewProperty[] = [];
+  const values = Object.values(enumObject);
+
+  values.forEach(valueKey => {
+    const foundProp = pageLayoutView.properties.find(prop => prop.name === valueKey);
+    if (foundProp) {
+      propertyList.push(foundProp);
+    } else {
+      const newProp: PageLayoutViewProperty = {
+        name: valueKey,
+        type: PageLayoutViewPropertyType.String,
+        value: "0dp"
+      };
+      propertyList.push(newProp);
+    }
+  });
+
+  return propertyList;
 };

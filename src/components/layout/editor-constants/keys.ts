@@ -27,3 +27,18 @@ export enum LayoutPaddingPropKeys {
   LayoutPaddingRight = "paddingRight",
   LayoutPaddingBottom = "paddingBottom",
 }
+
+/**
+ * Text view property keys
+ */
+export enum LayoutTextViewPropKeys {
+  Width = "width",
+  Height = "height",
+  TextColor = "textColor",
+  TextResources = "text",
+  TextStyle = "textStyle",
+  TextAlignment = "textAlignment",
+  TextSize = "textSize",
+  Gravity = "gravity",
+  Typeface = "typeface"
+}

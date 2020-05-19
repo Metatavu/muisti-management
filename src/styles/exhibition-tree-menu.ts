@@ -6,7 +6,10 @@ export default createStyles({
   treeView: {
     "& > div:focus": {
       outline: "none"
-    }
+    },
+    "& .MuiListItemSecondaryAction-root": {
+      zIndex: 1000
+    },
   },
 
   searchBar: {
@@ -19,7 +22,6 @@ export default createStyles({
     "&:hover": {
       backgroundColor: "#f2f2f2"
     },
-
     "&.focused": {
       backgroundColor: theme.palette.secondary.main,
       color: "#fff",

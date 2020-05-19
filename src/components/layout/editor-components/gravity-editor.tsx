@@ -4,7 +4,7 @@ import { WithStyles, withStyles, Button } from "@material-ui/core";
 import styles from "../../../styles/gravity-editor";
 import classNames from "classnames";
 
-import ArrowIcon from '@material-ui/icons/ArrowLeft';
+import ArrowIcon from '@material-ui/icons/ArrowBack';
 import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
 import GravityIcon from '@material-ui/icons/OpenWith';
 
