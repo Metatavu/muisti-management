@@ -299,5 +299,38 @@
       "roomName" : "Huoneen nimi",
       "dialogTitle" : "Anna huoneen nimi"
     }
+  },
+
+  "layoutEditor": {
+    "commonComponents": {
+      "id": "ID",
+      "layoutWidth": "Layout width",
+      "layoutHeight": "Layout height",
+      "backgroundColor": "Layout background color",
+      "paddings": {
+        "left": "Padding left",
+        "right": "Padding right",
+        "top": "Padding top",
+        "bottom": "Padding bottom",
+        "link": "Link paddings"
+      },
+      "margins": {
+        "left": "Margin left",
+        "right": "Margin right",
+        "top": "Margin top",
+        "bottom": "Margin bottom",
+        "link": "Link margins"
+      },
+      "layoutGravity": "Layout gravity",
+      "layoutAlign": "Layout align"
+    },
+
+    "addLayoutViewDialog": {
+      "title": "Lisää asettelun elementti",
+      "id": "Id",
+      "widget": "Widget",
+      "confirm": "Tallenna",
+      "cancel": "Peruuta"
+    }
   }
 }

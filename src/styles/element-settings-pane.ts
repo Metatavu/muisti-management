@@ -20,9 +20,11 @@ export default createStyles({
     width: 50
   },
   container: {
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
     backgroundColor: "#fbfbfb",
     height: "100%",
-    width: 320,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
@@ -42,7 +44,8 @@ export default createStyles({
       textOverflow: "ellipsis"
     }
   },
-  content: {   
-    padding: theme.spacing(2)
+  content: {
+    padding: theme.spacing(2),
+    overflowY: "auto"
   },
 });

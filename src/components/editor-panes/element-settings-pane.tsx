@@ -10,17 +10,17 @@ import classNames from "classnames";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  title: string
+  title: string;
+  minWidth: number;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  open: boolean
+  open: boolean;
 }
 
-const minWidth = 320;
 const minimizedWidth = 50;
 
 /**
@@ -53,7 +53,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, minWidth } = this.props;
     return (
       <div className={ classes.root } style={{ width: this.state.open ? minWidth : minimizedWidth }}>
         <div className={ classes.btnContainer }>
@@ -61,7 +61,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
             { this.state.open ? <CloseIcon /> : <OpenIcon /> }
           </IconButton>
         </div>
-        <div className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
+        <div style={{ minWidth: minWidth }} className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
           <div className={ classes.header }>
             <h3>{ this.props.title }</h3>
           </div>

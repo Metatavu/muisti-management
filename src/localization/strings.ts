@@ -300,6 +300,42 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  layoutEditor: {
+    commonComponents: {
+      id: string;
+      layoutWidth: string;
+      layoutHeight: string;
+      backgroundColor: string;
+      paddings: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      margins: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      layoutGravity: string;
+      layoutAlign: string;
+    };
+
+    addLayoutViewDialog: {
+      title: string;
+      id: string;
+      widget: string;
+      confirm: string;
+      cancel: string;
+    };
+
+  };
+
 }
 
 const strings: IStrings = new LocalizedStrings({

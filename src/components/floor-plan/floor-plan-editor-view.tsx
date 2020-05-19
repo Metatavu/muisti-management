@@ -124,7 +124,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane title={ strings.floorPlan.properties.title }>
+          <ElementSettingsPane minWidth={ 320 } title={ strings.floorPlan.properties.title }>
             { this.renderProperties() }
           </ElementSettingsPane>
         </div>
