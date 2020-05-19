@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
 import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
@@ -149,12 +149,19 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextColor = () => {
     const { classes } = this.props;
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
         <ColorPicker
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color) }
+          property={ foundProp }
           onColorChange={ this.props.onValueChange }
+        />
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.TextColor }
+          textFieldType="text"
+          property={ foundProp }
+          onTextFieldChange={ this.props.onValueChange }
         />
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>

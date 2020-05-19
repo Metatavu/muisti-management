@@ -158,6 +158,7 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
  * Update layout view with property
  * @param updatedPageLayoutViewProperty updated layout view property
  * @param layoutViewToUpdate layout view to update
+ * @returns updated page layout view
  */
 export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
   const name = updatedPageLayoutViewProperty.name;
@@ -182,7 +183,8 @@ export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewPr
 };
 
 /**
- * Find property with given key
+ * Find property from given page layout view with given key
+ * @param pageLayoutView page layout view to search from
  * @param key property to find
  * @param type page layout view property type
  * @returns Found property or new property to be modified
@@ -202,7 +204,8 @@ export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: P
 };
 
 /**
- * Get padding and margin properties
+ * Get padding and margin properties from given page layout view
+ * @param pageLayoutView page layout view to search from
  * @param enumObject enum object that is used to find/generate property
  * @returns list of page layout view properties
  */

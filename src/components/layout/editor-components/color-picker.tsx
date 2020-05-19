@@ -1,9 +1,8 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, TextField } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../../styles/color-picker";
 import { SketchPicker, ColorResult } from 'react-color';
-import theme from "../../../styles/theme";
 
 /**
  * Interface representing component properties
@@ -49,7 +48,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const { classes, property } = this.props;
     const { showColorPicker } = this.state;
     return (
-      <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+      <>
         <div className={ classes.color } style={{ backgroundColor: property.value }} onClick={ this.onColorBoxClick }></div>
         { showColorPicker &&
           <SketchPicker
@@ -57,8 +56,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
             onChangeComplete={ this.handleChangeComplete }
           />
         }
-        <TextField disabled style={{ marginLeft: theme.spacing(2) }} variant="outlined" value={ property.value }/>
-      </div>
+      </>
     );
   }
 

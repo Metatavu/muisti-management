@@ -141,13 +141,22 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    */
   private renderLayoutBackgroundColor = () => {
     const { classes } = this.props;
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
-        <ColorPicker
-          property={ getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color) }
-          onColorChange={ this.onSingleValueChange }
-        />
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <ColorPicker
+            property={ foundProp }
+            onColorChange={ this.onSingleValueChange }
+          />
+          <GenericPropertyTextField
+            textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
+            textFieldType="text"
+            property={ foundProp }
+            onTextFieldChange={ this.onSingleValueChange }
+          />
+        </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
