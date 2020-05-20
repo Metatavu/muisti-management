@@ -1,5 +1,7 @@
 import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../generated/client";
-
+/**
+ * Utility class for resources
+ */
 export default class ResourceUtils {
 
   /**
