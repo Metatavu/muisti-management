@@ -178,6 +178,11 @@ export interface IStrings extends LocalizedStringsMethods {
           imageUrl: string;
         };
       };
+      mediaView: {
+        properties: {
+          imageOrVideoUrl: string;
+        };
+      };
       textView: {
         properties: {
           text: string;
