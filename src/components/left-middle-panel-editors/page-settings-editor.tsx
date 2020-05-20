@@ -1,4 +1,5 @@
 import * as React from "react";
+// eslint-disable-next-line max-len
 import { ExhibitionPage, ExhibitionPageResource, ExhibitionPageEventTrigger, PageLayout, ExhibitionDevice, ExhibitionPageTransition } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
@@ -28,8 +29,7 @@ interface Props extends WithStyles<typeof styles> {
   onPageTransitionChange: (transition: ExhibitionPageTransition[], transitionType: string) => void;
   onLayoutChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onDeviceChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
-  onResourceClick: (resource: ExhibitionPageResource) => void;
-  onAddResourceClick: () => void;
+  onResourceClick: (resourceIndex: number) => void;
   onEventTriggerClick: (eventTriggerIndex: number) => void;
   onAddEventTriggerClick: () => void;
 }
@@ -86,24 +86,16 @@ class PageSettingsEditor extends React.Component<Props, State> {
    * Renders resources tree
    */
   private renderResourcesTree = () => {
-    const { onResourceClick, onAddResourceClick, resources, classes } = this.props;
+    const { onResourceClick, resources } = this.props;
 
     const items = resources.map((resource, index) => {
       const label = slugify(`${resource.id}`);
-      return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => onResourceClick(resource) } />;
+      return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => onResourceClick(index) } />;
     });
-
-    const addResourceLabel = (
-      <div className={ classes.addNewLabel }>
-        <AddIcon fontSize="small" />
-        { strings.exhibition.addResource }
-      </div>
-    );
 
     return (
       <TreeItem nodeId="resources" label={ strings.exhibition.resources.title }>
         { items }
-        <TreeItem nodeId={ "resource-new" } label={ addResourceLabel } onClick={ onAddResourceClick } />
       </TreeItem>
     );
   }
