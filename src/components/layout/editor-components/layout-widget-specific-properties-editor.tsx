@@ -11,6 +11,11 @@ import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-ut
 import { PageLayoutElementType } from "../../../types";
 
 import TextViewEditor from "./widget-editors/text-view-editor";
+import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
+import ImageViewEditor from "./widget-editors/image-view-editor";
+import ButtonEditor from "./widget-editors/button-editor";
+import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
+
 /**
  * Interface representing component properties
  */
@@ -66,6 +71,16 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     switch (selectedWidgetType) {
       case (PageLayoutElementType.TEXTVIEW):
         return this.renderTextViewEditor();
+      case (PageLayoutElementType.FLOWTEXTVIEW):
+        return this.renderFlowTextViewEditor();
+      case (PageLayoutElementType.IMAGEVIEW):
+      case (PageLayoutElementType.MEDIAVIEW):
+      case (PageLayoutElementType.PLAYERVIEW):
+        return this.renderImageViewEditor();
+      case (PageLayoutElementType.BUTTON):
+        return this.renderButtonEditor();
+      case (PageLayoutElementType.LINEARLAYOUT):
+        return this.renderLinearLayoutEditor();
       default:
         return (<div/>);
     }
@@ -77,6 +92,54 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
   private renderTextViewEditor = () => {
     return (
       <TextViewEditor
+        pageLayoutView={ this.props.pageLayoutView }
+        onValueChange={ this.onSingleValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render flow text view editor
+   */
+  private renderFlowTextViewEditor = () => {
+    return (
+      <FlowTextViewEditor
+        pageLayoutView={ this.props.pageLayoutView }
+        onValueChange={ this.onSingleValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render image view editor
+   */
+  private renderImageViewEditor = () => {
+    return (
+      <ImageViewEditor
+        pageLayoutView={ this.props.pageLayoutView }
+        onValueChange={ this.onSingleValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render button editor
+   */
+  private renderButtonEditor = () => {
+    return (
+      <ButtonEditor
+        pageLayoutView={ this.props.pageLayoutView }
+        onValueChange={ this.onSingleValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render linear layout editor
+   */
+  private renderLinearLayoutEditor = () => {
+    return (
+      <LinearLayoutEditor
         pageLayoutView={ this.props.pageLayoutView }
         onValueChange={ this.onSingleValueChange }
       />

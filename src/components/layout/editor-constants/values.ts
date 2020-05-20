@@ -53,3 +53,11 @@ export enum TextViewTextAlignValues {
   ViewStart = "view_start",
   ViewEnd = "view_end",
 }
+
+/**
+ * Available linear layout orientation values
+ */
+export enum LinearLayoutOrientationValues {
+  Horizontal = "horizontal",
+  Vertical = "vertical",
+}

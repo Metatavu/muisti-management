@@ -337,6 +337,23 @@
       "typeface": "Fontti"
     },
 
+    "imageView": {
+      "src": "Kuvan polku"
+    },
+
+    "button": {
+      "width": "Napin leveys",
+      "height": "Napin korkeus",
+      "color": "Napin tekstin väri",
+      "textResource": "Napin teksti",
+      "fontStyle": "Napin fontin tyyli",
+      "textSize": "Napin tekstin koko (dp)"
+    },
+
+    "linearLayout": {
+      "orientation": "Orientaatio"
+    },
+
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
       "id": "Id",

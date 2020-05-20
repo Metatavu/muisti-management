@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import { PageLayoutElementType } from "../../types";
 import { setSelectedLayout } from "../../actions/layouts";
-import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "./utils/tree-data-utils";
+import { constructTreeDeleteData, pushNewPageLayoutViewToTree, getWidgetType } from "./utils/tree-data-utils";
 import EditorDialog from '../generic/editor-dialog';
 import theme from "../../styles/theme";
 
@@ -205,7 +205,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
       path: pageLayout.data.id,
       label: pageLayout.data.widget,
       element: pageLayout.data,
-      type: PageLayoutElementType.ROOT,
+      type: getWidgetType(pageLayout.data.widget),
       parents: [ ],
       nodes: pageLayout.data.children.map(childPageLayoutView => {
         return this.getDisplayNode(pageLayout.data.id, pageLayout.data, childPageLayoutView);
@@ -221,7 +221,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
       path: path,
       label: layoutView.widget,
       element: layoutView,
-      type: layoutView.widget === "TextView" ? PageLayoutElementType.TEXTVIEW : "",
+      type: getWidgetType(layoutView.widget),
       parents: [ parentPageLayoutView ],
       nodes: layoutView.children.map(child => {
         return this.getDisplayNode(path, layoutView, child);

@@ -81,9 +81,14 @@ export enum ExhibitionElementType {
 }
 
 /**
- * Enum for different exhibition element types
+ * Enum for different page layout element types
  */
 export enum PageLayoutElementType {
-  ROOT = "ROOT",
-  TEXTVIEW = "TEXTVIEW"
+  TEXTVIEW = "TEXTVIEW",
+  FLOWTEXTVIEW = "FLOWTEXTVIEW",
+  IMAGEVIEW = "IMAGEVIEW",
+  MEDIAVIEW = "MEDIAVIEW",
+  PLAYERVIEW = "PLAYERVIEW",
+  BUTTON = "BUTTON",
+  LINEARLAYOUT = "LINEARLAYOUT"
 }
