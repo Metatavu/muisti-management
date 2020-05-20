@@ -85,4 +85,5 @@ export enum ExhibitionElementType {
  */
 export enum PageLayoutElementType {
   ROOT = "ROOT",
+  TEXTVIEW = "TEXTVIEW"
 }

@@ -15,7 +15,8 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-utils";
+import { constructTreeUpdateData, updateLayoutView, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
+import GenericPropertyTextField from "./generic-property-textfield";
 
 /**
  * Interface representing component properties
@@ -73,6 +74,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutWidth = () => {
+
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -83,9 +86,16 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             { strings.layoutEditor.commonComponents.layoutWidth }:
           </Typography>
           <GenericPropertySelect
-            property={ this.getProperty(LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String) }
+            property={ foundProp }
             onSelectChange={ this.onSingleValueChange }
             selectItemType={ LayoutWidthValues }
+          />
+          <GenericPropertyTextField
+            textFieldId={ LayoutPropKeys.LayoutWidth }
+            textFieldType="number"
+            textFieldUnit="dp"
+            property={ foundProp }
+            onTextFieldChange={ this.onSingleValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
@@ -97,6 +107,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutHeight = () => {
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String);
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -107,9 +119,16 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             { strings.layoutEditor.commonComponents.layoutHeight }:
           </Typography>
           <GenericPropertySelect
-            property={ this.getProperty(LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String) }
+            property={ foundProp }
             onSelectChange={ this.onSingleValueChange }
             selectItemType={ LayoutHeightValues }
+          />
+          <GenericPropertyTextField
+            textFieldId={ LayoutPropKeys.LayoutHeight }
+            textFieldType="number"
+            textFieldUnit="dp"
+            property={ foundProp }
+            onTextFieldChange={ this.onSingleValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
@@ -122,13 +141,22 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    */
   private renderLayoutBackgroundColor = () => {
     const { classes } = this.props;
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
-        <ColorPicker
-          property={ this.getProperty(LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color) }
-          onColorChange={ this.onSingleValueChange }
-        />
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <ColorPicker
+            property={ foundProp }
+            onColorChange={ this.onSingleValueChange }
+          />
+          <GenericPropertyTextField
+            textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
+            textFieldType="text"
+            property={ foundProp }
+            onTextFieldChange={ this.onSingleValueChange }
+          />
+        </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
@@ -143,7 +171,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.commonComponents.paddings.title }</Typography>
         <MarginPaddingEditor
           itemKey="layout_padding"
-          properties={ this.getPaddingOrMarginProperties(LayoutPaddingPropKeys) }
+          properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutPaddingPropKeys) }
           onSingleValueChange={ this.onSingleValueChange }
           onMultipleValueChange={ this.onMultipleValueChange }
         />
@@ -160,7 +188,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.commonComponents.margins.title }</Typography>
         <MarginPaddingEditor
           itemKey="layout_margin"
-          properties={ this.getPaddingOrMarginProperties(LayoutMarginPropKeys) }
+          properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutMarginPropKeys) }
           onSingleValueChange={ this.onSingleValueChange }
           onMultipleValueChange={ this.onMultipleValueChange }
         />
@@ -176,7 +204,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
       <div style={{ padding: theme.spacing(1) }}>
         <Typography variant="h4">{ strings.layoutEditor.commonComponents.layoutGravity }</Typography>
         <GravityEditor
-          property={ this.getProperty(LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
+          property={ getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.onSingleValueChange }
         />
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
@@ -212,54 +240,6 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
     this.props.setSelectedLayout(pageLayoutToUpdate);
-  }
-
-  /**
-   * Find property with given key
-   * @param key property to find
-   * @param type page layout view property type
-   * @returns Found property or new property to be modified
-   */
-  private getProperty = (key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
-    const { pageLayoutView } = this.props;
-    const layoutProps = pageLayoutView.properties;
-    const foundIndex = layoutProps.findIndex(prop => prop.name === key);
-    if (foundIndex < 0) {
-      const createdSingleProperty: PageLayoutViewProperty = {
-        name: key,
-        value: "",
-        type: type
-      };
-      return createdSingleProperty;
-    }
-    return layoutProps[foundIndex];
-  }
-
-  /**
-   * Get padding and margin properties
-   * @param enumObject enum object that is used to find/generate property
-   * @returns list of page layout view properties
-   */
-  private getPaddingOrMarginProperties = (enumObject: typeof LayoutPaddingPropKeys | typeof LayoutMarginPropKeys): PageLayoutViewProperty[] => {
-    const { pageLayoutView } = this.props;
-    const propertyList: PageLayoutViewProperty[] = [];
-    const values = Object.values(enumObject);
-
-    values.forEach(valueKey => {
-      const foundProp = pageLayoutView.properties.find(prop => prop.name === valueKey);
-      if (foundProp) {
-        propertyList.push(foundProp);
-      } else {
-        const newProp: PageLayoutViewProperty = {
-          name: valueKey,
-          type: PageLayoutViewPropertyType.String,
-          value: "0dp"
-        };
-        propertyList.push(newProp);
-      }
-    });
-
-    return propertyList;
   }
 }
 

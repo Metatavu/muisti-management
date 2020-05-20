@@ -32,3 +32,24 @@ export enum LayoutGravityValuePairs {
   Bottom = "bottom",
   RightBottom = "right|bottom"
 }
+
+/**
+ * Available text view text style values
+ */
+export enum TextViewTextStyleValues {
+  Normal = "normal",
+  Bold = "bold",
+}
+
+/**
+ * Available text view text align values
+ */
+export enum TextViewTextAlignValues {
+  Inherit = "inherit",
+  Gravity = "gravity",
+  TextStart = "text_start",
+  TextEnd = "text_end",
+  Center = "center",
+  ViewStart = "view_start",
+  ViewEnd = "view_end",
+}

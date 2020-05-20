@@ -200,7 +200,6 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
    */
   private constructDisplayTreeData = (dataParams: TreeDataParams) => {
     const { pageLayout } = dataParams;
-
     const treeData = [{
       key: pageLayout.data.id,
       path: pageLayout.data.id,
@@ -222,6 +221,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
       path: path,
       label: layoutView.widget,
       element: layoutView,
+      type: layoutView.widget === "TextView" ? PageLayoutElementType.TEXTVIEW : "",
       parents: [ parentPageLayoutView ],
       nodes: layoutView.children.map(child => {
         return this.getDisplayNode(path, layoutView, child);
