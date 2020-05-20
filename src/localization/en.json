@@ -181,6 +181,11 @@
           "imageUrl": "Image URL address"
         }
       },
+      "mediaView": {
+        "properties": {
+          "imageOrVideoUrl": "Image or video URL address"
+        }
+      },
       "textView": {
         "properties": {
           "text": "Text"

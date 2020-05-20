@@ -180,6 +180,11 @@
           "imageUrl": "Kuvan URL-osoite"
         }
       },
+      "mediaView": {
+        "properties": {
+          "imageOrVideoUrl": "Kuvan tai videon URL-osoite"
+        }
+      },
       "textView": {
         "properties": {
           "text": "Teksti"

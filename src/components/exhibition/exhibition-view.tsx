@@ -12,7 +12,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionPageResource, ExhibitionPageResourceType, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, ExhibitionPageTransition } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, ExhibitionPageTransition } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../generic/basic-layout";
@@ -32,6 +32,7 @@ import AddIcon from "@material-ui/icons/AddSharp";
 import AndroidUtils from "../../utils/android-utils";
 import PagePreview from "../preview/page-preview";
 import PageUtils from "../../utils/page-utils";
+import ResourceUtils from "../../utils/resource-utils";
 
 type View = "CODE" | "VISUAL";
 
@@ -68,7 +69,7 @@ interface State {
   selectedDeviceGroupId?: string;
   selectedContentVersionId?: string;
   selectedDeviceId?: string;
-  selectedResource?: ExhibitionPageResource;
+  selectedResourceIndex?: number;
   selectedEventTriggerIndex?: number;
   view: View;
   name: string;
@@ -131,7 +132,7 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition, history } = this.props;
-    const { selectedElement, selectedResource } = this.state;
+    const { selectedElement, selectedResourceIndex, selectedEventTriggerIndex } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -189,16 +190,13 @@ export class ExhibitionView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane minWidth={ 320 } title={ selectedResource ? selectedResource.id : "" }>
+          <ElementSettingsPane minWidth={ 320 } title="">
             {
-              this.state.selectedResource &&
-              <ResourceEditor 
-                resource={ this.state.selectedResource }
-                selectedElement={ this.state.selectedElement }
-                onChange={ this.onResourceDataChange} />
+              selectedResourceIndex !== undefined &&
+              this.renderResourceEditor()
             }
             {
-              this.state.selectedEventTriggerIndex !== undefined &&
+              selectedEventTriggerIndex !== undefined &&
               this.renderEventTriggerEditor()
             }
           </ElementSettingsPane>
@@ -388,26 +386,55 @@ export class ExhibitionView extends React.Component<Props, State> {
    */
   private renderPageSettings = (pageData: ExhibitionPage) => {
     const { classes } = this.props;
-    const { resources, eventTriggers } = this.parseJsonCode();
+    const { resources, eventTriggers } = pageData;
+
     return (
       <div className={ classes.toolbarContent }>
         <PageSettingsEditor
           devices={ this.state.devices }
           pages={ this.state.pages }
-          resources={ resources || [] }
-          eventTriggers={ eventTriggers || [] }
+          resources={ resources }
+          eventTriggers={ eventTriggers }
           pageData={ pageData }
           onPageNameChange={ this.onPageNameChange }
           onPageTransitionChange={ this.onTransitionChange }
           onLayoutChange={ this.onLayoutChange }
           onDeviceChange={ this.onDeviceChange }
-          onAddResourceClick={ this.onAddResourceClick }
           onAddEventTriggerClick={ this.onAddEventTriggerClick }
           onResourceClick={ this.onResourceNodeClick }
           onEventTriggerClick={ this.onEventTriggerNodeClick }
         />
       </div>
     );
+  }
+
+  /**
+   * Renders resource editor
+   */
+  private renderResourceEditor = () => {
+    const { selectedResourceIndex } = this.state;
+    if (selectedResourceIndex === undefined) {
+      return null;
+    }
+
+    const { resources } = this.parseJsonCode();
+    if (!resources) {
+      return null;
+    }
+
+    const selectedResource = resources.length > selectedResourceIndex ? resources[selectedResourceIndex] : undefined;
+    if (!selectedResource) {
+      return null;
+    }
+
+    return <>
+      <Typography variant="h3">{ selectedResource.id }</Typography>
+      <ResourceEditor
+        resource={ selectedResource }
+        selectedElement={ this.state.selectedElement }
+        onChange={ this.onResourceDataChange }
+      />
+    </>;
   }
 
   /**
@@ -475,25 +502,6 @@ export class ExhibitionView extends React.Component<Props, State> {
       devices: devices,
       pages: pages,
     });
-  }
-
-  /**
-   * Returns unique id
-   *
-   * @param idPrefix id prefix
-   * @param existingIds existing ids
-   * @return unique id
-   */
-  private getUniqueId = (idPrefix: string, existingIds: string[]) => {
-    let index = 0;
-    let id = idPrefix;
-
-    while (existingIds.includes(id)) {
-      index++;
-      id = `${idPrefix}-${index}`;
-    }
-
-    return id;
   }
 
   /**
@@ -576,25 +584,6 @@ export class ExhibitionView extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for resource add click
-   */
-  private onAddResourceClick = () => {
-    const parsedCode = this.parseJsonCode();
-    parsedCode.resources = (parsedCode.resources || []);
-    const ids = parsedCode.resources.map(resource => resource.id);
-
-    parsedCode.resources.push({
-      "id": this.getUniqueId("new", ids),
-      "data": "https://example.com",
-      "type": ExhibitionPageResourceType.Image
-    });
-
-    this.setState({
-      jsonCode: this.toJsonCode(parsedCode)
-    });
-  }
-
-  /**
    * Event handler for event trigger add click
    */
   private onAddEventTriggerClick = () => {
@@ -616,25 +605,25 @@ export class ExhibitionView extends React.Component<Props, State> {
   /**
    * Event handler for resource node click
    *
-   * @param resource selected node
+   * @param resourceIndex resource index of selected node
    */
-  private onResourceNodeClick = (resource: ExhibitionPageResource) => {
+  private onResourceNodeClick = (resourceIndex: number) => {
     this.setState({
       selectedEventTriggerIndex: undefined,
-      selectedResource: resource
+      selectedResourceIndex: resourceIndex
     });
   }
 
   /**
    * Event handler for event trigger node click
    *
-   * @param eventTrigger selected node
+   * @param eventTriggerIndex event trigger index of selected node
    */
   private onEventTriggerNodeClick = (eventTriggerIndex: number) => {
 
     this.setState({
       selectedEventTriggerIndex: eventTriggerIndex,
-      selectedResource: undefined
+      selectedResourceIndex: undefined
     });
   }
 
@@ -644,22 +633,21 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param event event
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedResource = this.state.selectedResource;
-    if (!selectedResource) {
-      return null;
+    const { selectedResourceIndex } = this.state;
+    if (selectedResourceIndex === undefined) {
+      return;
     }
 
     const parsedCode = this.parseJsonCode();
     parsedCode.resources = parsedCode.resources || [];
-    const index = parsedCode.resources.findIndex(resource => selectedResource.id === resource.id);
-    if (index > -1) {
-      parsedCode.resources[index].data = event.target.value;
-
-      this.setState({
-        selectedResource: parsedCode.resources[index],
-        jsonCode: this.toJsonCode(parsedCode)
-      });
+    if (parsedCode.resources.length < selectedResourceIndex) {
+      return;
     }
+    
+    parsedCode.resources[selectedResourceIndex].data = event.target.value;
+    this.setState({
+      jsonCode: this.toJsonCode(parsedCode)
+    });
   }
 
   /**
@@ -772,7 +760,18 @@ export class ExhibitionView extends React.Component<Props, State> {
       return;
     }
 
-    const data: ExhibitionPage = { ...selectedElement.data as ExhibitionPage, layoutId: event.target.value };
+    const layoutId = event.target.value;
+    const selectedLayout = this.props.layouts.find(layout => layout.id === layoutId);
+    if (!selectedLayout) {
+      return;
+    }
+
+    const resources = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
+    const data: ExhibitionPage = {
+      ...selectedElement.data as ExhibitionPage,
+      layoutId,
+      resources
+    };
 
     this.setState({
       selectedElement: { ...selectedElement, data }
@@ -861,9 +860,11 @@ export class ExhibitionView extends React.Component<Props, State> {
    * Event handler for add page click
    */
   private onAddPageClick = () => {
-    const layoutId = this.props.layouts && this.props.layouts.length ? this.props.layouts[0].id : null;
+    const { layouts } = this.props;
+    const layoutId = layouts && layouts.length ? layouts[0].id : null;
     const deviceId = this.state.selectedDeviceId;
     const contentVersionId = this.state.selectedContentVersionId;
+    const resources = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
     if (!layoutId || !deviceId || !contentVersionId) {
       return null;
@@ -875,7 +876,7 @@ export class ExhibitionView extends React.Component<Props, State> {
       contentVersionId: contentVersionId,
       name: strings.exhibition.newPage,
       eventTriggers: [],
-      resources: [],
+      resources: resources,
       enterTransitions: [],
       exitTransitions: []
     }
@@ -962,7 +963,8 @@ export class ExhibitionView extends React.Component<Props, State> {
         const pages = this.state.pages.filter(item => item.id !== updatedPage.id) || [];
 
         this.setState({
-          pages: [ ...pages, updatedPage ]
+          pages: [ ...pages, updatedPage ],
+          selectedElement: { type: ExhibitionElementType.PAGE, data: updatedPage }
         });
 
       } else {
@@ -1038,8 +1040,10 @@ export class ExhibitionView extends React.Component<Props, State> {
       selectedDeviceId: this.findSelectedExhibitionDevice(elements)?.id,
       selectedContentVersionId: this.findSelectedExhibitionContentVersion(elements)?.id,
       selectedRoomId: undefined,
+      pageLayout: undefined,
       newDevice: undefined,
       selectedEventTriggerIndex: undefined,
+      selectedResourceIndex: undefined,
       jsonCode: "{}"
     });
 
@@ -1067,9 +1071,16 @@ export class ExhibitionView extends React.Component<Props, State> {
       break;
       case ExhibitionElementType.PAGE:
         const pageData = element.data as ExhibitionPage;
-        const jsonCode = this.toJsonCode(pageData);
         const pageLayout = this.props.layouts.find(item => item.id === pageData.layoutId);
+        if (!pageLayout) {
+          return;
+        }
 
+        if (pageData.resources.length < 1) {
+          pageData.resources = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+        }
+
+        const jsonCode = this.toJsonCode(pageData);
         this.setState({
           selectedElement: element,
           jsonCode: jsonCode,
