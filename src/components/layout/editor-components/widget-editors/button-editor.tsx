@@ -89,7 +89,7 @@ class ButtonEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render  text view height editor
+   * Render text view height editor
    */
   private renderHeight = () => {
     return (
