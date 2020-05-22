@@ -309,12 +309,14 @@
 
   "layoutEditor": {
     "commonComponents": {
+      "layoutLabel": "Layout",
       "id": "ID",
-      "layoutWidth": "Layout width",
-      "layoutHeight": "Layout height",
-      "backgroundColor": "Layout background color",
+      "widget": "Widget",
+      "layoutWidth": "Width",
+      "layoutHeight": "Height",
+      "backgroundColor": "Background color",
       "paddings": {
-        "title": "Layout paddings",
+        "title": "Paddings",
         "left": "Padding left",
         "right": "Padding right",
         "top": "Padding top",
@@ -322,17 +324,17 @@
         "link": "Link paddings"
       },
       "margins": {
-        "title": "Layout margins",
+        "title": "Margins",
         "left": "Margin left",
         "right": "Margin right",
         "top": "Margin top",
         "bottom": "Margin bottom",
         "link": "Link margins"
       },
-      "layoutGravity": "Layout gravity",
-      "layoutAlign": "Layout align"
+      "layoutGravity": "Gravity",
+      "layoutAlign": "Alignment"
     },
-
+    "widgetSpecificLabel": "Widget specific",
     "textView": {
       "width": "Width",
       "height": "Height",

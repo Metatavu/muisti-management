@@ -1,13 +1,13 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, TextField } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
 import GenericPropertySelect from "./generic-property-select";
 import MarginPaddingEditor from "./margin-padding-editor";
 import GravityEditor from "./gravity-editor";
 import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
-import { LayoutPropKeys, LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { LayoutPropKeys, LayoutPaddingPropKeys, LayoutMarginPropKeys, LayoutInfoKeys } from "../editor-constants/keys";
 import ColorPicker from "./color-picker";
 import theme from "../../../styles/theme";
 
@@ -57,6 +57,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     return (
       <>
+        { this.renderLayoutInfo() }
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+        <Typography variant="h3">{ strings.layoutEditor.commonComponents.layoutLabel }</Typography>
         { this.renderLayoutWidth() }
         { this.renderLayoutHeight() }
         { this.renderLayoutBackgroundColor() }
@@ -73,33 +76,73 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   /**
    * Render layout width editor
    */
-  private renderLayoutWidth = () => {
+  private renderLayoutInfo = () => {
 
-    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
     return (
-      <>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(1) }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+            { strings.layoutEditor.commonComponents.id }:
+          </Typography>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="string"
+            name={ LayoutInfoKeys.Id }
+            value={ this.props.pageLayoutView.id }
+            onChange={ this.onInfoValueChange }
+          />
+        </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h4"
           >
-            { strings.layoutEditor.commonComponents.layoutWidth }:
+            { strings.layoutEditor.commonComponents.widget }:
           </Typography>
-          <GenericPropertySelect
-            property={ foundProp }
-            onSelectChange={ this.onSingleValueChange }
-            selectItemType={ LayoutWidthValues }
-          />
-          <GenericPropertyTextField
-            textFieldId={ LayoutPropKeys.LayoutWidth }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ foundProp }
-            onTextFieldChange={ this.onSingleValueChange }
+          <TextField
+            fullWidth
+            variant="filled"
+            type="string"
+            name={ LayoutInfoKeys.Widget }
+            value={ this.props.pageLayoutView.widget }
+            onChange={ this.onInfoValueChange }
           />
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </div>
+    );
+  }
+
+  /**
+   * Render layout width editor
+   */
+  private renderLayoutWidth = () => {
+
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(1) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="body2"
+        >
+          { strings.layoutEditor.commonComponents.layoutWidth }:
+        </Typography>
+        <GenericPropertySelect
+          property={ foundProp }
+          onSelectChange={ this.onSingleValueChange }
+          selectItemType={ LayoutWidthValues }
+        />
+        <GenericPropertyTextField
+          textFieldId={ LayoutPropKeys.LayoutWidth }
+          textFieldType="number"
+          textFieldUnit="dp"
+          property={ foundProp }
+          onTextFieldChange={ this.onSingleValueChange }
+        />
+      </div>
     );
   }
 
@@ -110,29 +153,26 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String);
 
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.commonComponents.layoutHeight }:
-          </Typography>
-          <GenericPropertySelect
-            property={ foundProp }
-            onSelectChange={ this.onSingleValueChange }
-            selectItemType={ LayoutHeightValues }
-          />
-          <GenericPropertyTextField
-            textFieldId={ LayoutPropKeys.LayoutHeight }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ foundProp }
-            onTextFieldChange={ this.onSingleValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="body2"
+        >
+          { strings.layoutEditor.commonComponents.layoutHeight }:
+        </Typography>
+        <GenericPropertySelect
+          property={ foundProp }
+          onSelectChange={ this.onSingleValueChange }
+          selectItemType={ LayoutHeightValues }
+        />
+        <GenericPropertyTextField
+          textFieldId={ LayoutPropKeys.LayoutHeight }
+          textFieldType="number"
+          textFieldUnit="dp"
+          property={ foundProp }
+          onTextFieldChange={ this.onSingleValueChange }
+        />
+      </div>
     );
   }
 
@@ -144,18 +184,20 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
+        <Typography variant="body2">{ strings.layoutEditor.commonComponents.backgroundColor }:</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <ColorPicker
             property={ foundProp }
             onColorChange={ this.onSingleValueChange }
           />
-          <GenericPropertyTextField
-            textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
-            textFieldType="text"
-            property={ foundProp }
-            onTextFieldChange={ this.onSingleValueChange }
-          />
+          <div style={{ marginLeft: theme.spacing(2) }}>
+            <GenericPropertyTextField
+              textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
+              textFieldType="text"
+              property={ foundProp }
+              onTextFieldChange={ this.onSingleValueChange }
+            />
+          </div>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
@@ -210,6 +252,26 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
+  }
+
+  /**
+   * Generic handler for single page layout property value changes
+   * @param updatedPageLayoutView page layout view property object to update
+   */
+  private onInfoValueChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { selectedElementPath } = this.props;
+    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+
+    const key = event.target.name;
+    const value = event.target.value;
+
+    if (!key || ! value) {
+      return;
+    }
+
+    const layoutViewToUpdate = { ...this.props.pageLayoutView, [key]: value } as PageLayoutView;
+    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
+    this.props.setSelectedLayout(pageLayoutToUpdate);
   }
 
   /**

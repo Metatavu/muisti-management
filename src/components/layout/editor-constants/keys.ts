@@ -1,6 +1,14 @@
 /**
  * Common page layout view property keys
  */
+export enum LayoutInfoKeys {
+  Id = "id",
+  Widget = "widget"
+}
+
+/**
+ * Common page layout view property keys
+ */
 export enum LayoutPropKeys {
   LayoutWidth = "layout_width",
   LayoutHeight = "layout_height",

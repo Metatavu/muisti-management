@@ -308,11 +308,13 @@
 
   "layoutEditor": {
     "commonComponents": {
+      "layoutLabel": "Asettelu",
       "id": "ID",
-      "layoutWidth": "Asettelun leveys",
-      "layoutHeight": "Asettelun korkeus",
-      "backgroundColor": "Asettelun taustaväri",
+      "layoutWidth": "Leveys",
+      "layoutHeight": "Korkeus",
+      "backgroundColor": "Taustaväri",
       "paddings": {
+        "title": "Täytteet",
         "left": "Täyte vasemmalla",
         "right": "Täyte oikealla",
         "top": "Täyte yläpuolella",
@@ -320,16 +322,17 @@
         "link": "Linkkien täytteet"
       },
       "margins": {
+        "title": "Marginaalit",
         "left": "Marginaali vasemmalla",
         "right": "Marginaali oikealla",
         "top": "Marginaali yläpuolella",
         "bottom": "Marginaali alapuolella",
         "link": "Linkkien marginaalit"
       },
-      "layoutGravity": "Asettelun painotus",
-      "layoutAlign": "Asettelun tasaus"
+      "layoutGravity": "Painotus",
+      "layoutAlign": "Tasaus"
     },
-
+    "widgetSpecificLabel": "Widget specific",
     "textView": {
       "width": "Leveys",
       "height": "Korkeus",

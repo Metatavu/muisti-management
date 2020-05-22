@@ -154,20 +154,22 @@ export class LayoutEditorView extends React.Component<Props, State> {
             { this.renderEditor() }
             { this.renderDeleteDialog() }
           </EditorView>
-
           <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
-            { pageLayoutView && selectedPropertyPath && 
+            { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
-                pageLayoutView={ pageLayoutView }
-                selectedElementPath={ selectedPropertyPath }
+              pageLayoutView={ pageLayoutView }
+              selectedElementPath={ selectedPropertyPath }
               />
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
-              <LayoutWidgetSpecificPropertiesEditor
-                pageLayoutView={ pageLayoutView }
-                selectedElementPath={ selectedPropertyPath }
-                selectedWidgetType={ selectedWidgetType }
-              />
+              <>
+                <Typography variant="h4">{ strings.layoutEditor.widgetSpecificLabel }</Typography>
+                <LayoutWidgetSpecificPropertiesEditor
+                  pageLayoutView={ pageLayoutView }
+                  selectedElementPath={ selectedPropertyPath }
+                  selectedWidgetType={ selectedWidgetType }
+                />
+              </>
             }
           </ElementSettingsPane>
         </div>
@@ -370,7 +372,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
    * @param type type of the element
    * @param path path to the selected element inside the tree structure
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
   private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutElementType, path: string) => {
     this.setState({
       pageLayoutView : element,
@@ -378,7 +379,6 @@ export class LayoutEditorView extends React.Component<Props, State> {
       selectedWidgetType: type
     });
   }
-
 
   /**
    * Attempts to guess property type from given value. Method falls back to string

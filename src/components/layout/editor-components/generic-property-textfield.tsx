@@ -48,6 +48,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
     return (
       <TextField
         fullWidth
+        variant="filled"
         type={ textFieldType }
         name={ textFieldId }
         value={ textFieldUnit && property.value.includes(textFieldUnit) ? property.value.substring(0, property.value.length - 2) : property.value }

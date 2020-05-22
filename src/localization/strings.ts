@@ -307,7 +307,9 @@ export interface IStrings extends LocalizedStringsMethods {
 
   layoutEditor: {
     commonComponents: {
+      layoutLabel: string;
       id: string;
+      widget: string;
       layoutWidth: string;
       layoutHeight: string;
       backgroundColor: string;
@@ -330,7 +332,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutGravity: string;
       layoutAlign: string;
     };
-
+    widgetSpecificLabel: string;
     textView: {
       width: string;
       height: string;
