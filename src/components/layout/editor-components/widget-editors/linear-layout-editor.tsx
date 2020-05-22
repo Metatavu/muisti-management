@@ -56,7 +56,7 @@ class LinearLayoutEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render flow text view text resource editor
+   * Render orientation editor
    */
   private renderOrientationEditor = () => {
     return (
