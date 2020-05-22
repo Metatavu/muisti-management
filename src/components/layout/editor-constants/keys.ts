@@ -42,3 +42,29 @@ export enum LayoutTextViewPropKeys {
   Gravity = "gravity",
   Typeface = "typeface"
 }
+
+/**
+ * Image view property keys
+ */
+export enum LayoutImageViewPropKeys {
+  Src = "src",
+}
+
+/**
+ * Button property keys
+ */
+export enum LayoutButtonPropKeys {
+  Width = "width",
+  Height = "height",
+  TextColor = "textColor",
+  TextResources = "text",
+  TextStyle = "textStyle",
+  TextSize = "textSize",
+}
+
+/**
+ * Linear layout property keys
+ */
+export enum LayoutLinearLayoutPropKeys {
+  Orientation = "orientation",
+}

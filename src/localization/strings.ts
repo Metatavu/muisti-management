@@ -75,7 +75,7 @@ export interface IStrings extends LocalizedStringsMethods {
       floorPlanTab: string;
       exhibitionContentsTab: string;
     }
-  }
+  };
 
   dashboard: {
     newExhibitionButton: string;
@@ -342,6 +342,23 @@ export interface IStrings extends LocalizedStringsMethods {
       textSize: string;
       typeface: string;
     };
+
+    imageView: {
+      src: string;
+    };
+
+    button: {
+      width: string;
+      height: string;
+      color: string;
+      textResource: string;
+      fontStyle: string;
+      textSize: string;
+    };
+
+    linearLayout: {
+      orientation: string;
+    }
 
     addLayoutViewDialog: {
       title: string;
