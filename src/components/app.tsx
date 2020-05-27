@@ -22,10 +22,12 @@ import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
 import DashboardFloorPlansView from "./dashboard/dashboard-floor-plans-view";
 import ExhibitionView from "./exhibition/exhibition-view";
 import LayoutEditorView from "./layout/layout-editor-view";
+import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
 import "moment/locale/en-gb";
-import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
+
+import ExhibitionsPage from "./exhibitions/exhibitions-page";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -153,7 +155,26 @@ class App extends React.Component<Props, State> {
                       path="/floorplans/:exhibitionId/:exhibitionFloorId"
                       exact={true}
                       render={ ({ match, history }) => (
-                        <FloorPlanEditorView history={ history } exhibitionId={ match.params.exhibitionId } exhibitionFloorId={ match.params.exhibitionFloorId } />
+                        <FloorPlanEditorView
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          exhibitionFloorId={ match.params.exhibitionFloorId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path={[
+                        "/v4/exhibitions",
+                        "/v4/exhibitions/:exhibitionId/content",
+                        "/v4/exhibitions/:exhibitionId/content/:roomId"
+                      ]}
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ExhibitionsPage
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          roomId={ match.params.roomId }
+                        />
                       )}
                     />
                   </Switch>

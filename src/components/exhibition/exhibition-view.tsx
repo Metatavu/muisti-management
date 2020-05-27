@@ -144,7 +144,6 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        exhibitionId={ exhibition.id }
         history={ history }
         title={ exhibition.name }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }

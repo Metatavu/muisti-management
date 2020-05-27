@@ -17,6 +17,12 @@ export const SET_SELECTED_EXHIBITION = "SET_SELECTED_EXHIBITION";
 export type SET_SELECTED_EXHIBITION = typeof SET_SELECTED_EXHIBITION;
 
 /**
+ * Set selected room action
+ */
+export const SET_SELECTED_ROOM = "SET_SELECTED_ROOM";
+export type SET_SELECTED_ROOM = typeof SET_SELECTED_ROOM;
+
+/**
  * Set exhibitions action
  */
 export const SET_EXHIBITIONS = "SET_EXHIBITIONS";

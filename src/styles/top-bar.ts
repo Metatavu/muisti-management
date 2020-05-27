@@ -11,39 +11,41 @@ export default createStyles({
     alignItems: "center",
     background: "#fff",
     borderBottom: "1px solid #ddd",
-    height: 100
+    height: 100,
+    padding: theme.spacing(2)
   },
 
   topRow: {
     paddingLeft: theme.spacing(8),
     display: "flex",
-    flex: 1,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     width: "100%",
   },
 
   middleRow: {
-    paddingLeft: theme.spacing(2),
-    // FIXME: Hide these from first version
-    display: "none",
-    flex: 1,
+    display: "flex",
+    paddingTop: theme.spacing(1),
     alignItems: "center",
     width: "100%",
   },
 
   bottomRow: {
+    display: "flex",
+    paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(8),
-    // FIXME: Hide these from first version
-    display: "none",
-    flex: 1,
+    paddingBottom: theme.spacing(2),
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
   },
 
+  breadcrumbs: {
+    marginRight: "auto"
+  },
+
   nav: {
-    display: "flex"
+    display: "flex",
   },
 
   navList: {
@@ -56,8 +58,9 @@ export default createStyles({
     }
   },
 
-  homeBtn: {
-
+  backBtn: {
+    marginRight: 25,
+    color: "#000"
   },
   
   title: {
@@ -65,6 +68,7 @@ export default createStyles({
   },
 
   user: {
+    marginLeft: 300,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -93,6 +97,10 @@ export default createStyles({
   },
 
   logoutBtn: {
+
+  },
+
+  tabs: {
 
   },
 

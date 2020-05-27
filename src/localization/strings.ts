@@ -22,6 +22,17 @@ export interface IStrings extends LocalizedStringsMethods {
       cancelButton: string;
       createButton: string;
     };
+    inProduction: string;
+    inDraft: string;
+    status: {
+      ready: string;
+    };
+    cardMenu: {
+      addExhibition: string;
+      moveToProduction: string;
+      moveToDraft: string;
+      setStatus: string;
+    };
   };
 
   confirmDialog: {
@@ -70,11 +81,11 @@ export interface IStrings extends LocalizedStringsMethods {
       devicesButton: string;
       layoutsButton: string;
       floorPlansButton: string;
-    }
+    };
     tabs: {
       floorPlanTab: string;
       exhibitionContentsTab: string;
-    }
+    };
   };
 
   dashboard: {
@@ -358,7 +369,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
     linearLayout: {
       orientation: string;
-    }
+    };
 
     addLayoutViewDialog: {
       title: string;

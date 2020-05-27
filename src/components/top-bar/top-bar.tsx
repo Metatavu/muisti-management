@@ -1,25 +1,25 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton, Typography, Breadcrumbs, List, ListItem, Button } from '@material-ui/core';
+import { WithStyles, withStyles, IconButton, Typography, List, ListItem, Button } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
+import { History } from "history";
 import styles from "../../styles/top-bar";
 import HomeIcon from "@material-ui/icons/Home";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import ArrowLeftIcon from "@material-ui/icons/ArrowLeftSharp";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
+import Breadcrumbs from "../generic/breadcrumbs";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  title: string;
+  history: History;
   keycloak: KeycloakInstance;
+  title: string;
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
-  locationPath: string;
-  exhibitionId?: string;
 }
 
 /**
@@ -38,7 +38,7 @@ interface NavigationButton {
 }
 
 /**
- * Component for basic application layout
+ * Component for top bar
  */
 class TopBar extends React.Component<Props, State> {
 
@@ -55,10 +55,10 @@ class TopBar extends React.Component<Props, State> {
   }
 
   /**
-   * Render basic layout
+   * Component render method
    */
   public render() {
-    const { classes, keycloak } = this.props;
+    const { classes, keycloak, history, title } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -66,55 +66,54 @@ class TopBar extends React.Component<Props, State> {
 
     return (
       <header className={ classes.root }>
+
         <div className={ classes.topRow }>
-
-          {/* Breadcrumb */}
-          <Breadcrumbs separator={ <ChevronRight /> }>
-            <Typography variant="h6">{ strings.exhibition.onProduction }</Typography>
-            <Typography color="textPrimary" variant="h5" className={ classes.title }>
-              { this.props.title }
-            </Typography>
-          </Breadcrumbs>
-
-          <div>
-            {/* Navigation */}
-            <nav className={ classes.nav }>
-              { this.props.onDashboardButtonClick &&
-                <IconButton size="small" className={ classes.homeBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
-                  <HomeIcon />
-                </IconButton>
-              }
-              { this.renderNavigation() }
-          </nav>
+          {/* Breadcrumbs */}
+          <div className={ classes.breadcrumbs }>
+            <Breadcrumbs
+              history={ history }
+            />
           </div>
 
+          {/* Navigation */}
+          <nav className={ classes.nav }>
+            { this.props.onDashboardButtonClick &&
+              <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
+                <HomeIcon />
+              </IconButton>
+            }
+            { this.renderNavigation() }
+          </nav>
+          
+          {/* User */}
           <div className={ classes.user }>
-            {/* User */}
             <Typography variant="body1">{ firstName } { lastName}</Typography>
             <div className={ classes.userAvatar } onClick={ this.onLogOutClick }>
               <p>{ initials }</p>
             </div>
           </div>
-
         </div>
-        <div className={ classes.middleRow }>
 
-          {/* Takaisin painike */}
-          { this.props.onDashboardButtonClick &&
-            <IconButton size="small" className={ classes.homeBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
-              <ArrowLeftIcon />
+        <div className={ classes.middleRow }>
+          {/* Back button */}
+          { this.props.history.length > 1 &&
+            <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ () => this.props.history.goBack() }>
+              <ArrowBackIcon />
             </IconButton>
           }
-          {/* Sivun title */}
-          <Typography variant="h1" className={ classes.title }>{ this.props.title }</Typography>
 
+          {/* Page title */}
+          <Typography variant="h1" className={ classes.title }>{ title }</Typography>
         </div>
+
         <div className={ classes.bottomRow }>
-
-          {/* Tänne tabit ja toolbar */}
-          { this.renderTabs() }
-          { this.renderToolbar() }
-
+          {/* Tabs and toolbar */}
+          { history.location.pathname.includes("v4/exhibitions/") &&
+            <>
+              { this.renderTabs() }
+              { this.renderToolbar() }
+            </>
+          }
         </div>
       </header>
     );
@@ -152,13 +151,11 @@ class TopBar extends React.Component<Props, State> {
    * @param navigationButton navigation button
    */
   private renderNavigationButton = (navigationButton: NavigationButton) => {
-    const { locationPath, exhibitionId } = this.props;
+    const { history } = this.props;
 
-    // If there's no selected exhibition, direct to dashboard overview
-    const exhibitionPath = !exhibitionId ? "/dashboard/overview" : `/${ navigationButton.postfix }/${ exhibitionId }`;
-
+    const exhibitionPath = "/dashboard/overview";
     const targetUrl = navigationButton.postfix === "exhibitions" ? exhibitionPath : `/dashboard/${ navigationButton.postfix }`;
-    const selected = navigationButton.postfix === "exhibitions" ? locationPath === exhibitionPath : locationPath === `/dashboard/${ navigationButton.postfix }`;
+    const selected = history.location.pathname === targetUrl;
     
     return (
       <ListItem
@@ -174,7 +171,6 @@ class TopBar extends React.Component<Props, State> {
 
   /**
    * Renders tabs
-   *
    */
   private renderTabs = () => {
     const { classes } = this.props;
@@ -199,12 +195,12 @@ class TopBar extends React.Component<Props, State> {
    * @param tabButton tab button
    */
   private renderTabButton = (tabButton: NavigationButton) => {
-    const { locationPath } = this.props;
+    const { history } = this.props;
 
     return (
       <ListItem
         button
-        selected={ locationPath === `/exhibitions/${ tabButton.postfix }` }
+        selected={ history.location.pathname === `/exhibitions/${ tabButton.postfix }` }
         component={ RouterLink }
         to={ `/exhibitions/${ tabButton.postfix }` }
       >
@@ -215,7 +211,6 @@ class TopBar extends React.Component<Props, State> {
 
   /**
    * Renders toolbar
-   *
    */
   private renderToolbar = () => {
     const { classes } = this.props;
@@ -239,8 +234,7 @@ class TopBar extends React.Component<Props, State> {
     }
   }
 
-
-
 }
+
 
 export default withStyles(styles)(TopBar);
