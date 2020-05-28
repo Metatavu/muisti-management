@@ -36,7 +36,7 @@ class CardMenuButton extends React.Component<Props, State> {
       open: false
     };
   }
-  
+
   /**
    * Component render method
    */

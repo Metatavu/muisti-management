@@ -68,14 +68,12 @@ class TopBar extends React.Component<Props, State> {
       <header className={ classes.root }>
 
         <div className={ classes.topRow }>
-          {/* Breadcrumbs */}
           <div className={ classes.breadcrumbs }>
             <Breadcrumbs
               history={ history }
             />
           </div>
 
-          {/* Navigation */}
           <nav className={ classes.nav }>
             { this.props.onDashboardButtonClick &&
               <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
@@ -84,8 +82,7 @@ class TopBar extends React.Component<Props, State> {
             }
             { this.renderNavigation() }
           </nav>
-          
-          {/* User */}
+
           <div className={ classes.user }>
             <Typography variant="body1">{ firstName } { lastName}</Typography>
             <div className={ classes.userAvatar } onClick={ this.onLogOutClick }>
@@ -95,19 +92,16 @@ class TopBar extends React.Component<Props, State> {
         </div>
 
         <div className={ classes.middleRow }>
-          {/* Back button */}
           { this.props.history.length > 1 &&
             <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ () => this.props.history.goBack() }>
               <ArrowBackIcon />
             </IconButton>
           }
 
-          {/* Page title */}
           <Typography variant="h1" className={ classes.title }>{ title }</Typography>
         </div>
 
         <div className={ classes.bottomRow }>
-          {/* Tabs and toolbar */}
           { history.location.pathname.includes("v4/exhibitions/") &&
             <>
               { this.renderTabs() }
@@ -156,7 +150,7 @@ class TopBar extends React.Component<Props, State> {
     const exhibitionPath = "/dashboard/overview";
     const targetUrl = navigationButton.postfix === "exhibitions" ? exhibitionPath : `/dashboard/${ navigationButton.postfix }`;
     const selected = history.location.pathname === targetUrl;
-    
+
     return (
       <ListItem
         button
@@ -228,7 +222,7 @@ class TopBar extends React.Component<Props, State> {
    */
   private onLogOutClick = () => {
     const { keycloak } = this.props;
-    
+
     if (keycloak) {
       keycloak.logout();
     }

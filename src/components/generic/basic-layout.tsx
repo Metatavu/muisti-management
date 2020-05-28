@@ -68,7 +68,7 @@ class BasicLayout extends React.Component<Props, State> {
    */
   private renderErrorDialog = () => {
     if (this.props.error && this.props.clearError) {
-      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />
+      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />;
     }
 
     return null;
@@ -76,7 +76,7 @@ class BasicLayout extends React.Component<Props, State> {
 
   /**
    * Get page title
-   * 
+   *
    * @returns page title as string
    */
   private getPageTitle = (): string => {

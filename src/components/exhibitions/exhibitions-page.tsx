@@ -136,7 +136,7 @@ export class ExhibitionsPage extends React.Component<Props, State> {
    */
   private fetchExhibitionData = async () => {
     const { accessToken, exhibitions, exhibitionId, selectedExhibition, roomId, selectedRoom } = this.props;
-    
+
     if (!exhibitionId) {
       this.props.setSelectedExhibition(undefined);
       return;
@@ -162,7 +162,7 @@ export class ExhibitionsPage extends React.Component<Props, State> {
 
   /**
    * Get card menu options
-   * 
+   *
    * @returns card menu options as array
    */
   private getCardMenuOptions = (): CardMenuOption[] => {
@@ -180,11 +180,11 @@ export class ExhibitionsPage extends React.Component<Props, State> {
   }
 
   /**
-   * 
+   * Set status handler
    */
   private setStatus = () => {
     alert(strings.comingSoon);
-    return; 
+    return;
   }
 }
 

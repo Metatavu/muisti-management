@@ -22,7 +22,7 @@ interface Props extends WithStyles<typeof styles> {
 
 /**
  * Functional component for custom breadcrumbs
- * 
+ *
  * @param props component props
  */
 const Breadcrumbs: React.FC<Props> = props => {
@@ -36,7 +36,7 @@ const Breadcrumbs: React.FC<Props> = props => {
       }
     </MaterialBreadcrumbs>
   );
-}
+};
 
 /**
  * Renders single breadcrumb
@@ -51,11 +51,11 @@ const renderBreadCrumb = (breadcrumb: BreadcrumbData, isCurrentLocation: boolean
       { breadcrumb.name }
     </Link>
   );
-}
+};
 
 /**
  * Gets breadcrumbs data from current path
- * 
+ *
  * @param props component props
  * @returns breadcrumbs data as array
  */
@@ -88,7 +88,7 @@ const getBreadcrumbsData = (props: Props): BreadcrumbData[] => {
   }
 
   return breadcrumbs;
-}
+};
 
 
 /**

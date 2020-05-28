@@ -76,84 +76,84 @@ class App extends React.Component<Props, State> {
                     <Redirect exact from="/" to="/dashboard/overview" />
                     <Route
                       path="/dashboard/overview"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardOverviewView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/recent"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardRecentView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/drafts"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardDraftsView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/archived"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardArchivedView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/settings"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardSettingsView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/users"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardUsersView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/devices"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardDevicesView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/layouts"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardLayoutsView history={ history } />
                       )}
                     />
                     <Route
                       path="/exhibitions/:exhibitionId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
                         <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
                       )}
                     />
                     <Route
                       path="/layouts/:layoutId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
                         <LayoutEditorView history={ history } layoutId={ match.params.layoutId } />
                       )}
                     />
                     <Route
                       path="/dashboard/floorplans"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardFloorPlansView history={ history } />
                       )}
                     />
                     <Route
                       path="/floorplans/:exhibitionId/:exhibitionFloorId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
                         <FloorPlanEditorView
                           history={ history }
