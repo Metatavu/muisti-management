@@ -11,6 +11,12 @@
     "tabs": {
       "floorPlanTab": "Pohjapiirros",
       "exhibitionContentsTab": "Näyttelysisällöt"
+    },
+
+    "inProduction": "Tuotannossa",
+    "inDraft": "Luonnokset",
+    "status": {
+      "ready": "Valmis" 
     }
   },
 
@@ -31,6 +37,12 @@
       "nameLabel": "Nimi",
       "cancelButton": "Peruuta",
       "createButton": "Luo"
+    },
+    "cardMenu": {
+      "addExhibition": "Lisää näyttely",
+      "moveToProduction": "Siirrä tuotantoon",
+      "moveToDraft": "Siirrä luonnoksiin",
+      "setStatus": "Aseta tila"
     }
   },
 

@@ -144,9 +144,9 @@ export class ExhibitionView extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        exhibitionId={ exhibition.id }
         history={ history }
         title={ exhibition.name }
+        breadcrumbs={ [] }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }

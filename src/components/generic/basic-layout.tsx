@@ -6,6 +6,7 @@ import TopBar from "../top-bar/top-bar";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
 import { History } from "history";
+import { BreadcrumbData } from "../../types";
 
 /**
  * Interface representing component properties
@@ -14,10 +15,10 @@ interface Props extends WithStyles<typeof styles> {
   title: string;
   keycloak: KeycloakInstance;
   history: History;
+  breadcrumbs: BreadcrumbData[];
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
-  exhibitionId?: string;
 }
 
 /**
@@ -47,12 +48,17 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history, exhibitionId } = this.props;
-    const locationPath = history.location.pathname;
+    const { classes, history, title, breadcrumbs, keycloak } = this.props;
 
     return (
       <div className={ classes.root }>
-        <TopBar exhibitionId={ exhibitionId } locationPath={ locationPath } title={ this.props.title } keycloak={ this.props.keycloak } onDashboardButtonClick={ this.props.onDashboardButtonClick } />
+        <TopBar 
+          history={ history }
+          keycloak={ keycloak }
+          breadcrumbs={ breadcrumbs }
+          onDashboardButtonClick={ this.props.onDashboardButtonClick }
+          title={ title }
+        />
         <div className={ classes.content }>
           { this.props.children }
         </div>
@@ -66,7 +72,7 @@ class BasicLayout extends React.Component<Props, State> {
    */
   private renderErrorDialog = () => {
     if (this.props.error && this.props.clearError) {
-      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />
+      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />;
     }
 
     return null;

@@ -92,3 +92,19 @@ export enum PageLayoutElementType {
   BUTTON = "BUTTON",
   LINEARLAYOUT = "LINEARLAYOUT"
 }
+
+/**
+ * Interface describing card menu option
+ */
+export interface CardMenuOption {
+  name: string;
+  action: () => void;
+}
+
+/**
+ * Interface describing breadcrumb data
+ */
+export interface BreadcrumbData {
+  name: string;
+  url?: string;
+}

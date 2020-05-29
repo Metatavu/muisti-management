@@ -27,10 +27,21 @@
     "newExhibitionLabel": "New exhibition",
     "createExhibitionDialog": {
       "title": "Create new exhibition",
-      "helpText": "You can create new exihibiton by adding a name and pressing create button",
+      "helpText": "You can create new exhibition by adding a name and pressing create button",
       "nameLabel": "Name",
       "cancelButton": "Cancel",
       "createButton": "Create"
+    },
+    "inProduction": "In production",
+    "inDraft": "In draft",
+    "status": {
+      "ready": "Ready"
+    },
+    "cardMenu": {
+      "addExhibition": "Add exhibition",
+      "moveToProduction": "Move to production",
+      "moveToDraft": "Move to draft",
+      "setStatus": "Set status"
     }
   },
 
@@ -227,7 +238,7 @@
       "deviceGroupEventTitle": "Triggers when device group event is detected",
       "deviceGroupEvent": "Device group event name",
       "delayTitle": "Triggers after delay",
-      "delay": "Viive (in milliseconds)",
+      "delay": "Delay (in milliseconds)",
       "actions": "Actions",
       "variableName": "User variable name",
       "variableValue": "User variable value",
@@ -272,7 +283,7 @@
     "properties": {
       "title": "Properties",
       "imageHeight": "Image Height",
-      "imageWidth": "Image Hidth",
+      "imageWidth": "Image Width",
       "physicalWidth": "Physical Width",
       "physicalHeight": "Physical Height"
     }

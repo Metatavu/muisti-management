@@ -1,0 +1,52 @@
+import * as React from "react";
+
+import { History } from "history";
+import { Link as RouterLink } from "react-router-dom";
+import { BreadcrumbData } from "../../types";
+import { WithStyles, withStyles, Link, Breadcrumbs as MaterialBreadcrumbs } from "@material-ui/core";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import styles from "../../styles/basic-layout";
+
+/**
+ * Interface representing component properties
+ */
+interface Props extends WithStyles<typeof styles> {
+  history: History;
+  breadcrumbs: BreadcrumbData[];
+}
+
+/**
+ * Functional component for breadcrumbs
+ *
+ * @param props component props
+ */
+const Breadcrumbs: React.FC<Props> = ({ breadcrumbs }) => {
+  return (
+    <MaterialBreadcrumbs separator={ <ChevronRight /> }>
+      {
+        breadcrumbs.map(breadcrumb => {
+          return renderBreadCrumb(breadcrumb);
+        })
+      }
+    </MaterialBreadcrumbs>
+  );
+};
+
+/**
+ * Renders single breadcrumb
+ * 
+ * @param breadcrumb breadcrumb data
+ * @param isCurrentLocation is breadcrumb path current location path
+ */
+const renderBreadCrumb = (breadcrumb: BreadcrumbData) => {
+  return breadcrumb.url ? (
+    <Link component={ RouterLink } to={ breadcrumb.url || "" }>
+      { breadcrumb.name }
+    </Link>
+  ) : (
+    <span>{ breadcrumb.name }</span>
+  );
+};
+
+
+export default withStyles(styles)(Breadcrumbs);

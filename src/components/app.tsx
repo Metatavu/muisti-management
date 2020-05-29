@@ -22,10 +22,13 @@ import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
 import DashboardFloorPlansView from "./dashboard/dashboard-floor-plans-view";
 import ExhibitionView from "./exhibition/exhibition-view";
 import LayoutEditorView from "./layout/layout-editor-view";
+import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
 import "moment/locale/en-gb";
-import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
+
+import ExhibitionsScreen from "./exhibitions/exhibitions-screen";
+import ExhibitionContentRoomsScreen from "./exhibitions/exhibition-content-rooms-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -74,86 +77,109 @@ class App extends React.Component<Props, State> {
                     <Redirect exact from="/" to="/dashboard/overview" />
                     <Route
                       path="/dashboard/overview"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardOverviewView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/recent"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardRecentView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/drafts"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardDraftsView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/archived"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardArchivedView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/settings"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardSettingsView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/users"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardUsersView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/devices"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardDevicesView history={ history } />
                       )}
                     />
                     <Route
                       path="/dashboard/layouts"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardLayoutsView history={ history } />
                       )}
                     />
                     <Route
                       path="/exhibitions/:exhibitionId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
                         <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
                       )}
                     />
                     <Route
                       path="/layouts/:layoutId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
                         <LayoutEditorView history={ history } layoutId={ match.params.layoutId } />
                       )}
                     />
                     <Route
                       path="/dashboard/floorplans"
-                      exact={true}
+                      exact={ true }
                       render={ ({ history }) => (
                         <DashboardFloorPlansView history={ history } />
                       )}
                     />
                     <Route
                       path="/floorplans/:exhibitionId/:exhibitionFloorId"
-                      exact={true}
+                      exact={ true }
                       render={ ({ match, history }) => (
-                        <FloorPlanEditorView history={ history } exhibitionId={ match.params.exhibitionId } exhibitionFloorId={ match.params.exhibitionFloorId } />
+                        <FloorPlanEditorView
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          exhibitionFloorId={ match.params.exhibitionFloorId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions"
+                      exact={ true }
+                      render={({ history }) => (
+                        <ExhibitionsScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/contents"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ExhibitionContentRoomsScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
                       )}
                     />
                   </Switch>
