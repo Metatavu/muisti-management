@@ -101,7 +101,10 @@ export interface CardMenuOption {
   action: () => void;
 }
 
+/**
+ * Interface describing breadcrumb data
+ */
 export interface BreadcrumbData {
   name: string;
-  url: string;
+  url?: string;
 }

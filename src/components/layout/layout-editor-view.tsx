@@ -13,7 +13,7 @@ import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, 
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, PageLayoutViewPropertyType, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
-import BasicLayoutV3 from "../generic/basic-layout";
+import BasicLayout from "../generic/basic-layout";
 import ElementSettingsPane from "../editor-panes/element-settings-pane";
 import ElementNavigationPane from "../editor-panes/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -132,9 +132,10 @@ export class LayoutEditorView extends React.Component<Props, State> {
     }
 
     return (
-      <BasicLayoutV3
+      <BasicLayout
         history={ history }
         title={ layout.name }
+        breadcrumbs={ [] }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
@@ -171,7 +172,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
             }
           </ElementSettingsPane>
         </div>
-      </BasicLayoutV3>
+      </BasicLayout>
     );
   }
 

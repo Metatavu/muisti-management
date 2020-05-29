@@ -3,15 +3,14 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-import { setSelectedExhibition, setSelectedRoom } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, ExhibitionRoom } from "../../generated/client";
-import { AccessToken, CardMenuOption } from '../../types';
+import { Exhibition, ExhibitionRoom } from "../../generated/client";
+import { AccessToken, CardMenuOption, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
@@ -25,13 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  exhibitions: Exhibition[];
-  exhibitionId?: string;
-  roomId?: string;
-  selectedExhibition?: Exhibition;
-  selectedRoom?: ExhibitionRoom;
-  setSelectedExhibition: typeof setSelectedExhibition;
-  setSelectedRoom: typeof setSelectedRoom;
+  exhibitionId: string;
 }
 
 /**
@@ -39,14 +32,14 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   loading: boolean;
-  floors: ExhibitionFloor[];
+  exhibition?: Exhibition;
   rooms: ExhibitionRoom[];
 }
 
 /**
- * Component for exhibitions view
+ * Component for exhibition content rooms view
  */
-export class ExhibitionsPage extends React.Component<Props, State> {
+class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -56,8 +49,7 @@ export class ExhibitionsPage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false,
-      floors: [],
+      loading: true,
       rooms: []
     };
   }
@@ -66,21 +58,16 @@ export class ExhibitionsPage extends React.Component<Props, State> {
    * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
-    await this.fetchExhibitionData();
-  }
-
-  /**
-   * Component did update life cycle handler
-   */
-  public componentDidUpdate = async () => {
-    await this.fetchExhibitionData();
+    await this.fetchData();
+    this.setState({ loading: false });
   }
 
   /**
    * Component render method
    */
   public render = () => {
-    const { classes, history, keycloak, selectedExhibition, selectedRoom } = this.props;
+    const { classes, history, keycloak } = this.props;
+    const { exhibition } = this.state;
     if (this.state.loading) {
       return (
         <div className={ classes.loader }>
@@ -89,35 +76,36 @@ export class ExhibitionsPage extends React.Component<Props, State> {
       );
     }
 
+    const breadcrumbs = this.getBreadcrumbsData();
     return (
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
-        selectedExhibition={ selectedExhibition }
-        selectedRoom={ selectedRoom }
+        title={ exhibition?.name || "" }
+        breadcrumbs={ breadcrumbs }
       >
-        { this.renderProductionCardsList() }
+        { this.renderRoomCardsList() }
       </BasicLayout>
     );
   }
 
   /**
-   * Renders exhibitions in production as card list
+   * Renders rooms as card list
    */
-  private renderProductionCardsList = () => {
-    const { exhibitions } = this.props;
+  private renderRoomCardsList = () => {
+    const { rooms } = this.state;
     const cardMenuOptions = this.getCardMenuOptions();
-    const cards = exhibitions.map(exhibition => {
-      const exhibitionId = exhibition.id;
-      if (!exhibitionId) {
+    const cards = rooms.map(room => {
+      const roomId = room.id;
+      if (!roomId) {
         return null;
       }
 
       return (
         <CardItem
-          key={ exhibition.id }
-          title={ exhibition.name }
-          onClick={ () => this.onCardClick(exhibitionId) }
+          key={ roomId }
+          title={ room.name }
+          onClick={ () => this.onCardClick(roomId) }
           cardMenuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
         />
@@ -132,32 +120,19 @@ export class ExhibitionsPage extends React.Component<Props, State> {
   }
 
   /**
-   * Fetches exhibition data if exhibition is selected
+   * Fetches component data
    */
-  private fetchExhibitionData = async () => {
-    const { accessToken, exhibitions, exhibitionId, selectedExhibition, roomId, selectedRoom } = this.props;
+  private fetchData = async () => {
+    const { accessToken, exhibitionId } = this.props;
 
-    if (!exhibitionId) {
-      this.props.setSelectedExhibition(undefined);
-      return;
-    }
-
-    if (!selectedExhibition || selectedExhibition.id !== exhibitionId) {
-      this.props.setSelectedExhibition(exhibitions.find(exhibition => exhibition.id === exhibitionId));
-    }
-
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const rooms = await exhibitionRoomsApi.listExhibitionRooms({ exhibitionId });
-    this.setState({ rooms: rooms });
+    const [ exhibition, rooms ] = await Promise.all<Exhibition, ExhibitionRoom[]>([
+      exhibitionsApi.findExhibition({ exhibitionId }),
+      exhibitionRoomsApi.listExhibitionRooms({ exhibitionId })
+    ]);
 
-    if (!roomId) {
-      this.props.setSelectedRoom(undefined);
-      return;
-    }
-
-    if (!selectedRoom || selectedRoom.id !== roomId) {
-      this.props.setSelectedRoom(rooms.find(room => room.id === roomId));
-    }
+    this.setState({ exhibition, rooms });
   }
 
   /**
@@ -174,9 +149,12 @@ export class ExhibitionsPage extends React.Component<Props, State> {
 
   /**
    * Event handler for card click
+   * 
+   * @param roomId room id
    */
-  private onCardClick = (exhibitionId: string) => {
-    this.props.history.push(`/exhibitions/${exhibitionId}`);
+  private onCardClick = (roomId: string) => {
+    const { pathname } = this.props.history.location;
+    this.props.history.push(`${pathname}/rooms/${roomId}`);
   }
 
   /**
@@ -185,6 +163,19 @@ export class ExhibitionsPage extends React.Component<Props, State> {
   private setStatus = () => {
     alert(strings.comingSoon);
     return;
+  }
+
+  /**
+   * Get breadcrumbs data
+   * 
+   * @returns breadcrumbs data as array
+   */
+  private getBreadcrumbsData = () => {
+    const { exhibition } = this.state;
+    return [
+      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
+      { name: exhibition?.name || "" }
+    ] as BreadcrumbData[];
   }
 }
 
@@ -196,8 +187,7 @@ export class ExhibitionsPage extends React.Component<Props, State> {
 function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 
@@ -208,10 +198,8 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedExhibition: (exhibition: Exhibition) => dispatch(setSelectedExhibition(exhibition)),
-    setSelectedRoom: (room: ExhibitionRoom) => dispatch(setSelectedRoom(room))
   };
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionsPage));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionContentRoomsScreen));

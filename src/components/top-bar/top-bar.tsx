@@ -9,12 +9,14 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
 import Breadcrumbs from "../generic/breadcrumbs";
+import { BreadcrumbData } from "../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   history: History;
+  breadcrumbs: BreadcrumbData[];
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
@@ -58,7 +60,7 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, title } = this.props;
+    const { classes, keycloak, history, breadcrumbs, title } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -71,6 +73,7 @@ class TopBar extends React.Component<Props, State> {
           <div className={ classes.breadcrumbs }>
             <Breadcrumbs
               history={ history }
+              breadcrumbs={ breadcrumbs }
             />
           </div>
 

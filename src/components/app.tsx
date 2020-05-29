@@ -27,7 +27,8 @@ import moment from "moment";
 import "moment/locale/fi";
 import "moment/locale/en-gb";
 
-import ExhibitionsPage from "./exhibitions/exhibitions-page";
+import ExhibitionsScreen from "./exhibitions/exhibitions-screen";
+import ExhibitionContentRoomsScreen from "./exhibitions/exhibition-content-rooms-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -163,17 +164,21 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path={[
-                        "/v4/exhibitions",
-                        "/v4/exhibitions/:exhibitionId/content",
-                        "/v4/exhibitions/:exhibitionId/content/:roomId"
-                      ]}
+                      path="/v4/exhibitions"
+                      exact={ true }
+                      render={({ history }) => (
+                        <ExhibitionsScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/contents"
                       exact={ true }
                       render={({ history, match }) => (
-                        <ExhibitionsPage
+                        <ExhibitionContentRoomsScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
-                          roomId={ match.params.roomId }
                         />
                       )}
                     />
