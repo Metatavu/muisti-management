@@ -1,6 +1,6 @@
 import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
-import { Exhibition, ExhibitionRoom } from "../generated/client";
+import { Exhibition } from "../generated/client";
 
 /**
  * Interface for set selected exhibition action type
@@ -16,14 +16,6 @@ export interface SetSelectedExhibitionAction {
 export interface SetExhibitionsAction {
   type: actionTypes.SET_EXHIBITIONS;
   exhibitions: Exhibition[];
-}
-
-/**
- * Interface for set selected room action type
- */
-export interface SetSelectedRoomAction {
-  type: actionTypes.SET_SELECTED_ROOM;
-  room: ExhibitionRoom;
 }
 
 /**
@@ -50,16 +42,4 @@ export const setExhibitions: ActionCreator<SetExhibitionsAction> = (exhibitions:
   };
 };
 
-/**
- * Function for dispatching selected room
- *
- * @param room room being dispatched
- */
-export const setSelectedRoom: ActionCreator<SetSelectedRoomAction> = (room: ExhibitionRoom) => {
-  return {
-    type: actionTypes.SET_SELECTED_ROOM,
-    room: room
-  };
-};
-
-export type ExhibitionsAction = SetSelectedExhibitionAction | SetExhibitionsAction | SetSelectedRoomAction;
+export type ExhibitionsAction = SetSelectedExhibitionAction | SetExhibitionsAction;

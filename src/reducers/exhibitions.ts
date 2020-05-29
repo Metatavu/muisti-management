@@ -1,7 +1,7 @@
 import { ExhibitionsAction } from '../actions/exhibitions';
-import { SET_SELECTED_EXHIBITION, SET_EXHIBITIONS, SET_SELECTED_ROOM } from '../constants/actionTypes';
+import { SET_SELECTED_EXHIBITION, SET_EXHIBITIONS } from '../constants/actionTypes';
 import { Reducer } from "redux";
-import { Exhibition, ExhibitionRoom } from '../generated/client';
+import { Exhibition } from '../generated/client';
 
 /**
  * Exhibitions state
@@ -9,7 +9,6 @@ import { Exhibition, ExhibitionRoom } from '../generated/client';
 interface ExhibitionsState {
   selectedExhibition?: Exhibition;
   exhibitions: Exhibition[];
-  selectedRoom?: ExhibitionRoom;
 }
 
 /**
@@ -17,8 +16,7 @@ interface ExhibitionsState {
  */
 const initialState: ExhibitionsState = {
   selectedExhibition: undefined,
-  exhibitions: [],
-  selectedRoom: undefined
+  exhibitions: []
 }
 
 /**
@@ -39,11 +37,6 @@ export const exhibitionsReducer: Reducer<ExhibitionsState, ExhibitionsAction> = 
       return {
         ...state,
         exhibitions: action.exhibitions
-      }
-    case SET_SELECTED_ROOM:
-      return {
-        ...state,
-        selectedRoom: action.room
       }
     default:
       return state;

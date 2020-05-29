@@ -49,7 +49,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: true,
+      loading: false,
       rooms: []
     };
   }
@@ -58,6 +58,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
    * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
+    this.setState({ loading: true });
     await this.fetchData();
     this.setState({ loading: false });
   }
@@ -148,16 +149,6 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for card click
-   * 
-   * @param roomId room id
-   */
-  private onCardClick = (roomId: string) => {
-    const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/rooms/${roomId}`);
-  }
-
-  /**
    * Set status handler
    */
   private setStatus = () => {
@@ -176,6 +167,16 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
       { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
       { name: exhibition?.name || "" }
     ] as BreadcrumbData[];
+  }
+
+  /**
+   * Event handler for card click
+   * 
+   * @param roomId room id
+   */
+  private onCardClick = (roomId: string) => {
+    const { pathname } = this.props.history.location;
+    this.props.history.push(`${pathname}/rooms/${roomId}`);
   }
 }
 
