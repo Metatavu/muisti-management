@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Typography, Card, withStyles, WithStyles, Grid } from "@material-ui/core";
+import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent } from "@material-ui/core";
 import styles from "../../../styles/card-item";
 import CardMenuButton from "./card-menu-button";
 import { CardMenuOption } from "../../../types";
@@ -50,21 +50,23 @@ class CardItem extends React.Component<Props, State> {
     const { classes, cardMenuOptions, title, status } = this.props;
 
     return (
-      <div className={ classes.cardItem } onClick={ this.props.onClick }>
-        <Card elevation={ 10 } variant="outlined" className={ classes.card }>
-          <Grid container>
-            <Typography variant="subtitle1" className={ classes.cardTitle }>
-              { title }
-            </Typography>
+      <Card elevation={ 5 } variant="elevation" className={ classes.card } onClick={ this.props.onClick }>
+        <CardHeader
+          titleTypographyProps={{ variant: "h3" }}
+          action={
             <CardMenuButton
               cardMenuOptions={ cardMenuOptions }
             />
-          </Grid>
-          <Typography variant="h3" className={ classes.cardTitle }>
+          }
+          title={ title }
+          subheader="Tiedekeskus Muistin kevätnäyttely 2021"
+        />
+        <CardContent>
+          <Typography variant="h5" className={ classes.status }>
             { status }
           </Typography>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 }

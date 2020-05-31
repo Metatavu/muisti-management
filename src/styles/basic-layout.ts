@@ -11,6 +11,7 @@ export default createStyles({
   },
   content: {
     gridArea: "content",
-    overflow: "hidden"
+    overflow: "hidden",
+    backgroundColor: "#fff"
   },
 });

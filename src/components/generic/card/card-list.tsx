@@ -42,7 +42,7 @@ class CardList extends React.Component<Props, State> {
 
     return (
       <>
-        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ title }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h2">{ title }</Typography>
         <List>
           { this.props.children }
         </List>

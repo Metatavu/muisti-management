@@ -70,7 +70,9 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         title={ strings.exhibitions.listTitle }
         breadcrumbs={ [] }
       >
-        { this.renderProductionCardsList() }
+        <div className={ classes.cardView }>
+          { this.renderProductionCardsList() }
+        </div>
       </BasicLayout>
     );
   }

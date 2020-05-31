@@ -3,35 +3,35 @@ import theme from "./theme";
 
 export default createStyles({
 
-  cardItem: {
-    width: 250,
-    height: 400,
+  card: {
+    display: "flex",
+    flexDirection: "column",
     cursor: "pointer",
-    opacity: 0.5,
-    transition: "opacity 0.2s ease-out",
+    width: 250,
+    height: 240,
+    background: "#ebebeb",
+    borderRadius: 4,
+    transition: "background 0.2s ease-out, box-shadow 0.2s ease-out ",
     "&:hover": {
-      opacity: 0.9,
+      background: "#dedede",
     },
     "&:active": {
-      opacity: 1,
+      background: "#dedede",
+      boxShadow: "0 0 2 rgba(0,0,0,0.2)"
+    },
+    "& .MuiCardContent-root": {
+      display: "flex",
+      flexGrow: 1,
+      flexDirection: "column",
     }
-  },
-
-  card: {
-    width: 250,
-    height: 400,
-    padding: 20,
-    background: "#ebebeb",
-    borderColor: theme.palette.text.primary
   },
 
   imageContainer: {
     height: "100%"
   },
 
-  cardTitle: {
-    textAlign: "center",
-    maxWidth: "120px"
+  status: {
+    marginTop: "auto"
   }
 
 });
