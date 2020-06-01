@@ -20,6 +20,11 @@ export default createStyles({
     marginBottom: 10
   },
 
+  cardView: {
+    paddingLeft: 85,
+    paddingTop: 40
+  },
+
   editorLayout: {
     height: "100%",
     overflow: "hidden",

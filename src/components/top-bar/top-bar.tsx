@@ -178,7 +178,7 @@ class TopBar extends React.Component<Props, State> {
       <List
         disablePadding
         dense
-        className={ classes.navList }
+        className={ classes.tabs }
       >
         { this.renderTabButton(floorplanTab) }
         { this.renderTabButton(contentsTab) }

@@ -1,6 +1,8 @@
 import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
+const leftPadding = 30;
+
 export default createStyles({
 
   root: {
@@ -9,18 +11,21 @@ export default createStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "space-between",
     background: "#fff",
-    borderBottom: "1px solid #ddd",
-    height: 100,
-    padding: theme.spacing(2)
+    height: 130,
+    paddingLeft: theme.spacing(5),
+    borderBottom: "1px solid #D5D5D5",
+    boxShadow: "0 0 10px rgba(0,0,0,0.2)"
   },
 
   topRow: {
-    paddingLeft: theme.spacing(8),
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    paddingLeft: leftPadding,
     width: "100%",
+    height: 45
   },
 
   middleRow: {
@@ -32,11 +37,10 @@ export default createStyles({
 
   bottomRow: {
     display: "flex",
-    paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(8),
-    paddingBottom: theme.spacing(2),
+    paddingLeft: leftPadding,
     alignItems: "center",
     justifyContent: "space-between",
+    height: 45,
     width: "100%",
   },
 
@@ -46,23 +50,47 @@ export default createStyles({
 
   nav: {
     display: "flex",
+    height: "100%"
   },
 
   navList: {
     display: "flex",
     "& a": {
       whiteSpace: "nowrap",
+      borderRadius: 0,
+      borderTop: "4px solid rgba(255,255,255,0)",
+      transition: "border-top-color 0.2s ease-out",
       "& p": {
         lineHeight: 0
+      },
+      "&.selected": {
+        borderTopColor: theme.palette.secondary.main
+      }
+    }
+  },
+
+  tabs: {
+    display: "flex",
+    height: "100%",
+    "& a": {
+      whiteSpace: "nowrap",
+      borderRadius: 0,
+      borderBottom: "4px solid rgba(255,255,255,0)",
+      transition: "border-top-color 0.2s ease-out",
+      "& p": {
+        lineHeight: 0
+      },
+      "&.selected": {
+        borderBottomColor: theme.palette.secondary.main
       }
     }
   },
 
   backBtn: {
-    marginRight: 25,
+    marginRight: theme.spacing(2),
     color: "#000"
   },
-  
+
   title: {
     color: theme.palette.text.primary
   },
@@ -97,10 +125,6 @@ export default createStyles({
   },
 
   logoutBtn: {
-
-  },
-
-  tabs: {
 
   },
 
