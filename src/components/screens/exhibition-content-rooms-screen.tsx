@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionRoom } from "../../generated/client";
-import { AccessToken, CardMenuOption, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
@@ -85,7 +85,9 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
         title={ exhibition?.name || "" }
         breadcrumbs={ breadcrumbs }
       >
-        { this.renderRoomCardsList() }
+        <div className={ classes.cardView }>
+          { this.renderRoomCardsList() }
+         </div>
       </BasicLayout>
     );
   }
@@ -139,9 +141,9 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
   /**
    * Get card menu options
    *
-   * @returns card menu options as array
+   * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (): CardMenuOption[] => {
+  private getCardMenuOptions = (): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
       action: this.setStatus

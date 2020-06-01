@@ -136,6 +136,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
         history={ history }
         title={ layout.name }
         breadcrumbs={ [] }
+        actionBarButtons={ [] }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }

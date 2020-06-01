@@ -1,15 +1,15 @@
 import * as React from "react";
 
 import { withStyles, WithStyles, Menu, MenuItem, IconButton } from "@material-ui/core";
-import styles from "../../../styles/card-list";
+import styles from "../../../styles/generic/card-list/card-list";
 import MenuIcon from '@material-ui/icons/Menu';
-import { CardMenuOption } from "../../../types";
+import { ActionButton } from "../../../types";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  cardMenuOptions: CardMenuOption[];
+  cardMenuOptions: ActionButton[];
   icon?: JSX.Element;
 }
 

@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent } from "@material-ui/core";
-import styles from "../../../styles/card-item";
+import styles from "../../../styles/generic/card-list/card-item";
 import CardMenuButton from "./card-menu-button";
-import { CardMenuOption } from "../../../types";
+import { ActionButton } from "../../../types";
 
 /**
  * Component props
@@ -23,7 +23,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * List of available menu options
    */
-  cardMenuOptions: CardMenuOption[];
+  cardMenuOptions: ActionButton[];
 
   /**
    * Handler for card click

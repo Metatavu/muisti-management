@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition } from "../../generated/client";
-import { AccessToken, CardMenuOption } from '../../types';
+import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -63,12 +63,14 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       );
     }
 
+    const actionBarButtons = this.getActionButtons();
     return (
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
         title={ strings.exhibitions.listTitle }
         breadcrumbs={ [] }
+        actionBarButtons={ actionBarButtons }
       >
         <div className={ classes.cardView }>
           { this.renderProductionCardsList() }
@@ -110,13 +112,24 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   /**
    * Get card menu options
    *
-   * @returns card menu options as array
+   * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (): CardMenuOption[] => {
+  private getCardMenuOptions = (): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
       action: this.setStatus
     }];
+  }
+
+  /**
+   * Get action buttons
+   * 
+   * @returns action buttons as array
+   */
+  private getActionButtons = () => {
+    return [
+      { name: strings.dashboard.newExhibitionButton, action: () => null }
+    ] as ActionButton[];
   }
 
   /**

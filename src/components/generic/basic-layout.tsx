@@ -1,12 +1,12 @@
 import * as React from "react";
 
 import { WithStyles, withStyles } from "@material-ui/core";
-import styles from "../../styles/basic-layout";
-import TopBar from "../top-bar/top-bar";
+import styles from "../../styles/generic/basic-layout";
+import TopBar from "./top-bar";
 import { KeycloakInstance } from "keycloak-js";
 import ErrorDialog from "./error-dialog";
 import { History } from "history";
-import { BreadcrumbData } from "../../types";
+import { BreadcrumbData, ActionButton } from "../../types";
 
 /**
  * Interface representing component properties
@@ -16,6 +16,7 @@ interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance;
   history: History;
   breadcrumbs: BreadcrumbData[];
+  actionBarButtons?: ActionButton[];
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
@@ -48,7 +49,7 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history, title, breadcrumbs, keycloak } = this.props;
+    const { classes, history, title, breadcrumbs, actionBarButtons, keycloak } = this.props;
 
     return (
       <div className={ classes.root }>
@@ -56,6 +57,7 @@ class BasicLayout extends React.Component<Props, State> {
           history={ history }
           keycloak={ keycloak }
           breadcrumbs={ breadcrumbs }
+          actionBarButtons={ actionBarButtons }
           onDashboardButtonClick={ this.props.onDashboardButtonClick }
           title={ title }
         />
