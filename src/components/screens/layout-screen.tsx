@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, BreadcrumbData } from '../../types';
 import strings from "../../localization/strings";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 import { PageLayout } from "../../generated/client";
 

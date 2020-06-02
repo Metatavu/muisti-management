@@ -5,7 +5,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { BreadcrumbData } from "../../types";
 import { WithStyles, withStyles, Link, Breadcrumbs as MaterialBreadcrumbs } from "@material-ui/core";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import styles from "../../styles/generic/breadcrumbs";
+import styles from "../../styles/components/generic/breadcrumbs";
 
 /**
  * Interface representing component properties

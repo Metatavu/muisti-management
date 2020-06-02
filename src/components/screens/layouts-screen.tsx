@@ -14,7 +14,7 @@ import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 
 /**
  * Component props
@@ -71,10 +71,9 @@ class LayoutsScreen extends React.Component<Props, State> {
         title={ strings.layout.title }
         breadcrumbs={ [] }
         actionBarButtons={ actionBarButtons }
+        noBackButton
       >
-        <div className={ classes.cardView }>
-          { this.renderLayoutCardsList() }
-        </div>
+        { this.renderLayoutCardsList() }
       </BasicLayout>
     );
   }

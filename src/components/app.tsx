@@ -9,8 +9,8 @@ import muistiTheme from "../styles/theme";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import strings from "../localization/strings";
-import AccessTokenRefresh from "./generic/access-token-refresh";
-import StoreInitializer from "./generic/store-initializer";
+import AccessTokenRefresh from "./containers/access-token-refresh";
+import StoreInitializer from "./containers/store-initializer";
 import DashboardOverviewView from "./dashboard/dashboard-overview-view";
 import DashboardRecentView from "./dashboard/dashboard-recent-view";
 import DashboardDraftsView from "./dashboard/dashboard-drafts-view";
@@ -32,7 +32,6 @@ import ExhibitionContentRoomsScreen from "./screens/exhibition-content-rooms-scr
 import LayoutsScreen from "./screens/layouts-screen";
 import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
-import DeviceModelScreen from "./screens/device-model-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -211,16 +210,6 @@ class App extends React.Component<Props, State> {
                       render={({ history }) => (
                         <DeviceModelsScreen
                           history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/v4/deviceModels/:deviceModelId"
-                      exact={ true }
-                      render={({ history, match }) => (
-                        <DeviceModelScreen
-                          history={ history }
-                          deviceModelId={ match.params.deviceModelId }
                         />
                       )}
                     />

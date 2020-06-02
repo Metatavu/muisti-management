@@ -39,7 +39,7 @@ export default createStyles({
     display: "flex",
     paddingLeft: leftPadding,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     height: 45,
     width: "100%",
   },
@@ -72,6 +72,7 @@ export default createStyles({
   tabs: {
     display: "flex",
     height: "100%",
+    marginRight: "auto",
     "& a": {
       whiteSpace: "nowrap",
       borderRadius: 0,

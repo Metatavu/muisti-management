@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { ActionButton } from "../../types";
 import { WithStyles, withStyles, Button, Grid } from "@material-ui/core";
-import styles from "../../styles/generic/toolbar";
+import styles from "../../styles/components/generic/toolbar";
 
 /**
  * Interface representing component properties

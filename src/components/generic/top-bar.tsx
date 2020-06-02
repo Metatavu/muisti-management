@@ -19,6 +19,7 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
+  noBackButton?: boolean;
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
@@ -62,7 +63,7 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, breadcrumbs, actionBarButtons, title } = this.props;
+    const { classes, keycloak, history, breadcrumbs, actionBarButtons, noBackButton, title } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -89,7 +90,7 @@ class TopBar extends React.Component<Props, State> {
           </nav>
 
           <div className={ classes.user }>
-            <Typography variant="body1">{ firstName } { lastName}</Typography>
+            <Typography variant="body1">{ firstName } { lastName }</Typography>
             <div className={ classes.userAvatar } onClick={ this.onLogOutClick }>
               <p>{ initials }</p>
             </div>
@@ -97,7 +98,7 @@ class TopBar extends React.Component<Props, State> {
         </div>
 
         <div className={ classes.middleRow }>
-          { this.props.history.length > 1 &&
+          { this.props.history.length > 1 && !noBackButton &&
             <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ () => this.props.history.goBack() }>
               <ArrowBackIcon />
             </IconButton>
@@ -107,9 +108,11 @@ class TopBar extends React.Component<Props, State> {
         </div>
 
         <div className={ classes.bottomRow }>
-          { history.location.pathname.includes("v4/exhibitions/") &&
+          { history.location.pathname.includes("v4") &&
             <>
-              { this.renderTabs() }
+              { history.location.pathname.includes("exhibitions/") &&
+                this.renderTabs()
+              }
               { actionBarButtons &&
                 this.renderActionBar()
               }
@@ -179,7 +182,7 @@ class TopBar extends React.Component<Props, State> {
   private renderTabs = () => {
     const { classes } = this.props;
     const floorplanTab = { postfix: "floorplan", text: strings.header.tabs.floorPlanTab };
-    const contentsTab = { postfix: "exhibition-contents", text: strings.header.tabs.exhibitionContentsTab };
+    const contentsTab = { postfix: "content", text: strings.header.tabs.exhibitionContentsTab };
 
     return (
       <List
@@ -204,9 +207,9 @@ class TopBar extends React.Component<Props, State> {
     return (
       <ListItem
         button
-        selected={ history.location.pathname === `/exhibitions/${ tabButton.postfix }` }
+        selected={ history.location.pathname.includes(tabButton.postfix) }
         component={ RouterLink }
-        to={ `/exhibitions/${ tabButton.postfix }` }
+        to={ `/v4/exhibitions/${ tabButton.postfix }` }
       >
         <Typography>{ tabButton.text }</Typography>
       </ListItem>

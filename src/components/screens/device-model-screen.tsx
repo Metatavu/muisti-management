@@ -11,7 +11,7 @@ import { KeycloakInstance } from "keycloak-js";
 import { DeviceModel } from "../../generated/client";
 import { AccessToken, BreadcrumbData, ActionButton } from '../../types';
 import strings from "../../localization/strings";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 
 /**

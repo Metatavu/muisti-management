@@ -15,7 +15,7 @@ import Api from "../../api/api";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 
 /**
  * Component props
@@ -85,9 +85,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
         title={ exhibition?.name || "" }
         breadcrumbs={ breadcrumbs }
       >
-        <div className={ classes.cardView }>
-          { this.renderRoomCardsList() }
-         </div>
+        { this.renderRoomCardsList() }
       </BasicLayout>
     );
   }
@@ -96,11 +94,11 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
    * Renders rooms as card list
    */
   private renderRoomCardsList = () => {
-    const { rooms } = this.state;
+    const { rooms, exhibition } = this.state;
     const cardMenuOptions = this.getCardMenuOptions();
     const cards = rooms.map(room => {
       const roomId = room.id;
-      if (!roomId) {
+      if (!roomId || !exhibition) {
         return null;
       }
 
@@ -108,6 +106,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
         <CardItem
           key={ roomId }
           title={ room.name }
+          subtitle={ exhibition.name }
           onClick={ () => this.onCardClick(roomId) }
           cardMenuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
