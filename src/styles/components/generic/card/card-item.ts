@@ -2,6 +2,10 @@ import { createStyles } from "@material-ui/core";
 
 export default createStyles({
 
+  cardWrapper: {
+    position: "relative"
+  },
+
   largeCard: {
     position: "relative",
     display: "flex",
@@ -28,6 +32,7 @@ export default createStyles({
 
   card: {
     position: "relative",
+    zIndex: 2,
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",
@@ -42,16 +47,34 @@ export default createStyles({
     },
     "&:active": {
       background: "#dedede",
-      boxShadow: "0 0 2 rgba(0,0,0,0.2)"
+      boxShadow: "0 0 2px rgba(0,0,0,0.2)"
     },
     "&.selected": {
       border: "1px solid #000",
-      boxShadow: "0 0 2 rgba(0,0,0,0.2)"
+      boxShadow: "0 0 2px rgba(0,0,0,0.2)"
     },
     "& .MuiCardContent-root": {
       display: "flex",
       flexGrow: 1,
       flexDirection: "column",
+    }
+  },
+
+  cardActionArea: {
+    position: "absolute",
+    zIndex: 1,
+    width: "100%",
+    transform: "translate3d(0, -35px, 0)",
+    transition: "transform 0.2s ease-out",
+    "&.visible": {
+      transform: "translate3d(0, 0, 0)"
+    },
+    "& button": {
+      width: "100%",
+      border: "1px solid #000",
+      borderTopWidth: 0,
+      borderRadius: 0,
+      background: "#ebebeb",
     }
   },
 

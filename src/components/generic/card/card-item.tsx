@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent } from "@material-ui/core";
+import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent, Button } from "@material-ui/core";
 import styles from "../../../styles/components/generic/card/card-item";
 import CardMenuButton from "./card-menu-button";
 import { ActionButton } from "../../../types";
@@ -48,6 +48,11 @@ interface Props extends WithStyles<typeof styles> {
    * Handler for card click
    */
   onClick: () => void;
+
+  /**
+   * Handler for card action click
+   */
+  onActionClick?: () => void;
 }
 
 /**
@@ -67,33 +72,37 @@ class CardItem extends React.Component<Props, State> {
    */
   public render() {
     const { classes, cardMenuOptions, title, subtitle, status, size, selected } = this.props;
-    console.log(selected)
 
     return (
-      <Card
-        elevation={ 5 }
-        variant="elevation"
-        className={ classNames(`${size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
-        onClick={ this.props.onClick }
-      >
-        <CardHeader
-          titleTypographyProps={{ variant: "h3" }}
-          action={
-            <CardMenuButton
+      <div className={ classes.cardWrapper }>
+        <Card
+          elevation={ 5 }
+          variant="elevation"
+          className={ classNames(`${size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
+          onClick={ this.props.onClick }
+          >
+          <CardHeader
+            titleTypographyProps={{ variant: "h3" }}
+            action={
+              <CardMenuButton
               cardMenuOptions={ cardMenuOptions }
+              />
+            }
+            title={ title }
+            subheader={ subtitle }
             />
-          }
-          title={ title }
-          subheader={ subtitle }
-        />
-        <CardContent>
-          { status &&
-            <Typography variant="h5" className={ classes.status }>
-              { status }
-            </Typography>
-          }
-        </CardContent>
-      </Card>
+          <CardContent>
+            { status &&
+              <Typography variant="h5" className={ classes.status }>
+                { status }
+              </Typography>
+            }
+          </CardContent>
+        </Card>
+        <div className={ classNames(`${ classes.cardActionArea } ${ selected ? "visible" : "" }`) }>
+          <Button onClick={ this.props.onActionClick } variant="outlined">Avaa Timeline</Button>
+        </div>
+      </div>
     );
   }
 }
