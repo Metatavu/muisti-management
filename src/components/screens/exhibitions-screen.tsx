@@ -10,11 +10,11 @@ import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition } from "../../generated/client";
-import { AccessToken, CardMenuOption } from '../../types';
+import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 
 /**
  * Component props
@@ -63,16 +63,17 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       );
     }
 
+    const actionBarButtons = this.getActionButtons();
     return (
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
         title={ strings.exhibitions.listTitle }
         breadcrumbs={ [] }
+        actionBarButtons={ actionBarButtons }
+        noBackButton
       >
-        <div className={ classes.cardView }>
-          { this.renderProductionCardsList() }
-        </div>
+        { this.renderProductionCardsList() }
       </BasicLayout>
     );
   }
@@ -108,15 +109,26 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get card menu options
+   * Gets card menu options
    *
-   * @returns card menu options as array
+   * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (): CardMenuOption[] => {
+  private getCardMenuOptions = (): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
       action: this.setStatus
     }];
+  }
+
+  /**
+   * Gets action buttons
+   * 
+   * @returns action buttons as array
+   */
+  private getActionButtons = () => {
+    return [
+      { name: strings.dashboard.newExhibitionButton, action: () => null }
+    ] as ActionButton[];
   }
 
   /**
@@ -128,7 +140,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Set status handler
+   * Event handler for set status
    */
   private setStatus = () => {
     alert(strings.comingSoon);

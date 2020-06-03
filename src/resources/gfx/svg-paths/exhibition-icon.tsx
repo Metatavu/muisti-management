@@ -6,7 +6,7 @@ import theme from "../../../styles/theme"
  * Interface representing component properties
  */
 interface Props extends SvgIconProps {
-  selected?: boolean
+  selected?: boolean;
 }
 
 /**

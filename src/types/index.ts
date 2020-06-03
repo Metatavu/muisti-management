@@ -94,9 +94,9 @@ export enum PageLayoutElementType {
 }
 
 /**
- * Interface describing card menu option
+ * Interface describing generic action button
  */
-export interface CardMenuOption {
+export interface ActionButton {
   name: string;
   action: () => void;
 }

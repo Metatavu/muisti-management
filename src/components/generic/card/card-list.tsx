@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Typography, withStyles, WithStyles, List } from "@material-ui/core";
-import styles from "../../../styles/card-list";
+import { Typography, withStyles, WithStyles } from "@material-ui/core";
+import styles from "../../../styles/components/generic/card/card-list";
 import theme from "../../../styles/theme";
 
 /**
@@ -38,15 +38,15 @@ class CardList extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { title } = this.props;
+    const { classes, title } = this.props;
 
     return (
-      <>
+      <div className={ classes.cardView }>
         <Typography style={{ marginBottom: theme.spacing(2) }} variant="h2">{ title }</Typography>
-        <List>
+        <div className={ classes.cardList }>
           { this.props.children }
-        </List>
-      </>
+        </div>
+      </div>
     );
   }
 }

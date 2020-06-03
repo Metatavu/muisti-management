@@ -5,7 +5,7 @@ import { ReduxState, ReduxActions } from "../../store";
 import { login } from "../../actions/auth";
 
 import { AccessToken } from "../../types"
-import ErrorDialog from "./error-dialog";
+import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
 

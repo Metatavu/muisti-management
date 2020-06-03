@@ -11,14 +11,14 @@ import classNames from "classnames";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  title: string
+  title: string;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  open: boolean
+  open: boolean;
 }
 
 const minWidth = 320;

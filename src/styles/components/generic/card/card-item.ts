@@ -1,9 +1,9 @@
 import { createStyles } from "@material-ui/core";
-import theme from "./theme";
 
 export default createStyles({
 
   card: {
+    position: "relative",
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",

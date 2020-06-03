@@ -9,8 +9,8 @@ import muistiTheme from "../styles/theme";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import strings from "../localization/strings";
-import AccessTokenRefresh from "./generic/access-token-refresh";
-import StoreInitializer from "./generic/store-initializer";
+import AccessTokenRefresh from "./containers/access-token-refresh";
+import StoreInitializer from "./containers/store-initializer";
 import DashboardOverviewView from "./dashboard/dashboard-overview-view";
 import DashboardRecentView from "./dashboard/dashboard-recent-view";
 import DashboardDraftsView from "./dashboard/dashboard-drafts-view";
@@ -27,8 +27,11 @@ import moment from "moment";
 import "moment/locale/fi";
 import "moment/locale/en-gb";
 
-import ExhibitionsScreen from "./exhibitions/exhibitions-screen";
-import ExhibitionContentRoomsScreen from "./exhibitions/exhibition-content-rooms-screen";
+import ExhibitionsScreen from "./screens/exhibitions-screen";
+import ExhibitionContentRoomsScreen from "./screens/exhibition-content-rooms-screen";
+import LayoutsScreen from "./screens/layouts-screen";
+import LayoutScreen from "./screens/layout-screen";
+import DeviceModelsScreen from "./screens/device-models-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -173,7 +176,7 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/contents"
+                      path="/v4/exhibitions/:exhibitionId/content"
                       exact={ true }
                       render={({ history, match }) => (
                         <ExhibitionContentRoomsScreen
@@ -182,6 +185,78 @@ class App extends React.Component<Props, State> {
                         />
                       )}
                     />
+                    <Route
+                      path="/v4/layouts"
+                      exact={ true }
+                      render={({ history }) => (
+                        <LayoutsScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/layouts/:layoutId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <LayoutScreen
+                          history={ history }
+                          layoutId={ match.params.layoutId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/deviceModels"
+                      exact={ true }
+                      render={({ history }) => (
+                        <DeviceModelsScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    {
+                      /**
+                       * TODO:
+                       * Remove commenting below when all views are done
+                       */
+                    }
+                    {/* <Route
+                      path="/v4/spaces"
+                      exact={ true }
+                      render={({ history }) => (
+                        <SpacesScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/spaces/:spaceId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <SpaceScreen
+                          history={ history }
+                          spaceId={ match.params.spaceId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/users"
+                      exact={ true }
+                      render={({ history }) => (
+                        <UsersScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/users/:userId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <UserScreen
+                          history={ history }
+                          userId={ match.params.userId }
+                        />
+                      )}
+                    /> */}
                   </Switch>
                 </div>
               </BrowserRouter>

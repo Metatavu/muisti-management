@@ -11,10 +11,10 @@ import { WithStyles, withStyles, CircularProgress, Button } from "@material-ui/c
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionFloor, Coordinates, Bounds } from "../../generated/client";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 import FileUploader from "../generic/file-uploader";
-import ElementSettingsPane from "../editor-panes/element-settings-pane";
-import ElementNavigationPane from "../editor-panes/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
@@ -110,7 +110,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ [] }
-        onDashboardButtonClick={() => this.onDashboardButtonClick() }
+        actionBarButtons={ [] }
+        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>

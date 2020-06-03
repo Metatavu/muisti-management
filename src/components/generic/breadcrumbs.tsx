@@ -5,7 +5,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { BreadcrumbData } from "../../types";
 import { WithStyles, withStyles, Link, Breadcrumbs as MaterialBreadcrumbs } from "@material-ui/core";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import styles from "../../styles/basic-layout";
+import styles from "../../styles/components/generic/breadcrumbs";
 
 /**
  * Interface representing component properties
@@ -25,7 +25,7 @@ const Breadcrumbs: React.FC<Props> = ({ breadcrumbs }) => {
     <MaterialBreadcrumbs separator={ <ChevronRight /> }>
       {
         breadcrumbs.map(breadcrumb => {
-          return renderBreadCrumb(breadcrumb);
+          return renderBreadcrumb(breadcrumb);
         })
       }
     </MaterialBreadcrumbs>
@@ -38,7 +38,7 @@ const Breadcrumbs: React.FC<Props> = ({ breadcrumbs }) => {
  * @param breadcrumb breadcrumb data
  * @param isCurrentLocation is breadcrumb path current location path
  */
-const renderBreadCrumb = (breadcrumb: BreadcrumbData) => {
+const renderBreadcrumb = (breadcrumb: BreadcrumbData) => {
   return breadcrumb.url ? (
     <Link component={ RouterLink } to={ breadcrumb.url || "" }>
       { breadcrumb.name }

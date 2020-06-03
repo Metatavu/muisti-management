@@ -15,11 +15,11 @@ import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, ExhibitionPageTransition } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
-import BasicLayout from "../generic/basic-layout";
+import BasicLayout from "../layouts/basic-layout";
 import GenericButton from "../generic/generic-button";
-import ElementSettingsPane from "../editor-panes/element-settings-pane";
-import ElementNavigationPane from "../editor-panes/element-navigation-pane";
-import ElementContentsPane from "../editor-panes/element-contents-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementContentsPane from "../layouts/element-contents-pane";
 import EditorView from "../editor/editor-view";
 import CodeEditor from "../editor/code-editor";
 import ResourceEditor from "../right-panel-editors/resource-editor";
@@ -147,6 +147,7 @@ export class ExhibitionView extends React.Component<Props, State> {
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ [] }
+        actionBarButtons={ [] }
         onDashboardButtonClick={() => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }

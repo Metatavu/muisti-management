@@ -8,7 +8,7 @@ import { setLayouts } from "../../actions/layouts";
 import { setDeviceModels } from "../../actions/devices";
 
 import { AccessToken } from "../../types"
-import ErrorDialog from "./error-dialog";
+import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, PageLayout, DeviceModel } from "../../generated/client";
 import Api from "../../api/api";

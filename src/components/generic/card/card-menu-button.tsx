@@ -1,81 +1,100 @@
 import * as React from "react";
 
-import { withStyles, WithStyles, Menu, MenuItem, IconButton } from "@material-ui/core";
-import styles from "../../../styles/card-list";
+import { withStyles, WithStyles, MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@material-ui/core";
+import styles from "../../../styles/components/generic/card/card-list";
 import MenuIcon from '@material-ui/icons/Menu';
-import { CardMenuOption } from "../../../types";
+import { ActionButton } from "../../../types";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  cardMenuOptions: CardMenuOption[];
+  cardMenuOptions: ActionButton[];
   icon?: JSX.Element;
-}
-
-/**
- * Component state
- */
-interface State {
-  open: boolean;
 }
 
 /**
  * Generic card item component
  */
-class CardMenuButton extends React.Component<Props, State> {
+const CardMenuButton: React.FC<Props> = props => {
+  const { cardMenuOptions, icon } = props;
+  const [ open, setOpen ] = React.useState(false);
+
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const prevOpen = React.useRef(open);
 
   /**
-   * Constructor
-   *
-   * @param props component properties
+   * Hook for setting menu open state
    */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      open: false
+  React.useEffect(() => {
+    prevOpen.current = open;
+  }, [open]);
+
+  /**
+   * Handler for toggle menu
+   */
+  const handleToggle = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setOpen(prevOpen => !prevOpen);
+    event.stopPropagation();
+  };
+
+  /**
+   * Handler for close menu
+   * @param event 
+   */
+  const handleClose = (event: React.MouseEvent<EventTarget>) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const optionMenuItems = cardMenuOptions.map(option => {
+    const { name, action } = option;
+    const onClick = (event: React.MouseEvent<HTMLElement>) => {
+      action();
+      handleClose(event);
+      event.stopPropagation();
     };
-  }
-
-  /**
-   * Component render method
-   */
-  public render() {
-    const { cardMenuOptions, icon } = this.props;
-    const { open } = this.state;
-    const optionMenuItems = cardMenuOptions.map(option => {
-      const { name, action } = option;
-      const onClick = (event: React.MouseEvent<HTMLElement>) => {
-        action();
-        this.toggleMenu(event);
-      };
-
-      return (
-        <MenuItem onClick={ onClick }>
-          { name }
-        </MenuItem>
-      );
-    });
 
     return (
-      <>
-        <IconButton onClick={ this.toggleMenu }>
-          { icon || <MenuIcon/> }
-        </IconButton>
-        <Menu open={ open } onClose={ this.toggleMenu }>
-          { optionMenuItems }
-        </Menu>
-      </>
+      <MenuItem key={ name } onClick={ onClick }>
+        { name }
+      </MenuItem>
     );
-  }
+  });
 
-  /**
-   * Toggle menu handler
-   */
-  private toggleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    this.setState({ open: !this.state.open });
-    event.stopPropagation();
-  }
+  return (
+    <>
+      <IconButton onClick={ handleToggle } ref={ anchorRef }>
+        { icon || <MenuIcon/> }
+      </IconButton>
+      <Popper
+        open={ open }
+        role={ undefined }
+        anchorEl={ anchorRef.current }
+        placement="bottom-end"
+        transition
+        disablePortal
+      >
+        {({ TransitionProps }) => (
+          <Grow
+            { ...TransitionProps }
+            style={{ transformOrigin: "right top" }}
+          >
+            <Paper elevation={ 5 }>
+              <ClickAwayListener onClickAway={ handleClose }>
+                <MenuList autoFocusItem={ open }>
+                  { optionMenuItems }
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </>
+  );
 }
 
 export default withStyles(styles)(CardMenuButton);
