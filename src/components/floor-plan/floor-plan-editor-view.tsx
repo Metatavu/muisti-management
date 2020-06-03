@@ -111,7 +111,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         title={ exhibition.name }
         breadcrumbs={ [] }
         actionBarButtons={ [] }
-        onDashboardButtonClick={() => this.onDashboardButtonClick() }
+        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>
