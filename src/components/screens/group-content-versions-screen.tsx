@@ -19,6 +19,7 @@ import BasicLayout from "../layouts/basic-layout";
 import { ContentVersion } from "../../generated/client/models/ContentVersion";
 import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
+import GroupContentVersionsInfo from "./group-content-versions-info";
 
 /**
  * Component props
@@ -82,7 +83,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
-    const { contentVersion } = this.state;
+    const { contentVersion, selectedGroupContentVersion } = this.state;
     const breadcrumbs = this.getBreadcrumbsData();
     const actionBarButtons = this.getActionButtons();
 
@@ -112,6 +113,13 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       >
         { this.renderRoomCardsList() }
         { this.renderAddDialog() }
+        { selectedGroupContentVersion && contentVersion &&
+          <GroupContentVersionsInfo
+            contentVersion={ contentVersion }
+            groupContentVersion={ selectedGroupContentVersion }
+            onValueChange={ this.onGroupContentValueChange }
+          />
+        }
       </BasicLayout>
     );
   }
@@ -135,7 +143,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           subtitle={ contentVersion?.name }
           onClick={ () => this.onCardClick(groupContentVersion) }
           cardMenuOptions={ cardMenuOptions }
-          status={ strings.exhibitions.status.ready }
+          status={ groupContentVersion.status }
           selected={ selectedGroupContentVersion?.id === groupContentVersion.id }
         />
       );
@@ -155,7 +163,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         positiveButtonText={ strings.genericDialog.add }
         title={ strings.groupContentVersion.addDialogTitle }
         error={ false }
-        onConfirm={ this.onSaveClick }
+        onConfirm={ this.onDialogSaveClick }
         onCancel={ this.onCloseOrCancelClick }
         open={ this.state.addDialogOpen }
         onClose={ this.onCloseOrCancelClick }
@@ -270,6 +278,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   // FIXME: create new exhibition
   private getActionButtons = () => {
     return [
+      { name: strings.generic.save, action: this.onSaveClick },
       { name: strings.groupContentVersion.add, action: this.onAddGroupContentVersionClick }
     ] as ActionButton[];
   }
@@ -285,7 +294,21 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
   }
 
-  private onSaveClick = () => {
+  private onGroupContentValueChange = (groupContentVersion: GroupContentVersion) => {
+    const { groupContentVersions } = this.state;
+    const temp = [ ...groupContentVersions ];
+
+    const index = groupContentVersions.findIndex(version => version.id === groupContentVersion.id);
+    if (index > -1) {
+      temp.splice(index, 1, groupContentVersion);
+    }
+    this.setState({
+      groupContentVersions: temp,
+      selectedGroupContentVersion: groupContentVersion
+    });
+  }
+
+  private onDialogSaveClick = () => {
     const { accessToken, exhibitionId } = this.props;
     const { newGroupContentVersion } = this.state;
 
@@ -294,7 +317,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
 
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
-    const createdGroupContenVersion = groupContentVersionApi.createGroupContentVersion({
+    const createdGroupContentVersion = groupContentVersionApi.createGroupContentVersion({
       exhibitionId: exhibitionId,
       groupContentVersion: newGroupContentVersion
     });
@@ -330,11 +353,15 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
   }
 
+  private onSaveClick = () => {
+    alert(strings.comingSoon);
+  }
+
   /**
    * Handler when linked value changed is disabled (single filed is updated)
    * @param event react change event
    */
-  private onValueChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
     const { newGroupContentVersion } = this.state;
     const key = event.target.name;
     const value = event.target.value;

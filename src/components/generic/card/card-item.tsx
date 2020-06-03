@@ -5,6 +5,7 @@ import styles from "../../../styles/components/generic/card/card-item";
 import CardMenuButton from "./card-menu-button";
 import { ActionButton } from "../../../types";
 import classNames from "classnames";
+import { GroupContentVersionStatus } from "../../../generated/client";
 
 /**
  * Component props
@@ -24,7 +25,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Card item status
    */
-  status?: string;
+  status?: string | GroupContentVersionStatus;
 
   /**
    * Card item size

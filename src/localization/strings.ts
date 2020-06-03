@@ -387,6 +387,7 @@ export interface IStrings extends LocalizedStringsMethods {
     addDialogTitle: string;
     name: string;
     deviceGroup: string;
+    status: string;
   };
 
   genericDialog: {
@@ -395,6 +396,10 @@ export interface IStrings extends LocalizedStringsMethods {
     save: string;
     delete: string;
     add: string;
+  };
+
+  generic: {
+    save: string;
   };
 
 

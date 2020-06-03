@@ -387,7 +387,8 @@
     "add": "New group content version",
     "addDialogTitle": "Add group content version",
     "name": "Name",
-    "deviceGroup": "Device Group ID"
+    "deviceGroup": "Device Group ID",
+    "status": "Status"
   },
 
   "genericDialog": {
@@ -396,6 +397,10 @@
     "save": "Save",
     "delete": "Delete",
     "add": "Add"
+  },
+
+  "generic": {
+    "save": "Save"
   }
 
 }

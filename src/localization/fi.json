@@ -384,8 +384,9 @@
   "groupContentVersion": {
     "add": "Lisää uusi ryhmän sisältöversio",
     "addDialogTitle": "Lisää ryhmän sisältöversio",
-    "name": "Name",
-    "deviceGroup": "Device Group ID"
+    "name": "Nimi",
+    "deviceGroup": "Laiteryhmän ID",
+    "status": "Sisältöjen tila"
   },
 
   "genericDialog": {
@@ -394,5 +395,9 @@
     "save": "Tallenna",
     "delete": "Poista",
     "add": "Lisää"
+  },
+
+  "generic": {
+    "save": "Tallenna"
   }
 }
