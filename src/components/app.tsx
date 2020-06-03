@@ -216,7 +216,7 @@ class App extends React.Component<Props, State> {
                     {
                       /**
                        * TODO:
-                       * Remove commenting when all views are done
+                       * Remove commenting below when all views are done
                        */
                     }
                     {/* <Route

@@ -97,7 +97,7 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get breadcrumbs data
+   * Gets breadcrumbs data
    * 
    * @returns breadcrumbs data as array
    */

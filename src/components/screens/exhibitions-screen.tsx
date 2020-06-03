@@ -109,7 +109,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get card menu options
+   * Gets card menu options
    *
    * @returns card menu options as action button array
    */
@@ -121,7 +121,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get action buttons
+   * Gets action buttons
    * 
    * @returns action buttons as array
    */
@@ -140,7 +140,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Set status handler
+   * Event handler for set status
    */
   private setStatus = () => {
     alert(strings.comingSoon);

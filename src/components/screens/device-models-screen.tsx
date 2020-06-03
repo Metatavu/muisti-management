@@ -109,7 +109,6 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    */
   private renderDeviceModelsCardsList = () => {
     const { deviceModels } = this.props;
-    console.log(deviceModels);
     const cards = deviceModels.map(deviceModel => {
       return (
         <CardItem
@@ -130,7 +129,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render device delete confirmation dialog
+   * Renders device model delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
     const { selectedDeviceModel } = this.state;
@@ -151,7 +150,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders device modification dialog
+   * Renders device model modification dialog
    */
   private renderModifyDeviceDialog = () => {
     const { selectedDeviceModel, newDevice, deviceDialogOpen, deviceData, formError } = this.state;
@@ -367,7 +366,9 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Create new device with default values handler
+   * Creates new device model with default values
+   * 
+   * @param deviceModel device model
    */
   private createNewDevice = async (deviceModel: DeviceModel) => {
     const { accessToken } = this.props;
@@ -378,7 +379,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Updates device
+   * Updates device model
    * 
    * @param deviceModel device model
    */
@@ -396,33 +397,22 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     const index = devices.findIndex(device => updatedDevice.id === device.id);
 
     if (index > -1) {
-      devices.splice(index, 1);
-      this.props.setDeviceModels([...devices, updatedDevice]);
+      devices.splice(index, 1, updatedDevice);
+      this.props.setDeviceModels([...devices ]);
       this.onDeviceDialogClose();
     }
   }
 
   /**
-   * Get card menu options
+   * Get card menu options for device models
    *
+   * @param deviceModel device model
    * @returns card menu options as action button array
    */
   private getCardMenuOptions = (deviceModel: DeviceModel): ActionButton[] => {
     return [
       { name: strings.dashboard.devices.dialog.deleteDeviceTitle, action: () => this.onDeleteDialogOpen(deviceModel) }
     ];
-  }
-
-  /**
-   * Event handler for card click
-   */
-  private onCardClick = (deviceModel: DeviceModel) => {
-    this.setState({
-      deviceDialogOpen: true,
-      newDevice: false,
-      selectedDeviceModel: deviceModel,
-      deviceData: this.translateDeviceToDeviceData(deviceModel)
-    });
   }
 
   /**
@@ -434,6 +424,20 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     return [
       { name: strings.dashboard.devices.newDevice, action: this.onAddDeviceClick }
     ] as ActionButton[];
+  }
+
+  /**
+   * Event handler for card click
+   * 
+   * @param deviceModel device model
+   */
+  private onCardClick = (deviceModel: DeviceModel) => {
+    this.setState({
+      deviceDialogOpen: true,
+      newDevice: false,
+      selectedDeviceModel: deviceModel,
+      deviceData: this.translateDeviceToDeviceData(deviceModel)
+    });
   }
 
   /**
@@ -477,7 +481,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Add new device to state handler. Note: this just creates new device to state.
+   * Adds new device model to state handler. Note: this just creates new device to state.
    * Saving to API is done in createNewDevice
    */
   private onAddDeviceClick = () => {
@@ -520,7 +524,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On save device click handler
+   * Event handler for save device model click
    */
   private onSaveDeviceClick = () => {
     const { newDevice, deviceData, selectedDeviceModel } = this.state;
@@ -541,7 +545,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Delete device click handler
+   * Event handler for Delete device click
    *
    * @param deviceToDelete device to delete
    */
@@ -568,7 +572,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On device dialog close handler
+   * Event handler for device dialog close
    */
   private onDeviceDialogClose = () => {
     this.setState({
@@ -580,7 +584,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On delete device dialog open handler
+   * Event handler for open delete device dialog
    *
    * @param selectedDevice selected device
    */
@@ -592,7 +596,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On delete device dialog close handler
+   * Event handler for close delete device dialog
    */
   private onDeleteDialogClose = () => {
     this.setState({
@@ -622,8 +626,8 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Calculates device dpi in X and Y axis.
-   * Based on device physical width, physical height and pixel amount in Y and X axis.
+   * Calculates device model dpi in X and Y axis.
+   * Based on device model's physical width, physical height and pixel amount in Y and X axis.
    *
    * @param physicalWidth physical width
    * @param physicalHeight physical height
@@ -642,9 +646,9 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Calculates device overall dpi.
+   * Calculates device model overall dpi.
    * Needed in resolving device pixel density.
-   * Based on device physical width, physical height and pixel amount in Y and X axis.
+   * Based on device model's physical width, physical height and pixel amount in Y and X axis.
    *
    * @param physicalWidth physical width
    * @param physicalHeight physical height
@@ -663,8 +667,8 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Resolves device pixel density value.
-   * Based on device overall screen dpi.
+   * Resolves device model pixel density value.
+   * Based on device model's overall screen dpi.
    *
    * @param overallDpi overall dpi
    * @returns density value based on ranges between approximated dpi values
