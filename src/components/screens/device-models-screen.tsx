@@ -18,7 +18,7 @@ import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
 import { setDeviceModels } from "../../actions/devices";
 import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
-import EditorDialog from '../generic/editor-dialog';
+import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
 import { DeviceModelData, DeviceModelDisplayMetricsData, DeviceModelDimensionsData } from "../../types/device-model-string-data";
@@ -164,7 +164,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     }
 
     return (
-      <EditorDialog
+      <GenericDialog
         open={ deviceDialogOpen }
         error={ formError }
         title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
@@ -274,7 +274,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             }
           label={ strings.dashboard.devices.dialog.touchscreen }
         />
-      </EditorDialog>
+      </GenericDialog>
     );
   }
 

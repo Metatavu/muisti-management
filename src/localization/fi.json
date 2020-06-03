@@ -89,6 +89,7 @@
 
   "dashboard": {
     "newExhibitionButton": "Uusi näyttely",
+    "newContentVersionButton": "Uusi sisältöversio",
     "navigation": {
       "overviewButton": "Työpöytä",
       "recentButton": "Viimeisimmät",
@@ -378,5 +379,20 @@
       "confirm": "Tallenna",
       "cancel": "Peruuta"
     }
+  },
+
+  "groupContentVersion": {
+    "add": "Lisää uusi ryhmän sisältöversio",
+    "addDialogTitle": "Lisää ryhmän sisältöversio",
+    "name": "Name",
+    "deviceGroup": "Device Group ID"
+  },
+
+  "genericDialog": {
+    "confirm": "Vahvista",
+    "cancel": "Peruuta",
+    "save": "Tallenna",
+    "delete": "Poista",
+    "add": "Lisää"
   }
 }

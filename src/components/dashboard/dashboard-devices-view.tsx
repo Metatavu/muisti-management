@@ -23,7 +23,7 @@ import Api from "../../api/api";
 import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
 import ProjectorIcon from "../../resources/gfx/svg-paths/projektori";
 
-import EditorDialog from '../generic/editor-dialog';
+import GenericDialog from '../generic/generic-dialog';
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
@@ -226,7 +226,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
     }
 
     return (
-      <EditorDialog
+      <GenericDialog
         open={ deviceDialogOpen }
         error={ formError }
         title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
@@ -336,7 +336,7 @@ class DashboardDevicesView extends React.Component<Props, State> {
             }
           label={ strings.dashboard.devices.dialog.touchscreen }
         />
-      </EditorDialog>
+      </GenericDialog>
     );
   }
 

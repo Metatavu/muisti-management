@@ -92,6 +92,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
       return (
         <CardItem
+          size="large"
           key={ exhibition.id }
           title={ exhibition.name }
           onClick={ () => this.onCardClick(exhibitionId) }
@@ -125,6 +126,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * 
    * @returns action buttons as array
    */
+  // FIXME: create new exhibition
   private getActionButtons = () => {
     return [
       { name: strings.dashboard.newExhibitionButton, action: () => null }

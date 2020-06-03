@@ -15,32 +15,33 @@
 
 import * as runtime from '../runtime';
 import {
-    ExhibitionContentVersion,
-    ExhibitionContentVersionFromJSON,
-    ExhibitionContentVersionToJSON,
+    ContentVersion,
+    ContentVersionFromJSON,
+    ContentVersionToJSON,
 } from '../models';
 
-export interface CreateExhibitionContentVersionRequest {
-    exhibitionContentVersion: ExhibitionContentVersion;
+export interface CreateContentVersionRequest {
+    contentVersion: ContentVersion;
     exhibitionId: string;
 }
 
-export interface DeleteExhibitionContentVersionRequest {
-    exhibitionId: string;
-    contentVersionId: string;
-}
-
-export interface FindExhibitionContentVersionRequest {
+export interface DeleteContentVersionRequest {
     exhibitionId: string;
     contentVersionId: string;
 }
 
-export interface ListExhibitionContentVersionsRequest {
+export interface FindContentVersionRequest {
     exhibitionId: string;
+    contentVersionId: string;
 }
 
-export interface UpdateExhibitionContentVersionRequest {
-    exhibitionContentVersion: ExhibitionContentVersion;
+export interface ListContentVersionsRequest {
+    exhibitionId: string;
+    roomId?: string;
+}
+
+export interface UpdateContentVersionRequest {
+    contentVersion: ContentVersion;
     exhibitionId: string;
     contentVersionId: string;
 }
@@ -48,19 +49,19 @@ export interface UpdateExhibitionContentVersionRequest {
 /**
  * no description
  */
-export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
+export class ContentVersionsApi extends runtime.BaseAPI {
 
     /**
-     * Creates new exhibition content version
+     * Creates new content version
      * Create a content version
      */
-    async createExhibitionContentVersionRaw(requestParameters: CreateExhibitionContentVersionRequest): Promise<runtime.ApiResponse<ExhibitionContentVersion>> {
-        if (requestParameters.exhibitionContentVersion === null || requestParameters.exhibitionContentVersion === undefined) {
-            throw new runtime.RequiredError('exhibitionContentVersion','Required parameter requestParameters.exhibitionContentVersion was null or undefined when calling createExhibitionContentVersion.');
+    async createContentVersionRaw(requestParameters: CreateContentVersionRequest): Promise<runtime.ApiResponse<ContentVersion>> {
+        if (requestParameters.contentVersion === null || requestParameters.contentVersion === undefined) {
+            throw new runtime.RequiredError('contentVersion','Required parameter requestParameters.contentVersion was null or undefined when calling createContentVersion.');
         }
 
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
-            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createExhibitionContentVersion.');
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createContentVersion.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -82,32 +83,32 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionContentVersionToJSON(requestParameters.exhibitionContentVersion),
+            body: ContentVersionToJSON(requestParameters.contentVersion),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionContentVersionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ContentVersionFromJSON(jsonValue));
     }
 
     /**
-     * Creates new exhibition content version
+     * Creates new content version
      * Create a content version
      */
-    async createExhibitionContentVersion(requestParameters: CreateExhibitionContentVersionRequest): Promise<ExhibitionContentVersion> {
-        const response = await this.createExhibitionContentVersionRaw(requestParameters);
+    async createContentVersion(requestParameters: CreateContentVersionRequest): Promise<ContentVersion> {
+        const response = await this.createContentVersionRaw(requestParameters);
         return await response.value();
     }
 
     /**
-     * Delets exhibition content version.
+     * Delets content version.
      * Deletes content version.
      */
-    async deleteExhibitionContentVersionRaw(requestParameters: DeleteExhibitionContentVersionRequest): Promise<runtime.ApiResponse<void>> {
+    async deleteContentVersionRaw(requestParameters: DeleteContentVersionRequest): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
-            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteExhibitionContentVersion.');
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteContentVersion.');
         }
 
         if (requestParameters.contentVersionId === null || requestParameters.contentVersionId === undefined) {
-            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling deleteExhibitionContentVersion.');
+            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling deleteContentVersion.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -133,24 +134,24 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delets exhibition content version.
+     * Delets content version.
      * Deletes content version.
      */
-    async deleteExhibitionContentVersion(requestParameters: DeleteExhibitionContentVersionRequest): Promise<void> {
-        await this.deleteExhibitionContentVersionRaw(requestParameters);
+    async deleteContentVersion(requestParameters: DeleteContentVersionRequest): Promise<void> {
+        await this.deleteContentVersionRaw(requestParameters);
     }
 
     /**
      * Finds a content version by id
      * Find a content version
      */
-    async findExhibitionContentVersionRaw(requestParameters: FindExhibitionContentVersionRequest): Promise<runtime.ApiResponse<ExhibitionContentVersion>> {
+    async findContentVersionRaw(requestParameters: FindContentVersionRequest): Promise<runtime.ApiResponse<ContentVersion>> {
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
-            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findExhibitionContentVersion.');
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findContentVersion.');
         }
 
         if (requestParameters.contentVersionId === null || requestParameters.contentVersionId === undefined) {
-            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling findExhibitionContentVersion.');
+            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling findContentVersion.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -172,28 +173,32 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionContentVersionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ContentVersionFromJSON(jsonValue));
     }
 
     /**
      * Finds a content version by id
      * Find a content version
      */
-    async findExhibitionContentVersion(requestParameters: FindExhibitionContentVersionRequest): Promise<ExhibitionContentVersion> {
-        const response = await this.findExhibitionContentVersionRaw(requestParameters);
+    async findContentVersion(requestParameters: FindContentVersionRequest): Promise<ContentVersion> {
+        const response = await this.findContentVersionRaw(requestParameters);
         return await response.value();
     }
 
     /**
-     * List exhibition content versions
+     * List content versions
      * List content versions
      */
-    async listExhibitionContentVersionsRaw(requestParameters: ListExhibitionContentVersionsRequest): Promise<runtime.ApiResponse<Array<ExhibitionContentVersion>>> {
+    async listContentVersionsRaw(requestParameters: ListContentVersionsRequest): Promise<runtime.ApiResponse<Array<ContentVersion>>> {
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
-            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listExhibitionContentVersions.');
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listContentVersions.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.roomId !== undefined) {
+            queryParameters['roomId'] = requestParameters.roomId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -212,15 +217,15 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ExhibitionContentVersionFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ContentVersionFromJSON));
     }
 
     /**
-     * List exhibition content versions
+     * List content versions
      * List content versions
      */
-    async listExhibitionContentVersions(requestParameters: ListExhibitionContentVersionsRequest): Promise<Array<ExhibitionContentVersion>> {
-        const response = await this.listExhibitionContentVersionsRaw(requestParameters);
+    async listContentVersions(requestParameters: ListContentVersionsRequest): Promise<Array<ContentVersion>> {
+        const response = await this.listContentVersionsRaw(requestParameters);
         return await response.value();
     }
 
@@ -228,17 +233,17 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
      * Updates content version.
      * Updates content version.
      */
-    async updateExhibitionContentVersionRaw(requestParameters: UpdateExhibitionContentVersionRequest): Promise<runtime.ApiResponse<ExhibitionContentVersion>> {
-        if (requestParameters.exhibitionContentVersion === null || requestParameters.exhibitionContentVersion === undefined) {
-            throw new runtime.RequiredError('exhibitionContentVersion','Required parameter requestParameters.exhibitionContentVersion was null or undefined when calling updateExhibitionContentVersion.');
+    async updateContentVersionRaw(requestParameters: UpdateContentVersionRequest): Promise<runtime.ApiResponse<ContentVersion>> {
+        if (requestParameters.contentVersion === null || requestParameters.contentVersion === undefined) {
+            throw new runtime.RequiredError('contentVersion','Required parameter requestParameters.contentVersion was null or undefined when calling updateContentVersion.');
         }
 
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
-            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateExhibitionContentVersion.');
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateContentVersion.');
         }
 
         if (requestParameters.contentVersionId === null || requestParameters.contentVersionId === undefined) {
-            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling updateExhibitionContentVersion.');
+            throw new runtime.RequiredError('contentVersionId','Required parameter requestParameters.contentVersionId was null or undefined when calling updateContentVersion.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -260,18 +265,18 @@ export class ExhibitionContentVersionsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ExhibitionContentVersionToJSON(requestParameters.exhibitionContentVersion),
+            body: ContentVersionToJSON(requestParameters.contentVersion),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExhibitionContentVersionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ContentVersionFromJSON(jsonValue));
     }
 
     /**
      * Updates content version.
      * Updates content version.
      */
-    async updateExhibitionContentVersion(requestParameters: UpdateExhibitionContentVersionRequest): Promise<ExhibitionContentVersion> {
-        const response = await this.updateExhibitionContentVersionRaw(requestParameters);
+    async updateContentVersion(requestParameters: UpdateContentVersionRequest): Promise<ContentVersion> {
+        const response = await this.updateContentVersionRaw(requestParameters);
         return await response.value();
     }
 

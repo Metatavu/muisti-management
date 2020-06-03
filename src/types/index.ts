@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../generated/client";
+import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../generated/client";
 import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./device-model-string-data";
 
 /**
@@ -64,7 +64,7 @@ export interface PhysicalButtonData {
  * Interface describing exhibition element in exhibition editor
  */
 export interface ExhibitionElement {
-  data: Exhibition | ExhibitionContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
+  data: Exhibition | ContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
   type: ExhibitionElementType;
 }
 

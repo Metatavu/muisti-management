@@ -16,6 +16,7 @@ import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
+import { ContentVersion } from "../../generated/client/models/ContentVersion";
 
 /**
  * Component props
@@ -25,6 +26,7 @@ interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
   exhibitionId: string;
+  roomId: string;
 }
 
 /**
@@ -33,13 +35,14 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   loading: boolean;
   exhibition?: Exhibition;
-  rooms: ExhibitionRoom[];
+  room?: ExhibitionRoom;
+  contentVersions: ContentVersion[];
 }
 
 /**
  * Component for exhibition content rooms view
  */
-class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
+class ContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -50,7 +53,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      rooms: []
+      contentVersions: []
     };
   }
 
@@ -68,7 +71,8 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
-    const { exhibition } = this.state;
+    const { exhibition, room } = this.state;
+    const actionBarButtons = this.getActionButtons();
     const breadcrumbs = this.getBreadcrumbsData();
 
     if (this.state.loading) {
@@ -76,8 +80,9 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
         <BasicLayout
           keycloak={ keycloak }
           history={ history }
-          title={ exhibition?.name || "" }
+          title={ room?.name || "" }
           breadcrumbs={ breadcrumbs }
+          actionBarButtons={ actionBarButtons }
         >
           <div className={ classes.loader }>
             <CircularProgress size={ 50 } color="secondary"></CircularProgress>
@@ -90,8 +95,9 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
-        title={ exhibition?.name || "" }
+        title={ room?.name || "" }
         breadcrumbs={ breadcrumbs }
+        actionBarButtons={ actionBarButtons }
       >
         { this.renderRoomCardsList() }
       </BasicLayout>
@@ -102,20 +108,20 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
    * Renders rooms as card list
    */
   private renderRoomCardsList = () => {
-    const { rooms, exhibition } = this.state;
+    const { contentVersions, exhibition, room } = this.state;
     const cardMenuOptions = this.getCardMenuOptions();
-    const cards = rooms.map(room => {
-      const roomId = room.id;
-      if (!roomId || !exhibition) {
+    const cards = contentVersions.map(contentVersion => {
+      const contentVersionId = contentVersion.id;
+      if (!contentVersionId || !exhibition) {
         return null;
       }
 
       return (
         <CardItem
-          key={ roomId }
-          title={ room.name }
-          subtitle={ exhibition.name }
-          onClick={ () => this.onCardClick(roomId) }
+          key={ contentVersionId }
+          title={ contentVersion.name }
+          subtitle={ room?.name }
+          onClick={ () => this.onCardClick(contentVersionId) }
           cardMenuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
         />
@@ -130,19 +136,33 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Gets action buttons
+   * 
+   * @returns action buttons as array
+   */
+  // FIXME: create new exhibition
+  private getActionButtons = () => {
+    return [
+      { name: strings.dashboard.newContentVersionButton, action: () => null }
+    ] as ActionButton[];
+  }
+
+  /**
    * Fetches component data
    */
   private fetchData = async () => {
-    const { accessToken, exhibitionId } = this.props;
+    const { accessToken, exhibitionId, roomId } = this.props;
 
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const [ exhibition, rooms ] = await Promise.all<Exhibition, ExhibitionRoom[]>([
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
+    const [ exhibition, room, contentVersions ] = await Promise.all<Exhibition, ExhibitionRoom, ContentVersion[]>([
       exhibitionsApi.findExhibition({ exhibitionId }),
-      exhibitionRoomsApi.listExhibitionRooms({ exhibitionId })
+      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
+      contentVersionsApi.listContentVersions({ exhibitionId, roomId })
     ]);
 
-    this.setState({ exhibition, rooms });
+    this.setState({ exhibition, room, contentVersions });
   }
 
   /**
@@ -167,25 +187,27 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
 
   /**
    * Get breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = () => {
-    const { exhibition } = this.state;
+    const { exhibitionId } = this.props;
+    const { exhibition, room } = this.state;
     return [
       { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name || "" }
+      { name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/content` },
+      { name: room?.name || "" }
     ] as BreadcrumbData[];
   }
 
   /**
    * Event handler for card click
-   * 
-   * @param roomId room id
+   *
+   * @param contentVersionId content version id
    */
-  private onCardClick = (roomId: string) => {
+  private onCardClick = (contentVersionId: string) => {
     const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/rooms/${roomId}`);
+    this.props.history.push(`${pathname}/contentVersion/${contentVersionId}`);
   }
 }
 
@@ -212,4 +234,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionContentRoomsScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ContentVersionsScreen));

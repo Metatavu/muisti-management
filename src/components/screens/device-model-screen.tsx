@@ -64,16 +64,25 @@ export class DeviceModelScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
 
+    const breadcrumbs = this.getBreadcrumbsData();
+    const actionBarButtons = this.getActionButtons();
+
     if (this.state.loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
-        </div>
+        <BasicLayout
+          keycloak={ keycloak }
+          history={ history }
+          title={ strings.layout.title }
+          breadcrumbs={ breadcrumbs }
+          actionBarButtons={ actionBarButtons }
+        >
+          <div className={ classes.loader }>
+            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          </div>
+        </BasicLayout>
       );
     }
 
-    const breadcrumbs = this.getBreadcrumbsData();
-    const actionBarButtons = this.getActionButtons();
     return (
       <BasicLayout
         keycloak={ keycloak }

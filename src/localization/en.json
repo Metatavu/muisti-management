@@ -89,6 +89,7 @@
   "dashboard": {
 
     "newExhibitionButton": "New exhibition",
+    "newContentVersionButton": "New content version",
     "navigation": {
       "overviewButton": "Overview",
       "recentButton": "Recent",
@@ -380,6 +381,21 @@
       "confirm": "Save",
       "cancel": "Cancel"
     }
+  },
+
+  "groupContentVersion": {
+    "add": "New group content version",
+    "addDialogTitle": "Add group content version",
+    "name": "Name",
+    "deviceGroup": "Device Group ID"
+  },
+
+  "genericDialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "add": "Add"
   }
 
 }

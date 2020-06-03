@@ -14,60 +14,72 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Content version (e.g. language) of an exhibition.
+ * 
  * @export
- * @interface ExhibitionContentVersion
+ * @interface Visitor
  */
-export interface ExhibitionContentVersion {
+export interface Visitor {
     /**
-     * 
+     * Unique id for the visitor
      * @type {string}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
     readonly id?: string;
     /**
-     * Id of exhibition this page belongs to
+     * Exhibition id the visitor attended
      * @type {string}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
     readonly exhibitionId?: string;
     /**
-     * Human readable name of the content version
+     * 
      * @type {string}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
-    name: string;
+    email: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
+     */
+    tagId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
+     */
+    readonly userId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
      */
     readonly creatorId?: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
     readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
     readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof ExhibitionContentVersion
+     * @memberof Visitor
      */
     readonly modifiedAt?: Date;
 }
 
-export function ExhibitionContentVersionFromJSON(json: any): ExhibitionContentVersion {
-    return ExhibitionContentVersionFromJSONTyped(json, false);
+export function VisitorFromJSON(json: any): Visitor {
+    return VisitorFromJSONTyped(json, false);
 }
 
-export function ExhibitionContentVersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionContentVersion {
+export function VisitorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Visitor {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -75,7 +87,9 @@ export function ExhibitionContentVersionFromJSONTyped(json: any, ignoreDiscrimin
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'name': json['name'],
+        'email': json['email'],
+        'tagId': json['tagId'],
+        'userId': !exists(json, 'userId') ? undefined : json['userId'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -83,7 +97,7 @@ export function ExhibitionContentVersionFromJSONTyped(json: any, ignoreDiscrimin
     };
 }
 
-export function ExhibitionContentVersionToJSON(value?: ExhibitionContentVersion | null): any {
+export function VisitorToJSON(value?: Visitor | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -92,7 +106,8 @@ export function ExhibitionContentVersionToJSON(value?: ExhibitionContentVersion 
     }
     return {
         
-        'name': value.name,
+        'email': value.email,
+        'tagId': value.tagId,
     };
 }
 

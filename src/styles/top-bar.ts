@@ -20,10 +20,11 @@ export default createStyles({
   },
 
   topRow: {
-    display: "flex",
+    display: "grid",
+    gridAutoFlow: "column",
+    gridTemplateColumns: "1fr 1fr 1fr",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: leftPadding,
+    paddingLeft: 45,
     width: "100%",
     height: 45
   },
@@ -45,10 +46,11 @@ export default createStyles({
   },
 
   breadcrumbs: {
-    marginRight: "auto"
+
   },
 
   nav: {
+    justifySelf: "center",
     display: "flex",
     height: "100%"
   },
@@ -63,7 +65,7 @@ export default createStyles({
       "& p": {
         lineHeight: 0
       },
-      "&.selected": {
+      "&.Mui-selected": {
         borderTopColor: theme.palette.secondary.main
       }
     }
@@ -81,7 +83,7 @@ export default createStyles({
       "& p": {
         lineHeight: 0
       },
-      "&.selected": {
+      "&.Mui-selected": {
         borderBottomColor: theme.palette.secondary.main
       }
     }
@@ -97,10 +99,10 @@ export default createStyles({
   },
 
   user: {
-    marginLeft: 300,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    justifySelf: "end",
     alignItems: "center",
     "& p": {
       marginRight: theme.spacing(2)

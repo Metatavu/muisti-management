@@ -29,6 +29,8 @@ import "moment/locale/en-gb";
 
 import ExhibitionsScreen from "./screens/exhibitions-screen";
 import ExhibitionContentRoomsScreen from "./screens/exhibition-content-rooms-screen";
+import ContentVersionsScreen from "./screens/content-versions-screen";
+import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
 import LayoutsScreen from "./screens/layouts-screen";
 import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
@@ -182,6 +184,29 @@ class App extends React.Component<Props, State> {
                         <ExhibitionContentRoomsScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/content/rooms/:roomId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ContentVersionsScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          roomId={ match.params.roomId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/content/rooms/:roomId/contentVersion/:contentVersionId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <GroupContentVersionsScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          roomId={ match.params.roomId }
+                          contentVersionId={ match.params.contentVersionId }
                         />
                       )}
                     />

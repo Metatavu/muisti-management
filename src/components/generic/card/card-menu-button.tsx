@@ -4,6 +4,7 @@ import { withStyles, WithStyles, MenuItem, IconButton, Popper, Grow, Paper, Clic
 import styles from "../../../styles/components/generic/card/card-list";
 import MenuIcon from '@material-ui/icons/Menu';
 import { ActionButton } from "../../../types";
+import theme from "../../../styles/theme";
 
 /**
  * Component props
@@ -83,7 +84,7 @@ const CardMenuButton: React.FC<Props> = props => {
             { ...TransitionProps }
             style={{ transformOrigin: "right top" }}
           >
-            <Paper elevation={ 5 }>
+            <Paper elevation={ 5 } style={{ borderRadius: theme.shape.borderRadius }}>
               <ClickAwayListener onClickAway={ handleClose }>
                 <MenuList autoFocusItem={ open }>
                   { optionMenuItems }

@@ -90,6 +90,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
   dashboard: {
     newExhibitionButton: string;
+    newContentVersionButton: string;
     navigation: {
       overviewButton: string;
       recentButton: string;
@@ -380,6 +381,22 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
   };
+
+  groupContentVersion: {
+    add: string;
+    addDialogTitle: string;
+    name: string;
+    deviceGroup: string;
+  };
+
+  genericDialog: {
+    confirm: string;
+    cancel: string;
+    save: string;
+    delete: string;
+    add: string;
+  };
+
 
 }
 

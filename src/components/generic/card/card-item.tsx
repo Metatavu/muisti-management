@@ -4,6 +4,7 @@ import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent } fro
 import styles from "../../../styles/components/generic/card/card-item";
 import CardMenuButton from "./card-menu-button";
 import { ActionButton } from "../../../types";
+import classNames from "classnames";
 
 /**
  * Component props
@@ -24,6 +25,19 @@ interface Props extends WithStyles<typeof styles> {
    * Card item status
    */
   status?: string;
+
+  /**
+   * Card item size
+   *
+   * default: small
+   */
+  size?: "small" | "large";
+
+  /**
+   * Card item selection
+   *
+   */
+  selected?: boolean;
 
   /**
    * List of available menu options
@@ -52,10 +66,16 @@ class CardItem extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, cardMenuOptions, title, subtitle, status } = this.props;
+    const { classes, cardMenuOptions, title, subtitle, status, size, selected } = this.props;
+    console.log(selected)
 
     return (
-      <Card elevation={ 5 } variant="elevation" className={ classes.card } onClick={ this.props.onClick }>
+      <Card
+        elevation={ 5 }
+        variant="elevation"
+        className={ classNames(`${size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
+        onClick={ this.props.onClick }
+      >
         <CardHeader
           titleTypographyProps={{ variant: "h3" }}
           action={

@@ -10,7 +10,7 @@ import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
 import AddIcon from "@material-ui/icons/AddSharp";
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditorDialog from "../generic/editor-dialog";
+import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 import PageTransitionViewsEditor from "../left-middle-panel-editors/page-transition-elements-editor";
 
@@ -120,7 +120,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
     const { transitionDialogOpen } = this.state;
 
     return (
-      <EditorDialog
+      <GenericDialog
         open={ transitionDialogOpen }
         error={ false }
         title={ strings.exhibition.pageSettingsEditor.editTransition }
@@ -131,7 +131,7 @@ class PageTransitionsEditor extends React.Component<Props, State> {
         cancelButtonText={ strings.editorDialog.cancel }
       >
         { this.renderDialogContent() }
-      </EditorDialog>
+      </GenericDialog>
     );
   }
 
