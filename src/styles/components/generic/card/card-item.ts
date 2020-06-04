@@ -8,6 +8,7 @@ export default createStyles({
 
   largeCard: {
     position: "relative",
+    zIndex: 2,
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",
