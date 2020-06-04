@@ -67,7 +67,7 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
    * Render data fields
    */
   private renderFields = () => {
-    const { classes, contentVersion, groupContentVersion } = this.props;
+    const { groupContentVersion } = this.props;
 
     const statusSelectItems = Object.keys(GroupContentVersionStatus).map(key =>
       <MenuItem key={ key } value={ key}>{ key }</MenuItem>

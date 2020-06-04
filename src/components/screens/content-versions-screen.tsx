@@ -240,7 +240,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
 
     return rooms.map(room => {
       if (!room.id) {
-        return;
+        return <div/>;
       }
       return (
         <FormControlLabel

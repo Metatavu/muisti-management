@@ -348,7 +348,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
 
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
-    const createdGroupContentVersion = groupContentVersionApi.createGroupContentVersion({
+    groupContentVersionApi.createGroupContentVersion({
       exhibitionId: exhibitionId,
       groupContentVersion: selectedGroupContentVersion
     });
