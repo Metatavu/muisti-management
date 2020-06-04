@@ -42,7 +42,9 @@
       "addExhibition": "Lisää näyttely",
       "moveToProduction": "Siirrä tuotantoon",
       "moveToDraft": "Siirrä luonnoksiin",
-      "setStatus": "Aseta tila"
+      "setStatus": "Aseta tila",
+      "delete": "Poista",
+      "edit": "Muokkaa"
     }
   },
 
@@ -381,12 +383,24 @@
     }
   },
 
+  "contentVersion": {
+    "add": "Lisää uusi sisältö versio",
+    "addDialogTitle": "Lisää sisältö versio",
+    "name": "Nimi",
+    "language": "Kieli",
+    "rooms": "Huoneet",
+    "deleteTitle": "Poista sisältöversio",
+    "deleteText": "Oletko varma, että haluat poistaa tämän sisältöversion ja kaikki sen sisällöt?"
+  },
+
   "groupContentVersion": {
     "add": "Lisää uusi ryhmän sisältöversio",
     "addDialogTitle": "Lisää ryhmän sisältöversio",
     "name": "Nimi",
     "deviceGroup": "Laiteryhmän ID",
-    "status": "Sisältöjen tila"
+    "status": "Sisältöjen tila",
+    "deleteTitle": "Poista ryhmän sisältöversio",
+    "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
   },
 
   "genericDialog": {

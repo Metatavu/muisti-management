@@ -4,20 +4,14 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
-import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
+import { WithStyles, withStyles, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus } from "../../generated/client";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
-import Api from "../../api/api";
+import { GroupContentVersion, GroupContentVersionStatus } from "../../generated/client";
+import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
 import { ContentVersion } from "../../generated/client/models/ContentVersion";
-import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 
 /**
@@ -27,6 +21,10 @@ interface Props extends WithStyles<typeof styles> {
   contentVersion: ContentVersion;
   groupContentVersion: GroupContentVersion;
 
+  /**
+   * On value change handler
+   * @param updatedGroupContentVersion group content version
+   */
   onValueChange: (updatedGroupContentVersion: GroupContentVersion) => void;
 }
 
@@ -38,7 +36,7 @@ interface State {
 }
 
 /**
- * Component for exhibition content rooms view
+ * Component for group content version info view
  */
 class GroupContentVersionsInfo extends React.Component<Props, State> {
 
@@ -55,24 +53,9 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life cycle handler
-   */
-  public componentDidMount = async () => {
-    // this.setState({ loading: true });
-    // this.setState({ loading: false });
-  }
-
-  /**
    * Component render method
    */
   public render = () => {
-
-    if (this.state.loading) {
-      return (
-        <div/>
-      );
-    }
-
     return (
       <>
         { this.renderFields() }
@@ -80,6 +63,9 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render data fields
+   */
   private renderFields = () => {
     const { classes, contentVersion, groupContentVersion } = this.props;
 
@@ -119,14 +105,14 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
   }
 
   /**
-   * Handler when linked value changed is disabled (single filed is updated)
+   * On value change handler
    * @param event react change event
    */
   private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
     const { onValueChange } = this.props;
     const key = event.target.name;
     const value = event.target.value;
-    if (!key || !value) {
+    if (!key || value === undefined) {
       return;
     }
 

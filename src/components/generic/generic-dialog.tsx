@@ -9,8 +9,20 @@ interface Props {
   title: string;
   positiveButtonText: string;
   cancelButtonText: string;
+
+  /**
+   * On close handler
+   */
   onClose: () => void;
+
+  /**
+   * On cancel handler
+   */
   onCancel: () => void;
+
+  /**
+   * On confirm handler
+   */
   onConfirm: () => void;
   open: boolean;
   error: boolean;

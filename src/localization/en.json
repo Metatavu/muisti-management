@@ -41,7 +41,9 @@
       "addExhibition": "Add exhibition",
       "moveToProduction": "Move to production",
       "moveToDraft": "Move to draft",
-      "setStatus": "Set status"
+      "setStatus": "Set status",
+      "delete": "Delete",
+      "edit": "Edit"
     }
   },
 
@@ -383,12 +385,24 @@
     }
   },
 
+  "contentVersion": {
+    "add": "New content version",
+    "addDialogTitle": "Add content version",
+    "name": "Name",
+    "language": "Language",
+    "rooms": "Rooms",
+    "deleteTitle": "Delete content version",
+    "deleteText": "Are you sure you want to delete this content version and all its content?"
+  },
+
   "groupContentVersion": {
-    "add": "New group content version",
-    "addDialogTitle": "Add group content version",
+    "add": "New device group content version",
+    "addDialogTitle": "Add device group content version",
     "name": "Name",
     "deviceGroup": "Device Group ID",
-    "status": "Status"
+    "status": "Status",
+    "deleteTitle": "Delete group content version",
+    "deleteText": "Are you sure you want to delete this group content version and all its content?"
   },
 
   "genericDialog": {

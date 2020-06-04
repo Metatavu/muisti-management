@@ -108,3 +108,13 @@ export interface BreadcrumbData {
   name: string;
   url?: string;
 }
+
+/**
+ * Language codes (ISO 639-1)
+ */
+export enum LanguageOptions {
+  FI = "FI",
+  EN = "EN",
+  SV = "SV",
+  RU = "RU"
+}
