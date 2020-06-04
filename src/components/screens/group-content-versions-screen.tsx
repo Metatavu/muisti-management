@@ -276,7 +276,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     return [{
       name: strings.exhibitions.cardMenu.delete,
       action: () => this.setState({ deleteDialogOpen: true, selectedGroupContentVersion: groupContentVersion })
-    }]
+    }];
   }
 
   /**
@@ -305,6 +305,47 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       { name: strings.generic.save, action: this.onSaveClick },
       { name: strings.groupContentVersion.add, action: this.onAddGroupContentVersionClick }
     ] as ActionButton[];
+  }
+
+  /**
+   * Delete group content version handler
+   * @param groupContentVersion selected group content version
+   */
+  private deleteGroupContentVersion = (groupContentVersion: GroupContentVersion) => {
+    const { accessToken, exhibitionId } = this.props;
+    const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
+
+    if (!groupContentVersion.id) {
+      return;
+    }
+
+    groupContentVersionApi.deleteGroupContentVersion({
+      exhibitionId: exhibitionId,
+      groupContentVersionId: groupContentVersion.id,
+    });
+
+    this.setState({
+      deleteDialogOpen: false,
+      selectedGroupContentVersion: undefined
+    });
+  }
+
+  /**
+   * On value change handler
+   * @param event react change event
+   */
+  private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
+    const { selectedGroupContentVersion } = this.state;
+    const key = event.target.name;
+    const value = event.target.value;
+    if (!key || value === undefined || !selectedGroupContentVersion) {
+      return;
+    }
+
+    this.setState({
+      selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value }
+    });
+
   }
 
   /**
@@ -409,47 +450,6 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       addDialogOpen: false,
       selectedGroupContentVersion: updatedGroupContentVersion
     });
-  }
-
-  /**
-   * Delete group content version handler
-   * @param groupContentVersion selected group content version
-   */
-  private deleteGroupContentVersion = (groupContentVersion: GroupContentVersion) => {
-    const { accessToken, exhibitionId } = this.props;
-    const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
-
-    if (!groupContentVersion.id) {
-      return;
-    }
-
-    groupContentVersionApi.deleteGroupContentVersion({
-      exhibitionId: exhibitionId,
-      groupContentVersionId: groupContentVersion.id,
-    });
-
-    this.setState({
-      deleteDialogOpen: false,
-      selectedGroupContentVersion: undefined
-    });
-  }
-
-  /**
-   * On value change handler
-   * @param event react change event
-   */
-  private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
-    const { selectedGroupContentVersion } = this.state;
-    const key = event.target.name;
-    const value = event.target.value;
-    if (!key || value === undefined || !selectedGroupContentVersion) {
-      return;
-    }
-
-    this.setState({
-      selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value }
-    });
-
   }
 }
 

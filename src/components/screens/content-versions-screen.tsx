@@ -308,67 +308,6 @@ class ContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On dialog save click handler
-   */
-  private onDialogSaveClick = async () => {
-    const { accessToken, exhibitionId } = this.props;
-    const { selectedContentVersion, addNewContentVersion } = this.state;
-
-    if (!selectedContentVersion) {
-      return;
-    }
-    const contentVersionApi = Api.getContentVersionsApi(accessToken);
-    let tempContentVersion;
-    if (addNewContentVersion) {
-      tempContentVersion = await contentVersionApi.createContentVersion({
-        exhibitionId: exhibitionId,
-        contentVersion: selectedContentVersion
-      });
-    } else {
-      tempContentVersion = await contentVersionApi.updateContentVersion({
-        contentVersionId: selectedContentVersion.id!,
-        exhibitionId: exhibitionId,
-        contentVersion: selectedContentVersion
-      });
-    }
-
-    this.setState({
-      dialogOpen: false,
-      selectedContentVersion: { ...tempContentVersion } as ContentVersion
-    });
-
-  }
-
-  /**
-   * On add content version click
-   */
-  private onAddContentVersionClick = () => {
-    const { roomId } = this.props;
-    const selectedContentVersion: ContentVersion = {
-      name: "",
-      language: LanguageOptions.FI,
-      rooms: [roomId]
-    };
-
-    this.setState({
-      dialogOpen: true,
-      selectedContentVersion: selectedContentVersion,
-      addNewContentVersion: true
-    });
-  }
-
-  /**
-   * On dialog close or cancel click handler
-   */
-  private onCloseOrCancelClick = () => {
-    this.setState({
-      dialogOpen: false,
-      deleteDialogOpen: false,
-      selectedContentVersion: undefined
-    });
-  }
-
-  /**
    * Set status handler
    */
   private deleteContentVersion = (contentVersion: ContentVersion) => {
@@ -469,6 +408,67 @@ class ContentVersionsScreen extends React.Component<Props, State> {
       selectedContentVersion : { ...selectedContentVersion, rooms: tempRooms }
     });
 
+  }
+
+  /**
+   * On dialog save click handler
+   */
+  private onDialogSaveClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedContentVersion, addNewContentVersion } = this.state;
+
+    if (!selectedContentVersion) {
+      return;
+    }
+    const contentVersionApi = Api.getContentVersionsApi(accessToken);
+    let tempContentVersion;
+    if (addNewContentVersion) {
+      tempContentVersion = await contentVersionApi.createContentVersion({
+        exhibitionId: exhibitionId,
+        contentVersion: selectedContentVersion
+      });
+    } else {
+      tempContentVersion = await contentVersionApi.updateContentVersion({
+        contentVersionId: selectedContentVersion.id!,
+        exhibitionId: exhibitionId,
+        contentVersion: selectedContentVersion
+      });
+    }
+
+    this.setState({
+      dialogOpen: false,
+      selectedContentVersion: { ...tempContentVersion } as ContentVersion
+    });
+
+  }
+
+  /**
+   * On add content version click
+   */
+  private onAddContentVersionClick = () => {
+    const { roomId } = this.props;
+    const selectedContentVersion: ContentVersion = {
+      name: "",
+      language: LanguageOptions.FI,
+      rooms: [roomId]
+    };
+
+    this.setState({
+      dialogOpen: true,
+      selectedContentVersion: selectedContentVersion,
+      addNewContentVersion: true
+    });
+  }
+
+  /**
+   * On dialog close or cancel click handler
+   */
+  private onCloseOrCancelClick = () => {
+    this.setState({
+      dialogOpen: false,
+      deleteDialogOpen: false,
+      selectedContentVersion: undefined
+    });
   }
 }
 
