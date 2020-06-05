@@ -12,7 +12,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, ButtonGroup, Button, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionDevice, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, ExhibitionPageTransition } from "../../generated/client";
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionFloor, ExhibitionRoom, ScreenOrientation, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType, ExhibitionPageTransition } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../layouts/basic-layout";
@@ -57,7 +57,7 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   error?: Error;
   loading: boolean;
-  contentVersions: ExhibitionContentVersion[];
+  contentVersions: ContentVersion[];
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
   deviceGroups: ExhibitionDeviceGroup[];
@@ -191,7 +191,7 @@ export class ExhibitionView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane minWidth={ 320 } title="">
+          <ElementSettingsPane width={ 320 } title="">
             {
               selectedResourceIndex !== undefined &&
               this.renderResourceEditor()
@@ -478,7 +478,7 @@ export class ExhibitionView extends React.Component<Props, State> {
   private fetchExhibitionData = async (exhibition: Exhibition) => {
     const { accessToken } = this.props;
     const exhibitionId = exhibition.id!;
-    const exhibitionContentVersionsApi = Api.getExhibitionContentVersionsApi(accessToken);
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
@@ -486,8 +486,8 @@ export class ExhibitionView extends React.Component<Props, State> {
     const exhibitionDeviceGroupApi = Api.getExhibitionDeviceGroupsApi(accessToken);
 
     const [ contentVersions, floors, rooms, deviceGroups, devices, pages ] =
-      await Promise.all<ExhibitionContentVersion[], ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[], ExhibitionPage[]>([
-        exhibitionContentVersionsApi.listExhibitionContentVersions({ exhibitionId }),
+      await Promise.all<ContentVersion[], ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[], ExhibitionPage[]>([
+        contentVersionsApi.listContentVersions({ exhibitionId }),
         exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
         exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
         exhibitionDeviceGroupApi.listExhibitionDeviceGroups({ exhibitionId: exhibitionId }),
@@ -1000,14 +1000,14 @@ export class ExhibitionView extends React.Component<Props, State> {
    * @param elements tree elements
    * @return content version or null if not found
    */
-  private findSelectedExhibitionContentVersion = (elements: ExhibitionElement[]): ExhibitionContentVersion | null => {
+  private findSelectedExhibitionContentVersion = (elements: ExhibitionElement[]): ContentVersion | null => {
     const element = elements.find(item => item.type === ExhibitionElementType.CONTENT_VERSION);
 
     if (!element || !element.data) {
       return null;
     }
 
-    return element.data as ExhibitionContentVersion;
+    return element.data as ContentVersion;
   }
 
   /**

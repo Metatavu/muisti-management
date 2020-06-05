@@ -13,73 +13,86 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    GroupContentVersionStatus,
+    GroupContentVersionStatusFromJSON,
+    GroupContentVersionStatusFromJSONTyped,
+    GroupContentVersionStatusToJSON,
+} from './';
+
 /**
- * 
+ * Content version (e.g. language) of a device group.
  * @export
- * @interface ExhibitionDeviceGroup
+ * @interface GroupContentVersion
  */
-export interface ExhibitionDeviceGroup {
+export interface GroupContentVersion {
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly id?: string;
     /**
-     * 
+     * Id of exhibition this group content version belongs to
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly exhibitionId?: string;
     /**
-     * 
+     * Human readable name of the group content version
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
-     */
-    roomId?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     name: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof ExhibitionDeviceGroup
+     * @type {GroupContentVersionStatus}
+     * @memberof GroupContentVersion
      */
-    allowVisitorSessionCreation: boolean;
+    status: GroupContentVersionStatus;
+    /**
+     * Id of content version
+     * @type {string}
+     * @memberof GroupContentVersion
+     */
+    contentVersionId: string;
+    /**
+     * Id of device group
+     * @type {string}
+     * @memberof GroupContentVersion
+     */
+    deviceGroupId: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly creatorId?: string;
     /**
      * 
      * @type {string}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly lastModifierId?: string;
     /**
      * Created date
      * @type {Date}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly createdAt?: Date;
     /**
      * Date modified
      * @type {Date}
-     * @memberof ExhibitionDeviceGroup
+     * @memberof GroupContentVersion
      */
     readonly modifiedAt?: Date;
 }
 
-export function ExhibitionDeviceGroupFromJSON(json: any): ExhibitionDeviceGroup {
-    return ExhibitionDeviceGroupFromJSONTyped(json, false);
+export function GroupContentVersionFromJSON(json: any): GroupContentVersion {
+    return GroupContentVersionFromJSONTyped(json, false);
 }
 
-export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExhibitionDeviceGroup {
+export function GroupContentVersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupContentVersion {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -87,9 +100,10 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
-        'roomId': !exists(json, 'roomId') ? undefined : json['roomId'],
         'name': json['name'],
-        'allowVisitorSessionCreation': json['allowVisitorSessionCreation'],
+        'status': GroupContentVersionStatusFromJSON(json['status']),
+        'contentVersionId': json['contentVersionId'],
+        'deviceGroupId': json['deviceGroupId'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -97,7 +111,7 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null): any {
+export function GroupContentVersionToJSON(value?: GroupContentVersion | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -106,9 +120,10 @@ export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null
     }
     return {
         
-        'roomId': value.roomId,
         'name': value.name,
-        'allowVisitorSessionCreation': value.allowVisitorSessionCreation,
+        'status': GroupContentVersionStatusToJSON(value.status),
+        'contentVersionId': value.contentVersionId,
+        'deviceGroupId': value.deviceGroupId,
     };
 }
 

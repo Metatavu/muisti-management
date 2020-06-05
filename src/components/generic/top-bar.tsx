@@ -162,7 +162,7 @@ class TopBar extends React.Component<Props, State> {
     const targetUrl = isV4Path ? `/v4/${navigationButton.postfix}` : (
       navigationButton.postfix === "exhibitions" ? v3ExhibitionPath : `/dashboard/${navigationButton.postfix}`
     );
-    const selected = history.location.pathname === targetUrl;
+    const selected = history.location.pathname.includes(targetUrl);
 
     return (
       <ListItem

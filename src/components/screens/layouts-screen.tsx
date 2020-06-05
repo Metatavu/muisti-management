@@ -55,15 +55,25 @@ class LayoutsScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
+    const actionBarButtons = this.getActionButtons();
+
     if (this.state.loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
-        </div>
+        <BasicLayout
+          keycloak={ keycloak }
+          history={ history }
+          title={ strings.layout.title }
+          breadcrumbs={ [] }
+          actionBarButtons={ actionBarButtons }
+          noBackButton
+        >
+          <div className={ classes.loader }>
+            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          </div>
+        </BasicLayout>
       );
     }
 
-    const actionBarButtons = this.getActionButtons();
     return (
       <BasicLayout
         keycloak={ keycloak }
@@ -122,7 +132,7 @@ class LayoutsScreen extends React.Component<Props, State> {
 
   /**
    * Gets action buttons
-   * 
+   *
    * @returns action buttons as array
    */
   private getActionButtons = () => {

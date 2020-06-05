@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ExhibitionPage, Exhibition, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../../generated/client";
+import { ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem } from "@material-ui/core";
 import { ExhibitionElement, ExhibitionElementType } from '../../types';
@@ -19,7 +19,7 @@ import PageUtils from "../../utils/page-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   exhibition: Exhibition;
-  contentVersions: ExhibitionContentVersion[];
+  contentVersions: ContentVersion[];
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
   devices: ExhibitionDevice[];
@@ -38,7 +38,7 @@ interface State {
  */
 interface TreeDataParams {
   exhibition: Exhibition;
-  contentVersions: ExhibitionContentVersion[];
+  contentVersions: ContentVersion[];
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
   devices: ExhibitionDevice[];

@@ -32,6 +32,8 @@ export interface IStrings extends LocalizedStringsMethods {
       moveToProduction: string;
       moveToDraft: string;
       setStatus: string;
+      delete: string;
+      edit: string;
     };
   };
 
@@ -90,6 +92,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
   dashboard: {
     newExhibitionButton: string;
+    newContentVersionButton: string;
     navigation: {
       overviewButton: string;
       recentButton: string;
@@ -380,6 +383,40 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
   };
+
+  contentVersion: {
+    add: string;
+    addDialogTitle: string;
+    name: string;
+    language: string;
+    rooms: string;
+    deleteTitle: string;
+    deleteText: string;
+  };
+
+  groupContentVersion: {
+    add: string;
+    addDialogTitle: string;
+    name: string;
+    deviceGroup: string;
+    status: string;
+    deleteTitle: string;
+    deleteText: string;
+  };
+
+
+  genericDialog: {
+    confirm: string;
+    cancel: string;
+    save: string;
+    delete: string;
+    add: string;
+  };
+
+  generic: {
+    save: string;
+  };
+
 
 }
 

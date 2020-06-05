@@ -17,7 +17,7 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import { PageLayoutElementType } from "../../types";
 import { setSelectedLayout } from "../../actions/layouts";
 import { constructTreeDeleteData, pushNewPageLayoutViewToTree, getWidgetType } from "./utils/tree-data-utils";
-import EditorDialog from '../generic/editor-dialog';
+import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 
 /**
@@ -101,7 +101,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
             )}
           </TreeMenu>
         </div>
-        <EditorDialog
+        <GenericDialog
           cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
           positiveButtonText={ strings.layoutEditor.addLayoutViewDialog.confirm }
           title={ strings.layoutEditor.addLayoutViewDialog.title }
@@ -112,7 +112,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           onClose={ this.onCloseOrCancelClick }
         >
           { this.renderDialogContent() }
-        </EditorDialog>
+        </GenericDialog>
       </>
     );
   }

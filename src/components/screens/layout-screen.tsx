@@ -63,16 +63,23 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
+    const breadcrumbs = this.getBreadcrumbsData();
 
     if (this.state.loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
-        </div>
+        <BasicLayout
+          keycloak={ keycloak }
+          history={ history }
+          title={ strings.layout.title }
+          breadcrumbs={ breadcrumbs }
+        >
+          <div className={ classes.loader }>
+            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          </div>
+        </BasicLayout>
       );
     }
 
-    const breadcrumbs = this.getBreadcrumbsData();
     return (
       <BasicLayout
         keycloak={ keycloak }
@@ -98,7 +105,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Gets breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = () => {

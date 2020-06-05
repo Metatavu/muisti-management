@@ -69,15 +69,23 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
     const { exhibition } = this.state;
+    const breadcrumbs = this.getBreadcrumbsData();
+
     if (this.state.loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
-        </div>
+        <BasicLayout
+          keycloak={ keycloak }
+          history={ history }
+          title={ exhibition?.name || "" }
+          breadcrumbs={ breadcrumbs }
+        >
+          <div className={ classes.loader }>
+            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          </div>
+        </BasicLayout>
       );
     }
 
-    const breadcrumbs = this.getBreadcrumbsData();
     return (
       <BasicLayout
         keycloak={ keycloak }

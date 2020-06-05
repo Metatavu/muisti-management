@@ -11,7 +11,11 @@ export default createStyles({
   },
   content: {
     gridArea: "content",
+    display: "grid",
+    gridTemplateColumns: "1fr auto auto",
+    gridTemplateRows: "1fr",
+    gridTemplateAreas: ' "inner-content properties hierarchy" ',
     overflow: "hidden",
     backgroundColor: "#fff"
-  },
+  }
 });

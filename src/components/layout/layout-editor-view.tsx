@@ -157,8 +157,8 @@ export class LayoutEditorView extends React.Component<Props, State> {
             { this.renderDeleteDialog() }
           </EditorView>
 
-          <ElementSettingsPane minWidth={ 420 } title={ strings.layout.properties.title }>
-            { pageLayoutView && selectedPropertyPath && 
+          <ElementSettingsPane width={ 420 } title={ strings.layout.properties.title }>
+            { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }

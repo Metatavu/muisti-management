@@ -37,6 +37,7 @@ export interface FindVisitorSessionRequest {
 
 export interface ListVisitorSessionsRequest {
     exhibitionId: string;
+    tagId?: string;
 }
 
 export interface UpdateVisitorSessionRequest {
@@ -194,6 +195,10 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.tagId !== undefined) {
+            queryParameters['tagId'] = requestParameters.tagId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
