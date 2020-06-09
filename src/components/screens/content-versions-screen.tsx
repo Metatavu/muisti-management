@@ -364,7 +364,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    */
   private onCardClick = (contentVersionId: string) => {
     const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/contentVersion/${contentVersionId}`);
+    this.props.history.push(`${pathname}/version/${contentVersionId}`);
   }
 
   /**

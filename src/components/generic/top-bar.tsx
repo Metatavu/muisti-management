@@ -204,12 +204,14 @@ class TopBar extends React.Component<Props, State> {
   private renderTabButton = (tabButton: NavigationButton) => {
     const { history } = this.props;
 
+    const tabButtonPath = this.getTabButtonPath(tabButton);
+
     return (
       <ListItem
         button
         selected={ history.location.pathname.includes(tabButton.postfix) }
         component={ RouterLink }
-        to={ `/v4/exhibitions/${ tabButton.postfix }` }
+        to={ tabButtonPath }
       >
         <Typography>{ tabButton.text }</Typography>
       </ListItem>
@@ -226,6 +228,25 @@ class TopBar extends React.Component<Props, State> {
         <ActionBar buttons={ actionBarButtons || [] } />
       </div>
     );
+  }
+
+  /**
+   * Get new path.
+   *
+   * @param tabButton navigation button
+   */
+  private getTabButtonPath = (tabButton: NavigationButton): string => {
+    const { history } = this.props;
+
+    const currentPath = history.location.pathname;
+    switch (tabButton.postfix) {
+      case "content":
+        return currentPath.replace("floorplan", tabButton.postfix);
+      case "floorplan":
+        return currentPath.replace("content", tabButton.postfix);
+      default:
+        return currentPath;
+    }
   }
 
   /**

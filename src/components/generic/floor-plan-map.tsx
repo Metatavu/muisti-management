@@ -25,6 +25,7 @@ interface Props {
   accessToken: AccessToken;
   exhibitionId?: string;
   exhibitionFloorId? : string;
+  readOnly: boolean;
 }
 
 /**
@@ -55,7 +56,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * This feature group is used only for storing new geometries because
-   * inidividual feature group objects can be cast to polygon objects
+   * individual feature group objects can be cast to polygon objects
    */
   private addedLayers = new L.FeatureGroup();
 
@@ -87,17 +88,19 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public render = () => {
     return (<>
-      <LeafletMap ref={ this.setMapRef } 
-        crs={ CRS.Simple } 
-        center={ [0, 0] } 
+      <LeafletMap ref={ this.setMapRef }
+        crs={ CRS.Simple }
+        center={ [0, 0] }
         bounds={ this.props.bounds }
         minZoom={ this.props.minZoom }
         maxZoom={ this.props.maxZoom }
-        zoom={ this.state.zoom } 
+        zoom={ this.state.zoom }
         style={{ width: "100%", height: "100%" }}
-        onmousemove={ this.onMapMouseMove }>
-          { this.renderMapChildren() }
+        onmousemove={ this.onMapMouseMove }
+      >
+        { this.renderMapChildren() }
       </LeafletMap>
+
       <PolygonDialog
         cancelButtonText={ strings.editorDialog.cancel }
         positiveButtonText={ strings.editorDialog.save }
@@ -127,6 +130,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Updates Leaflet instance and adds handlers
+   *
+   * @param mapRef map refs
    */
   private setMapRef = (mapRef: any) => {
     this.mapInstance = mapRef ? mapRef.leafletElement : undefined;
@@ -135,28 +140,20 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
     this.mapInstance.addLayer(this.layersToShow);
-    const polygonOption: L.DrawOptions.PolygonOptions = {};
-    const controls = new L.Control.Draw({
-      position: 'topleft',
-      draw: {
-        polygon: polygonOption
-      },
-      edit: {
-        featureGroup: this.layersToShow,
-      },
-    });
+
+    const controls = this.getControls();
     this.mapInstance.addControl(controls);
     this.addDrawHandler();
     this.addOnLayerRemovedHandler();
     this.mapInstance.on(L.Draw.Event.DELETED, _event => {
-      this.onDeletePolygons()
+      this.onDeletePolygons();
     });
   }
 
   /**
    * Event handler for mouse moving over the map
-   * 
-   * @param event event
+   *
+   * @param event leaflet mouse event
    */
   private onMapMouseMove = (event: LeafletMouseEvent) => {
     this.setState({
@@ -179,6 +176,37 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         polygonCreated: true,
         layer: layer
       });
+    });
+  }
+
+  /**
+   * Get leaflet controls
+   */
+  private getControls() {
+    const { readOnly } = this.props;
+    if (readOnly) {
+      return new L.Control.Draw({
+        draw: {
+          polygon: false,
+          circle: false,
+          circlemarker: false,
+          marker: false,
+          polyline: false,
+          rectangle: false
+        },
+      });
+    }
+    
+    return new L.Control.Draw({
+      position: 'topleft',
+      draw: {
+        circle: false,
+        circlemarker: false,
+        polyline: false,
+      },
+      edit: {
+        featureGroup: this.layersToShow,
+      },
     });
   }
 
@@ -229,7 +257,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomName || !layer) {
       return;
     }
-    
+
     const geoShape = this.addedLayers;
     const geoJson = geoShape.toGeoJSON() as FeatureCollection;
     if (geoJson.features[0].geometry.type !== "Polygon") {
@@ -254,7 +282,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Delete n amount of rooms from API
-   * TODO: Add confimation dialog
+   * TODO: Add confirmation dialog
    */
   private onDeletePolygons = () => {
     const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
@@ -283,6 +311,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * On polygon name change handler
+   *
+   * @param event react change event
    */
   private onRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -309,6 +339,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Add layers to leaflet map
+   *
    * @param rooms list of exhibition rooms
    */
   private addLayers = (rooms: ExhibitionRoom[]) => {
@@ -340,13 +371,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     });
   }
 
-  
-
   /**
    * Adds all geo shapes found from api to leaflet map
+   *
    * @param geoShapesToAdd list of geo shapes
-   * @param room 
-   * @param tempMap 
+   * @param room room
+   * @param tempMap temp maps
    */
   private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, string>) {
     geoShapesToAdd.forEach(shape => {
@@ -357,4 +387,4 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       }
     });
   }
-};
+}
