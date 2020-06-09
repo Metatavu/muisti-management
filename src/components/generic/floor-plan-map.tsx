@@ -196,7 +196,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         },
       });
     }
-
+    
     return new L.Control.Draw({
       position: 'topleft',
       draw: {

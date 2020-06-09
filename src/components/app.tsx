@@ -263,6 +263,8 @@ class App extends React.Component<Props, State> {
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.floorId }
+                          roomId={ match.params.roomId }
+                          contentVersionId={ match.params.versionId }
                           readOnly={ true }
                         />
                       )}

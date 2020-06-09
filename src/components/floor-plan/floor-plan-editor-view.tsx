@@ -56,6 +56,7 @@ interface State {
   cropImageDetails?: cropperjs.default.ImageData;
   room?: ExhibitionRoom;
   contentVersion?: ContentVersion;
+  breadCrumbs: BreadcrumbData[];
 }
 
 /**
@@ -74,7 +75,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       loading: false,
       name: "",
       toolbarOpen: true,
-      cropping: false
+      cropping: false,
+      breadCrumbs: []
     };
   }
 
@@ -92,7 +94,9 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   public componentDidUpdate = async (prevProps: Props) => {
     if (prevProps.exhibitions !== this.props.exhibitions) {
+      this.setState({ loading: true });
       await this.loadViewData();
+      this.setState({ loading: false });
     }
   }
 
@@ -101,7 +105,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, keycloak } = this.props;
-    const { exhibition } = this.state;
+    const { exhibition, breadCrumbs } = this.state;
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
         <div className={ classes.loader }>
@@ -111,13 +115,12 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     }
 
     const actionBarButtons = this.getActionButtons();
-    const breadCrumbs = this.getBreadCrumbsData();
     return (
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
         title={ exhibition.name }
-        breadcrumbs={ [] }
+        breadcrumbs={ breadCrumbs }
         actionBarButtons={ actionBarButtons }
         onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         error={ this.state.error }
@@ -201,40 +204,57 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Loads view data
    */
   private loadViewData = async () => {
-    const { exhibitionId, exhibitionFloorId, roomId, contentVersionId } = this.props;
-    if (!this.props.exhibitionId || !this.props.exhibitionFloorId) {
+    const { exhibitionId, roomId, contentVersionId, accessToken } = this.props;
+
+    const breadCrumbs: BreadcrumbData[] = [];
+
+    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/v4/exhibitions" })
+    if (!exhibitionId) {
       return;
     }
 
-    const exhibition = this.loadExhibition();
-    const exhibitionFloor = exhibition ? await this.loadExhibitionFloor(exhibition, this.props.exhibitionFloorId) : undefined;
-    this.setState({
-      exhibition: exhibition,
-      exhibitionFloor: exhibitionFloor
-    });
-  }
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const [ exhibition ] = await Promise.all<Exhibition>([
+      exhibitionsApi.findExhibition({ exhibitionId }),
+    ]);
+   
+    breadCrumbs.push({ name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan` })
+    this.setState({ exhibition, breadCrumbs });
 
-  /**
-   * Loads an exhibition
-   *
-   * @returns loads exhibition
-   */
-  private loadExhibition = () => {
-    return this.props.exhibitions.find(exhibition => exhibition.id === this.props.exhibitionId);
-  }
+    if (!roomId) {
+      return;
+    }
 
-  /**
-   * Loads an exhibition floor
-   *
-   * @returns loads exhibition floor
-   */
-  private loadExhibitionFloor = (exhibition: Exhibition, exhibitionFloorId: string) => {
-    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(this.props.accessToken);
+    const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const [ room ] = await Promise.all<ExhibitionRoom>([
+      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId })
+    ]);
 
-    return exhibitionFloorsApi.findExhibitionFloor({
-      exhibitionId: exhibition.id!,
-      floorId: exhibitionFloorId
-    });
+    if (!room) {
+      return;
+    }
+
+    const [ floor ] = await Promise.all<ExhibitionFloor>([
+      exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: room.floorId }),
+    ]);
+
+    breadCrumbs.push({ name: room?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${room?.floorId}/rooms/${roomId}` })
+    this.setState({ exhibitionFloor: floor, room: room, breadCrumbs });
+
+    if (!contentVersionId) {
+      return;
+    }
+
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
+    const [ contentVersion ] = await Promise.all<ContentVersion>([
+      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId })
+    ]);
+
+    breadCrumbs.push({ name: contentVersion?.name || "" });
+
+    this.setState({ contentVersion, breadCrumbs });
+
   }
 
   /**
@@ -357,22 +377,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       { name: strings.floorPlan.toolbar.save, action: this.onSaveClick },
       { name: strings.floorPlan.toolbar.upload, action: this.onUploadSave }
     ] as ActionButton[];
-  }
-
-  /**
-   * Get breadcrumbs data
-   *
-   * @returns breadcrumbs data as array
-   */
-  private getBreadCrumbsData = () => {
-    const { exhibitionId, roomId } = this.props;
-    const { exhibition, room, contentVersion } = this.state;
-    return [
-      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/content` },
-      { name: room?.name, url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
-      { name: contentVersion?.name || "" }
-    ] as BreadcrumbData[];
   }
 
   /**
