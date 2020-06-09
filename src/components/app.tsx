@@ -150,6 +150,7 @@ class App extends React.Component<Props, State> {
                         <LayoutEditorView history={ history } layoutId={ match.params.layoutId } />
                       )}
                     />
+                    {/* Remove this once the V4 floorplan view is done! */}
                     <Route
                       path="/dashboard/floorplans"
                       exact={ true }
@@ -158,13 +159,21 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/floorplans/:exhibitionId/:exhibitionFloorId"
+                      path="/v4/floorplans"
+                      exact={ true }
+                      render={ ({ history }) => (
+                        <DashboardFloorPlansView history={ history } />
+                      )}
+                    />
+                    <Route
+                      path="/v4/floorplans/:exhibitionId/:exhibitionFloorId"
                       exact={ true }
                       render={ ({ match, history }) => (
                         <FloorPlanEditorView
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.exhibitionFloorId }
+                          readOnly={ false }
                         />
                       )}
                     />
@@ -174,6 +183,18 @@ class App extends React.Component<Props, State> {
                       render={({ history }) => (
                         <ExhibitionsScreen
                           history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/floorplan"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <FloorPlanEditorView
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          exhibitionFloorId={ match.params.exhibitionFloorId }
+                          readOnly={ true }
                         />
                       )}
                     />
@@ -188,7 +209,17 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/content/rooms/:roomId"
+                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ExhibitionContentRoomsScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId"
                       exact={ true }
                       render={({ history, match }) => (
                         <ContentVersionsScreen
@@ -199,14 +230,40 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/content/rooms/:roomId/contentVersion/:contentVersionId"
+                      path="/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <FloorPlanEditorView
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          exhibitionFloorId={ match.params.floorId }
+                          roomId={ match.params.roomId }
+                          contentVersionId={ match.params.versionId }
+                          readOnly={ true }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/version/:versionId"
                       exact={ true }
                       render={({ history, match }) => (
                         <GroupContentVersionsScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           roomId={ match.params.roomId }
-                          contentVersionId={ match.params.contentVersionId }
+                          contentVersionId={ match.params.versionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/version/:versionId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <FloorPlanEditorView
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          exhibitionFloorId={ match.params.floorId }
+                          readOnly={ true }
                         />
                       )}
                     />

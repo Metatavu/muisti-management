@@ -193,7 +193,7 @@ class DashboardFloorPlansView extends React.Component<Props, State> {
       return;
     }
 
-    this.props.history.push(`/floorPlans/${exhibition.id}/${exhibitionFloor.id}`);
+    this.props.history.push(`/v4/floorPlans/${exhibition.id}/${exhibitionFloor.id}`);
   }
 }
 

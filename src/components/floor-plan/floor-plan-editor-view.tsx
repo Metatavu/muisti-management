@@ -10,13 +10,12 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress, Button } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ContentVersion } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
-import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import strings from "../../localization/strings";
 import 'cropperjs/dist/cropper.css';
 import FloorPlanCrop from "./floor-plan-crop";
@@ -35,7 +34,10 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   exhibitionId?: string;
   exhibitionFloorId?: string;
+  roomId?: string;
+  contentVersionId?: string;
   exhibitions: Exhibition[];
+  readOnly: boolean;
 }
 
 /**
@@ -52,6 +54,8 @@ interface State {
   cropImageDataUrl?: string;
   cropImageData?: Blob;
   cropImageDetails?: cropperjs.default.ImageData;
+  room?: ExhibitionRoom;
+  contentVersion?: ContentVersion;
 }
 
 /**
@@ -78,7 +82,9 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Component did mount life-cycle handler
    */
   public componentDidMount = async () => {
+    this.setState({ loading: true });
     await this.loadViewData();
+    this.setState({ loading: false });
   }
 
   /**
@@ -94,9 +100,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history } = this.props;
+    const { classes, history, keycloak } = this.props;
     const { exhibition } = this.state;
-
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
         <div className={ classes.loader }>
@@ -105,16 +110,19 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       );
     }
 
+    const actionBarButtons = this.getActionButtons();
+    const breadCrumbs = this.getBreadCrumbsData();
     return (
       <BasicLayout
+        keycloak={ keycloak }
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ [] }
-        actionBarButtons={ [] }
+        actionBarButtons={ actionBarButtons }
         onDashboardButtonClick={ () => this.onDashboardButtonClick() }
-        keycloak={ this.props.keycloak }
         error={ this.state.error }
-        clearError={ () => this.setState({ error: undefined }) }>
+        clearError={ () => this.setState({ error: undefined }) }
+      >
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.title }>
@@ -122,10 +130,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
             </div>
           </ElementNavigationPane>
           <EditorView>
-            { this.renderToolbar() }
             { this.renderEditor() }
           </EditorView>
-
           <ElementSettingsPane width={ 320 } title={ strings.floorPlan.properties.title }>
             { this.renderProperties() }
           </ElementSettingsPane>
@@ -136,39 +142,18 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Renders a toolbar
-   */
-  private renderToolbar = () => {
-    const { classes } = this.props;
-
-    return (
-      <div className={ classes.toolBar }>
-        <div>
-          <Button disableElevation variant="contained" color="secondary" onClick={ this.onSaveClick } style={{ marginRight: 8 }}>
-            { strings.floorPlan.toolbar.save }
-          </Button>
-
-          <FileUploader
-            uploadKey="new"
-            buttonText={ strings.floorPlan.toolbar.upload }
-            allowedFileTypes={ [ "image/png" ] }
-            onSave={ this.onUploadSave }
-          />
-        </div>
-      </div>
-    );
-
-  }
-
-  /**
    * Renders editor view
    */
   private renderEditor = () => {
     const { exhibitionFloor } = this.state;
-    const { exhibitionId, accessToken } = this.props;
+    const { exhibitionId, accessToken, readOnly } = this.props;
     if (this.state.cropping && this.state.cropImageDataUrl ) {
       return (
-        <FloorPlanCrop imageDataUrl={ this.state.cropImageDataUrl } onDetailsUpdate={ this.onCropDetailsUpdate } onDataUpdate={ this.onCropDataUpdate } />
+        <FloorPlanCrop
+          imageDataUrl={ this.state.cropImageDataUrl }
+          onDetailsUpdate={ this.onCropDetailsUpdate }
+          onDataUpdate={ this.onCropDataUpdate }
+        />
       );
     }
 
@@ -179,7 +164,18 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
-      return <FloorPlanMap accessToken={ accessToken } exhibitionFloorId={ exhibitionFloor.id } exhibitionId={ exhibitionId } bounds={ bounds } url={ exhibitionFloor.floorPlanUrl } imageHeight={ 965 } imageWidth={ 1314 }/>
+      return (
+        <FloorPlanMap
+          accessToken={ accessToken }
+          exhibitionFloorId={ exhibitionFloor.id }
+          exhibitionId={ exhibitionId }
+          bounds={ bounds }
+          url={ exhibitionFloor.floorPlanUrl }
+          imageHeight={ 965 }
+          imageWidth={ 1314 }
+          readOnly={ readOnly }
+        />
+      );
     }
     return null;
   }
@@ -189,10 +185,10 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private renderProperties = () => {
     if (this.state.cropping && this.state.cropImageDataUrl) {
-      return <FloorPlanCropProperties 
-        imageHeight={ this.state.cropImageDetails?.height } 
+      return <FloorPlanCropProperties
+        imageHeight={ this.state.cropImageDetails?.height }
         imageWidth={ this.state.cropImageDetails?.width }
-        naturalWidth={ this.state.cropImageDetails?.naturalWidth } 
+        naturalWidth={ this.state.cropImageDetails?.naturalWidth }
         naturalHeight={ this.state.cropImageDetails?.naturalHeight }
         onCropPropertyChange={ this.onCropPropertyChange }
       />;
@@ -205,13 +201,10 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Loads view data
    */
   private loadViewData = async () => {
+    const { exhibitionId, exhibitionFloorId, roomId, contentVersionId } = this.props;
     if (!this.props.exhibitionId || !this.props.exhibitionFloorId) {
       return;
     }
-
-    this.setState({
-      loading: true
-    });
 
     const exhibition = this.loadExhibition();
     const exhibitionFloor = exhibition ? await this.loadExhibitionFloor(exhibition, this.props.exhibitionFloorId) : undefined;
@@ -219,24 +212,20 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       exhibition: exhibition,
       exhibitionFloor: exhibitionFloor
     });
-
-    this.setState({
-      loading: false
-    });
   }
 
   /**
    * Loads an exhibition
-   * 
+   *
    * @returns loads exhibition
    */
   private loadExhibition = () => {
-    return this.props.exhibitions.find(exhibition => exhibition.id === this.props.exhibitionId);    
+    return this.props.exhibitions.find(exhibition => exhibition.id === this.props.exhibitionId);
   }
 
   /**
    * Loads an exhibition floor
-   * 
+   *
    * @returns loads exhibition floor
    */
   private loadExhibitionFloor = (exhibition: Exhibition, exhibitionFloorId: string) => {
@@ -250,7 +239,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
   /**
    * Updates floor's floor plan image
-   * 
+   *
    * @param data image data
    */
   private updateFloorPlan = async (data: Blob) => {
@@ -264,7 +253,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const floorPlanToUpdate = { ...exhibitionFloor,
       floorPlanUrl: uploadedFile.uri,
       floorPlanBounds : this.getBounds()
-    }
+    };
+
     await exhibitionFloorsApi.updateExhibitionFloor({
       floorId: exhibitionFloor.id,
       exhibitionId: exhibitionFloor.exhibitionId,
@@ -274,7 +264,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
   /**
    * Event handler for crop details update
-   * 
+   *
    * @param details details
    */
   private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
@@ -285,7 +275,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
   /**
    * Event handler for crop data update
-   * 
+   *
    * @param data
    */
   private onCropDataUpdate = (data: Blob) => {
@@ -298,10 +288,10 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Event handler for property data change
    */
   private onCropPropertyChange = (key: string, value: number) => {
-    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value }
+    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value };
     this.setState({
       cropImageDetails : updatedDetails
-    })
+    });
   }
 
   /**
@@ -317,24 +307,24 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const swCorner: Coordinates = {
       latitude: 0.0,
       longitude: 0.0
-    }
+    };
 
     const neCorner: Coordinates = {
       latitude: cropImageDetails.naturalWidth,
       longitude: cropImageDetails.naturalHeight
-    }
+    };
 
-    const floorBounds: Bounds = { 
+    const floorBounds: Bounds = {
       northEastCorner : neCorner,
       southWestCorner : swCorner
-    }
+    };
 
     return floorBounds;
   }
 
   /**
    * Event handler for upload save click
-   * 
+   *
    * @param files files
    * @param key  upload key
    */
@@ -349,12 +339,40 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
           this.setState({
             cropImageDataUrl: dataUrl as string,
             cropping: true
-          });  
+          });
         }
       };
 
       reader.readAsDataURL(file);
     }
+  }
+
+  /**
+   * Gets action buttons
+   *
+   * @returns action buttons as array
+   */
+  private getActionButtons = () => {
+    return [
+      { name: strings.floorPlan.toolbar.save, action: this.onSaveClick },
+      { name: strings.floorPlan.toolbar.upload, action: this.onUploadSave }
+    ] as ActionButton[];
+  }
+
+  /**
+   * Get breadcrumbs data
+   *
+   * @returns breadcrumbs data as array
+   */
+  private getBreadCrumbsData = () => {
+    const { exhibitionId, roomId } = this.props;
+    const { exhibition, room, contentVersion } = this.state;
+    return [
+      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
+      { name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/content` },
+      { name: room?.name, url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
+      { name: contentVersion?.name || "" }
+    ] as BreadcrumbData[];
   }
 
   /**

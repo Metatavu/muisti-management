@@ -106,7 +106,8 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
     const cardMenuOptions = this.getCardMenuOptions();
     const cards = rooms.map(room => {
       const roomId = room.id;
-      if (!roomId || !exhibition) {
+      const floorId = room.floorId;
+      if (!roomId || !exhibition || !floorId) {
         return null;
       }
 
@@ -115,7 +116,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
           key={ roomId }
           title={ room.name }
           subtitle={ exhibition.name }
-          onClick={ () => this.onCardClick(roomId) }
+          onClick={ () => this.onCardClick(roomId, floorId) }
           cardMenuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
         />
@@ -183,9 +184,9 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
    * 
    * @param roomId room id
    */
-  private onCardClick = (roomId: string) => {
+  private onCardClick = (roomId: string, floorId: string) => {
     const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/rooms/${roomId}`);
+    this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
   }
 }
 

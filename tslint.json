@@ -18,7 +18,8 @@
     "no-empty-interface": false,
     "prefer-for-of": false,
     "arrow-parens": [true, "ban-single-arg-parens"],
-    "whitespace": [true, "check-branch", "check-operator", "check-typecast", "check-preblock", "check-postbrace"]
+    "whitespace": [true, "check-branch", "check-operator", "check-typecast", "check-preblock", "check-postbrace"],
+    "completed-docs": [true, "methods"]
   },
   "linterOptions": {
     "exclude": ["config/**/*.js", "node_modules/**/*.ts", "coverage/lcov-report/*.js"]
