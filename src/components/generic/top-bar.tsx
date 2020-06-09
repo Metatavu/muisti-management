@@ -246,15 +246,18 @@ class TopBar extends React.Component<Props, State> {
           const split = currentPath.replace("floorplan", tabButton.postfix);
           return split;
         }
+        break;
       case "floorplan":
         if (!currentPath.includes(tabButton.postfix)) {
           const split = currentPath.replace("content", tabButton.postfix);
           return split;
         }
-
+        break;
       default:
         return currentPath;
     }
+
+    return "";
   }
 
   /**
