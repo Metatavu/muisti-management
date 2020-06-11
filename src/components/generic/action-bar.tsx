@@ -36,7 +36,7 @@ const ActionBar: React.FC<Props> = ({ buttons }) => {
  */
 const renderToolbarButton = (button: ActionButton) => {
   return (
-    <Grid item>
+    <Grid item key={ button.name }>
       <Button
         variant="contained"
         disableElevation

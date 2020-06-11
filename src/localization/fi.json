@@ -6,7 +6,8 @@
       "usersButton": "Käyttäjät",
       "devicesButton": "Laitteet",
       "layoutsButton": "Asettelut",
-      "floorPlansButton": "Pohjapiirrustukset"
+      "floorPlansButton": "Pohjapiirrustukset",
+      "spacesButton": "Tilat"
     },
     "tabs": {
       "floorPlanTab": "Pohjapiirros",
@@ -279,6 +280,15 @@
 
   "floorPlan": {
     "title": "Pohjapiirrustus",
+    "listTitle": "Tilat",
+    "addFloor": "Lisää uusi kerros",
+    "newFloor": "Uusi kerros",
+    "addRoom": "Lisää uusi huone",
+    "newRoom": "Uusi huone",
+    "addDeviceGroup": "Lisää uusi laiteryhmä",
+    "newDeviceGroup": "Uusi laiteryhmä",
+    "addDevice": "Lisää uusi laite",
+    "newDevice": "Uusi laite",
     "toolbar": {
       "save": "Tallenna",
       "upload": "Lataa kuva"
@@ -288,7 +298,12 @@
       "imageHeight": "Kuvan korkeus",
       "imageWidth": "Kuvan leveys",
       "physicalWidth": "Fyysinen leveys",
-      "physicalHeight": "Fyysinen korkeus"
+      "physicalHeight": "Fyysinen korkeus",
+      "model": "Malli",
+      "screenOrientation": "Näytön suunta",
+      "landscape": "Vaaka",
+      "portrait": "Pysty",
+      "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle"
     }
   },
 
@@ -384,8 +399,8 @@
   },
 
   "contentVersion": {
-    "add": "Lisää uusi sisältö versio",
-    "addDialogTitle": "Lisää sisältö versio",
+    "add": "Lisää uusi sisältöversio",
+    "addDialogTitle": "Lisää sisältöversio",
     "name": "Nimi",
     "language": "Kieli",
     "rooms": "Huoneet",
@@ -412,6 +427,13 @@
   },
 
   "generic": {
-    "save": "Tallenna"
+    "save": "Tallenna",
+    "loadNew": "Lataa uusi",
+    "name": "Nimi"
+  },
+
+  "spaces": {
+    "title": "Tilat"
   }
+  
 }

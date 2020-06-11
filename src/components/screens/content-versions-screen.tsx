@@ -207,6 +207,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             fullWidth
             type="text"
             name="name"
+            variant="filled"
             value={ selectedContentVersion ? selectedContentVersion.name : "" }
             onChange={ this.onValueChange }
           />
