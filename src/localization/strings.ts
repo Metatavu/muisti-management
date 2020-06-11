@@ -83,6 +83,7 @@ export interface IStrings extends LocalizedStringsMethods {
       devicesButton: string;
       layoutsButton: string;
       floorPlansButton: string;
+      spacesButton: string;
     };
     tabs: {
       floorPlanTab: string;
@@ -277,6 +278,15 @@ export interface IStrings extends LocalizedStringsMethods {
 
   floorPlan: {
     title: string;
+    listTitle: string;
+    addFloor: string;
+    newFloor: string;
+    addRoom: string;
+    newRoom: string;
+    addDeviceGroup: string;
+    newDeviceGroup: string;
+    addDevice: string;
+    newDevice: string;
     toolbar: {
       save: string;
       upload: string;
@@ -287,6 +297,11 @@ export interface IStrings extends LocalizedStringsMethods {
       imageWidth: string;
       physicalWidth: string;
       physicalHeight: string;
+      model: string;
+      screenOrientation: string;
+      landscape: string;
+      portrait: string;
+      allowVisitorSessionCreation: string;
     };
   };
 
@@ -415,8 +430,13 @@ export interface IStrings extends LocalizedStringsMethods {
 
   generic: {
     save: string;
+    loadNew: string;
+    name: string;
   };
 
+  spaces: {
+    title: string;
+  };
 
 }
 

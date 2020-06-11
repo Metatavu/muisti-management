@@ -3,6 +3,7 @@ import * as React from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { ReduxState, ReduxActions, rootReducer } from "../store";
+import * as immer from "immer";
 
 import { ThemeProvider } from "@material-ui/styles";
 import muistiTheme from "../styles/theme";
@@ -34,6 +35,8 @@ import GroupContentVersionsScreen from "./screens/group-content-versions-screen"
 import LayoutsScreen from "./screens/layouts-screen";
 import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
+import FloorPlansScreen from "./screens/floor-plans-screen";
+import FloorPlanScreen from "./screens/floor-plan-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -64,6 +67,7 @@ class App extends React.Component<Props, State> {
    */
   public componentDidMount = () => {
     moment.locale(strings.getLanguage());
+    immer.enableAllPlugins();
   }
 
   /**
@@ -79,7 +83,7 @@ class App extends React.Component<Props, State> {
               <BrowserRouter>
                 <div className="App">
                   <Switch>
-                    <Redirect exact from="/" to="/dashboard/overview" />
+                    <Redirect exact from="/" to="/v4/exhibitions" />
                     <Route
                       path="/dashboard/overview"
                       exact={ true }
@@ -156,25 +160,6 @@ class App extends React.Component<Props, State> {
                       exact={ true }
                       render={ ({ history }) => (
                         <DashboardFloorPlansView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/v4/floorplans"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardFloorPlansView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/v4/floorplans/:exhibitionId/:exhibitionFloorId"
-                      exact={ true }
-                      render={ ({ match, history }) => (
-                        <FloorPlanEditorView
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          exhibitionFloorId={ match.params.exhibitionFloorId }
-                          readOnly={ false }
-                        />
                       )}
                     />
                     <Route
@@ -297,6 +282,25 @@ class App extends React.Component<Props, State> {
                         />
                       )}
                     />
+                    <Route
+                      path="/v4/floorPlans"
+                      exact={ true }
+                      render={({ history }) => (
+                        <FloorPlansScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/floorPlans/:exhibitionId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <FloorPlanScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
                     {
                       /**
                        * TODO:
@@ -304,25 +308,6 @@ class App extends React.Component<Props, State> {
                        */
                     }
                     {/* <Route
-                      path="/v4/spaces"
-                      exact={ true }
-                      render={({ history }) => (
-                        <SpacesScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/v4/spaces/:spaceId"
-                      exact={ true }
-                      render={({ history, match }) => (
-                        <SpaceScreen
-                          history={ history }
-                          spaceId={ match.params.spaceId }
-                        />
-                      )}
-                    />
-                    <Route
                       path="/v4/users"
                       exact={ true }
                       render={({ history }) => (

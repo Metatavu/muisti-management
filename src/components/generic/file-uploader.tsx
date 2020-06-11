@@ -10,7 +10,10 @@ import strings from "../../localization/strings";
 interface Props extends WithStyles<typeof styles> {
   uploadKey?: string;
   allowedFileTypes: string[];
-  buttonText: string;
+  buttonText?: string;
+  controlled?: boolean;
+  open?: boolean;
+  onClose?: () => void;
 
   /**
    * Event callback for upload save click
@@ -25,7 +28,7 @@ interface Props extends WithStyles<typeof styles> {
  * Component states
  */
 interface State {
-  dialogOpen: boolean;
+  dialogOpen?: boolean;
   uploading: boolean;
 }
 
@@ -41,16 +44,25 @@ class FileUploader extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dialogOpen: false,
       uploading: false
     };
+  }
+
+  /**
+   * Component did mount life cycle method
+   */
+  public componentDidMount = () => {
+    const { controlled } = this.props;
+    if (!controlled) {
+      this.setState({ dialogOpen: false });
+    }
   }
 
   /**
    * Component render method
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, controlled, buttonText } = this.props;
     
     if (this.state.uploading) {
       return (
@@ -62,9 +74,11 @@ class FileUploader extends React.Component<Props, State> {
 
     return (
       <>
-        <Button disableElevation variant="contained" color="secondary" onClick={ this.onOpenClick }>
-          { this.props.buttonText }          
-        </Button>
+        { !controlled &&
+          <Button disableElevation variant="contained" color="secondary" onClick={ this.onOpenClick }>
+            { buttonText || strings.generic.loadNew }
+          </Button>
+        }
 
         { this.renderUploadDialog() }
       </>
@@ -75,13 +89,13 @@ class FileUploader extends React.Component<Props, State> {
    * Render upload dialog
    */
   private renderUploadDialog = () => {
-    const { allowedFileTypes } = this.props;
+    const { allowedFileTypes, controlled } = this.props;
 
     return (
       <DropzoneDialog
         acceptedFiles={ allowedFileTypes }
-        open={ this.state.dialogOpen }
-        onClose={ this.onClose }
+        open={ controlled ? this.props.open : this.state.dialogOpen }
+        onClose={ controlled ? this.props.onClose : this.onClose }
         onSave={ this.onSave }
         cancelButtonText={ strings.fileUpload.cancel }
         submitButtonText={ strings.fileUpload.upload }
@@ -114,23 +128,33 @@ class FileUploader extends React.Component<Props, State> {
    * Event handler for dialog open button click
    */
   private onOpenClick = () => {
-    this.openDialog();
+    if (!this.props.controlled) {
+      this.openDialog();
+    }
   }
 
   /**
    * Event handler for dialog close click
    */
   private onClose = () => {
-    this.closeDialog();
+    if (!this.props.controlled) {
+      this.closeDialog();
+    }
   }
 
   /**
    * Event handler for dialog save click
    */
   private onSave = async (files: File[]) => {
-    this.setState({ uploading: true })
-    this.closeDialog();
-    await this.props.onSave(files, this.props.uploadKey);
+    const { controlled } = this.props;
+
+    this.setState({ uploading: true });
+
+    if (!controlled) {
+      this.closeDialog();
+    }
+
+    this.props.onSave(files, this.props.uploadKey);
     this.setState({ uploading: false });
   }
 }

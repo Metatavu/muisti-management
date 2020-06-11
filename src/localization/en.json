@@ -6,7 +6,8 @@
       "usersButton": "Users",
       "devicesButton": "Devices",
       "layoutsButton": "Layouts",
-      "floorPlansButton": "Floorplans"
+      "floorPlansButton": "Floorplans",
+      "spacesButton": "Spaces"
     },
     "tabs": {
       "floorPlanTab": "Floorplan",
@@ -278,7 +279,16 @@
   },
 
   "floorPlan": {
-    "title": "Floor Plan",
+    "title": "Floor plan",
+    "listTitle": "Floor plans",
+    "addFloor": "Add new floor",
+    "newFloor": "New floor",
+    "addRoom": "Add new room",
+    "newRoom": "New room",
+    "addDeviceGroup": "Add new device group",
+    "newDeviceGroup": "New device group",
+    "addDevice": "Add new device",
+    "newDevice": "New device",
     "toolbar": {
       "save": "Save",
       "upload": "Upload image"
@@ -288,7 +298,12 @@
       "imageHeight": "Image Height",
       "imageWidth": "Image Width",
       "physicalWidth": "Physical Width",
-      "physicalHeight": "Physical Height"
+      "physicalHeight": "Physical Height",
+      "model": "Model",
+      "screenOrientation": "Screen Orientation",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "allowVisitorSessionCreation": "Allow creation of new session to visitor"
     }
   },
 
@@ -414,7 +429,13 @@
   },
 
   "generic": {
-    "save": "Save"
+    "save": "Save",
+    "loadNew": "Load new",
+    "name": "Name"
+  },
+
+  "spaces": {
+    "title": "Spaces"
   }
 
 }
