@@ -20,7 +20,7 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import { ContentVersion } from "../../generated/client/models/ContentVersion";
 import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
-import GroupContentVersionsInfo from "./group-content-versions-info";
+import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import ConfirmDialog from "../generic/confirm-dialog";
 
 /**
@@ -52,7 +52,7 @@ interface State {
 }
 
 /**
- * Component group content version view
+ * Component for group content versions screen
  */
 class GroupContentVersionsScreen extends React.Component<Props, State> {
 
@@ -163,7 +163,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render add dialog
+   * Renders add dialog
    */
   private renderAddDialog = () => {
     return(
@@ -183,7 +183,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render group content version dialog confirmation dialog
+   * Renders delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
     const { selectedGroupContentVersion } = this.state;
@@ -268,7 +268,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get card menu options
+   * Gets card menu options
+   * 
    * @param groupContentVersion selected group content version
    * @returns card menu options as action button array
    */
@@ -280,35 +281,36 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get breadcrumbs data
+   * Gets breadcrumbs data
    *
-   * @returns breadcrumbs data as array
+   * @returns array of breadcrumb data objects
    */
-  private getBreadcrumbsData = () => {
+  private getBreadcrumbsData = (): BreadcrumbData[] => {
     const { exhibitionId, roomId } = this.props;
     const { exhibition, room, contentVersion } = this.state;
     return [
       { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/content` },
-      { name: room?.name, url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
+      { name: exhibition?.name || "", url: `/v4/exhibitions/${exhibitionId}/content` },
+      { name: room?.name || "", url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
       { name: contentVersion?.name || "" }
-    ] as BreadcrumbData[];
+    ];
   }
 
   /**
    * Gets action buttons
    *
-   * @returns action buttons as array
+   * @returns array of action button objects
    */
-  private getActionButtons = () => {
+  private getActionButtons = (): ActionButton[] => {
     return [
       { name: strings.generic.save, action: this.onSaveClick },
       { name: strings.groupContentVersion.add, action: this.onAddGroupContentVersionClick }
-    ] as ActionButton[];
+    ];
   }
 
   /**
-   * Delete group content version handler
+   * Deletes group content version
+   * 
    * @param groupContentVersion selected group content version
    */
   private deleteGroupContentVersion = (groupContentVersion: GroupContentVersion) => {
@@ -331,7 +333,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On value change handler
+   * Event handler for value change
+   * 
    * @param event react change event
    */
   private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
@@ -360,7 +363,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On Group content version value change
+   * Event handler for group content value change
+   * 
    * @param groupContentVersion group content version
    */
   private onGroupContentValueChange = (groupContentVersion: GroupContentVersion) => {
@@ -378,7 +382,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On dialog save click handler
+   * Event handler for dialog save click
    */
   private onDialogSaveClick = () => {
     const { accessToken, exhibitionId } = this.props;
@@ -401,7 +405,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On dialog close or cancel click handler
+   * Event handler for close of cancel click
    */
   private onCloseOrCancelClick = () => {
     this.setState({
@@ -412,7 +416,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On add group content version click handler
+   * Event handler for add group content version click
    */
   private onAddGroupContentVersionClick = () => {
     const { contentVersionId } = this.props;
@@ -430,7 +434,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On save click handler
+   * Event handler for save click
    */
   private onSaveClick = async () => {
     const { accessToken, exhibitionId } = this.props;

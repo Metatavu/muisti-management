@@ -43,7 +43,7 @@
     "react-leaflet-freedraw": "^0.1.2",
     "react-measure": "^2.3.0",
     "react-redux": "^7.1.3",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.3.0",
     "react-simple-tree-menu": "^1.1.15",
     "slugify": "^1.4.0",

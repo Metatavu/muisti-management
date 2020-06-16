@@ -214,28 +214,30 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
   /**
    * Generic handler for single page layout property value changes
+   * 
    * @param updatedPageLayoutView page layout view property object to update
    */
-  private onSingleValueChange = (updatedPageLayoutView: PageLayoutViewProperty) => {
+  private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
     const { selectedElementPath } = this.props;
     const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
-    const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
-    updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
-    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
+    const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
+    const updatedLayoutView = updateLayoutView(pageLayoutViewProperty, layoutView);
+    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, updatedLayoutView, selectedElementPath);
     this.props.setSelectedLayout(pageLayoutToUpdate);
   }
 
   /**
    * Generic handler for multiple page layout property value changes
+   * 
    * @param updatedPageLayoutViews list of page layout view property objects to update
    */
-  private onMultipleValueChange = (updatedPageLayoutViews: PageLayoutViewProperty[]) => {
+  private onMultipleValueChange = (pageLayoutViewProperties: PageLayoutViewProperty[]) => {
     const { selectedElementPath } = this.props;
     const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
 
-    updatedPageLayoutViews.forEach(updatedPageLayoutView => {
-      updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
+    pageLayoutViewProperties.forEach(property => {
+      updateLayoutView(property, layoutViewToUpdate);
     });
 
     const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
