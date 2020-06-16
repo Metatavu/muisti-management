@@ -282,12 +282,16 @@ export interface IStrings extends LocalizedStringsMethods {
     listTitle: string;
     addFloor: string;
     newFloor: string;
+    deleteFloor: string;
     addRoom: string;
     newRoom: string;
+    deleteRoom: string;
     addDeviceGroup: string;
     newDeviceGroup: string;
+    deleteDeviceGroup: string;
     addDevice: string;
     newDevice: string;
+    deleteDevice: string;
     toolbar: {
       save: string;
       upload: string;

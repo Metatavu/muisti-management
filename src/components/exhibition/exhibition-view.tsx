@@ -191,7 +191,7 @@ export class ExhibitionView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane width={ 320 } title="">
+          <ElementSettingsPane open={ true } width={ 320 } title="">
             {
               selectedResourceIndex !== undefined &&
               this.renderResourceEditor()
@@ -451,7 +451,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (!eventTriggers) {
       return null;
     }
-    
+
     const selectedEventTrigger = eventTriggers.length > selectedEventTriggerIndex ? eventTriggers[selectedEventTriggerIndex] : undefined;
     if (!selectedEventTrigger) {
       return null;
@@ -644,7 +644,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (parsedCode.resources.length < selectedResourceIndex) {
       return;
     }
-    
+
     parsedCode.resources[selectedResourceIndex].data = event.target.value;
     this.setState({
       jsonCode: this.toJsonCode(parsedCode)
@@ -653,7 +653,7 @@ export class ExhibitionView extends React.Component<Props, State> {
 
   /**
    * Event handler for index page select change
-   * 
+   *
    * @param event event
    */
   private onDeviceIndexPageChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
@@ -679,7 +679,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (!selectedElement || selectedElement.type !== ExhibitionElementType.DEVICE) {
       return;
     }
-    
+
     const device = selectedElement.data as ExhibitionDevice;
 
     this.setState({
@@ -719,10 +719,10 @@ export class ExhibitionView extends React.Component<Props, State> {
     const page = selectedElement.data as ExhibitionPage;
     let elementToUpdate;
     if (transitionType === "enter") {
-      elementToUpdate =  { ...selectedElement, data: { ...page, enterTransitions: transitions }}
+      elementToUpdate =  { ...selectedElement, data: { ...page, enterTransitions: transitions }};
     }
     if (transitionType === "exit") {
-      elementToUpdate =  { ...selectedElement, data: { ...page, exitTransitions: transitions }}
+      elementToUpdate =  { ...selectedElement, data: { ...page, exitTransitions: transitions }};
     }
     this.setState({
       selectedElement: elementToUpdate
@@ -743,7 +743,7 @@ export class ExhibitionView extends React.Component<Props, State> {
     if (!parsedCode || !parsedCode.eventTriggers || parsedCode.eventTriggers.length <= selectedEventTriggerIndex) {
       return;
     }
-    
+
     parsedCode.eventTriggers[selectedEventTriggerIndex] = eventTrigger;
     this.setState({
       jsonCode: this.toJsonCode(parsedCode)
@@ -880,12 +880,12 @@ export class ExhibitionView extends React.Component<Props, State> {
       resources: resources,
       enterTransitions: [],
       exitTransitions: []
-    }
+    };
 
     const newElement: ExhibitionElement = {
       data: newPage,
       type: ExhibitionElementType.PAGE
-    }
+    };
 
     this.setState({
       selectedElement: newElement
@@ -903,7 +903,7 @@ export class ExhibitionView extends React.Component<Props, State> {
         groupId: this.state.selectedDeviceGroupId,
         screenOrientation: ScreenOrientation.Portrait
       }
-    }); 
+    });
   }
 
   /**

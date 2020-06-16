@@ -290,8 +290,12 @@
     "newDeviceGroup": "New device group",
     "addDevice": "Add new device",
     "newDevice": "New device",
+    "deleteDevice": "Delete device",
+    "deleteDeviceGroup": "Delete devicegroup",
+    "deleteRoom": "Delete room",
+    "deleteFloor": "Delete space",
     "toolbar": {
-      "save": "Save",
+      "save": "Save changes",
       "upload": "Upload image"
     },
     "properties": {

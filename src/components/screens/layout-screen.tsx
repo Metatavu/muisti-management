@@ -160,7 +160,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane width={ 420 } title={ strings.layout.properties.title }>
+          <ElementSettingsPane open={ true } width={ 420 } title={ strings.layout.properties.title }>
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }

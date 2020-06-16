@@ -181,7 +181,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
 
   /**
    * Event handler for node click event
-   * 
+   *
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
    */

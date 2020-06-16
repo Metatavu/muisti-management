@@ -96,7 +96,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
           key={ exhibition.id }
           title={ exhibition.name }
           onClick={ () => this.onCardClick(exhibitionId) }
-          cardMenuOptions={ cardMenuOptions }
+          menuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
         />
       );
@@ -123,7 +123,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Gets action buttons
-   * 
+   *
    * @returns action buttons as array
    */
   // FIXME: create new exhibition

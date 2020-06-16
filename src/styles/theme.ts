@@ -1,15 +1,19 @@
 import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
+const uiHighlightDark = "#0079E9";
+const uiHighlightMain = "#0079E9";
+const uiHighlightLight = "#0079E9";
+
 export default createMuiTheme({
 
   palette: {
     primary: { main: grey[900] },
-    secondary: { 
-      main: "#8AC0CB",
-      light: "#C0DDE3"
+    secondary: {
+      dark: uiHighlightDark,
+      main: uiHighlightMain,
+      light: uiHighlightLight
     },
-
     background: {
       default: "#f2f2f2",
       paper: "#fff"
@@ -80,18 +84,18 @@ export default createMuiTheme({
       containedPrimary: {
         color: "#fff",
         textTransform: "initial",
-        borderRadius: 100
+        borderRadius: 0
       },
       containedSecondary: {
         color: "#fff",
         textTransform: "initial",
-        borderRadius: 100
+        borderRadius: 0
       },
       contained: {
         color: "#fff",
-        backgroundColor: "rgba(138,192,203, 1)",
+        backgroundColor: uiHighlightMain,
         textTransform: "initial",
-        borderRadius: 100,
+        borderRadius: 0,
         "&:hover": {
           backgroundColor: "rgba(138,192,203, 0.8)"
         },
@@ -127,11 +131,11 @@ export default createMuiTheme({
           borderBottom: "0px solid rgba(0,0,0,0)"
         },
         "&::after": {
-          borderBottomColor: "rgba(138,192,203, 1)"
+          borderBottomColor: uiHighlightMain
         },
         "&:hover": {
           "&::before": {
-            borderBottomColor: "rgba(138,192,203, 1)"
+            borderBottomColor: uiHighlightMain
           }
         }
       }
@@ -161,13 +165,13 @@ export default createMuiTheme({
         borderRadius: 4,
         "&.Mui-selected": {
           backgroundColor: "rgba(0,0,0,0)",
-          color: "rgba(138,192,203, 1)",
+          color: uiHighlightMain,
           "& .MuiListItemIcon-root": {
             color: "#fff",
-            backgroundColor: "rgba(138,192,203, 1)"
+            backgroundColor: uiHighlightMain
           },
           "& .MuiTypography-colorTextSecondary": {
-            color: "rgba(138,192,203, 1)"
+            color: uiHighlightMain
           }
         }
       }

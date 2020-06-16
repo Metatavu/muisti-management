@@ -15,12 +15,12 @@ import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
 import strings from "../../localization/strings";
-import 'cropperjs/dist/cropper.css';
+import "cropperjs/dist/cropper.css";
 import FloorPlanCrop from "./floor-plan-crop";
 import FloorPlanCropProperties from "./floor-plan-crop-properties";
-import * as cropperjs from 'cropperjs';
+import * as cropperjs from "cropperjs";
 import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
 import FloorPlanMap from "../generic/floor-plan-map";
@@ -48,12 +48,13 @@ interface State {
   loading: boolean;
   name: string;
   toolbarOpen: boolean;
-  exhibition?: Exhibition;
-  exhibitionFloor?: ExhibitionFloor;
   cropping: boolean;
   cropImageDataUrl?: string;
   cropImageData?: Blob;
   cropImageDetails?: cropperjs.default.ImageData;
+
+  exhibition?: Exhibition;
+  exhibitionFloor?: ExhibitionFloor;
   room?: ExhibitionRoom;
   contentVersion?: ContentVersion;
   breadCrumbs: BreadcrumbData[];
@@ -135,7 +136,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
           <EditorView>
             { this.renderEditor() }
           </EditorView>
-          <ElementSettingsPane width={ 320 } title={ strings.floorPlan.properties.title }>
+          <ElementSettingsPane open={ true } width={ 320 } title={ strings.floorPlan.properties.title }>
             { this.renderProperties() }
           </ElementSettingsPane>
         </div>
@@ -148,9 +149,9 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { exhibitionFloor } = this.state;
+    const { exhibitionFloor, room } = this.state;
     const { exhibitionId, accessToken, readOnly } = this.props;
-    if (this.state.cropping && this.state.cropImageDataUrl ) {
+    if (this.state.cropping && this.state.cropImageDataUrl) {
       return (
         <FloorPlanCrop
           imageDataUrl={ this.state.cropImageDataUrl }
@@ -170,7 +171,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       return (
         <FloorPlanMap
           accessToken={ accessToken }
-          exhibitionFloorId={ exhibitionFloor.id }
+          selectedFloor={ exhibitionFloor }
+          selectedRoom={ room }
           exhibitionId={ exhibitionId }
           bounds={ bounds }
           url={ exhibitionFloor.floorPlanUrl }
@@ -208,7 +210,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
     const breadCrumbs: BreadcrumbData[] = [];
 
-    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/v4/exhibitions" })
+    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/v4/exhibitions" });
     if (!exhibitionId) {
       return;
     }
@@ -217,8 +219,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const [ exhibition ] = await Promise.all<Exhibition>([
       exhibitionsApi.findExhibition({ exhibitionId }),
     ]);
-   
-    breadCrumbs.push({ name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan` })
+
+    breadCrumbs.push({ name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan` });
     this.setState({ exhibition, breadCrumbs });
 
     if (!roomId) {
@@ -239,7 +241,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: room.floorId }),
     ]);
 
-    breadCrumbs.push({ name: room?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${room?.floorId}/rooms/${roomId}` })
+    breadCrumbs.push({ name: room?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${room?.floorId}/rooms/${roomId}` });
     this.setState({ exhibitionFloor: floor, room: room, breadCrumbs });
 
     if (!contentVersionId) {

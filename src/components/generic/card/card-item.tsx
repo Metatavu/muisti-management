@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent, Button } from "@material-ui/core";
 import styles from "../../../styles/components/generic/card/card-item";
-import CardMenuButton from "./card-menu-button";
+import MenuButton from "../menu-button";
 import { ActionButton } from "../../../types";
 import classNames from "classnames";
 import { GroupContentVersionStatus } from "../../../generated/client";
@@ -43,7 +43,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * List of available menu options
    */
-  cardMenuOptions: ActionButton[];
+  menuOptions: ActionButton[];
 
   /**
    * Handler for card click
@@ -72,21 +72,21 @@ class CardItem extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, cardMenuOptions, title, subtitle, status, size, selected } = this.props;
+    const { classes, menuOptions, title, subtitle, status, size, selected } = this.props;
 
     return (
       <div className={ classes.cardWrapper }>
         <Card
           elevation={ 5 }
           variant="elevation"
-          className={ classNames(`${size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
+          className={ classNames(`${ size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
           onClick={ this.props.onClick }
           >
           <CardHeader
             titleTypographyProps={{ variant: "h3" }}
             action={
-              <CardMenuButton
-              cardMenuOptions={ cardMenuOptions }
+              <MenuButton
+                menuOptions={ menuOptions }
               />
             }
             title={ title }

@@ -8,7 +8,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/floor-plan-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, OutlinedTextFieldProps, Select, SelectProps, MenuItem, InputLabel, Switch, FormControlLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, ScreenOrientation, DeviceModel } from "../../generated/client";
@@ -17,18 +17,18 @@ import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, BreadcrumbData, ActionButton } from '../../types';
+import { AccessToken, BreadcrumbData, ActionButton } from "../../types";
 import strings from "../../localization/strings";
-import 'cropperjs/dist/cropper.css';
+import "cropperjs/dist/cropper.css";
 import FloorPlanCrop from "../floor-plan/floor-plan-crop";
 import FloorPlanCropProperties from "../floor-plan/floor-plan-crop-properties";
-import * as cropperjs from 'cropperjs';
+import * as cropperjs from "cropperjs";
 import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
 import FloorPlanMap from "../generic/floor-plan-map";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
-import theme from "../../styles/theme";
+import FloorPlanInfo from "../floor-plan/floor-plan-info";
 
 /**
  * Component props
@@ -65,6 +65,7 @@ interface State {
   cropImageData?: Blob;
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
+  selectedItemHasNodes: boolean;
 }
 
 /**
@@ -89,7 +90,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       deviceGroups: [],
       devices: [],
       treeData: [],
-      addImageDialogOpen: false
+      addImageDialogOpen: false,
+      selectedItemHasNodes: false
     };
   }
 
@@ -120,7 +122,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history } = this.props;
-    const { exhibition, floors, rooms, deviceGroups, devices, addImageDialogOpen } = this.state;
+    // tslint:disable-next-line: max-line-length
+    const { exhibition, floors, rooms, deviceGroups, devices, addImageDialogOpen, selectedFloor } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -131,7 +134,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     const treeNodes = this.constructTreeData(floors, rooms, deviceGroups, devices);
-    const firstSelected = this.state.selectedFloor?.id || "";
+    const firstSelected = selectedFloor?.id || "";
     return (
       <BasicLayout
         history={ history }
@@ -152,8 +155,12 @@ export class FloorPlanScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane width={ 320 } title={ strings.floorPlan.properties.title }>
-            { this.renderProperties() }
+          <ElementSettingsPane
+            open={ true }
+            width={ 420 }
+            title={ strings.floorPlan.properties.title }
+          >
+            { this.renderRightPanel() }
           </ElementSettingsPane>
         </div>
         <FileUploader
@@ -173,7 +180,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { selectedFloor, cropping, cropImageDataUrl } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
     const { exhibitionId, accessToken } = this.props;
     if (cropping && cropImageDataUrl ) {
       return (
@@ -193,143 +200,53 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
       return <FloorPlanMap
+        key={ "floorPlanMap" }
         accessToken={ accessToken }
-        exhibitionFloorId={ selectedFloor.id }
-        exhibitionId={ exhibitionId }
         bounds={ bounds }
         url={ selectedFloor.floorPlanUrl }
         imageHeight={ 965 }
         imageWidth={ 1314 }
         readOnly={ false }
-      />
+        exhibitionId={ exhibitionId }
+        selectedFloor={ selectedFloor }
+        selectedRoom={ selectedRoom }
+        selectedDeviceGroup={ selectedDeviceGroup }
+        selectedDevice={ selectedDevice }
+        onRoomClick={ this.onRoomClick }
+      />;
     }
     return null;
   }
 
   /**
-   * Renders properties
+   * Renders right panel
    */
-  private renderProperties = () => {
+  private renderRightPanel = () => {
     const { deviceModels } = this.props;
     const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
     if (cropping && cropImageDataUrl) {
-      return <FloorPlanCropProperties 
+      return <FloorPlanCropProperties
         imageHeight={ this.state.cropImageDetails?.height }
         imageWidth={ this.state.cropImageDetails?.width }
-        naturalWidth={ this.state.cropImageDetails?.naturalWidth } 
+        naturalWidth={ this.state.cropImageDetails?.naturalWidth }
         naturalHeight={ this.state.cropImageDetails?.naturalHeight }
         onCropPropertyChange={ this.onCropPropertyChange }
       />;
-    }
-
-    const textFieldGenericProps = {
-      fullWidth: true,
-      type: "text",
-      variant: "filled" as OutlinedTextFieldProps["variant"],
-      style: { marginTop: theme.spacing(2) }
-    };
-
-    const selectFieldGenericProps = {
-      fullWidth: true,
-      variant: "filled" as SelectProps["variant"],
-      style: { marginTop: theme.spacing(2) }
-    };
-
-    if (selectedFloor) {
+    } else {
       return (
-        <TextField
-          { ...textFieldGenericProps }
-          name="name"
-          label={ strings.generic.name }
-          value={ selectedFloor.name }
-          onChange={ this.onChangeFloorProperties }
+        <FloorPlanInfo
+          selectedFloor={ selectedFloor }
+          selectedRoom={ selectedRoom }
+          selectedDeviceGroup={ selectedDeviceGroup }
+          selectedDevice={ selectedDevice }
+          deviceModels={ deviceModels }
+          onChangeFloorProperties={ this.onChangeFloorProperties }
+          onChangeRoomProperties={ this.onChangeRoomProperties }
+          onChangeDeviceGroupProperties={ this.onChangeDeviceGroupProperties }
+          onChangeDeviceProperties={ this.onChangeDeviceProperties }
         />
       );
     }
-
-    if (selectedRoom) {
-      return (
-        <TextField
-          { ...textFieldGenericProps }
-          label={ strings.generic.name }
-          name="name"
-          value={ selectedRoom.name }
-          onChange={ this.onChangeRoomProperties }
-        />
-      );
-    }
-
-    if (selectedDeviceGroup) {
-      return (
-        <>
-          <TextField
-            { ...textFieldGenericProps }
-            label={ strings.generic.name }
-            name="name"
-            value={ selectedDeviceGroup.name }
-            onChange={ this.onChangeDeviceGroupProperties }
-          />
-          <FormControlLabel
-            label={ strings.floorPlan.properties.allowVisitorSessionCreation }
-            style={{ marginTop: theme.spacing(2) }}
-            control={
-              <Switch
-                checked={ selectedDeviceGroup.allowVisitorSessionCreation }
-                onChange={ this.onChangeDeviceGroupProperties }
-                color="primary"
-                name="allowVisitorSessionCreation"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            }
-          />
-        </>
-      );
-    }
-
-    if (selectedDevice) {
-      return (
-        <>
-          <TextField
-            { ...textFieldGenericProps }
-            label={ strings.generic.name }
-            name="name"
-            value={ selectedDevice.name }
-            onChange={ this.onChangeDeviceProperties }
-          />
-          <InputLabel id="modelId-label" style={{ marginTop: theme.spacing(2) }}>
-            { strings.floorPlan.properties.model }
-          </InputLabel>
-          <Select
-            { ...selectFieldGenericProps }
-            label={ strings.dashboard.devices.dialog.model }
-            name="modelId"
-            value={ selectedDevice.modelId || "" }
-            onChange={ this.onChangeDeviceProperties }
-          >
-            { deviceModels.map(model => 
-              <MenuItem key={ model.id } value={ model.id }>
-                { `${model.manufacturer} ${model.model}` }
-              </MenuItem>
-            )}
-          </Select>
-          <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
-            { strings.floorPlan.properties.screenOrientation }
-          </InputLabel>
-          <Select
-            { ...selectFieldGenericProps }
-            labelId="screenOrientation-label"
-            name="screenOrientation"
-            value={ selectedDevice.screenOrientation || "" }
-            onChange={ this.onChangeDeviceProperties }
-          >
-            <MenuItem key={ "landscape" } value={ ScreenOrientation.Landscape }>{ strings.floorPlan.properties.landscape }</MenuItem>
-            <MenuItem key={ "portrait" } value={ ScreenOrientation.Portrait }>{ strings.floorPlan.properties.portrait }</MenuItem>
-          </Select>
-        </>
-      );
-    }
-
-    return null;
   }
 
   /**
@@ -373,7 +290,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Constructs tree data
-   * 
+   *
    * @param floors exhibition floors
    * @param rooms exhibition rooms
    * @param deviceGroups exhibition device groups
@@ -385,23 +302,23 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return {
         key: floor.id!,
         label: floor.name,
-        onClick: () => this.onFloorClick(floor),
+        onClick: (hasNodes: boolean) => this.onFloorClick(floor, hasNodes),
         nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
           return {
             key: room.id!,
             label: room.name,
-            onClick: () => this.onRoomClick(room),
+            onClick: (hasNodes: boolean) => this.onRoomClick(floor, room, hasNodes),
             nodes: deviceGroups.filter(group => group.roomId === room.id).map(group => {
               return {
                 key: group.id!,
                 label: group.name,
-                onClick: () => this.onDeviceGroupClick(group),
+                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor, room, group, hasNodes),
                 nodes: devices.filter(device => device.groupId === group.id).map(device => {
                   return {
                     key: device.id!,
                     label: device.name,
-                    onClick: () => this.onDeviceClick(device),
-                    nodes: []
+                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor, room, group, device, hasNodes),
+                    nodes: [],
                   };
                 })
               };
@@ -416,7 +333,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Get breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = () => {
@@ -434,29 +351,39 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private getActionButtons = (): ActionButton[] => {
     const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
+    if (selectedDevice) {
+      return [
+        { name: strings.floorPlan.toolbar.save, action: this.onSaveDeviceClick },
+        { name: strings.floorPlan.deleteDevice, action: () => alert(strings.comingSoon) }
+      ] as ActionButton[];
+    }
+
+    if (selectedDeviceGroup) {
+      return [
+        { name: strings.floorPlan.addDevice, action: this.onAddDeviceClick },
+        { name: strings.floorPlan.toolbar.save, action: this.onSaveDeviceGroupClick },
+        { name: strings.floorPlan.deleteDeviceGroup, action: () => alert(strings.comingSoon) }
+      ] as ActionButton[];
+    }
+
+    if (selectedRoom) {
+      return [
+        { name: strings.floorPlan.addDeviceGroup, action: this.onAddDeviceGroupClick },
+        { name: strings.floorPlan.toolbar.save, action: this.onSaveRoomClick },
+        { name: strings.floorPlan.deleteRoom, action: () => alert(strings.comingSoon) }
+      ] as ActionButton[];
+    }
+
     if (selectedFloor) {
       return [
-        { name: strings.generic.save, action: this.onSaveFloorClick },
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
-        { name: strings.floorPlan.addFloor, action: this.onAddFloorClick }
-      ];
-    } else if (selectedRoom) {
-      return [
-        { name: strings.generic.save, action: this.onSaveRoomClick },
-        { name: strings.floorPlan.addDeviceGroup, action: this.onAddDeviceGroupClick }
-      ];
-    } else if (selectedDeviceGroup) {
-      return [
-        { name: strings.generic.save, action: this.onSaveDeviceGroupClick },
-        { name: strings.floorPlan.addDevice, action: this.onAddDeviceClick }
-      ];
-    } else if (selectedDevice) {
-      return [ 
-        { name: strings.generic.save, action: this.onSaveDeviceClick }
-      ];
-    } else {
-      return [];
+        { name: strings.floorPlan.addFloor, action: this.onAddFloorClick },
+        { name: strings.floorPlan.toolbar.save, action: this.onSaveFloorClick },
+        { name: strings.floorPlan.deleteFloor, action: () => alert(strings.comingSoon) }
+      ] as ActionButton[];
     }
+
+    return [];
   }
 
   /**
@@ -474,24 +401,24 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const swCorner: Coordinates = {
       latitude: 0.0,
       longitude: 0.0
-    }
+    };
 
     const neCorner: Coordinates = {
       latitude: cropImageDetails.naturalWidth,
       longitude: cropImageDetails.naturalHeight
-    }
+    };
 
-    const floorBounds: Bounds = { 
+    const floorBounds: Bounds = {
       northEastCorner : neCorner,
       southWestCorner : swCorner
-    }
+    };
 
     return floorBounds;
   }
 
   /**
    * Updates floor's floor plan image
-   * 
+   *
    * @param data image data
    */
   private updateFloorPlanImage = async (data: Blob) => {
@@ -532,7 +459,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for crop details update
-   * 
+   *
    * @param details details
    */
   private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
@@ -543,7 +470,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for crop data update
-   * 
+   *
    * @param data data as Blob
    */
   private onCropDataUpdate = (data: Blob) => {
@@ -554,20 +481,20 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for crop property data change
-   * 
+   *
    * @param key crop property key
    * @param value crop property value
    */
   private onCropPropertyChange = (key: string, value: number) => {
-    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value }
+    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value };
     this.setState({
       cropImageDetails : updatedDetails
-    })
+    });
   }
 
   /**
    * Event handler for upload save click
-   * 
+   *
    * @param files files
    * @param key  upload key
    */
@@ -604,7 +531,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       exhibitionFloor: { name: strings.floorPlan.newFloor }
     });
-    
+
     this.setState(
       produce((draft: Draft<State>) => {
         draft.floors.push(newFloor);
@@ -631,7 +558,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         roomId: selectedRoom.id
       }
     });
-    
+
     this.setState(
       produce((draft: Draft<State>) => {
         draft.deviceGroups.push(newDeviceGroup);
@@ -659,7 +586,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         screenOrientation: ScreenOrientation.Landscape
       }
     });
-    
+
     this.setState(
       produce((draft: Draft<State>) => {
         draft.devices.push(newDevice);
@@ -789,63 +716,77 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for floor click
-   * 
+   *
    * @param floor selected floor
+   * @param hasNodes has child nodes
    */
-  private onFloorClick = (floor: ExhibitionFloor) => {
+  private onFloorClick = (floor: ExhibitionFloor, hasNodes: boolean) => {
     this.setState({
       selectedFloor: floor,
       selectedRoom: undefined,
       selectedDeviceGroup: undefined,
-      selectedDevice: undefined
+      selectedDevice: undefined,
+      selectedItemHasNodes: hasNodes
     });
   }
 
   /**
    * Event handler for room click
-   * 
+   *
+   * @param floor selected floor
    * @param room selected room
+   * @param hasNodes has child nodes
    */
-  private onRoomClick = (room: ExhibitionRoom) => {
+  private onRoomClick = (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => {
     this.setState({
-      selectedFloor: undefined,
+      selectedFloor: floor,
       selectedRoom: room,
       selectedDeviceGroup: undefined,
-      selectedDevice: undefined
+      selectedDevice: undefined,
+      selectedItemHasNodes: hasNodes
     });
   }
 
   /**
    * Event handler for device group click
-   * 
+   *
+   * @param floor selected floor
+   * @param room selected room
    * @param deviceGroup selected device group
+   * @param hasNodes has child nodes
    */
-  private onDeviceGroupClick = (deviceGroup: ExhibitionDeviceGroup) => {
+  private onDeviceGroupClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => {
     this.setState({
-      selectedFloor: undefined,
-      selectedRoom: undefined,
+      selectedFloor: floor,
+      selectedRoom: room,
       selectedDeviceGroup: deviceGroup,
-      selectedDevice: undefined
+      selectedDevice: undefined,
+      selectedItemHasNodes: hasNodes
     });
   }
 
   /**
    * Event handler for device click
-   * 
+   *
+   * @param floor selected floor
+   * @param room selected room
+   * @param deviceGroup selected device group
    * @param device selected device
+   * @param hasNodes has child nodes
    */
-  private onDeviceClick = (device: ExhibitionDevice) => {
+  private onDeviceClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => {
     this.setState({
-      selectedFloor: undefined,
-      selectedRoom: undefined,
-      selectedDeviceGroup: undefined,
-      selectedDevice: device
+      selectedFloor: floor,
+      selectedRoom: room,
+      selectedDeviceGroup: deviceGroup,
+      selectedDevice: device,
+      selectedItemHasNodes: hasNodes
     });
   }
 
   /**
    * Event handler for change floor properties
-   * 
+   *
    * @param event event
    */
   private onChangeFloorProperties = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -863,7 +804,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for change room properties
-   * 
+   *
    * @param event event
    */
   private onChangeRoomProperties = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -881,7 +822,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for change device group properties
-   * 
+   *
    * @param event event
    */
   private onChangeDeviceGroupProperties = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -901,7 +842,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for change device properties
-   * 
+   *
    * @param event event
    */
   private onChangeDeviceProperties = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {

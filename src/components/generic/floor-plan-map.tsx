@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 import Api from "../../api/api";
 import { AccessToken } from "../../types";
-import { ExhibitionRoom, Polygon as ApiPolygon } from "../../generated/client";
+import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import PolygonDialog from "./polygon-dialog";
 import strings from "../../localization/strings";
@@ -23,9 +23,43 @@ interface Props {
   imageHeight: number;
   bounds: LatLngBounds;
   accessToken: AccessToken;
-  exhibitionId?: string;
-  exhibitionFloorId? : string;
   readOnly: boolean;
+  exhibitionId?: string;
+  selectedFloor? : ExhibitionFloor;
+  selectedRoom?: ExhibitionRoom;
+  selectedDeviceGroup?: ExhibitionDeviceGroup;
+  selectedDevice?: ExhibitionDevice;
+  selectedItemHasNodes?: boolean;
+
+  /**
+   * Event handler for room click
+   *
+   * @param floor selected floor
+   * @param room selected room
+   * @param hasNodes has child nodes
+   */
+  onRoomClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => void;
+
+  /**
+   * Event handler for device group click
+   *
+   * @param floor selected floor
+   * @param room selected room
+   * @param deviceGroup selected device group
+   * @param hasNodes has child nodes
+   */
+  onDeviceGroupClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => void;
+
+  /**
+   * Event handler for device click
+   *
+   * @param floor selected floor
+   * @param room selected room
+   * @param deviceGroup selected device group
+   * @param device selected device
+   * @param hasNodes has child nodes
+   */
+  onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice) => void;
 }
 
 /**
@@ -37,7 +71,7 @@ interface State {
   polygonCreated: boolean;
   roomName?: string;
   layer?: any;
-  geoShapeMap: Map<number, string>;
+  geoShapeMap: Map<number, ExhibitionRoom>;
   roomsToDelete: number[];
 }
 
@@ -59,6 +93,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * individual feature group objects can be cast to polygon objects
    */
   private addedLayers = new L.FeatureGroup();
+
+  private currentControls = new L.Control();
 
 
   /**
@@ -84,11 +120,24 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   }
 
   /**
+   * Component did update handler
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+
+    if (prevProps.selectedFloor !== this.props.selectedFloor || prevProps.selectedRoom !== this.props.selectedRoom) {
+      this.loadGeoShapes();
+    }
+  }
+
+  /**
    * Component render method
    */
   public render = () => {
+
     return (<>
-      <LeafletMap ref={ this.setMapRef }
+      <LeafletMap
+        ref={ this.setMapRef }
+        key="leafletMap"
         crs={ CRS.Simple }
         center={ [0, 0] }
         bounds={ this.props.bounds }
@@ -141,13 +190,24 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
     this.mapInstance.addLayer(this.layersToShow);
 
-    const controls = this.getControls();
-    this.mapInstance.addControl(controls);
+    this.currentControls = this.getControls();
+
+    this.mapInstance.addControl(this.currentControls);
     this.addDrawHandler();
+
     this.addOnLayerRemovedHandler();
-    this.mapInstance.on(L.Draw.Event.DELETED, _event => {
+    this.mapInstance.on(L.Draw.Event.DELETED, event => {
       this.onDeletePolygons();
     });
+
+    this.mapInstance.on(L.Draw.Event.EDITED, event => {
+      this.onEditPolygons(event);
+    });
+
+    this.layersToShow.on('click', event => {
+      this.setSelectedRoom(event);
+    });
+
   }
 
   /**
@@ -183,7 +243,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Get leaflet controls
    */
   private getControls() {
-    const { readOnly } = this.props;
+    const { readOnly, selectedRoom } = this.props;
     if (readOnly) {
       return new L.Control.Draw({
         draw: {
@@ -196,7 +256,17 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         },
       });
     }
-    
+
+    if (!selectedRoom) {
+      return new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+          circle: false,
+          circlemarker: false,
+          polyline: false,
+        }
+      });
+    }
     return new L.Control.Draw({
       position: 'topleft',
       draw: {
@@ -206,6 +276,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       },
       edit: {
         featureGroup: this.layersToShow,
+        remove: false
       },
     });
   }
@@ -248,13 +319,24 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.addedLayers = new L.FeatureGroup();
   }
 
+  private setSelectedRoom = (event: L.LeafletEvent) => {
+    const { onRoomClick, selectedFloor, selectedItemHasNodes } = this.props;
+    const { geoShapeMap } = this.state;
+    const foundRoom = geoShapeMap.get(event.layer._leaflet_id);
+
+    if (!onRoomClick || !selectedFloor || !foundRoom || !selectedItemHasNodes) {
+      return;
+    }
+    onRoomClick(selectedFloor, foundRoom, selectedItemHasNodes);
+  }
+
   /**
    * Save polygon to API handler
    */
   private savePolygon = async () => {
-    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
+    const { accessToken, exhibitionId, selectedFloor } = this.props;
     const { roomName, layer } = this.state;
-    if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomName || !layer) {
+    if (!accessToken || !exhibitionId || !selectedFloor || !selectedFloor.id || !roomName || !layer) {
       return;
     }
 
@@ -267,7 +349,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
     const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionRoomToCreate: ExhibitionRoom = {
-      floorId: exhibitionFloorId,
+      floorId: selectedFloor.id,
       name: roomName,
       geoShape: roomPolygon
     };
@@ -280,24 +362,66 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.layersToShow.addLayer(layer);
   }
 
+
+  /**
+   * Edit room polygons
+   * @param event leaflet event
+   * TODO: Add confirmation dialog
+   */
+  private onEditPolygons = (event: L.LeafletEvent) => {
+    const { exhibitionId, accessToken, selectedRoom } = this.props;
+
+    if ( !exhibitionId || !selectedRoom || !accessToken) {
+      return;
+    }
+
+    /**
+     * Must cast is it like this because L.LeafletEvent does not contain
+     * layers object but that is used during runtime.
+     */
+    const leafletEvent = event as any;
+    const leafletFeatureGroup = leafletEvent.layers as FeatureGroup;
+
+    const roomToUpdate = { ...selectedRoom } as ExhibitionRoom;
+
+    if (!roomToUpdate.id) {
+      return;
+    }
+
+    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
+      onEachFeature(_feature, layer) {
+        const roomPolygon = _feature.geometry as ApiPolygon;
+        roomToUpdate.geoShape = roomPolygon;
+      }
+    });
+
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    roomsApi.updateExhibitionRoom({
+      exhibitionId: exhibitionId,
+      exhibitionRoom: roomToUpdate,
+      roomId: roomToUpdate.id
+    });
+
+  }
+
   /**
    * Delete n amount of rooms from API
    * TODO: Add confirmation dialog
    */
   private onDeletePolygons = () => {
-    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
+    const { accessToken, exhibitionId } = this.props;
     const { geoShapeMap, roomsToDelete } = this.state;
-    if (!accessToken || !exhibitionId || !exhibitionFloorId || !roomsToDelete) {
+    if (!accessToken || !exhibitionId || !roomsToDelete) {
       return;
     }
     const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const tempMap = geoShapeMap;
     roomsToDelete.map(async room => {
       const roomToDelete = tempMap.get(room);
-      if (roomToDelete) {
+      if (roomToDelete && roomToDelete.id) {
         await roomsApi.deleteExhibitionRoom({
           exhibitionId: exhibitionId,
-          roomId: roomToDelete
+          roomId: roomToDelete.id
         });
         tempMap.delete(room);
       }
@@ -324,17 +448,33 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Load geo shape data from API
    */
   private loadGeoShapes = async () => {
-    const { accessToken, exhibitionId, exhibitionFloorId } = this.props;
-    if (!accessToken || !exhibitionId || !exhibitionFloorId) {
+    const { accessToken, exhibitionId, selectedFloor, selectedRoom } = this.props;
+    const { mapInstance } = this;
+    if (!accessToken || !exhibitionId || !selectedFloor || !selectedFloor.id) {
       return;
     }
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const foundRooms = await roomsApi.listExhibitionRooms({
-      exhibitionId: exhibitionId,
-      floorId: exhibitionFloorId
-    });
 
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    let foundRooms = [];
+
+    if (selectedRoom && selectedRoom.id) {
+      const foundRoom = await roomsApi.findExhibitionRoom({
+        exhibitionId: exhibitionId,
+        roomId: selectedRoom.id
+      });
+      foundRooms.push(foundRoom);
+    } else {
+      foundRooms = await roomsApi.listExhibitionRooms({
+        exhibitionId: exhibitionId,
+        floorId: selectedFloor.id
+      });
+    }
+
+    this.layersToShow.clearLayers();
     this.addLayers(foundRooms);
+    mapInstance?.removeControl(this.currentControls);
+    this.currentControls = this.getControls();
+    mapInstance?.addControl(this.currentControls);
   }
 
   /**
@@ -347,7 +487,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!rooms) {
       return;
     }
-    const tempMap = new Map<number, string>();
+    const tempMap = new Map<number, ExhibitionRoom>();
     rooms.forEach(room => {
       const geoShape = room.geoShape;
       if (geoShape && this.mapInstance && this.layersToShow) {
@@ -366,9 +506,27 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         }
       }
     });
+
     this.setState({
       geoShapeMap : tempMap
     });
+  }
+
+  private updateRoomPolygon = async (roomToUpdate: ExhibitionRoom) => {
+    const { accessToken, exhibitionId } = this.props;
+
+    if (!accessToken || !exhibitionId || !roomToUpdate.id) {
+      return;
+    }
+
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const updatedRoom = await roomsApi.updateExhibitionRoom({
+      exhibitionId: exhibitionId,
+      exhibitionRoom: roomToUpdate,
+      roomId: roomToUpdate.id
+    });
+
+    return updatedRoom;
   }
 
   /**
@@ -378,13 +536,14 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param room room
    * @param tempMap temp maps
    */
-  private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, string>) {
+  private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, ExhibitionRoom>) {
     geoShapesToAdd.forEach(shape => {
       if (room.id) {
         this.layersToShow.addLayer(shape);
         const layerId = this.layersToShow.getLayerId(shape);
-        tempMap.set(layerId, room.id);
+        tempMap.set(layerId, room);
       }
     });
+    this.mapInstance?.fitBounds(this.layersToShow.getBounds());
   }
 }

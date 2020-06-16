@@ -32,7 +32,7 @@ interface State {
 interface TreeNode {
   id: string;
   label: string;
-  onClick: () => void;
+  onClick: (hasNodes: boolean) => void;
   children: TreeNode[];
 }
 
@@ -43,7 +43,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -62,7 +62,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeNodes }
-          onClickItem={({ key, label, ...props }) => props.onClick() }
+          onClickItem={({ key, label, ...props }) => props.onClick(props.hasNodes) }
           initialOpenNodes={[ firstSelected || "" ]}
           initialActiveKey={ firstSelected || "" }
           initialFocusKey={ firstSelected || "" }

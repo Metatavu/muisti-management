@@ -109,7 +109,7 @@ export class DeviceModelScreen extends React.Component<Props, State> {
 
   /**
    * Get breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = () => {
@@ -122,7 +122,7 @@ export class DeviceModelScreen extends React.Component<Props, State> {
 
   /**
    * Get action buttons
-   * 
+   *
    * @returns action buttons as array
    */
   private getActionButtons = () => {

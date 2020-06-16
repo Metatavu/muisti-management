@@ -1,24 +1,24 @@
 import * as React from "react";
 
 import { withStyles, WithStyles, MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@material-ui/core";
-import styles from "../../../styles/components/generic/card/card-list";
+import styles from "../../styles/components/generic/menu-button";
 import MenuIcon from '@material-ui/icons/Menu';
-import { ActionButton } from "../../../types";
-import theme from "../../../styles/theme";
+import { ActionButton } from "../../types";
+import theme from "../../styles/theme";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  cardMenuOptions: ActionButton[];
+  menuOptions: ActionButton[];
   icon?: JSX.Element;
 }
 
 /**
- * Generic card item component
+ * Generic menu button component
  */
-const CardMenuButton: React.FC<Props> = props => {
-  const { cardMenuOptions, icon } = props;
+const MenuButton: React.FC<Props> = props => {
+  const { menuOptions, icon } = props;
   const [ open, setOpen ] = React.useState(false);
 
   const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -51,7 +51,7 @@ const CardMenuButton: React.FC<Props> = props => {
     setOpen(false);
   };
 
-  const optionMenuItems = cardMenuOptions.map(option => {
+  const optionMenuItems = menuOptions.map(option => {
     const { name, action } = option;
     const onClick = (event: React.MouseEvent<HTMLElement>) => {
       action();
@@ -98,4 +98,4 @@ const CardMenuButton: React.FC<Props> = props => {
   );
 }
 
-export default withStyles(styles)(CardMenuButton);
+export default withStyles(styles)(MenuButton);
