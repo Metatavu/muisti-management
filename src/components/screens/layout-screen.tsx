@@ -104,6 +104,11 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({ loading: false });
   }
 
+  /**
+   * Component di update life cycle handler
+   * 
+   * @param prevProps previous component props
+   */
   public componentDidUpdate = (prevProps: Props) => {
     const { layout } = this.props;
     if (layout && layout !== prevProps.layout) {
@@ -132,7 +137,7 @@ export class LayoutScreen extends React.Component<Props, State> {
         title={ layout.name }
         breadcrumbs={ this.getBreadcrumbsData() }
         actionBarButtons={ this.getActionButtons() }
-        onDashboardButtonClick={() => this.onDashboardButtonClick() }
+        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }
@@ -449,11 +454,10 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Event handler for screen orientation select change
    *
    * @param event event
-   * @param _child child node
    */
-  private onScreenOrientationChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => {
+  private onScreenOrientationChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     this.setState({
-      screenOrientation: e.target.value as ScreenOrientation
+      screenOrientation: event.target.value as ScreenOrientation
     });
   }
 
@@ -461,7 +465,6 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Event handler for device model select change
    *
    * @param event event
-   * @param _child child node
    */
   private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     this.setState({
@@ -476,7 +479,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param data editor data
    * @param value code
    */
-  private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
+  private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
     this.setState({
       jsonCode: value
     });
@@ -529,6 +532,9 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view add
+   * 
+   * @param layoutView layout view
+   * @param path path in tree structure
    */
   private onLayoutViewAdd = async (layoutView: PageLayoutView, path: string) => {
     const { layout } = this.props;
@@ -543,6 +549,8 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view delete
+   * 
+   * @param path path in tree structure
    */
   private onLayoutViewDelete = async (path: string) => {
     const { layout } = this.props;
