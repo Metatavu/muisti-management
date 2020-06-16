@@ -28,7 +28,7 @@ import { LatLngExpression, LatLngBounds } from "leaflet";
 import FloorPlanMap from "../generic/floor-plan-map";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
-import FloorPlanInfo from "../screens/floor-plan-info";
+import FloorPlanInfo from "../floor-plan/floor-plan-info";
 
 /**
  * Component props
@@ -155,7 +155,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          {/* FIXME: open when something is selected */}
           <ElementSettingsPane
             open={ true }
             width={ 420 }

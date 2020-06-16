@@ -364,7 +364,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
 
   /**
-   * Delete n amount of rooms from API
+   * Edit room polygons
+   * @param event leaflet event
    * TODO: Add confirmation dialog
    */
   private onEditPolygons = (event: L.LeafletEvent) => {
