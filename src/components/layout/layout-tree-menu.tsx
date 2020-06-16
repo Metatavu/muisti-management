@@ -1,12 +1,9 @@
 import * as React from "react";
-import { PageLayout, PageLayoutView } from "../../generated/client";
+import { PageLayoutView } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Typography, Divider, TextField } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,19 +11,18 @@ import AddIcon from '@material-ui/icons/AddCircle';
 import classNames from "classnames";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
-import { PageLayoutElementType } from "../../types";
-import { setSelectedLayout } from "../../actions/layouts";
-import { constructTreeDeleteData, pushNewPageLayoutViewToTree, getWidgetType } from "./utils/tree-data-utils";
 import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
+import { PageLayoutElementType } from "../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  pageLayout: PageLayout;
+  treeData: TreeNodeInArray[];
   onSelect: (element: PageLayoutView, type: PageLayoutElementType, path: string) => void;
-  setSelectedLayout: typeof setSelectedLayout;
+  onAdd: (pageLayoutView: PageLayoutView, path: string) => void;
+  onDelete: (path: string) => void;
 }
 
 /**
@@ -36,13 +32,6 @@ interface State {
   addPropertyDialogOpen: boolean;
   newPageLayoutViewPath?: string;
   newPageLayoutView?: PageLayoutView;
-}
-
-/**
- * Interface for tree data parameters
- */
-interface TreeDataParams {
-  pageLayout: PageLayout;
 }
 
 /**
@@ -66,11 +55,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, pageLayout, onSelect} = this.props;
-
-    const treeData = this.constructDisplayTreeData({
-      pageLayout
-    });
+    const { classes, treeData } = this.props;
 
     return (
       <>
@@ -78,7 +63,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           <TreeMenu
             data={ treeData }
             onClickItem={({ key, label, ...props }) => {
-              onSelect(props.element, props.type, props.path);
+              props.onSelect(props.element, props.type, props.path);
             }}
           >
             {({ search, items }) => (
@@ -128,12 +113,11 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
     const toggleIcon = (on: boolean) => on ? 
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
-    const path = item.path;
+    const { level, focused, hasNodes, toggleNode, isOpen, label, path } = item;
     return (
       <>
         <ListItem { ...item }
-          className={ classNames( classes.listItem, focused ? "focused" : "" ) }
+          className={ classNames(classes.listItem, focused ? "focused" : "") }
           style={{ paddingLeft: level * 20 }}
         >
           { hasNodes ?
@@ -145,10 +129,12 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           }
           { label }
           <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="delete" onClick={ () => this.onLayoutViewPropertyDeleteClick(path) }>
-              <DeleteIcon />
-            </IconButton>
-            <IconButton edge="end" aria-label="delete" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
+            { level > 0 &&
+              <IconButton edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
+                <DeleteIcon />
+              </IconButton>
+            }
+            <IconButton edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
               <AddIcon />
             </IconButton>
           </ListItemSecondaryAction>
@@ -174,7 +160,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
               type="text"
               name="id"
               value={ newPageLayoutView.id }
-              onChange={ this.handleTextChange }
+              onChange={ this.onTextChange }
             />
             <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
@@ -185,7 +171,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
               type="text"
               name="widget"
               value={ newPageLayoutView.widget }
-              onChange={ this.handleTextChange }
+              onChange={ this.onTextChange }
             />
             <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
@@ -194,43 +180,8 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * Constructs tree data
+   * Event handler for node click event
    *
-   * @param dataParams tree data params
-   */
-  private constructDisplayTreeData = (dataParams: TreeDataParams) => {
-    const { pageLayout } = dataParams;
-    const treeData = [{
-      key: pageLayout.data.id,
-      path: pageLayout.data.id,
-      label: pageLayout.data.widget,
-      element: pageLayout.data,
-      type: getWidgetType(pageLayout.data.widget),
-      parents: [ ],
-      nodes: pageLayout.data.children.map(childPageLayoutView => {
-        return this.getDisplayNode(pageLayout.data.id, pageLayout.data, childPageLayoutView);
-      })
-    }];
-    return treeData;
-  }
-
-  private getDisplayNode = (pathString: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
-    const path = `${pathString}/${layoutView.id}`;
-    return {
-      key: layoutView.id,
-      path: path,
-      label: layoutView.widget,
-      element: layoutView,
-      type: getWidgetType(layoutView.widget),
-      parents: [ parentPageLayoutView ],
-      nodes: layoutView.children.map(child => {
-        return this.getDisplayNode(path, layoutView, child);
-      })
-    };
-  }
-
-  /**
-   * Handler for on node click event
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
    */
@@ -242,18 +193,8 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * On layout view property delete click handler
-   * @param path path to the element to be deleted inside the tree structure
-   */
-  private onLayoutViewPropertyDeleteClick = (path: string) => {
-    const { setSelectedLayout } = this.props;
-    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
-    const pageLayoutToUpdate = constructTreeDeleteData(currentPageLayout, path);
-    setSelectedLayout(pageLayoutToUpdate);
-  }
-
-  /**
-   * On layout view property add click handler
+   * Event handler for layout view property add click
+   * 
    * @param path path to the parent element where the new child item will be added
    */
   private onLayoutViewPropertyAddClick = (path: string) => {
@@ -272,19 +213,15 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * On dialog confirm click handler
+   * Event handler for dialog confirm click
    */
   private onConfirmClick = () => {
     const { newPageLayoutView, newPageLayoutViewPath } = this.state;
-    const { setSelectedLayout } = this.props;
-
     if (!newPageLayoutView || !newPageLayoutViewPath) {
       return;
     }
 
-    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
-    const pageLayoutToUpdate = pushNewPageLayoutViewToTree(currentPageLayout, newPageLayoutView, newPageLayoutViewPath);
-    setSelectedLayout(pageLayoutToUpdate);
+    this.props.onAdd(newPageLayoutView, newPageLayoutViewPath);
 
     this.setState({
       addPropertyDialogOpen : false,
@@ -295,7 +232,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * On dialog close or cancel click handler
+   * Event handler for dialog close or cancel click
    */
   private onCloseOrCancelClick = () => {
     this.setState({
@@ -306,45 +243,22 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * Dialog text field change handler
+   * Event handler for text field change
+   * 
    * @param event change event
    */
-  private handleTextChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private onTextChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
     const { newPageLayoutView } = this.state;
+    const { name, value } = event.target;
 
-    const key = event.target.name;
-    const value = event.target.value as string;
-
-    if (!newPageLayoutView || !key) {
+    if (!newPageLayoutView || !name) {
       return;
     }
 
     this.setState({
-      newPageLayoutView : { ...newPageLayoutView, [key]: value }
+      newPageLayoutView : { ...newPageLayoutView, [name]: value as string }
     });
   }
 }
 
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return {
-    pageLayout: state.layouts.selectedLayout as PageLayout,
-  };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-    setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutEditorTreeMenu));
+export default withStyles(styles)(LayoutEditorTreeMenu);

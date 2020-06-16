@@ -129,7 +129,8 @@ class TopBar extends React.Component<Props, State> {
   private renderNavigation = () => {
     const { classes } = this.props;
     const exhibitionsButton = { postfix: "exhibitions", text: strings.header.navigation.exhibitionsButton };
-    const usersButton = { postfix: "users", text: strings.header.navigation.usersButton };
+    // Remove commenting when users view is done
+    //const usersButton = { postfix: "users", text: strings.header.navigation.usersButton };
     const deviceModelsButton = { postfix: "deviceModels", text: strings.header.navigation.devicesButton };
     const layoutsButton = { postfix: "layouts", text: strings.header.navigation.layoutsButton };
     const floorPlansButton = { postfix: "floorPlans", text: strings.header.navigation.floorPlansButton };
@@ -143,7 +144,8 @@ class TopBar extends React.Component<Props, State> {
         { this.renderNavigationButton(exhibitionsButton) }
         { this.renderNavigationButton(layoutsButton) }
         { this.renderNavigationButton(floorPlansButton) }
-        { this.renderNavigationButton(usersButton) }
+        {/* Remove commenting when users view is done */}
+        {/* { this.renderNavigationButton(usersButton) } */}
         { this.renderNavigationButton(deviceModelsButton) }
       </List>
     );

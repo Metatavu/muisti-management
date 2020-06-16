@@ -36,7 +36,7 @@ interface State {
 }
 
 /**
- * Component for group content version info view
+ * Component for group content versions info view
  */
 class GroupContentVersionsInfo extends React.Component<Props, State> {
 
@@ -105,7 +105,8 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
   }
 
   /**
-   * On value change handler
+   * Event handler for value change
+   * 
    * @param event react change event
    */
   private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {

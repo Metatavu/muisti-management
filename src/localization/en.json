@@ -262,6 +262,7 @@
 
   "layout": {
     "title": "Layout",
+    "addNew": "Add new layout",
     "toolbar": {
       "visual": "Visual view",
       "code": "Technical view",
@@ -433,7 +434,9 @@
   },
 
   "generic": {
+    "add": "Add",
     "save": "Save",
+    "cancel": "Cancel",
     "loadNew": "Load new",
     "name": "Name"
   },

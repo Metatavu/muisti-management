@@ -262,6 +262,7 @@
 
   "layout": {
     "title": "Asettelu",
+    "addNew": "Lisää uusi asettelu",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
       "code": "Tekninen näkymä",
@@ -431,7 +432,9 @@
   },
 
   "generic": {
+    "add": "Lisää",
     "save": "Tallenna",
+    "cancel": "Peruuta",
     "loadNew": "Lataa uusi",
     "name": "Nimi"
   },

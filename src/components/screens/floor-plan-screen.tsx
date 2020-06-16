@@ -39,6 +39,7 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   exhibitionId?: string;
   exhibitions: Exhibition[];
+  deviceModels: DeviceModel[];
 }
 
 /**
@@ -54,7 +55,6 @@ interface State {
   rooms: ExhibitionRoom[];
   deviceGroups: ExhibitionDeviceGroup[];
   devices: ExhibitionDevice[];
-  deviceModels: DeviceModel[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
   selectedDeviceGroup?: ExhibitionDeviceGroup;
@@ -89,7 +89,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       rooms: [],
       deviceGroups: [],
       devices: [],
-      deviceModels: [],
       treeData: [],
       addImageDialogOpen: false,
       selectedItemHasNodes: false
@@ -224,7 +223,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders right panel
    */
   private renderRightPanel = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, deviceModels } = this.state;
+    const { deviceModels } = this.props;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
     if (cropping && cropImageDataUrl) {
       return <FloorPlanCropProperties
         imageHeight={ this.state.cropImageDetails?.height }
@@ -268,15 +268,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
-    const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
-    const [ floors, rooms, deviceGroups, devices, deviceModels ] =
-      await Promise.all<ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[], DeviceModel[]>(
+    const [ floors, rooms, deviceGroups, devices ] =
+      await Promise.all<ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[]>(
         [
           exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
           exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
           exhibitionDeviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId }),
-          exhibitionDevicesApi.listExhibitionDevices({ exhibitionId }),
-          deviceModelsApi.listDeviceModels()
+          exhibitionDevicesApi.listExhibitionDevices({ exhibitionId })
         ]
       );
     const selectedFloor = floors[0];
@@ -287,7 +285,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       rooms,
       deviceGroups,
       devices,
-      deviceModels,
       selectedFloor
     });
   }
@@ -351,9 +348,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Gets action buttons
    *
-   * @returns action buttons as array
+   * @returns array of action button objects
    */
-  private getActionButtons = () => {
+  private getActionButtons = (): ActionButton[] => {
     const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
     if (selectedDevice) {
       return [
@@ -392,6 +389,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Get bounds from cropImageDetails
+   * 
+   * @returns bounds object if crop image details are found, otherwise returns undefined
    */
   private getBounds = (): Bounds | undefined => {
     const { cropImageDetails } = this.state;
@@ -572,8 +571,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Event handler for add device click
    */
   private onAddDeviceClick = async () => {
-    const { accessToken, exhibitionId } = this.props;
-    const { selectedDeviceGroup, deviceModels } = this.state;
+    const { accessToken, exhibitionId, deviceModels } = this.props;
+    const { selectedDeviceGroup } = this.state;
     if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id || deviceModels.length < 1 || !deviceModels[0].id) {
       return;
     }
@@ -872,7 +871,8 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    exhibitions: state.exhibitions.exhibitions,
+    deviceModels: state.devices.deviceModels
   };
 }
 
