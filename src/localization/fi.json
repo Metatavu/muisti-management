@@ -289,8 +289,12 @@
     "newDeviceGroup": "Uusi laiteryhmä",
     "addDevice": "Lisää uusi laite",
     "newDevice": "Uusi laite",
+    "deleteDevice": "Poista laite",
+    "deleteDeviceGroup": "Poista laiteryhmä",
+    "deleteRoom": "Poista huone",
+    "deleteFloor": "Poista tila",
     "toolbar": {
-      "save": "Tallenna",
+      "save": "Tallenna muutokset",
       "upload": "Lataa kuva"
     },
     "properties": {

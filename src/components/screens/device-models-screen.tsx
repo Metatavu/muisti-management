@@ -115,7 +115,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
           key={ deviceModel.id }
           title={ `${deviceModel.manufacturer} ${deviceModel.model}` }
           onClick={ () => this.onCardClick(deviceModel) }
-          cardMenuOptions={ this.getCardMenuOptions(deviceModel) }
+          menuOptions={ this.getCardMenuOptions(deviceModel) }
           status={ "" }
         />
       );
@@ -380,7 +380,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
   /**
    * Updates device model
-   * 
+   *
    * @param deviceModel device model
    */
   private updateDevice = async (deviceModel: DeviceModel) => {
@@ -428,7 +428,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for card click
-   * 
+   *
    * @param deviceModel device model
    */
   private onCardClick = (deviceModel: DeviceModel) => {

@@ -157,7 +157,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
             { this.renderDeleteDialog() }
           </EditorView>
 
-          <ElementSettingsPane width={ 420 } title={ strings.layout.properties.title }>
+          <ElementSettingsPane open={ true } width={ 420 } title={ strings.layout.properties.title }>
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }
@@ -237,7 +237,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
         onSelect={ this.onLayoutPageViewSelect }
       />
     );
-  } 
+  }
 
   /**
    * Renders a toolbar
@@ -302,7 +302,7 @@ export class LayoutEditorView extends React.Component<Props, State> {
             onBeforeChange={ this.onBeforeJsonCodeChange } />
         </div>
       </div>
-    )
+    );
   }
 
   /**

@@ -117,7 +117,7 @@ class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
           title={ room.name }
           subtitle={ exhibition.name }
           onClick={ () => this.onCardClick(roomId, floorId) }
-          cardMenuOptions={ cardMenuOptions }
+          menuOptions={ cardMenuOptions }
           status={ strings.exhibitions.status.ready }
         />
       );
