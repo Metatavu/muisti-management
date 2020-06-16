@@ -19,10 +19,8 @@ import DashboardArchivedView from "./dashboard/dashboard-archived-view";
 import DashboardSettingsView from "./dashboard/dashboard-settings-view";
 import DashboardUsersView from "./dashboard/dashboard-users-view";
 import DashboardDevicesView from "./dashboard/dashboard-devices-view";
-import DashboardLayoutsView from "./dashboard/dashboard-layouts-view";
 import DashboardFloorPlansView from "./dashboard/dashboard-floor-plans-view";
 import ExhibitionView from "./exhibition/exhibition-view";
-import LayoutEditorView from "./layout/layout-editor-view";
 import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
@@ -134,24 +132,10 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/dashboard/layouts"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardLayoutsView history={ history } />
-                      )}
-                    />
-                    <Route
                       path="/exhibitions/:exhibitionId"
                       exact={ true }
                       render={ ({ match, history }) => (
                         <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/layouts/:layoutId"
-                      exact={ true }
-                      render={ ({ match, history }) => (
-                        <LayoutEditorView history={ history } layoutId={ match.params.layoutId } />
                       )}
                     />
                     {/* Remove this once the V4 floorplan view is done! */}
@@ -184,17 +168,10 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/content"
-                      exact={ true }
-                      render={({ history, match }) => (
-                        <ExhibitionContentRoomsScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId"
+                      path={[
+                        "/v4/exhibitions/:exhibitionId/content",
+                        "/v4/exhibitions/:exhibitionId/content/floors/:floorId"
+                      ]}
                       exact={ true }
                       render={({ history, match }) => (
                         <ExhibitionContentRoomsScreen

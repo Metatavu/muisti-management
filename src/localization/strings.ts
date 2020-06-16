@@ -260,6 +260,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
   layout: {
     title: string;
+    addNew: string;
     toolbar: {
       visual: string;
       code: string;
@@ -429,7 +430,9 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   generic: {
+    add: string;
     save: string;
+    cancel: string;
     loadNew: string;
     name: string;
   };

@@ -23,7 +23,7 @@ interface Props {
   /**
    * On confirm handler
    */
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   open: boolean;
   error: boolean;
 }
