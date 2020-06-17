@@ -54,7 +54,7 @@ export default createMuiTheme({
       fontFamily: "TTNorms-Regular",
       fontSize: "14px",
       fontWeight: "normal",
-      color: "#999999"
+      color: "#666666"
     },
     body1: {
       fontSize: "14px"

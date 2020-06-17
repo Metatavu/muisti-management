@@ -72,24 +72,21 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderWidth = () => {
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.textView.width }:
-          </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutTextViewPropKeys.Width }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Width, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.textView.width }:
+        </Typography>
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.Width }
+          textFieldType="number"
+          textFieldUnit="dp"
+          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Width, PageLayoutViewPropertyType.String) }
+          onTextFieldChange={ this.props.onValueChange }
+        />
+      </div>
     );
   }
 
@@ -98,24 +95,21 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderHeight = () => {
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.textView.height }:
-          </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutTextViewPropKeys.Height }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Height, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.textView.height }:
+        </Typography>
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.Height }
+          textFieldType="number"
+          textFieldUnit="dp"
+          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Height, PageLayoutViewPropertyType.String) }
+          onTextFieldChange={ this.props.onValueChange }
+        />
+      </div>
     );
   }
 
@@ -124,23 +118,20 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextResource = () => {
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.textView.textResource }:
-          </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutTextViewPropKeys.TextResources }
-            textFieldType="text"
-            property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.textView.textResource }:
+        </Typography>
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.TextResources }
+          textFieldType="text"
+          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
+          onTextFieldChange={ this.props.onValueChange }
+        />
+      </div>
     );
   }
 
@@ -151,7 +142,7 @@ class TextViewEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.backgroundPickerContainer }>
+      <div className={ classes.backgroundPickerContainer } style={{ marginBottom: theme.spacing(2) }}>
         <Typography variant="h6">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(1) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
@@ -167,7 +158,6 @@ class TextViewEditor extends React.Component<Props, State> {
             onTextFieldChange={ this.props.onValueChange }
           />
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
   }
@@ -177,7 +167,7 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextStyle = () => {
     return (
-      <div style={{ padding: theme.spacing(1) }}>
+      <div style={{ marginBottom: theme.spacing(2) }}>
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.fontStyle }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextStyle, PageLayoutViewPropertyType.String) }
@@ -193,7 +183,7 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextAlign = () => {
     return (
-      <div style={{ padding: theme.spacing(1) }}>
+      <div style={{ marginBottom: theme.spacing(2) }}>
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.textAlign }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextAlignment, PageLayoutViewPropertyType.String) }
@@ -209,24 +199,21 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextSize = () => {
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.textView.textSize }:
-          </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutTextViewPropKeys.TextSize }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.textView.textSize }:
+        </Typography>
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.TextSize }
+          textFieldType="number"
+          textFieldUnit="dp"
+          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String) }
+          onTextFieldChange={ this.props.onValueChange }
+        />
+      </div>
     );
   }
 
@@ -235,23 +222,20 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTypeface = () => {
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.textView.typeface }:
-          </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutTextViewPropKeys.Typeface }
-            textFieldType="text"
-            property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.textView.typeface }:
+        </Typography>
+        <GenericPropertyTextField
+          textFieldId={ LayoutTextViewPropKeys.Typeface }
+          textFieldType="text"
+          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String) }
+          onTextFieldChange={ this.props.onValueChange }
+        />
+      </div>
     );
   }
 
@@ -260,7 +244,7 @@ class TextViewEditor extends React.Component<Props, State> {
    */
   private renderTextViewGravity = () => {
     return (
-      <div style={{ padding: theme.spacing(1) }}>
+      <div>
         <Typography variant="h6">{ strings.layoutEditor.textView.textGravity }</Typography>
         <GravityEditor
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Gravity, PageLayoutViewPropertyType.String) }
