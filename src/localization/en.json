@@ -275,7 +275,7 @@
       "landscape": "Landscape"
     },
     "properties": {
-      "title": "Properties"
+      "title": "properties"
     }
   },
 
@@ -398,9 +398,9 @@
 
     "addLayoutViewDialog": {
       "title": "Add layout view element",
-      "id": "Id",
-      "widget": "Widget",
-      "confirm": "Save",
+      "id": "Type element ID",
+      "widget": "Select widget",
+      "confirm": "Add",
       "cancel": "Cancel"
     }
   },
@@ -438,7 +438,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "loadNew": "Load new",
-    "name": "Name"
+    "name": "Name",
+    "or": "or"
   },
 
   "spaces": {

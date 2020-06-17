@@ -156,6 +156,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           <Grid item xs={ 12 }>
             <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.layoutEditor.addLayoutViewDialog.id }</Typography>
             <TextField
+              variant="filled"
               fullWidth
               type="text"
               name="id"
@@ -167,6 +168,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           <Grid item xs={ 12 }>
             <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.layoutEditor.addLayoutViewDialog.widget }</Typography>
             <TextField
+              variant="filled"
               fullWidth
               type="text"
               name="widget"
