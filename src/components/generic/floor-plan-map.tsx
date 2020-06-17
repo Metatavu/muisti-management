@@ -1,16 +1,18 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, Point } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 import Api from "../../api/api";
 import { AccessToken } from "../../types";
-import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice } from "../../generated/client";
+import { ExhibitionRoom, Polygon as ApiPolygon, Point as ApiPoint, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, Exhibition } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import PolygonDialog from "./polygon-dialog";
 import strings from "../../localization/strings";
+import { loadRooms, loadDevices, updateDevice } from "../floor-plan/map-api-calls";
+import defaultExhibitionImage from "../../resources/gfx/muisti-logo.png";
 
 /**
  * Component props
@@ -59,7 +61,7 @@ interface Props {
    * @param device selected device
    * @param hasNodes has child nodes
    */
-  onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice) => void;
+  onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => void;
 }
 
 /**
@@ -71,7 +73,8 @@ interface State {
   polygonCreated: boolean;
   roomName?: string;
   layer?: any;
-  geoShapeMap: Map<number, ExhibitionRoom>;
+  leafletIdToRoomMap: Map<number, ExhibitionRoom>;
+  leafletIdToDeviceMap: Map<number, ExhibitionDevice>;
   roomsToDelete: number[];
 }
 
@@ -84,9 +87,25 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   private mapInstance?: MapInstance;
 
   /**
-   * This feature group contains all layers that are displayed
+   * This feature group contains all room layers that are displayed
    */
-  private layersToShow = new L.FeatureGroup();
+  private roomLayers = new L.FeatureGroup();
+
+  /**
+   * This feature group contains all devices that are displayed
+   */
+  private deviceMarkers = new L.FeatureGroup();
+
+  private deviceIcon = new L.Icon({
+    iconUrl: defaultExhibitionImage,
+    iconAnchor: undefined,
+    popupAnchor: undefined,
+    shadowUrl: undefined,
+    shadowSize: undefined,
+    shadowAnchor: undefined,
+    iconSize: new L.Point(60, 75),
+    className: 'leaflet-div-icon'
+  });
 
   /**
    * This feature group is used only for storing new geometries because
@@ -107,7 +126,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.state = {
       zoom: 2,
       polygonCreated: false,
-      geoShapeMap: new Map(),
+      leafletIdToRoomMap: new Map(),
+      leafletIdToDeviceMap: new Map(),
       roomsToDelete: [],
     };
   }
@@ -116,7 +136,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Component did mount handler
    */
   public componentDidMount = () => {
-    this.loadGeoShapes();
+    this.initializeMapData();
   }
 
   /**
@@ -124,8 +144,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public componentDidUpdate = (prevProps: Props) => {
 
-    if (prevProps.selectedFloor !== this.props.selectedFloor || prevProps.selectedRoom !== this.props.selectedRoom) {
-      this.loadGeoShapes();
+    if (prevProps.selectedFloor !== this.props.selectedFloor ||
+      prevProps.selectedRoom !== this.props.selectedRoom ||
+      prevProps.selectedDevice !== this.props.selectedDevice ||
+      prevProps.selectedDeviceGroup !== this.props.selectedDeviceGroup
+    ) {
+      this.initializeMapData();
     }
   }
 
@@ -183,12 +207,17 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param mapRef map refs
    */
   private setMapRef = (mapRef: any) => {
+    const { selectedDeviceGroup, selectedDevice } = this.props;
     this.mapInstance = mapRef ? mapRef.leafletElement : undefined;
 
     if (!this.mapInstance) {
       return;
     }
-    this.mapInstance.addLayer(this.layersToShow);
+    this.mapInstance.addLayer(this.roomLayers);
+
+    if (selectedDeviceGroup) {
+      this.mapInstance.addLayer(this.deviceMarkers);
+    }
 
     this.currentControls = this.getControls();
 
@@ -204,8 +233,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       this.onEditPolygons(event);
     });
 
-    this.layersToShow.on('click', event => {
+    this.roomLayers.on('click', event => {
       this.setSelectedRoom(event);
+    });
+
+    this.deviceMarkers.on('click', event => {
+      this.setSelectedDevice(event);
     });
 
   }
@@ -225,25 +258,48 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Add draw handler
    */
   private addDrawHandler = () => {
+    const { selectedDevice } = this.props;
     if (!this.mapInstance) {
       return;
     }
 
     this.mapInstance.on(L.Draw.Event.CREATED, event => {
-      const layer = event.layer;
-      this.addedLayers.addLayer(layer);
-      this.setState({
-        polygonCreated: true,
-        layer: layer
-      });
+      const leafletEvent = event as any;
+      if (leafletEvent.layerType === "polygon" || leafletEvent.layerType === "rectangle") {
+        const layer = event.layer;
+        this.addedLayers.addLayer(layer);
+        this.setState({
+          polygonCreated: true,
+          layer: layer
+        });
+      }
+
+      if (leafletEvent.layerType === "marker" && selectedDevice) {
+        this.handleMarkerCreation(event);
+      }
+
     });
+  }
+
+  private handleMarkerCreation = async (event: L.LeafletEvent) => {
+    const { accessToken, exhibitionId, selectedDevice } = this.props;
+    const marker = event.layer;
+    if (marker && marker._latlng) {
+      const markerOptions: MarkerOptions = {
+        icon: this.deviceIcon,
+        draggable: false
+      };
+      const customMarker = new L.Marker(marker._latlng, markerOptions);
+      this.deviceMarkers.addLayer(customMarker);
+      const updatedDevice = await updateDevice(accessToken, exhibitionId, selectedDevice, marker._latlng) as ExhibitionDevice;
+    }
   }
 
   /**
    * Get leaflet controls
    */
   private getControls() {
-    const { readOnly, selectedRoom } = this.props;
+    const { readOnly, selectedRoom, selectedDeviceGroup, selectedDevice } = this.props;
     if (readOnly) {
       return new L.Control.Draw({
         draw: {
@@ -257,28 +313,61 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       });
     }
 
-    if (!selectedRoom) {
+    if (selectedDevice) {
+      return new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+          polygon: false,
+          circle: false,
+          circlemarker: false,
+          polyline: false,
+          rectangle: false
+        },
+        edit: {
+          featureGroup: this.deviceMarkers,
+          remove: false
+        },
+      });
+    }
+
+    if (selectedDeviceGroup) {
+      return new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+          polygon: false,
+          circle: false,
+          circlemarker: false,
+          marker: false,
+          polyline: false,
+          rectangle: false
+        }
+      });
+    }
+
+    if (selectedRoom) {
       return new L.Control.Draw({
         position: 'topleft',
         draw: {
           circle: false,
           circlemarker: false,
           polyline: false,
-        }
+        },
+        edit: {
+          featureGroup: this.roomLayers,
+          remove: false
+        },
       });
     }
+
     return new L.Control.Draw({
       position: 'topleft',
       draw: {
         circle: false,
         circlemarker: false,
         polyline: false,
-      },
-      edit: {
-        featureGroup: this.layersToShow,
-        remove: false
-      },
+      }
     });
+
   }
 
   /**
@@ -290,7 +379,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
 
     this.mapInstance.on('layerremove', event => {
-      const layerId = this.layersToShow.getLayerId(event.layer);
+      const layerId = this.roomLayers.getLayerId(event.layer);
       this.setState({
         roomsToDelete: [...this.state.roomsToDelete, layerId]
       });
@@ -319,15 +408,34 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.addedLayers = new L.FeatureGroup();
   }
 
+  /**
+   * Set selected room
+   * @param event leaflet event
+   */
   private setSelectedRoom = (event: L.LeafletEvent) => {
     const { onRoomClick, selectedFloor, selectedItemHasNodes } = this.props;
-    const { geoShapeMap } = this.state;
-    const foundRoom = geoShapeMap.get(event.layer._leaflet_id);
+    const { leafletIdToRoomMap } = this.state;
+    const foundRoom = leafletIdToRoomMap.get(event.layer._leaflet_id);
 
     if (!onRoomClick || !selectedFloor || !foundRoom || !selectedItemHasNodes) {
       return;
     }
     onRoomClick(selectedFloor, foundRoom, selectedItemHasNodes);
+  }
+
+  /**
+   * Set selected device
+   * @param event leaflet event
+   */
+  private setSelectedDevice = (event: L.LeafletEvent) => {
+    const { onDeviceClick, selectedFloor, selectedRoom, selectedDeviceGroup, selectedItemHasNodes } = this.props;
+    const { leafletIdToDeviceMap } = this.state;
+    const foundDevice = leafletIdToDeviceMap.get(event.layer._leaflet_id);
+    console.log(foundDevice);
+    if (!onDeviceClick || !selectedFloor || !selectedRoom || !selectedDeviceGroup || !foundDevice || !selectedItemHasNodes) {
+      return;
+    }
+    onDeviceClick(selectedFloor, selectedRoom, selectedDeviceGroup, foundDevice, selectedItemHasNodes);
   }
 
   /**
@@ -359,7 +467,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       exhibitionRoom: exhibitionRoomToCreate
     });
     this.addedLayers = new L.FeatureGroup();
-    this.layersToShow.addLayer(layer);
+    this.roomLayers.addLayer(layer);
   }
 
 
@@ -369,11 +477,14 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * TODO: Add confirmation dialog
    */
   private onEditPolygons = (event: L.LeafletEvent) => {
-    const { exhibitionId, accessToken, selectedRoom } = this.props;
-
+    const { exhibitionId, accessToken, selectedRoom, selectedDevice } = this.props;
+    const { leafletIdToRoomMap, leafletIdToDeviceMap } = this.state;
     if ( !exhibitionId || !selectedRoom || !accessToken) {
       return;
     }
+
+    console.log(leafletIdToRoomMap)
+    console.log(leafletIdToDeviceMap)
 
     /**
      * Must cast is it like this because L.LeafletEvent does not contain
@@ -382,26 +493,53 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const leafletEvent = event as any;
     const leafletFeatureGroup = leafletEvent.layers as FeatureGroup;
 
-    const roomToUpdate = { ...selectedRoom } as ExhibitionRoom;
+    if (selectedDevice) {
+      const deviceToUpdate = { ...selectedDevice } as ExhibitionDevice;
+      if (!deviceToUpdate.id) {
+        return;
+      }
+      L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
+        onEachFeature(_feature, layer) {
+          if (!deviceToUpdate || !deviceToUpdate.location) {
+            return;
+          }
+          const marker = _feature.geometry as any;
+          deviceToUpdate.location.x = marker.coordinates[1];
+          deviceToUpdate.location.y = marker.coordinates[0];
+        }
+      });
 
-    if (!roomToUpdate.id) {
+      const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+      devicesApi.updateExhibitionDevice({
+        deviceId: deviceToUpdate.id,
+        exhibitionDevice: deviceToUpdate,
+        exhibitionId: exhibitionId
+      });
       return;
     }
 
-    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-      onEachFeature(_feature, layer) {
-        const roomPolygon = _feature.geometry as ApiPolygon;
-        roomToUpdate.geoShape = roomPolygon;
+    if (selectedRoom) {
+      const roomToUpdate = { ...selectedRoom } as ExhibitionRoom;
+
+      if (!roomToUpdate.id) {
+        return;
       }
-    });
 
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    roomsApi.updateExhibitionRoom({
-      exhibitionId: exhibitionId,
-      exhibitionRoom: roomToUpdate,
-      roomId: roomToUpdate.id
-    });
+      L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
+        onEachFeature(_feature, layer) {
+          const roomPolygon = _feature.geometry as ApiPolygon;
+          roomToUpdate.geoShape = roomPolygon;
+        }
+      });
 
+      const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+      roomsApi.updateExhibitionRoom({
+        exhibitionId: exhibitionId,
+        exhibitionRoom: roomToUpdate,
+        roomId: roomToUpdate.id
+      });
+      return;
+    }
   }
 
   /**
@@ -410,12 +548,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private onDeletePolygons = () => {
     const { accessToken, exhibitionId } = this.props;
-    const { geoShapeMap, roomsToDelete } = this.state;
+    const { leafletIdToRoomMap, roomsToDelete } = this.state;
     if (!accessToken || !exhibitionId || !roomsToDelete) {
       return;
     }
     const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const tempMap = geoShapeMap;
+    const tempMap = leafletIdToRoomMap;
     roomsToDelete.map(async room => {
       const roomToDelete = tempMap.get(room);
       if (roomToDelete && roomToDelete.id) {
@@ -429,7 +567,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
     this.setState({
       roomsToDelete: [],
-      geoShapeMap: tempMap
+      leafletIdToRoomMap: tempMap
     });
   }
 
@@ -444,37 +582,42 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     });
   }
 
-  /**
-   * Load geo shape data from API
-   */
-  private loadGeoShapes = async () => {
-    const { accessToken, exhibitionId, selectedFloor, selectedRoom } = this.props;
+  private initializeMapData = () => {
     const { mapInstance } = this;
-    if (!accessToken || !exhibitionId || !selectedFloor || !selectedFloor.id) {
+    if (!mapInstance) {
       return;
     }
 
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    let foundRooms = [];
+    this.loadRooms();
+    // this.loadDeviceGroups();
+    this.loadDevices();
 
-    if (selectedRoom && selectedRoom.id) {
-      const foundRoom = await roomsApi.findExhibitionRoom({
-        exhibitionId: exhibitionId,
-        roomId: selectedRoom.id
-      });
-      foundRooms.push(foundRoom);
-    } else {
-      foundRooms = await roomsApi.listExhibitionRooms({
-        exhibitionId: exhibitionId,
-        floorId: selectedFloor.id
-      });
-    }
-
-    this.layersToShow.clearLayers();
-    this.addLayers(foundRooms);
-    mapInstance?.removeControl(this.currentControls);
+    mapInstance.removeControl(this.currentControls);
     this.currentControls = this.getControls();
-    mapInstance?.addControl(this.currentControls);
+    mapInstance.addControl(this.currentControls);
+  }
+
+  /**
+   * Load geo shape data from API
+   */
+  private loadRooms = async () => {
+    const { accessToken, exhibitionId, selectedFloor, selectedRoom } = this.props;
+
+    const foundRooms = await loadRooms(accessToken, exhibitionId, selectedFloor, selectedRoom);
+    this.roomLayers.clearLayers();
+    this.addRoomLayers(foundRooms);
+  }
+
+  /**
+   * Load device data from API
+   */
+  private loadDevices = async () => {
+    const { accessToken, exhibitionId, selectedDeviceGroup, selectedDevice } = this.props;
+    console.log(selectedDevice);
+
+    const foundDevices = await loadDevices(accessToken, exhibitionId, selectedDeviceGroup, selectedDevice);
+    this.deviceMarkers.clearLayers();
+    this.addDeviceMarkers(foundDevices);
   }
 
   /**
@@ -482,7 +625,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    *
    * @param rooms list of exhibition rooms
    */
-  private addLayers = (rooms: ExhibitionRoom[]) => {
+  private addRoomLayers = (rooms: ExhibitionRoom[]) => {
 
     if (!rooms) {
       return;
@@ -490,7 +633,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const tempMap = new Map<number, ExhibitionRoom>();
     rooms.forEach(room => {
       const geoShape = room.geoShape;
-      if (geoShape && this.mapInstance && this.layersToShow) {
+      if (geoShape && this.mapInstance && this.roomLayers) {
         const geoJson = geoShape as Polygon;
         try {
           const geoShapesToAdd: Layer[] = [];
@@ -500,7 +643,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
             }
           });
 
-          this.addLayersToMap(geoShapesToAdd, room, tempMap);
+          this.addRoomLayersToMap(geoShapesToAdd, room, tempMap);
         } catch (error) {
           console.log(error);
         }
@@ -508,8 +651,46 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     });
 
     this.setState({
-      geoShapeMap : tempMap
+      leafletIdToRoomMap : tempMap
     });
+  }
+
+  /**
+   * Add device markers to leaflet map
+   *
+   * @param rooms list of exhibition devices
+   */
+  private addDeviceMarkers = (devices: ExhibitionDevice[]) => {
+
+    if (!devices) {
+      return;
+    }
+
+    const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
+
+    devices.forEach(device => {
+
+      if (device && device.location && device.location.x && device.location.y) {
+        const markerOptions: MarkerOptions = {
+          icon: this.deviceIcon,
+          draggable: false
+        };
+
+        const latlng = new LatLng(device.location.x, device.location.y);
+        const customMarker = new L.Marker(latlng, markerOptions);
+        this.deviceMarkers.addLayer(customMarker);
+        const markerId = this.deviceMarkers.getLayerId(customMarker);
+        tempLeafletIdToDeviceMap.set(markerId, device);
+      }
+    });
+
+    console.log(this.deviceMarkers.getLayers());
+    this.mapInstance?.addLayer(this.deviceMarkers);
+
+    this.setState({
+      leafletIdToDeviceMap: tempLeafletIdToDeviceMap
+    });
+
   }
 
   private updateRoomPolygon = async (roomToUpdate: ExhibitionRoom) => {
@@ -530,20 +711,20 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   }
 
   /**
-   * Adds all geo shapes found from api to leaflet map
+   * Adds all room geo shapes found from api to leaflet map
    *
    * @param geoShapesToAdd list of geo shapes
    * @param room room
    * @param tempMap temp maps
    */
-  private addLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, ExhibitionRoom>) {
+  private addRoomLayersToMap(geoShapesToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, ExhibitionRoom>) {
     geoShapesToAdd.forEach(shape => {
       if (room.id) {
-        this.layersToShow.addLayer(shape);
-        const layerId = this.layersToShow.getLayerId(shape);
+        this.roomLayers.addLayer(shape);
+        const layerId = this.roomLayers.getLayerId(shape);
         tempMap.set(layerId, room);
       }
     });
-    this.mapInstance?.fitBounds(this.layersToShow.getBounds());
+    this.mapInstance?.fitBounds(this.roomLayers.getBounds());
   }
 }

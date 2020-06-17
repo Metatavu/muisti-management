@@ -180,7 +180,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
     const { exhibitionId, accessToken } = this.props;
     if (cropping && cropImageDataUrl ) {
       return (
@@ -212,7 +212,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         selectedRoom={ selectedRoom }
         selectedDeviceGroup={ selectedDeviceGroup }
         selectedDevice={ selectedDevice }
+        selectedItemHasNodes={ selectedItemHasNodes }
         onRoomClick={ this.onRoomClick }
+        onDeviceClick={ this.onDeviceClick }
       />;
     }
     return null;
