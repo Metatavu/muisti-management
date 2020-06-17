@@ -76,7 +76,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.textView.width }:
           </Typography>
@@ -102,7 +102,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.textView.height }:
           </Typography>
@@ -128,7 +128,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.textView.textResource }:
           </Typography>
@@ -152,7 +152,7 @@ class TextViewEditor extends React.Component<Props, State> {
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
+        <Typography variant="h6">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(1) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
             <ColorPicker
@@ -178,7 +178,7 @@ class TextViewEditor extends React.Component<Props, State> {
   private renderTextStyle = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.textView.fontStyle }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.fontStyle }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextStyle, PageLayoutViewPropertyType.String) }
           onSelectChange={ this.props.onValueChange }
@@ -194,7 +194,7 @@ class TextViewEditor extends React.Component<Props, State> {
   private renderTextAlign = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.textView.textAlign }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.textAlign }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextAlignment, PageLayoutViewPropertyType.String) }
           onSelectChange={ this.props.onValueChange }
@@ -213,7 +213,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.textView.textSize }:
           </Typography>
@@ -239,7 +239,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.textView.typeface }:
           </Typography>
@@ -261,12 +261,11 @@ class TextViewEditor extends React.Component<Props, State> {
   private renderTextViewGravity = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography variant="h4">{ strings.layoutEditor.textView.textGravity }</Typography>
+        <Typography variant="h6">{ strings.layoutEditor.textView.textGravity }</Typography>
         <GravityEditor
           property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Gravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.props.onValueChange }
         />
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );
   }

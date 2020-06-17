@@ -439,6 +439,7 @@ export interface IStrings extends LocalizedStringsMethods {
     cancel: string;
     loadNew: string;
     name: string;
+    or: string;
   };
 
   spaces: {

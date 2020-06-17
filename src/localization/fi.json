@@ -436,7 +436,8 @@
     "save": "Tallenna",
     "cancel": "Peruuta",
     "loadNew": "Lataa uusi",
-    "name": "Nimi"
+    "name": "Nimi",
+    "or": "tai"
   },
 
   "spaces": {

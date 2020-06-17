@@ -438,7 +438,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "loadNew": "Load new",
-    "name": "Name"
+    "name": "Name",
+    "or": "or"
   },
 
   "spaces": {
