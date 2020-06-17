@@ -1,16 +1,14 @@
 import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
-const uiHighlightDark = "#0079E9";
 const uiHighlightMain = "#0079E9";
-const uiHighlightLight = "#0079E9";
+const uiHighlightLight = "rgba(0, 121, 233, 0.25)";
 
 export default createMuiTheme({
 
   palette: {
     primary: { main: grey[900] },
     secondary: {
-      dark: uiHighlightDark,
       main: uiHighlightMain,
       light: uiHighlightLight
     },
@@ -147,6 +145,11 @@ export default createMuiTheme({
         }
       }
     },
+    MuiInputBase: {
+      root: {
+        fontSize: 14
+      }
+    },
     MuiSelect: {
       filled: {
         padding: "10px 12px"
@@ -203,14 +206,14 @@ export default createMuiTheme({
     MuiGridListTile: {
       tile: {
         cursor: "pointer",
-        backgroundColor: "rgba(138,192,203, 1)",
+        backgroundColor: uiHighlightMain,
         borderRadius: 10,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         transition: "background-color 0.2s ease-out",
         "&:hover": {
-          backgroundColor: "rgba(138,192,203, 0.8)"
+          backgroundColor: uiHighlightLight
         }
       },
       imgFullWidth: {

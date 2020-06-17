@@ -146,10 +146,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
       <div className={ classes.backgroundPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
-          <ColorPicker
-            property={ foundProp }
-            onColorChange={ this.onSingleValueChange }
-          />
+          <div style={{ marginRight: theme.spacing(2) }}>
+            <ColorPicker
+              property={ foundProp }
+              onColorChange={ this.onSingleValueChange }
+              />
+          </div>
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
             textFieldType="text"

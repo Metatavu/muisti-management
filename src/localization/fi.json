@@ -275,7 +275,7 @@
       "landscape": "Vaaka"
     },
     "properties": {
-      "title": "Ominaisuudet"
+      "title": "ominaisuudet"
     }
   },
 
@@ -396,9 +396,9 @@
 
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
-      "id": "Id",
-      "widget": "Widget",
-      "confirm": "Tallenna",
+      "id": "Anna elementille ID",
+      "widget": "Valitse elementti",
+      "confirm": "Lisää",
       "cancel": "Peruuta"
     }
   },

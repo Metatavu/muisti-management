@@ -153,16 +153,20 @@ class TextViewEditor extends React.Component<Props, State> {
     return (
       <div className={ classes.backgroundPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
-        <ColorPicker
-          property={ foundProp }
-          onColorChange={ this.props.onValueChange }
-        />
-        <GenericPropertyTextField
-          textFieldId={ LayoutTextViewPropKeys.TextColor }
-          textFieldType="text"
-          property={ foundProp }
-          onTextFieldChange={ this.props.onValueChange }
-        />
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(1) }}>
+          <div style={{ marginRight: theme.spacing(2) }}>
+            <ColorPicker
+              property={ foundProp }
+              onColorChange={ this.props.onValueChange }
+              />
+          </div>
+          <GenericPropertyTextField
+            textFieldId={ LayoutTextViewPropKeys.TextColor }
+            textFieldType="text"
+            property={ foundProp }
+            onTextFieldChange={ this.props.onValueChange }
+          />
+        </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );

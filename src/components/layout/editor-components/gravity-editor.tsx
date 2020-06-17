@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, Button } from "@material-ui/core";
-import styles from "../../../styles/gravity-editor";
+import styles from "../../../styles/components/layout-screen/gravity-editor";
 import classNames from "classnames";
 
 import ArrowIcon from '@material-ui/icons/ArrowBack';
@@ -79,8 +79,8 @@ class GravityEditor extends React.Component<Props, State> {
           </div>
         </div>
         <div style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(4), display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ display: "flex" }}>
-            <GravityIcon />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GravityIcon style={{ marginRight: theme.spacing(2) }} />
             <GenericPropertySelect
               property={ property }
               onSelectChange={ this.props.onSingleValueChange }

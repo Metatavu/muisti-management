@@ -70,6 +70,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const { property } = this.props;
     return (
       <Select
+        variant="filled"
         fullWidth
         id={ property.name }
         onChange={ this.handleSelectChange }
