@@ -628,7 +628,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
     this.mapInstance.fire(L.Draw.Event.EDITED, this.roomLayers);
     const layers = this.roomLayers.getLayers();
-    console.log(layers)
     const layer = layers[0] as any;
     layer.editing.disable();
   }
