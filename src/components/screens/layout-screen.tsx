@@ -139,7 +139,6 @@ export class LayoutScreen extends React.Component<Props, State> {
         title={ layout.name }
         breadcrumbs={ this.getBreadcrumbsData() }
         actionBarButtons={ this.getActionButtons() }
-        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }
@@ -574,13 +573,6 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({
       view: this.state.view === "CODE" ? "VISUAL" : "CODE"
     });
-  }
-
-  /**
-   * Handle dashboard click
-   */
-  private onDashboardButtonClick = () => {
-    this.props.history.push(`/dashboard/overview`);
   }
 }
 
