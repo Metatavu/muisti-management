@@ -280,18 +280,31 @@ export interface IStrings extends LocalizedStringsMethods {
   floorPlan: {
     title: string;
     listTitle: string;
-    addFloor: string;
-    newFloor: string;
-    deleteFloor: string;
-    addRoom: string;
-    newRoom: string;
-    deleteRoom: string;
-    addDeviceGroup: string;
-    newDeviceGroup: string;
-    deleteDeviceGroup: string;
-    addDevice: string;
-    newDevice: string;
-    deleteDevice: string;
+    floor: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+    };
+    room: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+    };
+    deviceGroup: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+    };
+    device: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+    }
+    structure: string;
     toolbar: {
       save: string;
       upload: string;
@@ -308,6 +321,7 @@ export interface IStrings extends LocalizedStringsMethods {
       portrait: string;
       allowVisitorSessionCreation: string;
     };
+    hasChildElements: string;
   };
 
   deviceTypes: {
@@ -439,6 +453,7 @@ export interface IStrings extends LocalizedStringsMethods {
     cancel: string;
     loadNew: string;
     name: string;
+    confirmDelete: string;
   };
 
   spaces: {
