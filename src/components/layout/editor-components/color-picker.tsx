@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles } from "@material-ui/core";
-import styles from "../../../styles/color-picker";
+import styles from "../../../styles/components/generic/color-picker";
 import { SketchPicker, ColorResult } from 'react-color';
 
 /**

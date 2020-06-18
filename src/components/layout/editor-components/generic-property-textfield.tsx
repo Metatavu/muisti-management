@@ -47,6 +47,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
     const { property, textFieldType, textFieldId, textFieldUnit } = this.props;
     return (
       <TextField
+        variant="filled"
         fullWidth
         type={ textFieldType }
         name={ textFieldId }

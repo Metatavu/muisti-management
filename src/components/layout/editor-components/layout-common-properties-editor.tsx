@@ -77,29 +77,32 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.commonComponents.layoutWidth }:
-          </Typography>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.commonComponents.layoutWidth }:
+        </Typography>
+        <div style={{ marginRight: theme.spacing(1) }}>
           <GenericPropertySelect
             property={ foundProp }
             onSelectChange={ this.onSingleValueChange }
             selectItemType={ LayoutWidthValues }
-          />
+            />
+        </div>
+        <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutWidth }
             textFieldType="number"
             textFieldUnit="dp"
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
-          />
+            />
+          <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </div>
     );
   }
 
@@ -114,22 +117,28 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.commonComponents.layoutHeight }:
           </Typography>
-          <GenericPropertySelect
-            property={ foundProp }
-            onSelectChange={ this.onSingleValueChange }
-            selectItemType={ LayoutHeightValues }
-          />
-          <GenericPropertyTextField
-            textFieldId={ LayoutPropKeys.LayoutHeight }
-            textFieldType="number"
-            textFieldUnit="dp"
-            property={ foundProp }
-            onTextFieldChange={ this.onSingleValueChange }
-          />
+          <div style={{ marginRight: theme.spacing(1) }}>
+            <GenericPropertySelect
+              property={ foundProp }
+              onSelectChange={ this.onSingleValueChange }
+              selectItemType={ LayoutHeightValues }
+            />
+          </div>
+          <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyTextField
+              textFieldId={ LayoutPropKeys.LayoutHeight }
+              textFieldType="number"
+              textFieldUnit="dp"
+              property={ foundProp }
+              onTextFieldChange={ this.onSingleValueChange }
+              />
+            <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
+          </div>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -144,12 +153,14 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
       <div className={ classes.backgroundPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
+        <Typography variant="h6">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
-          <ColorPicker
-            property={ foundProp }
-            onColorChange={ this.onSingleValueChange }
-          />
+          <div style={{ marginRight: theme.spacing(2) }}>
+            <ColorPicker
+              property={ foundProp }
+              onColorChange={ this.onSingleValueChange }
+              />
+          </div>
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
             textFieldType="text"
@@ -168,7 +179,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutPadding = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.commonComponents.paddings.title }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.commonComponents.paddings.title }</Typography>
         <MarginPaddingEditor
           itemKey="layout_padding"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutPaddingPropKeys) }
@@ -185,7 +196,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutMargin = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.commonComponents.margins.title }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.commonComponents.margins.title }</Typography>
         <MarginPaddingEditor
           itemKey="layout_margin"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutMarginPropKeys) }
@@ -202,7 +213,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutGravity = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography variant="h4">{ strings.layoutEditor.commonComponents.layoutGravity }</Typography>
+        <Typography variant="h6">{ strings.layoutEditor.commonComponents.layoutGravity }</Typography>
         <GravityEditor
           property={ getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.onSingleValueChange }

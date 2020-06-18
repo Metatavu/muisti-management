@@ -7,7 +7,7 @@ import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 
 import { History } from "history";
-import styles from "../../styles/layout-editor-view";
+import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
@@ -68,6 +68,7 @@ interface State {
   pageLayoutView?: PageLayoutView;
   selectedPropertyPath? : string;
   selectedWidgetType?: PageLayoutElementType;
+  panelOpen: boolean;
 }
 
 /**
@@ -91,7 +92,8 @@ export class LayoutScreen extends React.Component<Props, State> {
       xmlCode: "",
       toolbarOpen: true,
       deleteOpen: false,
-      view: "VISUAL"
+      view: "VISUAL",
+      panelOpen: false
     };
   }
 
@@ -106,7 +108,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Component di update life cycle handler
-   * 
+   *
    * @param prevProps previous component props
    */
   public componentDidUpdate = (prevProps: Props) => {
@@ -121,7 +123,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, layout } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType } = this.state;
+    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen } = this.state;
 
     if (!layout || !layout.id || loading ) {
       return (
@@ -146,6 +148,7 @@ export class LayoutScreen extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.layout.title }>
             <div className={ classes.toolbarContent }>
               <TextField
+                variant="filled"
                 fullWidth
                 label={ strings.layout.toolbar.name }
                 value={ this.state.name }
@@ -160,9 +163,9 @@ export class LayoutScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane open={ true } width={ 420 } title={ strings.layout.properties.title }>
+          <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
-              <CommonLayoutPropertiesEditor
+              <CommonLayoutPropertiesEditor 
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
@@ -334,11 +337,11 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private getActionButtons = (): ActionButton[] => {
     return [
-      { name: strings.exhibitionLayouts.editView.importButton, action: this.onImportClick },
-      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick },
       { name: this.state.view === "CODE" ?
           strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton, action: this.onSwitchViewClick }
+          strings.exhibitionLayouts.editView.switchToCodeButton, action: this.onSwitchViewClick },
+      { name: strings.exhibitionLayouts.editView.importButton, action: this.onImportClick },
+      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick },
     ];
   }
 
@@ -394,7 +397,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Gets single tree node
-   * 
+   *
    * @param basePath node path in tree
    * @param parentPageLayoutView parent node
    * @param layoutView node
@@ -428,7 +431,8 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({
       pageLayoutView: element,
       selectedPropertyPath: path,
-      selectedWidgetType: type
+      selectedWidgetType: type,
+      panelOpen: true
     });
   }
 
@@ -436,7 +440,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Event handler for import click event
    */
   private onImportClick = () => {
-    alert("Clicked import");
+    alert("Coming soon");
   }
 
   /**

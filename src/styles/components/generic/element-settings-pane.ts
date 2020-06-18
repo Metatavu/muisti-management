@@ -3,6 +3,7 @@ import theme from "../../theme";
 
 export default createStyles({
   root: {
+    height: "100%",
     position: "relative",
     gridArea: "properties",
     borderLeft: "1px solid #ddd",
@@ -20,11 +21,14 @@ export default createStyles({
     width: 50
   },
   container: {
-    display: "flex",
+    maxHeight: "100%",
+    height: "100%",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gridTemplateRows: "auto 1fr",
     flexDirection: "column",
     overflow: "hidden",
     backgroundColor: "#fbfbfb",
-    height: "100%",
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
@@ -46,6 +50,8 @@ export default createStyles({
   },
   content: {
     padding: theme.spacing(2),
-    overflowY: "auto"
+    overflowY: "auto",
+    maxHeight: "100%",
+    height: "100%",
   },
 });

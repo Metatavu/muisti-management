@@ -1,5 +1,5 @@
 import { createStyles } from "@material-ui/core";
-import theme from "./theme";
+import theme from "../../theme";
 
 export default createStyles({
   gravitySelector: {
@@ -20,13 +20,17 @@ export default createStyles({
     flexDirection: "row"
   },
   button: {
-    minWidth: 50,
-    height: 50,
+    minWidth: 40,
+    height: 40,
     padding: 0,
     border: "1px solid rgba(0,0,0,0.2)",
     "&.selected": {
       backgroundColor: theme.palette.secondary.main,
       color: "#fff"
+    },
+    "& .MuiButton-label svg": {
+      width: 16,
+      height: 16
     }
   }
 });
