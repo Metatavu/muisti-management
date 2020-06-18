@@ -4,7 +4,7 @@
     "navigation": {
       "exhibitionsButton": "Näyttelyt",
       "usersButton": "Käyttäjät",
-      "devicesButton": "Laitteet",
+      "devicesButton": "Laitetyypit",
       "layoutsButton": "Asettelut",
       "floorPlansButton": "Pohjapiirrustukset",
       "spacesButton": "Tilat"
@@ -282,18 +282,31 @@
   "floorPlan": {
     "title": "Pohjapiirrustus",
     "listTitle": "Tilat",
-    "addFloor": "Lisää uusi kerros",
-    "newFloor": "Uusi kerros",
-    "addRoom": "Lisää uusi huone",
-    "newRoom": "Uusi huone",
-    "addDeviceGroup": "Lisää uusi laiteryhmä",
-    "newDeviceGroup": "Uusi laiteryhmä",
-    "addDevice": "Lisää uusi laite",
-    "newDevice": "Uusi laite",
-    "deleteDevice": "Poista laite",
-    "deleteDeviceGroup": "Poista laiteryhmä",
-    "deleteRoom": "Poista huone",
-    "deleteFloor": "Poista tila",
+    "floor": {
+      "add": "Lisää uusi tila",
+      "new": "Uusi tila",
+      "delete": "Poista tila",
+      "edit": "Muokaa tilaa"
+    },
+    "room": {
+      "add": "Lisää uusi alue",
+      "new": "Uusi alue",
+      "delete": "Poista alue",
+      "edit": "Muokaa aluetta"
+    },
+    "deviceGroup": {
+      "add": "Lisää uusi laiteryhmä",
+      "new": "Uusi laiteryhmä",
+      "delete": "Poista laiteryhmä",
+      "edit": "Muokaa laiteryhmää"
+    },
+    "device" : {
+      "add": "Lisää uusi laite",
+      "new": "Uusi laite",
+      "delete": "Poista laite",
+      "edit": "Muokkaa laitetta"
+    },
+    "structure": "Rakenne",
     "toolbar": {
       "save": "Tallenna muutokset",
       "upload": "Lataa kuva"
@@ -309,7 +322,9 @@
       "landscape": "Vaaka",
       "portrait": "Pysty",
       "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle"
-    }
+    },
+    
+    "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!"
   },
 
   "sorting": {
@@ -437,6 +452,7 @@
     "cancel": "Peruuta",
     "loadNew": "Lataa uusi",
     "name": "Nimi",
+    "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
     "or": "tai"
   },
 

@@ -29,6 +29,9 @@ import FloorPlanMap from "../generic/floor-plan-map";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
+import { createRef } from "react";
+import { deleteFloor } from "../floor-plan/map-api-calls";
+import GenericDialog from "../generic/generic-dialog";
 
 /**
  * Component props
@@ -73,6 +76,8 @@ interface State {
  */
 export class FloorPlanScreen extends React.Component<Props, State> {
 
+  private mapRef = createRef<FloorPlanMap>();
+
   /**
    * Constructor
    *
@@ -106,7 +111,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Component did update life cycle handler
-   * 
+   *
    * @param prevProps previous props
    */
   public componentDidUpdate = async (prevProps: Props) => {
@@ -146,10 +151,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         clearError={ () => this.setState({ error: undefined }) }>
 
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title={ strings.floorPlan.title }>
-            <div className={ classes.toolbarContent }>
-              <FloorPlanTreeMenu treeNodes={ treeNodes } firstSelected={ firstSelected } />
-            </div>
+          <ElementNavigationPane title={ strings.floorPlan.structure }>
+            <FloorPlanTreeMenu treeNodes={ treeNodes } firstSelected={ firstSelected } />
           </ElementNavigationPane>
           <EditorView>
             { this.renderEditor() }
@@ -180,8 +183,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
-    const { exhibitionId, accessToken } = this.props;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
+    const { exhibitionId, accessToken, deviceModels } = this.props;
     if (cropping && cropImageDataUrl ) {
       return (
         <FloorPlanCrop
@@ -200,6 +203,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
       return <FloorPlanMap
+        ref={ this.mapRef }
         key={ "floorPlanMap" }
         accessToken={ accessToken }
         bounds={ bounds }
@@ -207,12 +211,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         imageHeight={ 965 }
         imageWidth={ 1314 }
         readOnly={ false }
+        deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
         selectedFloor={ selectedFloor }
         selectedRoom={ selectedRoom }
         selectedDeviceGroup={ selectedDeviceGroup }
         selectedDevice={ selectedDevice }
+        selectedItemHasNodes={ selectedItemHasNodes }
         onRoomClick={ this.onRoomClick }
+        onDeviceClick={ this.onDeviceClick }
       />;
     }
     return null;
@@ -350,36 +357,47 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @returns array of action button objects
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
+
     if (selectedDevice) {
       return [
-        { name: strings.floorPlan.toolbar.save, action: this.onSaveDeviceClick },
-        { name: strings.floorPlan.deleteDevice, action: () => alert(strings.comingSoon) }
+        { name: strings.floorPlan.device.edit, action: () => this.mapRef.current!.editDeviceMarker() },
+        { name: strings.generic.save, action: () => this.mapRef.current!.saveDeviceMarker() },
+        { name: strings.floorPlan.device.delete, action: () => this.mapRef.current!.deleteDevice() }
       ] as ActionButton[];
     }
 
     if (selectedDeviceGroup) {
       return [
-        { name: strings.floorPlan.addDevice, action: this.onAddDeviceClick },
-        { name: strings.floorPlan.toolbar.save, action: this.onSaveDeviceGroupClick },
-        { name: strings.floorPlan.deleteDeviceGroup, action: () => alert(strings.comingSoon) }
+        { name: strings.floorPlan.device.add, action: () => this.mapRef.current!.addDeviceMarker() },
+        { name: strings.generic.save, action: this.onSaveDeviceGroupClick },
+        { name: strings.floorPlan.deviceGroup.delete,
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => this.mapRef.current!.deleteDeviceGroup()
+        }
       ] as ActionButton[];
     }
 
     if (selectedRoom) {
       return [
-        { name: strings.floorPlan.addDeviceGroup, action: this.onAddDeviceGroupClick },
-        { name: strings.floorPlan.toolbar.save, action: this.onSaveRoomClick },
-        { name: strings.floorPlan.deleteRoom, action: () => alert(strings.comingSoon) }
+        { name: strings.floorPlan.deviceGroup.add, action: this.onAddDeviceGroupClick },
+        { name: strings.floorPlan.room.edit, action: () => this.mapRef.current!.editRoom() },
+        { name: strings.generic.save, action: () => this.mapRef.current!.saveRoom() },
+        { name: strings.floorPlan.room.delete,
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => this.mapRef.current!.deleteRoom()
+        }
       ] as ActionButton[];
     }
 
     if (selectedFloor) {
       return [
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
-        { name: strings.floorPlan.addFloor, action: this.onAddFloorClick },
-        { name: strings.floorPlan.toolbar.save, action: this.onSaveFloorClick },
-        { name: strings.floorPlan.deleteFloor, action: () => alert(strings.comingSoon) }
+        { name: strings.floorPlan.floor.add, action: this.onAddFloorClick },
+        { name: strings.floorPlan.room.add, action: () => this.mapRef.current!.addRoom() },
+        { name: strings.generic.save, action: this.onSaveFloorClick },
+        { name: strings.floorPlan.floor.delete,
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => deleteFloor(accessToken, exhibitionId, selectedFloor)
+        }
       ] as ActionButton[];
     }
 
@@ -388,7 +406,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Get bounds from cropImageDetails
-   * 
+   *
    * @returns bounds object if crop image details are found, otherwise returns undefined
    */
   private getBounds = (): Bounds | undefined => {
@@ -514,6 +532,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       };
 
       reader.readAsDataURL(file);
+      this.setState({
+        addImageDialogOpen: false
+      });
     }
   }
 
@@ -529,7 +550,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const floorsApi = Api.getExhibitionFloorsApi(accessToken);
     const newFloor = await floorsApi.createExhibitionFloor({
       exhibitionId: exhibitionId,
-      exhibitionFloor: { name: strings.floorPlan.newFloor }
+      exhibitionFloor: { name: strings.floorPlan.floor.new }
     });
 
     this.setState(
@@ -553,7 +574,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newDeviceGroup = await deviceGroupsApi.createExhibitionDeviceGroup({
       exhibitionId: exhibitionId,
       exhibitionDeviceGroup: {
-        name: strings.floorPlan.newDeviceGroup,
+        name: strings.floorPlan.deviceGroup.new,
         allowVisitorSessionCreation: false,
         roomId: selectedRoom.id
       }
@@ -562,34 +583,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: Draft<State>) => {
         draft.deviceGroups.push(newDeviceGroup);
-      })
-    );
-  }
-
-  /**
-   * Event handler for add device click
-   */
-  private onAddDeviceClick = async () => {
-    const { accessToken, exhibitionId, deviceModels } = this.props;
-    const { selectedDeviceGroup } = this.state;
-    if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id || deviceModels.length < 1 || !deviceModels[0].id) {
-      return;
-    }
-
-    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
-    const newDevice = await devicesApi.createExhibitionDevice({
-      exhibitionId: exhibitionId,
-      exhibitionDevice: {
-        name: strings.floorPlan.newDevice,
-        groupId: selectedDeviceGroup.id,
-        modelId: deviceModels[0].id,
-        screenOrientation: ScreenOrientation.Landscape
-      }
-    });
-
-    this.setState(
-      produce((draft: Draft<State>) => {
-        draft.devices.push(newDevice);
       })
     );
   }
@@ -681,34 +674,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         const groupIndex = deviceGroups.findIndex(group => group.id === selectedDeviceGroup.id);
         if (groupIndex > -1) {
           deviceGroups.splice(groupIndex, 1, updatedDeviceGroup);
-        }
-      })
-    );
-  }
-
-  /**
-   * Event handler for on save device click
-   */
-  private onSaveDeviceClick = async () => {
-    const { accessToken } = this.props;
-    const { selectedDevice } = this.state;
-    if (!selectedDevice || !selectedDevice.id || !selectedDevice.exhibitionId) {
-      return;
-    }
-
-    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
-    const updatedDevice = await devicesApi.updateExhibitionDevice({
-      exhibitionId: selectedDevice.exhibitionId,
-      deviceId: selectedDevice.id,
-      exhibitionDevice: selectedDevice
-    });
-
-    this.setState(
-      produce((draft: Draft<State>) => {
-        const { devices } = draft;
-        const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
-        if (deviceIndex > -1) {
-          devices.splice(deviceIndex, 1, updatedDevice);
         }
       })
     );

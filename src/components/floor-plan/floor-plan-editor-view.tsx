@@ -130,8 +130,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.title }>
-            <div className={ classes.toolbarContent }>
-            </div>
           </ElementNavigationPane>
           <EditorView>
             { this.renderEditor() }
