@@ -400,7 +400,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
 
-    console.log(event)
 
     /**
      * Must cast is it like this because L.LeafletEvent does not contain
