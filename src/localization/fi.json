@@ -211,14 +211,14 @@
     "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
       "pageDeviceLabel": "Sivun laite",
-      "enterTransitions": "Tulo transitiot",
-      "exitTransitions": "Lähtö transitiot",
-      "addTransition": "Lisää transitio",
-      "editTransition": "Muokkaa transitiota",
-      "removeTransition": "Poista transitio",
+      "enterTransitions": "Siirtymä saapuessa",
+      "exitTransitions": "Siirtymä lähtiessä",
+      "addTransition": "Lisää siirtymä",
+      "editTransition": "Muokkaa siirtymää",
+      "removeTransition": "Poista siirtymä",
 
       "dialog": {
-        "animation": "Animation",
+        "animation": "Animaatio",
         "timeInterpolation": "Interpolointi",
         "duration": "Kesto (millisekunttia)",
         "viewPairs": "Elementtiparit",

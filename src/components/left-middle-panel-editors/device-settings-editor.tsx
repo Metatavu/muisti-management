@@ -13,8 +13,7 @@ import { Dispatch } from "redux";
 interface Props extends WithStyles<typeof styles> {
   deviceData: ExhibitionDevice;
   devicePages: ExhibitionPage[];
-  onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onIndexPageChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
 }
 
 /**
@@ -56,19 +55,22 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
         <TextField
           className={ classes.nameInput }
           variant="filled"
-          fullWidth label="Name"
+          fullWidth
+          label={ strings.generic.name }
+          name="name"
           value={ deviceData.name }
-          onChange={ this.props.onNameChange }
+          onChange={ this.props.onChange }
         />
         <InputLabel id="indexPageId">
           { strings.exhibition.deviceSettingsEditor.indexPageId }
         </InputLabel>
         <Select 
           variant="filled"
-          labelId="pageLayoutId"
+          labelId="indexPageId"
           fullWidth
+          name="indexPageId"
           value={ deviceData.indexPageId || "" }
-          onChange={ this.props.onIndexPageChange }
+          onChange={ this.props.onChange }
         >
           { selectIndexPageItems }
         </Select>

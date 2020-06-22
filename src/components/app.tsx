@@ -20,7 +20,6 @@ import DashboardSettingsView from "./dashboard/dashboard-settings-view";
 import DashboardUsersView from "./dashboard/dashboard-users-view";
 import DashboardDevicesView from "./dashboard/dashboard-devices-view";
 import DashboardFloorPlansView from "./dashboard/dashboard-floor-plans-view";
-import ExhibitionView from "./exhibition/exhibition-view";
 import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
@@ -35,6 +34,7 @@ import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
+import TimelineScreen from "./screens/timeline-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -131,13 +131,6 @@ class App extends React.Component<Props, State> {
                         <DashboardDevicesView history={ history } />
                       )}
                     />
-                    <Route
-                      path="/exhibitions/:exhibitionId"
-                      exact={ true }
-                      render={ ({ match, history }) => (
-                        <ExhibitionView exhibitionId={ match.params.exhibitionId } history={ history } />
-                      )}
-                    />
                     {/* Remove this once the V4 floorplan view is done! */}
                     <Route
                       path="/dashboard/floorplans"
@@ -206,19 +199,19 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/version/:versionId"
+                      path="/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
                       exact={ true }
                       render={({ history, match }) => (
                         <GroupContentVersionsScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           roomId={ match.params.roomId }
-                          contentVersionId={ match.params.versionId }
+                          contentVersionId={ match.params.contentVersionId }
                         />
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/version/:versionId"
+                      path="/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
                       exact={ true }
                       render={({ history, match }) => (
                         <FloorPlanEditorView
@@ -226,8 +219,25 @@ class App extends React.Component<Props, State> {
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.floorId }
                           roomId={ match.params.roomId }
-                          contentVersionId={ match.params.versionId }
+                          contentVersionId={ match.params.contentVersionId }
                           readOnly={ true }
+                        />
+                      )}
+                    />
+                    <Route
+                      path={[
+                        "/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
+                        "/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline"
+                      ]}
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <TimelineScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          floorId={ match.params.floorId }
+                          roomId={ match.params.roomId }
+                          contentVersionId={ match.params.contentVersionId }
+                          groupContentVersionId={ match.params.groupContentVersionId }
                         />
                       )}
                     />

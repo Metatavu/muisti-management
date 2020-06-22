@@ -14,7 +14,7 @@ import 'codemirror/addon/lint/lint';
 import strings from "../../localization/strings";
 import { JsonLintParseErrorHash } from "../../types";
 import * as jsonlint from "jsonlint-mod";
-import { ExhibitionPage } from "../../generated/client";
+import { ExhibitionPage, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType } from "../../generated/client";
 
 /**
  * Interface representing component properties
@@ -22,7 +22,6 @@ import { ExhibitionPage } from "../../generated/client";
 interface Props extends WithStyles<typeof styles> {
   json: string;
   onChange: (json: string) => void;
-  parseJson: (errorHandler?: (message: string, e?: SyntaxError) => void) => Partial<ExhibitionPage>;
 }
 
 /**
@@ -67,7 +66,9 @@ class CodeEditor extends React.Component<Props, State> {
 
     return (
       <div className={ classes.codeEditorContainer }>
-        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
+        <Typography style={{ margin: 8 }}>
+          { strings.exhibitionLayouts.editView.json }
+        </Typography>
         <CodeMirror
           className={ classes.editor }
           value={ this.props.json }
@@ -117,7 +118,7 @@ class CodeEditor extends React.Component<Props, State> {
     }
 
     if (found.length === 0) {
-      this.props.parseJson((message: string, _e?: SyntaxError) => {
+      this.parseJson((message: string, _e?: SyntaxError) => {
         found.push({
           from: codemirror.Pos(0, 0),
           to: codemirror.Pos(0, 0),
@@ -127,6 +128,85 @@ class CodeEditor extends React.Component<Props, State> {
     }
 
     return found;
+  }
+
+  /**
+   * Parses JSON code from the editor
+   *
+   * @param errorHandler error handler for the parsing errors
+   * @returns parsed JSON code from the editor
+   */
+  private parseJson = (errorHandler?: (message: string, e?: SyntaxError) => void) => {
+    const result: Partial<ExhibitionPage> = {
+      eventTriggers: [],
+      resources: []
+    };
+
+    try {
+      const parsedCode = JSON.parse(this.props.json);
+      result.eventTriggers = (parsedCode.eventTriggers || []).map(ExhibitionPageEventTriggerFromJSON);
+      result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
+
+      if (errorHandler) {
+        this.validateParsedPage(result, errorHandler);
+      }
+
+
+    } catch (e) {
+      if (errorHandler) {
+        errorHandler(e.message, e);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Validates parsed page
+   *
+   * @param parsedPage parsed page
+   * @param errorHandler parser error handler
+   */
+  private validateParsedPage = (parsedPage: Partial<ExhibitionPage>, errorHandler: (message: string, e?: SyntaxError) => void) => {
+    if (!parsedPage.resources) {
+      return errorHandler("Invalid resources");
+    }
+
+    if (!parsedPage.eventTriggers) {
+      return errorHandler("Invalid event triggers");
+    }
+
+    const eventTypes = Object.values(ExhibitionPageEventActionType);
+
+    for (let i = 0; i < parsedPage.resources.length; i++) {
+      if (!parsedPage.resources[i].id) {
+        return errorHandler(`Resource ${i} requires id`);
+      }
+
+      if (!parsedPage.resources[i].data) {
+        return errorHandler(`Resource ${i} requires data`);
+      }
+
+      if (!parsedPage.resources[i].type) {
+        return errorHandler(`Resource ${i} requires type`);
+      }
+    }
+
+    for (let i = 0; i < parsedPage.eventTriggers.length; i++) {
+      const events = parsedPage.eventTriggers[i].events || [];
+
+      for (let j = 0; j < events.length; j++) {
+        const eventAction = events[j].action;
+
+        if (!eventAction) {
+          return errorHandler(`Event ${i} requires an action`);
+        }
+
+        if (!eventTypes.includes(eventAction)) {
+          return errorHandler(`Event ${i} action ${events[j].action} is not valid (${eventTypes.join(", ")})`);
+        }
+      }
+    }
   }
 }
 
