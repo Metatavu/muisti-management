@@ -2,7 +2,7 @@ import { createStyles } from "@material-ui/core";
 import theme from "./theme";
 
 export default createStyles({
-  
+
   loader: {
     height: "100%",
     position: "absolute",
@@ -28,7 +28,7 @@ export default createStyles({
     display: "grid",
     gridAutoColumns: "auto 1fr",
     gridTemplateRows: "1fr",
-    gridTemplateAreas: "'panel content' 'panel content'",
+    gridTemplateAreas: "'panel content' 'panel content'"
   },
 
   panel: {
@@ -52,10 +52,6 @@ export default createStyles({
     height: 55,
     padding: "0 16px",
     alignItems: "center",
-  },
-
-  toolbarContent: {
-    padding: theme.spacing(2)
   },
 
   btnContainer: {

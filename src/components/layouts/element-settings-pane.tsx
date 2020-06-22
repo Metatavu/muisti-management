@@ -1,27 +1,48 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/components/generic/element-settings-pane";
-import OpenIcon from "@material-ui/icons/ChevronLeftSharp";
-import CloseIcon from "@material-ui/icons/ChevronRightSharp";
+import MenuIcon from "@material-ui/icons/Menu";
 import classNames from "classnames";
+import MenuButton from "../generic/menu-button";
+import { ActionButton } from "../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  /**
+   * Panel title
+   */
   title: string;
+  /**
+   * Panel width
+   */
   width: number;
+  /**
+   * Toggle panel open/closed
+   */
+  open: boolean;
+  /**
+   * Icon for action button
+   */
+  actionIcon?: JSX.Element;
+  /**
+   * Handler for action button click
+   */
+  onActionClick?: () => void;
+  /**
+   * List of available menu options
+   */
+  menuOptions?: ActionButton[];
 }
 
 /**
  * Interface representing component state
  */
-interface State {
-  open: boolean;
-}
+interface State {}
 
-const minimizedWidth = 50;
+const minimizedWidth = 0;
 
 /**
  * Component for element settings pane
@@ -30,7 +51,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -50,18 +71,21 @@ class ElementSettingsPane extends React.Component<Props, State> {
   }
 
   /**
-   * Render basic layout
+   * Render panel
    */
   public render() {
-    const { classes, width } = this.props;
+    const { classes, width, open, actionIcon, menuOptions } = this.props;
     return (
-      <div className={ classes.root } style={{ width: this.state.open ? width : minimizedWidth }}>
+      <div className={ classes.root } style={{ width: open ? width : minimizedWidth }}>
         <div className={ classes.btnContainer }>
-          <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
-            { this.state.open ? <CloseIcon /> : <OpenIcon /> }
-          </IconButton>
+          { menuOptions &&
+            <MenuButton
+              icon={ actionIcon ? actionIcon : <MenuIcon /> }
+              menuOptions={ menuOptions }
+            />
+          }
         </div>
-        <div style={{ minWidth: width }} className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
+        <div style={{ minWidth: width }} className={ classNames( classes.container, open ? "" : "closed" ) }>
           <div className={ classes.header }>
             <h3>{ this.props.title }</h3>
           </div>
@@ -71,14 +95,6 @@ class ElementSettingsPane extends React.Component<Props, State> {
         </div>
       </div>
     );
-  }
-  /**
-   * Handle toggle panel
-   */
-  private onToggleClick = () => {
-    this.setState({
-      open: !this.state.open
-    });
   }
 }
 

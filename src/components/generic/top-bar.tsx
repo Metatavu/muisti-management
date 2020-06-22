@@ -133,7 +133,7 @@ class TopBar extends React.Component<Props, State> {
     //const usersButton = { postfix: "users", text: strings.header.navigation.usersButton };
     const deviceModelsButton = { postfix: "deviceModels", text: strings.header.navigation.devicesButton };
     const layoutsButton = { postfix: "layouts", text: strings.header.navigation.layoutsButton };
-    const floorPlansButton = { postfix: "floorPlans", text: strings.header.navigation.floorPlansButton };
+    const floorPlansButton = { postfix: "floorPlans", text: strings.header.navigation.spacesButton };
 
     return (
       <List

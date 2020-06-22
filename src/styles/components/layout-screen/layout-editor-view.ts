@@ -1,5 +1,5 @@
 import { createStyles } from "@material-ui/core";
-import theme from "./theme";
+import theme from "../../theme";
 
 export default createStyles({
 
@@ -16,6 +16,7 @@ export default createStyles({
   },
 
   editorLayout: {
+    overflow: "hidden",
     height: "100%",
     display: "grid",
     gridTemplateRows: "1fr",

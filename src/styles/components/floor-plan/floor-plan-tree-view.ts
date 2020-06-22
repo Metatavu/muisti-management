@@ -29,4 +29,8 @@ export default createStyles({
     }
   },
 
+  treeMenu: {
+    overflow: "hidden"
+  }
+
 });

@@ -275,23 +275,40 @@
       "landscape": "Landscape"
     },
     "properties": {
-      "title": "Properties"
+      "title": "properties"
     }
   },
 
   "floorPlan": {
     "title": "Floor plan",
     "listTitle": "Floor plans",
-    "addFloor": "Add new floor",
-    "newFloor": "New floor",
-    "addRoom": "Add new room",
-    "newRoom": "New room",
-    "addDeviceGroup": "Add new device group",
-    "newDeviceGroup": "New device group",
-    "addDevice": "Add new device",
-    "newDevice": "New device",
+    "floor": {
+      "add": "Add new space",
+      "new": "New space",
+      "delete": "Delete space",
+      "edit": "Edit space"
+    },
+    "room": {
+      "add": "Add new room",
+      "new": "New room",
+      "delete": "Delete room",
+      "edit": "Edit space"
+    },
+    "deviceGroup": {
+      "add": "Add new device group",
+      "new": "New device group",
+      "delete": "Delete device group",
+      "edit": "Edit device group"
+    },
+    "device" : {
+      "add": "Add new device",
+      "new": "New device",
+      "delete": "Delete device",
+      "edit": "Edit device"
+    },
+    "structure": "Structure",
     "toolbar": {
-      "save": "Save",
+      "save": "Save changes",
       "upload": "Upload image"
     },
     "properties": {
@@ -305,7 +322,9 @@
       "landscape": "Landscape",
       "portrait": "Portrait",
       "allowVisitorSessionCreation": "Allow creation of new session to visitor"
-    }
+    },
+    
+    "hasChildElements": "Selected element has child elements. Cannot delete!"
   },
 
   "sorting": {
@@ -394,9 +413,9 @@
 
     "addLayoutViewDialog": {
       "title": "Add layout view element",
-      "id": "Id",
-      "widget": "Widget",
-      "confirm": "Save",
+      "id": "Type element ID",
+      "widget": "Select widget",
+      "confirm": "Add",
       "cancel": "Cancel"
     }
   },
@@ -434,7 +453,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "loadNew": "Load new",
-    "name": "Name"
+    "name": "Name",
+    "confirmDelete": "Are you sure you want to remove selected element?",
+    "or": "or"
   },
 
   "spaces": {

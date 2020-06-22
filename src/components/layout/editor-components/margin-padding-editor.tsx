@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, TextField, Button } from "@material-ui/core";
-import styles from "../../../styles/margin-padding-editor";
+import styles from "../../../styles/components/layout-screen/margin-padding-editor";
 import LinkIcon from '@material-ui/icons/Link';
 import UnLinkIcon from '@material-ui/icons/LinkOff';
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
