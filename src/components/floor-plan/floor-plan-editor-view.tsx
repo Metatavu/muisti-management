@@ -169,14 +169,19 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       return (
         <FloorPlanMap
           accessToken={ accessToken }
-          selectedFloor={ exhibitionFloor }
-          selectedRoom={ room }
+          floorPlanInfo={{
+            bounds: bounds,
+            url: exhibitionFloor.floorPlanUrl,
+            imageHeight: 965,
+            imageWidth: 1314,
+            readOnly: readOnly
+          }}
+          selectedItems={{
+            floor: exhibitionFloor,
+            room: room
+          }}
           exhibitionId={ exhibitionId }
-          bounds={ bounds }
-          url={ exhibitionFloor.floorPlanUrl }
-          imageHeight={ 965 }
-          imageWidth={ 1314 }
-          readOnly={ readOnly }
+
         />
       );
     }

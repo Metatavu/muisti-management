@@ -129,7 +129,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
@@ -158,7 +158,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Updates child bounds into state
-   * 
+   *
    * @param id child id
    * @param bounds child bounds
    */
@@ -173,7 +173,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for root component resize
-   * '
+   *
    * @param contentRect root content rect
    */
   private onRootResize = (contentRect: ContentRect) => {
@@ -188,12 +188,11 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for child resize event
-   * 
+   *
    * @param id child id
    * @param contentRect child content rect
    */
   private onChildResize = (id: string, contentRect: ContentRect) => {
-    console.log("resize", id, contentRect);
     if (id && contentRect.bounds) {
       this.updateChildBounds(id, contentRect.bounds);
     }
@@ -201,7 +200,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Handles a child component layouting 
-   * 
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles

@@ -11,7 +11,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, ScreenOrientation, DeviceModel } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -30,8 +30,8 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
-import { deleteFloor } from "../floor-plan/map-api-calls";
-import GenericDialog from "../generic/generic-dialog";
+// tslint:disable-next-line: max-line-length
+import { deleteFloor, deleteDevice, deleteRoom, createDevice, updateDevice, createFloor, updateFloor, updateRoom, createRoom, createDeviceGroup, updateDeviceGroup, deleteDeviceGroup } from "../floor-plan/map-api-calls";
 
 /**
  * Component props
@@ -185,6 +185,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private renderEditor = () => {
     const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
     const { exhibitionId, accessToken, deviceModels } = this.props;
+
     if (cropping && cropImageDataUrl ) {
       return (
         <FloorPlanCrop
@@ -202,23 +203,36 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
+
+      const floorPlanInfo = {
+        bounds: bounds,
+        url: selectedFloor.floorPlanUrl,
+        imageHeight: 965,
+        imageWidth: 1314,
+        readOnly: false
+      };
+
+      const selectedItems = {
+        floor: selectedFloor,
+        room: selectedRoom,
+        deviceGroup: selectedDeviceGroup,
+        device: selectedDevice,
+        selectedItemHasNodes: selectedItemHasNodes
+      };
+
       return <FloorPlanMap
         ref={ this.mapRef }
         key={ "floorPlanMap" }
         accessToken={ accessToken }
-        bounds={ bounds }
-        url={ selectedFloor.floorPlanUrl }
-        imageHeight={ 965 }
-        imageWidth={ 1314 }
-        readOnly={ false }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
-        selectedFloor={ selectedFloor }
-        selectedRoom={ selectedRoom }
-        selectedDeviceGroup={ selectedDeviceGroup }
-        selectedDevice={ selectedDevice }
-        selectedItemHasNodes={ selectedItemHasNodes }
+        floorPlanInfo={ floorPlanInfo }
+        selectedItems={ selectedItems }
+        onRoomAdd={ this.onRoomAddClick }
+        onRoomSave={ this.onRoomSaveClick }
         onRoomClick={ this.onRoomClick }
+        onDeviceAdd={ this.onDeviceAddClick }
+        onDeviceSave={ this.onDeviceSaveClick }
         onDeviceClick={ this.onDeviceClick }
       />;
     }
@@ -357,34 +371,33 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @returns array of action button objects
    */
   private getActionButtons = (): ActionButton[] => {
-    const { accessToken, exhibitionId } = this.props;
     const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
 
     if (selectedDevice) {
       return [
         { name: strings.floorPlan.device.edit, action: () => this.mapRef.current!.editDeviceMarker() },
         { name: strings.generic.save, action: () => this.mapRef.current!.saveDeviceMarker() },
-        { name: strings.floorPlan.device.delete, action: () => this.mapRef.current!.deleteDevice() }
+        { name: strings.floorPlan.device.delete, action: this.onDeviceDeleteClick }
       ] as ActionButton[];
     }
 
     if (selectedDeviceGroup) {
       return [
         { name: strings.floorPlan.device.add, action: () => this.mapRef.current!.addDeviceMarker() },
-        { name: strings.generic.save, action: this.onSaveDeviceGroupClick },
+        { name: strings.generic.save, action: this.onDeviceGroupSaveClick },
         { name: strings.floorPlan.deviceGroup.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => this.mapRef.current!.deleteDeviceGroup()
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onDeviceGroupDeleteClick
         }
       ] as ActionButton[];
     }
 
     if (selectedRoom) {
       return [
-        { name: strings.floorPlan.deviceGroup.add, action: this.onAddDeviceGroupClick },
+        { name: strings.floorPlan.deviceGroup.add, action: this.onDeviceGroupAddClick },
         { name: strings.floorPlan.room.edit, action: () => this.mapRef.current!.editRoom() },
         { name: strings.generic.save, action: () => this.mapRef.current!.saveRoom() },
         { name: strings.floorPlan.room.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => this.mapRef.current!.deleteRoom()
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onRoomDeleteClick
         }
       ] as ActionButton[];
     }
@@ -392,11 +405,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     if (selectedFloor) {
       return [
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
-        { name: strings.floorPlan.floor.add, action: this.onAddFloorClick },
+        { name: strings.floorPlan.floor.add, action: this.onFloorAddClick },
         { name: strings.floorPlan.room.add, action: () => this.mapRef.current!.addRoom() },
-        { name: strings.generic.save, action: this.onSaveFloorClick },
+        { name: strings.generic.save, action: this.onFloorSaveClick },
         { name: strings.floorPlan.floor.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : () => deleteFloor(accessToken, exhibitionId, selectedFloor)
+          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onFloorDeleteClick
         }
       ] as ActionButton[];
     }
@@ -463,6 +476,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
         if (floorIndex > -1) {
           draft.floors.splice(floorIndex, 1, updatedFloor);
+          draft.selectedFloor = updatedFloor;
         }
       })
     );
@@ -541,17 +555,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for add floor click
    */
-  private onAddFloorClick = async () => {
+  private onFloorAddClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     if (!exhibitionId) {
       return;
     }
 
-    const floorsApi = Api.getExhibitionFloorsApi(accessToken);
-    const newFloor = await floorsApi.createExhibitionFloor({
-      exhibitionId: exhibitionId,
-      exhibitionFloor: { name: strings.floorPlan.floor.new }
-    });
+    const newFloor = await createFloor(accessToken, exhibitionId, { name: strings.floorPlan.floor.new });
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -561,24 +571,161 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for add device group click
+   * Event handler for floor delete click
    */
-  private onAddDeviceGroupClick = async () => {
+  private onFloorDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedFloor } = this.state;
+    if (!exhibitionId || !selectedFloor || !selectedFloor.id) {
+      return;
+    }
+
+    // FIXME: Add nicer dialog
+    if (!window.confirm(strings.generic.confirmDelete)) {
+      return;
+    }
+
+    deleteFloor(accessToken, exhibitionId, selectedFloor.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { floors } = draft;
+        const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
+        if (floorIndex > -1) {
+          floors.splice(floorIndex, 1);
+          draft.selectedFloor = undefined;
+        }
+      })
+    );
+  }
+
+  /**
+   * Event handler for save floor click
+   * @param floorToUpdate floor to update
+   */
+  private onFloorSaveClick = async (floorToUpdate: ExhibitionFloor) => {
+    const { exhibitionId } = this.props;
+    const { cropping, cropImageData } = this.state;
+
+    if (cropping && cropImageData) {
+      await this.updateFloorPlanImage(cropImageData);
+
+      this.setState({
+        cropping: false
+      });
+    } else {
+      const { accessToken } = this.props;
+      if (!floorToUpdate || !floorToUpdate.id || !exhibitionId) {
+        return;
+      }
+
+      const updatedFloor = await updateFloor(accessToken, exhibitionId, floorToUpdate, floorToUpdate.id);
+
+      this.setState(
+        produce((draft: Draft<State>) => {
+          const { floors } = draft;
+          const floorIndex = floors.findIndex(floor => floor.id === floorToUpdate.id);
+          if (floorIndex > -1) {
+            floors.splice(floorIndex, 1, updatedFloor);
+            draft.selectedFloor = undefined;
+          }
+        })
+      );
+    }
+  }
+
+  /**
+   * Event handler for add room click
+   * @param roomToCreate exhibition room to create
+   */
+  private onRoomAddClick = async (roomToCreate: ExhibitionRoom) => {
+    const { accessToken, exhibitionId } = this.props;
+    if (!exhibitionId) {
+      return;
+    }
+
+    const newRoom = await createRoom(accessToken, exhibitionId, roomToCreate);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        draft.rooms.push(newRoom);
+        draft.selectedRoom = newRoom;
+      })
+    );
+  }
+
+  /**
+   * Event handler for delete room click
+   */
+  private onRoomDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedRoom } = this.state;
     if (!exhibitionId || !selectedRoom || !selectedRoom.id) {
       return;
     }
 
-    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
-    const newDeviceGroup = await deviceGroupsApi.createExhibitionDeviceGroup({
-      exhibitionId: exhibitionId,
-      exhibitionDeviceGroup: {
-        name: strings.floorPlan.deviceGroup.new,
-        allowVisitorSessionCreation: false,
-        roomId: selectedRoom.id
-      }
-    });
+    // FIXME: Add nicer dialog
+    if (!window.confirm(strings.generic.confirmDelete)) {
+      return;
+    }
+
+    deleteRoom(accessToken, exhibitionId, selectedRoom.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { rooms } = draft;
+        const roomIndex = rooms.findIndex(room => room.id === selectedRoom.id);
+        if (roomIndex > -1) {
+          rooms.splice(roomIndex, 1);
+          draft.selectedRoom = undefined;
+        }
+      })
+    );
+
+    this.mapRef.current!.deleteRoom();
+  }
+
+  /**
+   * Event handler for on save room click
+   * @param roomToUpdate room to update
+   */
+  private onRoomSaveClick = async (roomToUpdate: ExhibitionRoom) => {
+    const { accessToken, exhibitionId } = this.props;
+    if (!exhibitionId || !roomToUpdate || !roomToUpdate.id) {
+      return;
+    }
+
+    const updatedRoom = await updateRoom(accessToken, exhibitionId, roomToUpdate, roomToUpdate.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { rooms } = draft;
+        const roomIndex = rooms.findIndex(room => room.id === roomToUpdate.id);
+        if (roomIndex > -1) {
+          rooms.splice(roomIndex, 1, updatedRoom);
+        }
+      })
+    );
+  }
+
+  /**
+   * Event handler for add device group click
+   */
+  private onDeviceGroupAddClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedRoom } = this.state;
+    if (!exhibitionId || !selectedRoom || !selectedRoom.id) {
+      return;
+    }
+
+    // FIXME: Add map support for device groups
+    const groupToCreate: ExhibitionDeviceGroup = {
+      name: strings.floorPlan.deviceGroup.new,
+      allowVisitorSessionCreation: false,
+      roomId: selectedRoom.id
+    };
+
+    const newDeviceGroup = await createDeviceGroup(accessToken, exhibitionId, groupToCreate);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -588,85 +735,17 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for save floor click
-   */
-  private onSaveFloorClick = async () => {
-    const { cropping, cropImageData, selectedFloor } = this.state;
-    if (cropping && cropImageData) {
-      await this.updateFloorPlanImage(cropImageData);
-
-      this.setState({
-        cropping: false
-      });
-    } else {
-      const { accessToken } = this.props;
-      if (!selectedFloor || !selectedFloor.id || !selectedFloor.exhibitionId || !accessToken) {
-        return;
-      }
-
-      const floorsApi = Api.getExhibitionFloorsApi(accessToken);
-      const updatedFloor = await floorsApi.updateExhibitionFloor({
-        exhibitionFloor: selectedFloor,
-        exhibitionId: selectedFloor.exhibitionId,
-        floorId: selectedFloor.id
-      });
-
-      this.setState(
-        produce((draft: Draft<State>) => {
-          const { floors } = draft;
-          const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
-          if (floorIndex > -1) {
-            floors.splice(floorIndex, 1, updatedFloor);
-          }
-        })
-      );
-    }
-  }
-
-  /**
-   * Event handler for on save room click
-   */
-  private onSaveRoomClick = async () => {
-    const { accessToken } = this.props;
-    const { selectedRoom } = this.state;
-    if (!selectedRoom || !selectedRoom.id || !selectedRoom.exhibitionId) {
-      return;
-    }
-
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const updatedRoom = await roomsApi.updateExhibitionRoom({
-      exhibitionId: selectedRoom.exhibitionId,
-      roomId: selectedRoom.id,
-      exhibitionRoom: selectedRoom
-    });
-
-    this.setState(
-      produce((draft: Draft<State>) => {
-        const { rooms } = draft;
-        const roomIndex = rooms.findIndex(room => room.id === selectedRoom.id);
-        if (roomIndex > -1) {
-          rooms.splice(roomIndex, 1, updatedRoom);
-        }
-      })
-    );
-  }
-
-  /**
    * Event handler for on save device group click
    */
-  private onSaveDeviceGroupClick = async () => {
-    const { accessToken } = this.props;
+  private onDeviceGroupSaveClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;
-    if (!selectedDeviceGroup || !selectedDeviceGroup.id || !selectedDeviceGroup.exhibitionId) {
+    if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
       return;
     }
 
-    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
-    const updatedDeviceGroup = await deviceGroupsApi.updateExhibitionDeviceGroup({
-      exhibitionId: selectedDeviceGroup.exhibitionId,
-      deviceGroupId: selectedDeviceGroup.id,
-      exhibitionDeviceGroup: selectedDeviceGroup
-    });
+    // FIXME: Add map support for device groups
+    const updatedDeviceGroup = await updateDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup, selectedDeviceGroup.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -674,6 +753,108 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         const groupIndex = deviceGroups.findIndex(group => group.id === selectedDeviceGroup.id);
         if (groupIndex > -1) {
           deviceGroups.splice(groupIndex, 1, updatedDeviceGroup);
+        }
+      })
+    );
+  }
+
+  /**
+   * Event handler for device group delete click
+   */
+  private onDeviceGroupDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDeviceGroup } = this.state;
+    if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
+      return;
+    }
+
+    // FIXME: Add nicer dialog
+    if (!window.confirm(strings.generic.confirmDelete)) {
+      return;
+    }
+
+    deleteDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { deviceGroups } = draft;
+        const deviceGroupIndex = deviceGroups.findIndex(deviceGroup => deviceGroup.id === selectedDeviceGroup.id);
+        if (deviceGroupIndex > -1) {
+          deviceGroups.splice(deviceGroupIndex, 1);
+          draft.selectedDeviceGroup = undefined;
+        }
+      })
+    );
+
+    this.mapRef.current?.deleteDeviceGroup();
+  }
+
+  /**
+   * Event handler for add device click
+   * @param deviceToCreate exhibition device to create
+   */
+  private onDeviceAddClick = async (deviceToCreate: ExhibitionDevice) => {
+    const { accessToken, exhibitionId } = this.props;
+    if (!exhibitionId) {
+      return;
+    }
+
+    const newDevice = await createDevice(accessToken, exhibitionId, deviceToCreate);
+    this.setState(
+      produce((draft: Draft<State>) => {
+        draft.devices.push(newDevice);
+      })
+    );
+  }
+
+  /**
+   * Event handler for delete device click
+   */
+  private onDeviceDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDevice } = this.state;
+    if (!exhibitionId || !selectedDevice || !selectedDevice.id) {
+      return;
+    }
+
+    // FIXME: Add nicer dialog
+    if (!window.confirm(strings.generic.confirmDelete)) {
+      return;
+    }
+
+    deleteDevice(accessToken, exhibitionId, selectedDevice.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { devices } = draft;
+        const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
+        if (deviceIndex > -1) {
+          devices.splice(deviceIndex, 1);
+          draft.selectedDevice = undefined;
+        }
+      })
+    );
+
+    this.mapRef.current!.deleteDevice();
+  }
+
+  /**
+   * Event handler for on save device click
+   * @param deviceToUpdate exhibition device to update
+   */
+  private onDeviceSaveClick = async (deviceToUpdate: ExhibitionDevice) => {
+    const { accessToken, exhibitionId } = this.props;
+    if (!exhibitionId || !deviceToUpdate.id || !deviceToUpdate.exhibitionId) {
+      return;
+    }
+    const updatedDevice = await updateDevice(accessToken, exhibitionId, deviceToUpdate, deviceToUpdate.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { devices } = draft;
+        const deviceIndex = devices.findIndex(device => device.id === deviceToUpdate.id);
+        if (deviceIndex > -1) {
+          devices.splice(deviceIndex, 1, updatedDevice);
         }
       })
     );
