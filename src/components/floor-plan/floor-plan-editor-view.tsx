@@ -166,22 +166,26 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
       const ne: LatLngExpression = [ neCorner.longitude, neCorner.latitude ];
       const bounds = new LatLngBounds(sw, ne);
+
+      const floorPlanInfo = {
+        bounds: bounds,
+        url: exhibitionFloor.floorPlanUrl,
+        imageHeight: 965,
+        imageWidth: 1314,
+        readOnly: readOnly
+      };
+
+      const selectedItems = {
+        floor: exhibitionFloor,
+        room: room
+      };
+
       return (
         <FloorPlanMap
           accessToken={ accessToken }
-          floorPlanInfo={{
-            bounds: bounds,
-            url: exhibitionFloor.floorPlanUrl,
-            imageHeight: 965,
-            imageWidth: 1314,
-            readOnly: readOnly
-          }}
-          selectedItems={{
-            floor: exhibitionFloor,
-            room: room
-          }}
+          floorPlanInfo={ floorPlanInfo }
+          selectedItems={ selectedItems }
           exhibitionId={ exhibitionId }
-
         />
       );
     }
