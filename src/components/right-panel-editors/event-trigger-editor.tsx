@@ -21,6 +21,7 @@ import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
+import produce from "immer";
 
 /**
  * Component props
@@ -70,7 +71,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
         { this.renderDeviceGroupEventNameField() }
         { this.renderDelayField() }
 
-        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.actions }</Typography>
+        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
+          { strings.exhibition.eventTriggers.actions }
+        </Typography>
         { this.renderEventActionTypeSelect() }
         { this.props.selectedEventTrigger &&
           this.renderEventActionSettings()
@@ -86,12 +89,16 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { selectedEventTrigger } = this.props;
     const clickViewId = selectedEventTrigger.clickViewId;
     const clickViewIdList = this.props.layout.data.children.map((pageLayoutView, index) => {
-      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>{ pageLayoutView.id }</MenuItem>
+      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>
+        { pageLayoutView.id }
+      </MenuItem>
     });
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.clickViewIdTitle }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.clickViewIdTitle }
+        </Typography>
         <Select
           variant="filled"
           label={ strings.exhibition.eventTriggers.clickViewId }
@@ -100,7 +107,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ clickViewId || "" }
           onChange={ this.onEventTriggerChange }
         >
-          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
+          <MenuItem key={ `clickViewId-empty` } value="">
+            { strings.removeSelection }
+          </MenuItem>
           { clickViewIdList }
         </Select>
       </div>
@@ -122,12 +131,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     const menuItems = physicalButtons.map((button, index) => {
-      return <MenuItem key={ `physicalButtonDown-${index}` } value={ button.value }>{ button.name }</MenuItem>
+      return (
+        <MenuItem key={ `physicalButtonDown-${index}` } value={ button.value }>
+          { button.name }
+        </MenuItem>
+      );
     });
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.physicalButtonDownTitle }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.physicalButtonDownTitle }
+        </Typography>
         <Select
           variant="filled"
           label={ strings.exhibition.eventTriggers.physicalButton }
@@ -136,10 +151,14 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ trigger.keyDown || "" }
           onChange={ this.onEventTriggerChange }
         >
-          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
+          <MenuItem key={ `clickViewId-empty` } value="">
+            { strings.removeSelection }
+          </MenuItem>
           { menuItems }
         </Select>
-        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>{ strings.exhibition.eventTriggers.physicalButtonUpTitle }</Typography>
+        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
+          { strings.exhibition.eventTriggers.physicalButtonUpTitle }
+        </Typography>
         <Select
           variant="filled"
           label={ strings.exhibition.eventTriggers.physicalButton }
@@ -148,7 +167,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ trigger.keyUp || "" }
           onChange={ this.onEventTriggerChange }
         >
-          <MenuItem key={ `clickViewId-empty` } value="">{ strings.removeSelection }</MenuItem>
+          <MenuItem key={ `clickViewId-empty` } value="">
+            { strings.removeSelection }
+          </MenuItem>
           { menuItems }
         </Select>
       </div>
@@ -212,7 +233,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderEventActionTypeSelect = () => {
     const selectedActionType = this.getSelectedEventActionType();
     const eventActionTypeList = Object.keys(ExhibitionPageEventActionType).map((actionType, index) => {
-      return <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>{ actionType }</MenuItem>
+      return (
+        <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>
+          { actionType }
+        </MenuItem>
+      );
     });
 
     return (
@@ -240,7 +265,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
       case ExhibitionPageEventActionType.Settext:
         return <h5>{ strings.comingSoon }</h5>;
         /**
-         * TODO: Needs implamentation
+         * TODO: Needs implementation
          */
       case ExhibitionPageEventActionType.Setuservalue:
         return this.renderSetUserValueSettings();
@@ -262,13 +287,16 @@ class EventTriggerEditor extends React.Component<Props, State> {
     if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
       return;
     }
+
     const event = (selectedEventTrigger.events && selectedEventTrigger.events.length) ? selectedEventTrigger.events[0] : undefined;
     const userValuePropertyName = event ? event.properties.find(property => property.name === "name") : undefined;
     const userValuePropertyValue = event ? event.properties.find(property => property.name === "value") : undefined;
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.variableName }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.variableName }
+        </Typography>
         <TextField
           name="name"
           className={ classes.textResourceEditor } 
@@ -277,7 +305,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           onChange={ this.onEventTriggerEventPropertyChange }
         />
 
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.variableValue }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.variableValue }
+        </Typography>
         <TextField
           name="value"
           className={ classes.textResourceEditor }
@@ -301,7 +331,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.selectPage }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.selectPage }
+        </Typography>
         <Select
           variant="filled"
           fullWidth
@@ -330,7 +362,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">{ strings.exhibition.eventTriggers.deviceGroupEvent }</Typography>
+        <Typography variant="h6">
+          { strings.exhibition.eventTriggers.deviceGroupEvent }
+        </Typography>
         <TextField
           name="name"
           className={ classes.textResourceEditor } 
@@ -358,7 +392,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     const pageSelectionItems = this.props.pages.map(page => {
       return (
-        <MenuItem key={ `event-trigger-navigation-${page.id}` } value={ page.id }> { page.name }</MenuItem>
+        <MenuItem key={ `event-trigger-navigation-${page.id}` } value={ page.id }>
+          { page.name }
+        </MenuItem>
       );
     });
     return pageSelectionItems;
@@ -415,7 +451,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param event react change event
    */
   private onEventTriggerEventPropertyChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
+    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
     const propertyName = event.target.name;
     const propertyValue = event.target.value as string;
     if (propertyName === undefined || !trigger.events || !trigger.events.length) {
@@ -426,17 +462,19 @@ class EventTriggerEditor extends React.Component<Props, State> {
       return;
     }
 
-    const propertyIndex = trigger.events[0].properties.findIndex(property => property.name === propertyName);
-    if (propertyIndex === -1) {
-      trigger.events[0].properties.push({
-        name: propertyName,
-        value: propertyValue,
-        type: ExhibitionPageEventPropertyType.String
-      });
-    } else {
-      trigger.events[0].properties[propertyIndex].value = propertyValue;
-    }
-    
+    trigger.events = produce(trigger.events, draft => {
+      const propertyIndex = draft[0].properties.findIndex(property => property.name === propertyName);
+      if (propertyIndex === -1) {
+        draft[0].properties.push({
+          name: propertyName,
+          value: propertyValue,
+          type: ExhibitionPageEventPropertyType.String
+        });
+      } else {
+        draft[0].properties[propertyIndex].value = propertyValue;
+      }
+    });
+
     this.props.onSave(trigger);
   }
 
@@ -458,7 +496,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param actionType new event action type
    */
   private overwriteEventInJson = (actionType: ExhibitionPageEventActionType) => {
-    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
+    const trigger: ExhibitionPageEventTrigger = Object.assign({}, this.props.selectedEventTrigger);
     if (trigger.events?.length !== 0 && trigger.events![0].action === actionType) {
       return;
     }

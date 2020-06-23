@@ -1,8 +1,7 @@
 import * as React from "react";
-import { ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../../generated/client";
+import { Exhibition } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem } from "@material-ui/core";
-import { ExhibitionElement, ExhibitionElementType } from '../../types';
 import styles from "../../styles/exhibition-tree-menu";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -12,37 +11,18 @@ import SearchIcon from "../../resources/gfx/svg-paths/hae";
 import classNames from "classnames"
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
-import PageUtils from "../../utils/page-utils";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  exhibition: Exhibition;
-  contentVersions: ContentVersion[];
-  floors: ExhibitionFloor[];
-  rooms: ExhibitionRoom[];
-  devices: ExhibitionDevice[];
-  pages: ExhibitionPage[];
-  onSelect: (parents: ExhibitionElement[], element: ExhibitionElement) => void; 
+  treeData: TreeNodeInArray[];
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-}
-
-/**
- * Interface for tree data parameters
- */
-interface TreeDataParams {
-  exhibition: Exhibition;
-  contentVersions: ContentVersion[];
-  floors: ExhibitionFloor[];
-  rooms: ExhibitionRoom[];
-  devices: ExhibitionDevice[];
-  pages: ExhibitionPage[];
 }
 
 /**
@@ -66,30 +46,14 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, 
-            exhibition, 
-            contentVersions,
-            floors,
-            rooms,
-            devices,
-            pages,
-            onSelect } = this.props;
-
-    const treeData = this.constructTreeData({
-      exhibition,
-      contentVersions,
-      floors,
-      rooms,
-      devices,
-      pages
-    });
+    const { classes, treeData } = this.props;
     
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeData }
           onClickItem={({ key, label, ...props }) => {
-            onSelect(props.parents, props.element);
+            props.onSelect(props.parents, props.element);
           }}
         >
           {({ search, items }) => (
@@ -143,92 +107,6 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
         { label }
       </ListItem>
     );
-  }
-
-  /**
-   * Constructs tree data
-   *
-   * @param dataParams tree data params
-   */
-  private constructTreeData = (dataParams: TreeDataParams): TreeNodeInArray[] => {
-    const { exhibition, contentVersions, floors, rooms, devices, pages } = dataParams;
-    const exhibitionElement = {
-      data: exhibition,
-      type: ExhibitionElementType.EXHIBITION
-    };
-
-    const treeData = [{
-      key: exhibition.id!,
-      label: exhibition.name,
-      element: exhibitionElement,
-      parents: [ ],
-      nodes: contentVersions.map(contentVersion => {
-        const contentVersionElement = {
-          data: contentVersion,
-          type: ExhibitionElementType.CONTENT_VERSION
-        };
-
-        return {
-          key: contentVersion.id!,
-          label: contentVersion.name,
-          element: contentVersionElement,
-          parents: [ exhibitionElement ],
-          nodes: floors.map(floor => {
-            const floorElement = {
-              data: floor,
-              type: ExhibitionElementType.FLOOR
-            };
-
-            return {
-              key: floor.id!,
-              label: floor.name,
-              element: floorElement,
-              parents: [ exhibitionElement, contentVersionElement ],
-              nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
-                const roomElement = {
-                  data: room,
-                  type: ExhibitionElementType.ROOM
-                }; 
-                
-                return {
-                  key: room.id!,
-                  label: room.name,
-                  element: roomElement,
-                  parents: [ exhibitionElement, contentVersionElement, floorElement ],
-                  nodes: devices.map(device => {
-                    const deviceElement = {
-                      data: device,
-                      type: ExhibitionElementType.DEVICE
-                    };
-
-                    return {
-                      key: device.id!,
-                      label: device.name,
-                      element: deviceElement,
-                      parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement ],
-                      nodes: PageUtils.getSortedPages(pages.filter(page => page.deviceId === device.id)).map(page => {
-                        return {
-                          key: page.id!,
-                          label: page.name,
-                          element: {
-                            data: page,
-                            type: ExhibitionElementType.PAGE
-                          },
-                          parents: [ exhibitionElement, contentVersionElement, floorElement, roomElement, deviceElement ],
-                          nodes: []
-                        }
-                      })
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
-      })
-    }];
-
-    return treeData;
   }
 
   /**
