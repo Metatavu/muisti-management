@@ -25,10 +25,9 @@ interface Props extends WithStyles<typeof styles> {
   pageData: ExhibitionPage;
   eventTriggers: ExhibitionPageEventTrigger[];
   resources: ExhibitionPageResource[];
-  onPageNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
   onPageTransitionChange: (transition: ExhibitionPageTransition[], transitionType: string) => void;
   onLayoutChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
-  onDeviceChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
   onResourceClick: (resourceIndex: number) => void;
   onEventTriggerClick: (eventTriggerIndex: number) => void;
   onAddEventTriggerClick: () => void;
@@ -60,11 +59,18 @@ class PageSettingsEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, pageData, onPageNameChange } = this.props;
+    const { classes, pageData, onChange } = this.props;
 
     return (
       <>
-        <TextField fullWidth variant="filled" label="Name" value={ pageData.name } onChange={ onPageNameChange }/>
+        <TextField
+          fullWidth
+          variant="filled"
+          label="Name"
+          name="name"
+          value={ pageData.name }
+          onChange={ onChange }
+        />
         <div className={ classes.selectFields }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
@@ -90,7 +96,13 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
     const items = resources.map((resource, index) => {
       const label = slugify(`${resource.id}`);
-      return <TreeItem nodeId={ `resource-${index}` } label={ label } onClick={ () => onResourceClick(index) } />;
+      return (
+        <TreeItem
+          nodeId={ `resource-${index}` }
+          label={ label }
+          onClick={ () => onResourceClick(index) }
+        />
+      );
     });
 
     return (
@@ -108,7 +120,13 @@ class PageSettingsEditor extends React.Component<Props, State> {
 
     const items = eventTriggers.map((_eventTrigger: ExhibitionPageEventTrigger, index) => {
       const label = strings.formatString(strings.exhibition.eventTrigger, index + 1);
-      return <TreeItem nodeId={ `event-${index}` } label={ label } onClick={ () => onEventTriggerClick(index) } />
+      return (
+        <TreeItem
+          nodeId={ `event-${index}` }
+          label={ label }
+          onClick={ () => onEventTriggerClick(index) }
+        />
+      );
     });
 
     const addEventTriggerLabel = (
@@ -121,7 +139,11 @@ class PageSettingsEditor extends React.Component<Props, State> {
     return (
       <TreeItem nodeId="event-triggers" label={ strings.exhibition.eventTriggers.title }>
         { items }
-        <TreeItem nodeId={ "event-trigger-new" } label={ addEventTriggerLabel } onClick={ onAddEventTriggerClick }/>
+        <TreeItem
+          nodeId={ "event-trigger-new" }
+          label={ addEventTriggerLabel }
+          onClick={ onAddEventTriggerClick }
+        />
       </TreeItem>
     );
   }
@@ -133,14 +155,23 @@ class PageSettingsEditor extends React.Component<Props, State> {
     const { layouts, onLayoutChange } = this.props;
     const layoutSelectItems = layouts.map(layout => {
       return (
-        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
+        <MenuItem key={ layout.id } value={ layout.id }>
+          { layout.name }
+        </MenuItem>
       );
     });
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <InputLabel id="pageLayoutId">{ strings.exhibition.pageSettingsEditor.pageLayoutLabel }</InputLabel>
-        <Select variant="filled" labelId="pageLayoutId" fullWidth value={ pageData.layoutId } onChange={ onLayoutChange }>
+        <InputLabel id="pageLayoutId">
+          { strings.exhibition.pageSettingsEditor.pageLayoutLabel }
+        </InputLabel>
+        <Select
+          variant="filled"
+          labelId="pageLayoutId"
+          fullWidth value={ pageData.layoutId }
+          onChange={ onLayoutChange }
+        >
           { layoutSelectItems }
         </Select>
       </div>
@@ -168,17 +199,28 @@ class PageSettingsEditor extends React.Component<Props, State> {
    * Renders device select
    */
   private renderDeviceSelect = (pageData: ExhibitionPage) => {
-    const { devices, onDeviceChange } = this.props;
+    const { devices, onChange } = this.props;
     const selectItems = devices.map(device => {
       return (
-        <MenuItem key={ device.id || "" } value={ device.id }>{ device.name }</MenuItem>
+        <MenuItem key={ device.id || "" } value={ device.id }>
+          { device.name }
+        </MenuItem>
       );
     });
 
     return (
       <>
-        <InputLabel id="pageDeviceId">{ strings.exhibition.pageSettingsEditor.pageDeviceLabel }</InputLabel>
-        <Select variant="filled" labelId="pageDeviceId" fullWidth value={ pageData.deviceId } onChange={ onDeviceChange }>
+        <InputLabel id="pageDeviceId">
+          { strings.exhibition.pageSettingsEditor.pageDeviceLabel }
+        </InputLabel>
+        <Select
+          variant="filled"
+          labelId="pageDeviceId"
+          fullWidth
+          name="deviceId"
+          value={ pageData.deviceId }
+          onChange={ onChange }
+        >
           { selectItems }
         </Select>
       </>

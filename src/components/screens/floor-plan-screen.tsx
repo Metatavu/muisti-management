@@ -11,7 +11,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, ScreenOrientation, DeviceModel } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -31,7 +31,7 @@ import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
 import { deleteFloor } from "../floor-plan/map-api-calls";
-import GenericDialog from "../generic/generic-dialog";
+//import GenericDialog from "../generic/generic-dialog";
 
 /**
  * Component props

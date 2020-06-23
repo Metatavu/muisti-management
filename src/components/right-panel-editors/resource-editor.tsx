@@ -2,7 +2,6 @@ import * as React from "react";
 import { ExhibitionPageResource, PageLayout, ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, Typography, TextField } from "@material-ui/core";
-import { ExhibitionElement } from '../../types';
 import styles from "../../styles/exhibition-view";
 import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
@@ -14,7 +13,6 @@ import { Dispatch } from "redux";
  */
 interface Props extends WithStyles<typeof styles> {
   resource: ExhibitionPageResource;
-  selectedElement?: ExhibitionElement;
   layouts: PageLayout[];
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -59,6 +57,7 @@ class ResourceEditor extends React.Component<Props, State> {
               className={ classes.textResourceEditor } 
               label={ strings.exhibition.resources.imageView.properties.imageUrl }
               variant="filled"
+              name="data"
               value={ resource.data }
               onChange={ onChange }
             />
@@ -73,6 +72,7 @@ class ResourceEditor extends React.Component<Props, State> {
               className={ classes.textResourceEditor } 
               label={ strings.exhibition.resources.mediaView.properties.imageOrVideoUrl }
               variant="filled"
+              name="data"
               value={ resource.data }
               onChange={ onChange }
             />
@@ -87,6 +87,7 @@ class ResourceEditor extends React.Component<Props, State> {
               className={ classes.textResourceEditor } 
               label={ strings.exhibition.resources.textView.properties.text }
               variant="filled"
+              name="data"
               value={ resource.data }
               onChange={ onChange }
             />
