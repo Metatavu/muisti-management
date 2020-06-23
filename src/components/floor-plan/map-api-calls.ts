@@ -20,6 +20,7 @@ export const createFloor = async (accessToken: AccessToken, exhibitionId: string
     exhibitionId: exhibitionId,
     exhibitionFloor: exhibitionFloor
   });
+  
   return createdFloor;
 };
 
