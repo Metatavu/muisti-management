@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
@@ -9,7 +9,6 @@ import { AccessToken } from "../../types";
 import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import strings from "../../localization/strings";
-import { loadRooms, loadDevices } from "../floor-plan/map-api-calls";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
 // FIXME: Add support for antennas
 // import antennaIcon from "../../resources/gfx/muisti-logo.png";
@@ -22,6 +21,7 @@ interface Props {
   deviceModels?: DeviceModel[];
   exhibitionId?: string;
 
+  mapData: MapData;
   floorPlanInfo: FloorPlanInfo;
   selectedItems: SelectedItems;
 
@@ -58,6 +58,12 @@ interface FloorPlanInfo {
   bounds: LatLngBounds;
 }
 
+interface MapData {
+  rooms?: ExhibitionRoom[];
+  deviceGroups?: ExhibitionDeviceGroup[];
+  devices?: ExhibitionDevice[];
+}
+
 interface SelectedItems {
   floor? : ExhibitionFloor;
   room?: ExhibitionRoom;
@@ -78,6 +84,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * This feature group contains all room layers that are displayed
    */
   private roomLayers = new L.FeatureGroup();
+
+  /**
+   * This feature group contains all generated device group layers that are displayed
+   */
+  private deviceGroupLayers = new L.FeatureGroup();
 
   /**
    * This feature group contains all devices that are displayed
@@ -194,6 +205,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.mapInstance.addLayer(this.roomLayers);
 
     if (selectedItems.deviceGroup) {
+      this.mapInstance.addLayer(this.deviceGroupLayers);
       this.mapInstance.addLayer(this.deviceMarkers);
     }
 
@@ -378,29 +390,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
 
     this.loadRooms();
+    this.loadDeviceGroups();
     this.loadDevices();
-  }
-
-  /**
-   * Load room data from API
-   */
-  private loadRooms = async () => {
-    const { accessToken, exhibitionId, selectedItems } = this.props;
-
-    const foundRooms = await loadRooms(accessToken, exhibitionId, selectedItems.floor, selectedItems.room);
-    this.roomLayers.clearLayers();
-    this.addRoomLayers(foundRooms);
-  }
-
-  /**
-   * Load device data from API
-   */
-  private loadDevices = async () => {
-    const { accessToken, exhibitionId, selectedItems } = this.props;
-
-    const foundDevices = await loadDevices(accessToken, exhibitionId, selectedItems.deviceGroup, selectedItems.device);
-    this.deviceMarkers.clearLayers();
-    this.addDeviceMarkers(foundDevices);
   }
 
   /**
@@ -408,13 +399,15 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    *
    * @param rooms list of exhibition rooms
    */
-  private addRoomLayers = (rooms: ExhibitionRoom[]) => {
-
-    if (!rooms) {
+  private loadRooms = () => {
+    const { mapData } = this.props;
+    this.roomLayers.clearLayers();
+    if (!mapData.rooms) {
       return;
     }
+
     const tempMap = new Map<number, ExhibitionRoom>();
-    rooms.forEach(room => {
+    mapData.rooms.forEach(room => {
       const geoShape = room.geoShape;
       if (geoShape && this.mapInstance && this.roomLayers) {
         const geoJson = geoShape as Polygon;
@@ -449,15 +442,80 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    *
    * @param devices list of exhibition devices
    */
-  private addDeviceMarkers = (devices: ExhibitionDevice[]) => {
+  private loadDeviceGroups = () => {
+    const { mapData } = this.props;
 
-    if (!devices) {
+    const devices = mapData.devices;
+
+    if (!mapData.deviceGroups || !devices) {
+      return;
+    }
+
+    this.deviceGroupLayers.clearLayers();
+
+    const devicePoints: number[][] = [];
+
+
+    mapData.deviceGroups.forEach(deviceGroup => {
+      const asd: LatLngExpression = {};
+      devices.forEach(device => {
+        if (device.groupId === deviceGroup.id && device.location && device.location.x && device.location.y) {
+          asd.push(device.location.x);
+          asd.push(device.location.y);
+          devicePoints.push(asd);
+        }
+      });
+      console.log(devicePoints);
+    });
+
+    const drawMap = this.mapInstance! as DrawMap;
+    const newDeviceGroupLayer = new L.Polygon( [devicePoints] );
+
+    // if (!devices) {
+    //   return;
+    // }
+
+    // const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
+
+    // devices.forEach(device => {
+
+    //   if (device && device.location && device.location.x && device.location.y) {
+    //     const markerOptions: MarkerOptions = {
+    //       icon: this.deviceIcon,
+    //       draggable: false
+    //     };
+
+    //     const latlng = new LatLng(device.location.x, device.location.y);
+    //     const customMarker = new L.Marker(latlng, markerOptions);
+    //     this.deviceMarkers.addLayer(customMarker);
+    //     const markerId = this.deviceMarkers.getLayerId(customMarker);
+    //     tempLeafletIdToDeviceMap.set(markerId, device);
+    //   }
+    // });
+
+    // this.mapInstance?.addLayer(this.deviceMarkers);
+
+    // this.setState({
+    //   leafletIdToDeviceMap: tempLeafletIdToDeviceMap
+    // });
+
+  }
+
+  /**
+   * Add device markers to leaflet map
+   *
+   * @param devices list of exhibition devices
+   */
+  private loadDevices = () => {
+    this.deviceMarkers.clearLayers();
+    const { mapData } = this.props;
+    if (!mapData.devices) {
       return;
     }
 
     const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
 
-    devices.forEach(device => {
+    mapData.devices.forEach(device => {
 
       if (device && device.location && device.location.x && device.location.y) {
         const markerOptions: MarkerOptions = {
