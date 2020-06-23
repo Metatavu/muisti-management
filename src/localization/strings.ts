@@ -178,6 +178,8 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     newPage: string;
     addPage: string;
+    deletePage: string;
+    confirmDeletePage: string;
     addDevice: string;
     addResource: string;
     addEventTrigger: string;
