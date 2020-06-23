@@ -91,6 +91,7 @@ export const updateRoom = async (accessToken: AccessToken, exhibitionId: string,
     exhibitionRoom: roomToUpdate,
     roomId: roomId
   });
+  
   return updatedRoom;
 };
 
