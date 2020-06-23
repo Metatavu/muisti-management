@@ -786,7 +786,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       })
     );
 
-    this.mapRef.current?.deleteDeviceGroup();
+    this.mapRef.current!.deleteDeviceGroup();
   }
 
   /**
