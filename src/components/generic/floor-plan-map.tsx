@@ -244,6 +244,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Device marker creation handler
+   *
    * @param event leaflet event
    */
   private handleDeviceMarkerCreation = async (event: L.LeafletEvent) => {
@@ -276,7 +277,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   }
 
   /**
-   * Device marker creation handler
+   * Room creation handler
+   *
    * @param event leaflet event
    */
   private handleRoomCreation = async (event: L.LeafletEvent) => {
@@ -310,6 +312,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Set selected room
+   *
    * @param event leaflet event
    */
   private setSelectedRoom = (event: L.LeafletEvent) => {
@@ -325,6 +328,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Set selected device
+   *
    * @param event leaflet event
    */
   private setSelectedDevice = (event: L.LeafletEvent) => {
@@ -340,6 +344,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Edit map layers
+   *
    * @param event leaflet event
    */
   private onEditLayers = (event: L.LeafletEvent) => {
