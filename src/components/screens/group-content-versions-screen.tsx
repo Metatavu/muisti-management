@@ -363,7 +363,11 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
   }
 
-
+  /** 
+   * Opens timeline screen
+   * 
+   * @param groupContentVersion selected group content version
+  */
   private openTimeline = (groupContentVersion: GroupContentVersion) => {
     const { history } = this.props;
     history.push(`${history.location.pathname}/groupContentVersions/${groupContentVersion.id}/timeline`);
