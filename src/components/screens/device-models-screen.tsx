@@ -731,6 +731,13 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    */
   private assignDeviceDataToDevice = (deviceData: DeviceModelData, device: DeviceModel): DeviceModel => {
     const { displayMetrics, dimensions, manufacturer, model, capabilities } = deviceData;
+
+    /**
+     * FIXME:
+     * Remove when possible device measurements flipping is saved to API
+     */
+    const landscapeDevice = displayMetrics.widthPixels > displayMetrics.heightPixels;
+
     const deviceDimensions: DeviceModelDimensions = {
       deviceWidth: Number(dimensions.deviceWidth),
       deviceHeight: Number(dimensions.deviceHeight),
@@ -740,10 +747,10 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     };
     const deviceDisplayMetrics: DeviceModelDisplayMetrics = {
       density: Number(displayMetrics.density),
-      widthPixels: Number(displayMetrics.widthPixels),
-      heightPixels: Number(displayMetrics.heightPixels),
-      xdpi: Number(displayMetrics.xdpi),
-      ydpi: Number(displayMetrics.ydpi)
+      widthPixels: Number(landscapeDevice ? displayMetrics.heightPixels : displayMetrics.widthPixels),
+      heightPixels: Number(landscapeDevice ? displayMetrics.widthPixels : displayMetrics.heightPixels),
+      xdpi: Number(landscapeDevice ? displayMetrics.ydpi : displayMetrics.xdpi),
+      ydpi: Number(landscapeDevice ? displayMetrics.xdpi : displayMetrics.ydpi)
     };
 
     return {

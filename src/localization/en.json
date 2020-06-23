@@ -181,6 +181,8 @@
     },
     "newPage": "New page",
     "addPage": "Add page",
+    "deletePage": "Delete page",
+    "confirmDeletePage": "Are you sure you want to delete this page?",
     "addDevice": "Add device",
     "addResource": "Add resource",
     "addEventTrigger": "Add event trigger",

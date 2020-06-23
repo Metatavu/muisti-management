@@ -409,8 +409,11 @@ export class TimelineScreen extends React.Component<Props, State> {
           strings.exhibitionLayouts.editView.switchToCodeButton,
         action: this.onSwitchViewClick
       }, {
-        name: strings.exhibitionLayouts.editView.saveButton,
+        name: strings.generic.save,
         action: this.onSavePageClick
+      }, {
+        name: strings.exhibition.deletePage,
+        action: this.onDeletePageClick
       }];
     }
 
@@ -419,7 +422,7 @@ export class TimelineScreen extends React.Component<Props, State> {
         name: strings.exhibition.addPage,
         action: this.onAddPageClick
       }, {
-        name: strings.exhibitionLayouts.editView.saveButton,
+        name: strings.generic.save,
         action: this.onSaveDeviceClick
       }];
     }
@@ -431,13 +434,19 @@ export class TimelineScreen extends React.Component<Props, State> {
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, groupContentVersionId } = this.props;
+    const { accessToken, exhibitionId, roomId, contentVersionId, groupContentVersionId } = this.props;
 
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
 
-    const groupContentVersion = await groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId });
+    const [ room, contentVersion, groupContentVersion ] = await Promise.all([
+      roomsApi.findExhibitionRoom({ exhibitionId, roomId }),
+      contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
+      groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId })
+    ]);
 
     const exhibitionGroupId = groupContentVersion.deviceGroupId;
     const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId });
@@ -453,6 +462,8 @@ export class TimelineScreen extends React.Component<Props, State> {
     const pages = devicePages.flat();
 
     this.setState({
+      room,
+      contentVersion,
       groupContentVersion,
       devices,
       pages
@@ -817,6 +828,26 @@ export class TimelineScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for delete page click
+   */
+  private onDeletePageClick = () => {
+    const { selectedPage } = this.state;
+    if (!selectedPage) {
+      return;
+    }
+    
+    /**
+     * FIXME:
+     * Add cleaner confirm dialog
+     */
+    if (!window.confirm(strings.exhibition.confirmDeletePage)) {
+      return;
+    }
+
+    this.onPageDelete(selectedPage);
+  }
+
+  /**
    * Event handler for device save
    *
    * @param page page
@@ -855,7 +886,7 @@ export class TimelineScreen extends React.Component<Props, State> {
   /**
    * Event handler for page save
    *
-   * @param page page
+   * @param page page to save
    */
   private onPageSave = async (page: ExhibitionPage) => {
     try {
@@ -868,7 +899,7 @@ export class TimelineScreen extends React.Component<Props, State> {
         });
 
         const pages = produce(this.state.pages, draft => {
-          const pageIndex = draft.findIndex(item => item.id === updatedPage.id);
+          const pageIndex = draft.findIndex(page => page.id === updatedPage.id);
           if (pageIndex > -1) {
             draft[pageIndex] = updatedPage;
           }
@@ -885,6 +916,46 @@ export class TimelineScreen extends React.Component<Props, State> {
           pages: [ ...this.state.pages || [], createdPage ]
         });
       }
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
+  }
+
+    /**
+   * Event handler for page delete
+   * 
+   * @param page page to delete
+   */
+  private onPageDelete = async (page: ExhibitionPage) => {
+    try {
+      const { accessToken, exhibitionId } = this.props;
+      const pageId = page.id;
+      if (!pageId) {
+        return;
+      }
+
+      const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+      await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId });
+
+      this.setState(
+        produce((draft: State) => {
+          const pageIndex = draft.pages.findIndex(page => page.id === pageId);
+          if (pageIndex > -1) {
+            draft.pages.splice(pageIndex, 1);
+          }
+        })
+      );
+
+      this.setState({
+        selectedPage: undefined,
+        selectedDevice: undefined,
+        selectedEventTriggerIndex: undefined,
+        selectedResourceIndex: undefined
+      });
     } catch (e) {
       console.error(e);
 
