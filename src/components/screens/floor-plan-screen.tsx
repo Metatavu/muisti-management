@@ -601,11 +601,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for save floor click
-   * @param floorToUpdate floor to update
    */
-  private onFloorSaveClick = async (floorToUpdate: ExhibitionFloor) => {
+  private onFloorSaveClick = async () => {
     const { exhibitionId } = this.props;
-    const { cropping, cropImageData } = this.state;
+    const { cropping, cropImageData, selectedFloor } = this.state;
 
     if (cropping && cropImageData) {
       await this.updateFloorPlanImage(cropImageData);
@@ -615,16 +614,16 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       });
     } else {
       const { accessToken } = this.props;
-      if (!floorToUpdate || !floorToUpdate.id || !exhibitionId) {
+      if (!selectedFloor || !selectedFloor.id || !exhibitionId) {
         return;
       }
 
-      const updatedFloor = await updateFloor(accessToken, exhibitionId, floorToUpdate, floorToUpdate.id);
+      const updatedFloor = await updateFloor(accessToken, exhibitionId, selectedFloor, selectedFloor.id);
 
       this.setState(
         produce((draft: Draft<State>) => {
           const { floors } = draft;
-          const floorIndex = floors.findIndex(floor => floor.id === floorToUpdate.id);
+          const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
           if (floorIndex > -1) {
             floors.splice(floorIndex, 1, updatedFloor);
             draft.selectedFloor = undefined;
