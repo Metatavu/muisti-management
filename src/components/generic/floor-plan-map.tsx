@@ -13,7 +13,7 @@ import PolygonDialog from "./polygon-dialog";
 import strings from "../../localization/strings";
 import { loadRooms, loadDevices, createDevice, deleteDevice, deleteDeviceGroup, deleteRoom } from "../floor-plan/map-api-calls";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
-import antennaIcon from "../../resources/gfx/muisti-logo.png";
+//import antennaIcon from "../../resources/gfx/muisti-logo.png";
 
 /**
  * Component props
@@ -301,7 +301,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         }
       };
 
-      const createdDevice = await createDevice(accessToken, exhibitionId, exhibitionDevice) as ExhibitionDevice;
+      createDevice(accessToken, exhibitionId, exhibitionDevice);
     }
   }
 

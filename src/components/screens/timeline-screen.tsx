@@ -157,7 +157,11 @@ export class TimelineScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane width={ 320 } title="">
+          <ElementSettingsPane
+            width={ 320 }
+            title=""
+            open={ selectedResourceIndex !== undefined || selectedEventTriggerIndex !== undefined }
+          >
             {
               selectedResourceIndex !== undefined &&
               this.renderResourceEditor()
@@ -251,6 +255,8 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Renders device settings
+   * 
+   * @param deviceData device data
    */
   private renderDeviceSettings = (deviceData: ExhibitionDevice) => {
     const { classes } = this.props;
@@ -407,6 +413,7 @@ export class TimelineScreen extends React.Component<Props, State> {
         action: this.onSavePageClick
       }];
     }
+
     if (selectedDevice) {
       return [{
         name: strings.exhibition.addPage,
@@ -455,7 +462,6 @@ export class TimelineScreen extends React.Component<Props, State> {
   /**
    * Constructs tree data
    *
-   * @param dataParams tree data params
    * @returns array of tree nodes in array
    */
   private constructTreeData = (): TreeNodeInArray[] => {
@@ -515,11 +521,9 @@ export class TimelineScreen extends React.Component<Props, State> {
     };
 
     try {
-
       const parsedCode = JSON.parse(json);
       result.eventTriggers = (parsedCode.eventTriggers || []).map(ExhibitionPageEventTriggerFromJSON);
       result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
-
     } catch (error) {
       this.setState({ error });
     }
@@ -528,9 +532,10 @@ export class TimelineScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Serializes the page into JSON code
+   * Serializes exhibition page into JSON code
    *
-   * @returns JSON
+   * @param page exhibition page
+   * @returns exhibition page as JSON string
    */
   private toJsonCode = (page: Partial<ExhibitionPage>): string => {
     const { resources, eventTriggers } = page;
@@ -571,11 +576,12 @@ export class TimelineScreen extends React.Component<Props, State> {
       selectedEventTriggerIndex: undefined
     });
   }
+  
   /**
    * Event handler for page click
    * 
-   * @param selectedDevice selected device
-   * @param selectedPage selected page
+   * @param deviceId selected device id
+   * @param pageId selected page id
    */
   private onPageClick = (deviceId: string, pageId: string) => {
     const { devices, pages } = this.state;

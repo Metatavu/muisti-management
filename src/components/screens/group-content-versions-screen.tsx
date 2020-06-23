@@ -151,6 +151,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           menuOptions={ this.getCardMenuOptions(groupContentVersion) }
           status={ groupContentVersion.status }
           selected={ selectedGroupContentVersion?.id === groupContentVersion.id }
+          onActionClick={ () => this.openTimeline(groupContentVersion) }
         />
       );
     });
@@ -361,6 +362,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       selectedGroupContentVersion: groupContentVersion
     });
   }
+
 
   private openTimeline = (groupContentVersion: GroupContentVersion) => {
     const { history } = this.props;

@@ -151,7 +151,6 @@ class CodeEditor extends React.Component<Props, State> {
         this.validateParsedPage(result, errorHandler);
       }
 
-
     } catch (e) {
       if (errorHandler) {
         errorHandler(e.message, e);
