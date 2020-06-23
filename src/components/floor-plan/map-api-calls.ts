@@ -30,7 +30,6 @@ export const createFloor = async (accessToken: AccessToken, exhibitionId: string
  * @param exhibitionId exhibition id
  * @param floorId floor id
  */
-// tslint:disable-next-line: max-line-length
 export const deleteFloor = async (accessToken: AccessToken, exhibitionId: string, floorId: string) => {
   const floorsApi = Api.getExhibitionFloorsApi(accessToken);
   floorsApi.deleteExhibitionFloor({
@@ -66,7 +65,6 @@ export const updateFloor = async (accessToken: AccessToken, exhibitionId: string
  * @param exhibitionId exhibition id
  * @param roomToCreate room to create
  */
-// tslint:disable-next-line: max-line-length
 export const createRoom = async (accessToken: AccessToken, exhibitionId: string, roomToCreate: ExhibitionRoom): Promise<ExhibitionRoom> => {
   const roomsApi = Api.getExhibitionRoomsApi(accessToken);
   const newRoom = roomsApi.createExhibitionRoom({
@@ -239,7 +237,6 @@ export const updateDevice = async (accessToken: AccessToken, exhibitionId: strin
  * @param exhibitionId exhibition id
  * @param deviceId device id
  */
-// tslint:disable-next-line: max-line-length
 export const deleteDevice = async (accessToken: AccessToken, exhibitionId: string, deviceId: string) => {
   const devicesApi = Api.getExhibitionDevicesApi(accessToken);
   devicesApi.deleteExhibitionDevice({
