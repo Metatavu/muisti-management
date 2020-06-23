@@ -72,6 +72,7 @@ export const createRoom = async (accessToken: AccessToken, exhibitionId: string,
     exhibitionId: exhibitionId,
     exhibitionRoom: roomToCreate
   });
+  
   return newRoom;
 };
 
