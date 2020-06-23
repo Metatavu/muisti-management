@@ -5,64 +5,36 @@ import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
-import Api from "../../api/api";
 import { AccessToken } from "../../types";
-import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation } from "../../generated/client";
+import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
-import PolygonDialog from "./polygon-dialog";
 import strings from "../../localization/strings";
-import { loadRooms, loadDevices, createDevice, deleteDevice, deleteDeviceGroup, deleteRoom } from "../floor-plan/map-api-calls";
+import { loadRooms, loadDevices } from "../floor-plan/map-api-calls";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
-//import antennaIcon from "../../resources/gfx/muisti-logo.png";
+// FIXME: Add support for antennas
+// import antennaIcon from "../../resources/gfx/muisti-logo.png";
 
 /**
  * Component props
  */
 interface Props {
-  url: string;
-  minZoom?: number;
-  maxZoom?: number;
-  imageWidth: number;
-  imageHeight: number;
-  bounds: LatLngBounds;
   accessToken: AccessToken;
-  readOnly: boolean;
   deviceModels?: DeviceModel[];
   exhibitionId?: string;
-  selectedFloor? : ExhibitionFloor;
-  selectedRoom?: ExhibitionRoom;
-  selectedDeviceGroup?: ExhibitionDeviceGroup;
-  selectedDevice?: ExhibitionDevice;
-  selectedItemHasNodes?: boolean;
 
-  /**
-   * Event handler for room click
-   *
-   * @param floor selected floor
-   * @param room selected room
-   * @param hasNodes has child nodes
-   */
+  floorPlanInfo: FloorPlanInfo;
+  selectedItems: SelectedItems;
+
+  onRoomAdd?: (roomToCreate: ExhibitionRoom) => void;
+  onRoomSave?: (updatedRoom: ExhibitionRoom) => void;
   onRoomClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => void;
 
-  /**
-   * Event handler for device group click
-   *
-   * @param floor selected floor
-   * @param room selected room
-   * @param deviceGroup selected device group
-   * @param hasNodes has child nodes
-   */
+  onDeviceGroupAdd?: (deviceGroupToCreate: ExhibitionDeviceGroup) => void;
+  onDeviceGroupSave?: (deviceGroupToUpdate: ExhibitionDeviceGroup) => void;
   onDeviceGroupClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => void;
 
-  /**
-   * Event handler for device click
-   *
-   * @param floor selected floor
-   * @param room selected room
-   * @param deviceGroup selected device group
-   * @param device selected device
-   * @param hasNodes has child nodes
-   */
+  onDeviceAdd?: (deviceToCreate: ExhibitionDevice) => void;
+  onDeviceSave?: (deviceToUpdate: ExhibitionDevice) => void;
   onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => void;
 }
 
@@ -72,12 +44,26 @@ interface Props {
 interface State {
   zoom: number;
   cursorPosition?: LatLng;
-  polygonCreated: boolean;
-  roomName?: string;
-  layer?: any;
   leafletIdToRoomMap: Map<number, ExhibitionRoom>;
   leafletIdToDeviceMap: Map<number, ExhibitionDevice>;
-  roomsToDelete: number[];
+}
+
+interface FloorPlanInfo {
+  readOnly: boolean;
+  url: string;
+  minZoom?: number;
+  maxZoom?: number;
+  imageWidth: number;
+  imageHeight: number;
+  bounds: LatLngBounds;
+}
+
+interface SelectedItems {
+  floor? : ExhibitionFloor;
+  room?: ExhibitionRoom;
+  deviceGroup?: ExhibitionDeviceGroup;
+  device?: ExhibitionDevice;
+  selectedItemHasNodes?: boolean;
 }
 
 /**
@@ -128,10 +114,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     super(props);
     this.state = {
       zoom: 2,
-      polygonCreated: false,
       leafletIdToRoomMap: new Map(),
       leafletIdToDeviceMap: new Map(),
-      roomsToDelete: [],
     };
   }
 
@@ -147,10 +131,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public componentDidUpdate = (prevProps: Props) => {
 
-    if (prevProps.selectedFloor !== this.props.selectedFloor ||
-      prevProps.selectedRoom !== this.props.selectedRoom ||
-      prevProps.selectedDevice !== this.props.selectedDevice ||
-      prevProps.selectedDeviceGroup !== this.props.selectedDeviceGroup
+    if (prevProps.selectedItems.floor !== this.props.selectedItems.floor ||
+      prevProps.selectedItems.room !== this.props.selectedItems.room ||
+      prevProps.selectedItems.device !== this.props.selectedItems.device ||
+      prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup
     ) {
       this.initializeMapData();
     }
@@ -161,34 +145,23 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public render = () => {
 
+    const { floorPlanInfo } = this.props;
+
     return (<>
       <LeafletMap
         ref={ this.setMapRef }
         key="leafletMap"
         crs={ CRS.Simple }
         center={ [0, 0] }
-        bounds={ this.props.bounds }
-        minZoom={ this.props.minZoom }
-        maxZoom={ this.props.maxZoom }
+        bounds={ floorPlanInfo.bounds }
+        minZoom={ floorPlanInfo.minZoom }
+        maxZoom={ floorPlanInfo.maxZoom }
         zoom={ this.state.zoom }
         style={{ width: "100%", height: "100%" }}
         onmousemove={ this.onMapMouseMove }
       >
         { this.renderMapChildren() }
       </LeafletMap>
-
-      <PolygonDialog
-        cancelButtonText={ strings.editorDialog.cancel }
-        positiveButtonText={ strings.editorDialog.save }
-        onCancel={ this.onCancel }
-        onClose={ this.onCancel }
-        onConfirm={ this.onPolygonSave }
-        onNameChange={ this.onRoomNameChange }
-        open={ this.state.polygonCreated }
-        text={ strings.map.properties.roomName }
-        roomName={ this.state.roomName }
-        title={ strings.map.properties.dialogTitle }
-      />
     </>);
   }
 
@@ -196,9 +169,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Renders map child components
    */
   private renderMapChildren = () => {
+    const { floorPlanInfo } = this.props;
+
     return (
       <>
-        <ImageOverlay url={ this.props.url } bounds={ this.props.bounds }/>
+        <ImageOverlay url={ floorPlanInfo.url } bounds={ floorPlanInfo.bounds }/>
         <ScaleControl imperial={ false }/>
       </>
     );
@@ -210,7 +185,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param mapRef map refs
    */
   private setMapRef = (mapRef: any) => {
-    const { selectedDeviceGroup } = this.props;
+    const { selectedItems } = this.props;
     this.mapInstance = mapRef ? mapRef.leafletElement : undefined;
 
     if (!this.mapInstance) {
@@ -218,14 +193,14 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
     this.mapInstance.addLayer(this.roomLayers);
 
-    if (selectedDeviceGroup) {
+    if (selectedItems.deviceGroup) {
       this.mapInstance.addLayer(this.deviceMarkers);
     }
 
     this.addDrawHandler();
 
     this.mapInstance.on(L.Draw.Event.EDITED, event => {
-      this.onEditPolygons(event);
+      this.onEditLayers(event);
     });
 
     this.roomLayers.on('click', event => {
@@ -259,12 +234,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.mapInstance.on(L.Draw.Event.CREATED, event => {
       const leafletEvent = event as any;
       if (leafletEvent.layerType === "polygon" || leafletEvent.layerType === "rectangle") {
-        const layer = event.layer;
-        this.addedLayers.addLayer(layer);
-        this.setState({
-          polygonCreated: true,
-          layer: layer
-        });
+        this.handleRoomCreation(event);
       } else if (leafletEvent.layerType === "marker") {
         this.handleDeviceMarkerCreation(event);
       }
@@ -274,10 +244,12 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Device marker creation handler
+   *
+   * @param event leaflet event
    */
   private handleDeviceMarkerCreation = async (event: L.LeafletEvent) => {
-    const { accessToken, exhibitionId, selectedDeviceGroup, deviceModels } = this.props;
-    if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id || !deviceModels || !deviceModels[0].id) {
+    const { exhibitionId, selectedItems, deviceModels, onDeviceAdd } = this.props;
+    if (!exhibitionId || !selectedItems.deviceGroup || !selectedItems.deviceGroup.id || !deviceModels || !deviceModels[0].id || !onDeviceAdd) {
       return;
     }
 
@@ -292,7 +264,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
       const exhibitionDevice: ExhibitionDevice = {
         name: strings.floorPlan.device.new,
-        groupId: selectedDeviceGroup.id,
+        groupId: selectedItems.deviceGroup.id,
         modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,
         location: {
@@ -300,106 +272,83 @@ export default class FloorPlanMap extends React.Component<Props, State> {
           y: marker._latlng.lng
         }
       };
-
-      createDevice(accessToken, exhibitionId, exhibitionDevice);
+      onDeviceAdd(exhibitionDevice);
     }
   }
 
   /**
-   * On polygon save handler
+   * Room creation handler
+   *
+   * @param event leaflet event
    */
-  private onPolygonSave = () => {
-    this.saveRoomPolygon();
-    this.setState({
-      polygonCreated : false,
-      roomName: ""
-    });
-  }
+  private handleRoomCreation = async (event: L.LeafletEvent) => {
+    const { exhibitionId, selectedItems, onRoomAdd } = this.props;
+    if (!exhibitionId || !selectedItems.floor || !selectedItems.floor.id || !onRoomAdd) {
+      return;
+    }
 
-  /**
-   * On cancel handler
-   */
-  private onCancel = () => {
-    this.setState({
-      polygonCreated: false,
-      roomName: ""
-    });
-    this.addedLayers = new L.FeatureGroup();
+    const room = event.layer;
+    if (room && room._latlngs) {
+      const newRoom = new L.Rectangle(room._latlngs);
+      this.addedLayers.addLayer(newRoom);
+
+      const geoJson =  this.addedLayers.toGeoJSON() as FeatureCollection;
+      if (geoJson.features[0].geometry.type !== "Polygon") {
+        this.addedLayers = new L.FeatureGroup();
+        return;
+      }
+      const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
+
+      const roomToCreate: ExhibitionRoom = {
+        floorId: selectedItems.floor.id,
+        name: strings.floorPlan.floor.new,
+        geoShape: roomPolygon
+      };
+      onRoomAdd(roomToCreate);
+      this.addedLayers = new L.FeatureGroup();
+    }
+
   }
 
   /**
    * Set selected room
+   *
    * @param event leaflet event
    */
   private setSelectedRoom = (event: L.LeafletEvent) => {
-    const { onRoomClick, selectedFloor, selectedItemHasNodes } = this.props;
+    const { onRoomClick, selectedItems } = this.props;
     const { leafletIdToRoomMap } = this.state;
     const foundRoom = leafletIdToRoomMap.get(event.layer._leaflet_id);
 
-    if (!onRoomClick || !selectedFloor || !foundRoom || !selectedItemHasNodes) {
+    if (!onRoomClick || !selectedItems.floor || !foundRoom || !selectedItems.selectedItemHasNodes) {
       return;
     }
-    onRoomClick(selectedFloor, foundRoom, selectedItemHasNodes);
+    onRoomClick(selectedItems.floor, foundRoom, selectedItems.selectedItemHasNodes);
   }
 
   /**
    * Set selected device
+   *
    * @param event leaflet event
    */
   private setSelectedDevice = (event: L.LeafletEvent) => {
-    const { onDeviceClick, selectedFloor, selectedRoom, selectedDeviceGroup, selectedItemHasNodes } = this.props;
+    const { onDeviceClick, selectedItems } = this.props;
     const { leafletIdToDeviceMap } = this.state;
     const foundDevice = leafletIdToDeviceMap.get(event.layer._leaflet_id);
-    if (!onDeviceClick || !selectedFloor || !selectedRoom || !selectedDeviceGroup || !foundDevice || !selectedItemHasNodes) {
+    if (!onDeviceClick ||
+      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || !selectedItems.selectedItemHasNodes) {
       return;
     }
-    onDeviceClick(selectedFloor, selectedRoom, selectedDeviceGroup, foundDevice, selectedItemHasNodes);
+    onDeviceClick(selectedItems.floor, selectedItems.room, selectedItems.deviceGroup, foundDevice, selectedItems.selectedItemHasNodes);
   }
 
   /**
-   * Save polygon to API handler
-   */
-  private saveRoomPolygon = async () => {
-    const { accessToken, exhibitionId, selectedFloor } = this.props;
-    const { roomName, layer } = this.state;
-    if (!accessToken || !exhibitionId || !selectedFloor || !selectedFloor.id || !roomName || !layer) {
-      return;
-    }
-
-    const geoShape = this.addedLayers;
-    const geoJson = geoShape.toGeoJSON() as FeatureCollection;
-    if (geoJson.features[0].geometry.type !== "Polygon") {
-      this.addedLayers = new L.FeatureGroup();
-      return;
-    }
-    const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const exhibitionRoomToCreate: ExhibitionRoom = {
-      floorId: selectedFloor.id,
-      name: roomName,
-      geoShape: roomPolygon
-    };
-
-    await roomsApi.createExhibitionRoom({
-      exhibitionId: exhibitionId,
-      exhibitionRoom: exhibitionRoomToCreate
-    });
-    this.addedLayers = new L.FeatureGroup();
-    this.roomLayers.addLayer(layer);
-  }
-
-
-  /**
-   * Edit room polygons
+   * Edit map layers
+   *
    * @param event leaflet event
-   * TODO: Add confirmation dialog
    */
-  private onEditPolygons = (event: L.LeafletEvent) => {
-    const { exhibitionId, accessToken, selectedRoom, selectedDevice } = this.props;
-    if ( !exhibitionId || !selectedRoom || !accessToken) {
-      return;
-    }
-
+  private onEditLayers = (event: L.LeafletEvent) => {
+    const { selectedItems } = this.props;
 
     /**
      * Must cast is it like this because L.LeafletEvent does not contain
@@ -408,64 +357,15 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const leafletEvent = event as any;
     const leafletFeatureGroup = leafletEvent as FeatureGroup;
 
-    if (selectedDevice) {
-      const deviceToUpdate = { ...selectedDevice } as ExhibitionDevice;
-      if (!deviceToUpdate.id) {
-        return;
-      }
-      L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-        onEachFeature(_feature, layer) {
-          if (!deviceToUpdate || !deviceToUpdate.location) {
-            return;
-          }
-          const marker = _feature.geometry as any;
-          deviceToUpdate.location.x = marker.coordinates[1];
-          deviceToUpdate.location.y = marker.coordinates[0];
-        }
-      });
-
-      const devicesApi = Api.getExhibitionDevicesApi(accessToken);
-      devicesApi.updateExhibitionDevice({
-        deviceId: deviceToUpdate.id,
-        exhibitionDevice: deviceToUpdate,
-        exhibitionId: exhibitionId
-      });
+    if (selectedItems.device) {
+      this.handleDeviceUpdate(leafletFeatureGroup);
       return;
     }
 
-    if (selectedRoom) {
-      const roomToUpdate = { ...selectedRoom } as ExhibitionRoom;
-
-      if (!roomToUpdate.id) {
-        return;
-      }
-
-      L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-        onEachFeature(_feature, layer) {
-          const roomPolygon = _feature.geometry as ApiPolygon;
-          roomToUpdate.geoShape = roomPolygon;
-        }
-      });
-
-      const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-      roomsApi.updateExhibitionRoom({
-        exhibitionId: exhibitionId,
-        exhibitionRoom: roomToUpdate,
-        roomId: roomToUpdate.id
-      });
+    if (selectedItems.room) {
+      this.handleRoomUpdate(leafletFeatureGroup);
       return;
     }
-  }
-
-  /**
-   * On polygon name change handler
-   *
-   * @param event react change event
-   */
-  private onRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      roomName : event.target.value
-    });
   }
 
   /**
@@ -485,9 +385,9 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Load room data from API
    */
   private loadRooms = async () => {
-    const { accessToken, exhibitionId, selectedFloor, selectedRoom } = this.props;
+    const { accessToken, exhibitionId, selectedItems } = this.props;
 
-    const foundRooms = await loadRooms(accessToken, exhibitionId, selectedFloor, selectedRoom);
+    const foundRooms = await loadRooms(accessToken, exhibitionId, selectedItems.floor, selectedItems.room);
     this.roomLayers.clearLayers();
     this.addRoomLayers(foundRooms);
   }
@@ -496,9 +396,9 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Load device data from API
    */
   private loadDevices = async () => {
-    const { accessToken, exhibitionId, selectedDeviceGroup, selectedDevice } = this.props;
+    const { accessToken, exhibitionId, selectedItems } = this.props;
 
-    const foundDevices = await loadDevices(accessToken, exhibitionId, selectedDeviceGroup, selectedDevice);
+    const foundDevices = await loadDevices(accessToken, exhibitionId, selectedItems.deviceGroup, selectedItems.device);
     this.deviceMarkers.clearLayers();
     this.addDeviceMarkers(foundDevices);
   }
@@ -600,6 +500,66 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   }
 
   /**
+   * Handle device update
+   *
+   * @param leafletFeatureGroup leaflet feature group
+   */
+  private handleDeviceUpdate = (leafletFeatureGroup: FeatureGroup) => {
+    const { selectedItems, onDeviceSave } = this.props;
+    if (!selectedItems.device || !onDeviceSave) {
+      return;
+    }
+
+    const deviceToUpdate = { ...selectedItems.device } as ExhibitionDevice;
+    if (!deviceToUpdate.id) {
+      return;
+    }
+    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
+      onEachFeature(_feature, layer) {
+        if (!deviceToUpdate || !deviceToUpdate.location) {
+          return;
+        }
+
+        const marker = _feature.geometry as any;
+        const newPoint: Point = {
+          x: marker.coordinates[1],
+          y: marker.coordinates[0]
+        };
+        deviceToUpdate.location = newPoint;
+      }
+    });
+
+    onDeviceSave(deviceToUpdate);
+  }
+
+  /**
+   * Handle room update
+   *
+   * @param leafletFeatureGroup leaflet feature group
+   */
+  private handleRoomUpdate = (leafletFeatureGroup: FeatureGroup) => {
+    const { selectedItems, onRoomSave } = this.props;
+    if (!selectedItems.room || !onRoomSave) {
+      return;
+    }
+
+    const roomToUpdate = { ...selectedItems.room } as ExhibitionRoom;
+
+    if (!roomToUpdate.id) {
+      return;
+    }
+
+    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
+      onEachFeature(_feature, layer) {
+        const roomPolygon = _feature.geometry as ApiPolygon;
+        roomToUpdate.geoShape = roomPolygon;
+      }
+    });
+
+    onRoomSave(roomToUpdate);
+  }
+
+  /**
    * Trigger L.Draw.Rectangle event which allows user to draw rectangle on the map
    */
   public addRoom = () => {
@@ -621,7 +581,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Save current device marker
    */
   public saveRoom = () => {
-    console.log(this.mapInstance)
     if (!this.mapInstance) {
       return;
     }
@@ -666,49 +625,20 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Delete current device
    */
   public deleteDevice = () => {
-    const { accessToken, exhibitionId, selectedDevice } = this.props;
-
-    if (!exhibitionId || !selectedDevice) {
-      return;
-    }
-
-    // FIXME: Add nicer confirm dialog
-    if (window.confirm(strings.generic.confirmDelete)) {
-      deleteDevice(accessToken, exhibitionId, selectedDevice);
-      this.deviceMarkers.clearLayers();
-    }
+    this.deviceMarkers.clearLayers();
   }
 
   /**
    * Delete currently selected device group
    */
   public deleteDeviceGroup = () => {
-    const { accessToken, exhibitionId, selectedDeviceGroup } = this.props;
-
-    if (!exhibitionId || !selectedDeviceGroup) {
-      return;
-    }
-
-    // FIXME: Add nicer confirm dialog
-    if (window.confirm(strings.generic.confirmDelete)) {
-      deleteDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup);
-    }
+    // FIXME: Add map support for device groups
   }
 
   /**
    * Delete currently selected room
    */
   public deleteRoom = () => {
-    const { accessToken, exhibitionId, selectedRoom } = this.props;
-
-    if (!exhibitionId || !selectedRoom) {
-      return;
-    }
-
-    // FIXME: Add nicer confirm dialog
-    if (window.confirm(strings.generic.confirmDelete)) {
-      deleteRoom(accessToken, exhibitionId, selectedRoom);
-      this.roomLayers.clearLayers();
-    }
+    this.roomLayers.clearLayers();
   }
 }
