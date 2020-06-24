@@ -420,6 +420,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     return [];
   }
 
+  /**
+   * Filter map data for leaflet
+   */
   private filterMapData = () => {
     const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices } = this.state;
     const data: any = { };

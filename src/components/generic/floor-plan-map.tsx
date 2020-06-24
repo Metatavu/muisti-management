@@ -54,12 +54,18 @@ interface FloorPlanInfo {
   bounds: LatLngBounds;
 }
 
+/**
+ * Contains all map data
+ */
 interface MapData {
   rooms?: ExhibitionRoom[];
   deviceGroups?: ExhibitionDeviceGroup[];
   devices?: ExhibitionDevice[];
 }
 
+/**
+ * Contains all selected items
+ */
 interface SelectedItems {
   floor? : ExhibitionFloor;
   room?: ExhibitionRoom;
@@ -405,8 +411,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Add room layers to leaflet map
-   *
-   * @param rooms list of exhibition rooms
    */
   private loadRooms = () => {
     const { mapData } = this.props;
@@ -484,8 +488,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   /**
    * Add device markers to leaflet map
-   *
-   * @param devices list of exhibition devices
    */
   private loadDevices = () => {
     this.deviceMarkers.clearLayers();
