@@ -181,6 +181,8 @@
     },
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
+    "deletePage": "Poista sivu",
+    "confirmDeletePage": "Haluatko varmasti poistaa sivun?",
     "addDevice": "Lisää laite",
     "addResource": "Lisää resurssi",
     "addEventTrigger": "Lisää tapahtuma",
