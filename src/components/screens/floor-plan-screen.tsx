@@ -126,7 +126,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   public render() {
     const { classes, history } = this.props;
     // tslint:disable-next-line: max-line-length
-    const { exhibition, floors, rooms, deviceGroups, devices, addImageDialogOpen, selectedFloor } = this.state;
+    const { exhibition, addImageDialogOpen, selectedFloor } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -136,7 +136,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       );
     }
 
-    const treeNodes = this.constructTreeData(floors, rooms, deviceGroups, devices);
+    const treeNodes = this.constructTreeData();
     const firstSelected = selectedFloor?.id || "";
     return (
       <BasicLayout
@@ -181,7 +181,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, devices, selectedDevice, selectedItemHasNodes } = this.state;
     const { exhibitionId, accessToken, deviceModels } = this.props;
 
     if (cropping && cropImageDataUrl ) {
@@ -319,7 +319,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param devices exhibition devices
    * @return array of tree nodes
    */
-  private constructTreeData = (floors: ExhibitionFloor[], rooms: ExhibitionRoom[], deviceGroups: ExhibitionDeviceGroup[], devices: ExhibitionDevice[]) => {
+  private constructTreeData = () => {
+    const { floors, rooms, deviceGroups, devices } = this.state;
+
+    console.log(devices.find(device => device.id === this.state.selectedDevice?.id));
+    console.log(this.state.selectedDevice)
     const treeData: TreeNodeInArray[] = floors.map(floor => {
       return {
         key: floor.id!,
@@ -874,13 +878,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
     const updatedDevice = await this.updateDevice(accessToken, exhibitionId, deviceToUpdate, deviceToUpdate.id);
-
+    console.log(updatedDevice.location);
     this.setState(
       produce((draft: Draft<State>) => {
         const { devices } = draft;
         const deviceIndex = devices.findIndex(device => device.id === deviceToUpdate.id);
         if (deviceIndex > -1) {
           devices.splice(deviceIndex, 1, updatedDevice);
+          draft.selectedDevice = updatedDevice;
         }
       })
     );

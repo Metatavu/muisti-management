@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression, LatLngTuple } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
@@ -145,8 +145,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (prevProps.selectedItems.floor !== this.props.selectedItems.floor ||
       prevProps.selectedItems.room !== this.props.selectedItems.room ||
       prevProps.selectedItems.device !== this.props.selectedItems.device ||
-      prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup
+      prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup ||
+      prevProps.mapData !== this.props.mapData
     ) {
+      console.log("Changed!");
       this.initializeMapData();
     }
   }
@@ -348,7 +350,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const { leafletIdToDeviceMap } = this.state;
     const foundDevice = leafletIdToDeviceMap.get(event.layer._leaflet_id);
     if (!onDeviceClick ||
-      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || !selectedItems.selectedItemHasNodes) {
+      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || selectedItems.selectedItemHasNodes === undefined) {
       return;
     }
     onDeviceClick(selectedItems.floor, selectedItems.room, selectedItems.deviceGroup, foundDevice, selectedItems.selectedItemHasNodes);
@@ -390,7 +392,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
 
     this.loadRooms();
-    this.loadDeviceGroups();
+    this.loadDeviceGroup();
     this.loadDevices();
   }
 
@@ -442,63 +444,35 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    *
    * @param devices list of exhibition devices
    */
-  private loadDeviceGroups = () => {
+  private loadDeviceGroup = () => {
     const { mapData } = this.props;
-
+    this.deviceGroupLayers.clearLayers();
     const devices = mapData.devices;
 
-    if (!mapData.deviceGroups || !devices) {
+    if (!mapData.deviceGroups || !devices || !this.mapInstance) {
       return;
     }
 
-    this.deviceGroupLayers.clearLayers();
-
-    const devicePoints: number[][] = [];
-
+    const devicePoints: LatLngExpression[] = [];
 
     mapData.deviceGroups.forEach(deviceGroup => {
-      const asd: LatLngExpression = {};
       devices.forEach(device => {
         if (device.groupId === deviceGroup.id && device.location && device.location.x && device.location.y) {
-          asd.push(device.location.x);
-          asd.push(device.location.y);
-          devicePoints.push(asd);
+          const latLng: LatLngTuple = [device.location.x, device.location.y];
+          devicePoints.push(latLng);
         }
       });
-      console.log(devicePoints);
     });
 
-    const drawMap = this.mapInstance! as DrawMap;
-    const newDeviceGroupLayer = new L.Polygon( [devicePoints] );
-
-    // if (!devices) {
-    //   return;
-    // }
-
-    // const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
-
-    // devices.forEach(device => {
-
-    //   if (device && device.location && device.location.x && device.location.y) {
-    //     const markerOptions: MarkerOptions = {
-    //       icon: this.deviceIcon,
-    //       draggable: false
-    //     };
-
-    //     const latlng = new LatLng(device.location.x, device.location.y);
-    //     const customMarker = new L.Marker(latlng, markerOptions);
-    //     this.deviceMarkers.addLayer(customMarker);
-    //     const markerId = this.deviceMarkers.getLayerId(customMarker);
-    //     tempLeafletIdToDeviceMap.set(markerId, device);
-    //   }
-    // });
-
-    // this.mapInstance?.addLayer(this.deviceMarkers);
-
-    // this.setState({
-    //   leafletIdToDeviceMap: tempLeafletIdToDeviceMap
-    // });
-
+    const deviceGroupBounds = this.getDeviceGroupBounds(devicePoints);
+    const newDeviceGroupLayer = new L.Polygon(deviceGroupBounds) as any;
+    newDeviceGroupLayer.setStyle({
+      fillOpacity: 0.5,
+      // FIXME: Needs API support for layer properties
+      fillColor :"#b52016",
+    });
+    this.deviceGroupLayers.addLayer(newDeviceGroupLayer);
+    this.mapInstance.addLayer(this.deviceGroupLayers);
   }
 
   /**
@@ -508,14 +482,19 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private loadDevices = () => {
     this.deviceMarkers.clearLayers();
-    const { mapData } = this.props;
-    if (!mapData.devices) {
+    const { mapData, selectedItems } = this.props;
+    const tempMapData = { ...mapData };
+    if (!tempMapData.devices || !this.mapInstance) {
       return;
+    }
+
+    if (selectedItems.device) {
+      tempMapData.devices = [selectedItems.device];
     }
 
     const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
 
-    mapData.devices.forEach(device => {
+    tempMapData.devices.forEach(device => {
 
       if (device && device.location && device.location.x && device.location.y) {
         const markerOptions: MarkerOptions = {
@@ -531,12 +510,37 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       }
     });
 
-    this.mapInstance?.addLayer(this.deviceMarkers);
+    this.mapInstance.addLayer(this.deviceMarkers);
 
     this.setState({
       leafletIdToDeviceMap: tempLeafletIdToDeviceMap
     });
 
+  }
+
+  private getDeviceGroupBounds = (devicePoints: LatLngExpression[]): LatLngExpression[] => {
+    if (devicePoints.length === 0) {
+      return [];
+    }
+
+    const padding = 0.3;
+    const sortX = devicePoints as LatLngTuple[];
+    sortX.sort((point1, point2) => { return (point1[0] - point2[0]); });
+    const leftX = sortX[0][0] - padding;
+    const rightX = sortX[sortX.length - 1][0] + padding;
+
+    const sortY = devicePoints as LatLngTuple[];
+    sortY.sort((point1, point2) => { return (point1[1] - point2[1]); });
+    const bottomY = sortX[0][1] - padding;
+    const topY = sortX[sortX.length - 1][1] + padding;
+
+    const test: LatLngTuple[] = [];
+    test.push([leftX, topY]);
+    test.push([leftX, bottomY]);
+
+    test.push([rightX, bottomY]);
+    test.push([rightX, topY]);
+    return test;
   }
 
   /**
