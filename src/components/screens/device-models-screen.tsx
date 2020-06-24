@@ -417,7 +417,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
   /**
    * Get action buttons
-   * 
+   *
    * @returns action buttons as array
    */
   private getActionButtons = () => {
@@ -463,7 +463,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       const propertyToUpdate = deviceData[key1] as DeviceModelDataProperty;
       const updatedProperty = this.updateSubProperty(propertyToUpdate, key2, value);
       const updatedDeviceData = { ...deviceData, [key1]: updatedProperty } as DeviceModelData;
-      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDeviceModel);
+      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDeviceModel, true);
       this.setState({
         selectedDeviceModel: updatedDevice,
         deviceData: updatedDeviceData,
@@ -471,7 +471,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       });
     } else {
       const updatedDeviceData = { ...this.state.deviceData, [target.name]: value } as DeviceModelData;
-      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDeviceModel);
+      const updatedDevice = this.assignDeviceDataToDevice(updatedDeviceData, selectedDeviceModel, true);
       this.setState({
         selectedDeviceModel: updatedDevice,
         deviceData: updatedDeviceData,
@@ -533,7 +533,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     }
 
     this.setState({ formError: false });
-    const device = this.assignDeviceDataToDevice(deviceData, selectedDeviceModel);
+    const device = this.assignDeviceDataToDevice(deviceData, selectedDeviceModel, false);
     const updatedHiddenDisplayMetrics = this.updateHiddenDisplayMetricsValues(device.displayMetrics, device.dimensions);
     device.displayMetrics = updatedHiddenDisplayMetrics;
     if (newDevice) {
@@ -729,14 +729,14 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    * @param device device model
    * @returns device model
    */
-  private assignDeviceDataToDevice = (deviceData: DeviceModelData, device: DeviceModel): DeviceModel => {
+  private assignDeviceDataToDevice = (deviceData: DeviceModelData, device: DeviceModel, modify: boolean): DeviceModel => {
     const { displayMetrics, dimensions, manufacturer, model, capabilities } = deviceData;
 
     /**
      * FIXME:
      * Remove when possible device measurements flipping is saved to API
      */
-    const landscapeDevice = displayMetrics.widthPixels > displayMetrics.heightPixels;
+    const landscapeDevice = modify ? false : displayMetrics.widthPixels > displayMetrics.heightPixels;
 
     const deviceDimensions: DeviceModelDimensions = {
       deviceWidth: Number(dimensions.deviceWidth),
