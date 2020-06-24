@@ -44,6 +44,9 @@ interface State {
   leafletIdToDeviceMap: Map<number, ExhibitionDevice>;
 }
 
+/**
+ * Contains all floor plan data
+ */
 interface FloorPlanInfo {
   readOnly: boolean;
   url: string;
