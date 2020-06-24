@@ -476,7 +476,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     newDeviceGroupLayer.setStyle({
       fillOpacity: layerStyleOptions.deviceGroupOpacity,
       // FIXME: Needs API support for layer properties
-      fillColor : layerStyleOptions.deviceGroupLayerColor,
+      fillColor: layerStyleOptions.deviceGroupLayerColor,
     });
     this.deviceGroupLayers.addLayer(newDeviceGroupLayer);
     this.mapInstance.addLayer(this.deviceGroupLayers);
