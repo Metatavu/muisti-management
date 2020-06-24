@@ -305,7 +305,16 @@ export interface IStrings extends LocalizedStringsMethods {
       new: string;
       delete: string;
       edit: string;
-    }
+      move: string;
+    };
+    antenna: {
+      add: string;
+      new: string;
+      newReaderId: string;
+      delete: string;
+      edit: string;
+      move: string;
+    };
     structure: string;
     toolbar: {
       save: string;
@@ -322,6 +331,10 @@ export interface IStrings extends LocalizedStringsMethods {
       landscape: string;
       portrait: string;
       allowVisitorSessionCreation: string;
+      name: string;
+      readerId: string;
+      deviceGroup: string;
+      room: string;
     };
     hasChildElements: string;
   };

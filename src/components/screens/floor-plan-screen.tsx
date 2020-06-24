@@ -11,7 +11,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel, RfidAntenna } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -56,10 +56,12 @@ interface State {
   rooms: ExhibitionRoom[];
   deviceGroups: ExhibitionDeviceGroup[];
   devices: ExhibitionDevice[];
+  antennas: RfidAntenna[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
   selectedDeviceGroup?: ExhibitionDeviceGroup;
   selectedDevice?: ExhibitionDevice;
+  selectedAntenna?: RfidAntenna;
   treeData: TreeNodeInArray[];
   cropping: boolean;
   cropImageDataUrl?: string;
@@ -92,6 +94,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       rooms: [],
       deviceGroups: [],
       devices: [],
+      antennas: [],
       treeData: [],
       addImageDialogOpen: false,
       selectedItemHasNodes: false
@@ -125,7 +128,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history } = this.props;
-    // tslint:disable-next-line: max-line-length
     const { exhibition, addImageDialogOpen, selectedFloor } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
@@ -181,7 +183,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
     const { exhibitionId, accessToken, deviceModels } = this.props;
 
     if (cropping && cropImageDataUrl ) {
@@ -217,6 +219,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         room: selectedRoom,
         deviceGroup: selectedDeviceGroup,
         device: selectedDevice,
+        antenna: selectedAntenna,
         selectedItemHasNodes: selectedItemHasNodes
       };
 
@@ -235,6 +238,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         onDeviceAdd={ this.onDeviceAddClick }
         onDeviceSave={ this.onDeviceSaveClick }
         onDeviceClick={ this.onDeviceClick }
+        onAntennaAdd={ this.onAntennaAddClick }
+        onAntennaSave={ this.onAntennaSaveClick }
+        onAntennaClick={ this.onAntennaClick }
       />;
     }
     return null;
@@ -245,7 +251,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private renderRightPanel = () => {
     const { deviceModels } = this.props;
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, rooms, selectedRoom, selectedDeviceGroup, deviceGroups, selectedDevice, selectedAntenna } = this.state;
     if (cropping && cropImageDataUrl) {
       return <FloorPlanCropProperties
         imageHeight={ this.state.cropImageDetails?.height }
@@ -261,11 +267,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           selectedRoom={ selectedRoom }
           selectedDeviceGroup={ selectedDeviceGroup }
           selectedDevice={ selectedDevice }
+          selectedAntenna={ selectedAntenna }
           deviceModels={ deviceModels }
+          rooms={ selectedRoom ? rooms.filter(room => room.id === selectedRoom.id) : [] }
+          deviceGroups={ selectedRoom ? deviceGroups.filter(group => group.roomId === selectedRoom.id) : [] }
           onChangeFloorProperties={ this.onChangeFloorProperties }
           onChangeRoomProperties={ this.onChangeRoomProperties }
           onChangeDeviceGroupProperties={ this.onChangeDeviceGroupProperties }
           onChangeDeviceProperties={ this.onChangeDeviceProperties }
+          onChangeAntennaProperties={ this.onChangeAntennaProperties }
         />
       );
     }
@@ -289,13 +299,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
-    const [ floors, rooms, deviceGroups, devices ] =
-      await Promise.all<ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[]>(
+    const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
+    const [ floors, rooms, deviceGroups, devices, antennas ] =
+      await Promise.all<ExhibitionFloor[], ExhibitionRoom[], ExhibitionDeviceGroup[], ExhibitionDevice[], RfidAntenna[]>(
         [
           exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
           exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
           exhibitionDeviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId }),
-          exhibitionDevicesApi.listExhibitionDevices({ exhibitionId })
+          exhibitionDevicesApi.listExhibitionDevices({ exhibitionId }),
+          rfidAntennasApi.listRfidAntennas({ exhibitionId })
         ]
       );
     const selectedFloor = floors[0];
@@ -306,6 +318,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       rooms,
       deviceGroups,
       devices,
+      antennas,
       selectedFloor
     });
   }
@@ -313,14 +326,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Constructs tree data
    *
-   * @param floors exhibition floors
-   * @param rooms exhibition rooms
-   * @param deviceGroups exhibition device groups
-   * @param devices exhibition devices
    * @return array of tree nodes
    */
   private constructTreeData = () => {
-    const { floors, rooms, deviceGroups, devices } = this.state;
+    const { floors, rooms, deviceGroups, devices, antennas } = this.state;
 
     const treeData: TreeNodeInArray[] = floors.map(floor => {
       return {
@@ -337,14 +346,25 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                 key: group.id!,
                 label: group.name,
                 onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor.id!, room.id!, group.id!, hasNodes),
-                nodes: devices.filter(device => device.groupId === group.id).map(device => {
-                  return {
-                    key: device.id!,
-                    label: device.name,
-                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
-                    nodes: [],
-                  };
-                })
+                nodes:
+                  [
+                    ...devices.filter(device => device.groupId === group.id).map(device => {
+                      return {
+                        key: device.id!,
+                        label: device.name,
+                        onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
+                        nodes: [],
+                      };
+                    }),
+                    ...antennas.filter(antenna => antenna.groupId === group.id).map(antenna => {
+                      return {
+                        key: antenna.id!,
+                        label: antenna.name,
+                        onClick: (hasNodes: boolean) => this.onAntennaClick(floor.id!, room.id!, group.id!, antenna.id!, hasNodes),
+                        nodes: [],
+                      };
+                    }),
+                  ]
               };
             })
           };
@@ -374,19 +394,28 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @returns array of action button objects
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
+    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
+
+    if (selectedAntenna) {
+      return [
+        { name: strings.floorPlan.antenna.move, action: () => this.mapRef.current!.editAntennaMarker() },
+        { name: strings.generic.save, action: () => this.mapRef.current!.saveAntennaMarker() },
+        { name: strings.floorPlan.antenna.delete, action: this.onAntennaDeleteClick }
+      ] as ActionButton[];
+    }
 
     if (selectedDevice) {
       return [
-        { name: strings.floorPlan.device.edit, action: () => this.mapRef.current!.editDeviceMarker() },
+        { name: strings.floorPlan.device.move, action: () => this.mapRef.current!.editDeviceMarker() },
         { name: strings.generic.save, action: () => this.mapRef.current!.saveDeviceMarker() },
-        { name: strings.floorPlan.device.delete, action: this.onDeviceDeleteClick }
+        { name: strings.floorPlan.device.delete, action: this.onDeviceDeleteClick },
       ] as ActionButton[];
     }
 
     if (selectedDeviceGroup) {
       return [
         { name: strings.floorPlan.device.add, action: () => this.mapRef.current!.addDeviceMarker() },
+        { name: strings.floorPlan.antenna.add, action: () => this.mapRef.current!.addAntennaMarker() },
         { name: strings.generic.save, action: this.onDeviceGroupSaveClick },
         { name: strings.floorPlan.deviceGroup.delete,
           action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onDeviceGroupDeleteClick
@@ -424,13 +453,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Filter map data for leaflet
    */
   private filterMapData = () => {
-    const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices } = this.state;
+    const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices, antennas } = this.state;
     const data: any = { };
 
     if (selectedDeviceGroup) {
       data.rooms = [ selectedRoom ];
       data.deviceGroups = [ selectedDeviceGroup ];
       data.devices = devices.filter(device => device.groupId === selectedDeviceGroup.id);
+      data.antennas = antennas.filter(antenna => antenna.groupId === selectedDeviceGroup.id);
       return data;
     }
 
@@ -791,7 +821,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for device group delete click
    */
-  private onDeviceGroupDeleteClick = async () => {// tslint:disable-next-line: max-line-length
+  private onDeviceGroupDeleteClick = async () => {
 
     const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;
@@ -816,8 +846,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         }
       })
     );
-
-    this.mapRef.current!.deleteDeviceGroup();
   }
 
   /**
@@ -892,9 +920,90 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for add device click
+   *
+   * @param deviceToCreate exhibition device to create
+   */
+  private onAntennaAddClick = async (antennaToCreate: RfidAntenna) => {
+    const { accessToken, exhibitionId } = this.props;
+    if (!exhibitionId) {
+      return;
+    }
+
+    const newAntenna = await this.createAntenna(accessToken, exhibitionId, antennaToCreate);
+    this.setState(
+      produce((draft: Draft<State>) => {
+        draft.antennas.push(newAntenna);
+      })
+    );
+  }
+
+  /**
+   * Event handler for delete antenna click
+   */
+  private onAntennaDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedAntenna } = this.state;
+    if (!exhibitionId || !selectedAntenna || !selectedAntenna.id) {
+      return;
+    }
+
+    // FIXME: Add nicer dialog
+    if (!window.confirm(strings.generic.confirmDelete)) {
+      return;
+    }
+
+    this.deleteAntenna(accessToken, exhibitionId, selectedAntenna.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { antennas } = draft;
+        const antennaIndex = antennas.findIndex(antenna => antenna.id === selectedAntenna.id);
+        if (antennaIndex > -1) {
+          antennas.splice(antennaIndex, 1);
+          draft.selectedAntenna = undefined;
+        }
+      })
+    );
+
+    this.mapRef.current!.deleteAntenna();
+  }
+
+  /**
+   * Event handler for on save antenna click
+   *
+   * @param antennaToUpdate antenna to update
+   */
+  private onAntennaSaveClick = async (antennaToUpdate: RfidAntenna) => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDeviceGroup } = this.state;
+    if (!exhibitionId || !antennaToUpdate.id || !antennaToUpdate.exhibitionId) {
+      return;
+    }
+
+    const updatedAntenna = await this.updateAntenna(accessToken, exhibitionId, antennaToUpdate, antennaToUpdate.id);
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { antennas } = draft;
+        const antennaIndex = antennas.findIndex(antenna => antenna.id === antennaToUpdate.id);
+        if (antennaIndex > -1) {
+          antennas.splice(antennaIndex, 1, updatedAntenna);
+          if (selectedDeviceGroup && selectedDeviceGroup.id !== antennaToUpdate.groupId ) {
+            this.mapRef.current!.deleteAntenna();
+            draft.selectedAntenna = undefined;
+          } else {
+            draft.selectedAntenna = updatedAntenna;
+          }
+        }
+      })
+    );
+  }
+
+  /**
    * Event handler for floor click
    *
-   * @param floor selected floor
+   * @param floorId selected floor id
    * @param hasNodes has child nodes
    */
   private onFloorClick = (floorId: string, hasNodes: boolean) => {
@@ -905,6 +1014,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom: undefined,
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
+      selectedAntenna: undefined,
       selectedItemHasNodes: hasNodes
     });
   }
@@ -912,8 +1022,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for room click
    *
-   * @param floor selected floor
-   * @param room selected room
+   * @param floorId selected floor id
+   * @param roomId selected room id
    * @param hasNodes has child nodes
    */
   private onRoomClick = (floorId: string, roomId: string, hasNodes: boolean) => {
@@ -924,6 +1034,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
+      selectedAntenna: undefined,
       selectedItemHasNodes: hasNodes
     });
   }
@@ -931,9 +1042,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for device group click
    *
-   * @param floor selected floor
-   * @param room selected room
-   * @param deviceGroup selected device group
+   * @param floorId selected floor id
+   * @param roomId selected room id
+   * @param deviceGroupId selected device group id
    * @param hasNodes has child nodes
    */
   private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => {
@@ -944,6 +1055,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
+      selectedAntenna: undefined,
       selectedItemHasNodes: hasNodes
     });
   }
@@ -951,10 +1063,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for device click
    *
-   * @param floor selected floor
-   * @param room selected room
-   * @param deviceGroup selected device group
-   * @param device selected device
+   * @param floorId selected floor id
+   * @param roomId selected room id
+   * @param deviceGroupId selected device group id
+   * @param deviceId selected device id
    * @param hasNodes has child nodes
    */
   private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => {
@@ -965,6 +1077,29 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: devices.find(device => device.id === deviceId),
+      selectedAntenna: undefined,
+      selectedItemHasNodes: hasNodes
+    });
+  }
+
+  /**
+   * Event handler for antenna click
+   *
+   * @param floorId selected floor id
+   * @param roomId selected room id
+   * @param deviceGroupId selected device group id
+   * @param antennaId selected antenna id
+   * @param hasNodes has child nodes
+   */
+  private onAntennaClick = (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => {
+    const { floors, rooms, deviceGroups, antennas } = this.state;
+
+    this.setState({
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
+      selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
+      selectedDevice: undefined,
+      selectedAntenna: antennas.find(antenna => antenna.id === antennaId),
       selectedItemHasNodes: hasNodes
     });
   }
@@ -1041,6 +1176,25 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState({
       selectedDevice: updatedDevice
+    });
+  }
+
+  /**
+   * Event handler for change antenna properties
+   *
+   * @param event event
+   */
+  private onChangeAntennaProperties = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const { selectedAntenna } = this.state;
+    const { name, value } = event.target;
+    if (!selectedAntenna) {
+      return;
+    }
+
+    const updatedAntenna: RfidAntenna = { ...selectedAntenna, [name as keyof RfidAntenna]: value };
+
+    this.setState({
+      selectedAntenna: updatedAntenna
     });
   }
 
@@ -1200,24 +1354,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   };
 
   /**
-   * Finds device group from API
-   *
-   * @param accessToken keycloak access token
-   * @param exhibitionId exhibition id
-   * @param deviceGroupId device group id to find
-   */
-  // tslint:disable-next-line: max-line-length
-  private findDeviceGroup = async (accessToken: AccessToken, exhibitionId: string, deviceGroupId: string): Promise<ExhibitionDeviceGroup> => {
-    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
-    const foundDeviceGroup = deviceGroupsApi.findExhibitionDeviceGroup({
-      exhibitionId: exhibitionId,
-      deviceGroupId: deviceGroupId
-    });
-
-    return foundDeviceGroup;
-  };
-
-  /**
    * Create device handler
    *
    * @param accessToken keycloak access token
@@ -1268,6 +1404,57 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       deviceId: deviceId
     });
+  };
+
+  /**
+   * Create antenna handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param antennaToCreate antenna to create
+   */
+  private createAntenna = async (accessToken: AccessToken, exhibitionId: string, antennaToCreate: RfidAntenna): Promise<RfidAntenna> => {
+    const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
+    const createRfidAntenna = rfidAntennasApi.createRfidAntenna({
+      exhibitionId: exhibitionId,
+      rfidAntenna: antennaToCreate
+    });
+
+    return createRfidAntenna;
+  };
+
+  /**
+   * Delete antenna handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param antennaId antenna id
+   */
+  private deleteAntenna = async (accessToken: AccessToken, exhibitionId: string, antennaId: string) => {
+    const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
+    rfidAntennasApi.deleteRfidAntenna({
+      exhibitionId: exhibitionId,
+      rfidAntennaId: antennaId
+    });
+  };
+
+  /**
+   * Update device handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceToUpdate device to update
+   * @param deviceId device id
+   */
+  private updateAntenna = async (accessToken: AccessToken, exhibitionId: string, antennaToUpdate: RfidAntenna, antennaId: string): Promise<RfidAntenna> => {
+    const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
+    const updatedRfidAntenna = rfidAntennasApi.updateRfidAntenna({
+      rfidAntennaId: antennaId,
+      rfidAntenna: antennaToUpdate,
+      exhibitionId: exhibitionId
+    });
+
+    return updatedRfidAntenna;
   };
 
 }

@@ -306,7 +306,16 @@
       "add": "Add new device",
       "new": "New device",
       "delete": "Delete device",
-      "edit": "Edit device"
+      "edit": "Edit device",
+      "move": "Move device"
+    },
+    "antenna" : {
+      "add": "Add new antenna",
+      "new": "New antenna",
+      "newReaderId": "123456",
+      "delete": "Delete antenna",
+      "edit": "Edit antenna",
+      "move": "Move antenna"
     },
     "structure": "Structure",
     "toolbar": {
@@ -314,6 +323,7 @@
       "upload": "Upload image"
     },
     "properties": {
+
       "title": "Properties",
       "imageHeight": "Image Height",
       "imageWidth": "Image Width",
@@ -323,9 +333,12 @@
       "screenOrientation": "Screen Orientation",
       "landscape": "Landscape",
       "portrait": "Portrait",
-      "allowVisitorSessionCreation": "Allow creation of new session to visitor"
+      "allowVisitorSessionCreation": "Allow creation of new session to visitor",
+      "name": "Name",
+      "readerId": "Antenna reader Id",
+      "deviceGroup": "Device group where antenna belongs to",
+      "room": "Room where antenna belongs to"
     },
-    
     "hasChildElements": "Selected element has child elements. Cannot delete!"
   },
 

@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -59,6 +59,15 @@ export default class Api {
    */
   public static getExhibitionDevicesApi(accessToken: AccessToken) {
     return new ExhibitionDevicesApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized rfid antennas api
+   *
+   * @param token access token
+   */
+  public static getRfidAntennasApi(accessToken: AccessToken) {
+    return new RfidAntennasApi(Api.getConfiguration(accessToken));
   }
 
   /**
