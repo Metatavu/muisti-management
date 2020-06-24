@@ -30,8 +30,6 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
-// tslint:disable-next-line: max-line-length
-import { deleteFloor, deleteDevice, deleteRoom, createDevice, updateDevice, createFloor, updateFloor, updateRoom, createRoom, createDeviceGroup, updateDeviceGroup, deleteDeviceGroup } from "../floor-plan/map-api-calls";
 
 /**
  * Component props
@@ -128,7 +126,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   public render() {
     const { classes, history } = this.props;
     // tslint:disable-next-line: max-line-length
-    const { exhibition, floors, rooms, deviceGroups, devices, addImageDialogOpen, selectedFloor } = this.state;
+    const { exhibition, addImageDialogOpen, selectedFloor } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -138,7 +136,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       );
     }
 
-    const treeNodes = this.constructTreeData(floors, rooms, deviceGroups, devices);
+    const treeNodes = this.constructTreeData();
     const firstSelected = selectedFloor?.id || "";
     return (
       <BasicLayout
@@ -212,6 +210,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         readOnly: false
       };
 
+      const mapData = this.filterMapData();
+
       const selectedItems = {
         floor: selectedFloor,
         room: selectedRoom,
@@ -226,6 +226,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         accessToken={ accessToken }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
+        mapData={ mapData }
         floorPlanInfo={ floorPlanInfo }
         selectedItems={ selectedItems }
         onRoomAdd={ this.onRoomAddClick }
@@ -318,27 +319,29 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param devices exhibition devices
    * @return array of tree nodes
    */
-  private constructTreeData = (floors: ExhibitionFloor[], rooms: ExhibitionRoom[], deviceGroups: ExhibitionDeviceGroup[], devices: ExhibitionDevice[]) => {
+  private constructTreeData = () => {
+    const { floors, rooms, deviceGroups, devices } = this.state;
+
     const treeData: TreeNodeInArray[] = floors.map(floor => {
       return {
         key: floor.id!,
         label: floor.name,
-        onClick: (hasNodes: boolean) => this.onFloorClick(floor, hasNodes),
+        onClick: (hasNodes: boolean) => this.onFloorClick(floor.id!, hasNodes),
         nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
           return {
             key: room.id!,
             label: room.name,
-            onClick: (hasNodes: boolean) => this.onRoomClick(floor, room, hasNodes),
+            onClick: (hasNodes: boolean) => this.onRoomClick(floor.id!, room.id!, hasNodes),
             nodes: deviceGroups.filter(group => group.roomId === room.id).map(group => {
               return {
                 key: group.id!,
                 label: group.name,
-                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor, room, group, hasNodes),
+                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor.id!, room.id!, group.id!, hasNodes),
                 nodes: devices.filter(device => device.groupId === group.id).map(device => {
                   return {
                     key: device.id!,
                     label: device.name,
-                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor, room, group, device, hasNodes),
+                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
                     nodes: [],
                   };
                 })
@@ -415,6 +418,34 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     return [];
+  }
+
+  /**
+   * Filter map data for leaflet
+   */
+  private filterMapData = () => {
+    const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices } = this.state;
+    const data: any = { };
+
+    if (selectedDeviceGroup) {
+      data.rooms = [ selectedRoom ];
+      data.deviceGroups = [ selectedDeviceGroup ];
+      data.devices = devices.filter(device => device.groupId === selectedDeviceGroup.id);
+      return data;
+    }
+
+    if (selectedRoom) {
+      data.rooms = [ selectedRoom ];
+      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom.id);
+      return data;
+    }
+
+    if (selectedFloor) {
+      data.rooms = rooms.filter(room => room.floorId === selectedFloor.id);
+      return data;
+    }
+
+    return data;
   }
 
   /**
@@ -561,7 +592,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    const newFloor = await createFloor(accessToken, exhibitionId, { name: strings.floorPlan.floor.new });
+    const newFloor = await this.createFloor(accessToken, exhibitionId, { name: strings.floorPlan.floor.new });
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -585,7 +616,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    deleteFloor(accessToken, exhibitionId, selectedFloor.id);
+    this.deleteFloor(accessToken, exhibitionId, selectedFloor.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -618,7 +649,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         return;
       }
 
-      const updatedFloor = await updateFloor(accessToken, exhibitionId, selectedFloor, selectedFloor.id);
+      const updatedFloor = await this.updateFloor(accessToken, exhibitionId, selectedFloor, selectedFloor.id);
 
       this.setState(
         produce((draft: Draft<State>) => {
@@ -643,7 +674,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    const newRoom = await createRoom(accessToken, exhibitionId, roomToCreate);
+    const newRoom = await this.createRoom(accessToken, exhibitionId, roomToCreate);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -668,7 +699,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    deleteRoom(accessToken, exhibitionId, selectedRoom.id);
+    this.deleteRoom(accessToken, exhibitionId, selectedRoom.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -694,7 +725,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    const updatedRoom = await updateRoom(accessToken, exhibitionId, roomToUpdate, roomToUpdate.id);
+    const updatedRoom = await this.updateRoom(accessToken, exhibitionId, roomToUpdate, roomToUpdate.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -724,7 +755,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       roomId: selectedRoom.id
     };
 
-    const newDeviceGroup = await createDeviceGroup(accessToken, exhibitionId, groupToCreate);
+    const newDeviceGroup = await this.createDeviceGroup(accessToken, exhibitionId, groupToCreate);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -744,7 +775,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     // FIXME: Add map support for device groups
-    const updatedDeviceGroup = await updateDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup, selectedDeviceGroup.id);
+    const updatedDeviceGroup = await this.updateDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup, selectedDeviceGroup.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -760,7 +791,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for device group delete click
    */
-  private onDeviceGroupDeleteClick = async () => {
+  private onDeviceGroupDeleteClick = async () => {// tslint:disable-next-line: max-line-length
+
     const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;
     if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
@@ -772,7 +804,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    deleteDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup.id);
+    this.deleteDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -798,7 +830,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    const newDevice = await createDevice(accessToken, exhibitionId, deviceToCreate);
+    const newDevice = await this.createDevice(accessToken, exhibitionId, deviceToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
         draft.devices.push(newDevice);
@@ -821,7 +853,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    deleteDevice(accessToken, exhibitionId, selectedDevice.id);
+    this.deleteDevice(accessToken, exhibitionId, selectedDevice.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -846,14 +878,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     if (!exhibitionId || !deviceToUpdate.id || !deviceToUpdate.exhibitionId) {
       return;
     }
-    const updatedDevice = await updateDevice(accessToken, exhibitionId, deviceToUpdate, deviceToUpdate.id);
-
+    const updatedDevice = await this.updateDevice(accessToken, exhibitionId, deviceToUpdate, deviceToUpdate.id);
     this.setState(
       produce((draft: Draft<State>) => {
         const { devices } = draft;
         const deviceIndex = devices.findIndex(device => device.id === deviceToUpdate.id);
         if (deviceIndex > -1) {
           devices.splice(deviceIndex, 1, updatedDevice);
+          draft.selectedDevice = updatedDevice;
         }
       })
     );
@@ -865,9 +897,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param floor selected floor
    * @param hasNodes has child nodes
    */
-  private onFloorClick = (floor: ExhibitionFloor, hasNodes: boolean) => {
+  private onFloorClick = (floorId: string, hasNodes: boolean) => {
+    const { floors } = this.state;
+
     this.setState({
-      selectedFloor: floor,
+      selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: undefined,
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
@@ -882,10 +916,12 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param room selected room
    * @param hasNodes has child nodes
    */
-  private onRoomClick = (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => {
+  private onRoomClick = (floorId: string, roomId: string, hasNodes: boolean) => {
+    const { floors, rooms } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedItemHasNodes: hasNodes
@@ -900,11 +936,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param deviceGroup selected device group
    * @param hasNodes has child nodes
    */
-  private onDeviceGroupClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => {
+  private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => {
+    const { floors, rooms, deviceGroups } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
-      selectedDeviceGroup: deviceGroup,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
+      selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedItemHasNodes: hasNodes
     });
@@ -919,12 +957,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param device selected device
    * @param hasNodes has child nodes
    */
-  private onDeviceClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => {
+  private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => {
+    const { floors, rooms, deviceGroups, devices } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
-      selectedDeviceGroup: deviceGroup,
-      selectedDevice: device,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
+      selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
+      selectedDevice: devices.find(device => device.id === deviceId),
       selectedItemHasNodes: hasNodes
     });
   }
@@ -1003,6 +1043,232 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDevice: updatedDevice
     });
   }
+
+  /**
+   * Create floor handler
+   *
+   * @param accessToken keycloak access token access token
+   * @param exhibitionId exhibition id exhibition id
+   * @param exhibitionFloor
+   */
+  private createFloor = async (accessToken: AccessToken, exhibitionId: string, exhibitionFloor: ExhibitionFloor): Promise<ExhibitionFloor> => {
+    const floorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const createdFloor = await floorsApi.createExhibitionFloor({
+      exhibitionId: exhibitionId,
+      exhibitionFloor: exhibitionFloor
+    });
+
+    return createdFloor;
+  };
+
+  /**
+   * Delete floor handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param floorId floor id
+   */
+  private deleteFloor = async (accessToken: AccessToken, exhibitionId: string, floorId: string) => {
+    const floorsApi = Api.getExhibitionFloorsApi(accessToken);
+    floorsApi.deleteExhibitionFloor({
+      exhibitionId: exhibitionId,
+      floorId: floorId
+    });
+  };
+
+  /**
+   * Update floor handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param floorToUpdate floor to update
+   * @param floorId floor id
+   */
+  // tslint:disable-next-line: max-line-length
+  private updateFloor = async (accessToken: AccessToken, exhibitionId: string, floorToUpdate: ExhibitionFloor, floorId: string): Promise<ExhibitionFloor> => {
+    const floorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const updatedFloor = floorsApi.updateExhibitionFloor({
+      exhibitionId: exhibitionId,
+      exhibitionFloor: floorToUpdate,
+      floorId: floorId
+    });
+
+    return updatedFloor;
+  };
+
+  /**
+   * Create room handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param roomToCreate room to create
+   */
+  private createRoom = async (accessToken: AccessToken, exhibitionId: string, roomToCreate: ExhibitionRoom): Promise<ExhibitionRoom> => {
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const newRoom = roomsApi.createExhibitionRoom({
+      exhibitionId: exhibitionId,
+      exhibitionRoom: roomToCreate
+    });
+
+    return newRoom;
+  };
+
+  /**
+   * Delete room handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param roomId room id
+   */
+  private deleteRoom = async (accessToken: AccessToken, exhibitionId: string, roomId: string) => {
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    roomsApi.deleteExhibitionRoom({
+      exhibitionId: exhibitionId,
+      roomId: roomId
+    });
+  };
+
+  /**
+   * Update room handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param roomToUpdate room to update
+   * @param roomId room id
+   */
+  private updateRoom = async (accessToken: AccessToken, exhibitionId: string, roomToUpdate: ExhibitionRoom, roomId: string): Promise<ExhibitionRoom> => {
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const updatedRoom = roomsApi.updateExhibitionRoom({
+      exhibitionId: exhibitionId,
+      exhibitionRoom: roomToUpdate,
+      roomId: roomId
+    });
+
+    return updatedRoom;
+  };
+
+  /**
+   * Create device group handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceGroupToCreate device group to create
+   */
+  // tslint:disable-next-line: max-line-length
+  private createDeviceGroup = async (accessToken: AccessToken, exhibitionId: string, deviceGroupToCreate: ExhibitionDeviceGroup): Promise<ExhibitionDeviceGroup> => {
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const newGroup = deviceGroupsApi.createExhibitionDeviceGroup({
+      exhibitionId: exhibitionId,
+      exhibitionDeviceGroup: deviceGroupToCreate
+    });
+
+    return newGroup;
+  };
+
+  /**
+   * Update device group handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceGroupToUpdate device group to update
+   * @param deviceGroupId group id
+   */
+  // tslint:disable-next-line: max-line-length
+  private updateDeviceGroup = async (accessToken: AccessToken, exhibitionId: string, deviceGroupToUpdate: ExhibitionDeviceGroup, deviceGroupId: string): Promise<ExhibitionDeviceGroup> => {
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const updatedGroup = deviceGroupsApi.updateExhibitionDeviceGroup({
+      exhibitionId: exhibitionId,
+      exhibitionDeviceGroup: deviceGroupToUpdate,
+      deviceGroupId: deviceGroupId
+    });
+
+    return updatedGroup;
+  };
+
+  /**
+   * Delete device group handler
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceGroupId device group id
+   */
+  private deleteDeviceGroup = async (accessToken: AccessToken, exhibitionId: string, deviceGroupId: string) => {
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    deviceGroupsApi.deleteExhibitionDeviceGroup({
+      exhibitionId: exhibitionId,
+      deviceGroupId: deviceGroupId
+    });
+  };
+
+  /**
+   * Finds device group from API
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceGroupId device group id to find
+   */
+  // tslint:disable-next-line: max-line-length
+  private findDeviceGroup = async (accessToken: AccessToken, exhibitionId: string, deviceGroupId: string): Promise<ExhibitionDeviceGroup> => {
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const foundDeviceGroup = deviceGroupsApi.findExhibitionDeviceGroup({
+      exhibitionId: exhibitionId,
+      deviceGroupId: deviceGroupId
+    });
+
+    return foundDeviceGroup;
+  };
+
+  /**
+   * Create device handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceToCreate device to create
+   */
+  // tslint:disable-next-line: max-line-length
+  private createDevice = async (accessToken: AccessToken, exhibitionId: string, deviceToCreate: ExhibitionDevice): Promise<ExhibitionDevice> => {
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const createdDevice = devicesApi.createExhibitionDevice({
+      exhibitionId: exhibitionId,
+      exhibitionDevice: deviceToCreate
+    });
+
+    return createdDevice;
+  };
+
+  /**
+   * Update device handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceToUpdate device to update
+   * @param deviceId device id
+   */
+  // tslint:disable-next-line: max-line-length
+  private updateDevice = async (accessToken: AccessToken, exhibitionId: string, deviceToUpdate: ExhibitionDevice, deviceId: string): Promise<ExhibitionDevice> => {
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const updatedDevice = devicesApi.updateExhibitionDevice({
+      deviceId: deviceId,
+      exhibitionDevice: deviceToUpdate,
+      exhibitionId: exhibitionId
+    });
+
+    return updatedDevice;
+  };
+
+  /**
+   * Delete device handler
+   *
+   * @param accessToken keycloak access token
+   * @param exhibitionId exhibition id
+   * @param deviceId device id
+   */
+  private deleteDevice = async (accessToken: AccessToken, exhibitionId: string, deviceId: string) => {
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    devicesApi.deleteExhibitionDevice({
+      exhibitionId: exhibitionId,
+      deviceId: deviceId
+    });
+  };
 
 }
 

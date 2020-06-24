@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression, LatLngTuple } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
@@ -9,7 +9,6 @@ import { AccessToken } from "../../types";
 import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import strings from "../../localization/strings";
-import { loadRooms, loadDevices } from "../floor-plan/map-api-calls";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
 // FIXME: Add support for antennas
 // import antennaIcon from "../../resources/gfx/muisti-logo.png";
@@ -22,20 +21,17 @@ interface Props {
   deviceModels?: DeviceModel[];
   exhibitionId?: string;
 
+  mapData: MapData;
   floorPlanInfo: FloorPlanInfo;
   selectedItems: SelectedItems;
 
   onRoomAdd?: (roomToCreate: ExhibitionRoom) => void;
   onRoomSave?: (updatedRoom: ExhibitionRoom) => void;
-  onRoomClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => void;
-
-  onDeviceGroupAdd?: (deviceGroupToCreate: ExhibitionDeviceGroup) => void;
-  onDeviceGroupSave?: (deviceGroupToUpdate: ExhibitionDeviceGroup) => void;
-  onDeviceGroupClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => void;
+  onRoomClick?: (floorId: string, roomId: string, hasNodes: boolean) => void;
 
   onDeviceAdd?: (deviceToCreate: ExhibitionDevice) => void;
   onDeviceSave?: (deviceToUpdate: ExhibitionDevice) => void;
-  onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => void;
+  onDeviceClick?: (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => void;
 }
 
 /**
@@ -48,6 +44,9 @@ interface State {
   leafletIdToDeviceMap: Map<number, ExhibitionDevice>;
 }
 
+/**
+ * Contains all floor plan data
+ */
 interface FloorPlanInfo {
   readOnly: boolean;
   url: string;
@@ -58,6 +57,18 @@ interface FloorPlanInfo {
   bounds: LatLngBounds;
 }
 
+/**
+ * Contains all map data
+ */
+interface MapData {
+  rooms?: ExhibitionRoom[];
+  deviceGroups?: ExhibitionDeviceGroup[];
+  devices?: ExhibitionDevice[];
+}
+
+/**
+ * Contains all selected items
+ */
 interface SelectedItems {
   floor? : ExhibitionFloor;
   room?: ExhibitionRoom;
@@ -80,6 +91,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   private roomLayers = new L.FeatureGroup();
 
   /**
+   * This feature group contains all generated device group layers that are displayed
+   */
+  private deviceGroupLayers = new L.FeatureGroup();
+
+  /**
    * This feature group contains all devices that are displayed
    */
   private deviceMarkers = new L.FeatureGroup();
@@ -99,11 +115,23 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   });
 
   /**
+   * Contains all style values for layers
+   *
+   * FIXME: Needs API support for layer properties
+   */
+  private layerStyleOptions = {
+    roomLayerOpacity: 0.5,
+    roomLayerColor: "#3388ff",
+    deviceGroupPadding: 0.3,
+    deviceGroupOpacity: 0.5,
+    deviceGroupLayerColor: "#b52016"
+  };
+
+  /**
    * This feature group is used only for storing new geometries because
    * individual feature group objects can be cast to polygon objects
    */
   private addedLayers = new L.FeatureGroup();
-
 
   /**
    * Constructor
@@ -134,7 +162,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (prevProps.selectedItems.floor !== this.props.selectedItems.floor ||
       prevProps.selectedItems.room !== this.props.selectedItems.room ||
       prevProps.selectedItems.device !== this.props.selectedItems.device ||
-      prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup
+      prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup ||
+      prevProps.mapData !== this.props.mapData
     ) {
       this.initializeMapData();
     }
@@ -194,6 +223,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     this.mapInstance.addLayer(this.roomLayers);
 
     if (selectedItems.deviceGroup) {
+      this.mapInstance.addLayer(this.deviceGroupLayers);
       this.mapInstance.addLayer(this.deviceMarkers);
     }
 
@@ -323,7 +353,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!onRoomClick || !selectedItems.floor || !foundRoom || !selectedItems.selectedItemHasNodes) {
       return;
     }
-    onRoomClick(selectedItems.floor, foundRoom, selectedItems.selectedItemHasNodes);
+    onRoomClick(selectedItems.floor.id!, foundRoom.id!, selectedItems.selectedItemHasNodes);
   }
 
   /**
@@ -336,10 +366,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const { leafletIdToDeviceMap } = this.state;
     const foundDevice = leafletIdToDeviceMap.get(event.layer._leaflet_id);
     if (!onDeviceClick ||
-      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || !selectedItems.selectedItemHasNodes) {
+      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || selectedItems.selectedItemHasNodes === undefined) {
       return;
     }
-    onDeviceClick(selectedItems.floor, selectedItems.room, selectedItems.deviceGroup, foundDevice, selectedItems.selectedItemHasNodes);
+    onDeviceClick(selectedItems.floor.id!, selectedItems.room.id!, selectedItems.deviceGroup.id!, foundDevice.id!, selectedItems.selectedItemHasNodes);
   }
 
   /**
@@ -378,43 +408,23 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     }
 
     this.loadRooms();
+    this.loadDeviceGroup();
     this.loadDevices();
   }
 
   /**
-   * Load room data from API
+   * Add room layers to leaflet map
    */
-  private loadRooms = async () => {
-    const { accessToken, exhibitionId, selectedItems } = this.props;
-
-    const foundRooms = await loadRooms(accessToken, exhibitionId, selectedItems.floor, selectedItems.room);
+  private loadRooms = () => {
+    const { mapData } = this.props;
+    const { layerStyleOptions } = this;
     this.roomLayers.clearLayers();
-    this.addRoomLayers(foundRooms);
-  }
-
-  /**
-   * Load device data from API
-   */
-  private loadDevices = async () => {
-    const { accessToken, exhibitionId, selectedItems } = this.props;
-
-    const foundDevices = await loadDevices(accessToken, exhibitionId, selectedItems.deviceGroup, selectedItems.device);
-    this.deviceMarkers.clearLayers();
-    this.addDeviceMarkers(foundDevices);
-  }
-
-  /**
-   * Add layers to leaflet map
-   *
-   * @param rooms list of exhibition rooms
-   */
-  private addRoomLayers = (rooms: ExhibitionRoom[]) => {
-
-    if (!rooms) {
+    if (!mapData.rooms) {
       return;
     }
+
     const tempMap = new Map<number, ExhibitionRoom>();
-    rooms.forEach(room => {
+    mapData.rooms.forEach(room => {
       const geoShape = room.geoShape;
       if (geoShape && this.mapInstance && this.roomLayers) {
         const geoJson = geoShape as Polygon;
@@ -424,9 +434,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
             onEachFeature(_feature, layer) {
               const customLayer = layer as any;
               customLayer.setStyle({
-                fillOpacity: 0.5,
-                // FIXME: Needs API support for layer properties
-                // fillColor :'#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1,6),
+                fillOpacity: layerStyleOptions.roomLayerOpacity,
               });
               roomLayersToAdd.push(layer);
             }
@@ -449,15 +457,56 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    *
    * @param devices list of exhibition devices
    */
-  private addDeviceMarkers = (devices: ExhibitionDevice[]) => {
+  private loadDeviceGroup = () => {
+    const { mapData } = this.props;
+    const { layerStyleOptions } = this;
+    this.deviceGroupLayers.clearLayers();
+    const devices = mapData.devices;
 
-    if (!devices) {
+    if (!mapData.deviceGroups || !devices || !this.mapInstance) {
       return;
+    }
+
+    const devicePoints: LatLngExpression[] = [];
+
+    mapData.deviceGroups.forEach(deviceGroup => {
+      devices.forEach(device => {
+        if (device.groupId === deviceGroup.id && device.location && device.location.x && device.location.y) {
+          const latLng: LatLngTuple = [device.location.x, device.location.y];
+          devicePoints.push(latLng);
+        }
+      });
+    });
+
+    const deviceGroupBounds = this.getDeviceGroupBounds(devicePoints);
+    const newDeviceGroupLayer = new L.Polygon(deviceGroupBounds) as any;
+    newDeviceGroupLayer.setStyle({
+      fillOpacity: layerStyleOptions.deviceGroupOpacity,
+      // FIXME: Needs API support for layer properties
+      fillColor: layerStyleOptions.deviceGroupLayerColor,
+    });
+    this.deviceGroupLayers.addLayer(newDeviceGroupLayer);
+    this.mapInstance.addLayer(this.deviceGroupLayers);
+  }
+
+  /**
+   * Add device markers to leaflet map
+   */
+  private loadDevices = () => {
+    this.deviceMarkers.clearLayers();
+    const { mapData, selectedItems } = this.props;
+    const tempMapData = { ...mapData };
+    if (!tempMapData.devices || !this.mapInstance) {
+      return;
+    }
+
+    if (selectedItems.device) {
+      tempMapData.devices = [selectedItems.device];
     }
 
     const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
 
-    devices.forEach(device => {
+    tempMapData.devices.forEach(device => {
 
       if (device && device.location && device.location.x && device.location.y) {
         const markerOptions: MarkerOptions = {
@@ -473,12 +522,48 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       }
     });
 
-    this.mapInstance?.addLayer(this.deviceMarkers);
+    this.mapInstance.addLayer(this.deviceMarkers);
 
     this.setState({
       leafletIdToDeviceMap: tempLeafletIdToDeviceMap
     });
 
+  }
+
+  /**
+   * Get device group bounds
+   *
+   * @param devicePoints list of device points
+   * @returns latLng expression which always contains four corner coordinates
+   */
+  private getDeviceGroupBounds = (devicePoints: LatLngExpression[]): LatLngExpression[] => {
+    if (devicePoints.length === 0) {
+      return [];
+    }
+
+    const { layerStyleOptions } = this;
+
+    const sortX = devicePoints as LatLngTuple[];
+    sortX.sort((point1, point2) => { return (point1[0] - point2[0]); });
+    const leftX = sortX[0][0] - layerStyleOptions.deviceGroupPadding;
+    const rightX = sortX[sortX.length - 1][0] + layerStyleOptions.deviceGroupPadding;
+
+    const sortY = devicePoints as LatLngTuple[];
+    sortY.sort((point1, point2) => { return (point1[1] - point2[1]); });
+    const bottomY = sortX[0][1] - layerStyleOptions.deviceGroupPadding;
+    const topY = sortX[sortX.length - 1][1] + layerStyleOptions.deviceGroupPadding;
+
+    const deviceGroupBounds: LatLngTuple[] = [];
+
+    /**
+     * Needs to be in this specific order!
+     */
+    deviceGroupBounds.push([leftX, topY]);
+    deviceGroupBounds.push([leftX, bottomY]);
+    deviceGroupBounds.push([rightX, bottomY]);
+    deviceGroupBounds.push([rightX, topY]);
+
+    return deviceGroupBounds;
   }
 
   /**

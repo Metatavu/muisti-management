@@ -183,6 +183,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       return (
         <FloorPlanMap
           accessToken={ accessToken }
+          mapData={{ }}
           floorPlanInfo={ floorPlanInfo }
           selectedItems={ selectedItems }
           exhibitionId={ exhibitionId }
