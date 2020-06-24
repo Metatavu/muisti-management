@@ -181,7 +181,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, devices, selectedDevice, selectedItemHasNodes } = this.state;
+    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedItemHasNodes } = this.state;
     const { exhibitionId, accessToken, deviceModels } = this.props;
 
     if (cropping && cropImageDataUrl ) {
