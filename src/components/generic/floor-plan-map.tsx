@@ -404,7 +404,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   }
 
   /**
-   * Add layers to leaflet map
+   * Add room layers to leaflet map
    *
    * @param rooms list of exhibition rooms
    */
