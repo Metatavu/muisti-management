@@ -322,28 +322,26 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private constructTreeData = () => {
     const { floors, rooms, deviceGroups, devices } = this.state;
 
-    console.log(devices.find(device => device.id === this.state.selectedDevice?.id));
-    console.log(this.state.selectedDevice)
     const treeData: TreeNodeInArray[] = floors.map(floor => {
       return {
         key: floor.id!,
         label: floor.name,
-        onClick: (hasNodes: boolean) => this.onFloorClick(floor, hasNodes),
+        onClick: (hasNodes: boolean) => this.onFloorClick(floor.id!, hasNodes),
         nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
           return {
             key: room.id!,
             label: room.name,
-            onClick: (hasNodes: boolean) => this.onRoomClick(floor, room, hasNodes),
+            onClick: (hasNodes: boolean) => this.onRoomClick(floor.id!, room.id!, hasNodes),
             nodes: deviceGroups.filter(group => group.roomId === room.id).map(group => {
               return {
                 key: group.id!,
                 label: group.name,
-                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor, room, group, hasNodes),
+                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor.id!, room.id!, group.id!, hasNodes),
                 nodes: devices.filter(device => device.groupId === group.id).map(device => {
                   return {
                     key: device.id!,
                     label: device.name,
-                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor, room, group, device, hasNodes),
+                    onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
                     nodes: [],
                   };
                 })
@@ -878,7 +876,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
     const updatedDevice = await this.updateDevice(accessToken, exhibitionId, deviceToUpdate, deviceToUpdate.id);
-    console.log(updatedDevice.location);
     this.setState(
       produce((draft: Draft<State>) => {
         const { devices } = draft;
@@ -897,9 +894,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param floor selected floor
    * @param hasNodes has child nodes
    */
-  private onFloorClick = (floor: ExhibitionFloor, hasNodes: boolean) => {
+  private onFloorClick = (floorId: string, hasNodes: boolean) => {
+    const { floors } = this.state;
+
     this.setState({
-      selectedFloor: floor,
+      selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: undefined,
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
@@ -914,10 +913,12 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param room selected room
    * @param hasNodes has child nodes
    */
-  private onRoomClick = (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => {
+  private onRoomClick = (floorId: string, roomId: string, hasNodes: boolean) => {
+    const { floors, rooms } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedItemHasNodes: hasNodes
@@ -932,11 +933,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param deviceGroup selected device group
    * @param hasNodes has child nodes
    */
-  private onDeviceGroupClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => {
+  private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => {
+    const { floors, rooms, deviceGroups } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
-      selectedDeviceGroup: deviceGroup,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
+      selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedItemHasNodes: hasNodes
     });
@@ -951,12 +954,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param device selected device
    * @param hasNodes has child nodes
    */
-  private onDeviceClick = (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => {
+  private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => {
+    const { floors, rooms, deviceGroups, devices } = this.state;
+
     this.setState({
-      selectedFloor: floor,
-      selectedRoom: room,
-      selectedDeviceGroup: deviceGroup,
-      selectedDevice: device,
+      selectedFloor: floors.find(floor => floor.id === floorId),
+      selectedRoom: rooms.find(room => room.id === roomId),
+      selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
+      selectedDevice: devices.find(device => device.id === deviceId),
       selectedItemHasNodes: hasNodes
     });
   }

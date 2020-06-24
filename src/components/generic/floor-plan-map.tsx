@@ -27,15 +27,11 @@ interface Props {
 
   onRoomAdd?: (roomToCreate: ExhibitionRoom) => void;
   onRoomSave?: (updatedRoom: ExhibitionRoom) => void;
-  onRoomClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, hasNodes: boolean) => void;
-
-  onDeviceGroupAdd?: (deviceGroupToCreate: ExhibitionDeviceGroup) => void;
-  onDeviceGroupSave?: (deviceGroupToUpdate: ExhibitionDeviceGroup) => void;
-  onDeviceGroupClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, hasNodes: boolean) => void;
+  onRoomClick?: (floorId: string, roomId: string, hasNodes: boolean) => void;
 
   onDeviceAdd?: (deviceToCreate: ExhibitionDevice) => void;
   onDeviceSave?: (deviceToUpdate: ExhibitionDevice) => void;
-  onDeviceClick?: (floor: ExhibitionFloor, room: ExhibitionRoom, deviceGroup: ExhibitionDeviceGroup, device: ExhibitionDevice, hasNodes: boolean) => void;
+  onDeviceClick?: (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => void;
 }
 
 /**
@@ -110,11 +106,23 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   });
 
   /**
+   * Contains all style values for layers
+   *
+   * FIXME: Needs API support for layer properties
+   */
+  private layerStyleOptions = {
+    roomLayerOpacity: 0.5,
+    roomLayerColor: "#3388ff",
+    deviceGroupPadding: 0.3,
+    deviceGroupOpacity: 0.5,
+    deviceGroupLayerColor: "#b52016"
+  };
+
+  /**
    * This feature group is used only for storing new geometries because
    * individual feature group objects can be cast to polygon objects
    */
   private addedLayers = new L.FeatureGroup();
-
 
   /**
    * Constructor
@@ -148,7 +156,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup ||
       prevProps.mapData !== this.props.mapData
     ) {
-      console.log("Changed!");
       this.initializeMapData();
     }
   }
@@ -337,7 +344,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!onRoomClick || !selectedItems.floor || !foundRoom || !selectedItems.selectedItemHasNodes) {
       return;
     }
-    onRoomClick(selectedItems.floor, foundRoom, selectedItems.selectedItemHasNodes);
+    onRoomClick(selectedItems.floor.id!, foundRoom.id!, selectedItems.selectedItemHasNodes);
   }
 
   /**
@@ -353,7 +360,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || selectedItems.selectedItemHasNodes === undefined) {
       return;
     }
-    onDeviceClick(selectedItems.floor, selectedItems.room, selectedItems.deviceGroup, foundDevice, selectedItems.selectedItemHasNodes);
+    onDeviceClick(selectedItems.floor.id!, selectedItems.room.id!, selectedItems.deviceGroup.id!, foundDevice.id!, selectedItems.selectedItemHasNodes);
   }
 
   /**
@@ -403,6 +410,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private loadRooms = () => {
     const { mapData } = this.props;
+    const { layerStyleOptions } = this;
     this.roomLayers.clearLayers();
     if (!mapData.rooms) {
       return;
@@ -419,9 +427,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
             onEachFeature(_feature, layer) {
               const customLayer = layer as any;
               customLayer.setStyle({
-                fillOpacity: 0.5,
-                // FIXME: Needs API support for layer properties
-                // fillColor :'#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1,6),
+                fillOpacity: layerStyleOptions.roomLayerOpacity,
               });
               roomLayersToAdd.push(layer);
             }
@@ -446,6 +452,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private loadDeviceGroup = () => {
     const { mapData } = this.props;
+    const { layerStyleOptions } = this;
     this.deviceGroupLayers.clearLayers();
     const devices = mapData.devices;
 
@@ -467,9 +474,9 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const deviceGroupBounds = this.getDeviceGroupBounds(devicePoints);
     const newDeviceGroupLayer = new L.Polygon(deviceGroupBounds) as any;
     newDeviceGroupLayer.setStyle({
-      fillOpacity: 0.5,
+      fillOpacity: layerStyleOptions.deviceGroupOpacity,
       // FIXME: Needs API support for layer properties
-      fillColor :"#b52016",
+      fillColor : layerStyleOptions.deviceGroupLayerColor,
     });
     this.deviceGroupLayers.addLayer(newDeviceGroupLayer);
     this.mapInstance.addLayer(this.deviceGroupLayers);
@@ -518,29 +525,40 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
   }
 
+  /**
+   * Get device group bounds
+   *
+   * @param devicePoints list of device points
+   * @returns latLng expression which always contains four corner coordinates
+   */
   private getDeviceGroupBounds = (devicePoints: LatLngExpression[]): LatLngExpression[] => {
     if (devicePoints.length === 0) {
       return [];
     }
 
-    const padding = 0.3;
+    const { layerStyleOptions } = this;
+
     const sortX = devicePoints as LatLngTuple[];
     sortX.sort((point1, point2) => { return (point1[0] - point2[0]); });
-    const leftX = sortX[0][0] - padding;
-    const rightX = sortX[sortX.length - 1][0] + padding;
+    const leftX = sortX[0][0] - layerStyleOptions.deviceGroupPadding;
+    const rightX = sortX[sortX.length - 1][0] + layerStyleOptions.deviceGroupPadding;
 
     const sortY = devicePoints as LatLngTuple[];
     sortY.sort((point1, point2) => { return (point1[1] - point2[1]); });
-    const bottomY = sortX[0][1] - padding;
-    const topY = sortX[sortX.length - 1][1] + padding;
+    const bottomY = sortX[0][1] - layerStyleOptions.deviceGroupPadding;
+    const topY = sortX[sortX.length - 1][1] + layerStyleOptions.deviceGroupPadding;
 
-    const test: LatLngTuple[] = [];
-    test.push([leftX, topY]);
-    test.push([leftX, bottomY]);
+    const deviceGroupBounds: LatLngTuple[] = [];
 
-    test.push([rightX, bottomY]);
-    test.push([rightX, topY]);
-    return test;
+    /**
+     * Needs to be in this specific order!
+     */
+    deviceGroupBounds.push([leftX, topY]);
+    deviceGroupBounds.push([leftX, bottomY]);
+    deviceGroupBounds.push([rightX, bottomY]);
+    deviceGroupBounds.push([rightX, topY]);
+
+    return deviceGroupBounds;
   }
 
   /**
