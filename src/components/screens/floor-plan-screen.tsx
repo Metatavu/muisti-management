@@ -920,9 +920,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for add device click
+   * Event handler for add antenna click
    *
-   * @param deviceToCreate exhibition device to create
+   * @param antennaToCreate exhibition antenna to create
    */
   private onAntennaAddClick = async (antennaToCreate: RfidAntenna) => {
     const { accessToken, exhibitionId } = this.props;
