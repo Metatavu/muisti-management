@@ -306,7 +306,16 @@
       "add": "Lisää uusi laite",
       "new": "Uusi laite",
       "delete": "Poista laite",
-      "edit": "Muokkaa laitetta"
+      "edit": "Muokkaa laitetta",
+      "move": "Siirrä laitetta"
+    },
+    "antenna" : {
+      "add": "Lisää uusi antenni",
+      "new": "Uusi antenni",
+      "newReaderId": "123456",
+      "delete": "Poista antenni",
+      "edit": "Muokkaa antennia",
+      "move": "Siirrä antennia"
     },
     "structure": "Rakenne",
     "toolbar": {
@@ -323,7 +332,10 @@
       "screenOrientation": "Näytön suunta",
       "landscape": "Vaaka",
       "portrait": "Pysty",
-      "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle"
+      "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
+      "readerId": "Antennin lukijan Id",
+      "deviceGroup": "Laiteryhmä johon antenni kuuluu",
+      "room": "Huone johon antenni kuuluu"
     },
     
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!"

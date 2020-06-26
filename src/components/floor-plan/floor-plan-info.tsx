@@ -8,7 +8,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, TextField, MenuItem, Select, OutlinedTextFieldProps, SelectProps, FormControlLabel, Switch, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice } from "../../generated/client";
+import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna } from "../../generated/client";
 import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
@@ -18,16 +18,19 @@ import theme from "../../styles/theme";
  */
 interface Props extends WithStyles<typeof styles> {
   deviceModels: DeviceModel[];
+  rooms?: ExhibitionRoom[];
+  deviceGroups?: ExhibitionDeviceGroup[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
   selectedDeviceGroup?: ExhibitionDeviceGroup;
   selectedDevice?: ExhibitionDevice;
+  selectedAntenna?: RfidAntenna;
 
   onChangeFloorProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeRoomProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDeviceGroupProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDeviceProperties?: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
-
+  onChangeAntennaProperties?: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
 }
 
 /**
@@ -70,8 +73,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
    * Renders properties
    */
   private renderProperties = () => {
-    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, deviceModels } = this.props;
-    const { onChangeFloorProperties, onChangeRoomProperties, onChangeDeviceGroupProperties, onChangeDeviceProperties } = this.props;
+    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna,  deviceModels } = this.props;
+    const { onChangeFloorProperties, onChangeRoomProperties, onChangeDeviceGroupProperties, onChangeDeviceProperties, onChangeAntennaProperties } = this.props;
 
     const textFieldGenericProps = {
       fullWidth: true,
@@ -85,6 +88,40 @@ class FloorPlanInfo extends React.Component<Props, State> {
       variant: "filled" as SelectProps["variant"],
       style: { marginTop: theme.spacing(2) }
     };
+
+    if (selectedAntenna) {
+      const deviceGroupMenuItems = this.getDeviceGroupItems();
+      return (
+        <>
+          <TextField
+            { ...textFieldGenericProps }
+            label={ strings.generic.name }
+            name="name"
+            value={ selectedAntenna.name }
+            onChange={ onChangeAntennaProperties }
+          />
+          <TextField
+            { ...textFieldGenericProps }
+            label={ strings.floorPlan.properties.readerId }
+            name="readerId"
+            value={ selectedAntenna.readerId }
+            onChange={ onChangeAntennaProperties }
+          />
+          <InputLabel id="groupId-label" style={{ marginTop: theme.spacing(2) }}>
+            { strings.floorPlan.properties.deviceGroup }
+          </InputLabel>
+          <Select
+            { ...selectFieldGenericProps }
+            labelId="groupId-label"
+            name="groupId"
+            value={ selectedAntenna.groupId || "" }
+            onChange={ onChangeAntennaProperties }
+          >
+            { deviceGroupMenuItems }
+          </Select>
+        </>
+      );
+    }
 
     if (selectedDevice) {
       return (
@@ -179,6 +216,20 @@ class FloorPlanInfo extends React.Component<Props, State> {
         />
       );
     }
+  }
+
+  /**
+   * Get device group select items
+   */
+  private getDeviceGroupItems = () => {
+    const { deviceGroups } = this.props;
+
+    if (!deviceGroups) {
+      return (null);
+    }
+    return deviceGroups.map(group => {
+      return <MenuItem key={ group.id } value={ group.id }>{ group.name }</MenuItem>
+    });
   }
 }
 

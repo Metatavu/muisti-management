@@ -126,7 +126,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    *
    * @returns action buttons as array
    */
-  // FIXME: create new exhibition
+  // TODO: create new exhibition
   private getActionButtons = () => {
     return [
       { name: strings.dashboard.newExhibitionButton, action: () => null }
