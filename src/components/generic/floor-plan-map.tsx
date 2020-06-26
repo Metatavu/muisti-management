@@ -139,7 +139,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     shadowSize: undefined,
     shadowAnchor: undefined,
     iconSize: new L.Point(50, 50),
-    className: "device-icon"
+    className: "antenna-icon"
   });
 
   /**
@@ -152,7 +152,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     roomLayerColor: "#3388ff",
     deviceGroupPadding: 0.3,
     deviceGroupOpacity: 0.5,
-    deviceGroupLayerColor: "#b52016"
+    deviceGroupLayerColor: "#3388ff"
   };
 
   /**

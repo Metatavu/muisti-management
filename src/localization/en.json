@@ -470,7 +470,8 @@
     "loadNew": "Load new",
     "name": "Name",
     "confirmDelete": "Are you sure you want to remove selected element?",
-    "or": "or"
+    "or": "or",
+    "undefined": "Undefined"
   },
 
   "spaces": {
