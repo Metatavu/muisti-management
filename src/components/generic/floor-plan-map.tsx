@@ -640,7 +640,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const tempLeafletIdToAntennaMap = new Map<number, RfidAntenna>();
 
     tempMapData.antennas.forEach(antenna => {
-
       if (antenna && antenna.location && antenna.location.x && antenna.location.y) {
         const markerOptions: MarkerOptions = {
           icon: this.antennaIcon,
