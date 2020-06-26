@@ -225,12 +225,11 @@ class FloorPlanInfo extends React.Component<Props, State> {
     const { deviceGroups } = this.props;
 
     if (!deviceGroups) {
-      return (<div/>);
+      return (null);
     }
-    const items = deviceGroups.map(group => {
+    return deviceGroups.map(group => {
       return <MenuItem key={ group.id } value={ group.id }>{ group.name }</MenuItem>
     });
-    return items;
   }
 }
 
