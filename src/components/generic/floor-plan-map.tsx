@@ -145,7 +145,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   /**
    * Contains all style values for layers
    *
-   * FIXME: Needs API support for layer properties
+   * TODO: Needs API support for layer properties
    */
   private layerStyleOptions = {
     roomLayerOpacity: 0.5,
@@ -574,7 +574,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const newDeviceGroupLayer = new L.Polygon(deviceGroupBounds) as any;
     newDeviceGroupLayer.setStyle({
       fillOpacity: layerStyleOptions.deviceGroupOpacity,
-      // FIXME: Needs API support for layer properties
+      // TODO: Needs API support for layer properties
       fillColor: layerStyleOptions.deviceGroupLayerColor,
     });
     this.deviceGroupLayers.addLayer(newDeviceGroupLayer);

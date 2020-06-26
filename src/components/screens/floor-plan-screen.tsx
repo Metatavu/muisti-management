@@ -641,7 +641,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add nicer dialog
+    // TODO: Add nicer dialog
     if (!window.confirm(strings.generic.confirmDelete)) {
       return;
     }
@@ -724,7 +724,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add nicer dialog
+    // TODO: Add nicer dialog
     if (!window.confirm(strings.generic.confirmDelete)) {
       return;
     }
@@ -778,7 +778,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add map support for device groups
     const groupToCreate: ExhibitionDeviceGroup = {
       name: strings.floorPlan.deviceGroup.new,
       allowVisitorSessionCreation: false,
@@ -804,7 +803,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add map support for device groups
     const updatedDeviceGroup = await this.updateDeviceGroup(accessToken, exhibitionId, selectedDeviceGroup, selectedDeviceGroup.id);
 
     this.setState(
@@ -829,7 +827,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add nicer dialog
+    // TODO: Add nicer dialog
     if (!window.confirm(strings.generic.confirmDelete)) {
       return;
     }
@@ -876,7 +874,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add nicer dialog
+    // TODO: Add nicer dialog
     if (!window.confirm(strings.generic.confirmDelete)) {
       return;
     }
@@ -948,7 +946,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // FIXME: Add nicer dialog
+    // TODO: Add nicer dialog
     if (!window.confirm(strings.generic.confirmDelete)) {
       return;
     }
