@@ -263,6 +263,7 @@ export interface IStrings extends LocalizedStringsMethods {
   layout: {
     title: string;
     addNew: string;
+    confirmDelete: string;
     toolbar: {
       visual: string;
       code: string;

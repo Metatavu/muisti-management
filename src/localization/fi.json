@@ -265,6 +265,7 @@
   "layout": {
     "title": "Asettelu",
     "addNew": "Lisää uusi asettelu",
+    "confirmDelete": "Haluatko varmasti poistaa asettelun {0}?",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
       "code": "Tekninen näkymä",
