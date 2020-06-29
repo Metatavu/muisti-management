@@ -265,6 +265,7 @@
   "layout": {
     "title": "Layout",
     "addNew": "Add new layout",
+    "confirmDelete": "Are you sure you want to delete layout {0}?",
     "toolbar": {
       "visual": "Visual view",
       "code": "Technical view",
