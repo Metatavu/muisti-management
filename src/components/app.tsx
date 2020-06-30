@@ -26,7 +26,7 @@ import "moment/locale/fi";
 import "moment/locale/en-gb";
 
 import ExhibitionsScreen from "./screens/exhibitions-screen";
-import ExhibitionContentRoomsScreen from "./screens/exhibition-content-rooms-screen";
+import RoomsScreen from "./screens/rooms-screen";
 import ContentVersionsScreen from "./screens/content-versions-screen";
 import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
 import LayoutsScreen from "./screens/layouts-screen";
@@ -167,7 +167,7 @@ class App extends React.Component<Props, State> {
                       ]}
                       exact={ true }
                       render={({ history, match }) => (
-                        <ExhibitionContentRoomsScreen
+                        <RoomsScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                         />

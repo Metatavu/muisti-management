@@ -22,6 +22,11 @@ export interface IStrings extends LocalizedStringsMethods {
       cancelButton: string;
       createButton: string;
     };
+    deleteExhibitionDialog: {
+      title: string;
+      description: string;
+      deleteButton: string;
+    };
     inProduction: string;
     inDraft: string;
     status: {

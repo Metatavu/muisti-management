@@ -33,6 +33,11 @@
       "cancelButton": "Cancel",
       "createButton": "Create"
     },
+    "deleteExhibitionDialog": {
+      "title": "Delete exhibition",
+      "description": "Are you sure you want to delete exhibition {0}?",
+      "deleteButton": "Delete"
+    },
     "inProduction": "In production",
     "inDraft": "In draft",
     "status": {

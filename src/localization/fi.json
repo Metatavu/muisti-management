@@ -39,6 +39,11 @@
       "cancelButton": "Peruuta",
       "createButton": "Luo"
     },
+    "deleteExhibitionDialog": {
+      "title": "Poista näyttely",
+      "description": "Haluatko varmasti poistaa näyttelyn {0}?",
+      "deleteButton": "Poista"
+    },
     "cardMenu": {
       "addExhibition": "Lisää näyttely",
       "moveToProduction": "Siirrä tuotantoon",
