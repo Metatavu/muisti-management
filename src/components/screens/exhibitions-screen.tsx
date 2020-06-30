@@ -213,6 +213,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for set status
+   * 
+   * @param exhibition exhibition
    */
   private setStatus = (exhibition: Exhibition) => {
     alert(strings.comingSoon);
@@ -233,6 +235,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for exhibition data change
+   * 
+   * @param event event
    */
   private onExhibitionDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { selectedExhibition } = this.state;

@@ -12,14 +12,6 @@ import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
 import strings from "../localization/strings";
 import AccessTokenRefresh from "./containers/access-token-refresh";
 import StoreInitializer from "./containers/store-initializer";
-import DashboardOverviewView from "./dashboard/dashboard-overview-view";
-import DashboardRecentView from "./dashboard/dashboard-recent-view";
-import DashboardDraftsView from "./dashboard/dashboard-drafts-view";
-import DashboardArchivedView from "./dashboard/dashboard-archived-view";
-import DashboardSettingsView from "./dashboard/dashboard-settings-view";
-import DashboardUsersView from "./dashboard/dashboard-users-view";
-import DashboardDevicesView from "./dashboard/dashboard-devices-view";
-import DashboardFloorPlansView from "./dashboard/dashboard-floor-plans-view";
 import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import moment from "moment";
 import "moment/locale/fi";
@@ -82,63 +74,6 @@ class App extends React.Component<Props, State> {
                 <div className="App">
                   <Switch>
                     <Redirect exact from="/" to="/v4/exhibitions" />
-                    <Route
-                      path="/dashboard/overview"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardOverviewView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/recent"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardRecentView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/drafts"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardDraftsView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/archived"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardArchivedView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/settings"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardSettingsView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/users"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardUsersView history={ history } />
-                      )}
-                    />
-                    <Route
-                      path="/dashboard/devices"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardDevicesView history={ history } />
-                      )}
-                    />
-                    {/* Remove this once the V4 floorplan view is done! */}
-                    <Route
-                      path="/dashboard/floorplans"
-                      exact={ true }
-                      render={ ({ history }) => (
-                        <DashboardFloorPlansView history={ history } />
-                      )}
-                    />
                     <Route
                       path="/v4/exhibitions"
                       exact={ true }
