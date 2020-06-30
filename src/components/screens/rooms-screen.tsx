@@ -37,9 +37,9 @@ interface State {
 }
 
 /**
- * Component for exhibition content rooms view
+ * Component for rooms screen
  */
-class ExhibitionContentRoomsScreen extends React.Component<Props, State> {
+class RoomsScreen extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -213,4 +213,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionContentRoomsScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(RoomsScreen));

@@ -22,6 +22,11 @@ export interface IStrings extends LocalizedStringsMethods {
       cancelButton: string;
       createButton: string;
     };
+    deleteExhibitionDialog: {
+      title: string;
+      description: string;
+      deleteButton: string;
+    };
     inProduction: string;
     inDraft: string;
     status: {
@@ -288,18 +293,21 @@ export interface IStrings extends LocalizedStringsMethods {
       new: string;
       delete: string;
       edit: string;
+      properties: string;
     };
     room: {
       add: string;
       new: string;
       delete: string;
       edit: string;
+      properties: string;
     };
     deviceGroup: {
       add: string;
       new: string;
       delete: string;
       edit: string;
+      properties: string;
     };
     device: {
       add: string;
@@ -307,6 +315,7 @@ export interface IStrings extends LocalizedStringsMethods {
       delete: string;
       edit: string;
       move: string;
+      properties: string;
     };
     antenna: {
       add: string;
@@ -315,6 +324,7 @@ export interface IStrings extends LocalizedStringsMethods {
       delete: string;
       edit: string;
       move: string;
+      properties: string;
     };
     structure: string;
     toolbar: {

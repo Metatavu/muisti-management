@@ -39,6 +39,11 @@
       "cancelButton": "Peruuta",
       "createButton": "Luo"
     },
+    "deleteExhibitionDialog": {
+      "title": "Poista näyttely",
+      "description": "Haluatko varmasti poistaa näyttelyn {0}?",
+      "deleteButton": "Poista"
+    },
     "cardMenu": {
       "addExhibition": "Lisää näyttely",
       "moveToProduction": "Siirrä tuotantoon",
@@ -289,26 +294,30 @@
       "add": "Lisää uusi tila",
       "new": "Uusi tila",
       "delete": "Poista tila",
-      "edit": "Muokaa tilaa"
+      "edit": "Muokkaa tilaa",
+      "properties": "Tilan ominaisuudet"
     },
     "room": {
       "add": "Lisää uusi alue",
       "new": "Uusi alue",
       "delete": "Poista alue",
-      "edit": "Muokaa aluetta"
+      "edit": "Muokaa aluetta",
+      "properties": "Alueen ominaisuudet"
     },
     "deviceGroup": {
       "add": "Lisää uusi laiteryhmä",
       "new": "Uusi laiteryhmä",
       "delete": "Poista laiteryhmä",
-      "edit": "Muokaa laiteryhmää"
+      "edit": "Muokaa laiteryhmää",
+      "properties": "Laiteryhmän ominaisuudet"
     },
     "device" : {
       "add": "Lisää uusi laite",
       "new": "Uusi laite",
       "delete": "Poista laite",
       "edit": "Muokkaa laitetta",
-      "move": "Siirrä laitetta"
+      "move": "Siirrä laitetta",
+      "properties": "Laitteen ominaisuudet"
     },
     "antenna" : {
       "add": "Lisää uusi antenni",
@@ -316,7 +325,8 @@
       "newReaderId": "123456",
       "delete": "Poista antenni",
       "edit": "Muokkaa antennia",
-      "move": "Siirrä antennia"
+      "move": "Siirrä antennia",
+      "properties": "Antennin ominaisuudet"
     },
     "structure": "Rakenne",
     "toolbar": {

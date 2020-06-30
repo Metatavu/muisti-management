@@ -33,6 +33,11 @@
       "cancelButton": "Cancel",
       "createButton": "Create"
     },
+    "deleteExhibitionDialog": {
+      "title": "Delete exhibition",
+      "description": "Are you sure you want to delete exhibition {0}?",
+      "deleteButton": "Delete"
+    },
     "inProduction": "In production",
     "inDraft": "In draft",
     "status": {
@@ -289,26 +294,30 @@
       "add": "Add new space",
       "new": "New space",
       "delete": "Delete space",
-      "edit": "Edit space"
+      "edit": "Edit space",
+      "properties": "Space properties"
     },
     "room": {
       "add": "Add new room",
       "new": "New room",
       "delete": "Delete room",
-      "edit": "Edit space"
+      "edit": "Edit room",
+      "properties": "Room properties"
     },
     "deviceGroup": {
       "add": "Add new device group",
       "new": "New device group",
       "delete": "Delete device group",
-      "edit": "Edit device group"
+      "edit": "Edit device group",
+      "properties": "Device group properties"
     },
     "device" : {
       "add": "Add new device",
       "new": "New device",
       "delete": "Delete device",
       "edit": "Edit device",
-      "move": "Move device"
+      "move": "Move device",
+      "properties": "Device properties"
     },
     "antenna" : {
       "add": "Add new antenna",
@@ -316,7 +325,8 @@
       "newReaderId": "123456",
       "delete": "Delete antenna",
       "edit": "Edit antenna",
-      "move": "Move antenna"
+      "move": "Move antenna",
+      "properties": "Antenna properties"
     },
     "structure": "Structure",
     "toolbar": {
