@@ -279,7 +279,6 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId })
       ]);
 
-    console.log(groupContentVersions);
     this.setState({ exhibition, room, contentVersion, groupContentVersions, deviceGroups });
   }
 
