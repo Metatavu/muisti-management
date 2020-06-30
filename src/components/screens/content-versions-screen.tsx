@@ -20,6 +20,7 @@ import { ContentVersion } from "../../generated/client/models/ContentVersion";
 import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
+import produce from "immer";
 
 /**
  * Component props
@@ -311,23 +312,29 @@ class ContentVersionsScreen extends React.Component<Props, State> {
   /**
    * Set status handler
    */
-  private deleteContentVersion = (contentVersion: ContentVersion) => {
+  private deleteContentVersion = async (contentVersion: ContentVersion) => {
     const { accessToken, exhibitionId } = this.props;
-    const contentVersionApi = Api.getContentVersionsApi(accessToken);
-
     if (!contentVersion.id) {
       return;
     }
 
-    contentVersionApi.deleteContentVersion({
+    const contentVersionApi = Api.getContentVersionsApi(accessToken);
+    await contentVersionApi.deleteContentVersion({
       exhibitionId: exhibitionId,
       contentVersionId: contentVersion.id,
     });
 
-    this.setState({
-      deleteDialogOpen: false,
-      selectedContentVersion: undefined
-    });
+    this.setState(
+      produce((draft: State) => {
+        const versionIndex = draft.contentVersions.findIndex(version => version.id === contentVersion.id);
+        if (versionIndex > -1) {
+          draft.contentVersions.splice(versionIndex, 1);
+        }
+
+        draft.deleteDialogOpen = false;
+        draft.selectedContentVersion = undefined;
+      })
+    );
   }
 
   /**
@@ -380,9 +387,11 @@ class ContentVersionsScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({
-      selectedContentVersion : { ...selectedContentVersion, [key] : value }
-    });
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedContentVersion = { ...selectedContentVersion, [key] : value }
+      })
+    );
   }
 
   /**
@@ -390,25 +399,22 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    * @param event react change event
    */
   private onCheckBoxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { selectedContentVersion } = this.state;
-    const key = event.target.name;
-    const value = event.target.value;
-    if (!key || !value || !selectedContentVersion) {
-      return;
-    }
-    const index = selectedContentVersion.rooms.findIndex(roomId => roomId === value);
-    const tempRooms = selectedContentVersion.rooms;
+    this.setState(
+      produce((draft: State) => {
+        const { value } = event.target;
+        if (!value || !draft.selectedContentVersion) {
+          return;
+        }
 
-    if (index > -1) {
-      tempRooms.splice(index, 1);
-    } else {
-      tempRooms.push(value);
-    }
-
-    this.setState({
-      selectedContentVersion : { ...selectedContentVersion, rooms: tempRooms }
-    });
-
+        const index = draft.selectedContentVersion.rooms.findIndex(roomId => roomId === value);
+        
+        if (index > -1) {
+          draft.selectedContentVersion.rooms.splice(index, 1);
+        } else {
+          draft.selectedContentVersion.rooms.push(value);
+        }
+      })
+    );
   }
 
   /**
@@ -417,30 +423,39 @@ class ContentVersionsScreen extends React.Component<Props, State> {
   private onDialogSaveClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedContentVersion, addNewContentVersion } = this.state;
-
     if (!selectedContentVersion) {
       return;
     }
-    const contentVersionApi = Api.getContentVersionsApi(accessToken);
-    let tempContentVersion;
-    if (addNewContentVersion) {
-      tempContentVersion = await contentVersionApi.createContentVersion({
-        exhibitionId: exhibitionId,
-        contentVersion: selectedContentVersion
-      });
-    } else {
-      tempContentVersion = await contentVersionApi.updateContentVersion({
-        contentVersionId: selectedContentVersion.id!,
-        exhibitionId: exhibitionId,
-        contentVersion: selectedContentVersion
-      });
-    }
 
-    this.setState({
-      dialogOpen: false,
-      selectedContentVersion: { ...tempContentVersion } as ContentVersion
+    const newState = await produce(this.state, async draft => {
+      const contentVersionApi = Api.getContentVersionsApi(accessToken);
+
+      if (addNewContentVersion) {
+        const newContentVersion = await contentVersionApi.createContentVersion({
+          exhibitionId: exhibitionId,
+          contentVersion: selectedContentVersion
+        });
+
+        draft.selectedContentVersion = newContentVersion;
+        draft.contentVersions.push(newContentVersion);
+      } else {
+        const updatedContentVersion = await contentVersionApi.updateContentVersion({
+          contentVersionId: selectedContentVersion.id!,
+          exhibitionId: exhibitionId,
+          contentVersion: selectedContentVersion
+        });
+
+        draft.selectedContentVersion = updatedContentVersion;
+        const versionIndex = draft.contentVersions.findIndex(version => version.id === updatedContentVersion.id);
+        if (versionIndex > -1) {
+          draft.contentVersions.splice(versionIndex, 1, updatedContentVersion);
+        }
+      }
+
+      draft.dialogOpen = false;
     });
 
+    this.setState(newState);
   }
 
   /**

@@ -15,6 +15,9 @@ import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
+import GenericDialog from "../generic/generic-dialog";
+import Api from "../../api/api";
+import { setExhibitions } from "../../actions/exhibitions";
 
 /**
  * Component props
@@ -24,6 +27,7 @@ interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
   exhibitions: Exhibition[];
+  setExhibitions: typeof setExhibitions;
 }
 
 /**
@@ -31,6 +35,8 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   loading: boolean;
+  addExhibitionDialogOpen: boolean;
+  selectedExhibition?: Exhibition;
 }
 
 /**
@@ -46,7 +52,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      addExhibitionDialogOpen: false
     };
   }
 
@@ -74,6 +81,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         noBackButton
       >
         { this.renderProductionCardsList() }
+        { this.renderAddDialog() }
       </BasicLayout>
     );
   }
@@ -110,6 +118,26 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders add exhibition dialog
+   */
+  private renderAddDialog = () => {
+    return (
+      <GenericDialog
+        cancelButtonText={ strings.genericDialog.cancel }
+        positiveButtonText={ strings.genericDialog.save }
+        title={ strings.contentVersion.addDialogTitle }
+        error={ false }
+        onConfirm={ this.onDialogSaveClick }
+        onCancel={ this.onCloseOrCancelClick }
+        open={ this.state.addExhibitionDialogOpen }
+        onClose={ this.onCloseOrCancelClick }
+      >
+        
+      </GenericDialog>
+    );
+  }
+
+  /**
    * Gets card menu options
    *
    * @returns card menu options as action button array
@@ -126,11 +154,10 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    *
    * @returns action buttons as array
    */
-  // TODO: create new exhibition
-  private getActionButtons = () => {
+  private getActionButtons = (): ActionButton[] => {
     return [
-      { name: strings.dashboard.newExhibitionButton, action: () => null }
-    ] as ActionButton[];
+      { name: strings.dashboard.newExhibitionButton, action: () => this.onNewExhibitionClick() }
+    ];
   }
 
   /**
@@ -147,6 +174,53 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   private setStatus = () => {
     alert(strings.comingSoon);
     return;
+  }
+
+  /**
+   * Event handler for new exhibition click
+   */
+  private onNewExhibitionClick = () => {
+    const newExhibition: Exhibition = { name: "" };
+
+    this.setState({
+      addExhibitionDialogOpen: true,
+      selectedExhibition: newExhibition
+    });
+  }
+
+  /**
+   * Event handler for exhibition delete click
+   */
+  private onDeleteExhibitionClick = () => {
+
+  }
+
+  /**
+   * Event handler for dialog save click
+   */
+  private onDialogSaveClick = async () => {
+    const { accessToken, exhibitions } = this.props;
+    const { selectedExhibition } = this.state;
+    if (!accessToken || !selectedExhibition) {
+      return;
+    }
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const newExhibition = await exhibitionsApi.createExhibition({
+      exhibition: selectedExhibition
+    });
+
+    this.props.setExhibitions(exhibitions.push(newExhibition));
+  }
+
+  /**
+   * Event handler for close or cancel click
+   */
+  private onCloseOrCancelClick = () => {
+    this.setState({
+      addExhibitionDialogOpen: false,
+      selectedExhibition: undefined
+    });
   }
 }
 
@@ -170,6 +244,7 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
+    setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions))
   };
 }
 

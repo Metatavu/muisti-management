@@ -22,6 +22,7 @@ import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import ConfirmDialog from "../generic/confirm-dialog";
+import produce from "immer";
 
 /**
  * Component props
@@ -135,18 +136,28 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * Renders group content versions as card list
    */
   private renderGroupContentVersionCardsList = () => {
-    const { groupContentVersions, exhibition, room, contentVersion, selectedGroupContentVersion } = this.state;
+    const { groupContentVersions, exhibition, room, contentVersion, selectedGroupContentVersion, deviceGroups } = this.state;
     const cards = groupContentVersions.map(groupContentVersion => {
       const groupContentVersionId = groupContentVersion.id;
       if (!groupContentVersionId || !exhibition || !room || !contentVersion) {
         return null;
       }
 
+      const deviceGroupName = deviceGroups.find(group => group.id === groupContentVersion.deviceGroupId)?.name || "";
+
       return (
         <CardItem
           key={ groupContentVersionId }
           title={ groupContentVersion.name }
           subtitle={ contentVersion?.name }
+          context={
+            <div>
+              <Typography variant="body1">
+                <div>{`${room.name} /`}</div>
+                <div>{ deviceGroupName }</div>
+              </Typography>
+            </div>
+          }
           onClick={ () => this.onCardClick(groupContentVersion) }
           menuOptions={ this.getCardMenuOptions(groupContentVersion) }
           status={ groupContentVersion.status }
@@ -208,9 +219,12 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * Render dialog content
    */
   private renderDialogContent = () => {
-    const { selectedGroupContentVersion, deviceGroups } = this.state;
+    const { selectedGroupContentVersion, deviceGroups, room } = this.state;
+    if (!room) {
+      return;
+    }
 
-    const deviceGroupSelectItems = deviceGroups.map(group =>
+    const deviceGroupSelectItems = deviceGroups.filter(group => group.roomId === room.id).map(group =>
       <MenuItem key={ group.id } value={ group.id }>{ group.name }</MenuItem>
     );
 
@@ -256,15 +270,16 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
     const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
-    const [ exhibition, room, contentVersion, groupContentVersions, deviceGroups ] = await
-    Promise.all<Exhibition, ExhibitionRoom, ContentVersion, GroupContentVersion[], ExhibitionDeviceGroup[]>([
-      exhibitionsApi.findExhibition({ exhibitionId }),
-      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
-      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId }),
-      groupContentVersionApi.listGroupContentVersions({ exhibitionId: exhibitionId }),
-      deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId: exhibitionId, roomId: roomId })
-    ]);
+    const [ exhibition, room, contentVersion, groupContentVersions, deviceGroups ] = 
+      await Promise.all<Exhibition, ExhibitionRoom, ContentVersion, GroupContentVersion[], ExhibitionDeviceGroup[]>([
+        exhibitionsApi.findExhibition({ exhibitionId }),
+        exhibitionRoomsApi.findExhibitionRoom({ exhibitionId, roomId }),
+        contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
+        groupContentVersionApi.listGroupContentVersions({ exhibitionId, contentVersionId }),
+        deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId })
+      ]);
 
+    console.log(groupContentVersions);
     this.setState({ exhibition, room, contentVersion, groupContentVersions, deviceGroups });
   }
 
@@ -395,7 +410,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   /**
    * Event handler for dialog save click
    */
-  private onDialogSaveClick = () => {
+  private onDialogSaveClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedGroupContentVersion } = this.state;
 
@@ -404,12 +419,17 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
 
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
-    groupContentVersionApi.createGroupContentVersion({
+    const createdContentVersion = await groupContentVersionApi.createGroupContentVersion({
       exhibitionId: exhibitionId,
       groupContentVersion: selectedGroupContentVersion
     });
 
+    const groupContentVersions = produce(this.state.groupContentVersions, draft => {
+      draft.push(createdContentVersion)
+    });
+
     this.setState({
+      groupContentVersions,
       addDialogOpen: false,
       selectedGroupContentVersion: undefined
     });

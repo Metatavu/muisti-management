@@ -23,6 +23,11 @@ interface Props extends WithStyles<typeof styles> {
   subtitle?: string;
 
   /**
+   * Card context info
+   */
+  context?: JSX.Element;
+
+  /**
    * Card item status
    */
   status?: string | GroupContentVersionStatus;
@@ -72,7 +77,7 @@ class CardItem extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, menuOptions, title, subtitle, status, size, selected } = this.props;
+    const { classes, menuOptions, title, subtitle, context, status, size, selected } = this.props;
 
     return (
       <div className={ classes.cardWrapper }>
@@ -93,6 +98,7 @@ class CardItem extends React.Component<Props, State> {
             subheader={ subtitle }
             />
           <CardContent>
+            { context }
             { status &&
               <Typography variant="h5" className={ classes.status }>
                 { status }
