@@ -714,7 +714,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
           if (floorIndex > -1) {
             floors.splice(floorIndex, 1, updatedFloor);
-            draft.selectedFloor = undefined;
           }
         })
       );
