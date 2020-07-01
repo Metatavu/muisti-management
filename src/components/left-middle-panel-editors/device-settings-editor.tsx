@@ -50,7 +50,7 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
       );
     });
 
-    selectIndexPageItems.push(<MenuItem key={ "undefinedIndexPage" } value={ undefined }>{ strings.generic.undefined }</MenuItem>);
+    selectIndexPageItems.push(<MenuItem key={ "undefinedIndexPage" } value={ strings.generic.undefined }>{ strings.generic.undefined }</MenuItem>);
 
     return (
       <>
@@ -66,7 +66,7 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
         <InputLabel id="indexPageId">
           { strings.exhibition.deviceSettingsEditor.indexPageId }
         </InputLabel>
-        <Select 
+        <Select
           variant="filled"
           labelId="indexPageId"
           fullWidth
