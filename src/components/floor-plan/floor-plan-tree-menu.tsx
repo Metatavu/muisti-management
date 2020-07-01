@@ -18,6 +18,7 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 interface Props extends WithStyles<typeof styles> {
   treeNodes: TreeNodeInArray[];
   firstSelected?: string;
+  focusKey?: string;
 }
 
 /**
@@ -57,7 +58,8 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { treeNodes, classes, firstSelected } = this.props;
+    const { treeNodes, classes, firstSelected, focusKey } = this.props;
+
     return (
       <div className={ classes.treeView }>
         <TreeMenu
@@ -66,6 +68,8 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
           initialOpenNodes={[ firstSelected || "" ]}
           initialActiveKey={ firstSelected || "" }
           initialFocusKey={ firstSelected || "" }
+          activeKey={ focusKey || firstSelected || "" }
+          focusKey={ focusKey || firstSelected || "" }
         >
           { ({ items, search }) => this.renderTreeMenu(items, search) }
         </TreeMenu>
@@ -109,7 +113,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    */
   private renderTreeMenuItem = (item: TreeMenuItem) => {
     const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ? 
+    const toggleIcon = (on: boolean) => on ?
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
     const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
@@ -149,7 +153,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
 
   /**
    * Handler for on node click event
-   * 
+   *
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
    */

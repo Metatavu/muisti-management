@@ -69,6 +69,7 @@ interface State {
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
   selectedItemHasNodes: boolean;
+  activeKeyInTree?: string;
 }
 
 /**
@@ -135,7 +136,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom,
       selectedDeviceGroup,
       selectedDevice,
-      selectedAntenna } = this.state;
+      selectedAntenna,
+      activeKeyInTree } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -147,7 +149,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const treeNodes = this.constructTreeData();
     const firstSelected = selectedFloor?.id || "";
-    
+
     const devicePropertiesTitle =
       selectedAntenna ?
       strings.floorPlan.antenna.properties :
@@ -160,8 +162,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedFloor ?
       strings.floorPlan.floor.properties :
       "";
-    
-    return (
+
+      return (
       <BasicLayout
         history={ history }
         title={ exhibition.name }
@@ -173,7 +175,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.structure }>
-            <FloorPlanTreeMenu treeNodes={ treeNodes } firstSelected={ firstSelected } />
+            <FloorPlanTreeMenu
+              treeNodes={ treeNodes }
+              firstSelected={ firstSelected }
+              focusKey={ activeKeyInTree }
+            />
           </ElementNavigationPane>
           <EditorView>
             { this.renderEditor() }
@@ -1034,7 +1040,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}`
     });
   }
 
@@ -1054,7 +1061,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}`
     });
   }
 
@@ -1075,7 +1083,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}`
     });
   }
 
@@ -1097,7 +1106,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: devices.find(device => device.id === deviceId),
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`
     });
   }
 
@@ -1119,7 +1129,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: antennas.find(antenna => antenna.id === antennaId),
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${antennaId}`
     });
   }
 
