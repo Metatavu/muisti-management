@@ -511,7 +511,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const { mapData } = this.props;
     const { layerStyleOptions } = this;
     this.roomLayers.clearLayers();
-    if (!mapData.rooms) {
+    if (!mapData.rooms || !this.mapInstance) {
       return;
     }
 
@@ -538,6 +538,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         }
       }
     });
+
+    if (this.roomLayers.getLayers().length > 0) {
+      this.mapInstance.fitBounds(this.roomLayers.getBounds());
+    }
 
     this.setState({
       leafletIdToRoomMap : tempMap
@@ -714,6 +718,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param tempMap temp maps
    */
   private addRoomLayersToMap(roomLayersToAdd: Layer[], room: ExhibitionRoom, tempMap: Map<number, ExhibitionRoom>) {
+    if (!this.mapInstance) {
+      return;
+    }
+
     roomLayersToAdd.forEach(roomLayer => {
       if (room.id) {
         this.roomLayers.addLayer(roomLayer);
@@ -721,7 +729,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         tempMap.set(layerId, room);
       }
     });
-    this.mapInstance?.fitBounds(this.roomLayers.getBounds());
   }
 
   /**
