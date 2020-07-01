@@ -662,13 +662,17 @@ export class TimelineScreen extends React.Component<Props, State> {
   private onDeviceDataChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
     const { selectedDevice } = this.state;
     const { name, value } = event.target;
-    if (!selectedDevice || !name || !value) {
+    if (!selectedDevice || !name) {
       return;
     }
 
     this.setState(
       produce((draft: State) => {
-        draft.selectedDevice = { ...draft.selectedDevice!, [name]: value };
+
+        draft.selectedDevice = { 
+          ...draft.selectedDevice!,
+          [name]: value !== strings.generic.undefined ? value : undefined
+        };
       })
     );
   }

@@ -481,6 +481,7 @@ export interface IStrings extends LocalizedStringsMethods {
     name: string;
     confirmDelete: string;
     or: string;
+    undefined: string;
   };
 
   spaces: {

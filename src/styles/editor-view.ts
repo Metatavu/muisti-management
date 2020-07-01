@@ -16,7 +16,7 @@ export default createStyles({
       border: "3px solid #222"
     },
     "& .antenna-icon": {
-      backgroundColor: "rgba(46, 46, 80, 0.15)",
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
       borderRadius: "50%",
       boxShadow: "0 0 30px rgba(0,0,0,0.2)",
       border: "3px solid #222"

@@ -478,7 +478,8 @@
     "loadNew": "Lataa uusi",
     "name": "Nimi",
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
-    "or": "tai"
+    "or": "tai",
+    "undefined": "Ei määritelty"
   },
 
   "spaces": {
