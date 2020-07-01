@@ -19,6 +19,7 @@ import Api from "../../api/api";
 import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
+import produce from "immer";
 
 /**
  * Component props
@@ -108,17 +109,18 @@ class LayoutsScreen extends React.Component<Props, State> {
       return null;
     }
     
-    const cardMenuOptions = this.getCardMenuOptions();
-    const cards = layouts.map(exhibition => {
-      const layoutId = exhibition.id;
+    const cards = layouts.map(layout => {
+      const layoutId = layout.id;
       if (!layoutId) {
         return null;
       }
 
+      const cardMenuOptions = this.getCardMenuOptions(layout);
+
       return (
         <CardItem
-          key={ exhibition.id }
-          title={ exhibition.name }
+          key={ layout.id }
+          title={ layout.name }
           onClick={ () => this.onCardClick(layoutId) }
           menuOptions={ cardMenuOptions }
           status={ "" }
@@ -185,10 +187,13 @@ class LayoutsScreen extends React.Component<Props, State> {
    *
    * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (): ActionButton[] => {
+  private getCardMenuOptions = (layout: PageLayout): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
       action: this.setStatus
+    }, {
+      name: strings.exhibitions.cardMenu.delete,
+      action: () => this.deleteLayout(layout)
     }];
   }
 
@@ -290,6 +295,36 @@ class LayoutsScreen extends React.Component<Props, State> {
   private setStatus = () => {
     alert(strings.comingSoon);
     return;
+  }
+
+  /**
+   * Deletes layout
+   * 
+   * @param layout layout
+   */
+  private deleteLayout = async (layout: PageLayout) => {
+    const { accessToken, layouts } = this.props;
+    const pageLayoutId = layout.id;
+    if (!pageLayoutId) {
+      return;
+    }
+
+    const confirmMessage = strings.formatString(strings.layout.confirmDelete, layout.name);
+    if (!window.confirm(confirmMessage as string)) {
+      return;
+    }
+
+    const layoutsApi = Api.getPageLayoutsApi(accessToken);
+    await layoutsApi.deletePageLayout({ pageLayoutId });
+
+    const updatedLayouts = produce(layouts, draft => {
+      const layoutIndex = draft.findIndex(layout => layout.id === pageLayoutId);
+      if (layoutIndex > -1) {
+        draft.splice(layoutIndex, 1);
+      }
+    });
+
+    this.props.setLayouts(updatedLayouts);
   }
 }
 

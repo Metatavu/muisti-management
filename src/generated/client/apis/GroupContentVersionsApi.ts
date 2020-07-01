@@ -37,6 +37,7 @@ export interface FindGroupContentVersionRequest {
 
 export interface ListGroupContentVersionsRequest {
     exhibitionId: string;
+    contentVersionId?: string;
 }
 
 export interface UpdateGroupContentVersionRequest {
@@ -194,6 +195,10 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.contentVersionId !== undefined) {
+            queryParameters['contentVersionId'] = requestParameters.contentVersionId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

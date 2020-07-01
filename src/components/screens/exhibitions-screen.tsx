@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition } from "../../generated/client";
@@ -15,6 +15,11 @@ import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
+import GenericDialog from "../generic/generic-dialog";
+import Api from "../../api/api";
+import { setExhibitions } from "../../actions/exhibitions";
+import produce from "immer";
+import ConfirmDialog from "../generic/confirm-dialog";
 
 /**
  * Component props
@@ -24,6 +29,7 @@ interface Props extends WithStyles<typeof styles> {
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
   exhibitions: Exhibition[];
+  setExhibitions: typeof setExhibitions;
 }
 
 /**
@@ -31,6 +37,9 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   loading: boolean;
+  addDialogOpen: boolean;
+  deleteDialogOpen: boolean;
+  selectedExhibition?: Exhibition;
 }
 
 /**
@@ -46,7 +55,9 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      addDialogOpen: false,
+      deleteDialogOpen: false
     };
   }
 
@@ -74,6 +85,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         noBackButton
       >
         { this.renderProductionCardsList() }
+        { this.renderAddDialog() }
+        { this.renderConfirmDeleteDialog() }
       </BasicLayout>
     );
   }
@@ -83,8 +96,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    */
   private renderProductionCardsList = () => {
     const { exhibitions } = this.props;
-    const cardMenuOptions = this.getCardMenuOptions();
     const cards = exhibitions.map(exhibition => {
+      const cardMenuOptions = this.getCardMenuOptions(exhibition);
       const exhibitionId = exhibition.id;
       if (!exhibitionId) {
         return null;
@@ -110,14 +123,72 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Gets card menu options
+   * Renders add exhibition dialog
+   */
+  private renderAddDialog = () => {
+    const { selectedExhibition } = this.state;
+    if (selectedExhibition) {
+      return (
+        <GenericDialog
+          cancelButtonText={ strings.genericDialog.cancel }
+          positiveButtonText={ strings.genericDialog.save }
+          title={ strings.exhibitions.createExhibitionDialog.title }
+          error={ false }
+          onConfirm={ this.onDialogSaveClick }
+          onCancel={ this.onCloseOrCancelClick }
+          open={ this.state.addDialogOpen }
+          onClose={ this.onCloseOrCancelClick }
+        >
+          <TextField
+            fullWidth
+            variant="outlined"
+            label={ strings.generic.name }
+            name="name"
+            value={ selectedExhibition.name }
+            onChange={ this.onExhibitionDataChange }
+          />
+        </GenericDialog>
+      );
+    }
+  }
+
+  /**
+   * Renders delete confirmation dialog
+   */
+  private renderConfirmDeleteDialog = () => {
+    const { selectedExhibition } = this.state;
+    if (selectedExhibition) {
+      const description = strings.formatString(
+        strings.exhibitions.deleteExhibitionDialog.description,
+        selectedExhibition.name) as string;
+      return (
+        <ConfirmDialog
+          open={ this.state.deleteDialogOpen }
+          title={ strings.exhibitions.deleteExhibitionDialog.title }
+          text={ description }
+          onClose={ this.onCloseOrCancelClick }
+          onCancel={ this.onCloseOrCancelClick }
+          onConfirm={ () => this.deleteExhibition(selectedExhibition) }
+          positiveButtonText={ strings.confirmDialog.delete }
+          cancelButtonText={ strings.confirmDialog.cancel }
+        />
+      );
+    }
+  }
+
+  /**
+   * Gets card menu options for exhibition card
    *
+   * @param exhibition exhibition
    * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (): ActionButton[] => {
+  private getCardMenuOptions = (exhibition: Exhibition): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
-      action: this.setStatus
+      action: () => this.setStatus(exhibition)
+    }, {
+      name: strings.exhibitions.cardMenu.delete,
+      action: () => this.onDeleteExhibitionClick(exhibition)
     }];
   }
 
@@ -126,11 +197,10 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    *
    * @returns action buttons as array
    */
-  // TODO: create new exhibition
-  private getActionButtons = () => {
+  private getActionButtons = (): ActionButton[] => {
     return [
-      { name: strings.dashboard.newExhibitionButton, action: () => null }
-    ] as ActionButton[];
+      { name: strings.dashboard.newExhibitionButton, action: this.onNewExhibitionClick }
+    ];
   }
 
   /**
@@ -143,10 +213,123 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for set status
+   * 
+   * @param exhibition exhibition
    */
-  private setStatus = () => {
+  private setStatus = (exhibition: Exhibition) => {
     alert(strings.comingSoon);
     return;
+  }
+
+  /**
+   * Event handler for new exhibition click
+   */
+  private onNewExhibitionClick = () => {
+    const newExhibition: Exhibition = { name: "" };
+
+    this.setState({
+      addDialogOpen: true,
+      selectedExhibition: newExhibition
+    });
+  }
+
+  /**
+   * Event handler for exhibition data change
+   * 
+   * @param event event
+   */
+  private onExhibitionDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { selectedExhibition } = this.state;
+    const { name, value } = event.target;
+    if (!selectedExhibition || !name) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedExhibition = { ...draft.selectedExhibition!, [name]: value }
+      })
+    );
+  }
+
+  /**
+   * Event handler for exhibition delete click
+   * 
+   * @param selectedExhibition exhibition
+   */
+  private onDeleteExhibitionClick = (selectedExhibition: Exhibition) => {
+    this.setState({
+      selectedExhibition,
+      deleteDialogOpen: true
+    });
+  }
+
+  /**
+   * Event handler for dialog save click
+   */
+  private onDialogSaveClick = async () => {
+    const { accessToken, exhibitions } = this.props;
+    const { selectedExhibition } = this.state;
+    if (!accessToken || !selectedExhibition) {
+      return;
+    }
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const newExhibition = await exhibitionsApi.createExhibition({
+      exhibition: selectedExhibition
+    });
+
+    this.props.setExhibitions(
+      produce(exhibitions, draft => {
+        draft.push(newExhibition)
+      })
+    );
+
+    this.setState({
+      addDialogOpen: false,
+      selectedExhibition: undefined
+    });
+  }
+
+  /**
+   * Event handler for close or cancel click
+   */
+  private onCloseOrCancelClick = () => {
+    this.setState({
+      addDialogOpen: false,
+      deleteDialogOpen: false,
+      selectedExhibition: undefined
+    });
+  }
+
+  /**
+   * Deletes exhibition
+   * 
+   * @param selectedExhibition exhibition
+   */
+  private deleteExhibition = async (selectedExhibition: Exhibition) => {
+    const { accessToken, exhibitions } = this.props;
+    const exhibitionId = selectedExhibition.id;
+    if (!accessToken || !exhibitionId) {
+      return;
+    }
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    await exhibitionsApi.deleteExhibition({ exhibitionId });
+
+    this.props.setExhibitions(
+      produce(exhibitions, draft => {
+        const exhibitionIndex = exhibitions.findIndex(exhibition => exhibition.id === selectedExhibition.id)
+        if (exhibitionIndex > -1) {
+          draft.splice(exhibitionIndex, 1)
+        }
+      })
+    );
+
+    this.setState({
+      deleteDialogOpen: false,
+      selectedExhibition: undefined
+    });
   }
 }
 
@@ -170,6 +353,7 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
+    setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions))
   };
 }
 

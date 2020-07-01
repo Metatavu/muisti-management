@@ -128,7 +128,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history } = this.props;
-    const { exhibition, addImageDialogOpen, selectedFloor } = this.state;
+    const {
+      exhibition,
+      addImageDialogOpen,
+      selectedFloor,
+      selectedRoom,
+      selectedDeviceGroup,
+      selectedDevice,
+      selectedAntenna } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -140,6 +147,20 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const treeNodes = this.constructTreeData();
     const firstSelected = selectedFloor?.id || "";
+    
+    const devicePropertiesTitle =
+      selectedAntenna ?
+      strings.floorPlan.antenna.properties :
+      selectedDevice ?
+      strings.floorPlan.device.properties :
+      selectedDeviceGroup ?
+      strings.floorPlan.deviceGroup.properties :
+      selectedRoom ?
+      strings.floorPlan.room.properties :
+      selectedFloor ?
+      strings.floorPlan.floor.properties :
+      "";
+    
     return (
       <BasicLayout
         history={ history }
@@ -161,7 +182,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           <ElementSettingsPane
             open={ true }
             width={ 420 }
-            title={ strings.floorPlan.properties.title }
+            title={ devicePropertiesTitle }
           >
             { this.renderRightPanel() }
           </ElementSettingsPane>

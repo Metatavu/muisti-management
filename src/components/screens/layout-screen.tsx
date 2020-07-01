@@ -405,6 +405,7 @@ export class LayoutScreen extends React.Component<Props, State> {
   private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
     const type = getWidgetType(layoutView.widget) as PageLayoutElementType;
+    
     return {
       key: layoutView.id,
       path: path,

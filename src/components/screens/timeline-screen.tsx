@@ -666,9 +666,11 @@ export class TimelineScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({
-      selectedDevice: { ...selectedDevice, [name]: value as string } as ExhibitionDevice
-    });
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedDevice = { ...draft.selectedDevice!, [name]: value };
+      })
+    );
   }
 
   /**
@@ -684,13 +686,15 @@ export class TimelineScreen extends React.Component<Props, State> {
     }
 
     if (transitionType === "enter") {
-      this.setState({
-        selectedPage: { ...selectedPage, enterTransitions: transitions }
-      });
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage!.enterTransitions = transitions;
+        })
+      );
     } else if (transitionType === "exit") {
-      this.setState({
-        selectedPage: { ...selectedPage, exitTransitions: transitions }
-      });
+      produce((draft: State) => {
+        draft.selectedPage!.exitTransitions = transitions;
+      })
     }
   }
 
@@ -733,9 +737,12 @@ export class TimelineScreen extends React.Component<Props, State> {
 
     const resources = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
 
-    this.setState({
-      selectedPage: { ...selectedPage, layoutId, resources }
-    });
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage!.layoutId = layoutId;
+        draft.selectedPage!.resources = resources;
+      })
+    );
   }
 
   /**
@@ -750,18 +757,22 @@ export class TimelineScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({
-      selectedPage: { ...selectedPage, [name]: value }
-    });
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = { ...draft.selectedPage!, [name]: value };
+      })
+    );
   }
 
   /**
    * Event handler for switch view button click
    */
   private onSwitchViewClick = () => {
-    this.setState({
-      view: this.state.view === "CODE" ? "VISUAL" : "CODE"
-    });
+    this.setState(
+      produce((draft: State) => {
+        draft.view = draft.view === "CODE" ? "VISUAL" : "CODE";
+      })
+    );
   }
 
   /**
@@ -944,18 +955,17 @@ export class TimelineScreen extends React.Component<Props, State> {
       this.setState(
         produce((draft: State) => {
           const pageIndex = draft.pages.findIndex(page => page.id === pageId);
+
           if (pageIndex > -1) {
             draft.pages.splice(pageIndex, 1);
           }
+
+          draft.selectedPage = undefined;
+          draft.selectedDevice = undefined;
+          draft.selectedEventTriggerIndex = undefined;
+          draft.selectedResourceIndex = undefined;
         })
       );
-
-      this.setState({
-        selectedPage: undefined,
-        selectedDevice: undefined,
-        selectedEventTriggerIndex: undefined,
-        selectedResourceIndex: undefined
-      });
     } catch (e) {
       console.error(e);
 
