@@ -570,6 +570,15 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       });
     });
 
+    if (mapData.antennas) {
+      mapData.antennas.forEach(antenna => {
+        if (antenna.location.x && antenna.location.y) {
+          const latLng: LatLngTuple = [antenna.location.x, antenna.location.y];
+          devicePoints.push(latLng);
+        }
+      });
+    }
+
     const deviceGroupBounds = this.getDeviceGroupBounds(devicePoints);
     const newDeviceGroupLayer = new L.Polygon(deviceGroupBounds) as any;
     newDeviceGroupLayer.setStyle({
