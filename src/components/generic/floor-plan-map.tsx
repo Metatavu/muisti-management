@@ -598,6 +598,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   private loadDevices = () => {
     this.deviceMarkers.clearLayers();
     this.selectedMarker.clearLayers();
+
     const { mapData, selectedItems } = this.props;
     if (!mapData.devices || !selectedItems.deviceGroup) {
       return;
