@@ -994,6 +994,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         devicePoints.push(latLng);
       }
     });
+
     if (tempAntennas) {
       tempAntennas.filter(antenna => antenna.groupId === selectedDeviceGroup.id).forEach(antenna => {
         if (antenna.location.x && antenna.location.y) {

@@ -490,6 +490,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       const foundDevices: ExhibitionDevice[] = [];
       const foundAntennas: RfidAntenna[] = [];
 
+
       foundDeviceGroups.forEach(group => {
         foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
         foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
