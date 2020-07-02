@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { ReduxState, ReduxActions } from "../../store";
 import { login } from "../../actions/auth";
 
-import { AccessToken } from "../../types"
+import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
@@ -15,7 +15,7 @@ import Keycloak from "keycloak-js";
 interface Props {
   accessToken?: AccessToken;
   onLogin: (keycloak: KeycloakInstance) => void;
-};
+}
 
 /**
  * Component state
@@ -72,7 +72,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
       this.timer = setInterval(() => {
         this.refreshAccessToken();
       }, 1000 * 60);
-    };
+    }
   }
 
   /**
@@ -89,7 +89,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    */
   public render() {
     if (this.state.error) {
-      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
+      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />;
     }
 
     return this.props.accessToken ? this.props.children : null;
