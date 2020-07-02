@@ -81,19 +81,6 @@ export enum ExhibitionElementType {
 }
 
 /**
- * Enum for different page layout element types
- */
-export enum PageLayoutElementType {
-  TEXTVIEW = "TEXTVIEW",
-  FLOWTEXTVIEW = "FLOWTEXTVIEW",
-  IMAGEVIEW = "IMAGEVIEW",
-  MEDIAVIEW = "MEDIAVIEW",
-  PLAYERVIEW = "PLAYERVIEW",
-  BUTTON = "BUTTON",
-  LINEARLAYOUT = "LINEARLAYOUT"
-}
-
-/**
  * Interface describing generic action button
  */
 export interface ActionButton {

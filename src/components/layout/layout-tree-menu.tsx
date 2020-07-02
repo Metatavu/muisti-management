@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Typography, Divider, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -13,14 +13,15 @@ import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
 import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
-import { PageLayoutElementType } from "../../types";
+import { v4 as uuid } from "uuid";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   treeData: TreeNodeInArray[];
-  onSelect: (element: PageLayoutView, type: PageLayoutElementType, path: string) => void;
+  onSelect: (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => void;
   onAdd: (pageLayoutView: PageLayoutView, path: string) => void;
   onDelete: (path: string) => void;
 }
@@ -151,30 +152,28 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
     if (!newPageLayoutView) {
       return (<div/>);
     }
+
+    const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
+      return (
+        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+      );      
+    });
+
     return (<>
         <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
           <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.layoutEditor.addLayoutViewDialog.id }</Typography>
-            <TextField
+            <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+              { strings.layoutEditor.addLayoutViewDialog.widget }
+            </InputLabel>
+            <Select
               variant="filled"
+              labelId="widget"
               fullWidth
-              type="text"
-              name="id"
-              value={ newPageLayoutView.id }
-              onChange={ this.onTextChange }
-            />
-            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          </Grid>
-          <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.layoutEditor.addLayoutViewDialog.widget }</Typography>
-            <TextField
-              variant="filled"
-              fullWidth
-              type="text"
               name="widget"
               value={ newPageLayoutView.widget }
-              onChange={ this.onTextChange }
-            />
+              onChange={ this.onWidgetChange }>
+              { widgetItems }
+            </Select>
             <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
         </Grid>
@@ -193,7 +192,7 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
     }
     event.stopPropagation();
   }
-
+  
   /**
    * Event handler for layout view property add click
    * 
@@ -201,8 +200,8 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
    */
   private onLayoutViewPropertyAddClick = (path: string) => {
     const newPageLayoutView: PageLayoutView = {
-      id: "",
-      widget: "",
+      id: uuid(),
+      widget: PageLayoutWidgetType.TextView,
       properties: [],
       children: []
     };
@@ -245,20 +244,20 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for text field change
+   * Event handler for add dialog widget change
    * 
-   * @param event change event
+   * @param event React change event
    */
-  private onTextChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { newPageLayoutView } = this.state;
-    const { name, value } = event.target;
-
-    if (!newPageLayoutView || !name) {
+    if (!newPageLayoutView) {
       return;
     }
 
+    const widget = event.target.value as PageLayoutWidgetType;
+    
     this.setState({
-      newPageLayoutView : { ...newPageLayoutView, [name]: value as string }
+      newPageLayoutView : { ...newPageLayoutView, widget: widget }
     });
   }
 }

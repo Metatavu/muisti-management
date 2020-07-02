@@ -1,6 +1,5 @@
 import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
-import { PageLayoutElementType } from "../../../types";
 
 /**
  * Delete item from tree structure while keeping rest of there data
@@ -230,28 +229,4 @@ export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enu
   });
 
   return propertyList;
-};
-
-/**
- * TODO: These things should be defined in the spec.
- * Get correct widget type
- * @param widget type to find
- */
-export const getWidgetType = (widget: string): string => {
-  switch (widget) {
-    case "TextView":
-      return PageLayoutElementType.TEXTVIEW;
-    case "FlowTextView":
-      return PageLayoutElementType.FLOWTEXTVIEW;
-    case "ImageView":
-      return PageLayoutElementType.IMAGEVIEW;
-    case "MediaView":
-        return PageLayoutElementType.IMAGEVIEW;
-    case "Button":
-      return PageLayoutElementType.BUTTON;
-    case "LinearLayout":
-      return PageLayoutElementType.LINEARLAYOUT;
-    default:
-      return "";
-  }
 };

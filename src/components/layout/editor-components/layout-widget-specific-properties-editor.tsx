@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutView, PageLayout } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutView, PageLayout, PageLayoutWidgetType } from "../../../generated/client";
 import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
 
@@ -8,7 +8,6 @@ import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
 import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-utils";
-import { PageLayoutElementType } from "../../../types";
 
 import TextViewEditor from "./widget-editors/text-view-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
@@ -22,7 +21,7 @@ import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
   selectedElementPath: string;
-  selectedWidgetType: PageLayoutElementType;
+  selectedWidgetType: PageLayoutWidgetType;
   pageLayout: PageLayout;
   setSelectedLayout: typeof setSelectedLayout;
 }
@@ -69,17 +68,17 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     const { selectedWidgetType } = this.props;
 
     switch (selectedWidgetType) {
-      case (PageLayoutElementType.TEXTVIEW):
+      case (PageLayoutWidgetType.TextView):
         return this.renderTextViewEditor();
-      case (PageLayoutElementType.FLOWTEXTVIEW):
+      case (PageLayoutWidgetType.FlowTextView):
         return this.renderFlowTextViewEditor();
-      case (PageLayoutElementType.IMAGEVIEW):
-      case (PageLayoutElementType.MEDIAVIEW):
-      case (PageLayoutElementType.PLAYERVIEW):
+      case (PageLayoutWidgetType.ImageView):
+      case (PageLayoutWidgetType.MediaView):
+      case (PageLayoutWidgetType.PlayerView):
         return this.renderImageViewEditor();
-      case (PageLayoutElementType.BUTTON):
+      case (PageLayoutWidgetType.Button):
         return this.renderButtonEditor();
-      case (PageLayoutElementType.LINEARLAYOUT):
+      case (PageLayoutWidgetType.LinearLayout):
         return this.renderLinearLayoutEditor();
       default:
         return (<div/>);

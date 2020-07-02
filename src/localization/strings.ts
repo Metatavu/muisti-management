@@ -436,7 +436,6 @@ export interface IStrings extends LocalizedStringsMethods {
 
     addLayoutViewDialog: {
       title: string;
-      id: string;
       widget: string;
       confirm: string;
       cancel: string;
