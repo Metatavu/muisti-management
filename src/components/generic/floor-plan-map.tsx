@@ -759,7 +759,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const { layerStyleOptions } = this;
 
     const deviceGroupIndex = tempDeviceGroups.findIndex(group => group.id === selectedDeviceGroup.id);
-
     if (deviceGroupIndex === -1) {
       return;
     }
