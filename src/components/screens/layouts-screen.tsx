@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel } from "../../generated/client";
+import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType } from "../../generated/client";
 import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
@@ -226,7 +226,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       modelId: newLayout.modelId,
       data: {
         id: "newFrameLayout",
-        widget: "FrameLayout",
+        widget: PageLayoutWidgetType.FrameLayout,
         properties: [{
           name: "layout_width",
           value: "match_parent",

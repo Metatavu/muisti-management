@@ -18,7 +18,7 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
-import { AccessToken, PageLayoutElementType, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
@@ -31,7 +31,8 @@ import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-com
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";
 import { TreeNodeInArray } from "react-simple-tree-menu";
-import { getWidgetType, constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
+import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 
 type View = "CODE" | "VISUAL";
 
@@ -66,8 +67,8 @@ interface State {
   deleteOpen: boolean;
   view: View;
   pageLayoutView?: PageLayoutView;
-  selectedPropertyPath? : string;
-  selectedWidgetType?: PageLayoutElementType;
+  selectedPropertyPath?: string;
+  selectedWidgetType?: PageLayoutWidgetType;
   panelOpen: boolean;
 }
 
@@ -378,7 +379,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private constructTreeData = (pageLayout: PageLayout): TreeNodeInArray[] => {
     const path = pageLayout.data.id;
-    const type = getWidgetType(pageLayout.data.widget) as PageLayoutElementType;
+    const type = pageLayout.data.widget;
     const treeData = [{
       key: pageLayout.data.id,
       path: path,
@@ -404,14 +405,14 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
-    const type = getWidgetType(layoutView.widget) as PageLayoutElementType;
+    const type = layoutView.widget;
     
     return {
       key: layoutView.id,
       path: path,
       label: layoutView.widget,
       element: layoutView,
-      type: getWidgetType(layoutView.widget),
+      type: type,
       onSelect: () => this.onLayoutPageViewSelect(layoutView, type, path),
       parents: [ parentPageLayoutView ],
       nodes: layoutView.children.map(child => {
@@ -427,7 +428,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param type type of the element
    * @param path path to the selected element inside the tree structure
    */
-  private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutElementType, path: string) => {
+  private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => {
     this.setState({
       pageLayoutView: element,
       selectedPropertyPath: path,
