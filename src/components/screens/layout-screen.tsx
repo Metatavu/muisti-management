@@ -379,7 +379,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private constructTreeData = (pageLayout: PageLayout): TreeNodeInArray[] => {
     const path = pageLayout.data.id;
-    const type = pageLayout.data.widget as PageLayoutWidgetType;
+    const type = pageLayout.data.widget;
     const treeData = [{
       key: pageLayout.data.id,
       path: path,
@@ -405,7 +405,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
-    const type = layoutView.widget as PageLayoutWidgetType;
+    const type = layoutView.widget;
     
     return {
       key: layoutView.id,
