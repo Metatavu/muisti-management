@@ -468,6 +468,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!onDeviceGroupClick || !selectedItems.floor || !selectedItems.room || !foundDeviceGroup || !selectedItems.selectedItemHasNodes) {
       return;
     }
+
     onDeviceGroupClick(selectedItems.floor.id!, selectedItems.room.id!, foundDeviceGroup.id!, selectedItems.selectedItemHasNodes);
   }
 
@@ -597,6 +598,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
   private loadDevices = () => {
     this.deviceMarkers.clearLayers();
     this.selectedMarker.clearLayers();
+
     const { mapData, selectedItems } = this.props;
     if (!mapData.devices || !selectedItems.deviceGroup) {
       return;
@@ -617,6 +619,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private loadAntennas = () => {
     this.antennaMarkers.clearLayers();
+
     const { mapData, selectedItems } = this.props;
 
     if (!mapData.antennas || !selectedItems.deviceGroup) {
@@ -756,7 +759,6 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     const { layerStyleOptions } = this;
 
     const deviceGroupIndex = tempDeviceGroups.findIndex(group => group.id === selectedDeviceGroup.id);
-
     if (deviceGroupIndex === -1) {
       return;
     }
