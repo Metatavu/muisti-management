@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression, LatLngTuple, map } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression, LatLngTuple } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
-import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna, Exhibition } from "../../generated/client";
+import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import strings from "../../localization/strings";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
@@ -795,16 +795,14 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       return;
     }
 
-    let devicePoints: LatLngExpression[] = [];
     const tempLeafletIdToDeviceGroupMap = new Map<number, ExhibitionDeviceGroup>();
     tempDeviceGroups.forEach(deviceGroup => {
-      this.findDevicePoints(tempDevices, deviceGroup, devicePoints, tempAntennas);
+      const devicePoints = this.findDevicePoints(tempDevices, deviceGroup, tempAntennas);
 
       const layer = this.createDeviceGroupLayer(devicePoints, layerStyleOptions.deviceGroupOpacity, layerStyleOptions.deviceGroupLayerColor);
       this.deviceGroupLayers.addLayer(layer);
       const layerId = this.deviceGroupLayers.getLayerId(layer);
       tempLeafletIdToDeviceGroupMap.set(layerId, deviceGroup);
-      devicePoints = [];
     });
 
     this.setState({
@@ -983,9 +981,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param selectedDeviceGroup selected device group
    * @param devicePoints list of device points
    * @param tempAntennas list of antennas
+   * @returns list of device points
    */
   // tslint:disable-next-line: max-line-length
-  private findDevicePoints = (tempDevices: ExhibitionDevice[], selectedDeviceGroup: ExhibitionDeviceGroup, devicePoints: LatLngExpression[], tempAntennas?: RfidAntenna[]) => {
+  private findDevicePoints = (tempDevices: ExhibitionDevice[], selectedDeviceGroup: ExhibitionDeviceGroup, tempAntennas?: RfidAntenna[]): LatLngExpression[] => {
+    const devicePoints: LatLngExpression[] = [];
     tempDevices.filter(device => device.groupId === selectedDeviceGroup.id).forEach(device => {
       if (device.location && device.location.x && device.location.y) {
         const latLng: LatLngTuple = [device.location.x, device.location.y];
@@ -1000,6 +1000,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
         }
       });
     }
+
+    return devicePoints;
   }
 
   /**
