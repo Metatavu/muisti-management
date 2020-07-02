@@ -66,9 +66,10 @@ class GenericPropertyTextField extends React.Component<Props, State> {
 
     let value = event.target.value as string;
 
-    if (!value) {
+    if (value === undefined) {
       return;
     }
+
     if (textFieldUnit) {
       value = value + textFieldUnit;
     }
