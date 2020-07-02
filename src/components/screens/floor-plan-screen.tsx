@@ -1195,9 +1195,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for change room properties
+   * Event handler for room color change
    *
-   * @param event event
+   * @param color color to be saved
    */
   private onChangeRoomColor = (color: ColorResult) => {
     const { selectedRoom } = this.state;
