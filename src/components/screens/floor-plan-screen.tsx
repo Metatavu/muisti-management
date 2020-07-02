@@ -261,6 +261,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         onRoomAdd={ this.onRoomAddClick }
         onRoomSave={ this.onRoomSaveClick }
         onRoomClick={ this.onRoomClick }
+        onDeviceGroupClick={ this.onDeviceGroupClick }
         onDeviceAdd={ this.onDeviceAddClick }
         onDeviceSave={ this.onDeviceSaveClick }
         onDeviceClick={ this.onDeviceClick }
@@ -482,17 +483,19 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices, antennas } = this.state;
     const data: any = { };
 
-    if (selectedDeviceGroup) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = [ selectedDeviceGroup ];
-      data.devices = devices.filter(device => device.groupId === selectedDeviceGroup.id);
-      data.antennas = antennas.filter(antenna => antenna.groupId === selectedDeviceGroup.id);
-      return data;
-    }
+    if (selectedDeviceGroup || selectedRoom) {
+      const foundDeviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom!.id);
+      const foundDevices: ExhibitionDevice[] = [];
+      const foundAntennas: RfidAntenna[] = [];
+      foundDeviceGroups.forEach(group => {
+        foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
+        foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
+      });
 
-    if (selectedRoom) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom.id);
+      data.rooms = rooms.filter(room => room.floorId === selectedFloor!.id);
+      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom!.id);
+      data.devices = foundDevices;
+      data.antennas = foundAntennas;
       return data;
     }
 
