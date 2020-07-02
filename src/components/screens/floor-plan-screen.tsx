@@ -261,6 +261,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         onRoomAdd={ this.onRoomAddClick }
         onRoomSave={ this.onRoomSaveClick }
         onRoomClick={ this.onRoomClick }
+        onDeviceGroupClick={ this.onDeviceGroupClick }
         onDeviceAdd={ this.onDeviceAddClick }
         onDeviceSave={ this.onDeviceSaveClick }
         onDeviceClick={ this.onDeviceClick }
@@ -482,22 +483,23 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices, antennas } = this.state;
     const data: any = { };
 
-    if (selectedDeviceGroup) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = [ selectedDeviceGroup ];
-      data.devices = devices.filter(device => device.groupId === selectedDeviceGroup.id);
-      data.antennas = antennas.filter(antenna => antenna.groupId === selectedDeviceGroup.id);
-      return data;
-    }
+    if (selectedDeviceGroup || selectedRoom || selectedFloor) {
+      const floorId = selectedFloor ? selectedFloor.id : "";
+      const roomId = selectedRoom ? selectedRoom.id : "";
+      const foundDeviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
+      const foundDevices: ExhibitionDevice[] = [];
+      const foundAntennas: RfidAntenna[] = [];
 
-    if (selectedRoom) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom.id);
-      return data;
-    }
 
-    if (selectedFloor) {
-      data.rooms = rooms.filter(room => room.floorId === selectedFloor.id);
+      foundDeviceGroups.forEach(group => {
+        foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
+        foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
+      });
+
+      data.rooms = rooms.filter(room => room.floorId === floorId);
+      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
+      data.devices = foundDevices;
+      data.antennas = foundAntennas;
       return data;
     }
 
