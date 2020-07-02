@@ -619,6 +619,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private loadAntennas = () => {
     this.antennaMarkers.clearLayers();
+
     const { mapData, selectedItems } = this.props;
 
     if (!mapData.antennas || !selectedItems.deviceGroup) {
