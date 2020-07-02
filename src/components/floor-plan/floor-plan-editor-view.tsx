@@ -148,7 +148,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private renderEditor = () => {
     const { exhibitionFloor, room } = this.state;
-    const { exhibitionId, accessToken, readOnly } = this.props;
+    const { exhibitionId, readOnly } = this.props;
     if (this.state.cropping && this.state.cropImageDataUrl) {
       return (
         <FloorPlanCrop
@@ -182,7 +182,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
       return (
         <FloorPlanMap
-          accessToken={ accessToken }
           mapData={{ }}
           floorPlanInfo={ floorPlanInfo }
           selectedItems={ selectedItems }
