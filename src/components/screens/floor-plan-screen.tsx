@@ -483,24 +483,22 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices, antennas } = this.state;
     const data: any = { };
 
-    if (selectedDeviceGroup || selectedRoom) {
-      const foundDeviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom!.id);
+    if (selectedDeviceGroup || selectedRoom || selectedFloor) {
+      const floorId = selectedFloor ? selectedFloor.id : "";
+      const roomId = selectedRoom ? selectedRoom.id : "";
+      const foundDeviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
       const foundDevices: ExhibitionDevice[] = [];
       const foundAntennas: RfidAntenna[] = [];
+
       foundDeviceGroups.forEach(group => {
         foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
         foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
       });
 
-      data.rooms = rooms.filter(room => room.floorId === selectedFloor!.id);
-      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom!.id);
+      data.rooms = rooms.filter(room => room.floorId === floorId);
+      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
       data.devices = foundDevices;
       data.antennas = foundAntennas;
-      return data;
-    }
-
-    if (selectedFloor) {
-      data.rooms = rooms.filter(room => room.floorId === selectedFloor.id);
       return data;
     }
 
