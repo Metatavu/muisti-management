@@ -211,7 +211,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private renderEditor = () => {
     const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
-    const { exhibitionId, accessToken, deviceModels } = this.props;
+    const { exhibitionId, deviceModels } = this.props;
 
     if (cropping && cropImageDataUrl ) {
       return (
@@ -253,7 +253,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return <FloorPlanMap
         ref={ this.mapRef }
         key={ "floorPlanMap" }
-        accessToken={ accessToken }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
         mapData={ mapData }

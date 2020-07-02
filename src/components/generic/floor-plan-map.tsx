@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
-import { AccessToken } from "../../types";
 // tslint:disable-next-line: max-line-length
 import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
@@ -17,7 +16,6 @@ import antennaIcon from "../../resources/gfx/svg/antennaIcon.svg";
  * Component props
  */
 interface Props {
-  accessToken: AccessToken;
   deviceModels?: DeviceModel[];
   exhibitionId?: string;
 
@@ -194,7 +192,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       prevProps.selectedItems.device !== this.props.selectedItems.device ||
       prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup ||
       prevProps.selectedItems.antenna !== this.props.selectedItems.antenna ||
-      prevProps.mapData !== this.props.mapData
+      JSON.stringify(prevProps.mapData) !== JSON.stringify(this.props.mapData)
     ) {
       this.initializeMapData();
     }
