@@ -302,7 +302,8 @@
       "new": "Uusi alue",
       "delete": "Poista alue",
       "edit": "Muokaa aluetta",
-      "properties": "Alueen ominaisuudet"
+      "properties": "Alueen ominaisuudet",
+      "color": "Alueen täyttöväri"
     },
     "deviceGroup": {
       "add": "Lisää uusi laiteryhmä",

@@ -12,6 +12,7 @@ import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, Exhibi
 import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
+import { SketchPicker, ColorResult } from "react-color";
 
 /**
  * Component props
@@ -28,6 +29,7 @@ interface Props extends WithStyles<typeof styles> {
 
   onChangeFloorProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeRoomProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeRoomColor?: (color: ColorResult) => void;
   onChangeDeviceGroupProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeDeviceProperties?: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
   onChangeAntennaProperties?: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
@@ -38,6 +40,7 @@ interface Props extends WithStyles<typeof styles> {
  */
 interface State {
   loading: boolean;
+  showColorPicker: boolean;
 }
 
 /**
@@ -53,7 +56,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      showColorPicker: false
     };
   }
 
@@ -73,8 +77,16 @@ class FloorPlanInfo extends React.Component<Props, State> {
    * Renders properties
    */
   private renderProperties = () => {
-    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna,  deviceModels } = this.props;
-    const { onChangeFloorProperties, onChangeRoomProperties, onChangeDeviceGroupProperties, onChangeDeviceProperties, onChangeAntennaProperties } = this.props;
+    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna,  deviceModels, classes } = this.props;
+    const {
+      onChangeFloorProperties,
+      onChangeRoomProperties,
+      onChangeRoomColor,
+      onChangeDeviceGroupProperties,
+      onChangeDeviceProperties,
+      onChangeAntennaProperties
+    } = this.props;
+    const { showColorPicker } = this.state;
 
     const textFieldGenericProps = {
       fullWidth: true,
@@ -195,13 +207,27 @@ class FloorPlanInfo extends React.Component<Props, State> {
 
     if (selectedRoom) {
       return (
-        <TextField
-          { ...textFieldGenericProps }
-          label={ strings.generic.name }
-          name="name"
-          value={ selectedRoom.name }
-          onChange={ onChangeRoomProperties }
-        />
+        <>
+          <TextField
+            { ...textFieldGenericProps }
+            label={ strings.generic.name }
+            name="name"
+            value={ selectedRoom.name }
+            onChange={ onChangeRoomProperties }
+          />
+
+          <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
+            { strings.floorPlan.room.color }
+          </InputLabel>
+
+          <div className={ classes.color } style={{ backgroundColor: selectedRoom.color }} onClick={ this.onColorBoxClick }></div>
+          { showColorPicker &&
+            <SketchPicker
+              color={ selectedRoom.color }
+              onChangeComplete={ onChangeRoomColor }
+            />
+          }
+        </>
       );
     }
 
@@ -229,6 +255,15 @@ class FloorPlanInfo extends React.Component<Props, State> {
     }
     return deviceGroups.map(group => {
       return <MenuItem key={ group.id } value={ group.id }>{ group.name }</MenuItem>
+    });
+  }
+
+  /**
+   * On color box click handler
+   */
+  private onColorBoxClick = () => {
+    this.setState({
+      showColorPicker: !this.state.showColorPicker
     });
   }
 }
