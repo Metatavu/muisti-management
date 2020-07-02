@@ -468,6 +468,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!onDeviceGroupClick || !selectedItems.floor || !selectedItems.room || !foundDeviceGroup || !selectedItems.selectedItemHasNodes) {
       return;
     }
+
     onDeviceGroupClick(selectedItems.floor.id!, selectedItems.room.id!, foundDeviceGroup.id!, selectedItems.selectedItemHasNodes);
   }
 
