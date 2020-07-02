@@ -33,6 +33,7 @@ import LayoutTreeMenu from "../layout/layout-tree-menu";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
+import PanZoom from "../generic/pan-zoom";
 
 type View = "CODE" | "VISUAL";
 
@@ -303,16 +304,18 @@ export class LayoutScreen extends React.Component<Props, State> {
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
     const deviceModel = deviceModels.find(model => model.id === deviceModelId);
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
-    const scale = 0.3;
+    const scale = 1;
 
     return (
       <div className={ classes.editors }>
-        <PagePreview
-          view={ view }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-          screenOrientation={ screenOrientation }
-        />
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+          <PagePreview
+            view={ view }
+            displayMetrics={ displayMetrics }
+            scale={ scale }
+            screenOrientation={ screenOrientation }
+          />
+        </PanZoom>        
       </div>
     );
   }
