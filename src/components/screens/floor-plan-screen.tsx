@@ -169,7 +169,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ this.getBreadcrumbsData() }
-        actionBarButtons={ this.mapRef.current ? this.getActionButtons() : undefined }
+        actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>
@@ -464,6 +464,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     if (selectedFloor) {
+      if (!this.mapRef.current) {
+        return [
+          { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
+          { name: strings.generic.save, action: this.onFloorSaveClick },
+          { name: strings.floorPlan.floor.delete, action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onFloorDeleteClick }
+        ];
+      }
+
       return [
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
         { name: strings.floorPlan.floor.add, action: this.onFloorAddClick },
@@ -475,7 +483,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       ] as ActionButton[];
     }
 
-    return [];
+    if (!this.mapRef.current) {
+      return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
+    }
+
+    return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
   }
 
   /**
@@ -719,6 +731,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
           if (floorIndex > -1) {
             floors.splice(floorIndex, 1, updatedFloor);
+            draft.selectedFloor = updatedFloor;
           }
         })
       );
