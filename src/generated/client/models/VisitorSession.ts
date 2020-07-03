@@ -18,14 +18,14 @@ import {
     VisitorSessionStateFromJSON,
     VisitorSessionStateFromJSONTyped,
     VisitorSessionStateToJSON,
-    VisitorSessionUser,
-    VisitorSessionUserFromJSON,
-    VisitorSessionUserFromJSONTyped,
-    VisitorSessionUserToJSON,
     VisitorSessionVariable,
     VisitorSessionVariableFromJSON,
     VisitorSessionVariableFromJSONTyped,
     VisitorSessionVariableToJSON,
+    VisitorSessionVisitedDeviceGroup,
+    VisitorSessionVisitedDeviceGroupFromJSON,
+    VisitorSessionVisitedDeviceGroupFromJSONTyped,
+    VisitorSessionVisitedDeviceGroupToJSON,
 } from './';
 
 /**
@@ -60,10 +60,16 @@ export interface VisitorSession {
     variables?: Array<VisitorSessionVariable>;
     /**
      * 
-     * @type {Array<VisitorSessionUser>}
+     * @type {Array<string>}
      * @memberof VisitorSession
      */
-    users: Array<VisitorSessionUser>;
+    visitorIds: Array<string>;
+    /**
+     * 
+     * @type {Array<VisitorSessionVisitedDeviceGroup>}
+     * @memberof VisitorSession
+     */
+    visitedDeviceGroups?: Array<VisitorSessionVisitedDeviceGroup>;
     /**
      * 
      * @type {string}
@@ -104,7 +110,8 @@ export function VisitorSessionFromJSONTyped(json: any, ignoreDiscriminator: bool
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'state': VisitorSessionStateFromJSON(json['state']),
         'variables': !exists(json, 'variables') ? undefined : ((json['variables'] as Array<any>).map(VisitorSessionVariableFromJSON)),
-        'users': ((json['users'] as Array<any>).map(VisitorSessionUserFromJSON)),
+        'visitorIds': json['visitorIds'],
+        'visitedDeviceGroups': !exists(json, 'visitedDeviceGroups') ? undefined : ((json['visitedDeviceGroups'] as Array<any>).map(VisitorSessionVisitedDeviceGroupFromJSON)),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -123,7 +130,8 @@ export function VisitorSessionToJSON(value?: VisitorSession | null): any {
         
         'state': VisitorSessionStateToJSON(value.state),
         'variables': value.variables === undefined ? undefined : ((value.variables as Array<any>).map(VisitorSessionVariableToJSON)),
-        'users': ((value.users as Array<any>).map(VisitorSessionUserToJSON)),
+        'visitorIds': value.visitorIds,
+        'visitedDeviceGroups': value.visitedDeviceGroups === undefined ? undefined : ((value.visitedDeviceGroups as Array<any>).map(VisitorSessionVisitedDeviceGroupToJSON)),
     };
 }
 

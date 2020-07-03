@@ -1,14 +1,55 @@
 {
+
+  "header": {
+    "navigation": {
+      "exhibitionsButton": "Exhibitions",
+      "usersButton": "Users",
+      "devicesButton": "Devices",
+      "layoutsButton": "Layouts",
+      "floorPlansButton": "Floorplans",
+      "spacesButton": "Spaces"
+    },
+    "tabs": {
+      "floorPlanTab": "Floorplan",
+      "exhibitionContentsTab": "Exhibition contents"
+    }
+  },
+
   "comingSoon": "Coming soon!",
+  "removeSelection": "Remove selection",
+
+  "fileUpload": {
+    "upload": "Upload",
+    "cancel": "Cancel"
+  },
+
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",
     "createExhibitionDialog": {
       "title": "Create new exhibition",
-      "helpText": "You can create new exihibiton by adding a name and pressing create button",
+      "helpText": "You can create new exhibition by adding a name and pressing create button",
       "nameLabel": "Name",
       "cancelButton": "Cancel",
       "createButton": "Create"
+    },
+    "deleteExhibitionDialog": {
+      "title": "Delete exhibition",
+      "description": "Are you sure you want to delete exhibition {0}?",
+      "deleteButton": "Delete"
+    },
+    "inProduction": "In production",
+    "inDraft": "In draft",
+    "status": {
+      "ready": "Ready"
+    },
+    "cardMenu": {
+      "addExhibition": "Add exhibition",
+      "moveToProduction": "Move to production",
+      "moveToDraft": "Move to draft",
+      "setStatus": "Set status",
+      "delete": "Delete",
+      "edit": "Edit"
     }
   },
 
@@ -56,6 +97,7 @@
   "dashboard": {
 
     "newExhibitionButton": "New exhibition",
+    "newContentVersionButton": "New content version",
     "navigation": {
       "overviewButton": "Overview",
       "recentButton": "Recent",
@@ -64,7 +106,8 @@
       "settingsButton": "Settings",
       "usersButton": "Users",
       "devicesButton": "Devices",
-      "layoutsButton": "Layouts"
+      "layoutsButton": "Layouts",
+      "floorPlansButton": "Floor Plans"
     },
     "overview": {
       "onProduction": "On production",
@@ -128,6 +171,9 @@
     "layouts": {
       "title": "Layouts",
       "lastModified": "Last modified"
+    },
+    "floorPlans": {
+      "title": "Floor Plans"
     }
 
   },
@@ -140,7 +186,12 @@
     },
     "newPage": "New page",
     "addPage": "Add page",
+    "deletePage": "Delete page",
+    "confirmDeletePage": "Are you sure you want to delete this page?",
     "addDevice": "Add device",
+    "addResource": "Add resource",
+    "addEventTrigger": "Add event trigger",
+    "eventTrigger": "Event trigger {0}",
     "onProduction": "On production",
     "properties": {
       "title": "Properties"
@@ -152,6 +203,11 @@
           "imageUrl": "Image URL address"
         }
       },
+      "mediaView": {
+        "properties": {
+          "imageOrVideoUrl": "Image or video URL address"
+        }
+      },
       "textView": {
         "properties": {
           "text": "Text"
@@ -159,12 +215,27 @@
       }
     },
     
-    "pageEditor": {
+    "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
-      "pageDeviceLabel": "Page device"  
+      "pageDeviceLabel": "Page device",
+      "enterTransitions": "Enter transitions",
+      "exitTransitions": "Exit transitions",
+      "addTransition": "Add transition",
+      "editTransition": "Edit transition",
+      "removeTransition": "Remove transition",
+
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Time interpolation",
+        "duration": "Duration (milliseconds)",
+        "viewPairs": "Element pairs",
+        "addViewPair": "Add element pair",
+        "startOfTransition": "From element",
+        "endOfTransition" : "To element"
+      }
     },
 
-    "deviceEditor": {
+    "deviceSettingsEditor": {
       "indexPageId": "Device front page"
     },
 
@@ -175,8 +246,10 @@
       "physicalButtonDownTitle": "Triggers when button is pressed",
       "physicalButtonUpTitle": "Triggers when button is released",
       "physicalButton": "Button",
+      "deviceGroupEventTitle": "Triggers when device group event is detected",
+      "deviceGroupEvent": "Device group event name",
       "delayTitle": "Triggers after delay",
-      "delay": "Viive (in milliseconds)",
+      "delay": "Delay (in milliseconds)",
       "actions": "Actions",
       "variableName": "User variable name",
       "variableValue": "User variable value",
@@ -196,6 +269,8 @@
 
   "layout": {
     "title": "Layout",
+    "addNew": "Add new layout",
+    "confirmDelete": "Are you sure you want to delete layout {0}?",
     "toolbar": {
       "visual": "Visual view",
       "code": "Technical view",
@@ -208,8 +283,74 @@
       "landscape": "Landscape"
     },
     "properties": {
-      "title": "Properties"
+      "title": "properties"
     }
+  },
+
+  "floorPlan": {
+    "title": "Floor plan",
+    "listTitle": "Floor plans",
+    "floor": {
+      "add": "Add new space",
+      "new": "New space",
+      "delete": "Delete space",
+      "edit": "Edit space",
+      "properties": "Space properties"
+    },
+    "room": {
+      "add": "Add new room",
+      "new": "New room",
+      "delete": "Delete room",
+      "edit": "Edit room",
+      "properties": "Room properties"
+    },
+    "deviceGroup": {
+      "add": "Add new device group",
+      "new": "New device group",
+      "delete": "Delete device group",
+      "edit": "Edit device group",
+      "properties": "Device group properties"
+    },
+    "device" : {
+      "add": "Add new device",
+      "new": "New device",
+      "delete": "Delete device",
+      "edit": "Edit device",
+      "move": "Move device",
+      "properties": "Device properties"
+    },
+    "antenna" : {
+      "add": "Add new antenna",
+      "new": "New antenna",
+      "newReaderId": "123456",
+      "delete": "Delete antenna",
+      "edit": "Edit antenna",
+      "move": "Move antenna",
+      "properties": "Antenna properties"
+    },
+    "structure": "Structure",
+    "toolbar": {
+      "save": "Save changes",
+      "upload": "Upload image"
+    },
+    "properties": {
+
+      "title": "Properties",
+      "imageHeight": "Image Height",
+      "imageWidth": "Image Width",
+      "physicalWidth": "Physical Width",
+      "physicalHeight": "Physical Height",
+      "model": "Model",
+      "screenOrientation": "Screen Orientation",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "allowVisitorSessionCreation": "Allow creation of new session to visitor",
+      "name": "Name",
+      "readerId": "Antenna reader Id",
+      "deviceGroup": "Device group where antenna belongs to",
+      "room": "Room where antenna belongs to"
+    },
+    "hasChildElements": "Selected element has child elements. Cannot delete!"
   },
 
   "sorting": {
@@ -232,6 +373,119 @@
         "all": "All"
       }
     }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Room name",
+      "dialogTitle" : "Type room name"
+    }
+  },
+
+  "layoutEditor": {
+    "commonComponents": {
+      "id": "ID",
+      "layoutWidth": "Layout width",
+      "layoutHeight": "Layout height",
+      "backgroundColor": "Layout background color",
+      "paddings": {
+        "title": "Layout paddings",
+        "left": "Padding left",
+        "right": "Padding right",
+        "top": "Padding top",
+        "bottom": "Padding bottom",
+        "link": "Link paddings"
+      },
+      "margins": {
+        "title": "Layout margins",
+        "left": "Margin left",
+        "right": "Margin right",
+        "top": "Margin top",
+        "bottom": "Margin bottom",
+        "link": "Link margins"
+      },
+      "layoutGravity": "Layout gravity",
+      "layoutAlign": "Layout align"
+    },
+
+    "textView": {
+      "width": "Width",
+      "height": "Height",
+      "color": "Text color",
+      "textResource": "Text resource",
+      "fontStyle": "Font style",
+      "textAlign": "Text align",
+      "textGravity": "Text gravity",
+      "textSize": "Text size (dp)",
+      "typeface": "Typeface"
+    },
+
+    "imageView": {
+      "src": "Image path"
+    },
+
+    "button": {
+      "width": "Button width",
+      "height": "Button height",
+      "color": "Button text color",
+      "textResource": "Button text resource",
+      "fontStyle": "Button font style",
+      "textSize": "Button text size (dp)"
+    },
+
+    "linearLayout": {
+      "orientation": "Orientation"
+    },
+
+    "addLayoutViewDialog": {
+      "title": "Add layout view element",
+      "widget": "Select widget",
+      "confirm": "Add",
+      "cancel": "Cancel"
+    }
+  },
+
+  "contentVersion": {
+    "add": "New content version",
+    "addDialogTitle": "Add content version",
+    "name": "Name",
+    "language": "Language",
+    "rooms": "Rooms",
+    "deleteTitle": "Delete content version",
+    "deleteText": "Are you sure you want to delete this content version and all its content?"
+  },
+
+  "groupContentVersion": {
+    "add": "New device group content version",
+    "addDialogTitle": "Add device group content version",
+    "name": "Name",
+    "deviceGroup": "Device Group ID",
+    "status": "Status",
+    "deleteTitle": "Delete group content version",
+    "deleteText": "Are you sure you want to delete this group content version and all its content?"
+  },
+
+  "genericDialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "add": "Add"
+  },
+
+  "generic": {
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loadNew": "Load new",
+    "name": "Name",
+    "confirmDelete": "Are you sure you want to remove selected element?",
+    "or": "or",
+    "undefined": "Undefined"
+  },
+
+  "spaces": {
+    "title": "Spaces"
   }
 
 }

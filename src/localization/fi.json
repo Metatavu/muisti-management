@@ -1,5 +1,34 @@
 {
+
+  "header": {
+    "navigation": {
+      "exhibitionsButton": "Näyttelyt",
+      "usersButton": "Käyttäjät",
+      "devicesButton": "Laitetyypit",
+      "layoutsButton": "Asettelut",
+      "floorPlansButton": "Pohjapiirrustukset",
+      "spacesButton": "Tilat"
+    },
+    "tabs": {
+      "floorPlanTab": "Pohjapiirros",
+      "exhibitionContentsTab": "Näyttelysisällöt"
+    },
+
+    "inProduction": "Tuotannossa",
+    "inDraft": "Luonnokset",
+    "status": {
+      "ready": "Valmis" 
+    }
+  },
+
   "comingSoon": "Tulossa pian!",
+  "removeSelection": "Poista valinta",
+
+  "fileUpload": {
+    "upload": "Lähetä",
+    "cancel": "Peruuta"
+  },
+
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
@@ -9,6 +38,19 @@
       "nameLabel": "Nimi",
       "cancelButton": "Peruuta",
       "createButton": "Luo"
+    },
+    "deleteExhibitionDialog": {
+      "title": "Poista näyttely",
+      "description": "Haluatko varmasti poistaa näyttelyn {0}?",
+      "deleteButton": "Poista"
+    },
+    "cardMenu": {
+      "addExhibition": "Lisää näyttely",
+      "moveToProduction": "Siirrä tuotantoon",
+      "moveToDraft": "Siirrä luonnoksiin",
+      "setStatus": "Aseta tila",
+      "delete": "Poista",
+      "edit": "Muokkaa"
     }
   },
 
@@ -54,8 +96,8 @@
   },
 
   "dashboard": {
-
     "newExhibitionButton": "Uusi näyttely",
+    "newContentVersionButton": "Uusi sisältöversio",
     "navigation": {
       "overviewButton": "Työpöytä",
       "recentButton": "Viimeisimmät",
@@ -64,7 +106,8 @@
       "settingsButton": "Asetukset",
       "usersButton": "Käyttäjät",
       "devicesButton": "Laitteet",
-      "layoutsButton": "Asettelut"
+      "layoutsButton": "Asettelut",
+      "floorPlansButton": "Pohjapiirrustukset"
     },
     "overview": {
       "onProduction": "Tuotannossa",
@@ -128,6 +171,9 @@
     "layouts": {
       "title": "Asettelut",
       "lastModified": "Viimeksi muokattu"
+    },
+    "floorPlans": {
+      "title": "Pohjapiirrokset"
     }
 
   },
@@ -140,7 +186,12 @@
     },
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
+    "deletePage": "Poista sivu",
+    "confirmDeletePage": "Haluatko varmasti poistaa sivun?",
     "addDevice": "Lisää laite",
+    "addResource": "Lisää resurssi",
+    "addEventTrigger": "Lisää tapahtuma",
+    "eventTrigger": "Tapahtuma {0}",
     "onProduction": "Tuotannossa",
     "properties": {
       "title": "Ominaisuudet"
@@ -152,6 +203,11 @@
           "imageUrl": "Kuvan URL-osoite"
         }
       },
+      "mediaView": {
+        "properties": {
+          "imageOrVideoUrl": "Kuvan tai videon URL-osoite"
+        }
+      },
       "textView": {
         "properties": {
           "text": "Teksti"
@@ -159,12 +215,27 @@
       }
     },
 
-    "pageEditor": {
+    "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
-      "pageDeviceLabel": "Sivun laite"  
+      "pageDeviceLabel": "Sivun laite",
+      "enterTransitions": "Siirtymä saapuessa",
+      "exitTransitions": "Siirtymä lähtiessä",
+      "addTransition": "Lisää siirtymä",
+      "editTransition": "Muokkaa siirtymää",
+      "removeTransition": "Poista siirtymä",
+
+      "dialog": {
+        "animation": "Animaatio",
+        "timeInterpolation": "Interpolointi",
+        "duration": "Kesto (millisekunttia)",
+        "viewPairs": "Elementtiparit",
+        "addViewPair": "Lisää elementtipari",
+        "startOfTransition": "Elementistä",
+        "endOfTransition" : "Elementille"
+      }
     },
 
-    "deviceEditor": {
+    "deviceSettingsEditor": {
       "indexPageId": "Laitteen etusivu"
     },
     
@@ -175,6 +246,8 @@
       "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
       "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
       "physicalButton": "Nappi",
+      "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
+      "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
       "delayTitle": "Tapahtuu viiveen jälkeen",
       "delay": "Viive (millisekunneissa)",
       "actions": "Toiminnot",
@@ -196,6 +269,8 @@
 
   "layout": {
     "title": "Asettelu",
+    "addNew": "Lisää uusi asettelu",
+    "confirmDelete": "Haluatko varmasti poistaa asettelun {0}?",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
       "code": "Tekninen näkymä",
@@ -208,8 +283,73 @@
       "landscape": "Vaaka"
     },
     "properties": {
-      "title": "Ominaisuudet"
+      "title": "ominaisuudet"
     }
+  },
+
+  "floorPlan": {
+    "title": "Pohjapiirrustus",
+    "listTitle": "Tilat",
+    "floor": {
+      "add": "Lisää uusi tila",
+      "new": "Uusi tila",
+      "delete": "Poista tila",
+      "edit": "Muokkaa tilaa",
+      "properties": "Tilan ominaisuudet"
+    },
+    "room": {
+      "add": "Lisää uusi alue",
+      "new": "Uusi alue",
+      "delete": "Poista alue",
+      "edit": "Muokaa aluetta",
+      "properties": "Alueen ominaisuudet"
+    },
+    "deviceGroup": {
+      "add": "Lisää uusi laiteryhmä",
+      "new": "Uusi laiteryhmä",
+      "delete": "Poista laiteryhmä",
+      "edit": "Muokaa laiteryhmää",
+      "properties": "Laiteryhmän ominaisuudet"
+    },
+    "device" : {
+      "add": "Lisää uusi laite",
+      "new": "Uusi laite",
+      "delete": "Poista laite",
+      "edit": "Muokkaa laitetta",
+      "move": "Siirrä laitetta",
+      "properties": "Laitteen ominaisuudet"
+    },
+    "antenna" : {
+      "add": "Lisää uusi antenni",
+      "new": "Uusi antenni",
+      "newReaderId": "123456",
+      "delete": "Poista antenni",
+      "edit": "Muokkaa antennia",
+      "move": "Siirrä antennia",
+      "properties": "Antennin ominaisuudet"
+    },
+    "structure": "Rakenne",
+    "toolbar": {
+      "save": "Tallenna muutokset",
+      "upload": "Lataa kuva"
+    },
+    "properties": {
+      "title": "Ominaisuudet",
+      "imageHeight": "Kuvan korkeus",
+      "imageWidth": "Kuvan leveys",
+      "physicalWidth": "Fyysinen leveys",
+      "physicalHeight": "Fyysinen korkeus",
+      "model": "Malli",
+      "screenOrientation": "Näytön suunta",
+      "landscape": "Vaaka",
+      "portrait": "Pysty",
+      "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
+      "readerId": "Antennin lukijan Id",
+      "deviceGroup": "Laiteryhmä johon antenni kuuluu",
+      "room": "Huone johon antenni kuuluu"
+    },
+    
+    "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!"
   },
 
   "sorting": {
@@ -232,5 +372,117 @@
         "all": "Kaikki"
       }
     }
+  },
+
+  "map": {
+    "properties": {
+      "roomName" : "Huoneen nimi",
+      "dialogTitle" : "Anna huoneen nimi"
+    }
+  },
+
+  "layoutEditor": {
+    "commonComponents": {
+      "id": "ID",
+      "layoutWidth": "Asettelun leveys",
+      "layoutHeight": "Asettelun korkeus",
+      "backgroundColor": "Asettelun taustaväri",
+      "paddings": {
+        "left": "Täyte vasemmalla",
+        "right": "Täyte oikealla",
+        "top": "Täyte yläpuolella",
+        "bottom": "Täyte alapuolella",
+        "link": "Linkkien täytteet"
+      },
+      "margins": {
+        "left": "Marginaali vasemmalla",
+        "right": "Marginaali oikealla",
+        "top": "Marginaali yläpuolella",
+        "bottom": "Marginaali alapuolella",
+        "link": "Linkkien marginaalit"
+      },
+      "layoutGravity": "Asettelun painotus",
+      "layoutAlign": "Asettelun tasaus"
+    },
+
+    "textView": {
+      "width": "Leveys",
+      "height": "Korkeus",
+      "color": "Tekstin väri",
+      "textResource": "Teksti",
+      "fontStyle": "Fontin tyyli",
+      "textAlign": "Tekstin tasaus",
+      "textGravity": "Tekstin painotus",
+      "textSize": "Tekstin koko (dp)",
+      "typeface": "Fontti"
+    },
+
+    "imageView": {
+      "src": "Kuvan polku"
+    },
+
+    "button": {
+      "width": "Napin leveys",
+      "height": "Napin korkeus",
+      "color": "Napin tekstin väri",
+      "textResource": "Napin teksti",
+      "fontStyle": "Napin fontin tyyli",
+      "textSize": "Napin tekstin koko (dp)"
+    },
+
+    "linearLayout": {
+      "orientation": "Orientaatio"
+    },
+
+    "addLayoutViewDialog": {
+      "title": "Lisää asettelun elementti",
+      "widget": "Valitse elementti",
+      "confirm": "Lisää",
+      "cancel": "Peruuta"
+    }
+  },
+
+  "contentVersion": {
+    "add": "Lisää uusi sisältöversio",
+    "addDialogTitle": "Lisää sisältöversio",
+    "name": "Nimi",
+    "language": "Kieli",
+    "rooms": "Huoneet",
+    "deleteTitle": "Poista sisältöversio",
+    "deleteText": "Oletko varma, että haluat poistaa tämän sisältöversion ja kaikki sen sisällöt?"
+  },
+
+  "groupContentVersion": {
+    "add": "Lisää uusi ryhmän sisältöversio",
+    "addDialogTitle": "Lisää ryhmän sisältöversio",
+    "name": "Nimi",
+    "deviceGroup": "Laiteryhmän ID",
+    "status": "Sisältöjen tila",
+    "deleteTitle": "Poista ryhmän sisältöversio",
+    "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
+  },
+
+  "genericDialog": {
+    "confirm": "Vahvista",
+    "cancel": "Peruuta",
+    "save": "Tallenna",
+    "delete": "Poista",
+    "add": "Lisää"
+  },
+
+  "generic": {
+    "add": "Lisää",
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "loadNew": "Lataa uusi",
+    "name": "Nimi",
+    "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
+    "or": "tai",
+    "undefined": "Ei määritelty"
+  },
+
+  "spaces": {
+    "title": "Tilat"
   }
+  
 }

@@ -1,0 +1,27 @@
+{
+  "extends": "tslint:recommended",
+  "defaultSeverity": "warning",
+  "rules": {
+    "max-line-length": {
+      "options": [160]
+    },
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "import-sources-order": "any",
+    "no-unused-variable": true,
+    "no-string-literal": false,
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "trailing-comma": false,
+    "interface-name": false,
+    "object-literal-shorthand": false,
+    "eofline": false,
+    "no-empty-interface": false,
+    "prefer-for-of": false,
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "whitespace": [true, "check-branch", "check-operator", "check-typecast", "check-preblock", "check-postbrace"],
+    "completed-docs": [true, "methods"]
+  },
+  "linterOptions": {
+    "exclude": ["config/**/*.js", "node_modules/**/*.ts", "coverage/lcov-report/*.js"]
+  }
+}

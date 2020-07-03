@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Polygon,
+    PolygonFromJSON,
+    PolygonFromJSONTyped,
+    PolygonToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -43,6 +50,12 @@ export interface ExhibitionRoom {
      * @memberof ExhibitionRoom
      */
     name: string;
+    /**
+     * 
+     * @type {Polygon}
+     * @memberof ExhibitionRoom
+     */
+    geoShape?: Polygon;
     /**
      * 
      * @type {string}
@@ -83,6 +96,7 @@ export function ExhibitionRoomFromJSONTyped(json: any, ignoreDiscriminator: bool
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'floorId': json['floorId'],
         'name': json['name'],
+        'geoShape': !exists(json, 'geoShape') ? undefined : PolygonFromJSON(json['geoShape']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -101,6 +115,7 @@ export function ExhibitionRoomToJSON(value?: ExhibitionRoom | null): any {
         
         'floorId': value.floorId,
         'name': value.name,
+        'geoShape': PolygonToJSON(value.geoShape),
     };
 }
 

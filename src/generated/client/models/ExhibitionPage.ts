@@ -22,6 +22,10 @@ import {
     ExhibitionPageResourceFromJSON,
     ExhibitionPageResourceFromJSONTyped,
     ExhibitionPageResourceToJSON,
+    ExhibitionPageTransition,
+    ExhibitionPageTransitionFromJSON,
+    ExhibitionPageTransitionFromJSONTyped,
+    ExhibitionPageTransitionToJSON,
 } from './';
 
 /**
@@ -80,6 +84,18 @@ export interface ExhibitionPage {
     eventTriggers: Array<ExhibitionPageEventTrigger>;
     /**
      * 
+     * @type {Array<ExhibitionPageTransition>}
+     * @memberof ExhibitionPage
+     */
+    enterTransitions: Array<ExhibitionPageTransition>;
+    /**
+     * 
+     * @type {Array<ExhibitionPageTransition>}
+     * @memberof ExhibitionPage
+     */
+    exitTransitions: Array<ExhibitionPageTransition>;
+    /**
+     * 
      * @type {string}
      * @memberof ExhibitionPage
      */
@@ -122,6 +138,8 @@ export function ExhibitionPageFromJSONTyped(json: any, ignoreDiscriminator: bool
         'name': json['name'],
         'resources': ((json['resources'] as Array<any>).map(ExhibitionPageResourceFromJSON)),
         'eventTriggers': ((json['eventTriggers'] as Array<any>).map(ExhibitionPageEventTriggerFromJSON)),
+        'enterTransitions': ((json['enterTransitions'] as Array<any>).map(ExhibitionPageTransitionFromJSON)),
+        'exitTransitions': ((json['exitTransitions'] as Array<any>).map(ExhibitionPageTransitionFromJSON)),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -144,6 +162,8 @@ export function ExhibitionPageToJSON(value?: ExhibitionPage | null): any {
         'name': value.name,
         'resources': ((value.resources as Array<any>).map(ExhibitionPageResourceToJSON)),
         'eventTriggers': ((value.eventTriggers as Array<any>).map(ExhibitionPageEventTriggerToJSON)),
+        'enterTransitions': ((value.enterTransitions as Array<any>).map(ExhibitionPageTransitionToJSON)),
+        'exitTransitions': ((value.exitTransitions as Array<any>).map(ExhibitionPageTransitionToJSON)),
     };
 }
 

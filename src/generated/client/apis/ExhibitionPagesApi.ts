@@ -37,7 +37,7 @@ export interface FindExhibitionPageRequest {
 
 export interface ListExhibitionPagesRequest {
     exhibitionId: string;
-    exhibitionContentVersionId?: string;
+    contentVersionId?: string;
     exhibitionDeviceId?: string;
 }
 
@@ -197,8 +197,8 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
 
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.exhibitionContentVersionId !== undefined) {
-            queryParameters['exhibitionContentVersionId'] = requestParameters.exhibitionContentVersionId;
+        if (requestParameters.contentVersionId !== undefined) {
+            queryParameters['contentVersionId'] = requestParameters.contentVersionId;
         }
 
         if (requestParameters.exhibitionDeviceId !== undefined) {

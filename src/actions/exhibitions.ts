@@ -3,7 +3,7 @@ import * as actionTypes from "../constants/actionTypes";
 import { Exhibition } from "../generated/client";
 
 /**
- * Interface for set exhibition action type
+ * Interface for set selected exhibition action type
  */
 export interface SetSelectedExhibitionAction {
   type: actionTypes.SET_SELECTED_EXHIBITION;

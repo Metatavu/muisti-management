@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ExhibitionContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -21,8 +21,17 @@ export default class Api {
    *
    * @param token access token
    */
-  public static getExhibitionContentVersionsApi(accessToken: AccessToken) {
-    return new ExhibitionContentVersionsApi(Api.getConfiguration(accessToken));
+  public static getContentVersionsApi(accessToken: AccessToken) {
+    return new ContentVersionsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized exhibition group content versions api
+   *
+   * @param token access token
+   */
+  public static getGroupContentVersionsApi(accessToken: AccessToken) {
+    return new GroupContentVersionsApi(Api.getConfiguration(accessToken));
   }
 
   /**
@@ -50,6 +59,15 @@ export default class Api {
    */
   public static getExhibitionDevicesApi(accessToken: AccessToken) {
     return new ExhibitionDevicesApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized rfid antennas api
+   *
+   * @param token access token
+   */
+  public static getRfidAntennasApi(accessToken: AccessToken) {
+    return new RfidAntennasApi(Api.getConfiguration(accessToken));
   }
 
   /**

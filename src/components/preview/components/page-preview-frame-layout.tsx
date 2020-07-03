@@ -115,6 +115,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         break;
       }
     });
+    result.boxSizing = "border-box"
 
     return result;
   }

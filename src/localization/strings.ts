@@ -5,6 +5,12 @@ import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
  */
 export interface IStrings extends LocalizedStringsMethods {
   comingSoon: string;
+  removeSelection: string;
+
+  fileUpload: {
+    upload: string;
+    cancel: string;
+  };
 
   exhibitions: {
     listTitle: string;
@@ -15,6 +21,24 @@ export interface IStrings extends LocalizedStringsMethods {
       nameLabel: string;
       cancelButton: string;
       createButton: string;
+    };
+    deleteExhibitionDialog: {
+      title: string;
+      description: string;
+      deleteButton: string;
+    };
+    inProduction: string;
+    inDraft: string;
+    status: {
+      ready: string;
+    };
+    cardMenu: {
+      addExhibition: string;
+      moveToProduction: string;
+      moveToDraft: string;
+      setStatus: string;
+      delete: string;
+      edit: string;
     };
   };
 
@@ -57,8 +81,24 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  header: {
+    navigation: {
+      exhibitionsButton: string;
+      usersButton: string;
+      devicesButton: string;
+      layoutsButton: string;
+      floorPlansButton: string;
+      spacesButton: string;
+    };
+    tabs: {
+      floorPlanTab: string;
+      exhibitionContentsTab: string;
+    };
+  };
+
   dashboard: {
     newExhibitionButton: string;
+    newContentVersionButton: string;
     navigation: {
       overviewButton: string;
       recentButton: string;
@@ -68,6 +108,7 @@ export interface IStrings extends LocalizedStringsMethods {
       usersButton: string;
       devicesButton: string;
       layoutsButton: string;
+      floorPlansButton: string;
     };
     overview: {
       onProduction: string;
@@ -129,6 +170,9 @@ export interface IStrings extends LocalizedStringsMethods {
       title: string;
       lastModified: string;
     };
+    floorPlans: {
+      title: string;
+    };
   };
 
   exhibition: {
@@ -139,7 +183,12 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     newPage: string;
     addPage: string;
+    deletePage: string;
+    confirmDeletePage: string;
     addDevice: string;
+    addResource: string;
+    addEventTrigger: string;
+    eventTrigger: string;
     onProduction: string;
     properties: {
       title: string;
@@ -151,6 +200,11 @@ export interface IStrings extends LocalizedStringsMethods {
           imageUrl: string;
         };
       };
+      mediaView: {
+        properties: {
+          imageOrVideoUrl: string;
+        };
+      };
       textView: {
         properties: {
           text: string;
@@ -158,14 +212,29 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
 
-    pageEditor: {
+    pageSettingsEditor: {
       pageLayoutLabel: string;
-      pageDeviceLabel: string; 
-    },
+      pageDeviceLabel: string;
+      enterTransitions: string;
+      exitTransitions: string;
+      addTransition: string;
+      editTransition: string;
+      removeTransition: string;
 
-    deviceEditor: {
+      dialog: {
+        animation: string;
+        timeInterpolation: string;
+        duration: string;
+        viewPairs: string;
+        addViewPair: string;
+        startOfTransition: string;
+        endOfTransition: string;
+      };
+    };
+
+    deviceSettingsEditor: {
       indexPageId: string;
-    },
+    };
 
     eventTriggers: {
       title: string;
@@ -174,6 +243,8 @@ export interface IStrings extends LocalizedStringsMethods {
       physicalButtonDownTitle: string;
       physicalButtonUpTitle: string;
       physicalButton: string;
+      deviceGroupEventTitle: string;
+      deviceGroupEvent: string;
       delayTitle: string;
       delay: string;
       actions: string;
@@ -181,7 +252,7 @@ export interface IStrings extends LocalizedStringsMethods {
       variableValue: string;
       selectPage: string;
     };
-    
+
     addDeviceEditor: {
       title: string;
       defaultName: string;
@@ -192,11 +263,12 @@ export interface IStrings extends LocalizedStringsMethods {
       screenOrientationLandscape: string;
       saveButton: string;
     };
-    
   };
 
   layout: {
     title: string;
+    addNew: string;
+    confirmDelete: string;
     toolbar: {
       visual: string;
       code: string;
@@ -211,6 +283,71 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
+  };
+
+  floorPlan: {
+    title: string;
+    listTitle: string;
+    floor: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+      properties: string;
+    };
+    room: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+      properties: string;
+    };
+    deviceGroup: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+      properties: string;
+    };
+    device: {
+      add: string;
+      new: string;
+      delete: string;
+      edit: string;
+      move: string;
+      properties: string;
+    };
+    antenna: {
+      add: string;
+      new: string;
+      newReaderId: string;
+      delete: string;
+      edit: string;
+      move: string;
+      properties: string;
+    };
+    structure: string;
+    toolbar: {
+      save: string;
+      upload: string;
+    };
+    properties: {
+      title: string;
+      imageHeight: string;
+      imageWidth: string;
+      physicalWidth: string;
+      physicalHeight: string;
+      model: string;
+      screenOrientation: string;
+      landscape: string;
+      portrait: string;
+      allowVisitorSessionCreation: string;
+      name: string;
+      readerId: string;
+      deviceGroup: string;
+      room: string;
+    };
+    hasChildElements: string;
   };
 
   deviceTypes: {
@@ -233,6 +370,121 @@ export interface IStrings extends LocalizedStringsMethods {
         all: string;
       };
     };
+  };
+
+  map: {
+    properties: {
+      roomName: string;
+      dialogTitle: string;
+    };
+  };
+
+  layoutEditor: {
+    commonComponents: {
+      id: string;
+      layoutWidth: string;
+      layoutHeight: string;
+      backgroundColor: string;
+      paddings: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      margins: {
+        title: string;
+        left: string;
+        right: string;
+        top: string;
+        bottom: string;
+        link: string;
+      };
+      layoutGravity: string;
+      layoutAlign: string;
+    };
+
+    textView: {
+      width: string;
+      height: string;
+      color: string;
+      textResource: string;
+      fontStyle: string;
+      textAlign: string;
+      textGravity: string;
+      textSize: string;
+      typeface: string;
+    };
+
+    imageView: {
+      src: string;
+    };
+
+    button: {
+      width: string;
+      height: string;
+      color: string;
+      textResource: string;
+      fontStyle: string;
+      textSize: string;
+    };
+
+    linearLayout: {
+      orientation: string;
+    };
+
+    addLayoutViewDialog: {
+      title: string;
+      widget: string;
+      confirm: string;
+      cancel: string;
+    };
+
+  };
+
+  contentVersion: {
+    add: string;
+    addDialogTitle: string;
+    name: string;
+    language: string;
+    rooms: string;
+    deleteTitle: string;
+    deleteText: string;
+  };
+
+  groupContentVersion: {
+    add: string;
+    addDialogTitle: string;
+    name: string;
+    deviceGroup: string;
+    status: string;
+    deleteTitle: string;
+    deleteText: string;
+  };
+
+
+  genericDialog: {
+    confirm: string;
+    cancel: string;
+    save: string;
+    delete: string;
+    add: string;
+  };
+
+  generic: {
+    add: string;
+    save: string;
+    cancel: string;
+    loadNew: string;
+    name: string;
+    confirmDelete: string;
+    or: string;
+    undefined: string;
+  };
+
+  spaces: {
+    title: string;
   };
 
 }

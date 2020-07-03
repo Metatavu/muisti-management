@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ExhibitionContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../generated/client";
+import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../generated/client";
 import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./device-model-string-data";
 
 /**
@@ -64,7 +64,7 @@ export interface PhysicalButtonData {
  * Interface describing exhibition element in exhibition editor
  */
 export interface ExhibitionElement {
-  data: Exhibition | ExhibitionContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
+  data: Exhibition | ContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
   type: ExhibitionElementType;
 }
 
@@ -78,4 +78,30 @@ export enum ExhibitionElementType {
   ROOM = "ROOM",
   DEVICE = "DEVICE",
   PAGE = "PAGE"
+}
+
+/**
+ * Interface describing generic action button
+ */
+export interface ActionButton {
+  name: string;
+  action: () => void;
+}
+
+/**
+ * Interface describing breadcrumb data
+ */
+export interface BreadcrumbData {
+  name: string;
+  url?: string;
+}
+
+/**
+ * Language codes (ISO 639-1)
+ */
+export enum LanguageOptions {
+  FI = "FI",
+  EN = "EN",
+  SV = "SV",
+  RU = "RU"
 }

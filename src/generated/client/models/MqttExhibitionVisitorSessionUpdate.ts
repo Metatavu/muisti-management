@@ -38,11 +38,11 @@ export interface MqttExhibitionVisitorSessionUpdate {
      */
     readonly variablesChanged: boolean;
     /**
-     * Whether session users have changed
+     * Whether session visitors have changed
      * @type {boolean}
      * @memberof MqttExhibitionVisitorSessionUpdate
      */
-    readonly usersChanged: boolean;
+    readonly visitorsChanged: boolean;
 }
 
 export function MqttExhibitionVisitorSessionUpdateFromJSON(json: any): MqttExhibitionVisitorSessionUpdate {
@@ -58,7 +58,7 @@ export function MqttExhibitionVisitorSessionUpdateFromJSONTyped(json: any, ignor
         'id': json['id'],
         'exhibitionId': json['exhibitionId'],
         'variablesChanged': json['variablesChanged'],
-        'usersChanged': json['usersChanged'],
+        'visitorsChanged': json['visitorsChanged'],
     };
 }
 
