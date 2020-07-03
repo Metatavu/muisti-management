@@ -51,6 +51,12 @@ export interface ExhibitionRoom {
      */
     name: string;
     /**
+     * Room\'s color in CSS -color format
+     * @type {string}
+     * @memberof ExhibitionRoom
+     */
+    color?: string;
+    /**
      * 
      * @type {Polygon}
      * @memberof ExhibitionRoom
@@ -96,6 +102,7 @@ export function ExhibitionRoomFromJSONTyped(json: any, ignoreDiscriminator: bool
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'floorId': json['floorId'],
         'name': json['name'],
+        'color': !exists(json, 'color') ? undefined : json['color'],
         'geoShape': !exists(json, 'geoShape') ? undefined : PolygonFromJSON(json['geoShape']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -115,6 +122,7 @@ export function ExhibitionRoomToJSON(value?: ExhibitionRoom | null): any {
         
         'floorId': value.floorId,
         'name': value.name,
+        'color': value.color,
         'geoShape': PolygonToJSON(value.geoShape),
     };
 }

@@ -302,7 +302,8 @@
       "new": "New room",
       "delete": "Delete room",
       "edit": "Edit room",
-      "properties": "Room properties"
+      "properties": "Room properties",
+      "color": "Room fill color"
     },
     "deviceGroup": {
       "add": "Add new device group",
