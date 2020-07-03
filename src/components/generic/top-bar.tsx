@@ -63,7 +63,7 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, breadcrumbs, actionBarButtons, noBackButton, title } = this.props;
+    const { classes, keycloak, history, breadcrumbs, noBackButton, title } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -113,9 +113,7 @@ class TopBar extends React.Component<Props, State> {
               { history.location.pathname.includes("exhibitions/") &&
                 this.renderTabs()
               }
-              { actionBarButtons &&
-                this.renderActionBar()
-              }
+              { this.renderActionBar() }
             </>
           }
         </div>
@@ -225,9 +223,18 @@ class TopBar extends React.Component<Props, State> {
    */
   private renderActionBar = () => {
     const { classes, actionBarButtons } = this.props;
+
+    if (actionBarButtons === undefined) {
+      return (
+        <div className={ classes.toolbar }>
+          { strings.floorPlan.brokenData }
+        </div>
+      );
+    }
+
     return (
       <div className={ classes.toolbar }>
-        <ActionBar buttons={ actionBarButtons || [] } />
+        <ActionBar buttons={ actionBarButtons } />
       </div>
     );
   }

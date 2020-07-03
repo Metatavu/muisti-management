@@ -349,6 +349,7 @@ export interface IStrings extends LocalizedStringsMethods {
       room: string;
     };
     hasChildElements: string;
+    brokenData: string;
   };
 
   deviceTypes: {

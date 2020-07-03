@@ -350,7 +350,8 @@
       "room": "Huone johon antenni kuuluu"
     },
     
-    "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!"
+    "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
+    "brokenData": "Kartan saamat tiedot ovat viallisia eikä karttaa voida luoda!"
   },
 
   "sorting": {
