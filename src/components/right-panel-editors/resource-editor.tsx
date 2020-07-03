@@ -7,6 +7,8 @@ import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import MediaLibrary, { MediaType } from "./media-library";
+import produce from "immer";
 
 /**
  * Interface representing component properties
@@ -14,7 +16,7 @@ import { Dispatch } from "redux";
 interface Props extends WithStyles<typeof styles> {
   resource: ExhibitionPageResource;
   layouts: PageLayout[];
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onUpdate: (resource: ExhibitionPageResource) => void;
 }
 
 /**
@@ -44,22 +46,23 @@ class ResourceEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, resource, onChange } = this.props;
+    const { classes, resource } = this.props;
 
-    const title = <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>{ strings.exhibition.properties.title }</Typography>
+    const title = (
+      <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>
+        { strings.exhibition.properties.title }
+      </Typography>
+    );
+
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
         return (
           <>
             { title }
-            <TextField
-              type="url"
-              className={ classes.textResourceEditor } 
-              label={ strings.exhibition.resources.imageView.properties.imageUrl }
-              variant="filled"
-              name="data"
-              value={ resource.data }
-              onChange={ onChange }
+            <MediaLibrary
+              mediaType={ MediaType.IMAGE }
+              currentUrl={ resource.data }
+              onUrlChange={ this.updateResource }
             />
           </>
         );
@@ -67,14 +70,10 @@ class ResourceEditor extends React.Component<Props, State> {
         return (
           <>
             { title }
-            <TextField
-              type="url"
-              className={ classes.textResourceEditor } 
-              label={ strings.exhibition.resources.mediaView.properties.imageOrVideoUrl }
-              variant="filled"
-              name="data"
-              value={ resource.data }
-              onChange={ onChange }
+            <MediaLibrary
+              mediaType={ MediaType.VIDEO }
+              currentUrl={ resource.data }
+              onUrlChange={ this.updateResource }
             />
           </>
         );
@@ -89,12 +88,35 @@ class ResourceEditor extends React.Component<Props, State> {
               variant="filled"
               name="data"
               value={ resource.data }
-              onChange={ onChange }
+              onChange={ this.onResourceDataChange }
             />
           </>
         );
       default: return <div>{ title }</div>;
     }
+  }
+
+  /**
+   * Event handler for resource data change
+   * 
+   * @param event event
+   */
+  private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.updateResource(event.target.value);
+  }
+
+  /**
+   * Event handler for media change
+   * 
+   * @param value value as string
+   */
+  private updateResource = (value: string) => {
+    const { resource } = this.props;
+    this.props.onUpdate(
+      produce(resource, draft => {
+        draft.data = value;
+      })
+    );
   }
 }
 

@@ -18,10 +18,6 @@ import {
     PageLayoutViewPropertyFromJSON,
     PageLayoutViewPropertyFromJSONTyped,
     PageLayoutViewPropertyToJSON,
-    PageLayoutWidgetType,
-    PageLayoutWidgetTypeFromJSON,
-    PageLayoutWidgetTypeFromJSONTyped,
-    PageLayoutWidgetTypeToJSON,
 } from './';
 
 /**
@@ -38,10 +34,10 @@ export interface PageLayoutView {
     id: string;
     /**
      * 
-     * @type {PageLayoutWidgetType}
+     * @type {string}
      * @memberof PageLayoutView
      */
-    widget: PageLayoutWidgetType;
+    widget: string;
     /**
      * 
      * @type {Array<PageLayoutViewProperty>}
@@ -67,7 +63,7 @@ export function PageLayoutViewFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'id': json['id'],
-        'widget': PageLayoutWidgetTypeFromJSON(json['widget']),
+        'widget': json['widget'],
         'properties': ((json['properties'] as Array<any>).map(PageLayoutViewPropertyFromJSON)),
         'children': ((json['children'] as Array<any>).map(PageLayoutViewFromJSON)),
     };
@@ -83,7 +79,7 @@ export function PageLayoutViewToJSON(value?: PageLayoutView | null): any {
     return {
         
         'id': value.id,
-        'widget': PageLayoutWidgetTypeToJSON(value.widget),
+        'widget': value.widget,
         'properties': ((value.properties as Array<any>).map(PageLayoutViewPropertyToJSON)),
         'children': ((value.children as Array<any>).map(PageLayoutViewToJSON)),
     };
