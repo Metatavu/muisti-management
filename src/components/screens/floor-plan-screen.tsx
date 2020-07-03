@@ -822,9 +822,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
-        const { selectedFloor, selectedRoom } = draft;
-        const floorId = selectedFloor ? selectedFloor.id : "";
-        const roomId = selectedRoom ? selectedRoom.id : "";
+        const floorId = draft.selectedFloor?.id || "";
+        const roomId = draft.selectedRoom?.id || "";
         draft.deviceGroups.push(newDeviceGroup);
         draft.selectedDeviceGroup = newDeviceGroup;
         draft.activeKeyInTree = `${floorId}/${roomId}/${newDeviceGroup.id}`;
