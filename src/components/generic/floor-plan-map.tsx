@@ -1157,7 +1157,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Trigger L.Draw.Rectangle event which allows user to draw rectangle on the map
    */
   public addRoom = () => {
-    const drawMap = this.mapInstance! as DrawMap;
+    if (!this.mapInstance) {
+      return;
+    }
+
+    const drawMap = this.mapInstance as DrawMap;
     const newRoomShape = new L.Draw.Rectangle(drawMap);
     newRoomShape.enable();
   }
@@ -1167,8 +1171,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public editRoom = () => {
     const layers = this.selectedRoomLayer.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.enable();
+
+    if (layers && layers.length > 0) {
+      const layer = layers[0] as any;
+      layer.editing.enable();
+    }
   }
 
   /**
@@ -1178,17 +1185,24 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!this.mapInstance) {
       return;
     }
-    this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedRoomLayer);
+
     const layers = this.selectedRoomLayer.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.disable();
+    if (layers && layers.length > 0) {
+      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedRoomLayer);
+      const layer = layers[0] as any;
+      layer.editing.disable();
+    }
   }
 
   /**
    * Trigger L.Draw.Marker event which allows user to draw device marker on the map
    */
   public addDeviceMarker = () => {
-    const drawMap = this.mapInstance! as DrawMap;
+    if (!this.mapInstance) {
+      return;
+    }
+
+    const drawMap = this.mapInstance as DrawMap;
     const markerOptions: MarkerOptions = {
       icon: this.deviceIcon,
       draggable: false
@@ -1204,7 +1218,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * Trigger L.Draw.Marker event which allows user to draw antenna marker on the map
    */
   public addAntennaMarker = () => {
-    const drawMap = this.mapInstance! as DrawMap;
+    if (!this.mapInstance) {
+      return;
+    }
+
+    const drawMap = this.mapInstance as DrawMap;
     const markerOptions: MarkerOptions = {
       icon: this.antennaIcon,
       draggable: false
@@ -1221,8 +1239,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public editDeviceMarker = () => {
     const layers = this.selectedMarker.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.enable();
+    if (layers && layers.length > 0) {
+      const layer = layers[0] as any;
+      layer.editing.enable();
+    }
   }
 
   /**
@@ -1230,8 +1250,10 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   public editAntennaMarker = () => {
     const layers = this.selectedMarker.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.enable();
+    if (layers && layers.length > 0) {
+      const layer = layers[0] as any;
+      layer.editing.enable();
+    }
   }
 
   /**
@@ -1241,10 +1263,13 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!this.mapInstance) {
       return;
     }
-    this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
+
     const layers = this.selectedMarker.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.disable();
+    if (layers && layers.length > 0) {
+      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
+      const layer = layers[0] as any;
+      layer.editing.disable();
+    }
   }
 
   /**
@@ -1255,13 +1280,15 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (!this.mapInstance) {
       return;
     }
-    this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
-    if (selectedItems.deviceGroup && selectedItems.antenna && selectedItems.antenna.groupId !== selectedItems.deviceGroup.id) {
-      return;
-    }
     const layers = this.selectedMarker.getLayers();
-    const layer = layers[0] as any;
-    layer.editing.disable();
+    if (layers && layers.length > 0) {
+      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
+      if (selectedItems.deviceGroup && selectedItems.antenna && selectedItems.antenna.groupId !== selectedItems.deviceGroup.id) {
+        return;
+      }
+      const layer = layers[0] as any;
+      layer.editing.disable();
+    }
   }
 
   /**

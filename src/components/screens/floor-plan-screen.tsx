@@ -169,7 +169,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ this.getBreadcrumbsData() }
-        actionBarButtons={ this.getActionButtons() }
+        actionBarButtons={ this.mapRef.current ? this.getActionButtons() : undefined }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }>
@@ -797,6 +797,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         const roomIndex = rooms.findIndex(room => room.id === roomToUpdate.id);
         if (roomIndex > -1) {
           rooms.splice(roomIndex, 1, updatedRoom);
+          draft.selectedRoom = updatedRoom;
         }
       })
     );

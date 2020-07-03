@@ -351,7 +351,8 @@
       "deviceGroup": "Device group where antenna belongs to",
       "room": "Room where antenna belongs to"
     },
-    "hasChildElements": "Selected element has child elements. Cannot delete!"
+    "hasChildElements": "Selected element has child elements. Cannot delete!",
+    "brokenData": "Map got invalid data and cannot be instantiated and all controls are disabled!"
   },
 
   "sorting": {
