@@ -134,12 +134,26 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private deviceIcon = new L.Icon({
     iconUrl: deviceIcon,
+    iconSize: new L.Point(50, 50),
     iconAnchor: undefined,
     popupAnchor: undefined,
     shadowUrl: undefined,
     shadowSize: undefined,
     shadowAnchor: undefined,
-    iconSize: new L.Point(50, 50),
+    className: "device-icon"
+  });
+
+  /**
+   * Custom selected device icon
+   */
+  private selectedDeviceIcon = new L.Icon({
+    iconUrl: deviceIcon,
+    iconSize: new L.Point(60, 60),
+    iconAnchor: undefined,
+    popupAnchor: undefined,
+    shadowUrl: undefined,
+    shadowSize: undefined,
+    shadowAnchor: undefined,
     className: "device-icon"
   });
 
@@ -148,12 +162,26 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    */
   private antennaIcon = new L.Icon({
     iconUrl: antennaIcon,
+    iconSize: new L.Point(50, 50),
     iconAnchor: undefined,
     popupAnchor: undefined,
     shadowUrl: undefined,
     shadowSize: undefined,
     shadowAnchor: undefined,
-    iconSize: new L.Point(50, 50),
+    className: "antenna-icon"
+  });
+
+  /**
+   * Custom selected antenna icon
+   */
+  private selectedAntennaIcon = new L.Icon({
+    iconUrl: antennaIcon,
+    iconSize: new L.Point(60, 60),
+    iconAnchor: undefined,
+    popupAnchor: undefined,
+    shadowUrl: undefined,
+    shadowSize: undefined,
+    shadowAnchor: undefined,
     className: "antenna-icon"
   });
 
@@ -163,10 +191,8 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * TODO: Needs API support for layer properties
    */
   private layerStyleOptions = {
-    selectedRoomLayerOpacity: 0.8,
-    selectedRoomLayerColor: "#123456",
+    selectedRoomLayerOpacity: 0.6,
     roomLayerOpacity: 0.3,
-    roomLayerColor: "#3388ff",
     deviceGroupPadding: 0.3,
     selectedDeviceGroupOpacity: 1.0,
     selectedDeviceGroupColor: "#987654",
@@ -642,7 +668,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param opacity layer opacity
    * @param color layer fill color
    */
-  private getLayerPolygon = (geoJson: Polygon, opacity: number, color: string) => {
+  private getLayerPolygon = (geoJson: Polygon, layerName: string, opacity: number, color?: string) => {
     let tempLayer: any;
     L.geoJSON(geoJson, {
       onEachFeature(_feature, layer) {
@@ -651,6 +677,9 @@ export default class FloorPlanMap extends React.Component<Props, State> {
           fillOpacity: opacity,
           fillColor: color
         });
+        customLayer.bindTooltip(layerName, {
+          permanent: true,
+        }).openTooltip();
         tempLayer = layer;
       }
     });
@@ -676,7 +705,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
     if (geoShape && this.mapInstance && this.roomLayers) {
       const geoJson = geoShape as Polygon;
       try {
-        const roomLayerToAdd: any = this.getLayerPolygon(geoJson, layerStyleOptions.selectedRoomLayerOpacity, layerStyleOptions.selectedRoomLayerColor);
+        const roomLayerToAdd: any = this.getLayerPolygon(geoJson, selectedRoom.name, layerStyleOptions.selectedRoomLayerOpacity, selectedRoom.color);
         this.selectedRoomLayer.addLayer(roomLayerToAdd);
         tempRooms.splice(index, 1);
       } catch (error) {
@@ -691,6 +720,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param tempRooms temporary list of exhibition rooms
    */
   private addRoomLayers = (tempRooms: ExhibitionRoom[]) => {
+    const { selectedItems } = this.props;
     const { layerStyleOptions } = this;
 
     if (!this.mapInstance) {
@@ -703,7 +733,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       if (geoShape && this.mapInstance && this.roomLayers) {
         const geoJson = geoShape as Polygon;
         try {
-          const roomLayerToAdd: any = this.getLayerPolygon(geoJson, layerStyleOptions.roomLayerOpacity, layerStyleOptions.roomLayerColor);
+          const roomLayerToAdd: any = this.getLayerPolygon(geoJson, room.name, layerStyleOptions.roomLayerOpacity, room.color);
           this.addRoomLayersToMap(roomLayerToAdd, room, tempMap);
         } catch (error) {
           console.log(error);
@@ -711,7 +741,11 @@ export default class FloorPlanMap extends React.Component<Props, State> {
       }
     });
 
-    if (this.roomLayers.getLayers().length > 0) {
+    if (this.roomLayers.getLayers().length > 0 &&
+      !selectedItems.deviceGroup &&
+      !selectedItems.device &&
+      !selectedItems.antenna
+    ) {
       this.mapInstance.fitBounds(this.roomLayers.getBounds());
     }
 
@@ -821,13 +855,13 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param selectedDevice selected device
    */
   private addSelectedDeviceMarker = (tempDevices: ExhibitionDevice[], selectedDevice: ExhibitionDevice) => {
-    const { layerStyleOptions } = this;
+    const { layerStyleOptions, selectedDeviceIcon } = this;
     const deviceIndex = tempDevices.findIndex(device => device.id === selectedDevice.id);
     if (deviceIndex === -1) {
       return;
     }
 
-    const marker = this.getCustomMarker(selectedDevice, this.deviceIcon, layerStyleOptions.selectedMarkerOpacity);
+    const marker = this.getCustomMarker(selectedDevice, selectedDeviceIcon, layerStyleOptions.selectedMarkerOpacity);
     this.selectedMarker.addLayer(marker);
     tempDevices.splice(deviceIndex, 1);
   }
@@ -873,13 +907,13 @@ export default class FloorPlanMap extends React.Component<Props, State> {
    * @param selectedAntenna selected antenna
    */
   private addSelectedAntennaMarker = (tempAntennas: RfidAntenna[], selectedAntenna: RfidAntenna) => {
-    const { layerStyleOptions } = this;
+    const { layerStyleOptions, selectedAntennaIcon } = this;
     const antennaIndex = tempAntennas.findIndex(antenna => antenna.id === selectedAntenna.id);
     if (antennaIndex === -1) {
       return;
     }
 
-    const marker = this.getCustomMarker(selectedAntenna, this.antennaIcon, layerStyleOptions.selectedMarkerOpacity);
+    const marker = this.getCustomMarker(selectedAntenna, selectedAntennaIcon, layerStyleOptions.selectedMarkerOpacity);
     this.selectedMarker.addLayer(marker);
     tempAntennas.splice(antennaIndex, 1);
   }

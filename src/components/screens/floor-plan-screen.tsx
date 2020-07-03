@@ -30,6 +30,7 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
+import { ColorResult } from "react-color";
 
 /**
  * Component props
@@ -300,6 +301,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           deviceGroups={ selectedRoom ? deviceGroups.filter(group => group.roomId === selectedRoom.id) : [] }
           onChangeFloorProperties={ this.onChangeFloorProperties }
           onChangeRoomProperties={ this.onChangeRoomProperties }
+          onChangeRoomColor={ this.onChangeRoomColor }
           onChangeDeviceGroupProperties={ this.onChangeDeviceGroupProperties }
           onChangeDeviceProperties={ this.onChangeDeviceProperties }
           onChangeAntennaProperties={ this.onChangeAntennaProperties }
@@ -655,6 +657,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: Draft<State>) => {
         draft.floors.push(newFloor);
+        draft.selectedFloor = newFloor;
+        draft.activeKeyInTree = `${newFloor.id}`;
       })
     );
   }
@@ -735,8 +739,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
         draft.rooms.push(newRoom);
         draft.selectedRoom = newRoom;
+        draft.activeKeyInTree = `${floorId}/${newRoom.id}`;
       })
     );
   }
@@ -815,7 +822,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
+        const floorId = draft.selectedFloor?.id || "";
+        const roomId = draft.selectedRoom?.id || "";
         draft.deviceGroups.push(newDeviceGroup);
+        draft.selectedDeviceGroup = newDeviceGroup;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${newDeviceGroup.id}`;
       })
     );
   }
@@ -886,7 +897,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newDevice = await this.createDevice(accessToken, exhibitionId, deviceToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
+        const roomId = selectedRoom ? selectedRoom.id : "";
+        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.devices.push(newDevice);
+        draft.selectedDevice = newDevice;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newDevice.id}`;
       })
     );
   }
@@ -958,7 +975,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newAntenna = await this.createAntenna(accessToken, exhibitionId, antennaToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
+        const roomId = selectedRoom ? selectedRoom.id : "";
+        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.antennas.push(newAntenna);
+        draft.selectedAntenna = newAntenna;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newAntenna.id}`;
       })
     );
   }
@@ -1165,6 +1188,24 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     const updatedRoom: ExhibitionRoom = { ...selectedRoom, [name as keyof ExhibitionRoom]: value };
+    this.setState({
+      selectedRoom: updatedRoom
+    });
+  }
+
+  /**
+   * Event handler for room color change
+   *
+   * @param color color to be saved
+   */
+  private onChangeRoomColor = (color: ColorResult) => {
+    const { selectedRoom } = this.state;
+
+    if (!selectedRoom) {
+      return;
+    }
+
+    const updatedRoom: ExhibitionRoom = { ...selectedRoom, ["color" as keyof ExhibitionRoom]: color.hex };
     this.setState({
       selectedRoom: updatedRoom
     });

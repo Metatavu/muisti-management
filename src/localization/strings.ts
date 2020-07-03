@@ -301,6 +301,7 @@ export interface IStrings extends LocalizedStringsMethods {
       delete: string;
       edit: string;
       properties: string;
+      color: string;
     };
     deviceGroup: {
       add: string;
