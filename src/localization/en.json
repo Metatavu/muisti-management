@@ -349,7 +349,8 @@
       "name": "Name",
       "readerId": "Antenna reader Id",
       "deviceGroup": "Device group where antenna belongs to",
-      "room": "Room where antenna belongs to"
+      "room": "Room where antenna belongs to",
+      "antennaNumber": "Antenna number"
     },
     "hasChildElements": "Selected element has child elements. Cannot delete!",
     "brokenData": "Map got invalid data and cannot be instantiated and all controls are disabled!"

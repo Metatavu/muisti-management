@@ -119,6 +119,13 @@ class FloorPlanInfo extends React.Component<Props, State> {
             value={ selectedAntenna.readerId }
             onChange={ onChangeAntennaProperties }
           />
+          <TextField
+            { ...textFieldGenericProps }
+            label={ strings.floorPlan.properties.antennaNumber }
+            name="antennaNumber"
+            value={ selectedAntenna.antennaNumber }
+            onChange={ onChangeAntennaProperties }
+          />
           <InputLabel id="groupId-label" style={{ marginTop: theme.spacing(2) }}>
             { strings.floorPlan.properties.deviceGroup }
           </InputLabel>

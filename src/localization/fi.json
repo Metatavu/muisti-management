@@ -347,7 +347,8 @@
       "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
       "readerId": "Antennin lukijan Id",
       "deviceGroup": "Laiteryhmä johon antenni kuuluu",
-      "room": "Huone johon antenni kuuluu"
+      "room": "Huone johon antenni kuuluu",
+      "antennaNumber": "Antennin numero"
     },
     
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
