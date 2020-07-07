@@ -54,6 +54,7 @@ export * from './PageLayout';
 export * from './PageLayoutView';
 export * from './PageLayoutViewProperty';
 export * from './PageLayoutViewPropertyType';
+export * from './PageLayoutWidgetType';
 export * from './Point';
 export * from './Polygon';
 export * from './RfidAntenna';

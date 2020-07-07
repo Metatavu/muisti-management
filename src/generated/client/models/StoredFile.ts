@@ -36,6 +36,12 @@ export interface StoredFile {
      * @type {string}
      * @memberof StoredFile
      */
+    readonly thumbnailUri?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoredFile
+     */
     readonly contentType: string;
     /**
      * 
@@ -57,6 +63,7 @@ export function StoredFileFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'uri': json['uri'],
+        'thumbnailUri': !exists(json, 'thumbnailUri') ? undefined : json['thumbnailUri'],
         'contentType': json['contentType'],
         'fileName': json['fileName'],
     };
