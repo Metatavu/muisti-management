@@ -302,7 +302,8 @@
       "new": "New room",
       "delete": "Delete room",
       "edit": "Edit room",
-      "properties": "Room properties"
+      "properties": "Room properties",
+      "color": "Room fill color"
     },
     "deviceGroup": {
       "add": "Add new device group",
@@ -348,9 +349,11 @@
       "name": "Name",
       "readerId": "Antenna reader Id",
       "deviceGroup": "Device group where antenna belongs to",
-      "room": "Room where antenna belongs to"
+      "room": "Room where antenna belongs to",
+      "antennaNumber": "Antenna number"
     },
-    "hasChildElements": "Selected element has child elements. Cannot delete!"
+    "hasChildElements": "Selected element has child elements. Cannot delete!",
+    "brokenData": "Map got invalid data and cannot be instantiated and all controls are disabled!"
   },
 
   "sorting": {

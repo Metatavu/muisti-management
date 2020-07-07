@@ -108,7 +108,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     if (layouts.length < 1) {
       return null;
     }
-    
+
     const cards = layouts.map(layout => {
       const layoutId = layout.id;
       if (!layoutId) {
@@ -172,7 +172,7 @@ class LayoutsScreen extends React.Component<Props, State> {
           value={ newLayout.modelId || "" }
           onChange={ this.onNewLayoutChange }
         >
-          { deviceModels.map(model => 
+          { deviceModels.map(model =>
             <MenuItem key={ model.id } value={ model.id }>
               { `${model.manufacturer} ${model.model}` }
             </MenuItem>
@@ -247,22 +247,25 @@ class LayoutsScreen extends React.Component<Props, State> {
     const createdLayout = await layoutsApi.createPageLayout({ pageLayout });
     layouts.push(createdLayout);
     setLayouts(layouts);
+    this.setState({
+      addNewDialogOpen: false
+    });
   }
 
   /**
    * Event handler for card click
-   * 
+   *
    * @param layoutId layout id
    */
   private onCardClick = (layoutId: string) => {
     const { layouts } = this.props;
     const { pathname } = this.props.history.location;
-    const layout = layouts.find(layout => layout.id === layoutId);
-    if (!layout) {
+    const foundLayout = layouts.find(layout => layout.id === layoutId);
+    if (!foundLayout) {
       return;
     }
 
-    this.props.setSelectedLayout(layout);
+    this.props.setSelectedLayout(foundLayout);
     this.props.history.push(`${pathname}/${layoutId}`);
   }
 
@@ -277,7 +280,7 @@ class LayoutsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for new layout change
-   * 
+   *
    * @param event event
    */
   private onNewLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
@@ -299,7 +302,7 @@ class LayoutsScreen extends React.Component<Props, State> {
 
   /**
    * Deletes layout
-   * 
+   *
    * @param layout layout
    */
   private deleteLayout = async (layout: PageLayout) => {

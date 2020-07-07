@@ -30,6 +30,7 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
+import { ColorResult } from "react-color";
 
 /**
  * Component props
@@ -69,6 +70,7 @@ interface State {
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
   selectedItemHasNodes: boolean;
+  activeKeyInTree?: string;
 }
 
 /**
@@ -135,7 +137,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom,
       selectedDeviceGroup,
       selectedDevice,
-      selectedAntenna } = this.state;
+      selectedAntenna,
+      activeKeyInTree } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -147,7 +150,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const treeNodes = this.constructTreeData();
     const firstSelected = selectedFloor?.id || "";
-    
+
     const devicePropertiesTitle =
       selectedAntenna ?
       strings.floorPlan.antenna.properties :
@@ -160,8 +163,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedFloor ?
       strings.floorPlan.floor.properties :
       "";
-    
-    return (
+
+      return (
       <BasicLayout
         history={ history }
         title={ exhibition.name }
@@ -173,7 +176,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.structure }>
-            <FloorPlanTreeMenu treeNodes={ treeNodes } firstSelected={ firstSelected } />
+            <FloorPlanTreeMenu
+              treeNodes={ treeNodes }
+              firstSelected={ firstSelected }
+              focusKey={ activeKeyInTree }
+            />
           </ElementNavigationPane>
           <EditorView>
             { this.renderEditor() }
@@ -205,7 +212,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private renderEditor = () => {
     const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
-    const { exhibitionId, accessToken, deviceModels } = this.props;
+    const { exhibitionId, deviceModels } = this.props;
 
     if (cropping && cropImageDataUrl ) {
       return (
@@ -247,7 +254,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return <FloorPlanMap
         ref={ this.mapRef }
         key={ "floorPlanMap" }
-        accessToken={ accessToken }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
         mapData={ mapData }
@@ -256,6 +262,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         onRoomAdd={ this.onRoomAddClick }
         onRoomSave={ this.onRoomSaveClick }
         onRoomClick={ this.onRoomClick }
+        onDeviceGroupClick={ this.onDeviceGroupClick }
         onDeviceAdd={ this.onDeviceAddClick }
         onDeviceSave={ this.onDeviceSaveClick }
         onDeviceClick={ this.onDeviceClick }
@@ -294,6 +301,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           deviceGroups={ selectedRoom ? deviceGroups.filter(group => group.roomId === selectedRoom.id) : [] }
           onChangeFloorProperties={ this.onChangeFloorProperties }
           onChangeRoomProperties={ this.onChangeRoomProperties }
+          onChangeRoomColor={ this.onChangeRoomColor }
           onChangeDeviceGroupProperties={ this.onChangeDeviceGroupProperties }
           onChangeDeviceProperties={ this.onChangeDeviceProperties }
           onChangeAntennaProperties={ this.onChangeAntennaProperties }
@@ -456,6 +464,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     if (selectedFloor) {
+      if (!this.mapRef.current) {
+        return [
+          { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
+          { name: strings.generic.save, action: this.onFloorSaveClick },
+          { name: strings.floorPlan.floor.delete, action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onFloorDeleteClick }
+        ];
+      }
+
       return [
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
         { name: strings.floorPlan.floor.add, action: this.onFloorAddClick },
@@ -467,7 +483,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       ] as ActionButton[];
     }
 
-    return [];
+    if (!this.mapRef.current) {
+      return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
+    }
+
+    return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
   }
 
   /**
@@ -477,22 +497,23 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const { selectedFloor, rooms, selectedRoom, deviceGroups, selectedDeviceGroup, devices, antennas } = this.state;
     const data: any = { };
 
-    if (selectedDeviceGroup) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = [ selectedDeviceGroup ];
-      data.devices = devices.filter(device => device.groupId === selectedDeviceGroup.id);
-      data.antennas = antennas.filter(antenna => antenna.groupId === selectedDeviceGroup.id);
-      return data;
-    }
+    if (selectedDeviceGroup || selectedRoom || selectedFloor) {
+      const floorId = selectedFloor ? selectedFloor.id : "";
+      const roomId = selectedRoom ? selectedRoom.id : "";
+      const foundDeviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
+      const foundDevices: ExhibitionDevice[] = [];
+      const foundAntennas: RfidAntenna[] = [];
 
-    if (selectedRoom) {
-      data.rooms = [ selectedRoom ];
-      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === selectedRoom.id);
-      return data;
-    }
 
-    if (selectedFloor) {
-      data.rooms = rooms.filter(room => room.floorId === selectedFloor.id);
+      foundDeviceGroups.forEach(group => {
+        foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
+        foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
+      });
+
+      data.rooms = rooms.filter(room => room.floorId === floorId);
+      data.deviceGroups = deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId);
+      data.devices = foundDevices;
+      data.antennas = foundAntennas;
       return data;
     }
 
@@ -648,6 +669,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: Draft<State>) => {
         draft.floors.push(newFloor);
+        draft.selectedFloor = newFloor;
+        draft.activeKeyInTree = `${newFloor.id}`;
       })
     );
   }
@@ -708,7 +731,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           const floorIndex = floors.findIndex(floor => floor.id === selectedFloor.id);
           if (floorIndex > -1) {
             floors.splice(floorIndex, 1, updatedFloor);
-            draft.selectedFloor = undefined;
+            draft.selectedFloor = updatedFloor;
           }
         })
       );
@@ -729,8 +752,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
         draft.rooms.push(newRoom);
         draft.selectedRoom = newRoom;
+        draft.activeKeyInTree = `${floorId}/${newRoom.id}`;
       })
     );
   }
@@ -784,6 +810,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         const roomIndex = rooms.findIndex(room => room.id === roomToUpdate.id);
         if (roomIndex > -1) {
           rooms.splice(roomIndex, 1, updatedRoom);
+          draft.selectedRoom = updatedRoom;
         }
       })
     );
@@ -809,7 +836,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
+        const floorId = draft.selectedFloor?.id || "";
+        const roomId = draft.selectedRoom?.id || "";
         draft.deviceGroups.push(newDeviceGroup);
+        draft.selectedDeviceGroup = newDeviceGroup;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${newDeviceGroup.id}`;
       })
     );
   }
@@ -880,7 +911,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newDevice = await this.createDevice(accessToken, exhibitionId, deviceToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
+        const roomId = selectedRoom ? selectedRoom.id : "";
+        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.devices.push(newDevice);
+        draft.selectedDevice = newDevice;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newDevice.id}`;
       })
     );
   }
@@ -952,7 +989,13 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newAntenna = await this.createAntenna(accessToken, exhibitionId, antennaToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
+        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
+        const floorId = selectedFloor ? selectedFloor.id : "";
+        const roomId = selectedRoom ? selectedRoom.id : "";
+        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.antennas.push(newAntenna);
+        draft.selectedAntenna = newAntenna;
+        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newAntenna.id}`;
       })
     );
   }
@@ -1034,7 +1077,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}`
     });
   }
 
@@ -1054,7 +1098,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}`
     });
   }
 
@@ -1075,7 +1120,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}`
     });
   }
 
@@ -1097,7 +1143,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: devices.find(device => device.id === deviceId),
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`
     });
   }
 
@@ -1119,7 +1166,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: antennas.find(antenna => antenna.id === antennaId),
-      selectedItemHasNodes: hasNodes
+      selectedItemHasNodes: hasNodes,
+      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${antennaId}`
     });
   }
 
@@ -1154,6 +1202,24 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     const updatedRoom: ExhibitionRoom = { ...selectedRoom, [name as keyof ExhibitionRoom]: value };
+    this.setState({
+      selectedRoom: updatedRoom
+    });
+  }
+
+  /**
+   * Event handler for room color change
+   *
+   * @param color color to be saved
+   */
+  private onChangeRoomColor = (color: ColorResult) => {
+    const { selectedRoom } = this.state;
+
+    if (!selectedRoom) {
+      return;
+    }
+
+    const updatedRoom: ExhibitionRoom = { ...selectedRoom, ["color" as keyof ExhibitionRoom]: color.hex };
     this.setState({
       selectedRoom: updatedRoom
     });

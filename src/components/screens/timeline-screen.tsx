@@ -32,6 +32,7 @@ import PageUtils from "../../utils/page-utils";
 import ResourceUtils from "../../utils/resource-utils";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import produce from "immer";
+import PanZoom from "../generic/pan-zoom";
 
 type View = "CODE" | "VISUAL";
 
@@ -206,17 +207,18 @@ export class TimelineScreen extends React.Component<Props, State> {
     const resources = selectedPage.resources;
     const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
-    const scale = 0.3;
+    const scale = 1;
 
     return (
       <div className={ classes.visualEditorContainer }>
-        <PagePreview
-          screenOrientation={ pageLayout.screenOrientation }
-          view={ view }
-          resources={ resources }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-        />
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+          <PagePreview
+            screenOrientation={ pageLayout.screenOrientation }
+            view={ view }
+            resources={ resources }
+            displayMetrics={ displayMetrics }
+            scale={ scale } />
+        </PanZoom>
       </div>
     );
   }

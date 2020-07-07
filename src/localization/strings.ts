@@ -301,6 +301,7 @@ export interface IStrings extends LocalizedStringsMethods {
       delete: string;
       edit: string;
       properties: string;
+      color: string;
     };
     deviceGroup: {
       add: string;
@@ -346,8 +347,10 @@ export interface IStrings extends LocalizedStringsMethods {
       readerId: string;
       deviceGroup: string;
       room: string;
+      antennaNumber: string;
     };
     hasChildElements: string;
+    brokenData: string;
   };
 
   deviceTypes: {
