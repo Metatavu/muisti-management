@@ -9,11 +9,13 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import MediaLibrary, { MediaType } from "./media-library";
 import produce from "immer";
+import { AccessToken } from "../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  accessToken: AccessToken;
   resource: ExhibitionPageResource;
   layouts: PageLayout[];
   onUpdate: (resource: ExhibitionPageResource) => void;
@@ -46,7 +48,9 @@ class ResourceEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, resource } = this.props;
+    const { classes, resource, accessToken } = this.props;
+
+    console.log(resource);
 
     const title = (
       <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>
@@ -60,6 +64,7 @@ class ResourceEditor extends React.Component<Props, State> {
           <>
             { title }
             <MediaLibrary
+              accessToken={ accessToken }
               mediaType={ MediaType.IMAGE }
               currentUrl={ resource.data }
               onUrlChange={ this.updateResource }
@@ -71,6 +76,7 @@ class ResourceEditor extends React.Component<Props, State> {
           <>
             { title }
             <MediaLibrary
+              accessToken={ accessToken }
               mediaType={ MediaType.VIDEO }
               currentUrl={ resource.data }
               onUrlChange={ this.updateResource }
@@ -127,7 +133,8 @@ class ResourceEditor extends React.Component<Props, State> {
  */
 function mapStateToProps(state: ReduxState) {
   return {
-    layouts: state.layouts.layouts
+    layouts: state.layouts.layouts,
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 

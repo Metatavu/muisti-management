@@ -8,11 +8,14 @@ import theme from "../../styles/theme";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FolderIcon from "@material-ui/icons/Folder";
 import AddIcon from "@material-ui/icons/Add";
+import { AccessToken } from "../../types";
+import Api from "../../api/api";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  accessToken: AccessToken;
   mediaType: MediaType;
   currentUrl: string;
   onUrlChange: (newUrl: string) => void;
@@ -52,12 +55,14 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    */
   public render() {
     const { classes } = this.props;
+
+    const folders = this.getFolders();
     return (
       <div className={ classes.root }>
         <Accordion>
           <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
             <Typography variant="h3">{ strings.mediaLibrary.title }</Typography>
-            <IconButton size="small" title="Add media" onClick={ (event) => event.stopPropagation() } onFocus={ (event) => event.stopPropagation() }>
+            <IconButton size="small" title="Add media" onClick={ event => event.stopPropagation() } onFocus={ event => event.stopPropagation() }>
               <AddIcon />
             </IconButton>
           </AccordionSummary>
@@ -126,6 +131,17 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       </div>
     );
   }
+
+  private getFolders = async () => {
+    const { accessToken } = this.props;
+    const mediaApi = Api.getStoredFilesApi(accessToken);
+    const files = await mediaApi.listStoredFiles({
+      folder: ""
+    });
+
+    console.log(files);
+  }
+
 });
 
 export default MediaLibrary;
