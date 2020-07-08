@@ -12,6 +12,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
+// tslint:disable-next-line: max-line-length
 import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionRoom, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageTransition, GroupContentVersion, ExhibitionPageResource } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
@@ -125,7 +126,7 @@ export class TimelineScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition, history } = this.props;
-    const { selectedResourceIndex, selectedEventTriggerIndex } = this.state;
+    const { selectedResourceIndex, selectedEventTriggerIndex, selectedPage } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -159,8 +160,8 @@ export class TimelineScreen extends React.Component<Props, State> {
           </EditorView>
 
           <ElementSettingsPane
-            width={ 320 }
-            title=""
+            width={ 380 }
+            title={ selectedPage ? selectedPage.name : "" }
             open={ selectedResourceIndex !== undefined || selectedEventTriggerIndex !== undefined }
           >
             {
@@ -231,7 +232,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedPage) {
       return;
     }
-    
+
     return (
       <CodeEditor
         json={ this.toJsonCode(selectedPage) }
@@ -257,7 +258,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Renders device settings
-   * 
+   *
    * @param deviceData device data
    */
   private renderDeviceSettings = (deviceData: ExhibitionDevice) => {
@@ -320,13 +321,15 @@ export class TimelineScreen extends React.Component<Props, State> {
       return null;
     }
 
-    return <>
-      <Typography variant="h3">{ selectedResource.id }</Typography>
-      <ResourceEditor
-        resource={ selectedResource }
-        onUpdate={ this.onUpdateResource }
-      />
-    </>;
+    return (
+      <>
+        <Typography variant="h3">{ selectedResource.id }</Typography>
+        <ResourceEditor
+          resource={ selectedResource }
+          onUpdate={ this.onUpdateResource }
+        />
+      </>
+    );
   }
 
   /**

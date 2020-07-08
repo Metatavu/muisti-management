@@ -23,6 +23,14 @@
     "cancel": "Cancel"
   },
 
+  "mediaLibrary": {
+    "title": "Media library",
+    "selected": "selected",
+    "addMedia": "Add media",
+    "createFolder": "Create folder",
+    "search": "Search media"
+  },
+
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",

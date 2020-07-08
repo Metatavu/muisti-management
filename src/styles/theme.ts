@@ -58,9 +58,42 @@ export default createMuiTheme({
     },
     body1: {
       fontSize: "14px"
+    },
+    body2: {
+      fontSize: "14px",
+      fontFamily: "TTNorms-Bold",
     }
   },
   overrides: {
+    MuiTableCell: {
+      root: {
+        fontFamily: "TTNorms-Regular",
+        backgroundColor: "#fff",
+        padding: 10
+      },
+      head: {
+        fontFamily: "TTNorms-Bold",
+        backgroundColor: "#efefef"
+      }
+    },
+    MuiAccordionSummary: {
+      root: {
+        "&.Mui-expanded": {
+          minHeight: 48
+        }
+      },
+      content: {
+        alignItems: "center",
+        justifyContent: "space-between",
+      }
+    },
+    MuiAccordionDetails: {
+      root: {
+        flexDirection: "column",
+        padding: 0,
+        backgroundColor: "#f7f7f7"
+      }
+    },
     MuiBackdrop: {
       root: {
         backgroundColor: "rgba(0,0,0,0.1)"

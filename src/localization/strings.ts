@@ -1,4 +1,5 @@
 import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
+import MediaLibrary from '../components/right-panel-editors/media-library';
 
 /**
  * Interface describing localized strings
@@ -10,6 +11,14 @@ export interface IStrings extends LocalizedStringsMethods {
   fileUpload: {
     upload: string;
     cancel: string;
+  };
+
+  mediaLibrary: {
+    title: string;
+    selected: string;
+    addMedia: string;
+    createFolder: string;
+    search: string;
   };
 
   exhibitions: {

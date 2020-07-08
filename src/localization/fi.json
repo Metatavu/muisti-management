@@ -29,6 +29,14 @@
     "cancel": "Peruuta"
   },
 
+  "mediaLibrary": {
+    "title": "Mediakirjasto",
+    "selected": "valittu",
+    "addMedia": "Lisää media",
+    "createFolder": "Luo kansio",
+    "search": "Hae mediaa"
+  },
+
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
