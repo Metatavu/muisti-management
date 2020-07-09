@@ -100,7 +100,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
 
     return folders.map(folder => {
       return (
-        <Accordion onClick={ this.onFolderClick(folder) }>
+        <Accordion key={ folder.uri } onClick={ this.onFolderClick(folder) }>
           <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
             <div className={ classes.folder }>
               <FolderIcon fontSize="small" />
@@ -191,6 +191,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
 
       return(
         <TableRow
+          key={ file.uri }
           onClick={ this.onFileClick(file) }
           hover={ true }
           selected={ selected }
