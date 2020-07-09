@@ -1,5 +1,4 @@
 import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
-import MediaLibrary from '../components/right-panel-editors/media-library';
 
 /**
  * Interface describing localized strings

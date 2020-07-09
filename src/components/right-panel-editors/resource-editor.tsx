@@ -7,9 +7,9 @@ import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import MediaLibrary, { MediaType } from "./media-library";
+import MediaLibrary from "./media-library";
 import produce from "immer";
-import { AccessToken } from "../../types";
+import { AccessToken, MediaType } from "../../types";
 
 /**
  * Interface representing component properties
@@ -34,7 +34,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -49,8 +49,6 @@ class ResourceEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes, resource, accessToken } = this.props;
-
-    console.log(resource);
 
     const title = (
       <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>
@@ -89,7 +87,7 @@ class ResourceEditor extends React.Component<Props, State> {
             { title }
             <TextField
               multiline
-              className={ classes.textResourceEditor } 
+              className={ classes.textResourceEditor }
               label={ strings.exhibition.resources.textView.properties.text }
               variant="filled"
               name="data"
@@ -104,7 +102,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for resource data change
-   * 
+   *
    * @param event event
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,12 +111,11 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for media change
-   * 
+   *
    * @param value value as string
    */
   private updateResource = (value: string) => {
     const { resource } = this.props;
-    console.log(value);
     this.props.onUpdate(
       produce(resource, draft => {
         draft.data = value;

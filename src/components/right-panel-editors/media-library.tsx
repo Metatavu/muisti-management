@@ -1,7 +1,7 @@
 import * as React from "react";
 import strings from "../../localization/strings";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, IconButton, Checkbox, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Toolbar, Avatar } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button } from "@material-ui/core";
 import styles from "../../styles/components/right-panel-editors/media-library";
 import theme from "../../styles/theme";
 
@@ -9,8 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FolderIcon from "@material-ui/icons/Folder";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import PostAddIcon from '@material-ui/icons/PostAdd';
-import AddIcon from "@material-ui/icons/Add";
-import { AccessToken } from "../../types";
+import { AccessToken, MediaType } from "../../types";
 import Api from "../../api/api";
 import { StoredFile } from "../../generated/client";
 import FileUploader from "../generic/file-uploader";
@@ -38,12 +37,6 @@ interface State {
   selectedUploadFolder?: StoredFile;
 }
 
-export enum MediaType {
-  IMAGE = "image",
-  VIDEO = "video",
-  MEDIA = "media"
-}
-
 /**
  * Component for media library
  */
@@ -64,6 +57,9 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     };
   }
 
+  /**
+   * Component did mount life-cycle handler
+   */
   public componentDidMount = () => {
     this.getRootMedia();
   }
@@ -81,7 +77,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
         <Accordion>
           <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
             <Typography variant="h3">{ strings.mediaLibrary.title }</Typography>
-            {/* TODO: Needs API support */}
+            {/* TODO: Needs API support creating new folders */}
             {/* <IconButton size="small" title="Add media" onClick={ this.onFolderAddClick() } onFocus={ event => event.stopPropagation() }>
               <AddIcon />
             </IconButton> */}
@@ -95,6 +91,9 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     );
   }
 
+  /**
+   * Construct folder structure
+   */
   private constructFolders = () => {
     const { classes } = this.props;
     const { folders } = this.state;
@@ -106,17 +105,27 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
             <div className={ classes.folder }>
               <FolderIcon fontSize="small" />
               <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ folder.fileName }</Typography>
-              <RefreshIcon onClick={ this.onRefreshFolderClick(folder) }/>
-              <PostAddIcon onClick={ this.openDialog(folder) }/>
+              <Button className={ classes.refreshButton } onClick={ this.onRefreshFolderClick(folder) }>
+                <RefreshIcon/>
+              </Button>
+              <Button className={ classes.addButton } onClick={ this.openDialog(folder) }>
+                <PostAddIcon/>
+              </Button>
             </div>
           </AccordionSummary>
-          { this.constructFiles(folder) }
+          { this.renderFiles(folder) }
         </Accordion>
       );
     });
   }
 
-  private constructFiles = (folder: StoredFile) => {
+  /**
+   * Renders files under given folder
+   *
+   * @param folder folder to process
+   */
+  private renderFiles = (folder: StoredFile) => {
+    const { mediaType} = this.props;
     const { openFolders } = this.state;
 
     if (!openFolders.has(folder.uri)) {
@@ -129,25 +138,8 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       return null;
     }
 
-    const filteredFiles = files.filter(file => (file.contentType !== "inode/directory" && file.contentType !== "application/x-directory"));
-
-    const fileItems = filteredFiles.map(file => {
-      const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
-      return(
-        <TableRow onClick={ this.onFileClick(file) }>
-          <TableCell component="th" scope="row" padding="default">
-            { displayName }
-          </TableCell>
-          <TableCell align="left" padding="default">
-            { file.contentType }
-          </TableCell>
-          {/* TODO: Add support for image carousel */}
-          {/* <TableCell padding="checkbox">
-            <Checkbox />
-          </TableCell> */}
-        </TableRow>
-      );
-    });
+    const filteredFiles = files.filter(file => file.contentType.includes(mediaType));
+    const fileItems = this.getFileItems(filteredFiles, folder);
 
     return(
       <AccordionDetails>
@@ -176,15 +168,54 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
             </TableBody>
           </Table>
         </TableContainer>
-        <Toolbar variant="dense">
+        {/* TODO: Add support for image carousel */}
+        {/* <Toolbar variant="dense">
           <Typography variant="body1">x { strings.mediaLibrary.selected }</Typography>
-        </Toolbar>
+        </Toolbar> */}
       </AccordionDetails>
     );
   }
 
+  /**
+   * Get all file items
+   *
+   * @param filteredFiles filtered list of files
+   * @param folder folder where files are
+   */
+  private getFileItems = (filteredFiles: StoredFile[], folder: StoredFile) => {
+    const { currentUrl } = this.props;
+
+    return filteredFiles.map(file => {
+      const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
+      const selected = decodeURI(currentUrl) === file.uri;
+
+      return(
+        <TableRow
+          onClick={ this.onFileClick(file) }
+          hover={ true }
+          selected={ selected }
+        >
+          <TableCell component="th" scope="row" padding="default">
+            { displayName }
+          </TableCell>
+          <TableCell align="left" padding="default">
+            { file.contentType }
+          </TableCell>
+          {/* TODO: Add support for image carousel */}
+          {/* <TableCell padding="checkbox">
+            <Checkbox />
+          </TableCell> */}
+        </TableRow>
+      );
+    });
+  }
+
+  /**
+   * Render upload dialog
+   */
   private renderUploadDialog = () => {
     const { uploadOpen } = this.state;
+
     return(
       <FileUploader
         controlled
@@ -197,7 +228,12 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     );
   }
 
-  private onFolderClick = (folder: StoredFile) => async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  /**
+   * On folder click handler
+   *
+   * @param folder clicked folder
+   */
+  private onFolderClick = (folder: StoredFile) => () => {
     const { openFolders } = this.state;
     if (openFolders.has(folder.uri)) {
       return;
@@ -207,20 +243,32 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
 
   }
 
-  private onRefreshFolderClick = (folder: StoredFile) => async (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  /**
+   * On refresh folder click handler
+   *
+   * @param folder clicked folder
+   */
+  private onRefreshFolderClick = (folder: StoredFile) => async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
     this.fetchFolderData(folder.uri);
   }
 
-  private onFileClick = (file: StoredFile) => (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>) => {
-    console.log(file);
+  /**
+   * On file click handler
+   *
+   * @param file clicked file
+   */
+  private onFileClick = (file: StoredFile) => () => {
     this.props.onUrlChange(file.uri);
   }
 
   /**
-   * Toggle upload new image dialog
+   * Open upload dialog
+   *
+   * @param folder folder where new image will be stored
    */
-  private openDialog = (folder: StoredFile) => () => {
+  private openDialog = (folder: StoredFile) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
     this.setState({
       uploadOpen: true,
       selectedUploadFolder: folder
@@ -228,7 +276,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
   }
 
   /**
-   * Toggle upload new image dialog
+   * Close upload dialog
    */
   private closeDialog = () => {
     this.setState({
@@ -251,15 +299,19 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
 
     const file = files[0];
     if (file) {
-
-      const uploadedFile = await FileUpload.uploadFile(file, `${selectedUploadFolder.fileName}`);
-
+      await FileUpload.uploadFile(file, `${selectedUploadFolder.fileName}`);
+      this.fetchFolderData(selectedUploadFolder.uri);
       this.setState({
         uploadOpen: false
       });
     }
   }
 
+  /**
+   * Fetch file data from given folder path
+   *
+   * @param folderUri path to folder
+   */
   private fetchFolderData = async (folderUri: string) => {
     const { accessToken } = this.props;
     const { openFolders } = this.state;
@@ -267,7 +319,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     const mediaApi = Api.getStoredFilesApi(accessToken);
 
     const files = await mediaApi.listStoredFiles({
-      folder: folderUri.split("staging-muisti-cdn.metatavu.io")[1]
+      folder: folderUri.split(process.env.REACT_APP_CDN_BASE_PATH || "")[1]
     });
 
     const tempMap = new Map(openFolders);
