@@ -19,6 +19,11 @@ export interface IStrings extends LocalizedStringsMethods {
     addMedia: string;
     createFolder: string;
     search: string;
+    files: {
+      name: string;
+      modified: string;
+      type: string;
+    }
   };
 
   exhibitions: {

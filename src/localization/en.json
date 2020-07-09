@@ -28,7 +28,12 @@
     "selected": "selected",
     "addMedia": "Add media",
     "createFolder": "Create folder",
-    "search": "Search media"
+    "search": "Search media",
+    "files": {
+      "name": "Name",
+      "modified": "Modified",
+      "type": "Type"
+    }
   },
 
   "exhibitions": {

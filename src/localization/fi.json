@@ -34,7 +34,12 @@
     "selected": "valittu",
     "addMedia": "Lisää media",
     "createFolder": "Luo kansio",
-    "search": "Hae mediaa"
+    "search": "Hae mediaa",
+    "files": {
+      "name": "Nimi",
+      "modified": "Muokattu",
+      "type": "Tyyppi"
+    }
   },
 
   "exhibitions": {

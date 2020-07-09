@@ -118,6 +118,7 @@ class ResourceEditor extends React.Component<Props, State> {
    */
   private updateResource = (value: string) => {
     const { resource } = this.props;
+    console.log(value);
     this.props.onUpdate(
       produce(resource, draft => {
         draft.data = value;

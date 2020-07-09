@@ -203,7 +203,8 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedPage || !pageLayout) {
       return;
     }
-
+    console.log(selectedPage);
+    
     const view = pageLayout.data;
     const resources = selectedPage.resources;
     const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
@@ -320,6 +321,8 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedResource) {
       return null;
     }
+
+    console.log(selectedResource)
 
     return (
       <>

@@ -74,6 +74,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
     if (!this.props.view) {
       return null;
     }
+    console.log(this.props.view);
     switch (this.props.view.widget) {
       case "FrameLayout":
         return <PagePreviewFrameLayout 

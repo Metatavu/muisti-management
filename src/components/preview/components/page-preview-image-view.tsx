@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Measure, { ContentRect } from 'react-measure'
+import Measure, { ContentRect } from 'react-measure';
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
@@ -34,7 +34,7 @@ class PagePreviewImageView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -69,19 +69,19 @@ class PagePreviewImageView extends React.Component<Props, State> {
     if (src) {
       return (
         <div style={{ ...imageStyles, textAlign: "center" }}>
-          <img alt="preview" src={ src } style={{ maxWidth: "100%", maxHeight: "100%" }}/>
+          <img key={ src } alt="preview" src={ src } style={{ maxWidth: "100%", maxHeight: "100%" }}/>
         </div>
-      )
+      );
     } else {
       return (
         <ImageIcon style={{ ...imageStyles, background: "#fff", color: "rgb(188, 190, 192)" }}/>
-      )
+      );
     }
   }
 
   /**
    * Returns image src from resources or null if not found
-   * 
+   *
    * @returns image src from resources or null if not found
    */
   private getImageSrc = () => {
@@ -100,7 +100,7 @@ class PagePreviewImageView extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -118,19 +118,19 @@ class PagePreviewImageView extends React.Component<Props, State> {
       width: "100%",
       height: "100%"
     };
-    
+
     return result;
   }
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      
+
     });
 
     properties.forEach(property => {
@@ -141,7 +141,7 @@ class PagePreviewImageView extends React.Component<Props, State> {
       switch (property.name) {
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
 
