@@ -1,12 +1,13 @@
 import * as React from "react";
 import strings from "../../localization/strings";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button, CircularProgress } from "@material-ui/core";
 import styles from "../../styles/components/right-panel-editors/media-library";
 import theme from "../../styles/theme";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FolderIcon from "@material-ui/icons/Folder";
+import FolderClosedIcon from "@material-ui/icons/FolderOutlined";
+import FolderOpenIcon from "@material-ui/icons/FolderOpenOutlined";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { AccessToken, MediaType } from "../../types";
@@ -96,19 +97,22 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    */
   private constructFolders = () => {
     const { classes } = this.props;
-    const { folders } = this.state;
+    const { folders, openFolders } = this.state;
 
     return folders.map(folder => {
+
+      const folderOpen = openFolders.has(folder.uri);
+      // TODO: Make this into a component which would handle it's own state -> can have individual loaders while fetching content
       return (
         <Accordion key={ folder.uri } onClick={ this.onFolderClick(folder) }>
           <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
             <div className={ classes.folder }>
-              <FolderIcon fontSize="small" />
+              { folderOpen ? <FolderOpenIcon fontSize="small" /> : <FolderClosedIcon fontSize="small" /> }
               <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ folder.fileName }</Typography>
-              <Button className={ classes.refreshButton } onClick={ this.onRefreshFolderClick(folder) }>
+              <Button title={ strings.generic.refresh } className={ classes.refreshButton } onClick={ this.onRefreshFolderClick(folder) }>
                 <RefreshIcon/>
               </Button>
-              <Button className={ classes.addButton } onClick={ this.openDialog(folder) }>
+              <Button title={ strings.mediaLibrary.addFile } className={ classes.addButton } onClick={ this.openDialog(folder) }>
                 <PostAddIcon/>
               </Button>
             </div>
@@ -125,7 +129,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    * @param folder folder to process
    */
   private renderFiles = (folder: StoredFile) => {
-    const { mediaType} = this.props;
+    const { mediaType } = this.props;
     const { openFolders } = this.state;
 
     if (!openFolders.has(folder.uri)) {
@@ -141,7 +145,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     const filteredFiles = files.filter(file => file.contentType.includes(mediaType));
     const fileItems = this.getFileItems(filteredFiles, folder);
 
-    return(
+    return (
       <AccordionDetails>
         <TableContainer>
           <Table>

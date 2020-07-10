@@ -65,15 +65,33 @@ export default createMuiTheme({
     }
   },
   overrides: {
+    MuiTableRow: {
+      root: {
+        cursor: "pointer",
+        transition: "background 0.2s ease-out",
+        "&.Mui-selected": {
+          backgroundColor: "rgba(0, 121, 233, 0.25)"
+        },
+        "&:hover": {
+          backgroundColor: "rgba(0, 121, 233, 0.15)"
+        }
+      }
+    },
     MuiTableCell: {
       root: {
         fontFamily: "TTNorms-Regular",
-        backgroundColor: "#fff",
         padding: 10
       },
       head: {
         fontFamily: "TTNorms-Bold",
         backgroundColor: "#efefef"
+      }
+    },
+    MuiAccordion: {
+      root: {
+        "&.Mui-expanded": {
+          margin: 0
+        }
       }
     },
     MuiAccordionSummary: {

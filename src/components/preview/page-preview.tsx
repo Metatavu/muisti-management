@@ -59,10 +59,10 @@ class PagePreview extends React.Component<Props, State> {
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
-        <PagePreviewComponentEditor 
-          view={ view } 
-          displayMetrics={ displayMetrics } 
-          scale={ scale } 
+        <PagePreviewComponentEditor
+          view={ view }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }/>
       </div>
@@ -106,10 +106,10 @@ class PagePreview extends React.Component<Props, State> {
             } else {
               const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
               if (px) {
-                result.height = px
+                result.height = px;
               } else {
                 this.handleUnknownProperty(property, "Unknown value");
-              }  
+              }
             }
           break;
           default:
