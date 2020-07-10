@@ -168,7 +168,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       <BasicLayout
         history={ history }
         title={ exhibition.name }
-        breadcrumbs={ this.getBreadcrumbsData() }
+        breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
@@ -402,19 +402,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     });
 
     return treeData;
-  }
-
-  /**
-   * Get breadcrumbs data
-   *
-   * @returns breadcrumbs data as array
-   */
-  private getBreadcrumbsData = () => {
-    const { exhibition } = this.state;
-    return [
-      { name: strings.floorPlan.listTitle, url: "/v4/floorPlans" },
-      { name: exhibition?.name || "" }
-    ] as BreadcrumbData[];
   }
 
   /**
