@@ -23,6 +23,21 @@
     "cancel": "Cancel"
   },
 
+  "mediaLibrary": {
+    "title": "Media library",
+    "selected": "selected",
+    "addMedia": "Add media",
+    "addFolder": "Add folder",
+    "addFile": "Add file",
+    "createFolder": "Create folder",
+    "search": "Search media",
+    "files": {
+      "name": "Name",
+      "modified": "Modified",
+      "type": "Type"
+    }
+  },
+
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",
@@ -484,7 +499,8 @@
     "name": "Name",
     "confirmDelete": "Are you sure you want to remove selected element?",
     "or": "or",
-    "undefined": "Undefined"
+    "undefined": "Undefined",
+    "refresh": "Refresh"
   },
 
   "spaces": {

@@ -12,6 +12,21 @@ export interface IStrings extends LocalizedStringsMethods {
     cancel: string;
   };
 
+  mediaLibrary: {
+    title: string;
+    selected: string;
+    addMedia: string;
+    addFolder: string;
+    addFile: string;
+    createFolder: string;
+    search: string;
+    files: {
+      name: string;
+      modified: string;
+      type: string;
+    }
+  };
+
   exhibitions: {
     listTitle: string;
     newExhibitionLabel: string;
@@ -484,6 +499,7 @@ export interface IStrings extends LocalizedStringsMethods {
     confirmDelete: string;
     or: string;
     undefined: string;
+    refresh: string;
   };
 
   spaces: {

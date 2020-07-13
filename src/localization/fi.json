@@ -29,6 +29,21 @@
     "cancel": "Peruuta"
   },
 
+  "mediaLibrary": {
+    "title": "Mediakirjasto",
+    "selected": "valittu",
+    "addMedia": "Lisää media",
+    "addFolder": "Lisää kansio",
+    "addFile": "Lisää tiedosto",
+    "createFolder": "Luo kansio",
+    "search": "Hae mediaa",
+    "files": {
+      "name": "Nimi",
+      "modified": "Muokattu",
+      "type": "Tyyppi"
+    }
+  },
+
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
@@ -481,7 +496,8 @@
     "name": "Nimi",
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
     "or": "tai",
-    "undefined": "Ei määritelty"
+    "undefined": "Ei määritelty",
+    "refresh": "Päivitä"
   },
 
   "spaces": {

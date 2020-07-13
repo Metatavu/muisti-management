@@ -12,7 +12,8 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionRoom, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageTransition, GroupContentVersion } from "../../generated/client";
+// tslint:disable-next-line: max-line-length
+import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionRoom, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageTransition, GroupContentVersion, ExhibitionPageResource } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../layouts/basic-layout";
@@ -125,7 +126,7 @@ export class TimelineScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition, history } = this.props;
-    const { selectedResourceIndex, selectedEventTriggerIndex } = this.state;
+    const { selectedResourceIndex, selectedEventTriggerIndex, selectedPage } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -159,8 +160,8 @@ export class TimelineScreen extends React.Component<Props, State> {
           </EditorView>
 
           <ElementSettingsPane
-            width={ 320 }
-            title=""
+            width={ 380 }
+            title={ selectedPage ? selectedPage.name : "" }
             open={ selectedResourceIndex !== undefined || selectedEventTriggerIndex !== undefined }
           >
             {
@@ -231,7 +232,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedPage) {
       return;
     }
-    
+
     return (
       <CodeEditor
         json={ this.toJsonCode(selectedPage) }
@@ -257,7 +258,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Renders device settings
-   * 
+   *
    * @param deviceData device data
    */
   private renderDeviceSettings = (deviceData: ExhibitionDevice) => {
@@ -320,13 +321,15 @@ export class TimelineScreen extends React.Component<Props, State> {
       return null;
     }
 
-    return <>
-      <Typography variant="h3">{ selectedResource.id }</Typography>
-      <ResourceEditor
-        resource={ selectedResource }
-        onChange={ this.onResourceDataChange }
-      />
-    </>;
+    return (
+      <>
+        <Typography variant="h3">{ selectedResource.id }</Typography>
+        <ResourceEditor
+          resource={ selectedResource }
+          onUpdate={ this.onUpdateResource }
+        />
+      </>
+    );
   }
 
   /**
@@ -343,7 +346,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!eventTriggers) {
       return null;
     }
-    
+
     const selectedEventTrigger = eventTriggers.length > selectedEventTriggerIndex ? eventTriggers[selectedEventTriggerIndex] : undefined;
     if (!selectedEventTrigger) {
       return null;
@@ -366,7 +369,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Get breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = (): BreadcrumbData[] => {
@@ -390,7 +393,7 @@ export class TimelineScreen extends React.Component<Props, State> {
         name: contentVersion?.name || "",
         url: `/v4/exhibitions/${exhibitionId}/floors/${floorId}/rooms/${roomId}/contentVersions/${contentVersionId}`
       },
-      { 
+      {
         name: groupContentVersion?.name || ""
       }
     ];
@@ -490,9 +493,9 @@ export class TimelineScreen extends React.Component<Props, State> {
             label: page.name,
             onSelect: () => this.onPageClick(device.id!, page.id!),
             nodes: []
-          }
+          };
         })
-      }
+      };
     });
 
     return treeData;
@@ -500,7 +503,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Applies changes from code editor to page object
-   * 
+   *
    * @param json changed json
    */
   private applyCodeEditorChanges = (json: string) => {
@@ -514,7 +517,7 @@ export class TimelineScreen extends React.Component<Props, State> {
         if (parsedCode.resources) {
           draft.selectedPage.resources = parsedCode.resources;
         }
-        
+
         if (parsedCode.eventTriggers) {
           draft.selectedPage.eventTriggers = parsedCode.eventTriggers;
         }
@@ -524,7 +527,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Parses exhibition page json to object
-   * 
+   *
    * @param json page json
    */
   private parseCode = (json: string) => {
@@ -577,7 +580,7 @@ export class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for device click
-   * 
+   *
    * @param deviceId selected device id
    */
   private onDeviceClick = (deviceId: string) => {
@@ -589,10 +592,10 @@ export class TimelineScreen extends React.Component<Props, State> {
       selectedEventTriggerIndex: undefined
     });
   }
-  
+
   /**
    * Event handler for page click
-   * 
+   *
    * @param deviceId selected device id
    * @param pageId selected page id
    */
@@ -631,7 +634,7 @@ export class TimelineScreen extends React.Component<Props, State> {
    *
    * @param selectedEventTriggerIndex event trigger index of selected node
    */
-  private onEventTriggerNodeClick = (selectedEventTriggerIndex: number) => 
+  private onEventTriggerNodeClick = (selectedEventTriggerIndex: number) =>
     this.setState({ selectedEventTriggerIndex, selectedResourceIndex: undefined })
 
   /**
@@ -639,9 +642,7 @@ export class TimelineScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-
+  private onUpdateResource = (resource: ExhibitionPageResource) => {
     this.setState(
       produce((draft: State) => {
         const { selectedResourceIndex } = draft;
@@ -651,14 +652,14 @@ export class TimelineScreen extends React.Component<Props, State> {
           return;
         }
 
-        draft.selectedPage.resources[selectedResourceIndex].data = value;
+        draft.selectedPage.resources[selectedResourceIndex] = resource;
       })
     );
   }
 
   /**
    * Event handler for device change
-   * 
+   *
    * @param event event
    */
   private onDeviceDataChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
@@ -671,7 +672,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
 
-        draft.selectedDevice = { 
+        draft.selectedDevice = {
           ...draft.selectedDevice!,
           [name]: value !== strings.generic.undefined ? value : undefined
         };
@@ -700,13 +701,13 @@ export class TimelineScreen extends React.Component<Props, State> {
     } else if (transitionType === "exit") {
       produce((draft: State) => {
         draft.selectedPage!.exitTransitions = transitions;
-      })
+      });
     }
   }
 
   /**
    * Updates event trigger
-   * 
+   *
    * @param eventTrigger event trigger
    */
   private updateEventTrigger = (eventTrigger: ExhibitionPageEventTrigger) => {
@@ -714,7 +715,7 @@ export class TimelineScreen extends React.Component<Props, State> {
       produce((draft: State) => {
         const { selectedEventTriggerIndex } = draft;
         if (selectedEventTriggerIndex === undefined ||
-          !draft.selectedPage || 
+          !draft.selectedPage ||
           draft.selectedPage.eventTriggers.length < selectedEventTriggerIndex) {
           return;
         }
@@ -819,7 +820,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedDevice) {
       return;
     }
-    
+
     const layoutId = layouts && layouts.length ? layouts[0].id : null;
     const deviceId = selectedDevice.id;
     const resources = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
@@ -852,9 +853,9 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (!selectedPage) {
       return;
     }
-    
+
     /**
-     * FIXME:
+     * TODO:
      * Add cleaner confirm dialog
      */
     if (!window.confirm(strings.exhibition.confirmDeletePage)) {
@@ -942,7 +943,7 @@ export class TimelineScreen extends React.Component<Props, State> {
     }
   }
 
-    /**
+  /**
    * Event handler for page delete
    * 
    * @param page page to delete

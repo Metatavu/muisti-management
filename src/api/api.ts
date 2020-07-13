@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -104,6 +104,15 @@ export default class Api {
    */
   public static getExhibitionPagesApi(accessToken: AccessToken) {
     return new ExhibitionPagesApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized stored files api
+   *
+   * @param token access token
+   */
+  public static getStoredFilesApi(accessToken: AccessToken) {
+    return new StoredFilesApi(Api.getConfiguration(accessToken));
   }
 
   /**
