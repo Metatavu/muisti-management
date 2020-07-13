@@ -383,15 +383,15 @@ export class TimelineScreen extends React.Component<Props, State> {
       },
       {
         name: exhibition.name,
-        url: `/v4/exhibitions/${exhibitionId}`
+        url: `/v4/exhibitions/${exhibitionId}/content`
       },
       {
         name: room?.name || "",
-        url: `/v4/exhibitions/${exhibitionId}/floors/${floorId}/rooms/${roomId}`
+        url: `/v4/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}`
       },
       {
         name: contentVersion?.name || "",
-        url: `/v4/exhibitions/${exhibitionId}/floors/${floorId}/rooms/${roomId}/contentVersions/${contentVersionId}`
+        url: `/v4/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}/contentVersions/${contentVersionId}`
       },
       {
         name: groupContentVersion?.name || ""
