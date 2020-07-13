@@ -17,6 +17,7 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
  */
 interface Props extends WithStyles<typeof styles> {
   treeData: TreeNodeInArray[];
+  focusKey?: string;
 }
 
 /**
@@ -32,7 +33,7 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -46,12 +47,13 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, treeData } = this.props;
-    
+    const { classes, treeData, focusKey } = this.props;
+
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeData }
+          focusKey={ focusKey ? focusKey : "" }
           onClickItem={({ key, label, ...props }) => {
             props.onSelect(props.parents, props.element);
           }}
