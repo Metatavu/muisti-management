@@ -66,18 +66,25 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    * Renders wrapper component
    */
   private renderWrapper = () => {
-    if (!this.state.containerHeight || !this.state.containerWidth) {
+    const { containerHeight, containerWidth } = this.state;
+    const { defaultPositionX, defaultPositionY, minScale } = this.props;
+
+    if (!containerHeight || !containerWidth) {
       return null;
     }
 
     const options = {
-      minScale: this.props.minScale || 1,
+      minScale: minScale || 1,
       limitToBounds: false
     };
 
     return (
-      // tslint:disable-next-line: max-line-length
-      <TransformWrapper options={ options } defaultScale={ this.getDefaultScale() } defaultPositionX={ this.props.defaultPositionX } defaultPositionY={ this.props.defaultPositionY }>
+      <TransformWrapper
+        options={ options }
+        defaultScale={ this.getDefaultScale() }
+        defaultPositionX={ defaultPositionX }
+        defaultPositionY={ defaultPositionY }
+      >
         { (opts: any ) => this.renderContents(opts) }
       </TransformWrapper>
     );
