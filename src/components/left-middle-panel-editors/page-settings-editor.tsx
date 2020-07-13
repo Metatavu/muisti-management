@@ -98,6 +98,7 @@ class PageSettingsEditor extends React.Component<Props, State> {
       const label = slugify(`${resource.id}`);
       return (
         <TreeItem
+          key={ `resource-${index}` }
           nodeId={ `resource-${index}` }
           label={ label }
           onClick={ () => onResourceClick(index) }

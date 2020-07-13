@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Measure, { ContentRect } from 'react-measure'
+import Measure, { ContentRect } from 'react-measure';
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
@@ -34,7 +34,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -68,7 +68,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
     if (src) {
       return (
-        <video style={ videoStyles } autoPlay={ true }>
+        <video key={ src } style={ videoStyles } autoPlay={ true }>
           <source src={ src } />
         </video>
       );
@@ -79,7 +79,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
   /**
    * Returns video src from resources or null if not found
-   * 
+   *
    * @returns video src from resources or null if not found
    */
   private getVideoSrc = () => {
@@ -98,7 +98,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -108,7 +108,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
   /**
    * Resolves video styles
-   * 
+   *
    * @returns video styles
    */
   private resolveVideoViewStyles = (): CSSProperties => {
@@ -116,19 +116,19 @@ class PagePreviewVideoView extends React.Component<Props, State> {
       width: "100%",
       height: "100%"
     };
-    
+
     return result;
   }
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      
+
     });
 
     properties.forEach(property => {
@@ -139,7 +139,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
       switch (property.name) {
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
 

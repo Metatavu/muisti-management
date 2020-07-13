@@ -18,7 +18,7 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
@@ -139,7 +139,7 @@ export class LayoutScreen extends React.Component<Props, State> {
       <BasicLayout
         history={ history }
         title={ layout.name }
-        breadcrumbs={ this.getBreadcrumbsData() }
+        breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
@@ -315,22 +315,9 @@ export class LayoutScreen extends React.Component<Props, State> {
             scale={ scale }
             screenOrientation={ screenOrientation }
           />
-        </PanZoom>        
+        </PanZoom>
       </div>
     );
-  }
-
-  /**
-   * Get breadcrumbs data
-   * 
-   * @returns breadcrumbs data as array
-   */
-  private getBreadcrumbsData = (): BreadcrumbData[] => {
-    const { layout } = this.props;
-    return [
-      { name: strings.layout.title, url: "/v4/layouts" },
-      { name: layout?.name || "" }
-    ];
   }
 
   /**

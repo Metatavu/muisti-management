@@ -7,14 +7,18 @@ import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import MediaLibrary from "./media-library";
+import produce from "immer";
+import { AccessToken, MediaType } from "../../types";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  accessToken: AccessToken;
   resource: ExhibitionPageResource;
   layouts: PageLayout[];
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onUpdate: (resource: ExhibitionPageResource) => void;
 }
 
 /**
@@ -30,7 +34,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -44,22 +48,24 @@ class ResourceEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, resource, onChange } = this.props;
+    const { classes, resource, accessToken } = this.props;
 
-    const title = <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>{ strings.exhibition.properties.title }</Typography>
+    const title = (
+      <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>
+        { strings.exhibition.properties.title }
+      </Typography>
+    );
+
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
         return (
           <>
             { title }
-            <TextField
-              type="url"
-              className={ classes.textResourceEditor } 
-              label={ strings.exhibition.resources.imageView.properties.imageUrl }
-              variant="filled"
-              name="data"
-              value={ resource.data }
-              onChange={ onChange }
+            <MediaLibrary
+              accessToken={ accessToken }
+              mediaType={ MediaType.IMAGE }
+              currentUrl={ resource.data }
+              onUrlChange={ this.updateResource }
             />
           </>
         );
@@ -67,14 +73,11 @@ class ResourceEditor extends React.Component<Props, State> {
         return (
           <>
             { title }
-            <TextField
-              type="url"
-              className={ classes.textResourceEditor } 
-              label={ strings.exhibition.resources.mediaView.properties.imageOrVideoUrl }
-              variant="filled"
-              name="data"
-              value={ resource.data }
-              onChange={ onChange }
+            <MediaLibrary
+              accessToken={ accessToken }
+              mediaType={ MediaType.VIDEO }
+              currentUrl={ resource.data }
+              onUrlChange={ this.updateResource }
             />
           </>
         );
@@ -84,17 +87,40 @@ class ResourceEditor extends React.Component<Props, State> {
             { title }
             <TextField
               multiline
-              className={ classes.textResourceEditor } 
+              className={ classes.textResourceEditor }
               label={ strings.exhibition.resources.textView.properties.text }
               variant="filled"
               name="data"
               value={ resource.data }
-              onChange={ onChange }
+              onChange={ this.onResourceDataChange }
             />
           </>
         );
       default: return <div>{ title }</div>;
     }
+  }
+
+  /**
+   * Event handler for resource data change
+   *
+   * @param event event
+   */
+  private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.updateResource(event.target.value);
+  }
+
+  /**
+   * Event handler for media change
+   *
+   * @param value value as string
+   */
+  private updateResource = (value: string) => {
+    const { resource } = this.props;
+    this.props.onUpdate(
+      produce(resource, draft => {
+        draft.data = value;
+      })
+    );
   }
 }
 
@@ -105,7 +131,8 @@ class ResourceEditor extends React.Component<Props, State> {
  */
 function mapStateToProps(state: ReduxState) {
   return {
-    layouts: state.layouts.layouts
+    layouts: state.layouts.layouts,
+    accessToken: state.auth.accessToken as AccessToken
   };
 }
 
