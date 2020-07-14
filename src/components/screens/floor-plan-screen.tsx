@@ -17,7 +17,7 @@ import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, BreadcrumbData, ActionButton } from "../../types";
+import { AccessToken, ActionButton } from "../../types";
 import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
 import FloorPlanCrop from "../floor-plan/floor-plan-crop";

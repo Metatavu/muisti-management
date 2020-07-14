@@ -1,7 +1,7 @@
 import * as React from "react";
 import strings from "../../localization/strings";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button, CircularProgress } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button } from "@material-ui/core";
 import styles from "../../styles/components/right-panel-editors/media-library";
 import theme from "../../styles/theme";
 
