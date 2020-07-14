@@ -23,6 +23,7 @@ import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
 import { DeviceModelData, DeviceModelDisplayMetricsData, DeviceModelDimensionsData } from "../../types/device-model-string-data";
 import { isTypeOfDeviceModelDimensionsData, isTypeOfDeviceModelDisplayMetricsData, isTypeOfDeviceModelCapabilitiesData } from "../../types/type-guards";
+import produce, { Draft } from "immer";
 
 /**
  * Component props
@@ -92,7 +93,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       <BasicLayout
         keycloak={ keycloak }
         history={ history }
-        title={ strings.dashboard.devices.title }
+        title={ strings.device.title }
         breadcrumbs={ [] }
         actionBarButtons={ actionBarButtons }
         noBackButton
@@ -137,8 +138,8 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       return (
         <ConfirmDialog
           open={ this.state.deleteDialogOpen }
-          title={ strings.dashboard.devices.dialog.deleteDeviceTitle }
-          text={ strings.dashboard.devices.dialog.deleteDeviceText }
+          title={ strings.device.dialog.deleteDeviceTitle }
+          text={ strings.device.dialog.deleteDeviceText }
           onClose={ this.onDeleteDialogClose }
           onCancel={ this.onDeleteDialogClose }
           onConfirm={ () => this.onDeleteDeviceClick(selectedDeviceModel) }
@@ -153,13 +154,9 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    * Renders device model modification dialog
    */
   private renderModifyDeviceDialog = () => {
-    const { selectedDeviceModel, newDevice, deviceDialogOpen, deviceData, formError } = this.state;
-    const typeOptions = [
-      { name: strings.deviceTypes.screen, value: "SCREEN" },
-      { name: strings.deviceTypes.projector, value: "PROJECTOR" },
-    ];
+    const { newDevice, deviceDialogOpen, deviceData, formError } = this.state;
 
-    if (!deviceData || !selectedDeviceModel) {
+    if (!deviceData) {
       return;
     }
 
@@ -167,21 +164,49 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       <GenericDialog
         open={ deviceDialogOpen }
         error={ formError }
-        title={ newDevice ? `${strings.dashboard.devices.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
+        title={ newDevice ? `${strings.device.newDevice}` : deviceData ? `${deviceData.manufacturer} ${deviceData.model}` : "" }
         onClose={ this.onDeviceDialogClose }
         onCancel={ this.onDeviceDialogClose }
         onConfirm={ this.onSaveDeviceClick }
         positiveButtonText={ strings.editorDialog.save }
         cancelButtonText={ strings.editorDialog.cancel }
       >
-        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.dashboard.devices.dialog.dimensions.physicalSize }</Typography>
+        { this.renderDeviceDialogContent() }
+      </GenericDialog>
+    );
+  }
+
+  /**
+   * Render device dialog content
+   */
+  private renderDeviceDialogContent = () => {
+    const { selectedDeviceModel, deviceData } = this.state;
+
+    const typeOptions = [
+      { name: strings.deviceTypes.screen, value: "SCREEN" },
+      { name: strings.deviceTypes.projector, value: "PROJECTOR" },
+    ];
+
+    const orientationOptions = [
+      { name: strings.device.dialog.portrait, value: ScreenOrientation.Portrait },
+      { name: strings.device.dialog.landscape, value: ScreenOrientation.Landscape },
+    ];
+
+
+    if (!deviceData || !selectedDeviceModel) {
+      return;
+    }
+
+    return (
+      <>
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.device.dialog.dimensions.physicalSize }</Typography>
         <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
           <Grid item xs={ 4 }>
             <TextField
               error={ this.fieldIsInvalid(selectedDeviceModel.dimensions.deviceWidth, deviceData.dimensions.deviceWidth) }
               fullWidth
               type="width"
-              label={ strings.dashboard.devices.dialog.dimensions.width }
+              label={ strings.device.dialog.dimensions.width }
               InputProps={{
                 endAdornment: <InputAdornment position="end">mm</InputAdornment>
               }}
@@ -196,7 +221,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
               error={ this.fieldIsInvalid(selectedDeviceModel.dimensions.deviceHeight, deviceData.dimensions.deviceHeight) }
               fullWidth
               type="height"
-              label={ strings.dashboard.devices.dialog.dimensions.height }
+              label={ strings.device.dialog.dimensions.height }
               InputProps={{
                 endAdornment: <InputAdornment position="end">mm</InputAdornment>
               }}
@@ -211,7 +236,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
               error={ this.fieldIsInvalid(selectedDeviceModel.dimensions.deviceDepth, deviceData.dimensions.deviceDepth) }
               fullWidth
               type="depth"
-              label={ strings.dashboard.devices.dialog.dimensions.depth }
+              label={ strings.device.dialog.dimensions.depth }
               InputProps={{
                 endAdornment: <InputAdornment position="end">mm</InputAdornment>
               }}
@@ -223,15 +248,16 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
           </Grid>
         </Grid>
 
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.displayMetrics.displayInfo }</Typography>
+        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.device.dialog.displayMetrics.displayInfo }</Typography>
         {
           this.renderDisplayMetricOptions()
         }
+
         <TextField
           style={{ marginTop: theme.spacing(4) }}
           fullWidth
           type="manufacturer"
-          label={ strings.dashboard.devices.dialog.brand }
+          label={ strings.device.dialog.brand }
           variant="filled"
           name="manufacturer"
           value={ deviceData ? deviceData.manufacturer : "" }
@@ -241,23 +267,41 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
           style={{ marginTop: theme.spacing(3) }}
           fullWidth
           type="model"
-          label={ strings.dashboard.devices.dialog.model }
+          label={ strings.device.dialog.model }
           variant="filled"
           name="model"
           value={ deviceData ? deviceData.model : "" }
           onChange={ this.onDeviceInfoChange }
         />
-        <Typography style={{ marginTop: theme.spacing(1) }} variant="h6">{ strings.dashboard.devices.dialog.type }</Typography>
+
+        <Typography style={{ marginTop: theme.spacing(1) }} variant="h6">{ strings.device.dialog.type }</Typography>
         <Select
           variant="filled"
           fullWidth
           IconComponent={ props => (
-            <ArrowDownIcon { ...props } className={`material-icons ${ props.className }`}/>
+            <ArrowDownIcon { ...props } className={ `material-icons ${ props.className }` }/>
           )}
           id="select-filtering"
           defaultValue="SCREEN"
         >
           { typeOptions.map(option =>
+            <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
+          )}
+        </Select>
+
+        <Typography style={{ marginTop: theme.spacing(1) }} variant="h6">{ strings.device.dialog.defaultOrientation }</Typography>
+        <Select
+          variant="filled"
+          fullWidth
+          IconComponent={ props => (
+            <ArrowDownIcon { ...props } className={ `material-icons ${ props.className }` }/>
+          )}
+          id="select-filtering"
+          name="screenOrientation"
+          value={ selectedDeviceModel.screenOrientation }
+          onChange={ this.onDeviceInfoSelectChange }
+        >
+          { orientationOptions.map(option =>
             <MenuItem value={ option.value } key={ option.value }>{ option.name }</MenuItem>
           )}
         </Select>
@@ -272,9 +316,9 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
               inputProps={{ 'aria-label': 'primary checkbox' }}
               />
             }
-          label={ strings.dashboard.devices.dialog.touchscreen }
+          label={ strings.device.dialog.touchscreen }
         />
-      </GenericDialog>
+      </>
     );
   }
 
@@ -295,7 +339,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             error={ this.fieldIsInvalid(selectedDeviceModel.dimensions.screenWidth, deviceData.dimensions.screenWidth) }
             fullWidth
             type="screenWidth"
-            label={ strings.dashboard.devices.dialog.dimensions.screenWidth }
+            label={ strings.device.dialog.dimensions.screenWidth }
             InputProps={{
               endAdornment: <InputAdornment position="end">mm</InputAdornment>
             }}
@@ -310,7 +354,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             error={ this.fieldIsInvalid(selectedDeviceModel.dimensions.screenHeight, deviceData.dimensions.screenHeight) }
             fullWidth
             type="screenHeight"
-            label={ strings.dashboard.devices.dialog.dimensions.screenHeight }
+            label={ strings.device.dialog.dimensions.screenHeight }
             InputProps={{
               endAdornment: <InputAdornment position="end">mm</InputAdornment>
             }}
@@ -325,7 +369,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             error={ this.fieldIsInvalid(selectedDeviceModel.displayMetrics.widthPixels, deviceData.displayMetrics.widthPixels) }
             fullWidth
             type="widthPixels"
-            label={ strings.dashboard.devices.dialog.displayMetrics.widthPixels }
+            label={ strings.device.dialog.displayMetrics.widthPixels }
             InputProps={{
               endAdornment: <InputAdornment position="end">px</InputAdornment>
             }}
@@ -340,7 +384,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             error={ this.fieldIsInvalid(selectedDeviceModel.displayMetrics.heightPixels, deviceData.displayMetrics.heightPixels) }
             fullWidth
             type="heightPixels"
-            label={ strings.dashboard.devices.dialog.displayMetrics.heightPixels }
+            label={ strings.device.dialog.displayMetrics.heightPixels }
             InputProps={{
               endAdornment: <InputAdornment position="end">px</InputAdornment>
             }}
@@ -367,7 +411,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
   /**
    * Creates new device model with default values
-   * 
+   *
    * @param deviceModel device model
    */
   private createNewDevice = async (deviceModel: DeviceModel) => {
@@ -411,7 +455,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    */
   private getCardMenuOptions = (deviceModel: DeviceModel): ActionButton[] => {
     return [
-      { name: strings.dashboard.devices.dialog.deleteDeviceTitle, action: () => this.onDeleteDialogOpen(deviceModel) }
+      { name: strings.device.dialog.deleteDeviceTitle, action: () => this.onDeleteDialogOpen(deviceModel) }
     ];
   }
 
@@ -422,7 +466,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    */
   private getActionButtons = () => {
     return [
-      { name: strings.dashboard.devices.newDevice, action: this.onAddDeviceClick }
+      { name: strings.device.newDevice, action: this.onAddDeviceClick }
     ] as ActionButton[];
   }
 
@@ -481,6 +525,32 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * On device select info change handler
+   *
+   * @param event react change event
+   */
+  private onDeviceInfoSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any; }>) => {
+    const { selectedDeviceModel } = this.state;
+    if (!selectedDeviceModel) {
+      return;
+    }
+
+    const key = event.target.name;
+    const value = event.target.value;
+
+    if (!key) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        draft.selectedDeviceModel = { ...selectedDeviceModel, [key]: value };
+      })
+    );
+
+  }
+
+  /**
    * Adds new device model to state handler. Note: this just creates new device to state.
    * Saving to API is done in createNewDevice
    */
@@ -511,7 +581,8 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       dimensions: newDeviceDimensions,
       displayMetrics: newDeviceDisplayMetrics,
       manufacturer: "Company",
-      model: "Model"
+      model: "Model",
+      screenOrientation: ScreenOrientation.Portrait
     };
 
     this.setState({
@@ -732,12 +803,6 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
   private assignDeviceDataToDevice = (deviceData: DeviceModelData, device: DeviceModel, modify: boolean): DeviceModel => {
     const { displayMetrics, dimensions, manufacturer, model, capabilities } = deviceData;
 
-    /**
-     * FIXME:
-     * Remove when possible device measurements flipping is saved to API
-     */
-    const landscapeDevice = modify ? false : displayMetrics.widthPixels > displayMetrics.heightPixels;
-
     const deviceDimensions: DeviceModelDimensions = {
       deviceWidth: Number(dimensions.deviceWidth),
       deviceHeight: Number(dimensions.deviceHeight),
@@ -747,10 +812,10 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     };
     const deviceDisplayMetrics: DeviceModelDisplayMetrics = {
       density: Number(displayMetrics.density),
-      widthPixels: Number(landscapeDevice ? displayMetrics.heightPixels : displayMetrics.widthPixels),
-      heightPixels: Number(landscapeDevice ? displayMetrics.widthPixels : displayMetrics.heightPixels),
-      xdpi: Number(landscapeDevice ? displayMetrics.ydpi : displayMetrics.xdpi),
-      ydpi: Number(landscapeDevice ? displayMetrics.xdpi : displayMetrics.ydpi)
+      widthPixels: Number(displayMetrics.widthPixels),
+      heightPixels: Number(displayMetrics.heightPixels),
+      xdpi: Number(displayMetrics.xdpi),
+      ydpi: Number(displayMetrics.ydpi)
     };
 
     return {

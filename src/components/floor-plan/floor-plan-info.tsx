@@ -157,7 +157,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
           </InputLabel>
           <Select
             { ...selectFieldGenericProps }
-            label={ strings.dashboard.devices.dialog.model }
+            label={ strings.device.dialog.model }
             name="modelId"
             value={ selectedDevice.modelId || "" }
             onChange={ onChangeDeviceProperties }

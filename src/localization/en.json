@@ -154,35 +154,6 @@
     "users": {
       "title": "Users"
     },
-    "devices": {
-      "title": "Devices",
-      "capabilities": "Capabilities",
-      "newDevice": "New device",
-      "dialog": {
-        "deleteDeviceTitle": "Delete device",
-        "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
-        "brand": "Brand",
-        "model": "Model",
-        "displayMetrics": {
-          "displayInfo": "Screen info",
-          "widthPixels": "Screen pixel width",
-          "heightPixels": "Screen pixel height"
-        },
-        "dimensions" : {
-          "physicalSize": "Device physical size",
-          "width": "Width",
-          "height": "Height",
-          "depth": "Depth",
-          "screenWidth": "Screen physical width",
-          "screenHeight": "Screen physical height"
-        },
-        "type": "Type",
-        "orientation": "Orientation",
-        "landscape": "Landscape",
-        "portrait": "Portrait",
-        "touchscreen": "Touchscreen"
-      }
-    },
     "layouts": {
       "title": "Layouts",
       "lastModified": "Last modified"
@@ -369,6 +340,37 @@
     },
     "hasChildElements": "Selected element has child elements. Cannot delete!",
     "brokenData": "Map got invalid data and cannot be instantiated and all controls are disabled!"
+  },
+
+  "device": {
+    "title": "Devices",
+    "capabilities": "Capabilities",
+    "newDevice": "New device",
+    "dialog": {
+      "deleteDeviceTitle": "Delete device",
+      "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
+      "brand": "Brand",
+      "model": "Model",
+      "displayMetrics": {
+        "displayInfo": "Screen info",
+        "widthPixels": "Screen pixel width",
+        "heightPixels": "Screen pixel height"
+      },
+      "dimensions" : {
+        "physicalSize": "Device physical size",
+        "width": "Width",
+        "height": "Height",
+        "depth": "Depth",
+        "screenWidth": "Screen physical width",
+        "screenHeight": "Screen physical height"
+      },
+      "type": "Type",
+      "orientation": "Orientation",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "defaultOrientation": "Default orientation",
+      "touchscreen": "Touchscreen"
+    }
   },
 
   "sorting": {
