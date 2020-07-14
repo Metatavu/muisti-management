@@ -167,7 +167,7 @@ class LayoutsScreen extends React.Component<Props, State> {
           fullWidth
           variant="filled"
           style={{ marginTop: theme.spacing(2) }}
-          label={ strings.dashboard.devices.dialog.model }
+          label={ strings.device.dialog.model }
           name="modelId"
           value={ newLayout.modelId || "" }
           onChange={ this.onNewLayoutChange }

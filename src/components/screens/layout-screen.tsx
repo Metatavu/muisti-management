@@ -306,6 +306,10 @@ export class LayoutScreen extends React.Component<Props, State> {
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
     const scale = 1;
 
+    if (!deviceModel) {
+      return;
+    }
+
     return (
       <div className={ classes.editors }>
         <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
@@ -314,6 +318,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             displayMetrics={ displayMetrics }
             scale={ scale }
             screenOrientation={ screenOrientation }
+            deviceOrientation={ deviceModel.screenOrientation}
           />
         </PanZoom>
       </div>
@@ -396,7 +401,7 @@ export class LayoutScreen extends React.Component<Props, State> {
   private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
     const type = layoutView.widget;
-    
+
     return {
       key: layoutView.id,
       path: path,
@@ -544,7 +549,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view delete
-   * 
+   *
    * @param path path in tree structure
    */
   private onLayoutViewDelete = async (path: string) => {

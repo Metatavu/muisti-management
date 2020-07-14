@@ -155,32 +155,6 @@ export interface IStrings extends LocalizedStringsMethods {
     users: {
       title: string;
     };
-    devices: {
-      title: string;
-      capabilities: string;
-      newDevice: string;
-      dialog: {
-        deleteDeviceTitle: string;
-        deleteDeviceText: string;
-        brand: string;
-        model: string;
-        displayMetrics: {
-          displayInfo: string;
-          widthPixels: string;
-          heightPixels: string;
-        };
-        dimensions: {
-          physicalSize: string;
-          width: string;
-          height: string;
-          depth: string;
-          screenWidth: string;
-          screenHeight: string;
-        };
-        touchscreen: string;
-        type: string;
-      };
-    };
     layouts: {
       title: string;
       lastModified: string;
@@ -366,6 +340,37 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     hasChildElements: string;
     brokenData: string;
+  };
+
+  device: {
+    title: string;
+    capabilities: string;
+    newDevice: string;
+    dialog: {
+      deleteDeviceTitle: string;
+      deleteDeviceText: string;
+      brand: string;
+      model: string;
+      displayMetrics: {
+        displayInfo: string;
+        widthPixels: string;
+        heightPixels: string;
+      };
+      dimensions: {
+        physicalSize: string;
+        width: string;
+        height: string;
+        depth: string;
+        screenWidth: string;
+        screenHeight: string;
+      };
+      type: string;
+      orientation: string;
+      defaultOrientation: string;
+      landscape: string;
+      portrait: string;
+      touchscreen: string;
+    };
   };
 
   deviceTypes: {

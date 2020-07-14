@@ -154,35 +154,6 @@
     "users": {
       "title": "Käyttäjät"
     },
-    "devices": {
-      "deleteDeviceTitle": "Poista laite",
-      "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
-      "title": "Laitteet",
-      "capabilities": "Ominaisuudet",
-      "newDevice": "Uusi laite",
-      "dialog": {
-        "brand": "Merkki",
-        "model": "Malli",
-        "displayMetrics": {
-          "displayInfo": "Näytön tiedot",
-          "widthPixels": "Ruudun pikselileveys",
-          "heightPixels": "Ruudun pikselikorkeus"
-        },
-        "dimensions" : {
-          "physicalSize": "Laitteen fyysinen koko",
-          "width": "Leveys",
-          "height": "Korkeus",
-          "depth": "Syvyys",
-          "screenWidth": "Ruudun fyysinen leveys",
-          "screenHeight": "Ruudun fyysinen korkeus"
-        },
-        "type": "Tyyppi",
-        "orientation": "Orientation",
-        "landscape": "Landscape",
-        "portrait": "Portrait",
-        "touchscreen": "Kosketusnäyttö"
-      }
-    },
     "layouts": {
       "title": "Asettelut",
       "lastModified": "Viimeksi muokattu"
@@ -368,6 +339,37 @@
     
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
     "brokenData": "Kartan saamat tiedot ovat viallisia eikä karttaa voida luoda!"
+  },
+
+  "device": {
+    "deleteDeviceTitle": "Poista laite",
+    "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
+    "title": "Laitteet",
+    "capabilities": "Ominaisuudet",
+    "newDevice": "Uusi laite",
+    "dialog": {
+      "brand": "Merkki",
+      "model": "Malli",
+      "displayMetrics": {
+        "displayInfo": "Näytön tiedot",
+        "widthPixels": "Ruudun pikselileveys",
+        "heightPixels": "Ruudun pikselikorkeus"
+      },
+      "dimensions" : {
+        "physicalSize": "Laitteen fyysinen koko",
+        "width": "Leveys",
+        "height": "Korkeus",
+        "depth": "Syvyys",
+        "screenWidth": "Ruudun fyysinen leveys",
+        "screenHeight": "Ruudun fyysinen korkeus"
+      },
+      "type": "Tyyppi",
+      "orientation": "Orientation",
+      "defaultOrientation": "Oletus orientaatio",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "touchscreen": "Kosketusnäyttö"
+    }
   },
 
   "sorting": {
