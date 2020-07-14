@@ -10,7 +10,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ContentVersion } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, ExhibitionRoom, ContentVersion } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -18,10 +18,6 @@ import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
 import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
-import FloorPlanCrop from "./floor-plan-crop";
-import FloorPlanCropProperties from "./floor-plan-crop-properties";
-import * as cropperjs from "cropperjs";
-import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
 import FloorPlanMap from "../generic/floor-plan-map";
 
@@ -48,10 +44,6 @@ interface State {
   loading: boolean;
   name: string;
   toolbarOpen: boolean;
-  cropping: boolean;
-  cropImageDataUrl?: string;
-  cropImageData?: Blob;
-  cropImageDetails?: cropperjs.default.ImageData;
 
   exhibition?: Exhibition;
   exhibitionFloor?: ExhibitionFloor;
@@ -76,7 +68,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       loading: false,
       name: "",
       toolbarOpen: true,
-      cropping: false,
       breadCrumbs: []
     };
   }
@@ -135,7 +126,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
           <ElementSettingsPane open={ true } width={ 320 } title={ strings.floorPlan.properties.title }>
-            { this.renderProperties() }
           </ElementSettingsPane>
         </div>
 
@@ -149,15 +139,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   private renderEditor = () => {
     const { exhibitionFloor, room } = this.state;
     const { exhibitionId, readOnly } = this.props;
-    if (this.state.cropping && this.state.cropImageDataUrl) {
-      return (
-        <FloorPlanCrop
-          imageDataUrl={ this.state.cropImageDataUrl }
-          onDetailsUpdate={ this.onCropDetailsUpdate }
-          onDataUpdate={ this.onCropDataUpdate }
-        />
-      );
-    }
 
     if (exhibitionFloor && exhibitionFloor.floorPlanUrl && exhibitionFloor.floorPlanBounds) {
       const floorBounds = exhibitionFloor.floorPlanBounds;
@@ -189,23 +170,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         />
       );
     }
-    return null;
-  }
-
-  /**
-   * Renders properties
-   */
-  private renderProperties = () => {
-    if (this.state.cropping && this.state.cropImageDataUrl) {
-      return <FloorPlanCropProperties
-        imageHeight={ this.state.cropImageDetails?.height }
-        imageWidth={ this.state.cropImageDetails?.width }
-        naturalWidth={ this.state.cropImageDetails?.naturalWidth }
-        naturalHeight={ this.state.cropImageDetails?.naturalHeight }
-        onCropPropertyChange={ this.onCropPropertyChange }
-      />;
-    }
-
     return null;
   }
 
@@ -267,138 +231,13 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Updates floor's floor plan image
-   *
-   * @param data image data
-   */
-  private updateFloorPlan = async (data: Blob) => {
-    const exhibitionFloor = this.state.exhibitionFloor;
-    if (!exhibitionFloor || !exhibitionFloor.id || !exhibitionFloor.exhibitionId) {
-      return;
-    }
-    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(this.props.accessToken);
-    const uploadedFile = await FileUpload.uploadFile(data, `/floorplans/${exhibitionFloor.exhibitionId}`);
-
-    const floorPlanToUpdate = { ...exhibitionFloor,
-      floorPlanUrl: uploadedFile.uri,
-      floorPlanBounds : this.getBounds()
-    };
-
-    await exhibitionFloorsApi.updateExhibitionFloor({
-      floorId: exhibitionFloor.id,
-      exhibitionId: exhibitionFloor.exhibitionId,
-      exhibitionFloor: floorPlanToUpdate
-    });
-  }
-
-  /**
-   * Event handler for crop details update
-   *
-   * @param details details
-   */
-  private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
-    this.setState({
-      cropImageDetails: details
-    });
-  }
-
-  /**
-   * Event handler for crop data update
-   *
-   * @param data
-   */
-  private onCropDataUpdate = (data: Blob) => {
-    this.setState({
-      cropImageData: data,
-    });
-  }
-
-  /**
-   * Event handler for property data change
-   */
-  private onCropPropertyChange = (key: string, value: number) => {
-    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value };
-    this.setState({
-      cropImageDetails : updatedDetails
-    });
-  }
-
-  /**
-   * Get bounds from cropImageDetails
-   */
-  private getBounds = (): Bounds | undefined => {
-    const { cropImageDetails } = this.state;
-
-    if (!cropImageDetails) {
-      return;
-    }
-
-    const swCorner: Coordinates = {
-      latitude: 0.0,
-      longitude: 0.0
-    };
-
-    const neCorner: Coordinates = {
-      latitude: cropImageDetails.naturalWidth,
-      longitude: cropImageDetails.naturalHeight
-    };
-
-    const floorBounds: Bounds = {
-      northEastCorner : neCorner,
-      southWestCorner : swCorner
-    };
-
-    return floorBounds;
-  }
-
-  /**
-   * Event handler for upload save click
-   *
-   * @param files files
-   * @param key  upload key
-   */
-  private onUploadSave = (files: File[], _key?: string) => {
-    const file = files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = event => {
-        const dataUrl = event.target?.result;
-        if (dataUrl) {
-          this.setState({
-            cropImageDataUrl: dataUrl as string,
-            cropping: true
-          });
-        }
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-
-  /**
    * Gets action buttons
    *
    * @returns action buttons as array
    */
   private getActionButtons = () => {
     return [
-      { name: strings.floorPlan.toolbar.save, action: this.onSaveClick },
-      { name: strings.floorPlan.toolbar.upload, action: this.onUploadSave }
     ] as ActionButton[];
-  }
-
-  /**
-   * Event handler for save button click
-   */
-  private onSaveClick = async () => {
-    if (this.state.cropping && this.state.cropImageData) {
-      await this.updateFloorPlan(this.state.cropImageData);
-
-      this.setState({
-        cropping: false
-      });
-    }
   }
 
   /**
