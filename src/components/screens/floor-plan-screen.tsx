@@ -66,6 +66,8 @@ interface State {
   treeData: TreeNodeInArray[];
   cropping: boolean;
   cropImageDataUrl?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   cropImageData?: Blob;
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
@@ -211,12 +213,25 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { cropping, cropImageDataUrl, selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
+    const {
+      cropping,
+      cropImageDataUrl,
+      selectedFloor,
+      selectedRoom,
+      selectedDeviceGroup,
+      selectedDevice,
+      selectedAntenna,
+      selectedItemHasNodes,
+      imageHeight,
+      imageWidth
+    } = this.state;
     const { exhibitionId, deviceModels } = this.props;
 
-    if (cropping && cropImageDataUrl ) {
+    if (cropping && cropImageDataUrl && imageWidth && imageHeight) {
       return (
         <FloorPlanCrop
+          imageWidth={ imageWidth }
+          imageHeight={ imageHeight }
           imageDataUrl={ cropImageDataUrl }
           onDetailsUpdate={ this.onCropDetailsUpdate }
           onDataUpdate={ this.onCropDataUpdate }
@@ -623,15 +638,24 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onUploadSave = (files: File[], _key?: string) => {
     const file = files[0];
     if (file) {
+
       const reader = new FileReader();
 
       reader.onload = event => {
         const dataUrl = event.target?.result;
         if (dataUrl) {
-          this.setState({
-            cropImageDataUrl: dataUrl as string,
-            cropping: true
-          });
+          const image = new Image();
+          image.onload = () => {
+
+            this.setState({
+              imageWidth: image.width,
+              imageHeight: image.height,
+              cropImageDataUrl: dataUrl as string,
+              cropping: true
+            });
+
+          };
+          image.src = dataUrl as string;
         }
       };
 

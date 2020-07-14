@@ -3,12 +3,15 @@ import * as React from "react";
 import Cropper from 'react-cropper';
 import * as cropperjs from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
+import PanZoom from "../generic/pan-zoom";
 
 /**
  * Component props
  */
 interface Props {
   imageDataUrl: string;
+  imageWidth: number;
+  imageHeight: number;
   onDetailsUpdate: (details: cropperjs.default.ImageData) => void;
   onDataUpdate: (data: Blob) => void;
 }
@@ -45,22 +48,27 @@ export default class FloorPlanCrop extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+    const { imageWidth, imageHeight } = this.props;
+
     return (
       <div style={{ width: "100%" }}>
-        <Cropper
-          ref={ this.cropperRef }
-          src={ this.props.imageDataUrl }
-          style={{height: "100%", width: 'calc(100% - 320px)'}}
-          crop={ this.onCrop }
-          cropend={ this.onCropEnd }
-        />
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ imageWidth } contentHeight={ imageHeight }>
+          <Cropper
+            ref={ this.cropperRef }
+            src={ this.props.imageDataUrl }
+            style={{ height: imageHeight, width: imageWidth }}
+            crop={ this.onCrop }
+            cropend={ this.onCropEnd }
+            zoomable={ false }
+          />
+        </PanZoom>
       </div>
     );
   }
 
   /**
    * Event handler for crop component crop update
-   * 
+   *
    * @param event event
    */
   private onCrop = (event: CustomEvent<any>) => {
