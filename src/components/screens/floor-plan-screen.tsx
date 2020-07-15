@@ -180,8 +180,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.floorPlan.structure }>
             <FloorPlanTreeMenu
               treeNodes={ treeNodes }
-              firstSelected={ firstSelected }
-              focusKey={ activeKeyInTree }
+              focusKey={ activeKeyInTree || firstSelected }
             />
           </ElementNavigationPane>
           <EditorView>

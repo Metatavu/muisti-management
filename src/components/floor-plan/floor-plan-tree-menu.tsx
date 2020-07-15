@@ -8,23 +8,25 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import classNames from "classnames"
+import classNames from "classnames";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import ChevronRightIcon from '@material-ui/icons/ArrowRight';
+import { produce, Draft } from "immer";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   treeNodes: TreeNodeInArray[];
-  firstSelected?: string;
-  focusKey?: string;
+  focusKey: string;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
+  openNodes: string[];
 }
 
 /**
@@ -50,26 +52,41 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      openNodes: []
     };
+  }
+
+  /**
+   * Component did update life-cycle handler
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+    const { focusKey } = this.props;
+
+    if (prevProps.focusKey !== focusKey) {
+      console.log(focusKey);
+      this.updateOpenNodes();
+    }
   }
 
   /**
    * Component render method
    */
   public render() {
-    const { treeNodes, classes, firstSelected, focusKey } = this.props;
+    const { treeNodes, classes, focusKey } = this.props;
+    const { openNodes } = this.state;
 
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeNodes }
           onClickItem={({ key, label, ...props }) => props.onClick(props.hasNodes) }
-          initialOpenNodes={[ firstSelected || "" ]}
-          initialActiveKey={ firstSelected || "" }
-          initialFocusKey={ firstSelected || "" }
-          activeKey={ focusKey || firstSelected || "" }
-          focusKey={ focusKey || firstSelected || "" }
+          initialOpenNodes={[ focusKey || "" ]}
+          initialActiveKey={ focusKey || "" }
+          initialFocusKey={ focusKey || "" }
+          activeKey={ focusKey || "" }
+          focusKey={ focusKey || "" }
+          openNodes={ openNodes }
         >
           { ({ items, search }) => this.renderTreeMenu(items, search) }
         </TreeMenu>
@@ -109,6 +126,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * Renders tree menu item
    *
    * @param item tree menu item
+   *
    * @return menu item as ListItem
    */
   private renderTreeMenuItem = (item: TreeMenuItem) => {
@@ -124,7 +142,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
         style={{ paddingLeft: level * 20 }}
       >
         { hasNodes ?
-          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
+          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode, item) }>
             { toggleIcon(isOpen) }
           </div>
           :
@@ -156,12 +174,68 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    *
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
+   * @param item tree menu item
    */
-  private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined, item: TreeMenuItem) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { openNodes } = this.state;
+    const { key } = item;
+
     if (hasNodes && toggleNode) {
+      const isOpen = openNodes.includes(key);
+      if (isOpen) {
+        this.removeNode(key);
+      } else {
+        this.addNode(key);
+      }
       toggleNode();
     }
     event.stopPropagation();
+  }
+
+  /**
+   * Add node to open nodes
+   *
+   * @param key node key to add
+   */
+  private addNode = (key: string) => {
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { openNodes } = draft;
+        openNodes.push(key);
+      })
+    );
+  }
+
+  /**
+   * Remove node from open nodes
+   *
+   * @param key node key to remove
+   */
+  private removeNode = (key: string) => {
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { openNodes } = draft;
+        const index = openNodes.findIndex(node => node === key);
+        openNodes.splice(index, 1);
+      })
+    );
+  }
+
+  /**
+   * Add selected node from parent to open nodes
+   */
+  private updateOpenNodes = () => {
+    const { focusKey } = this.props;
+
+    this.setState(
+      produce((draft: Draft<State>) => {
+        const { openNodes } = draft;
+        console.log(openNodes.includes(focusKey));
+        if (!openNodes.includes(focusKey)) {
+          openNodes.push(focusKey);
+        }
+      })
+    );
   }
 }
 
