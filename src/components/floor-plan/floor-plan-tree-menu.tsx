@@ -64,7 +64,6 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
     const { focusKey } = this.props;
 
     if (prevProps.focusKey !== focusKey) {
-      console.log(focusKey);
       this.updateOpenNodes();
     }
   }
@@ -176,6 +175,7 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * @param toggleNode handler method for toggle node
    * @param item tree menu item
    */
+  // tslint:disable-next-line: max-line-length
   private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined, item: TreeMenuItem) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { openNodes } = this.state;
     const { key } = item;
@@ -230,7 +230,6 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
     this.setState(
       produce((draft: Draft<State>) => {
         const { openNodes } = draft;
-        console.log(openNodes.includes(focusKey));
         if (!openNodes.includes(focusKey)) {
           openNodes.push(focusKey);
         }
