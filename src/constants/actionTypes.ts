@@ -29,6 +29,12 @@ export const SET_DEVICES = "SET_DEVICES";
 export type SET_DEVICES = typeof SET_DEVICES;
 
 /**
+ * Set group content versions action
+ */
+export const SET_SELECTED_GROUP_CONTENT_VERSIONS = "SET_SELECTED_GROUP_CONTENT_VERSIONS";
+export type SET_SELECTED_GROUP_CONTENT_VERSIONS = typeof SET_SELECTED_GROUP_CONTENT_VERSIONS;
+
+/**
  * Set device groups action
  */
 export const SET_DEVICE_GROUPS = "SET_DEVICE_GROUPS";

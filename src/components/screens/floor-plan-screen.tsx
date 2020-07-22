@@ -25,7 +25,7 @@ import FloorPlanCropProperties from "../floor-plan/floor-plan-crop-properties";
 import * as cropperjs from "cropperjs";
 import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
-import FloorPlanMap from "../generic/floor-plan-map";
+import SpacesMap from "../generic/spaces-map";
 import { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
@@ -80,7 +80,7 @@ interface State {
  */
 export class FloorPlanScreen extends React.Component<Props, State> {
 
-  private mapRef = createRef<FloorPlanMap>();
+  private mapRef = createRef<SpacesMap>();
 
   /**
    * Constructor
@@ -266,9 +266,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         selectedItemHasNodes: selectedItemHasNodes
       };
 
-      return <FloorPlanMap
+      return <SpacesMap
         ref={ this.mapRef }
-        key={ "floorPlanMap" }
+        key={ "SpacesMap" }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
         mapData={ mapData }

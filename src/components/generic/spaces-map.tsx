@@ -89,7 +89,7 @@ interface SelectedItems {
 /**
  * Component for floor plan map
  */
-export default class FloorPlanMap extends React.Component<Props, State> {
+export default class SpacesMap extends React.Component<Props, State> {
 
   // tslint:disable-next-line
   private mapInstance?: MapInstance;

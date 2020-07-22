@@ -10,7 +10,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, ExhibitionRoom, ContentVersion } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, ExhibitionRoom, ContentVersion, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, GroupContentVersion } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -19,7 +19,7 @@ import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
 import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
 import { LatLngExpression, LatLngBounds } from "leaflet";
-import FloorPlanMap from "../generic/floor-plan-map";
+import ContentMap from "../generic/content-map";
 
 /**
  * Component props
@@ -31,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
   exhibitionId?: string;
   exhibitionFloorId?: string;
   roomId?: string;
+  groupContentVersion?: GroupContentVersion;
   contentVersionId?: string;
   exhibitions: Exhibition[];
   readOnly: boolean;
@@ -46,8 +47,12 @@ interface State {
   toolbarOpen: boolean;
 
   exhibition?: Exhibition;
-  exhibitionFloor?: ExhibitionFloor;
-  room?: ExhibitionRoom;
+  selectedFloor?: ExhibitionFloor;
+  rooms?: ExhibitionRoom[];
+  selectedRoom?: ExhibitionRoom;
+  deviceGroups?: ExhibitionDeviceGroup[];
+  devices?: ExhibitionDevice[];
+  antennas?: RfidAntenna[];
   contentVersion?: ContentVersion;
   breadCrumbs: BreadcrumbData[];
 }
@@ -78,6 +83,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   public componentDidMount = async () => {
     this.setState({ loading: true });
     await this.loadViewData();
+    await this.loadDevices();
     this.setState({ loading: false });
   }
 
@@ -85,7 +91,8 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Component did update life-cycle handler
    */
   public componentDidUpdate = async (prevProps: Props) => {
-    if (prevProps.exhibitions !== this.props.exhibitions) {
+    if (prevProps.exhibitions !== this.props.exhibitions ||
+      prevProps.groupContentVersion !== this.props.groupContentVersion) {
       this.setState({ loading: true });
       await this.loadViewData();
       this.setState({ loading: false });
@@ -137,11 +144,11 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { exhibitionFloor, room } = this.state;
+    const { selectedFloor, selectedRoom } = this.state;
     const { exhibitionId, readOnly } = this.props;
 
-    if (exhibitionFloor && exhibitionFloor.floorPlanUrl && exhibitionFloor.floorPlanBounds) {
-      const floorBounds = exhibitionFloor.floorPlanBounds;
+    if (selectedFloor && selectedFloor.floorPlanUrl && selectedFloor.floorPlanBounds) {
+      const floorBounds = selectedFloor.floorPlanBounds;
       const swCorner = floorBounds.southWestCorner;
       const neCorner = floorBounds.northEastCorner;
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
@@ -150,20 +157,22 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
       const floorPlanInfo = {
         bounds: bounds,
-        url: exhibitionFloor.floorPlanUrl,
+        url: selectedFloor.floorPlanUrl,
         imageHeight: 965,
         imageWidth: 1314,
         readOnly: readOnly
       };
 
       const selectedItems = {
-        floor: exhibitionFloor,
-        room: room
+        floor: selectedFloor,
+        room: selectedRoom
       };
 
+      const mapData = this.filterMapData();
+
       return (
-        <FloorPlanMap
-          mapData={{ }}
+        <ContentMap
+          mapData={ mapData }
           floorPlanInfo={ floorPlanInfo }
           selectedItems={ selectedItems }
           exhibitionId={ exhibitionId }
@@ -174,10 +183,32 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
+   * Filter map data for leaflet
+   */
+  private filterMapData = () => {
+    const { selectedFloor, rooms, selectedRoom, deviceGroups, devices, antennas } = this.state;
+    const data: any = { };
+
+    if (selectedRoom || selectedFloor) {
+      const floorId = selectedFloor ? selectedFloor.id : "";
+      const roomId = selectedRoom ? selectedRoom.id : "";
+      const foundDeviceGroups = deviceGroups ? deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId) : [];
+
+      data.rooms = rooms ? rooms.filter(room => room.floorId === floorId) : [];
+      data.deviceGroups = foundDeviceGroups;
+      data.devices = devices;
+      data.antennas = antennas;
+      return data;
+    }
+
+    return data;
+  }
+
+  /**
    * Loads view data
    */
   private loadViewData = async () => {
-    const { exhibitionId, roomId, contentVersionId, accessToken } = this.props;
+    const { exhibitionId, exhibitionFloorId, roomId, contentVersionId, accessToken } = this.props;
 
     const breadCrumbs: BreadcrumbData[] = [];
 
@@ -194,40 +225,87 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     breadCrumbs.push({ name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan` });
     this.setState({ exhibition, breadCrumbs });
 
+    if (!exhibitionFloorId) {
+      return;
+    }
+
+    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const [ floor ] = await Promise.all<ExhibitionFloor>([
+      exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: exhibitionFloorId }),
+    ]);
+
+    breadCrumbs.push({ name: floor.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}` });
+    this.setState({ selectedFloor: floor, breadCrumbs });
+
     if (!roomId) {
       return;
     }
 
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
-    const [ room ] = await Promise.all<ExhibitionRoom>([
-      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId })
+    const [ selectedRoom, rooms ] = await Promise.all<ExhibitionRoom, ExhibitionRoom[]>([
+      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
+      exhibitionRoomsApi.listExhibitionRooms({ exhibitionId: exhibitionId})
     ]);
 
-    if (!room) {
+    if (!selectedRoom) {
       return;
     }
 
-    const [ floor ] = await Promise.all<ExhibitionFloor>([
-      exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: room.floorId }),
-    ]);
-
-    breadCrumbs.push({ name: room?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${room?.floorId}/rooms/${roomId}` });
-    this.setState({ exhibitionFloor: floor, room: room, breadCrumbs });
+    breadCrumbs.push({ name: selectedRoom?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}/rooms/${roomId}` });
+    this.setState({ selectedRoom: selectedRoom, rooms: rooms, breadCrumbs });
 
     if (!contentVersionId) {
       return;
     }
 
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
-    const [ contentVersion ] = await Promise.all<ContentVersion>([
-      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId })
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const [ contentVersion, deviceGroups ] = await Promise.all<ContentVersion, ExhibitionDeviceGroup[]>([
+      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId }),
+      deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId: exhibitionId, roomId: selectedRoom.id })
     ]);
 
     breadCrumbs.push({ name: contentVersion?.name || "" });
+    console.log(deviceGroups);
+    this.setState({ contentVersion, breadCrumbs, deviceGroups: deviceGroups });
 
-    this.setState({ contentVersion, breadCrumbs });
+  }
 
+  private loadDevices = async () => {
+    const { exhibitionId, groupContentVersion, accessToken } = this.props;
+    const { deviceGroups } = this.state;
+    if (!exhibitionId || !deviceGroups) {
+      return;
+    }
+
+    console.log(groupContentVersion);
+
+    const tempDeviceGroups = [ ...deviceGroups ] as ExhibitionDeviceGroup[];
+
+    if (groupContentVersion) {
+      tempDeviceGroups.filter(group => group.id === groupContentVersion.deviceGroupId);
+    }
+
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const antennasApi = Api.getRfidAntennasApi(accessToken);
+    const [ allDevices, allAntennas ] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+      devicesApi.listExhibitionDevices({ exhibitionId: exhibitionId }),
+      antennasApi.listRfidAntennas({ exhibitionId: exhibitionId })
+    ]);
+
+    const filteredDevices: ExhibitionDevice[] = [];
+    const filteredAntennas: RfidAntenna[] = [];
+    tempDeviceGroups.forEach(group => {
+      filteredDevices.push.apply(filteredDevices, allDevices.filter(device => device.groupId === group.id));
+      filteredAntennas.push.apply(filteredAntennas, allAntennas.filter(antenna => antenna.groupId === group.id))
+    });
+
+    this.setState({
+      devices: filteredDevices,
+      antennas: filteredAntennas
+    });
+
+    console.log(filteredDevices);
   }
 
   /**
@@ -257,7 +335,8 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    exhibitions: state.exhibitions.exhibitions,
+    groupContentVersion: state.groupContentVersions.selectedGroupContentVersion
   };
 }
 

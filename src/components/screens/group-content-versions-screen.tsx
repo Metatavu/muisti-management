@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus } from "../../generated/client";
+import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus, PageLayout } from "../../generated/client";
 import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
 import strings from "../../localization/strings";
@@ -23,6 +23,8 @@ import theme from "../../styles/theme";
 import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import ConfirmDialog from "../generic/confirm-dialog";
 import produce from "immer";
+import { setSelectedGroupContentVersion } from "../../actions/groupContentVersions";
+import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 
 /**
  * Component props
@@ -34,6 +36,7 @@ interface Props extends WithStyles<typeof styles> {
   exhibitionId: string;
   roomId: string;
   contentVersionId: string;
+  setSelectedGroupContentVersion: typeof setSelectedGroupContentVersion;
 }
 
 /**
@@ -284,7 +287,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Gets card menu options
-   * 
+   *
    * @param groupContentVersion selected group content version
    * @returns card menu options as action button array
    */
@@ -325,7 +328,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Deletes group content version
-   * 
+   *
    * @param groupContentVersion selected group content version
    */
   private deleteGroupContentVersion = (groupContentVersion: GroupContentVersion) => {
@@ -349,7 +352,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for value change
-   * 
+   *
    * @param event react change event
    */
   private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
@@ -372,16 +375,17 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * @param contentVersionId content version id
    */
   private onCardClick = (groupContentVersion: GroupContentVersion) => {
+    this.props.setSelectedGroupContentVersion(groupContentVersion);
     this.setState({
       selectedGroupContentVersion: groupContentVersion
     });
   }
 
-  /** 
+  /**
    * Opens timeline screen
-   * 
+   *
    * @param groupContentVersion selected group content version
-  */
+   */
   private openTimeline = (groupContentVersion: GroupContentVersion) => {
     const { history } = this.props;
     history.push(`${history.location.pathname}/groupContentVersions/${groupContentVersion.id}/timeline`);
@@ -389,7 +393,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for group content value change
-   * 
+   *
    * @param groupContentVersion group content version
    */
   private onGroupContentValueChange = (groupContentVersion: GroupContentVersion) => {
@@ -424,7 +428,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
 
     const groupContentVersions = produce(this.state.groupContentVersions, draft => {
-      draft.push(createdContentVersion)
+      draft.push(createdContentVersion);
     });
 
     this.setState({
@@ -506,6 +510,7 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
+    setSelectedGroupContentVersion: (groupContentVersion?: GroupContentVersion) => dispatch(setSelectedGroupContentVersion(groupContentVersion))
   };
 }
 
