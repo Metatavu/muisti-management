@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus, PageLayout } from "../../generated/client";
+import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus } from "../../generated/client";
 import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
 import strings from "../../localization/strings";
@@ -24,7 +24,6 @@ import GroupContentVersionsInfo from "../group-content-version/group-content-ver
 import ConfirmDialog from "../generic/confirm-dialog";
 import produce from "immer";
 import { setSelectedGroupContentVersion } from "../../actions/groupContentVersions";
-import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 
 /**
  * Component props
@@ -156,7 +155,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           context={
             <div>
               <Typography variant="body1">
-                <div>{`${room.name} /`}</div>
+                <div>{ `${room.name} /`}</div>
                 <div>{ deviceGroupName }</div>
               </Typography>
             </div>

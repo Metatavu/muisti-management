@@ -1,14 +1,13 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, FeatureGroup, MarkerOptions, DrawMap, LatLngExpression, LatLngTuple } from "leaflet";
+import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, MarkerOptions, LatLngExpression, LatLngTuple } from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
-import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna } from "../../generated/client";
-import { FeatureCollection, Polygon } from "geojson";
-import strings from "../../localization/strings";
+import { ExhibitionRoom, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, RfidAntenna } from "../../generated/client";
+import { Polygon } from "geojson";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
 import antennaIcon from "../../resources/gfx/svg/antennaIcon.svg";
 
@@ -23,19 +22,8 @@ interface Props {
   floorPlanInfo: FloorPlanInfo;
   selectedItems: SelectedItems;
 
-  onRoomAdd?: (roomToCreate: ExhibitionRoom) => void;
-  onRoomSave?: (updatedRoom: ExhibitionRoom) => void;
   onRoomClick?: (floorId: string, roomId: string, hasNodes: boolean) => void;
-
-  onDeviceGroupClick?: (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => void;
-
-  onDeviceAdd?: (deviceToCreate: ExhibitionDevice) => void;
-  onDeviceSave?: (deviceToUpdate: ExhibitionDevice) => void;
-  onDeviceClick?: (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => void;
-
-  onAntennaAdd?: (antennaToCreate: RfidAntenna) => void;
-  onAntennaSave?: (antennaToUpdate: RfidAntenna) => void;
-  onAntennaClick?: (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => void;
+  onDeviceGroupClick?: (floorId: string, roomId: string, deviceGroupId: string, hasNodes?: boolean) => void;
 }
 
 /**
@@ -46,8 +34,6 @@ interface State {
   cursorPosition?: LatLng;
   leafletIdToRoomMap: Map<number, ExhibitionRoom>;
   leafletIdToDeviceGroupMap: Map<number, ExhibitionDeviceGroup>;
-  leafletIdToDeviceMap: Map<number, ExhibitionDevice>;
-  leafletIdToAntennaMap: Map<number, RfidAntenna>;
   addingAntenna: boolean;
 }
 
@@ -81,8 +67,6 @@ interface SelectedItems {
   floor? : ExhibitionFloor;
   room?: ExhibitionRoom;
   deviceGroup?: ExhibitionDeviceGroup;
-  device?: ExhibitionDevice;
-  antenna?: RfidAntenna;
   selectedItemHasNodes?: boolean;
 }
 
@@ -115,80 +99,7 @@ export default class ContentMap extends React.Component<Props, State> {
   private selectedDeviceGroupLayer = new L.FeatureGroup();
 
   /**
-   * This feature group contains all devices that are displayed
-   */
-  private deviceMarkers = new L.FeatureGroup();
-
-  /**
-   * This feature group contains all antennas that are displayed
-   */
-  private antennaMarkers = new L.FeatureGroup();
-
-  /**
-   * This feature group contains selected marker
-   */
-  private selectedMarker = new L.FeatureGroup();
-
-  /**
-   * Custom device icon
-   */
-  private deviceIcon = new L.Icon({
-    iconUrl: deviceIcon,
-    iconSize: new L.Point(50, 50),
-    iconAnchor: undefined,
-    popupAnchor: undefined,
-    shadowUrl: undefined,
-    shadowSize: undefined,
-    shadowAnchor: undefined,
-    className: "device-icon"
-  });
-
-  /**
-   * Custom selected device icon
-   */
-  private selectedDeviceIcon = new L.Icon({
-    iconUrl: deviceIcon,
-    iconSize: new L.Point(60, 60),
-    iconAnchor: undefined,
-    popupAnchor: undefined,
-    shadowUrl: undefined,
-    shadowSize: undefined,
-    shadowAnchor: undefined,
-    className: "device-icon"
-  });
-
-  /**
-   * Custom antenna icon
-   */
-  private antennaIcon = new L.Icon({
-    iconUrl: antennaIcon,
-    iconSize: new L.Point(50, 50),
-    iconAnchor: undefined,
-    popupAnchor: undefined,
-    shadowUrl: undefined,
-    shadowSize: undefined,
-    shadowAnchor: undefined,
-    className: "antenna-icon"
-  });
-
-  /**
-   * Custom selected antenna icon
-   */
-  private selectedAntennaIcon = new L.Icon({
-    iconUrl: antennaIcon,
-    iconSize: new L.Point(60, 60),
-    iconAnchor: undefined,
-    popupAnchor: undefined,
-    shadowUrl: undefined,
-    shadowSize: undefined,
-    shadowAnchor: undefined,
-    className: "antenna-icon"
-  });
-
-  /**
    * Contains all style values for layers
-   *
-   * TODO: Needs API support for layer properties
    */
   private layerStyleOptions = {
     selectedRoomLayerOpacity: 0.6,
@@ -203,12 +114,6 @@ export default class ContentMap extends React.Component<Props, State> {
   };
 
   /**
-   * This feature group is used only for storing new geometries because
-   * individual feature group objects can be cast to polygon objects
-   */
-  private addedLayers = new L.FeatureGroup();
-
-  /**
    * Constructor
    *
    * @param props component properties
@@ -219,8 +124,6 @@ export default class ContentMap extends React.Component<Props, State> {
       zoom: 2,
       leafletIdToRoomMap: new Map(),
       leafletIdToDeviceGroupMap: new Map(),
-      leafletIdToDeviceMap: new Map(),
-      leafletIdToAntennaMap: new Map(),
       addingAntenna: false
     };
   }
@@ -239,9 +142,7 @@ export default class ContentMap extends React.Component<Props, State> {
 
     if (prevProps.selectedItems.floor !== this.props.selectedItems.floor ||
       prevProps.selectedItems.room !== this.props.selectedItems.room ||
-      prevProps.selectedItems.device !== this.props.selectedItems.device ||
       prevProps.selectedItems.deviceGroup !== this.props.selectedItems.deviceGroup ||
-      prevProps.selectedItems.antenna !== this.props.selectedItems.antenna ||
       JSON.stringify(prevProps.mapData) !== JSON.stringify(this.props.mapData)
     ) {
       this.initializeMapData();
@@ -303,26 +204,12 @@ export default class ContentMap extends React.Component<Props, State> {
     this.mapInstance.addLayer(this.deviceGroupLayers);
     this.mapInstance.addLayer(this.selectedDeviceGroupLayer);
 
-    this.addDrawHandler();
-
-    this.mapInstance.on(L.Draw.Event.EDITED, event => {
-      this.onEditLayers(event);
-    });
-
     this.roomLayers.on('click', event => {
       this.setSelectedRoom(event);
     });
 
     this.deviceGroupLayers.on('click', event => {
       this.setSelectedDeviceGroup(event);
-    });
-
-    this.deviceMarkers.on('click', event => {
-      this.setSelectedDevice(event);
-    });
-
-    this.antennaMarkers.on('click', event => {
-      this.setSelectedAntenna(event);
     });
   }
 
@@ -335,140 +222,6 @@ export default class ContentMap extends React.Component<Props, State> {
     this.setState({
       cursorPosition: event.latlng
     });
-  }
-
-  /**
-   * Add draw handler
-   */
-  private addDrawHandler = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    this.mapInstance.on(L.Draw.Event.CREATED, event => {
-      const { addingAntenna } = this.state;
-      const leafletEvent = event as any;
-      if (leafletEvent.layerType === "polygon" || leafletEvent.layerType === "rectangle") {
-        this.handleRoomCreation(event);
-      } else if (leafletEvent.layerType === "marker") {
-        if (addingAntenna) {
-          this.handleAntennaMarkerCreation(event);
-        } else {
-          this.handleDeviceMarkerCreation(event);
-        }
-      }
-
-    });
-  }
-
-  /**
-   * Device marker creation handler
-   *
-   * @param event leaflet event
-   */
-  private handleDeviceMarkerCreation = (event: L.LeafletEvent) => {
-    const { exhibitionId, selectedItems, deviceModels, onDeviceAdd } = this.props;
-    if (!exhibitionId || !selectedItems.deviceGroup || !selectedItems.deviceGroup.id || !deviceModels || !deviceModels[0].id || !onDeviceAdd) {
-      return;
-    }
-
-    const marker = event.layer;
-    if (marker && marker._latlng) {
-      const markerOptions: MarkerOptions = {
-        icon: this.deviceIcon,
-        draggable: false    // if (actionBarButtons === undefined) {
-          //   return (
-          //     <div className={ classes.toolbar }>
-          //       { strings.floorPlan.brokenData }
-          //     </div>
-          //   );
-          // }
-      };
-      const customMarker = new L.Marker(marker._latlng, markerOptions);
-      this.deviceMarkers.addLayer(customMarker);
-
-      const exhibitionDevice: ExhibitionDevice = {
-        name: strings.floorPlan.device.new,
-        groupId: selectedItems.deviceGroup.id,
-        modelId: deviceModels[0].id,
-        screenOrientation: ScreenOrientation.Landscape,
-        location: {
-          x: marker._latlng.lat,
-          y: marker._latlng.lng
-        }
-      };
-      onDeviceAdd(exhibitionDevice);
-    }
-  }
-
-  /**
-   * Antenna marker creation handler
-   *
-   * @param event leaflet event
-   */
-  private handleAntennaMarkerCreation = (event: L.LeafletEvent) => {
-    const { exhibitionId, selectedItems, mapData, onAntennaAdd } = this.props;
-    // tslint:disable-next-line: max-line-length
-    if (!exhibitionId || !selectedItems.room || !selectedItems.room.id || !selectedItems.deviceGroup || !selectedItems.deviceGroup.id || mapData.antennas === undefined || !onAntennaAdd) {
-      return;
-    }
-
-    const marker = event.layer;
-    if (marker && marker._latlng) {
-      const markerOptions: MarkerOptions = {
-        icon: this.antennaIcon,
-        draggable: false
-      };
-      const customMarker = new L.Marker(marker._latlng, markerOptions);
-      this.antennaMarkers.addLayer(customMarker);
-
-      const rfidAntenna: RfidAntenna = {
-        name: strings.floorPlan.antenna.new,
-        groupId: selectedItems.deviceGroup.id,
-        readerId: strings.floorPlan.antenna.newReaderId,
-        roomId: selectedItems.room.id,
-        antennaNumber: mapData.antennas.length + 1,
-        location: {
-          x: marker._latlng.lat,
-          y: marker._latlng.lng
-        }
-      };
-      onAntennaAdd(rfidAntenna);
-    }
-  }
-
-  /**
-   * Room creation handler
-   *
-   * @param event leaflet event
-   */
-  private handleRoomCreation = (event: L.LeafletEvent) => {
-    const { exhibitionId, selectedItems, onRoomAdd } = this.props;
-    if (!exhibitionId || !selectedItems.floor || !selectedItems.floor.id || !onRoomAdd) {
-      return;
-    }
-
-    const room = event.layer;
-    if (room && room._latlngs) {
-      const newRoom = new L.Rectangle(room._latlngs);
-      this.addedLayers.addLayer(newRoom);
-
-      const geoJson =  this.addedLayers.toGeoJSON() as FeatureCollection;
-      if (geoJson.features[0].geometry.type !== "Polygon") {
-        this.addedLayers = new L.FeatureGroup();
-        return;
-      }
-      const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
-
-      const roomToCreate: ExhibitionRoom = {
-        floorId: selectedItems.floor.id,
-        name: strings.floorPlan.floor.new,
-        geoShape: roomPolygon
-      };
-      onRoomAdd(roomToCreate);
-      this.addedLayers = new L.FeatureGroup();
-    }
-
   }
 
   /**
@@ -496,75 +249,12 @@ export default class ContentMap extends React.Component<Props, State> {
     const { onDeviceGroupClick, selectedItems } = this.props;
     const { leafletIdToDeviceGroupMap } = this.state;
     const foundDeviceGroup = leafletIdToDeviceGroupMap.get(event.layer._leaflet_id);
-    console.log(event)
-    if (!onDeviceGroupClick || !selectedItems.floor || !selectedItems.room || !foundDeviceGroup || !selectedItems.selectedItemHasNodes) {
+
+    if (!onDeviceGroupClick || !selectedItems.floor || !selectedItems.room || !foundDeviceGroup) {
       return;
     }
 
-    onDeviceGroupClick(selectedItems.floor.id!, selectedItems.room.id!, foundDeviceGroup.id!, selectedItems.selectedItemHasNodes);
-  }
-
-  /**
-   * Set selected device
-   *
-   * @param event leaflet event
-   */
-  private setSelectedDevice = (event: L.LeafletEvent) => {
-    const { onDeviceClick, selectedItems } = this.props;
-    const { leafletIdToDeviceMap } = this.state;
-    const foundDevice = leafletIdToDeviceMap.get(event.layer._leaflet_id);
-    if (!onDeviceClick ||
-      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundDevice || selectedItems.selectedItemHasNodes === undefined) {
-      return;
-    }
-    onDeviceClick(selectedItems.floor.id!, selectedItems.room.id!, selectedItems.deviceGroup.id!, foundDevice.id!, selectedItems.selectedItemHasNodes);
-  }
-
-  /**
-   * Set selected antenna
-   *
-   * @param event leaflet event
-   */
-  private setSelectedAntenna = (event: L.LeafletEvent) => {
-    const { onAntennaClick, selectedItems } = this.props;
-    const { leafletIdToAntennaMap } = this.state;
-    const foundAntenna = leafletIdToAntennaMap.get(event.layer._leaflet_id);
-    if (!onAntennaClick ||
-      !selectedItems.floor || !selectedItems.room || !selectedItems.deviceGroup || !foundAntenna || selectedItems.selectedItemHasNodes === undefined) {
-      return;
-    }
-    onAntennaClick(selectedItems.floor.id!, selectedItems.room.id!, selectedItems.deviceGroup.id!, foundAntenna.id!, selectedItems.selectedItemHasNodes);
-  }
-
-  /**
-   * Edit map layers
-   *
-   * @param event leaflet event
-   */
-  private onEditLayers = (event: L.LeafletEvent) => {
-    const { selectedItems } = this.props;
-
-    /**
-     * Must cast is it like this because L.LeafletEvent does not contain
-     * layers object but that is used during runtime.
-     */
-    const leafletEvent = event as any;
-    const leafletFeatureGroup = leafletEvent as FeatureGroup;
-
-    if (selectedItems.antenna) {
-      this.handleAntennaUpdate(leafletFeatureGroup);
-      return;
-    }
-
-    if (selectedItems.device) {
-      this.handleDeviceUpdate(leafletFeatureGroup);
-      return;
-    }
-
-    if (selectedItems.room) {
-      this.handleRoomUpdate(leafletFeatureGroup);
-      return;
-    }
+    onDeviceGroupClick(selectedItems.floor.id!, selectedItems.room.id!, foundDeviceGroup.id!);
   }
 
   /**
@@ -572,15 +262,12 @@ export default class ContentMap extends React.Component<Props, State> {
    */
   private initializeMapData = () => {
     const { mapInstance } = this;
-    console.log(this.props);
     if (!mapInstance) {
       return;
     }
 
     this.loadRooms();
     this.loadDeviceGroup();
-    this.loadDevices();
-    this.loadAntennas();
   }
 
   /**
@@ -595,7 +282,6 @@ export default class ContentMap extends React.Component<Props, State> {
     }
 
     const tempRooms = [ ...mapData.rooms ] as ExhibitionRoom[];
-
     if (selectedItems.room) {
       this.addSelectedRoomLayer(tempRooms, selectedItems.room);
     }
@@ -624,48 +310,6 @@ export default class ContentMap extends React.Component<Props, State> {
     }
 
     this.addDeviceGroupLayers(tempDeviceGroups, tempDevices, tempAntennas);
-  }
-
-  /**
-   * Add device markers to leaflet map
-   */
-  private loadDevices = () => {
-    this.deviceMarkers.clearLayers();
-    this.selectedMarker.clearLayers();
-    const { mapData, selectedItems } = this.props;
-    if (!mapData.devices || !selectedItems.deviceGroup) {
-      return;
-    }
-
-    const tempDevices = [ ...mapData.devices ] as ExhibitionDevice[];
-
-    if (selectedItems.device) {
-      this.addSelectedDeviceMarker(tempDevices, selectedItems.device);
-    }
-
-    this.addDeviceMarkers(tempDevices);
-
-  }
-
-  /**
-   * Add antenna markers to leaflet map
-   */
-  private loadAntennas = () => {
-    this.antennaMarkers.clearLayers();
-
-    const { mapData, selectedItems } = this.props;
-
-    if (!mapData.antennas || !selectedItems.deviceGroup) {
-      return;
-    }
-
-    const tempAntennas = [ ...mapData.antennas ] as RfidAntenna[];
-
-    if (selectedItems.antenna) {
-      this.addSelectedAntennaMarker(tempAntennas, selectedItems.antenna);
-    }
-
-    this.addAntennaMarkers(tempAntennas);
   }
 
   /**
@@ -748,11 +392,7 @@ export default class ContentMap extends React.Component<Props, State> {
       }
     });
 
-    if (this.roomLayers.getLayers().length > 0 &&
-      !selectedItems.deviceGroup &&
-      !selectedItems.device &&
-      !selectedItems.antenna
-    ) {
+    if (this.roomLayers.getLayers().length > 0 && !selectedItems.deviceGroup) {
       this.mapInstance.fitBounds(this.roomLayers.getBounds());
     }
 
@@ -856,115 +496,6 @@ export default class ContentMap extends React.Component<Props, State> {
   }
 
   /**
-   * Add selected device marker
-   *
-   * @param tempDevices list of devices
-   * @param selectedDevice selected device
-   */
-  private addSelectedDeviceMarker = (tempDevices: ExhibitionDevice[], selectedDevice: ExhibitionDevice) => {
-    const { layerStyleOptions, selectedDeviceIcon } = this;
-    const deviceIndex = tempDevices.findIndex(device => device.id === selectedDevice.id);
-    if (deviceIndex === -1) {
-      return;
-    }
-
-    const marker = this.getCustomMarker(selectedDevice, selectedDeviceIcon, layerStyleOptions.selectedMarkerOpacity);
-    this.selectedMarker.addLayer(marker);
-    tempDevices.splice(deviceIndex, 1);
-  }
-
-  /**
-   * Add device markers
-   *
-   * @param tempDevices list of devices
-   */
-  private addDeviceMarkers = (tempDevices: ExhibitionDevice[]) => {
-    const { layerStyleOptions } = this;
-    const { selectedItems } = this.props;
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const tempLeafletIdToDeviceMap = new Map<number, ExhibitionDevice>();
-    let opacity = layerStyleOptions.selectedMarkerOpacity;
-
-    if (selectedItems.device || selectedItems.antenna) {
-      opacity = layerStyleOptions.markerOpacity;
-    }
-
-    tempDevices.filter(device => device.groupId === selectedItems.deviceGroup!.id).forEach(device => {
-      const marker = this.getCustomMarker(device, this.deviceIcon, opacity);
-      this.deviceMarkers.addLayer(marker);
-      const markerId = this.deviceMarkers.getLayerId(marker);
-      tempLeafletIdToDeviceMap.set(markerId, device);
-    });
-
-    this.mapInstance.addLayer(this.selectedMarker);
-    this.mapInstance.addLayer(this.deviceMarkers);
-
-    this.setState({
-      leafletIdToDeviceMap: tempLeafletIdToDeviceMap
-    });
-  }
-
-  /**
-   * Add selected antenna marker
-   *
-   * @param tempAntennas list of antennas
-   * @param selectedAntenna selected antenna
-   */
-  private addSelectedAntennaMarker = (tempAntennas: RfidAntenna[], selectedAntenna: RfidAntenna) => {
-    const { layerStyleOptions, selectedAntennaIcon } = this;
-    const antennaIndex = tempAntennas.findIndex(antenna => antenna.id === selectedAntenna.id);
-    if (antennaIndex === -1) {
-      return;
-    }
-
-    const marker = this.getCustomMarker(selectedAntenna, selectedAntennaIcon, layerStyleOptions.selectedMarkerOpacity);
-    this.selectedMarker.addLayer(marker);
-    tempAntennas.splice(antennaIndex, 1);
-  }
-
-  /**
-   * Add antenna markers
-   *
-   * @param tempAntennas list of antennas
-   */
-  private addAntennaMarkers = (tempAntennas: RfidAntenna[]) => {
-    const { layerStyleOptions } = this;
-    const { selectedItems } = this.props;
-
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const tempLeafletIdToAntennaMap = new Map<number, RfidAntenna>();
-
-    let opacity = layerStyleOptions.selectedMarkerOpacity;
-
-    if (selectedItems.device || selectedItems.antenna) {
-      opacity = layerStyleOptions.markerOpacity;
-    }
-
-    tempAntennas.filter(antenna => antenna.groupId === selectedItems.deviceGroup!.id).forEach(antenna => {
-      if (selectedItems.deviceGroup && selectedItems.deviceGroup.id !== antenna.groupId) {
-        return;
-      }
-      const marker = this.getCustomMarker(antenna, this.antennaIcon, opacity);
-      this.antennaMarkers.addLayer(marker);
-      const antennaMarkerId = this.antennaMarkers.getLayerId(marker);
-      tempLeafletIdToAntennaMap.set(antennaMarkerId, antenna);
-
-    });
-
-    this.mapInstance.addLayer(this.antennaMarkers);
-
-    this.setState({
-      leafletIdToAntennaMap: tempLeafletIdToAntennaMap
-    });
-  }
-
-  /**
    * Create device group layer
    *
    * @param devicePoints list device points
@@ -1065,257 +596,5 @@ export default class ContentMap extends React.Component<Props, State> {
       const layerId = this.roomLayers.getLayerId(roomLayer);
       tempMap.set(layerId, room);
     }
-  }
-
-  /**
-   * Handle device update
-   *
-   * @param leafletFeatureGroup leaflet feature group
-   */
-  private handleDeviceUpdate = (leafletFeatureGroup: FeatureGroup) => {
-    const { selectedItems, onDeviceSave } = this.props;
-    if (!selectedItems.device || !onDeviceSave) {
-      return;
-    }
-
-    const deviceToUpdate = { ...selectedItems.device } as ExhibitionDevice;
-    if (!deviceToUpdate.id) {
-      return;
-    }
-    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-      onEachFeature(_feature, layer) {
-        if (!deviceToUpdate || !deviceToUpdate.location) {
-          return;
-        }
-
-        const marker = _feature.geometry as any;
-        const newPoint: Point = {
-          x: marker.coordinates[1],
-          y: marker.coordinates[0]
-        };
-        deviceToUpdate.location = newPoint;
-      }
-    });
-
-    onDeviceSave(deviceToUpdate);
-  }
-
-  /**
-   * Handle antenna update
-   *
-   * @param leafletFeatureGroup leaflet feature group
-   */
-  private handleAntennaUpdate = (leafletFeatureGroup: FeatureGroup) => {
-    const { selectedItems, onAntennaSave } = this.props;
-    if (!selectedItems.antenna || !onAntennaSave) {
-      return;
-    }
-
-    const antennaToUpdate = { ...selectedItems.antenna } as RfidAntenna;
-    if (!antennaToUpdate.id) {
-      return;
-    }
-    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-      onEachFeature(_feature, layer) {
-        if (!antennaToUpdate || !antennaToUpdate.location) {
-          return;
-        }
-
-        const marker = _feature.geometry as any;
-        const newPoint: Point = {
-          x: marker.coordinates[1],
-          y: marker.coordinates[0]
-        };
-        antennaToUpdate.location = newPoint;
-      }
-    });
-
-    onAntennaSave(antennaToUpdate);
-  }
-
-  /**
-   * Handle room update
-   *
-   * @param leafletFeatureGroup leaflet feature group
-   */
-  private handleRoomUpdate = (leafletFeatureGroup: FeatureGroup) => {
-    const { selectedItems, onRoomSave } = this.props;
-    if (!selectedItems.room || !onRoomSave) {
-      return;
-    }
-
-    const roomToUpdate = { ...selectedItems.room } as ExhibitionRoom;
-
-    if (!roomToUpdate.id) {
-      return;
-    }
-
-    L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
-      onEachFeature(_feature, layer) {
-        const roomPolygon = _feature.geometry as ApiPolygon;
-        roomToUpdate.geoShape = roomPolygon;
-      }
-    });
-
-    onRoomSave(roomToUpdate);
-  }
-
-  /**
-   * Trigger L.Draw.Rectangle event which allows user to draw rectangle on the map
-   */
-  public addRoom = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const drawMap = this.mapInstance as DrawMap;
-    const newRoomShape = new L.Draw.Rectangle(drawMap);
-    newRoomShape.enable();
-  }
-
-  /**
-   * Enable editing mode for currently selected room polygon
-   */
-  public editRoom = () => {
-    const layers = this.selectedRoomLayer.getLayers();
-
-    if (layers && layers.length > 0) {
-      const layer = layers[0] as any;
-      layer.editing.enable();
-    }
-  }
-
-  /**
-   * Save current device marker
-   */
-  public saveRoom = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const layers = this.selectedRoomLayer.getLayers();
-    if (layers && layers.length > 0) {
-      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedRoomLayer);
-      const layer = layers[0] as any;
-      layer.editing.disable();
-    }
-  }
-
-  /**
-   * Trigger L.Draw.Marker event which allows user to draw device marker on the map
-   */
-  public addDeviceMarker = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const drawMap = this.mapInstance as DrawMap;
-    const markerOptions: MarkerOptions = {
-      icon: this.deviceIcon,
-      draggable: false
-    };
-    const newMarker = new L.Draw.Marker(drawMap, markerOptions);
-    newMarker.enable();
-    this.setState({
-      addingAntenna: false
-    });
-  }
-
-  /**
-   * Trigger L.Draw.Marker event which allows user to draw antenna marker on the map
-   */
-  public addAntennaMarker = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const drawMap = this.mapInstance as DrawMap;
-    const markerOptions: MarkerOptions = {
-      icon: this.antennaIcon,
-      draggable: false
-    };
-    const newMarker = new L.Draw.Marker(drawMap, markerOptions);
-    newMarker.enable();
-    this.setState({
-      addingAntenna: true
-    });
-  }
-
-  /**
-   * Enable editing mode for currently selected device marker
-   */
-  public editDeviceMarker = () => {
-    const layers = this.selectedMarker.getLayers();
-    if (layers && layers.length > 0) {
-      const layer = layers[0] as any;
-      layer.editing.enable();
-    }
-  }
-
-  /**
-   * Enable editing mode for currently selected antenna marker
-   */
-  public editAntennaMarker = () => {
-    const layers = this.selectedMarker.getLayers();
-    if (layers && layers.length > 0) {
-      const layer = layers[0] as any;
-      layer.editing.enable();
-    }
-  }
-
-  /**
-   * Save current device marker
-   */
-  public saveDeviceMarker = () => {
-    if (!this.mapInstance) {
-      return;
-    }
-
-    const layers = this.selectedMarker.getLayers();
-    if (layers && layers.length > 0) {
-      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
-      const layer = layers[0] as any;
-      layer.editing.disable();
-    }
-  }
-
-  /**
-   * Save current antenna marker
-   */
-  public saveAntennaMarker = () => {
-    const { selectedItems } = this.props;
-    if (!this.mapInstance) {
-      return;
-    }
-    const layers = this.selectedMarker.getLayers();
-    if (layers && layers.length > 0) {
-      this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
-      if (selectedItems.deviceGroup && selectedItems.antenna && selectedItems.antenna.groupId !== selectedItems.deviceGroup.id) {
-        return;
-      }
-      const layer = layers[0] as any;
-      layer.editing.disable();
-    }
-  }
-
-  /**
-   * Delete current device
-   */
-  public deleteDevice = () => {
-    this.deviceMarkers.clearLayers();
-  }
-
-  /**
-   * Delete current antenna
-   */
-  public deleteAntenna = () => {
-    this.antennaMarkers.clearLayers();
-  }
-
-  /**
-   * Delete currently selected room
-   */
-  public deleteRoom = () => {
-    this.roomLayers.clearLayers();
   }
 }
