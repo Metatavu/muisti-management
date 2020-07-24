@@ -8,8 +8,6 @@ import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
 import { ExhibitionRoom, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, RfidAntenna } from "../../generated/client";
 import { Polygon } from "geojson";
-import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
-import antennaIcon from "../../resources/gfx/svg/antennaIcon.svg";
 
 /**
  * Component props

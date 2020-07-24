@@ -20,7 +20,6 @@ import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
 import { LatLngExpression, LatLngBounds } from "leaflet";
 import ContentMap from "../generic/content-map";
-import { setSelectedGroupContentVersion } from "../../actions/groupContentVersions";
 
 /**
  * Component props
@@ -36,8 +35,6 @@ interface Props extends WithStyles<typeof styles> {
   contentVersionId?: string;
   exhibitions: Exhibition[];
   readOnly: boolean;
-
-  setSelectedGroupContentVersion: typeof setSelectedGroupContentVersion;
 }
 
 /**
@@ -345,7 +342,6 @@ function mapStateToProps(state: ReduxState) {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
     exhibitions: state.exhibitions.exhibitions,
-    groupContentVersion: state.groupContentVersions.selectedGroupContentVersion
   };
 }
 
@@ -356,7 +352,6 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedGroupContentVersion: (groupContentVersion?: GroupContentVersion) => dispatch(setSelectedGroupContentVersion(groupContentVersion))
   };
 }
 

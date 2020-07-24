@@ -23,7 +23,6 @@ import theme from "../../styles/theme";
 import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import ConfirmDialog from "../generic/confirm-dialog";
 import produce from "immer";
-import { setSelectedGroupContentVersion } from "../../actions/groupContentVersions";
 
 /**
  * Component props
@@ -35,7 +34,6 @@ interface Props extends WithStyles<typeof styles> {
   exhibitionId: string;
   roomId: string;
   contentVersionId: string;
-  setSelectedGroupContentVersion: typeof setSelectedGroupContentVersion;
 }
 
 /**
@@ -374,7 +372,6 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * @param contentVersionId content version id
    */
   private onCardClick = (groupContentVersion: GroupContentVersion) => {
-    this.props.setSelectedGroupContentVersion(groupContentVersion);
     this.setState({
       selectedGroupContentVersion: groupContentVersion
     });
@@ -509,7 +506,6 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedGroupContentVersion: (groupContentVersion?: GroupContentVersion) => dispatch(setSelectedGroupContentVersion(groupContentVersion))
   };
 }
 
