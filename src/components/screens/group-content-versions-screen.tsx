@@ -153,7 +153,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           context={
             <div>
               <Typography variant="body1">
-                <div>{ `${room.name} /`}</div>
+                <div>{ `${room.name} /` }</div>
                 <div>{ deviceGroupName }</div>
               </Typography>
             </div>
