@@ -43,6 +43,7 @@ export * from './MqttExhibitionVisitorSessionUpdate';
 export * from './MqttLayoutCreate';
 export * from './MqttLayoutDelete';
 export * from './MqttLayoutUpdate';
+export * from './MqttProximityUpdate';
 export * from './MqttRfidAntennaCreate';
 export * from './MqttRfidAntennaDelete';
 export * from './MqttRfidAntennaUpdate';

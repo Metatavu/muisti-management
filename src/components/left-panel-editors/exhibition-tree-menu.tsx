@@ -87,15 +87,22 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
    *
    * @param item tree menu item
    */
-  private renderTreeMenuItem = (item: TreeMenuItem) => {
+  private renderTreeMenuItem = ({
+    level,
+    focused,
+    hasNodes,
+    toggleNode,
+    isOpen,
+    label,
+    ...otherProps
+  }: TreeMenuItem) => {
     const { classes } = this.props;
     const toggleIcon = (on: boolean) => on ? 
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
 
     return (
-      <ListItem { ...item }
+      <ListItem { ...otherProps }
         className={ classNames( classes.listItem, focused ? "focused" : "" ) }
         style={{ paddingLeft: level * 20 }}
       >
