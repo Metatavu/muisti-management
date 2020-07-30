@@ -16,15 +16,17 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  treeRef?: React.Ref<TreeMenu>;
   treeNodes: TreeNodeInArray[];
   firstSelected?: string;
-  focusKey?: string;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
+  openNodes: string[];
 }
 
 /**
@@ -33,6 +35,7 @@ interface State {
 interface TreeNode {
   id: string;
   label: string;
+  pathInTree: string;
   onClick: (hasNodes: boolean) => void;
   children: TreeNode[];
 }
@@ -50,7 +53,8 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      openNodes: []
     };
   }
 
@@ -58,18 +62,17 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { treeNodes, classes, firstSelected, focusKey } = this.props;
+    const { treeRef, treeNodes, classes, firstSelected } = this.props;
 
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeNodes }
+          ref={ treeRef ?? undefined }
           onClickItem={({ key, label, ...props }) => props.onClick(props.hasNodes) }
           initialOpenNodes={[ firstSelected || "" ]}
           initialActiveKey={ firstSelected || "" }
           initialFocusKey={ firstSelected || "" }
-          activeKey={ focusKey || firstSelected || "" }
-          focusKey={ focusKey || firstSelected || "" }
         >
           { ({ items, search }) => this.renderTreeMenu(items, search) }
         </TreeMenu>
@@ -111,15 +114,27 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * @param item tree menu item
    * @return menu item as ListItem
    */
-  private renderTreeMenuItem = (item: TreeMenuItem) => {
+  private renderTreeMenuItem = ({
+    level = 0,
+    hasNodes,
+    isOpen,
+    label,
+    searchTerm,
+    openNodes,
+    matchSearch,
+    focused,
+    pathInTree,
+    active,
+    toggleNode,
+    ...otherProps
+  }: TreeMenuItem) => {
     const { classes } = this.props;
     const toggleIcon = (on: boolean) => on ?
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
 
     return (
-      <ListItem { ...item }
+      <ListItem { ...otherProps }
         className={ classNames( classes.listItem, focused ? "focused" : "" ) }
         style={{ paddingLeft: level * 20 }}
       >
