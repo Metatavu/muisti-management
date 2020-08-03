@@ -287,10 +287,10 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       return;
     }
 
-    const tempDeviceGroups = [ ...deviceGroups ] as ExhibitionDeviceGroup[];
+    let tempDeviceGroups = [ ...deviceGroups ] as ExhibitionDeviceGroup[];
 
     if (groupContentVersion) {
-      tempDeviceGroups.filter(group => group.id === groupContentVersion.deviceGroupId);
+      tempDeviceGroups = tempDeviceGroups.filter(group => group.id === groupContentVersion.deviceGroupId);
     }
 
     const devicesApi = Api.getExhibitionDevicesApi(accessToken);
