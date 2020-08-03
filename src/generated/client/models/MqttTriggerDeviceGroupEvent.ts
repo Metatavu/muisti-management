@@ -14,7 +14,7 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * MQTT notification message for informing device group members about triggered group event. Event in sent into /events/deviceGroup/{deviceGroupId} -topic and thus does not require id of device group as a property.  This is actually not part of REST API spec but a realtime notification via MQTT channel 
+ * MQTT notification message for informing device group members about tag proximity. Event in sent into /{device}/{antennaNumber} -topic.  This is actually not part of REST API spec but a realtime notification via MQTT channel 
  * @export
  * @interface MqttTriggerDeviceGroupEvent
  */

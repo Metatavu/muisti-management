@@ -26,7 +26,7 @@ import * as cropperjs from "cropperjs";
 import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
 import SpacesMap from "../generic/spaces-map";
-import { TreeNodeInArray } from "react-simple-tree-menu";
+import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
@@ -72,7 +72,6 @@ interface State {
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
   selectedItemHasNodes: boolean;
-  activeKeyInTree?: string;
 }
 
 /**
@@ -81,6 +80,7 @@ interface State {
 export class FloorPlanScreen extends React.Component<Props, State> {
 
   private mapRef = createRef<SpacesMap>();
+  private treeRef = createRef<TreeMenu>();
 
   /**
    * Constructor
@@ -139,8 +139,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom,
       selectedDeviceGroup,
       selectedDevice,
-      selectedAntenna,
-      activeKeyInTree } = this.state;
+      selectedAntenna } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -179,9 +178,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.structure }>
             <FloorPlanTreeMenu
+              treeRef={ this.treeRef }
               treeNodes={ treeNodes }
               firstSelected={ firstSelected }
-              focusKey={ activeKeyInTree }
             />
           </ElementNavigationPane>
           <EditorView>
@@ -355,6 +354,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         ]
       );
     const selectedFloor = floors[0];
+    const selectedItemHasNodes = !!rooms.find(room => room.floorId === selectedFloor.id);
 
     this.setState({
       exhibition,
@@ -363,7 +363,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       deviceGroups,
       devices,
       antennas,
-      selectedFloor
+      selectedFloor,
+      selectedItemHasNodes
     });
   }
 
@@ -372,23 +373,26 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    *
    * @return array of tree nodes
    */
-  private constructTreeData = () => {
+  private constructTreeData = (): TreeNodeInArray[] => {
     const { floors, rooms, deviceGroups, devices, antennas } = this.state;
 
-    const treeData: TreeNodeInArray[] = floors.map(floor => {
+    return floors.map(floor => {
       return {
         key: floor.id!,
         label: floor.name,
+        pathInTree: `${floor.id}`,
         onClick: (hasNodes: boolean) => this.onFloorClick(floor.id!, hasNodes),
         nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
           return {
             key: room.id!,
             label: room.name,
+            pathInTree: `${floor.id}/${room.id}`,
             onClick: (hasNodes: boolean) => this.onRoomClick(floor.id!, room.id!, hasNodes),
             nodes: deviceGroups.filter(group => group.roomId === room.id).map(group => {
               return {
                 key: group.id!,
                 label: group.name,
+                pathInTree: `${floor.id}/${room.id}/${group.id}`,
                 onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor.id!, room.id!, group.id!, hasNodes),
                 nodes:
                   [
@@ -396,6 +400,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                       return {
                         key: device.id!,
                         label: device.name,
+                        pathInTree: `${floor.id}/${room.id}/${group.id}/${device.id}`,
                         onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
                         nodes: [],
                       };
@@ -404,6 +409,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                       return {
                         key: antenna.id!,
                         label: antenna.name,
+                        pathInTree: `${floor.id}/${room.id}/${group.id}/${antenna.id}`,
                         onClick: (hasNodes: boolean) => this.onAntennaClick(floor.id!, room.id!, group.id!, antenna.id!, hasNodes),
                         nodes: [],
                       };
@@ -415,8 +421,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         })
       };
     });
-
-    return treeData;
   }
 
   /**
@@ -681,7 +685,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.floors.push(newFloor);
         draft.selectedFloor = newFloor;
-        draft.activeKeyInTree = `${newFloor.id}`;
       })
     );
   }
@@ -763,11 +766,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
-        const { selectedFloor } = draft;
-        const floorId = selectedFloor ? selectedFloor.id : "";
         draft.rooms.push(newRoom);
         draft.selectedRoom = newRoom;
-        draft.activeKeyInTree = `${floorId}/${newRoom.id}`;
       })
     );
   }
@@ -847,11 +847,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
-        const floorId = draft.selectedFloor?.id || "";
-        const roomId = draft.selectedRoom?.id || "";
         draft.deviceGroups.push(newDeviceGroup);
         draft.selectedDeviceGroup = newDeviceGroup;
-        draft.activeKeyInTree = `${floorId}/${roomId}/${newDeviceGroup.id}`;
       })
     );
   }
@@ -922,13 +919,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newDevice = await this.createDevice(accessToken, exhibitionId, deviceToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
-        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
-        const floorId = selectedFloor ? selectedFloor.id : "";
-        const roomId = selectedRoom ? selectedRoom.id : "";
-        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.devices.push(newDevice);
         draft.selectedDevice = newDevice;
-        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newDevice.id}`;
       })
     );
   }
@@ -1000,13 +992,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newAntenna = await this.createAntenna(accessToken, exhibitionId, antennaToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
-        const { selectedFloor, selectedRoom, selectedDeviceGroup } = draft;
-        const floorId = selectedFloor ? selectedFloor.id : "";
-        const roomId = selectedRoom ? selectedRoom.id : "";
-        const deviceGroupId = selectedDeviceGroup ? selectedDeviceGroup.id : "";
         draft.antennas.push(newAntenna);
         draft.selectedAntenna = newAntenna;
-        draft.activeKeyInTree = `${floorId}/${roomId}/${deviceGroupId}/${newAntenna.id}`;
       })
     );
   }
@@ -1082,14 +1069,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onFloorClick = (floorId: string, hasNodes: boolean) => {
     const { floors } = this.state;
 
+    const itemPathInTree = `${floorId}`;
+    this.updateOpenNodes(itemPathInTree);
     this.setState({
       selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: undefined,
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes,
-      activeKeyInTree: `${floorId}`
+      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1103,14 +1091,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onRoomClick = (floorId: string, roomId: string, hasNodes: boolean) => {
     const { floors, rooms } = this.state;
 
+    const itemPathInTree = `${floorId}/${roomId}`;
+    this.updateOpenNodes(itemPathInTree);
     this.setState({
       selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes,
-      activeKeyInTree: `${floorId}/${roomId}`
+      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1125,14 +1114,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => {
     const { floors, rooms, deviceGroups } = this.state;
 
+    const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}`;
+    this.updateOpenNodes(itemPathInTree);
     this.setState({
       selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes,
-      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}`
+      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1148,14 +1138,15 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => {
     const { floors, rooms, deviceGroups, devices } = this.state;
 
+    const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`;
+    this.updateOpenNodes(itemPathInTree);
     this.setState({
       selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: devices.find(device => device.id === deviceId),
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes,
-      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`
+      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1171,15 +1162,48 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onAntennaClick = (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => {
     const { floors, rooms, deviceGroups, antennas } = this.state;
 
+    const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}/${antennaId}`;
+    this.updateOpenNodes(itemPathInTree);
     this.setState({
       selectedFloor: floors.find(floor => floor.id === floorId),
       selectedRoom: rooms.find(room => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: antennas.find(antenna => antenna.id === antennaId),
-      selectedItemHasNodes: hasNodes,
-      activeKeyInTree: `${floorId}/${roomId}/${deviceGroupId}/${antennaId}`
+      selectedItemHasNodes: hasNodes
     });
+  }
+
+  /**
+   * Updates open nodes to tree menu
+   *
+   * @param itemPathInTree item path in tree as string
+   */
+  private updateOpenNodes = (itemPathInTree: string) => {
+    const treeRef = this.treeRef.current;
+    if (treeRef) {
+      const previousOpenNodes = (treeRef.state.openNodes ?? [])
+        .filter(node => !node.includes(itemPathInTree));
+      const newOpenNodes = this.constructOpenNodesList(itemPathInTree);
+      treeRef.resetOpenNodes(
+        [ ...previousOpenNodes, ...newOpenNodes ],
+        itemPathInTree
+      );
+    }
+  }
+
+  /**
+   * Constructs a list of new open nodes for tree menu
+   *
+   * @param itemPathInTree path of selected item in tree
+   * @returns list of open node key strings
+   */
+  private constructOpenNodesList = (itemPathInTree: string) => {
+    return itemPathInTree
+      .split("/")
+      .map((_, index, array) =>
+        array.slice(0, index + 1).join("/")
+      );
   }
 
   /**
