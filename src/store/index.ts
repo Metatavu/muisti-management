@@ -15,7 +15,7 @@ export const rootReducer = combineReducers({
     auth: authReducer,
     exhibitions: exhibitionsReducer,
     devices: devicesReducer,
-    layouts: layoutsReducer,
+    layouts: layoutsReducer
 });
 
 export type ReduxState = ReturnType<typeof rootReducer>;
