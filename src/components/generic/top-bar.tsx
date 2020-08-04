@@ -212,6 +212,7 @@ class TopBar extends React.Component<Props, State> {
         selected={ history.location.pathname.includes(tabButton.postfix) }
         component={ RouterLink }
         to={ tabButtonPath }
+        disabled={ !history.location.pathname.includes("floors/") }
       >
         <Typography>{ tabButton.text }</Typography>
       </ListItem>
@@ -224,17 +225,9 @@ class TopBar extends React.Component<Props, State> {
   private renderActionBar = () => {
     const { classes, actionBarButtons } = this.props;
 
-    if (actionBarButtons === undefined) {
-      return (
-        <div className={ classes.toolbar }>
-          { strings.floorPlan.brokenData }
-        </div>
-      );
-    }
-
     return (
       <div className={ classes.toolbar }>
-        <ActionBar buttons={ actionBarButtons } />
+        <ActionBar buttons={ actionBarButtons || [] } />
       </div>
     );
   }

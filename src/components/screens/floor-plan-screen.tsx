@@ -25,7 +25,7 @@ import FloorPlanCropProperties from "../floor-plan/floor-plan-crop-properties";
 import * as cropperjs from "cropperjs";
 import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
-import FloorPlanMap from "../generic/floor-plan-map";
+import SpacesMap from "../generic/spaces-map";
 import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
@@ -79,7 +79,7 @@ interface State {
  */
 export class FloorPlanScreen extends React.Component<Props, State> {
 
-  private mapRef = createRef<FloorPlanMap>();
+  private mapRef = createRef<SpacesMap>();
   private treeRef = createRef<TreeMenu>();
 
   /**
@@ -265,9 +265,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         selectedItemHasNodes: selectedItemHasNodes
       };
 
-      return <FloorPlanMap
+      return <SpacesMap
         ref={ this.mapRef }
-        key={ "floorPlanMap" }
+        key={ "SpacesMap" }
         deviceModels={ deviceModels }
         exhibitionId={ exhibitionId }
         mapData={ mapData }
@@ -1176,7 +1176,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Updates open nodes to tree menu
-   * 
+   *
    * @param itemPathInTree item path in tree as string
    */
   private updateOpenNodes = (itemPathInTree: string) => {
@@ -1194,14 +1194,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Constructs a list of new open nodes for tree menu
-   * 
+   *
    * @param itemPathInTree path of selected item in tree
    * @returns list of open node key strings
    */
   private constructOpenNodesList = (itemPathInTree: string) => {
     return itemPathInTree
       .split("/")
-      .map((_, index, array) => 
+      .map((_, index, array) =>
         array.slice(0, index + 1).join("/")
       );
   }

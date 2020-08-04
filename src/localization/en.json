@@ -485,6 +485,10 @@
     "deleteText": "Are you sure you want to delete this group content version and all its content?"
   },
 
+  "timeline": {
+    "open": "Open timeline"
+  },
+
   "genericDialog": {
     "confirm": "Confirm",
     "cancel": "Cancel",

@@ -84,7 +84,7 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/v4/exhibitions/:exhibitionId/floorplan"
+                      path="/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId"
                       exact={ true }
                       render={({ history, match }) => (
                         <FloorPlanEditorView
@@ -128,7 +128,6 @@ class App extends React.Component<Props, State> {
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.floorId }
                           roomId={ match.params.roomId }
-                          contentVersionId={ match.params.versionId }
                           readOnly={ true }
                         />
                       )}

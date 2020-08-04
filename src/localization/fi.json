@@ -482,6 +482,10 @@
     "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
   },
 
+  "timeline": {
+    "open": "Avaa timeline"
+  },
+
   "genericDialog": {
     "confirm": "Vahvista",
     "cancel": "Peruuta",

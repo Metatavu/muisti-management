@@ -486,6 +486,9 @@ export interface IStrings extends LocalizedStringsMethods {
     deleteText: string;
   };
 
+  timeline: {
+    open: string;
+  };
 
   genericDialog: {
     confirm: string;
