@@ -20,6 +20,7 @@ interface Props extends WithStyles<typeof styles> {
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
+  noTabs?: boolean;
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
@@ -63,7 +64,7 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, breadcrumbs, noBackButton, title } = this.props;
+    const { classes, keycloak, history, breadcrumbs, noBackButton, title, noTabs } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -110,7 +111,7 @@ class TopBar extends React.Component<Props, State> {
         <div className={ classes.bottomRow }>
           { history.location.pathname.includes("v4") &&
             <>
-              { history.location.pathname.includes("exhibitions/") &&
+              { history.location.pathname.includes("exhibitions/") && !noTabs &&
                 this.renderTabs()
               }
               { this.renderActionBar() }

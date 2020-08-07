@@ -18,6 +18,7 @@ interface Props extends WithStyles<typeof styles> {
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
+  noTabs?: boolean;
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
@@ -50,7 +51,7 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history, title, breadcrumbs, actionBarButtons, noBackButton, keycloak } = this.props;
+    const { classes, history, title, breadcrumbs, actionBarButtons, noBackButton, noTabs, keycloak } = this.props;
 
     return (
       <div className={ classes.root }>
@@ -60,6 +61,7 @@ class BasicLayout extends React.Component<Props, State> {
           breadcrumbs={ breadcrumbs }
           actionBarButtons={ actionBarButtons }
           noBackButton={ noBackButton }
+          noTabs={ noTabs }
           onDashboardButtonClick={ this.props.onDashboardButtonClick }
           title={ title }
         />
