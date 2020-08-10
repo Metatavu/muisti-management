@@ -1,7 +1,6 @@
 import React from "react";
 import { WithStyles, withStyles, List, ListItem, Typography } from "@material-ui/core";
 import styles from "../../styles/components/generic/tab-list";
-import strings from "../../localization/strings";
 import { History } from "history";
 import { Link as RouterLink } from 'react-router-dom';
 
