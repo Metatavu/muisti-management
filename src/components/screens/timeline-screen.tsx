@@ -15,11 +15,11 @@ import { KeycloakInstance } from "keycloak-js";
 // tslint:disable-next-line: max-line-length
 import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionRoom, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageTransition, GroupContentVersion, ExhibitionPageResource } from "../../generated/client";
 import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
-import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
+import ElementTimelinePane from "../layouts/element-timeline-pane";
 import EditorView from "../editor/editor-view";
 import CodeEditor from "../editor/code-editor";
 import ResourceEditor from "../right-panel-editors/resource-editor";
@@ -128,7 +128,7 @@ export class TimelineScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, exhibition, history } = this.props;
-    const { selectedResourceIndex, selectedEventTriggerIndex, treeMenuFocusKey, selectedPage } = this.state;
+    const { selectedResourceIndex, selectedEventTriggerIndex, selectedPage, devices } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
@@ -142,6 +142,8 @@ export class TimelineScreen extends React.Component<Props, State> {
       <BasicLayout
         history={ history }
         title={ exhibition.name }
+        devices={ devices }
+        setSelectedDevice={ this.onDeviceClick }
         breadcrumbs={ this.getBreadcrumbsData() }
         actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
@@ -149,20 +151,13 @@ export class TimelineScreen extends React.Component<Props, State> {
         clearError={ () => this.setState({ error: undefined }) }>
 
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title="">
-            <ExhibitionTreeMenu
-              focusKey={ treeMenuFocusKey }
-              treeData={ this.constructTreeData() }
-            />
-          </ElementNavigationPane>
-
-          <ElementContentsPane title="">
-            { this.renderElementContents() }
-          </ElementContentsPane>
-
           <EditorView>
             { this.renderEditor() }
           </EditorView>
+
+          <ElementTimelinePane>
+            { this.renderTimeline() }
+          </ElementTimelinePane>
 
           <ElementSettingsPane
             width={ 380 }
@@ -178,6 +173,14 @@ export class TimelineScreen extends React.Component<Props, State> {
               this.renderEventTriggerEditor()
             }
           </ElementSettingsPane>
+
+          <ElementContentsPane title="">
+            
+          </ElementContentsPane>
+
+          <ElementNavigationPane title="">
+            
+          </ElementNavigationPane>
         </div>
 
       </BasicLayout>
@@ -259,6 +262,13 @@ export class TimelineScreen extends React.Component<Props, State> {
     if (selectedDevice) {
       return this.renderDeviceSettings(selectedDevice);
     }
+  }
+
+  /**
+   * Renders element timeline
+   */
+  private renderTimeline = () => { // To do
+    return null;
   }
 
   /**
@@ -590,13 +600,15 @@ export class TimelineScreen extends React.Component<Props, State> {
    */
   private onDeviceClick = (deviceId: string) => {
     const { devices } = this.state;
+    const selectedDevice = devices.find(device => device.id === deviceId);
     this.setState({
-      selectedDevice: devices.find(device => device.id === deviceId),
+      selectedDevice: selectedDevice,
       selectedPage: undefined,
       selectedResourceIndex: undefined,
       selectedEventTriggerIndex: undefined,
       treeMenuFocusKey: `${deviceId}`
     });
+    return selectedDevice;
   }
 
   /**

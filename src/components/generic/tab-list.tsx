@@ -56,7 +56,7 @@ class TabList extends React.Component<Props, State> {
    */
   private renderTabs = () => {
     const { classes } = this.props;
-    
+
 
     return (
       <List
