@@ -12,7 +12,18 @@ import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition } from "../../generated/client";
+import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout } from "../../generated/client";
+import EditorView from "../editor/editor-view";
+import ElementTimelinePane from "../layouts/element-timeline-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import ElementContentsPane from "../layouts/element-contents-pane";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import PagePreview from "../preview/page-preview";
+import produce from "immer";
+import CodeEditor from "../editor/code-editor";
+import AndroidUtils from "../../utils/android-utils";
+import PanZoom from "../generic/pan-zoom";
+type View = "CODE" | "VISUAL";
 
 
 /**
@@ -29,18 +40,24 @@ interface Props extends WithStyles<typeof styles> {
   roomId: string;
   contentVersionId: string;
   groupContentVersionId: string;
+  deviceModels: DeviceModel[];
 }
 
 /**
  * Component state
  */
 interface State {
+  error?: Error;
   loading: boolean;
   room?: ExhibitionRoom;
   contentVersion?: ContentVersion;
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
+  selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
+  view: View;
+  selectedPage?: ExhibitionPage;
+  pageLayout?: PageLayout;
 }
 
 /**
@@ -58,7 +75,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       devices: [],
-      pages: []
+      pages: [],
+      view: "VISUAL"
     };
   }
 
@@ -91,7 +109,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
-    const { groupContentVersion } = this.state;
+    const { groupContentVersion, devices } = this.state;
 
     if (this.state.loading) {
       return (
@@ -116,12 +134,38 @@ class ContentEditorScreen extends React.Component<Props, State> {
         keycloak={ keycloak }
         history={ history }
         title={ groupContentVersion?.name || "" }
+        devices={ devices }
+        setSelectedDevice={ this.setSelectedDevice }
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         noBackButton
         noTabs
       >
-        
+        <div className={ classes.editorLayout }>
+          <EditorView>
+            { this.renderEditor() }
+          </EditorView>
+
+          <ElementTimelinePane>
+            { this.renderTimeline() }
+          </ElementTimelinePane>
+
+          <ElementSettingsPane
+            width={ 380 }
+            title={ "" }
+            open={ false }
+          >
+
+          </ElementSettingsPane>
+
+          <ElementContentsPane title="">
+            
+          </ElementContentsPane>
+
+          <ElementNavigationPane title="">
+            
+          </ElementNavigationPane>
+        </div>
       </BasicLayout>
     );
   }
@@ -145,6 +189,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     ]);
 
     const exhibitionGroupId = groupContentVersion.deviceGroupId;
+
     const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId });
 
     const devicePages = await Promise.all(
@@ -155,6 +200,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         })
       )
     );
+
     const pages = devicePages.flat();
 
     this.setState({
@@ -167,6 +213,75 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders element timeline
+   */
+  private renderTimeline = () => { // To do
+    return null;
+  }
+
+  /**
+   * Renders editor
+   */
+  private renderEditor = () => {
+    switch (this.state.view) {
+      case "CODE":
+        return this.renderCodeEditor();
+      case "VISUAL":
+        return this.renderVisualEditor();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Renders code editor
+   */
+  private renderCodeEditor = () => {
+    const { selectedPage } = this.state;
+    if (!selectedPage) {
+      return;
+    }
+
+    return (
+      <CodeEditor
+        json={ this.toJsonCode(selectedPage) }
+        onChange={ (json: string) => this.applyCodeEditorChanges(json) }
+      />
+    );
+  }
+
+  /**
+   * Renders visual editor
+   */
+  private renderVisualEditor = () => {
+    const { classes, deviceModels } = this.props;
+    const { selectedPage, pageLayout } = this.state;
+
+    if (!selectedPage || !pageLayout) {
+      return;
+    }
+
+    const view = pageLayout.data;
+    const resources = selectedPage.resources;
+    const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
+    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
+    const scale = 1;
+
+    return (
+      <div className={ classes.visualEditorContainer }>
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+          <PagePreview
+            screenOrientation={ pageLayout.screenOrientation }
+            view={ view }
+            resources={ resources }
+            displayMetrics={ displayMetrics }
+            scale={ scale } />
+        </PanZoom>
+      </div>
+    );
+  }
+
+  /**
    * Gets action buttons
    *
    * @returns action buttons as array
@@ -174,6 +289,78 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private getActionButtons = () => {
     return [] as ActionButton[];
   }
+
+  /**
+   * Sets selected device
+   *
+   * @param deviceId device id
+   */
+  private setSelectedDevice = (deviceId: string) => {
+    const { devices } = this.state;
+    const selectedDevice = devices.find(device => device.id === deviceId);
+    this.setState({
+      selectedDevice: selectedDevice
+    });
+    return selectedDevice;
+  }
+
+  /**
+   * Serializes exhibition page into JSON code
+   *
+   * @param page exhibition page
+   * @returns exhibition page as JSON string
+   */
+  private toJsonCode = (page: Partial<ExhibitionPage>): string => {
+    const { resources, eventTriggers } = page;
+    return JSON.stringify({ resources, eventTriggers }, null, 2);
+  }
+
+  /**
+   * Applies changes from code editor to page object
+   *
+   * @param json changed json
+   */
+  private applyCodeEditorChanges = (json: string) => {
+    this.setState(
+      produce((draft: State) => {
+        if (!draft.selectedPage) {
+          return;
+        }
+
+        const parsedCode = this.parseCode(json);
+        if (parsedCode.resources) {
+          draft.selectedPage.resources = parsedCode.resources;
+        }
+
+        if (parsedCode.eventTriggers) {
+          draft.selectedPage.eventTriggers = parsedCode.eventTriggers;
+        }
+      })
+    );
+  }
+
+  /**
+   * Parses exhibition page json to object
+   *
+   * @param json page json
+   */
+  private parseCode = (json: string) => {
+    const result: Partial<ExhibitionPage> = {
+      eventTriggers: [],
+      resources: []
+    };
+
+    try {
+      const parsedCode = JSON.parse(json);
+      result.eventTriggers = (parsedCode.eventTriggers || []).map(ExhibitionPageEventTriggerFromJSON);
+      result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
+    } catch (error) {
+      this.setState({ error });
+    }
+
+    return result;
+  }
+
 }
 
 /**
@@ -185,7 +372,8 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibition: state.exhibitions.selectedExhibition as Exhibition
+    exhibition: state.exhibitions.selectedExhibition as Exhibition,
+    deviceModels: state.devices.deviceModels,
   };
 }
 

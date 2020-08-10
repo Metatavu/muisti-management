@@ -166,15 +166,7 @@ class App extends React.Component<Props, State> {
                       ]}
                       exact={ true }
                       render={({ history, match }) => (
-                        // <ContentEditorScreen
-                        //   history={ history }
-                        //   exhibitionId={ match.params.exhibitionId }
-                        //   floorId={ match.params.floorId }
-                        //   roomId={ match.params.roomId }
-                        //   contentVersionId={ match.params.contentVersionId }
-                        //   groupContentVersionId={ match.params.groupContentVersionId }
-                        // />
-                        <TimelineScreen
+                        <ContentEditorScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           floorId={ match.params.floorId }
