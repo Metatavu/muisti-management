@@ -21,9 +21,9 @@ interface State {
 }
 
 /**
- * Component for tab list
+ * Component for device list
  */
-class TabList extends React.Component<Props, State> {
+class DeviceList extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -100,4 +100,4 @@ class TabList extends React.Component<Props, State> {
 
 }
 
-export default withStyles(styles)(TabList);
+export default withStyles(styles)(DeviceList);

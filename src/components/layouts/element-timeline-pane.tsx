@@ -17,7 +17,7 @@ interface State {
 }
 
 /**
- * Component for element contents pane
+ * Component for element timeline pane
  */
 class ElementTimelinePane extends React.Component<Props, State> {
 

@@ -18,13 +18,16 @@ interface Props extends WithStyles<typeof styles>  {
 interface State {
 }
 
+/**
+ * Interface representing navigation button
+ */
 interface NavigationButton {
   postfix: string;
   text: string;
 }
 
 /**
- * Component for content utility bar
+ * Component for tab list
  */
 class TabList extends React.Component<Props, State> {
 
@@ -97,6 +100,8 @@ class TabList extends React.Component<Props, State> {
    * Get new path.
    *
    * @param tabButton navigation button
+   *
+   * @returns string
    */
   private getTabButtonPath = (tabButton: NavigationButton): string => {
     const { history } = this.props;
