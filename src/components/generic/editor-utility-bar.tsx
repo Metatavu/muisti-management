@@ -21,7 +21,6 @@ interface Props extends WithStyles<typeof styles>  {
  * Interface representing component state
  */
 interface State {
-
 }
 
 /**
@@ -37,7 +36,6 @@ class EditorUtilityBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-
     };
   }
 

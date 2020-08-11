@@ -8,14 +8,12 @@ import styles from "../../styles/element-timeline-pane";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-
 }
 
 /**

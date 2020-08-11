@@ -25,7 +25,6 @@ import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 type View = "CODE" | "VISUAL";
 
-
 /**
  * Component props
  */
@@ -84,11 +83,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
-    const { exhibition, exhibitionId, accessToken } = this.props;
+    const { exhibition, exhibitionId, accessToken, setSelectedExhibition } = this.props;
 
     if (!exhibition || exhibitionId !== exhibition.id) {
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-      this.props.setSelectedExhibition(await exhibitionsApi.findExhibition({ exhibitionId }));
+      setSelectedExhibition(await exhibitionsApi.findExhibition({ exhibitionId }));
       return;
     }
 
