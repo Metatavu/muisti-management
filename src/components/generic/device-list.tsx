@@ -54,7 +54,7 @@ class TabList extends React.Component<Props, State> {
   }
 
   /**
-   * Renders tab button
+   * Renders tab buttons
    *
    * @param tabButton tab button
    */
