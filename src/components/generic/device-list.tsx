@@ -21,7 +21,7 @@ interface State {
 }
 
 /**
- * Component for content utility bar
+ * Component for tab list
  */
 class TabList extends React.Component<Props, State> {
 
