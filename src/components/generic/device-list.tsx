@@ -33,7 +33,6 @@ class TabList extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-
     };
   }
 
