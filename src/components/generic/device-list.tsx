@@ -49,6 +49,18 @@ class DeviceList extends React.Component<Props, State> {
         className={ classes.tabs }
       >
         { this.renderTabButtons() }
+
+        {/**
+         * Temporary link to new timeline component
+         */}
+        <ListItem
+          button
+          selected={ false }
+          onClick={ () => { this.props.history.push(this.props.history.location.pathname.replace("timeline", "newTimeline")) } }
+        >
+          <Typography>{ "Uusi timeline" }</Typography>
+        </ListItem>
+
       </List>
     );
   }
@@ -63,7 +75,7 @@ class DeviceList extends React.Component<Props, State> {
     const { selectedDevice } = this.state;
 
     if (!devices) {
-      throw new Error("devices array prop missing from basiclayout");
+      return;
     }
 
     return devices.map(device => {
@@ -85,12 +97,8 @@ class DeviceList extends React.Component<Props, State> {
   private selectDeviceTab = (device: ExhibitionDevice) => () => {
     const { setSelectedDevice } = this.props;
 
-    if (!device.id) {
+    if (!device.id || !setSelectedDevice) {
       return;
-    }
-
-    if (!setSelectedDevice) {
-      throw new Error("setSelectedDevice function prop missing from basiclayout");
     }
 
     this.setState({

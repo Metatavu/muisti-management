@@ -25,8 +25,11 @@ export default createStyles({
     overflow: "hidden",
     display: "grid",
     gridTemplateRows: "1fr",
-    gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ` "navigation contents editor-view properties" `,
+    gridTemplateColumns: "auto 1fr auto auto",
+    gridTemplateAreas: `
+    "properties editor-view contents navigation"
+    "timeline timeline contents navigation"
+    `,
   },
 
   visualEditorContainer: {
