@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
-import styles from "../../styles/exhibition-view";
+import styles from "../../styles/content-editor-screen";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';

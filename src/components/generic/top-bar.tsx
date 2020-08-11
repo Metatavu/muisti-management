@@ -113,10 +113,12 @@ class TopBar extends React.Component<Props, State> {
         <div className={ classes.bottomRow }>
           { history.location.pathname.includes("v4") &&
             <>
-              { !history.location.pathname.includes("timeline") &&
+              { // Temporary path to new timeline included
+                !history.location.pathname.includes("timeline") && !history.location.pathname.includes("newTimeline") &&
                 <ContentUtilityBar history={ history } actionBarButtons={ actionBarButtons } noTabs={ noTabs } />
               }
-              { history.location.pathname.includes("timeline") &&
+              {  // Temporary path to new timeline included
+                (history.location.pathname.includes("timeline") || history.location.pathname.includes("newTimeline")) &&
                 <EditorUtilityBar history={ history } actionBarButtons={ actionBarButtons } devices={ devices } setSelectedDevice={ setSelectedDevice } />
               }
             </>
