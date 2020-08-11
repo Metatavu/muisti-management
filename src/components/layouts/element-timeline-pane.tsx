@@ -14,7 +14,6 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
-
 }
 
 /**
