@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout, SubLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
@@ -17,21 +17,26 @@ import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
 import { constructTreeUpdateData, updateLayoutView, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
 import GenericPropertyTextField from "./generic-property-textfield";
+import { setSelectedSubLayout } from "../../../actions/subLayouts";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  editingSubLayout: boolean;
   pageLayoutView: PageLayoutView;
   selectedElementPath: string;
   pageLayout: PageLayout;
+  subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
+  setSelectedSubLayout: typeof setSelectedSubLayout;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  layout?: PageLayout | SubLayout;
 }
 
 /**
@@ -48,6 +53,38 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
     };
+  }
+
+  public componentDidMount = () => {
+    const { editingSubLayout, pageLayout, subLayout } = this.props;
+
+    if (editingSubLayout) {
+      this.setState({
+        layout: subLayout
+      });
+    } else {
+      this.setState({
+        layout: pageLayout
+      });
+    }
+  }
+
+  public componentDidUpdate = (prevProps: Props) => {
+    const { pageLayout, subLayout, editingSubLayout } = this.props;
+    if (
+      JSON.stringify(prevProps.pageLayout) !== JSON.stringify(pageLayout) ||
+      JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout))
+    {
+      if (editingSubLayout) {
+        this.setState({
+          layout: subLayout
+        });
+      } else {
+        this.setState({
+          layout: pageLayout
+        });
+      }
+    }
   }
 
   /**
@@ -225,34 +262,48 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
   /**
    * Generic handler for single page layout property value changes
-   * 
+   *
    * @param updatedPageLayoutView page layout view property object to update
    */
   private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
-    const { selectedElementPath } = this.props;
-    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+    const { selectedElementPath, editingSubLayout } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
     const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
     const updatedLayoutView = updateLayoutView(pageLayoutViewProperty, layoutView);
-    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, updatedLayoutView, selectedElementPath);
-    this.props.setSelectedLayout(pageLayoutToUpdate);
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
+    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    this.setState({
+      layout : layoutToUpdate
+    });
   }
 
   /**
    * Generic handler for multiple page layout property value changes
-   * 
+   *
    * @param updatedPageLayoutViews list of page layout view property objects to update
    */
   private onMultipleValueChange = (pageLayoutViewProperties: PageLayoutViewProperty[]) => {
-    const { selectedElementPath } = this.props;
-    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+    const { selectedElementPath, editingSubLayout } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
 
     pageLayoutViewProperties.forEach(property => {
       updateLayoutView(property, layoutViewToUpdate);
     });
 
-    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
-    this.props.setSelectedLayout(pageLayoutToUpdate);
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, layoutViewToUpdate, selectedElementPath);
+    this.props.setSelectedSubLayout(layoutToUpdate)
+    this.setState({
+      layout : layoutToUpdate
+    });
   }
 }
 
@@ -264,6 +315,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 function mapStateToProps(state: ReduxState) {
   return {
     pageLayout: state.layouts.selectedLayout as PageLayout,
+    subLayout: state.subLayouts.selectedSubLayout as SubLayout,
   };
 }
 
@@ -275,6 +327,7 @@ function mapStateToProps(state: ReduxState) {
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
+    setSelectedSubLayout: (subLayout: SubLayout) => dispatch(setSelectedSubLayout(subLayout)),
   };
 }
 

@@ -272,11 +272,16 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
-    subLayout: {
-      title: string;
-      addNew: string;
-    }
   };
+
+  subLayout: {
+    title: string;
+    addNew: string;
+    preview: {
+      height: string;
+      width: string;
+    }
+  }
 
   floorPlan: {
     title: string;

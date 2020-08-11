@@ -167,6 +167,7 @@ export class LayoutScreen extends React.Component<Props, State> {
           <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
+                editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
@@ -310,6 +311,7 @@ export class LayoutScreen extends React.Component<Props, State> {
     if (!deviceModel) {
       return;
     }
+    console.log(displayMetrics);
 
     return (
       <div className={ classes.editors }>

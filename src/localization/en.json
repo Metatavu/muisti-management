@@ -270,10 +270,15 @@
     },
     "properties": {
       "title": "properties"
-    },
-    "subLayout": {
-      "title": "Sub layout",
-      "addNew": "Add new sub layout"
+    }
+  },
+
+  "subLayout": {
+    "title": "Sub layout",
+    "addNew": "Add new sub layout",
+    "preview": {
+      "width": "Preview width (px)",
+      "height": "Preview height (px)"
     }
   },
 

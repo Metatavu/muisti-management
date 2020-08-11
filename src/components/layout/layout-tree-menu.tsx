@@ -301,7 +301,6 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   private onSublayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { newPageLayoutView } = this.state;
     const sublayoutId = event.target.value as PageLayout;
-    console.log(sublayoutId);
 
     // if (!newPageLayoutView) {
 

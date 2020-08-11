@@ -8,7 +8,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Typography, Divider } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayoutView, Exhibition, SubLayout } from "../../generated/client";
@@ -105,14 +105,14 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   /**
    * Component did mount life cycle handler
    */
-  public async componentDidMount() {
+  public componentDidMount = async () => {
     this.setState({ loading: true });
     await this.fetchEditorData();
     this.setState({ loading: false });
   }
 
   /**
-   * Component di update life cycle handler
+   * Component did update life cycle handler
    *
    * @param prevProps previous component props
    */
@@ -127,8 +127,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history, subLayout } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen } = this.state;
+    const { classes, history, subLayout, keycloak } = this.props;
+    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, error, name, width, height } = this.state;
 
     if (!subLayout || !subLayout.id || loading ) {
       return (
@@ -144,8 +144,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         title={ subLayout.name }
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
-        keycloak={ this.props.keycloak }
-        error={ this.state.error }
+        keycloak={ keycloak }
+        error={ error }
         clearError={ () => this.setState({ error: undefined }) }
       >
         <div className={ classes.editorLayout }>
@@ -153,9 +153,29 @@ export class SubLayoutScreen extends React.Component<Props, State> {
             <div className={ classes.toolbarContent }>
               <TextField
                 variant="filled"
+                type="number"
+                fullWidth
+                label={ strings.subLayout.preview.width }
+                value={ width }
+                onChange={ this.onWidthChange }
+              />
+              <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+
+              <TextField
+                variant="filled"
+                type="number"
+                fullWidth
+                label={ strings.subLayout.preview.height }
+                value={ height }
+                onChange={ this.onHeightChange }
+              />
+              <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+
+              <TextField
+                variant="filled"
                 fullWidth
                 label={ strings.layout.toolbar.name }
-                value={ this.state.name }
+                value={ name }
                 onChange={ this.onNameChange }
               />
               { this.renderPageLayoutComponentStructure() }
@@ -168,6 +188,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
           <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
+                editingSubLayout={ true }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
@@ -258,22 +279,22 @@ export class SubLayoutScreen extends React.Component<Props, State> {
      * Easiest way for now is to fake display metrics for preview
      */
     const displayMetrics: DisplayMetrics = {
-      density: 1,
+      density: 3,
       heightPixels: height,
       widthPixels: width,
-      xdpi: 1,
-      ydpi: 1,
-      densityDpi: 1
-    }
+      xdpi: 515,
+      ydpi: 515,
+      densityDpi: 480
+    };
     const scale = 1;
 
     return (
       <div className={ classes.editors }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ width } contentHeight={ height } disabled={ resizing }>
+        <PanZoom minScale={ 0.1 } fitContent={ false } contentWidth={ width } contentHeight={ height } disabled={ resizing }>
 
           <ResizableBox
-            width={ 200 }
-            height={ 200 }
+            width={ width }
+            height={ height }
             resizeHandles={ [ 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }
             onResizeStart={ this.onResizeStart }
             onResizeStop={ this.onResizeStop }
@@ -421,6 +442,28 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       name: event.target.value
+    });
+  }
+
+  /**
+   * Event handler for name input change
+   *
+   * @param event event
+   */
+  private onWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      width: Number(event.target.value)
+    });
+  }
+
+  /**
+   * Event handler for name input change
+   *
+   * @param event event
+   */
+  private onHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      height: Number(event.target.value)
     });
   }
 

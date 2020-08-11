@@ -270,10 +270,15 @@
     },
     "properties": {
       "title": "Ominaisuudet"
-    },
-    "subLayout": {
-      "title": "Ali asettelu",
-      "addNew": "Lisää uusi ali asettelu"
+    }
+  },
+
+  "subLayout": {
+    "title": "Ali asettelu",
+    "addNew": "Lisää uusi ali asettelu",
+    "preview": {
+      "width": "Esikatselun leveys (px)",
+      "height": "Esikatselun korkeus (px)"
     }
   },
 

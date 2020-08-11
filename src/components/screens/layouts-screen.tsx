@@ -148,7 +148,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       return (
         <CardItem
           key={ subLayout.id }
-          title={ `${strings.layout.subLayout.title} - ${subLayout.name}` }
+          title={ `${strings.subLayout.title} - ${subLayout.name}` }
           onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
           menuOptions={ cardMenuOptions }
           status={ "" }
@@ -162,7 +162,7 @@ class LayoutsScreen extends React.Component<Props, State> {
           { layoutCards }
         </CardList>
 
-        <CardList title={ strings.layout.subLayout.title }>
+        <CardList title={ strings.subLayout.title }>
           { subLayoutCards }
         </CardList>
       </div>
@@ -179,7 +179,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       <GenericDialog
         error={ !newLayout.name && !newSubLayout.name }
         open={ addNewDialogOpen }
-        title={ createSubLayout ? strings.layout.subLayout.addNew : strings.layout.addNew }
+        title={ createSubLayout ? strings.subLayout.addNew : strings.layout.addNew }
         positiveButtonText={ strings.generic.add }
         cancelButtonText={ strings.generic.cancel }
         onCancel={ this.toggleAddNewDialog }
@@ -197,7 +197,7 @@ class LayoutsScreen extends React.Component<Props, State> {
               inputProps={{ 'aria-label': 'primary checkbox' }}
               />
             }
-          label={ strings.layout.subLayout.title }
+          label={ strings.subLayout.title }
         />
         <TextField
           fullWidth

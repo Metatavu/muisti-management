@@ -76,7 +76,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
 
     const options = {
       minScale: minScale || 1,
-      limitToBounds: true,
+      limitToBounds: false,
       disabled: disabled
     };
 
