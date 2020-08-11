@@ -25,7 +25,6 @@ import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 type View = "CODE" | "VISUAL";
 
-
 /**
  * Component props
  */
