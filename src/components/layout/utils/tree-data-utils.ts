@@ -1,4 +1,4 @@
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout } from "../../../generated/client";
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
 
 /**
@@ -7,7 +7,7 @@ import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants
  * @param layoutViewPath path of the item to be deleted inside the tree
  * @returns updated page layout
  */
-export const constructTreeDeleteData = (pageLayout: PageLayout, layoutViewPath: string): PageLayout => {
+export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layoutViewPath: string): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data = { ...pageLayout.data, children: [] };
   } else {
@@ -56,7 +56,7 @@ const deleteViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
  * @param layoutViewPath path of the item to be updated inside the tree
  * @returns updated page layout
  */
-export const constructTreeUpdateData = (pageLayout: PageLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout => {
+export const constructTreeUpdateData = (pageLayout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data = pageLayoutView;
   } else {
@@ -107,7 +107,7 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
  * @returns updated page layout
  */
-export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout => {
+export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data.children.push(pageLayoutView);
   } else {

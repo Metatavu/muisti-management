@@ -153,8 +153,8 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     const { selectedElementPath } = this.props;
     const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
-    updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
-    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
+    const updatedLayoutView = updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
+    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, updatedLayoutView, selectedElementPath);
     this.props.setSelectedLayout(pageLayoutToUpdate);
   }
 }

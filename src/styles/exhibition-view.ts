@@ -73,5 +73,9 @@ export default createStyles({
     "&:hover": {
       boxShadow: "0 0 10px rgba(0,0,0,0.2)"
     }
-  }
+  },
+
+  title: {
+    color: theme.palette.text.primary
+  },
 });

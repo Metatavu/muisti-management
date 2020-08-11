@@ -272,6 +272,10 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
+    subLayout: {
+      title: string;
+      addNew: string;
+    }
   };
 
   floorPlan: {
@@ -462,6 +466,7 @@ export interface IStrings extends LocalizedStringsMethods {
       widget: string;
       confirm: string;
       cancel: string;
+      sublayout: string;
     };
 
   };

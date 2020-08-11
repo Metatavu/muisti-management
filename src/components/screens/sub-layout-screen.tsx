@@ -3,21 +3,19 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
+import { PageLayoutView, Exhibition, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import PagePreview from "../preview/page-preview";
 import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -34,6 +32,11 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
+import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
+import { Resizable, ResizableBox, ResizeCallbackData } from 'react-resizable';
+import "react-resizable/css/styles.css";
+import PagePreview from "../preview/page-preview";
+import DisplayMetrics from "../../types/display-metrics";
 
 type View = "CODE" | "VISUAL";
 
@@ -44,13 +47,11 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   keycloak: KeycloakInstance;
   accessToken: AccessToken;
-  exhibitions: Exhibition[];
-  deviceModels: DeviceModel[];
-  layoutId: string;
-  layout?: PageLayout;
-  layouts: PageLayout[];
-  setLayouts: typeof setLayouts;
-  setSelectedLayout: typeof setSelectedLayout;
+  subLayoutId: string;
+  subLayout?: SubLayout;
+  subLayouts: SubLayout[];
+  setSubLayouts: typeof setSubLayouts;
+  setSelectedSubLayout: typeof setSelectedSubLayout;
 }
 
 /**
@@ -61,8 +62,6 @@ interface State {
   loading: boolean;
   name: string;
   jsonCode: string;
-  deviceModelId: string;
-  screenOrientation: ScreenOrientation;
   xmlCode: string;
   toolbarOpen: boolean;
   deleteOpen: boolean;
@@ -71,12 +70,15 @@ interface State {
   selectedPropertyPath?: string;
   selectedWidgetType?: PageLayoutWidgetType;
   panelOpen: boolean;
+  resizing: boolean;
+  height: number;
+  width: number;
 }
 
 /**
- * Component for layout screen
+ * Component for sub layout screen
  */
-export class LayoutScreen extends React.Component<Props, State> {
+export class SubLayoutScreen extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -88,14 +90,15 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       name: "",
-      deviceModelId: "",
-      screenOrientation: ScreenOrientation.Portrait,
       jsonCode: JSON.stringify({}, null, 2),
       xmlCode: "",
       toolbarOpen: true,
       deleteOpen: false,
       view: "VISUAL",
-      panelOpen: false
+      panelOpen: false,
+      resizing: false,
+      height: 200,
+      width: 200
     };
   }
 
@@ -114,9 +117,9 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param prevProps previous component props
    */
   public componentDidUpdate = (prevProps: Props) => {
-    const { layout } = this.props;
-    if (layout && layout !== prevProps.layout) {
-      this.setState({ jsonCode: JSON.stringify(layout.data, null, 2) });
+    const { subLayout } = this.props;
+    if (subLayout && subLayout !== prevProps.subLayout) {
+      this.setState({ jsonCode: JSON.stringify(subLayout.data, null, 2) });
     }
   }
 
@@ -124,10 +127,10 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history, layout } = this.props;
+    const { classes, history, subLayout } = this.props;
     const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen } = this.state;
 
-    if (!layout || !layout.id || loading ) {
+    if (!subLayout || !subLayout.id || loading ) {
       return (
         <div className={ classes.loader }>
           <CircularProgress size={ 50 } color="secondary"></CircularProgress>
@@ -138,7 +141,7 @@ export class LayoutScreen extends React.Component<Props, State> {
     return (
       <BasicLayout
         history={ history }
-        title={ layout.name }
+        title={ subLayout.name }
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
@@ -155,8 +158,6 @@ export class LayoutScreen extends React.Component<Props, State> {
                 value={ this.state.name }
                 onChange={ this.onNameChange }
               />
-              { this.renderDeviceModelSelect() }
-              { this.renderScreenOrientationSelect() }
               { this.renderPageLayoutComponentStructure() }
             </div>
           </ElementNavigationPane>
@@ -185,70 +186,22 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders device model select
-   */
-  private renderDeviceModelSelect = () => {
-    const { deviceModels, classes } = this.props;
-    const deviceModelSelectItems = deviceModels.map(model => 
-      <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
-    );
-
-    return (
-      <div className={ classes.select }>
-        <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="deviceModelId"
-          value={ this.state.deviceModelId }
-          onChange={ this.onDeviceModelChange }
-        >
-        { deviceModelSelectItems }
-        </Select>
-      </div>
-    );
-  }
-
-  /**
-   * Renders screen orientation select
-   */
-  private renderScreenOrientationSelect = () => {
-    const { classes } = this.props;
-
-    return (
-      <div className={ classes.select }>
-        <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="screenOrientation"
-          value={ this.state.screenOrientation }
-          onChange={ this.onScreenOrientationChange }
-        >
-          <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-          <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
-        </Select>
-      </div>
-    );
-  }
-
-  /**
    * Renders page layout component structure
    */
   private renderPageLayoutComponentStructure = () => {
-    const { layouts, layout } = this.props;
+    const { subLayouts, subLayout } = this.props;
 
-    if (!layout) {
+    if (!subLayout) {
       return (<div/>);
     }
 
     return (
       <LayoutTreeMenu
-        layouts={ layouts }
+        layouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
-        onAdd={ this.onLayoutViewAdd }
+        onAdd={ this.onSubLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
-        treeData={ this.constructTreeData(layout) }
+        treeData={ this.constructTreeData(subLayout) }
       />
     );
   }
@@ -296,31 +249,41 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Renders a visual editor view
    */
   private renderVisualEditor = () => {
-    const { classes, deviceModels } = this.props;
-    const { deviceModelId, screenOrientation } = this.state;
-    if (deviceModels.length === 0) {
-      return;
-    }
+    const { classes } = this.props;
+    const { resizing, height, width } = this.state;
 
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
-    const deviceModel = deviceModels.find(model => model.id === deviceModelId);
-    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
-    const scale = 1;
 
-    if (!deviceModel) {
-      return;
+    /**
+     * Easiest way for now is to fake display metrics for preview
+     */
+    const displayMetrics: DisplayMetrics = {
+      density: 1,
+      heightPixels: height,
+      widthPixels: width,
+      xdpi: 1,
+      ydpi: 1,
+      densityDpi: 1
     }
+    const scale = 1;
 
     return (
       <div className={ classes.editors }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
-          <PagePreview
-            view={ view }
-            displayMetrics={ displayMetrics }
-            scale={ scale }
-            screenOrientation={ screenOrientation }
-            deviceOrientation={ deviceModel.screenOrientation}
-          />
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ width } contentHeight={ height } disabled={ resizing }>
+
+          <ResizableBox
+            width={ 200 }
+            height={ 200 }
+            resizeHandles={ [ 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }
+            onResizeStart={ this.onResizeStart }
+            onResizeStop={ this.onResizeStop }
+          >
+            <PagePreview
+              view={ view }
+              displayMetrics={ displayMetrics }
+              scale={ scale }
+            />
+          </ResizableBox>
         </PanZoom>
       </div>
     );
@@ -341,28 +304,38 @@ export class LayoutScreen extends React.Component<Props, State> {
     ];
   }
 
+  private onResizeStart = () => {
+    this.setState({
+      resizing: true
+    });
+  }
+
+  private onResizeStop = (e: React.SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
+    this.setState({
+      width: data.size.width,
+      height: data.size.height,
+      resizing: false
+    });
+  }
+
   /**
    * Fetches editor data
    */
   private fetchEditorData = async () => {
-    const { layoutId, layout, accessToken } = this.props;
+    const { subLayoutId, subLayout, accessToken } = this.props;
 
-    if (!layout) {
-      const layoutsApi = Api.getPageLayoutsApi(accessToken);
-      const layout = await layoutsApi.findPageLayout({ pageLayoutId: layoutId });
-      this.props.setSelectedLayout(layout);
+    if (!subLayout) {
+      const subLayoutsApi = Api.getSubLayoutsApi(accessToken);
+      const foundSubLayout = await subLayoutsApi.findSubLayout({ subLayoutId: subLayoutId });
+      this.props.setSelectedSubLayout(foundSubLayout);
       this.setState({
-        name: layout.name,
-        jsonCode: JSON.stringify(layout.data, null, 2),
-        screenOrientation: layout.screenOrientation,
-        deviceModelId: layout.modelId || ""
+        name: foundSubLayout.name,
+        jsonCode: JSON.stringify(foundSubLayout.data, null, 2),
       });
     } else {
       this.setState({
-        name: layout.name,
-        jsonCode: JSON.stringify(layout.data, null, 2),
-        screenOrientation: layout.screenOrientation,
-        deviceModelId: layout.modelId || ""
+        name: subLayout.name,
+        jsonCode: JSON.stringify(subLayout.data, null, 2),
       });
     }
   }
@@ -373,19 +346,19 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param dataParams tree data params
    * @returns array of tree nodes in array
    */
-  private constructTreeData = (pageLayout: PageLayout): TreeNodeInArray[] => {
-    const path = pageLayout.data.id;
-    const type = pageLayout.data.widget;
+  private constructTreeData = (subLayout: SubLayout): TreeNodeInArray[] => {
+    const path = subLayout.data.id;
+    const type = subLayout.data.widget;
     const treeData = [{
-      key: pageLayout.data.id,
+      key: subLayout.data.id,
       path: path,
-      label: pageLayout.data.widget,
-      element: pageLayout.data,
+      label: subLayout.data.widget,
+      element: subLayout.data,
       type: type,
-      onSelect: () => this.onLayoutPageViewSelect(pageLayout.data, type, path),
+      onSelect: () => this.onLayoutPageViewSelect(subLayout.data, type, path),
       parents: [ ],
-      nodes: pageLayout.data.children.map(child => {
-        return this.getNode(path, pageLayout.data, child);
+      nodes: subLayout.data.children.map(child => {
+        return this.getNode(path, subLayout.data, child);
       })
     }];
     return treeData;
@@ -452,28 +425,6 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for screen orientation select change
-   *
-   * @param event event
-   */
-  private onScreenOrientationChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
-    this.setState({
-      screenOrientation: event.target.value as ScreenOrientation
-    });
-  }
-
-  /**
-   * Event handler for device model select change
-   *
-   * @param event event
-   */
-  private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    this.setState({
-      deviceModelId: event.target.value as string
-    });
-  }
-
-  /**
    * Event handler for before JSON code change event
    *
    * @param editor editor instance
@@ -490,15 +441,13 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Event handler for save button click
    */
   private onSaveClick = () => {
-    const layout = {
-      ...this.props.layout,
+    const subLayout = {
+      ...this.props.subLayout,
       name: this.state.name,
-      data: JSON.parse(this.state.jsonCode),
-      modelId: this.state.deviceModelId,
-      screenOrientation: this.state.screenOrientation
+      data: JSON.parse(this.state.jsonCode)
     };
 
-    this.onLayoutSave(layout);
+    this.onSubLayoutSave(subLayout);
   }
 
   /**
@@ -506,21 +455,23 @@ export class LayoutScreen extends React.Component<Props, State> {
    *
    * @param layout layout
    */
-  private onLayoutSave = async (layout: PageLayout) => {
-    try {
-      const pageLayoutsApi = Api.getPageLayoutsApi(this.props.accessToken);
-      const pageLayoutId = layout.id!;
+  private onSubLayoutSave = async (subLayout: SubLayout) => {
+    const { accessToken, subLayouts, setSubLayouts } = this.props;
 
-      const updatedLayout = await pageLayoutsApi.updatePageLayout({
-        pageLayoutId: pageLayoutId,
-        pageLayout: layout
+    try {
+      const subLayoutsApi = Api.getSubLayoutsApi(accessToken);
+      const subLayoutId = subLayout.id!;
+
+      const updatedSubLayout = await subLayoutsApi.updateSubLayout({
+        subLayoutId: subLayoutId,
+        subLayout: subLayout
       });
 
-      const layouts = this.props.layouts.filter(item => item.id !== updatedLayout.id);
-      this.props.setLayouts([ ...layouts, layout ]);
+      const filteredSubLayouts = subLayouts.filter(layout => layout.id !== updatedSubLayout.id);
+      setSubLayouts([ ...subLayouts, updatedSubLayout ]);
 
       this.setState({
-        jsonCode: JSON.stringify(layout.data, null, 2)
+        jsonCode: JSON.stringify(updatedSubLayout.data, null, 2)
       });
     } catch (e) {
       console.error(e);
@@ -537,15 +488,15 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param layoutView layout view
    * @param path path in tree structure
    */
-  private onLayoutViewAdd = async (layoutView: PageLayoutView, path: string) => {
-    const { layout } = this.props;
-    if (!layout) {
+  private onSubLayoutViewAdd = async (layoutView: PageLayoutView, path: string) => {
+    const { subLayout } = this.props;
+    if (!subLayout) {
       return;
     }
 
-    const updatedLayout = pushNewPageLayoutViewToTree(layout, layoutView, path);
-    this.props.setSelectedLayout(updatedLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2) });
+    const updatedSubLayout = pushNewPageLayoutViewToTree(subLayout, layoutView, path);
+    this.props.setSelectedSubLayout(updatedSubLayout);
+    this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2) });
   }
 
   /**
@@ -554,18 +505,17 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param path path in tree structure
    */
   private onLayoutViewDelete = async (path: string) => {
-    const { layout } = this.props;
-    if (!layout) {
+    const { subLayout } = this.props;
+    if (!subLayout) {
       return;
     }
 
-    const updatedLayout = constructTreeDeleteData(layout, path);
-    this.props.setSelectedLayout(updatedLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2) });
+    const updatedSubLayout = constructTreeDeleteData(subLayout, path);
+    this.props.setSelectedSubLayout(updatedSubLayout);
+    this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2) });
   }
 
-  /**import { setSelectedLayout, setLayouts } from "../../actions/layouts";
-
+  /**
    * Event listener for switch view button click
    */
   private onSwitchViewClick = () => {
@@ -584,10 +534,8 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    layout: state.layouts.selectedLayout as PageLayout,
-    layouts: state.layouts.layouts,
-    exhibitions: state.exhibitions.exhibitions,
-    deviceModels: state.devices.deviceModels
+    subLayout: state.subLayouts.selectedSubLayout as SubLayout,
+    subLayouts: state.subLayouts.subLayouts
   };
 }
 
@@ -598,10 +546,10 @@ function mapStateToProps(state: ReduxState) {
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
-    setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
-    setLayouts: (layouts: PageLayout[]) => dispatch(setLayouts(layouts))
+    setSelectedSubLayout: (subLayout: SubLayout) => dispatch(setSelectedSubLayout(subLayout)),
+    setSubLayouts: (subLayouts: SubLayout[]) => dispatch(setSubLayouts(subLayouts))
   };
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SubLayoutScreen));

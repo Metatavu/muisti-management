@@ -27,6 +27,7 @@ import DeviceModelsScreen from "./screens/device-models-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import TimelineScreen from "./screens/timeline-screen";
+import SubLayoutScreen from "./screens/sub-layout-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -191,6 +192,16 @@ class App extends React.Component<Props, State> {
                         <LayoutScreen
                           history={ history }
                           layoutId={ match.params.layoutId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/v4/layouts/sub/:subLayoutId"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <SubLayoutScreen
+                          history={ history }
+                          subLayoutId={ match.params.subLayoutId }
                         />
                       )}
                     />

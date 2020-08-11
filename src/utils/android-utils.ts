@@ -24,7 +24,7 @@ export default class AndroidUtils {
       xdpi: displayMetrics.xdpi || 0,
       ydpi: displayMetrics.ydpi || 0,
       densityDpi: ((displayMetrics.density || 0) * AndroidUtils.DENSITY_DEFAULT)
-    }
+    };
 
     return result;
   }

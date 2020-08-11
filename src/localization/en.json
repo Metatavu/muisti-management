@@ -270,6 +270,10 @@
     },
     "properties": {
       "title": "properties"
+    },
+    "subLayout": {
+      "title": "Sub layout",
+      "addNew": "Add new sub layout"
     }
   },
 
@@ -461,7 +465,8 @@
       "title": "Add layout view element",
       "widget": "Select widget",
       "confirm": "Add",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sublayout": "Sublayout"
     }
   },
 

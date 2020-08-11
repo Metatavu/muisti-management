@@ -269,7 +269,11 @@
       "landscape": "Vaaka"
     },
     "properties": {
-      "title": "ominaisuudet"
+      "title": "Ominaisuudet"
+    },
+    "subLayout": {
+      "title": "Ali asettelu",
+      "addNew": "Lisää uusi ali asettelu"
     }
   },
 
@@ -458,7 +462,8 @@
       "title": "Lisää asettelun elementti",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
-      "cancel": "Peruuta"
+      "cancel": "Peruuta",
+      "sublayout": "Aliasettelu"
     }
   },
 
