@@ -26,7 +26,7 @@ import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
-import TimelineScreen from "./screens/timeline-screen";
+import ContentEditorScreen from "./screens/content-editor-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -165,7 +165,7 @@ class App extends React.Component<Props, State> {
                       ]}
                       exact={ true }
                       render={({ history, match }) => (
-                        <TimelineScreen
+                        <ContentEditorScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           floorId={ match.params.floorId }

@@ -3,14 +3,16 @@ import * as React from "react";
 import { WithStyles, withStyles, IconButton, Typography, List, ListItem } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { History } from "history";
-import styles from "../../styles/top-bar";
+import styles from "../../styles/components/generic/top-bar";
 import HomeIcon from "@material-ui/icons/Home";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
 import Breadcrumbs from "./breadcrumbs";
-import ActionBar from "./action-bar";
 import { BreadcrumbData, ActionButton } from "../../types";
+import ContentUtilityBar from "./content-utility-bar";
+import EditorUtilityBar from "./editor-utility-bar";
+import { ExhibitionDevice } from "../../generated/client";
 
 /**
  * Interface representing component properties
@@ -19,19 +21,21 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
+  devices?: ExhibitionDevice[];
   noBackButton?: boolean;
+  noTabs?: boolean;
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
+  setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  navigationButtons: NavigationButton[];
 }
 
 /**
@@ -55,7 +59,6 @@ class TopBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      navigationButtons: []
     };
   }
 
@@ -63,7 +66,7 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, breadcrumbs, noBackButton, title } = this.props;
+    const { classes, keycloak, history, breadcrumbs, noBackButton, title, noTabs, setSelectedDevice, actionBarButtons, devices } = this.props;
 
     const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
     const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
@@ -110,10 +113,12 @@ class TopBar extends React.Component<Props, State> {
         <div className={ classes.bottomRow }>
           { history.location.pathname.includes("v4") &&
             <>
-              { history.location.pathname.includes("exhibitions/") &&
-                this.renderTabs()
+              { !history.location.pathname.includes("timeline") &&
+                <ContentUtilityBar history={ history } actionBarButtons={ actionBarButtons } noTabs={ noTabs } />
               }
-              { this.renderActionBar() }
+              { history.location.pathname.includes("timeline") &&
+                <EditorUtilityBar history={ history } actionBarButtons={ actionBarButtons } devices={ devices } setSelectedDevice={ setSelectedDevice } />
+              }
             </>
           }
         </div>
@@ -174,81 +179,6 @@ class TopBar extends React.Component<Props, State> {
         <Typography>{ navigationButton.text }</Typography>
       </ListItem>
     );
-  }
-
-  /**
-   * Renders tabs
-   */
-  private renderTabs = () => {
-    const { classes } = this.props;
-    const floorplanTab = { postfix: "floorplan", text: strings.header.tabs.floorPlanTab };
-    const contentsTab = { postfix: "content", text: strings.header.tabs.exhibitionContentsTab };
-
-    return (
-      <List
-        disablePadding
-        dense
-        className={ classes.tabs }
-      >
-        { this.renderTabButton(floorplanTab) }
-        { this.renderTabButton(contentsTab) }
-      </List>
-    );
-  }
-
-  /**
-   * Renders tab button
-   *
-   * @param tabButton tab button
-   */
-  private renderTabButton = (tabButton: NavigationButton) => {
-    const { history } = this.props;
-
-    const tabButtonPath = this.getTabButtonPath(tabButton);
-
-    return (
-      <ListItem
-        button
-        selected={ history.location.pathname.includes(tabButton.postfix) }
-        component={ RouterLink }
-        to={ tabButtonPath }
-        disabled={ !history.location.pathname.includes("floors/") }
-      >
-        <Typography>{ tabButton.text }</Typography>
-      </ListItem>
-    );
-  }
-
-  /**
-   * Renders action bar
-   */
-  private renderActionBar = () => {
-    const { classes, actionBarButtons } = this.props;
-
-    return (
-      <div className={ classes.toolbar }>
-        <ActionBar buttons={ actionBarButtons || [] } />
-      </div>
-    );
-  }
-
-  /**
-   * Get new path.
-   *
-   * @param tabButton navigation button
-   */
-  private getTabButtonPath = (tabButton: NavigationButton): string => {
-    const { history } = this.props;
-
-    const currentPath = history.location.pathname;
-    switch (tabButton.postfix) {
-      case "content":
-        return currentPath.replace("floorplan", tabButton.postfix);
-      case "floorplan":
-        return currentPath.replace("content", tabButton.postfix);
-      default:
-        return currentPath;
-    }
   }
 
   /**
