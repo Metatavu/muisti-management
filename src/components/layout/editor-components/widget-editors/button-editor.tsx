@@ -54,6 +54,7 @@ class ButtonEditor extends React.Component<Props, State> {
       <>
         { this.renderWidth() }
         { this.renderHeight() }
+        { this.renderbackgroundColor() }
         { this.renderTextColor() }
         { this.renderTextResource() }
         { this.renderTextSize() }
@@ -115,6 +116,31 @@ class ButtonEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Render button background color editor
+   */
+  private renderbackgroundColor = () => {
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+            { strings.layoutEditor.button.textResource }:
+          </Typography>
+          <GenericPropertyTextField
+            textFieldId={ LayoutButtonPropKeys.TextResources }
+            textFieldType="text"
+            property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
+            onTextFieldChange={ this.props.onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
+    );
+  }
+
+  /**
    * Render button text resource editor
    */
   private renderTextResource = () => {
@@ -125,7 +151,7 @@ class ButtonEditor extends React.Component<Props, State> {
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h4"
           >
-            { strings.layoutEditor.button.textResource }:
+            { strings.layoutEditor.button.backgroundColor }:
           </Typography>
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextResources }

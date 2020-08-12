@@ -54,7 +54,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           <div ref={ measureRef } style={ this.resolveStyles() }>
             <div style={ this.resolveButtonStyles() }>
               { this.getText() }
-            </div>  
+            </div>
           </div>
         )}
       </Measure>
@@ -149,8 +149,9 @@ class PagePreviewButton extends React.Component<Props, State> {
 
       switch (property.name) {
         default:
+          console.log(property.name)
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
 
