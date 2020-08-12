@@ -471,7 +471,7 @@ export interface IStrings extends LocalizedStringsMethods {
       widget: string;
       confirm: string;
       cancel: string;
-      sublayout: string;
+      subLayout: string;
     };
 
   };

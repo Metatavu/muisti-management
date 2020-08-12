@@ -12,7 +12,7 @@ import styles from "../../styles/components/layout-screen/layout-editor-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
+import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -49,6 +49,7 @@ interface Props extends WithStyles<typeof styles> {
   layoutId: string;
   layout?: PageLayout;
   layouts: PageLayout[];
+  subLayouts: SubLayout[];
   setLayouts: typeof setLayouts;
   setSelectedLayout: typeof setSelectedLayout;
 }
@@ -100,16 +101,16 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life cycle handler
+   * Component did mount life-cycle handler
    */
-  public async componentDidMount() {
+  public componentDidMount = async () => {
     this.setState({ loading: true });
     await this.fetchEditorData();
     this.setState({ loading: false });
   }
 
   /**
-   * Component di update life cycle handler
+   * Component di update life-cycle handler
    *
    * @param prevProps previous component props
    */
@@ -157,7 +158,7 @@ export class LayoutScreen extends React.Component<Props, State> {
               />
               { this.renderDeviceModelSelect() }
               { this.renderScreenOrientationSelect() }
-              { this.renderPageLayoutComponentStructure() }
+              { this.renderLayoutComponentStructure() }
             </div>
           </ElementNavigationPane>
           <EditorView>
@@ -234,10 +235,10 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders page layout component structure
+   * Renders layout component structure
    */
-  private renderPageLayoutComponentStructure = () => {
-    const { layout } = this.props;
+  private renderLayoutComponentStructure = () => {
+    const { layout, subLayouts } = this.props;
 
     if (!layout) {
       return (<div/>);
@@ -246,7 +247,7 @@ export class LayoutScreen extends React.Component<Props, State> {
     return (
       <LayoutTreeMenu
         editingSubLayout={ false }
-        subLayouts={ [] }
+        subLayouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
@@ -535,12 +536,13 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view add
-   * 
+   *
    * @param layoutView layout view
    * @param path path in tree structure
    */
   private onLayoutViewAdd = async (layoutView: PageLayoutView, path: string) => {
     const { layout } = this.props;
+
     if (!layout) {
       return;
     }
@@ -557,6 +559,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private onLayoutViewDelete = async (path: string) => {
     const { layout } = this.props;
+
     if (!layout) {
       return;
     }
@@ -587,6 +590,7 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     layout: state.layouts.selectedLayout as PageLayout,
     layouts: state.layouts.layouts,
+    subLayouts: state.subLayouts.subLayouts,
     exhibitions: state.exhibitions.exhibitions,
     deviceModels: state.devices.deviceModels
   };

@@ -11,7 +11,7 @@ import styles from "../../styles/components/layout-screen/layout-editor-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Typography, Divider } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayoutView, Exhibition, SubLayout } from "../../generated/client";
+import { PageLayoutView, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -24,7 +24,6 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
-import AndroidUtils from "../../utils/android-utils";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";
@@ -33,7 +32,7 @@ import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
 import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
-import { Resizable, ResizableBox, ResizeCallbackData } from 'react-resizable';
+import { ResizableBox, ResizeCallbackData } from 'react-resizable';
 import "react-resizable/css/styles.css";
 import PagePreview from "../preview/page-preview";
 import DisplayMetrics from "../../types/display-metrics";
@@ -97,13 +96,13 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       view: "VISUAL",
       panelOpen: false,
       resizing: false,
-      height: 200,
-      width: 200
+      height: 500,
+      width: 500
     };
   }
 
   /**
-   * Component did mount life cycle handler
+   * Component did mount life-cycle handler
    */
   public componentDidMount = async () => {
     this.setState({ loading: true });
@@ -112,7 +111,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component did update life cycle handler
+   * Component did update life-cycle handler
    *
    * @param prevProps previous component props
    */
@@ -137,8 +136,6 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         </div>
       );
     }
-
-    console.log(this.props.subLayouts);
 
     return (
       <BasicLayout
@@ -209,21 +206,19 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders page layout component structure
+   * Renders sub layout component structure
    */
   private renderSubLayoutComponentStructure = () => {
-    const { subLayouts, subLayout } = this.props;
-    console.log(subLayouts);
+    const { subLayout } = this.props;
 
     if (!subLayout) {
-      return (<div/>);
+      return null;
     }
-
 
     return (
       <LayoutTreeMenu
         editingSubLayout={ true }
-        subLayouts={ subLayouts }
+        subLayouts={ [] }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onSubLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
@@ -452,7 +447,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for name input change
+   * Event handler for width input change
    *
    * @param event event
    */
@@ -463,7 +458,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for name input change
+   * Event handler for height input change
    *
    * @param event event
    */

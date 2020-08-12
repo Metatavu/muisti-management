@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutView, PageLayout, SubLayout } from "../../generated/client";
+import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel } from "@material-ui/core";
@@ -35,6 +35,7 @@ interface State {
   addPropertyDialogOpen: boolean;
   newPageLayoutViewPath?: string;
   newPageLayoutView?: PageLayoutView;
+  selectedSubLayoutId?: string;
 }
 
 /**
@@ -156,7 +157,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * Render dialog content
+   * Render dialog content based on editingSubLayout boolean
    */
   private renderDialogContent = () => {
     const { editingSubLayout } = this.props;
@@ -168,9 +169,12 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Render layout view dialog
+   */
   private renderLayoutDialog = () => {
     const { subLayouts, editingSubLayout } = this.props;
-    const { newPageLayoutView } = this.state;
+    const { newPageLayoutView, selectedSubLayoutId } = this.state;
 
     const subLayoutItems = subLayouts.map(layout => {
       return (
@@ -195,23 +199,23 @@ class LayoutTreeMenu extends React.Component<Props, State> {
             labelId="widget"
             fullWidth
             name="widget"
-            value={ newPageLayoutView ? newPageLayoutView.widget : "" }
+            value={ (!selectedSubLayoutId && newPageLayoutView) ? newPageLayoutView.widget : "" }
             onChange={ this.onWidgetChange }>
             { widgetItems }
           </Select>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
         <Grid item xs={ 12 }>
-          <InputLabel id="sublayout" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.sublayout }
+          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.subLayout }
           </InputLabel>
           <Select
             variant="filled"
-            labelId="sublayout"
+            labelId="subLayout"
             fullWidth
-            name="sublayout"
-            // value={ newPageLayoutView.widget }
-            onChange={ this.onSublayoutChange }
+            name="subLayout"
+            value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
+            onChange={ this.onSubLayoutChange }
           >
             { subLayoutItems }
           </Select>
@@ -221,6 +225,9 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     </>);
   }
 
+  /**
+   * Render sub layout view dialog
+   */
   private renderSubLayoutDialog = () => {
     const { newPageLayoutView } = this.state;
 
@@ -230,25 +237,27 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       );
     });
 
-    return (<>
-      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={ 12 }>
-          <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.widget }
-          </InputLabel>
-          <Select
-            variant="filled"
-            labelId="widget"
-            fullWidth
-            name="widget"
-            value={ newPageLayoutView ? newPageLayoutView.widget : "" }
-            onChange={ this.onWidgetChange }>
-            { widgetItems }
-          </Select>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+    return (
+      <>
+        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+          <Grid item xs={ 12 }>
+            <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+              { strings.layoutEditor.addLayoutViewDialog.widget }
+            </InputLabel>
+            <Select
+              variant="filled"
+              labelId="widget"
+              fullWidth
+              name="widget"
+              value={ newPageLayoutView ? newPageLayoutView.widget : "" }
+              onChange={ this.onWidgetChange }>
+              { widgetItems }
+            </Select>
+            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          </Grid>
         </Grid>
-      </Grid>
-    </>);
+      </>
+    );
   }
 
   /**
@@ -302,12 +311,13 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     this.setState({
       addPropertyDialogOpen : false,
       newPageLayoutView: undefined,
-      newPageLayoutViewPath: ""
+      newPageLayoutViewPath: "",
+      selectedSubLayoutId: undefined
     });
   }
 
   /**
-   * Event handler for add dialog widget change
+   * Event handler for widget change event
    *
    * @param event React change event
    */
@@ -315,51 +325,50 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     const { newPageLayoutView } = this.state;
     const widget = event.target.value as PageLayoutWidgetType;
 
-    if (!newPageLayoutView) {
-
-      const pageLayoutView: PageLayoutView = {
-        id: uuid(),
-        widget: widget,
-        properties: [],
-        children: []
-      };
-      this.setState({
-        newPageLayoutView : pageLayoutView
-      });
-      return;
-    }
-
+    const pageLayoutView: PageLayoutView = {
+      id: uuid(),
+      widget: widget,
+      properties: [],
+      children: []
+    };
     this.setState({
-      newPageLayoutView : { ...newPageLayoutView, widget: widget }
+      newPageLayoutView : pageLayoutView,
+      selectedSubLayoutId: undefined
     });
+
   }
 
   /**
-   * Event handler for add dialog widget change
+   * Event handler for sub layout change event
    *
    * @param event React change event
    */
-  private onSublayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  private onSubLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const { subLayouts } = this.props;
     const { newPageLayoutView } = this.state;
-    const sublayoutId = event.target.value as PageLayout;
+    const subLayoutId = event.target.value;
 
-    // if (!newPageLayoutView) {
+    if (!subLayoutId) {
+      return;
+    }
 
-    //   const pageLayoutView: PageLayoutView = {
-    //     id: uuid(),
-    //     widget: widget,
-    //     properties: [],
-    //     children: []
-    //   };
-    //   this.setState({
-    //     newPageLayoutView : pageLayoutView
-    //   });
-    //   return;
-    // }
+    const subLayout = subLayouts.find(layout => layout.id === subLayoutId);
 
-    // this.setState({
-    //   newPageLayoutView : { ...newPageLayoutView, widget: widget }
-    // });
+    if (!subLayout) {
+      return;
+    }
+
+    const pageLayoutView: PageLayoutView = {
+      ...subLayout.data,
+      id : uuid(),
+      sublayoutId: subLayoutId
+    };
+
+    this.setState({
+      newPageLayoutView : pageLayoutView,
+      selectedSubLayoutId: subLayoutId
+    });
+
   }
 }
 
