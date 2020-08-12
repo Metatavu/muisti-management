@@ -137,7 +137,8 @@ class PagePreviewButton extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
+    const { displayMetrics, scale, view } = this.props;
+    const { properties } = view;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
 
     });
@@ -149,7 +150,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
       switch (property.name) {
         case "width": {
-          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
             result.width = px;
           } else {
@@ -158,7 +159,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           break;
         }
         case "height": {
-          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
             result.height = px;
           } else {
