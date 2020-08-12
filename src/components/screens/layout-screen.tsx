@@ -191,7 +191,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
-    const deviceModelSelectItems = deviceModels.map(model => 
+    const deviceModelSelectItems = deviceModels.map(model =>
       <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
     );
 
