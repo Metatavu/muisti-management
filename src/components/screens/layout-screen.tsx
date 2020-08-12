@@ -166,7 +166,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
           <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
-              <CommonLayoutPropertiesEditor 
+              <CommonLayoutPropertiesEditor
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
@@ -189,7 +189,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
-    const deviceModelSelectItems = deviceModels.map(model => 
+    const deviceModelSelectItems = deviceModels.map(model =>
       <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
     );
 
