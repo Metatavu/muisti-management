@@ -102,7 +102,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
     this.setState({ loading: true });
@@ -111,7 +111,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component did update life-cycle handler
+   * Component did update life cycle handler
    *
    * @param prevProps previous component props
    */
@@ -326,13 +326,22 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     ];
   }
 
+  /**
+   * On resize start handler
+   */
   private onResizeStart = () => {
     this.setState({
       resizing: true
     });
   }
 
-  private onResizeStop = (e: React.SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
+  /**
+   * On resize stop handler
+   *
+   * @param event react event
+   * @param data resize callback data
+   */
+  private onResizeStop = (event: React.SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
     this.setState({
       width: data.size.width,
       height: data.size.height,
@@ -365,7 +374,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   /**
    * Constructs tree data
    *
-   * @param dataParams tree data params
+   * @param subLayout sub layout
    * @returns array of tree nodes in array
    */
   private constructTreeData = (subLayout: SubLayout): TreeNodeInArray[] => {
@@ -495,7 +504,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for layout save
+   * Event handler for sub layout save
    *
    * @param layout layout
    */
@@ -527,7 +536,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for layout view add
+   * Event handler for sub layout view add
    * 
    * @param layoutView layout view
    * @param path path in tree structure

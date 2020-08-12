@@ -54,7 +54,7 @@ class StoreInitializer extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle event
+   * Component did mount life cycle event
    */
   public componentDidMount = async () => {
     try {

@@ -244,24 +244,26 @@ class LayoutsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Gets card menu options
+   * Gets layout card menu options
    *
-   * @returns card menu options as action button array
+   * @param layout page layout
+   * @returns layout card menu options as action button array
    */
-  private getLayoutCardMenuOptions = (layout: PageLayout): ActionButton[] => {
+  private getLayoutCardMenuOptions = (pageLayout: PageLayout): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.setStatus,
       action: this.setStatus
     }, {
       name: strings.exhibitions.cardMenu.delete,
-      action: () => this.deleteLayout(layout)
+      action: () => this.deleteLayout(pageLayout)
     }];
   }
 
   /**
-   * Gets card menu options
+   * Gets sub layout card menu options
    *
-   * @returns card menu options as action button array
+   * @param subLayout sub layout
+   * @returns sub layout card menu options as action button array
    */
   private getSubLayoutCardMenuOptions = (subLayout: SubLayout): ActionButton[] => {
     return [{
@@ -462,14 +464,14 @@ class LayoutsScreen extends React.Component<Props, State> {
    *
    * @param layout layout
    */
-  private deleteLayout = async (layout: PageLayout) => {
+  private deleteLayout = async (pageLayout: PageLayout) => {
     const { accessToken, layouts } = this.props;
-    const pageLayoutId = layout.id;
+    const pageLayoutId = pageLayout.id;
     if (!pageLayoutId) {
       return;
     }
 
-    const confirmMessage = strings.formatString(strings.layout.confirmDelete, layout.name);
+    const confirmMessage = strings.formatString(strings.layout.confirmDelete, pageLayout.name);
     if (!window.confirm(confirmMessage as string)) {
       return;
     }
@@ -508,7 +510,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     await layoutsApi.deleteSubLayout({ subLayoutId });
 
     const updatedSubLayouts = produce(subLayouts, draft => {
-      const subLayoutIndex = draft.findIndex(subLayout => subLayout.id === subLayoutId);
+      const subLayoutIndex = draft.findIndex(layout => layout.id === subLayoutId);
       if (subLayoutIndex > -1) {
         draft.splice(subLayoutIndex, 1);
       }

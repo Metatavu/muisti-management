@@ -52,7 +52,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle event
+   * Component did mount life cycle event
    */
   public componentDidMount = async () => {
     const auth = await this.keycloakInit();
@@ -76,7 +76,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
   }
 
   /**
-   * Component will unmount life-cycle event
+   * Component will unmount life cycle event
    */
   public componentWillUnmount() {
     if (this.timer) {

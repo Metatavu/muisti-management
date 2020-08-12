@@ -55,6 +55,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     };
   }
 
+  /**
+   * Component did mount life cycle handler
+   */
   public componentDidMount = () => {
     const { editingSubLayout, pageLayout, subLayout } = this.props;
 
@@ -69,6 +72,11 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     }
   }
 
+  /**
+   * Component did mount life cycle handler
+   *
+   * @param prevProps previous props
+   */
   public componentDidUpdate = (prevProps: Props) => {
     const { pageLayout, subLayout, editingSubLayout } = this.props;
     if (
@@ -91,7 +99,6 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-
     return (
       <>
         { this.renderLayoutWidth() }

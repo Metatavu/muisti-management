@@ -59,7 +59,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = () => {
     this.getRootMedia();

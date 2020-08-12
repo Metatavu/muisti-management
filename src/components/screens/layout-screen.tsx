@@ -101,7 +101,7 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
     this.setState({ loading: true });
@@ -110,7 +110,7 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component di update life-cycle handler
+   * Component di update life cycle handler
    *
    * @param prevProps previous component props
    */

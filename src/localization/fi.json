@@ -274,8 +274,8 @@
   },
 
   "subLayout": {
-    "title": "Ali asettelu",
-    "addNew": "Lisää uusi ali asettelu",
+    "title": "Aliasettelu",
+    "addNew": "Lisää uusi aliasettelu",
     "preview": {
       "width": "Esikatselun leveys (px)",
       "height": "Esikatselun korkeus (px)"

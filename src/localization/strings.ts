@@ -24,7 +24,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
       modified: string;
       type: string;
-    }
+    };
   };
 
   exhibitions: {
@@ -280,8 +280,8 @@ export interface IStrings extends LocalizedStringsMethods {
     preview: {
       height: string;
       width: string;
-    }
-  }
+    };
+  };
 
   floorPlan: {
     title: string;
