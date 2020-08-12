@@ -80,7 +80,7 @@ interface State {
 /**
  * Component for timeline screen
  */
-export class TimelineScreen extends React.Component<Props, State> {
+class TimelineScreen extends React.Component<Props, State> {
 
   /**
    * Constructor

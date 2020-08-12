@@ -25,8 +25,11 @@ export default createStyles({
     overflow: "hidden",
     display: "grid",
     gridTemplateRows: "1fr",
-    gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ` "navigation contents editor-view properties" `,
+    gridTemplateColumns: "auto 1fr auto auto",
+    gridTemplateAreas: `
+    "properties editor-view contents navigation"
+    "timeline timeline contents navigation"
+    `,
   },
 
   visualEditorContainer: {
@@ -73,9 +76,5 @@ export default createStyles({
     "&:hover": {
       boxShadow: "0 0 10px rgba(0,0,0,0.2)"
     }
-  },
-
-  title: {
-    color: theme.palette.text.primary
-  },
+  }
 });

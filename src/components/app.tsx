@@ -28,6 +28,7 @@ import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import TimelineScreen from "./screens/timeline-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
+import ContentEditorScreen from "./screens/content-editor-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -167,6 +168,23 @@ class App extends React.Component<Props, State> {
                       exact={ true }
                       render={({ history, match }) => (
                         <TimelineScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                          floorId={ match.params.floorId }
+                          roomId={ match.params.roomId }
+                          contentVersionId={ match.params.contentVersionId }
+                          groupContentVersionId={ match.params.groupContentVersionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path={[
+                        "/v4/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/newTimeline",
+                        "/v4/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/newTimeline"
+                      ]}
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ContentEditorScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           floorId={ match.params.floorId }
