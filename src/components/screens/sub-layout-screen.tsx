@@ -138,6 +138,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       );
     }
 
+    console.log(this.props.subLayouts);
+
     return (
       <BasicLayout
         history={ history }
@@ -178,7 +180,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
                 value={ name }
                 onChange={ this.onNameChange }
               />
-              { this.renderPageLayoutComponentStructure() }
+              { this.renderSubLayoutComponentStructure() }
             </div>
           </ElementNavigationPane>
           <EditorView>
@@ -209,16 +211,19 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   /**
    * Renders page layout component structure
    */
-  private renderPageLayoutComponentStructure = () => {
+  private renderSubLayoutComponentStructure = () => {
     const { subLayouts, subLayout } = this.props;
+    console.log(subLayouts);
 
     if (!subLayout) {
       return (<div/>);
     }
 
+
     return (
       <LayoutTreeMenu
-        layouts={ subLayouts }
+        editingSubLayout={ true }
+        subLayouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onSubLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
@@ -276,7 +281,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const view: PageLayoutView = JSON.parse(this.state.jsonCode);
 
     /**
-     * Easiest way for now is to fake display metrics for preview
+     * Easiest way for now is to fake display metrics for preview.
+     * TODO: Must add logic for calculating pixel density based on the size of the preview
      */
     const displayMetrics: DisplayMetrics = {
       density: 3,

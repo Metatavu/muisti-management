@@ -20,7 +20,8 @@ import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWi
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  layouts: (PageLayout | SubLayout)[];
+  editingSubLayout: boolean;
+  subLayouts: SubLayout[];
   treeData: TreeNodeInArray[];
   onSelect: (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => void;
   onAdd: (pageLayoutView: PageLayoutView, path: string) => void;
@@ -158,18 +159,28 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    * Render dialog content
    */
   private renderDialogContent = () => {
-    const { layouts } = this.props;
+    const { editingSubLayout } = this.props;
+
+    if (editingSubLayout) {
+      return this.renderSubLayoutDialog();
+    } else {
+      return this.renderLayoutDialog();
+    }
+  }
+
+  private renderLayoutDialog = () => {
+    const { subLayouts, editingSubLayout } = this.props;
     const { newPageLayoutView } = this.state;
+
+    const subLayoutItems = subLayouts.map(layout => {
+      return (
+        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
+      );
+    });
 
     const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
       return (
         <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
-      );
-    });
-
-    const layoutItems = layouts.map(layout => {
-      return (
-        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
       );
     });
 
@@ -202,7 +213,37 @@ class LayoutTreeMenu extends React.Component<Props, State> {
             // value={ newPageLayoutView.widget }
             onChange={ this.onSublayoutChange }
           >
-            { layoutItems }
+            { subLayoutItems }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </Grid>
+      </Grid>
+    </>);
+  }
+
+  private renderSubLayoutDialog = () => {
+    const { newPageLayoutView } = this.state;
+
+    const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
+      return (
+        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+      );
+    });
+
+    return (<>
+      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={ 12 }>
+          <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.widget }
+          </InputLabel>
+          <Select
+            variant="filled"
+            labelId="widget"
+            fullWidth
+            name="widget"
+            value={ newPageLayoutView ? newPageLayoutView.widget : "" }
+            onChange={ this.onWidgetChange }>
+            { widgetItems }
           </Select>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>

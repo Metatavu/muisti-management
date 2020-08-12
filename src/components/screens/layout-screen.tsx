@@ -237,7 +237,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Renders page layout component structure
    */
   private renderPageLayoutComponentStructure = () => {
-    const { layouts, layout } = this.props;
+    const { layout } = this.props;
 
     if (!layout) {
       return (<div/>);
@@ -245,7 +245,8 @@ export class LayoutScreen extends React.Component<Props, State> {
 
     return (
       <LayoutTreeMenu
-        layouts={ layouts }
+        editingSubLayout={ false }
+        subLayouts={ [] }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
@@ -311,7 +312,6 @@ export class LayoutScreen extends React.Component<Props, State> {
     if (!deviceModel) {
       return;
     }
-    console.log(displayMetrics);
 
     return (
       <div className={ classes.editors }>
@@ -566,8 +566,7 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2) });
   }
 
-  /**import { setSelectedLayout, setLayouts } from "../../actions/layouts";
-
+  /**
    * Event listener for switch view button click
    */
   private onSwitchViewClick = () => {
