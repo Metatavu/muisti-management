@@ -24,7 +24,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
       modified: string;
       type: string;
-    }
+    };
   };
 
   exhibitions: {
@@ -274,6 +274,15 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  subLayout: {
+    title: string;
+    addNew: string;
+    preview: {
+      height: string;
+      width: string;
+    };
+  };
+
   floorPlan: {
     title: string;
     listTitle: string;
@@ -463,6 +472,7 @@ export interface IStrings extends LocalizedStringsMethods {
       widget: string;
       confirm: string;
       cancel: string;
+      subLayout: string;
     };
 
   };

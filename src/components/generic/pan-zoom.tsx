@@ -17,6 +17,7 @@ interface Props extends WithStyles<typeof styles> {
   defaultPositionY?: number;
   contentWidth?: number;
   contentHeight?: number;
+  disabled?: boolean;
 }
 
 /**
@@ -67,7 +68,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    */
   private renderWrapper = () => {
     const { containerHeight, containerWidth } = this.state;
-    const { defaultPositionX, defaultPositionY, minScale } = this.props;
+    const { defaultPositionX, defaultPositionY, minScale, disabled } = this.props;
 
     if (!containerHeight || !containerWidth) {
       return null;
@@ -75,7 +76,8 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
 
     const options = {
       minScale: minScale || 1,
-      limitToBounds: false
+      limitToBounds: false,
+      disabled: disabled
     };
 
     return (

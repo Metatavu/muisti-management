@@ -63,7 +63,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -73,7 +73,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Returns button text from properties
-   * 
+   *
    * @returns button text from properties
    */
   private getText = () => {
@@ -83,7 +83,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Resolves button styles
-   * 
+   *
    * @return button styles
    */
   private resolveButtonStyles = (): CSSProperties => {
@@ -127,19 +127,20 @@ class PagePreviewButton extends React.Component<Props, State> {
         }
       }
     });
-    
+
     return result;
   }
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
+    const { displayMetrics, scale, view } = this.props;
+    const { properties } = view;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      
+
     });
 
     properties.forEach(property => {
@@ -149,7 +150,26 @@ class PagePreviewButton extends React.Component<Props, State> {
 
       switch (property.name) {
         case "background":
-          
+          result.background = property.value;
+        break;
+        case "width": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.width = px;
+          } else {
+            console.log("Button: unknown width", property.value);
+          }
+          break;
+        }
+        case "height": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.height = px;
+          } else {
+            console.log("Button: unknown height", property.value);
+          }
+          break;
+        }
         default:
           console.log(property.name)
           this.handleUnknownProperty(property, "Unknown property");
