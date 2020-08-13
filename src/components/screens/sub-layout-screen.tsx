@@ -257,10 +257,12 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-          <CodeMirror className={ classes.editor }
+          <CodeMirror
+            className={ classes.editor }
             value={ this.state.jsonCode }
             options={ jsonEditorOptions }
-            onBeforeChange={ this.onBeforeJsonCodeChange } />
+            onBeforeChange={ this.onBeforeJsonCodeChange }
+          />
         </div>
       </div>
     )
