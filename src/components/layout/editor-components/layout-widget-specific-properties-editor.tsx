@@ -59,7 +59,9 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
   public componentDidMount = () => {
     const { editingSubLayout, pageLayout, subLayout } = this.props;
 
-    editingSubLayout ? this.setState({ layout: subLayout }) : this.setState({ layout: pageLayout });
+    this.setState({
+      layout: editingSubLayout ? subLayout : pageLayout
+    });
   }
 
   /**
