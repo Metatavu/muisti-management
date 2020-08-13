@@ -129,7 +129,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const { classes, history, subLayout, keycloak } = this.props;
     const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, error, name, width, height } = this.state;
 
-    if (!subLayout || !subLayout.id || loading ) {
+    if (!subLayout || !subLayout.id || loading) {
       return (
         <div className={ classes.loader }>
           <CircularProgress size={ 50 } color="secondary"></CircularProgress>
@@ -257,10 +257,12 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
-          <CodeMirror className={ classes.editor }
+          <CodeMirror
+            className={ classes.editor }
             value={ this.state.jsonCode }
             options={ jsonEditorOptions }
-            onBeforeChange={ this.onBeforeJsonCodeChange } />
+            onBeforeChange={ this.onBeforeJsonCodeChange }
+          />
         </div>
       </div>
     )
@@ -291,7 +293,13 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.editors }>
-        <PanZoom minScale={ 0.1 } fitContent={ false } contentWidth={ width } contentHeight={ height } disabled={ resizing }>
+        <PanZoom
+          minScale={ 0.1 }
+          fitContent={ false }
+          contentWidth={ width }
+          contentHeight={ height }
+          disabled={ resizing }
+        >
 
           <ResizableBox
             width={ width }
