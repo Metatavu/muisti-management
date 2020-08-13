@@ -75,7 +75,9 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       JSON.stringify(prevProps.pageLayout) !== JSON.stringify(pageLayout) ||
       JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout))
     {
-      editingSubLayout ? this.setState({ layout: subLayout }) : this.setState({ layout: pageLayout });
+      this.setState({
+        layout: editingSubLayout ? subLayout : pageLayout
+      });
     }
   }
 
