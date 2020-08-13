@@ -307,7 +307,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     });
 
     const layoutToUpdate = constructTreeUpdateData(currentLayout, layoutViewToUpdate, selectedElementPath);
-    this.props.setSelectedSubLayout(layoutToUpdate)
+    this.props.setSelectedSubLayout(layoutToUpdate);
     this.setState({
       layout : layoutToUpdate
     });
