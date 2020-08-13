@@ -61,6 +61,7 @@ export * from './Polygon';
 export * from './RfidAntenna';
 export * from './ScreenOrientation';
 export * from './StoredFile';
+export * from './SubLayout';
 export * from './Transition';
 export * from './Visitor';
 export * from './VisitorSession';

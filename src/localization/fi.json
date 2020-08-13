@@ -269,7 +269,16 @@
       "landscape": "Vaaka"
     },
     "properties": {
-      "title": "ominaisuudet"
+      "title": "Ominaisuudet"
+    }
+  },
+
+  "subLayout": {
+    "title": "Aliasettelu",
+    "addNew": "Lisää uusi aliasettelu",
+    "preview": {
+      "width": "Esikatselun leveys (px)",
+      "height": "Esikatselun korkeus (px)"
     }
   },
 
@@ -458,7 +467,8 @@
       "title": "Lisää asettelun elementti",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
-      "cancel": "Peruuta"
+      "cancel": "Peruuta",
+      "subLayout": "Aliasettelu"
     }
   },
 

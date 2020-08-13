@@ -33,7 +33,7 @@ class EditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = () => {
 

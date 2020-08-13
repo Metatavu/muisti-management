@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi, SubLayoutsApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -95,6 +95,15 @@ export default class Api {
    */
   public static getPageLayoutsApi(accessToken: AccessToken) {
     return new PageLayoutsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized sub layouts api
+   *
+   * @param token access token
+   */
+  public static getSubLayoutsApi(accessToken: AccessToken) {
+    return new SubLayoutsApi(Api.getConfiguration(accessToken));
   }
 
   /**

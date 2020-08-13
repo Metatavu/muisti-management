@@ -83,7 +83,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
     this.setState({ loading: true });
@@ -93,7 +93,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Component did update life-cycle handler
+   * Component did update life cycle handler
    */
   public componentDidUpdate = async (prevProps: Props) => {
     if (prevProps.exhibitions !== this.props.exhibitions) {
