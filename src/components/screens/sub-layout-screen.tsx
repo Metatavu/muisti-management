@@ -129,7 +129,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const { classes, history, subLayout, keycloak } = this.props;
     const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, error, name, width, height } = this.state;
 
-    if (!subLayout || !subLayout.id || loading ) {
+    if (!subLayout || !subLayout.id || loading) {
       return (
         <div className={ classes.loader }>
           <CircularProgress size={ 50 } color="secondary"></CircularProgress>
