@@ -5,7 +5,6 @@ import { SubLayout } from "../generated/client";
 /**
  * Interface for set sub layouts action type
  */
-
 export interface SetSubLayoutsAction {
   type: actionTypes.SET_SUB_LAYOUTS;
   subLayouts: SubLayout[];
