@@ -293,7 +293,13 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.editors }>
-        <PanZoom minScale={ 0.1 } fitContent={ false } contentWidth={ width } contentHeight={ height } disabled={ resizing }>
+        <PanZoom
+          minScale={ 0.1 }
+          fitContent={ false }
+          contentWidth={ width }
+          contentHeight={ height }
+          disabled={ resizing }
+        >
 
           <ResizableBox
             width={ width }
