@@ -5,7 +5,7 @@ import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import GenericPropertySelect from "../generic-property-select";
 import { TextViewTextStyleValues } from "../../editor-constants/values";
-import { LayoutButtonPropKeys, LayoutPropKeys } from "../../editor-constants/keys";
+import { LayoutButtonPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
