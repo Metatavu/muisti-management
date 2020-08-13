@@ -87,6 +87,8 @@ class PagePreviewButton extends React.Component<Props, State> {
    * @return button styles
    */
   private resolveButtonStyles = (): CSSProperties => {
+    const { displayMetrics, scale, view } = this.props;
+    const { properties } = view;
     const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
 
     const result: CSSProperties = {
@@ -100,8 +102,6 @@ class PagePreviewButton extends React.Component<Props, State> {
       marginBottom: defaultMargin,
       marginLeft: defaultMargin
     };
-
-    const properties = this.props.view.properties;
 
     properties.forEach(property => {
       if (property.name.startsWith("inset")) {
@@ -126,29 +126,10 @@ class PagePreviewButton extends React.Component<Props, State> {
           default:
         }
       }
-    });
-
-    return result;
-  }
-
-  /**
-   * Resolves component styles
-   *
-   * @returns component styles
-   */
-  private resolveStyles = (): CSSProperties => {
-    const { displayMetrics, scale, view } = this.props;
-    const { properties } = view;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-
-    });
-
-    properties.forEach(property => {
-      if (property.name === "text" || property.name.startsWith("layout_")) {
-        return;
-      }
-
       switch (property.name) {
+        case "backgroundColor":
+          result.backgroundColor = property.value;
+        break;
         case "width": {
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
@@ -167,6 +148,31 @@ class PagePreviewButton extends React.Component<Props, State> {
           }
           break;
         }
+        default:
+      }
+    });
+
+    return result;
+  }
+
+  /**
+   * Resolves component styles
+   *
+   * @returns component styles
+   */
+  private resolveStyles = (): CSSProperties => {
+    const { view } = this.props;
+    const { properties } = view;
+    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
+
+    });
+
+    properties.forEach(property => {
+      if (property.name === "text" || property.name.startsWith("layout_")) {
+        return;
+      }
+
+      switch (property.name) {
         default:
           this.handleUnknownProperty(property, "Unknown property");
         break;

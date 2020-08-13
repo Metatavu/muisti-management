@@ -459,7 +459,8 @@
       "color": "Button text color",
       "textResource": "Button text resource",
       "fontStyle": "Button font style",
-      "textSize": "Button text size (dp)"
+      "textSize": "Button text size (dp)",
+      "backgroundColor": "Button background color"
     },
 
     "linearLayout": {

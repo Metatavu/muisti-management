@@ -54,6 +54,7 @@ class ButtonEditor extends React.Component<Props, State> {
       <>
         { this.renderWidth() }
         { this.renderHeight() }
+        { this.renderbackgroundColor() }
         { this.renderTextColor() }
         { this.renderTextResource() }
         { this.renderTextSize() }
@@ -107,6 +108,32 @@ class ButtonEditor extends React.Component<Props, State> {
             textFieldUnit="dp"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Height, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
+    );
+  }
+
+  /**
+   * Render button background color editor
+   */
+  private renderbackgroundColor = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundColor, PageLayoutViewPropertyType.Color);
+
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+            { strings.layoutEditor.button.backgroundColor }:
+          </Typography>
+          <ColorPicker
+            property={ foundProp }
+            onColorChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
