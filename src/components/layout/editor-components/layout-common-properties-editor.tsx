@@ -294,7 +294,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * @param updatedPageLayoutViews list of page layout view property objects to update
    */
   private onMultipleValueChange = (pageLayoutViewProperties: PageLayoutViewProperty[]) => {
-    const { selectedElementPath, editingSubLayout } = this.props;
+    const { selectedElementPath } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
       return;

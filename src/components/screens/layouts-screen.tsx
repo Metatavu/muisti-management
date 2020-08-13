@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout } from "../../generated/client";
@@ -113,7 +113,7 @@ class LayoutsScreen extends React.Component<Props, State> {
    * Renders layouts as card list
    */
   private renderLayoutCardsList = () => {
-    const { layouts, subLayouts, classes } = this.props;
+    const { layouts, subLayouts } = this.props;
     if (layouts.length < 1 && subLayouts.length < 1) {
       return null;
     }

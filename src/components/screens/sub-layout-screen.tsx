@@ -520,7 +520,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         subLayout: subLayout
       });
 
-      const filteredSubLayouts = subLayouts.filter(layout => layout.id !== updatedSubLayout.id);
+      subLayouts.filter(layout => layout.id !== updatedSubLayout.id);
       setSubLayouts([ ...subLayouts, updatedSubLayout ]);
 
       this.setState({
@@ -537,7 +537,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for sub layout view add
-   * 
+   *
    * @param layoutView layout view
    * @param path path in tree structure
    */

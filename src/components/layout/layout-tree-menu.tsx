@@ -173,7 +173,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    * Render layout view dialog
    */
   private renderLayoutDialog = () => {
-    const { subLayouts, editingSubLayout } = this.props;
+    const { subLayouts } = this.props;
     const { newPageLayoutView, selectedSubLayoutId } = this.state;
 
     const subLayoutItems = subLayouts.map(layout => {
@@ -322,7 +322,6 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    * @param event React change event
    */
   private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    const { newPageLayoutView } = this.state;
     const widget = event.target.value as PageLayoutWidgetType;
 
     const pageLayoutView: PageLayoutView = {
@@ -345,7 +344,6 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    */
   private onSubLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
     const { subLayouts } = this.props;
-    const { newPageLayoutView } = this.state;
     const subLayoutId = event.target.value;
 
     if (!subLayoutId) {
