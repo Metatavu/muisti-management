@@ -34,7 +34,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -91,7 +91,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
     const result: CSSProperties = {
       display: "inline-block",
-      background: "#eee",      
+      background: "#eee",
       padding: "5px 10px",
       border: "1px outset #000",
       fontSize: "14px",
@@ -148,6 +148,8 @@ class PagePreviewButton extends React.Component<Props, State> {
       }
 
       switch (property.name) {
+        case "background":
+          
         default:
           console.log(property.name)
           this.handleUnknownProperty(property, "Unknown property");

@@ -5,7 +5,7 @@ import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import GenericPropertySelect from "../generic-property-select";
 import { TextViewTextStyleValues } from "../../editor-constants/values";
-import { LayoutButtonPropKeys } from "../../editor-constants/keys";
+import { LayoutButtonPropKeys, LayoutPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
@@ -119,6 +119,9 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button background color editor
    */
   private renderbackgroundColor = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -126,13 +129,11 @@ class ButtonEditor extends React.Component<Props, State> {
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h4"
           >
-            { strings.layoutEditor.button.textResource }:
+            { strings.layoutEditor.button.backgroundColor }:
           </Typography>
-          <GenericPropertyTextField
-            textFieldId={ LayoutButtonPropKeys.TextResources }
-            textFieldType="text"
-            property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
+          <ColorPicker
+            property={ foundProp }
+            onColorChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
@@ -151,7 +152,7 @@ class ButtonEditor extends React.Component<Props, State> {
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h4"
           >
-            { strings.layoutEditor.button.backgroundColor }:
+            { strings.layoutEditor.button.textResource }:
           </Typography>
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextResources }

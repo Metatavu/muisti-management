@@ -447,7 +447,8 @@
       "color": "Napin tekstin väri",
       "textResource": "Napin teksti",
       "fontStyle": "Napin fontin tyyli",
-      "textSize": "Napin tekstin koko (dp)"
+      "textSize": "Napin tekstin koko (dp)",
+      "backgroundColor": "Napin taustaväri"
     },
 
     "linearLayout": {
