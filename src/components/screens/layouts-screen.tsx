@@ -216,9 +216,13 @@ class LayoutsScreen extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render device modal select
+   */
   private renderDeviceModelSelect = () => {
     const { deviceModels } = this.props;
     const { newLayout } = this.state;
+
     return (
       <>
         <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
@@ -333,8 +337,6 @@ class LayoutsScreen extends React.Component<Props, State> {
 
   /**
    * Creates new sub layout
-   *
-   * @param layout layout
    */
   private createNewSubLayout = async () => {
     const { accessToken, setSubLayouts, subLayouts } = this.props;

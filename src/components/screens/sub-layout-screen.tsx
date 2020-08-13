@@ -127,7 +127,17 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, subLayout, keycloak } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, error, name, width, height } = this.state;
+    const {
+      loading,
+      pageLayoutView,
+      selectedPropertyPath,
+      selectedWidgetType,
+      panelOpen,
+      error,
+      name,
+      width,
+      height
+    } = this.state;
 
     if (!subLayout || !subLayout.id || loading) {
       return (
@@ -611,6 +621,5 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
     setSubLayouts: (subLayouts: SubLayout[]) => dispatch(setSubLayouts(subLayouts))
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SubLayoutScreen));
