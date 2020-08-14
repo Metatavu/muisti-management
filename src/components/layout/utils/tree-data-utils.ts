@@ -14,7 +14,7 @@ export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layo
     pageLayout.data.children = deleteViewFromLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id);
   }
   return pageLayout;
-}
+};
 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the item to be deleted.

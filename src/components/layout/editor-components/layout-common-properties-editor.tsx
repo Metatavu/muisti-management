@@ -61,15 +61,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   public componentDidMount = () => {
     const { editingSubLayout, pageLayout, subLayout } = this.props;
 
-    if (editingSubLayout) {
-      this.setState({
-        layout: subLayout
-      });
-    } else {
-      this.setState({
-        layout: pageLayout
-      });
-    }
+    this.setState({
+      layout: editingSubLayout ? subLayout : pageLayout
+    });
   }
 
   /**
@@ -83,15 +77,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
       JSON.stringify(prevProps.pageLayout) !== JSON.stringify(pageLayout) ||
       JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout))
     {
-      if (editingSubLayout) {
-        this.setState({
-          layout: subLayout
-        });
-      } else {
-        this.setState({
-          layout: pageLayout
-        });
-      }
+    this.setState({
+      layout: editingSubLayout ? subLayout : pageLayout
+    });
     }
   }
 
