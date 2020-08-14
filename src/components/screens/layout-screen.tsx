@@ -34,6 +34,7 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
+import theme from "../../styles/theme";
 
 type View = "CODE" | "VISUAL";
 
@@ -148,7 +149,7 @@ export class LayoutScreen extends React.Component<Props, State> {
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
-            <div className={ classes.toolbarContent }>
+            <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
                 variant="filled"
                 fullWidth
@@ -293,7 +294,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             onBeforeChange={ this.onBeforeJsonCodeChange } />
         </div>
       </div>
-    )
+    );
   }
 
   /**

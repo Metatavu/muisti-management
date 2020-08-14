@@ -131,7 +131,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       <>
         <ListItem { ...otherProps }
           className={ classNames(classes.listItem, focused ? "focused" : "") }
-          style={{ paddingLeft: level * 20 }}
+          style={{ paddingLeft: level * 10 }}
         >
           { hasNodes ?
             <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
@@ -143,11 +143,11 @@ class LayoutTreeMenu extends React.Component<Props, State> {
           { label }
           <ListItemSecondaryAction>
             { level > 0 &&
-              <IconButton edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
+              <IconButton size="small" edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
                 <DeleteIcon />
               </IconButton>
             }
-            <IconButton edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
+            <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
               <AddIcon />
             </IconButton>
           </ListItemSecondaryAction>

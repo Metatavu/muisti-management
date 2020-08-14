@@ -36,6 +36,7 @@ import { ResizableBox, ResizeCallbackData } from 'react-resizable';
 import "react-resizable/css/styles.css";
 import PagePreview from "../preview/page-preview";
 import DisplayMetrics from "../../types/display-metrics";
+import theme from "../../styles/theme";
 
 type View = "CODE" | "VISUAL";
 
@@ -159,7 +160,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
-            <div className={ classes.toolbarContent }>
+            <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
                 variant="filled"
                 type="number"
@@ -276,7 +277,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
           />
         </div>
       </div>
-    )
+    );
   }
 
   /**
