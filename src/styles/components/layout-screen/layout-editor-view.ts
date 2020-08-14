@@ -55,10 +55,6 @@ export default createStyles({
     alignItems: "center",
   },
 
-  toolbarContent: {
-    padding: theme.spacing(2)
-  },
-
   btnContainer: {
     position: "absolute",
     zIndex: 1,
