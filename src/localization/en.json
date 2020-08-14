@@ -414,6 +414,7 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
+      "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
       "backgroundColor": "Layout background color",

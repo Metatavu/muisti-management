@@ -378,7 +378,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private constructViewIdList = (items: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
 
-    pageLayoutViews.map((pageLayoutView, index) => {
+    pageLayoutViews.forEach((pageLayoutView, index) => {
       items.push(
         <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>
           { pageLayoutView.name ? pageLayoutView.name : pageLayoutView.id }

@@ -414,6 +414,7 @@ export interface IStrings extends LocalizedStringsMethods {
   layoutEditor: {
     commonComponents: {
       id: string;
+      name: string;
       layoutWidth: string;
       layoutHeight: string;
       backgroundColor: string;

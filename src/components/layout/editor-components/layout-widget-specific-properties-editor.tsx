@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-utils";
+import { constructTreeUpdateData, updateLayoutViewProperty } from "../utils/tree-data-utils";
 
 import TextViewEditor from "./widget-editors/text-view-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
@@ -191,7 +191,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     }
 
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
-    const updatedLayoutView = updateLayoutView(pageLayoutViewProperty, layoutViewToUpdate);
+    const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutViewToUpdate);
     const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
     editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
     this.setState({

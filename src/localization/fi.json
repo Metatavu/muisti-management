@@ -413,6 +413,7 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
+      "name": "Elementin nimi",
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
       "backgroundColor": "Asettelun taustaväri",

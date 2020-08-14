@@ -3,6 +3,7 @@ import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants
 
 /**
  * Delete item from tree structure while keeping rest of there data
+ *
  * @param pageLayout exhibition page layout
  * @param layoutViewPath path of the item to be deleted inside the tree
  * @returns updated page layout
@@ -18,6 +19,7 @@ export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layo
 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the item to be deleted.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path to the item to be deleted from tree
  * @param currentPath current path inside the recursion
@@ -51,22 +53,24 @@ const deleteViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
 
 /**
  * Update item from tree structure while keeping rest of there data
- * @param pageLayout exhibition page layout
+ *
+ * @param layout layout
  * @param pageLayoutView updated page layout view
  * @param layoutViewPath path of the item to be updated inside the tree
  * @returns updated page layout
  */
-export const constructTreeUpdateData = (pageLayout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
-  if (pageLayout.data.id === layoutViewPath) {
-    pageLayout.data = pageLayoutView;
+export const constructTreeUpdateData = (layout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
+  if (layout.data.id === layoutViewPath) {
+    layout.data = pageLayoutView;
   } else {
-    pageLayout.data.children = updateViewFromLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id, pageLayoutView);
+    layout.data.children = updateViewFromLayoutTree(layout.data.children, layoutViewPath, layout.data.id, pageLayoutView);
   }
-  return pageLayout;
+  return layout;
 };
 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the item to be updated.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path to the item to be updated from tree
  * @param currentPath current path inside the recursion
@@ -102,6 +106,7 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
 
 /**
  * Adds new item to tree structure while keeping rest of there data
+ *
  * @param pageLayout exhibition page layout
  * @param pageLayoutView new page layout view
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
@@ -119,6 +124,7 @@ export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout | SubLayout, 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the parent item where the new child item
  * will be added.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
  * @param currentPath current path inside the recursion
@@ -156,11 +162,12 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
 
 /**
  * Update layout view with property
+ *
  * @param updatedPageLayoutViewProperty updated layout view property
  * @param layoutViewToUpdate layout view to update
  * @returns updated page layout view
  */
-export const updateLayoutViewProperty= (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
   const name = updatedPageLayoutViewProperty.name;
   const value = updatedPageLayoutViewProperty.value;
   const type = updatedPageLayoutViewProperty.type;
@@ -184,6 +191,7 @@ export const updateLayoutViewProperty= (updatedPageLayoutViewProperty: PageLayou
 
 /**
  * Find property from given page layout view with given key
+ *
  * @param pageLayoutView page layout view to search from
  * @param key property to find
  * @param type page layout view property type
@@ -205,6 +213,7 @@ export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: P
 
 /**
  * Get padding and margin properties from given page layout view
+ *
  * @param pageLayoutView page layout view to search from
  * @param enumObject enum object that is used to find/generate property
  * @returns list of page layout view properties
