@@ -11,7 +11,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty } from "../../generated/client";
+import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
 import { AccessToken, PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
@@ -86,13 +86,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Render click view id select
    */
   private renderClickViewIdSelect = () => {
-    const { selectedEventTrigger } = this.props;
+    const { selectedEventTrigger, layout } = this.props;
     const clickViewId = selectedEventTrigger.clickViewId;
-    const clickViewIdList = this.props.layout.data.children.map((pageLayoutView, index) => {
-      return <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>
-        { pageLayoutView.id }
-      </MenuItem>
-    });
+    const tempList: JSX.Element[] = [];
+    const clickViewIdList = this.constructViewIdList(tempList, layout.data.children);
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
@@ -326,7 +323,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     if (this.getSelectedEventActionType() !== ExhibitionPageEventActionType.Navigate) {
       return;
     }
-    
+
     const selectedNavigationPageId = this.resolveSelectedPageId();
 
     return (
@@ -356,7 +353,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     if (actionType !== ExhibitionPageEventActionType.Triggerdevicegroupevent) {
       return;
     }
-    
+
     const event = (selectedEventTrigger.events && selectedEventTrigger.events.length) ? selectedEventTrigger.events[0] : undefined;
     const deviceGroupEventNameProperty = event ? event.properties.find(property => property.name === "name") : undefined;
 
@@ -374,6 +371,26 @@ class EventTriggerEditor extends React.Component<Props, State> {
         />
       </div>
     );
+  }
+
+  /**
+   * Construct view id list handler
+   */
+  private constructViewIdList = (items: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+
+    pageLayoutViews.map((pageLayoutView, index) => {
+      items.push(
+        <MenuItem key={ `clickViewId-${index}` } value={ pageLayoutView.id }>
+          { pageLayoutView.name ? pageLayoutView.name : pageLayoutView.id }
+        </MenuItem>
+      );
+
+      if (pageLayoutView.children.length > 0) {
+        this.constructViewIdList(items, pageLayoutView.children);
+      }
+    });
+
+    return items;
   }
 
   /**

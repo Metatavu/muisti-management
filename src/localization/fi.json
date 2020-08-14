@@ -466,6 +466,7 @@
 
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
+      "name": "Elementin nimi",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",

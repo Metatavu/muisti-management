@@ -3,7 +3,7 @@ import * as React from "react";
 import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
 import OpenIcon from "@material-ui/icons/ChevronRightSharp";
 import { WithStyles, withStyles, IconButton } from "@material-ui/core";
-import styles from "../../styles/element-navigation-pane";
+import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
 
 /**
@@ -15,11 +15,9 @@ interface Props extends WithStyles<typeof styles> {
    */
   title?: string;
   /**
-   * Panel width (optional)
-   *
-   * default: 320px
+   * Set panel open/closed
    */
-  width?: number;
+  open?: boolean;
 }
 
 /**
@@ -29,9 +27,9 @@ interface State {
 }
 
 /**
- * Component for element navigation pane
+ * Component for element properties pane
  */
-class ElementNavigationPane extends React.Component<Props, State> {
+class ElementPropertiesPane extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -48,11 +46,16 @@ class ElementNavigationPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, title, width, children } = this.props;
+    const {
+      classes,
+      title,
+      open,
+      children
+    } = this.props;
 
     return (
-      <div className={ classes.root } style={{ width: width ? width : 320 }}>
-        <div className={ classes.container }>
+      <div className={ classes.root } style={{ width: open ? 320 : 0 }}>
+        <div className={ classNames( classes.container, this.props.open ? "" : "closed" ) }>
           { title &&
             <div className={ classes.header }>
               <h3>{ title }</h3>
@@ -67,4 +70,4 @@ class ElementNavigationPane extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(ElementNavigationPane);
+export default withStyles(styles)(ElementPropertiesPane);

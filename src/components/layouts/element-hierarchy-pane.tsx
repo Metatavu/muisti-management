@@ -11,14 +11,13 @@ import classNames from "classnames";
  */
 interface Props extends WithStyles<typeof styles> {
   title: string;
-  width: number;
+  width?: number;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-  open: boolean;
 }
 
 const minimizedWidth = 50;
@@ -55,13 +54,8 @@ class ElementSettingsPane extends React.Component<Props, State> {
   public render() {
     const { classes, width } = this.props;
     return (
-      <div className={ classes.root } style={{ width: this.state.open ? width : minimizedWidth }}>
-        <div className={ classes.btnContainer }>
-          <IconButton size="small" edge="start" onClick={ this.onToggleClick }>
-            { this.state.open ? <CloseIcon /> : <OpenIcon /> }
-          </IconButton>
-        </div>
-        <div style={{ minWidth: width }} className={ classNames( classes.container, this.state.open ? "" : "closed" ) }>
+      <div className={ classes.root } style={{ width: width ? width : 320 }}>
+        <div style={{ minWidth: width }} className={ classes.container }>
           <div className={ classes.header }>
             <h3>{ this.props.title }</h3>
           </div>
@@ -71,14 +65,6 @@ class ElementSettingsPane extends React.Component<Props, State> {
         </div>
       </div>
     );
-  }
-  /**
-   * Handle toggle panel
-   */
-  private onToggleClick = () => {
-    this.setState({
-      open: !this.state.open
-    });
   }
 }
 

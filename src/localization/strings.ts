@@ -468,6 +468,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
     addLayoutViewDialog: {
+      name: string;
       title: string;
       widget: string;
       confirm: string;

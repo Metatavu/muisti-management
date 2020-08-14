@@ -469,6 +469,7 @@
 
     "addLayoutViewDialog": {
       "title": "Add layout view element",
+      "name": "Element name",
       "widget": "Select widget",
       "confirm": "Add",
       "cancel": "Cancel",

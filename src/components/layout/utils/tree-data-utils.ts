@@ -160,7 +160,7 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
  * @param layoutViewToUpdate layout view to update
  * @returns updated page layout view
  */
-export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+export const updateLayoutViewProperty= (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
   const name = updatedPageLayoutViewProperty.name;
   const value = updatedPageLayoutViewProperty.value;
   const type = updatedPageLayoutViewProperty.type;

@@ -5,7 +5,7 @@ export default createStyles({
   root: {
     position: "relative",
     gridArea: "contents",
-    borderRight: "1px solid #ddd",
+    borderLeft: "1px solid #ddd",
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
   },
@@ -22,7 +22,7 @@ export default createStyles({
   container: {
     backgroundColor: "#fbfbfb",
     height: "100%",
-    width: 320,
+    width: 400,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
@@ -42,7 +42,7 @@ export default createStyles({
       textOverflow: "ellipsis"
     }
   },
-  content: {   
+  content: {
     padding: theme.spacing(2)
   },
 });
