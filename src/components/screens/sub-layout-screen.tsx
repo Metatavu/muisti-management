@@ -579,7 +579,9 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   private onLayoutViewDelete = async (path: string) => {
     const { subLayout } = this.props;
-    if (!subLayout) {
+
+    // TODO: Add better confirmation dialog
+    if (!subLayout || !window.confirm(strings.generic.confirmDelete)) {
       return;
     }
 

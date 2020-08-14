@@ -562,7 +562,8 @@ export class LayoutScreen extends React.Component<Props, State> {
   private onLayoutViewDelete = async (path: string) => {
     const { layout } = this.props;
 
-    if (!layout) {
+    // TODO: Add better confirmation dialog
+    if (!layout || !window.confirm(strings.generic.confirmDelete)) {
       return;
     }
 
