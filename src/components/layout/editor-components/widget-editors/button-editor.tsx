@@ -118,7 +118,7 @@ class ButtonEditor extends React.Component<Props, State> {
   /**
    * Render button background color editor
    */
-  private renderbackgroundColor = () => {
+  private renderBackgroundColor = () => {
     const { pageLayoutView, onValueChange, classes } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundColor, PageLayoutViewPropertyType.Color);
 
