@@ -1,7 +1,7 @@
 import { createStyles } from "@material-ui/core";
 
 export default createStyles({
-  backgroundPickerContainer: {
+  colorPickerContainer: {
     position: "relative",
     "& .sketch-picker": {
       position: "absolute",
