@@ -17,7 +17,7 @@ import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementPropertiesPane from "../layouts/element-properties-pane";
 import PagePreview from "../preview/page-preview";
 import produce from "immer";
 import CodeEditor from "../editor/code-editor";
@@ -157,13 +157,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
           </ElementSettingsPane>
 
-          <ElementContentsPane title="">
-            
+          <ElementContentsPane>
+            <h1>Contents</h1>
           </ElementContentsPane>
 
-          <ElementNavigationPane title="">
-            
-          </ElementNavigationPane>
+          <ElementPropertiesPane>
+            <h1>Properties</h1>
+          </ElementPropertiesPane>
         </div>
       </BasicLayout>
     );

@@ -413,6 +413,7 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
+      "name": "Elementin nimi",
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
       "backgroundColor": "Asettelun taustaväri",
@@ -466,6 +467,7 @@
 
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
+      "name": "Elementin nimi",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",

@@ -64,7 +64,7 @@ export default class PolygonDialog extends React.Component<Props, State> {
         >
           <DialogTitle disableTypography id="polygon-dialog-title">{ title }</DialogTitle>
           <DialogContent>
-            <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>        
+            <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>
           </DialogContent>
           <DialogActions>
             <Button onClick={ onCancel } color="primary">

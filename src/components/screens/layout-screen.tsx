@@ -111,14 +111,16 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Component di update life cycle handler
+   * Component did update life cycle handler
    *
    * @param prevProps previous component props
    */
   public componentDidUpdate = (prevProps: Props) => {
     const { layout } = this.props;
     if (layout && layout !== prevProps.layout) {
-      this.setState({ jsonCode: JSON.stringify(layout.data, null, 2) });
+      this.setState({
+        jsonCode: JSON.stringify(layout.data, null, 2),
+      });
     }
   }
 
@@ -169,6 +171,7 @@ export class LayoutScreen extends React.Component<Props, State> {
           <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
@@ -489,6 +492,15 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({
       jsonCode: value
     });
+  }
+
+  /**
+   * On page layout view update handler
+   *
+   * @param pageLayoutView page layout view to update
+   */
+  private onPageLayoutViewUpdate = (pageLayoutView: PageLayoutView) => {
+    this.setState({ pageLayoutView });
   }
 
   /**

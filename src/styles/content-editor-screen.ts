@@ -27,8 +27,8 @@ export default createStyles({
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto 1fr auto auto",
     gridTemplateAreas: `
-    "properties editor-view contents navigation"
-    "timeline timeline contents navigation"
+    "editor-view editor-view contents properties"
+    "timeline timeline contents properties"
     `,
   },
 

@@ -1,17 +1,21 @@
 import * as React from "react";
 
 import { WithStyles, withStyles } from "@material-ui/core";
-import styles from "../../styles/element-contents-pane";
-
+import styles from "../../styles/element-properties-pane";
+import classNames from "classnames";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   /**
-   * Panel title
+   * Panel title (optional)
    */
   title?: string;
+  /**
+   * Set panel open/closed
+   */
+  open?: boolean;
 }
 
 /**
@@ -21,9 +25,9 @@ interface State {
 }
 
 /**
- * Component for element contents pane
+ * Component for element properties pane
  */
-class ElementContentsPane extends React.Component<Props, State> {
+class ElementPropertiesPane extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -40,18 +44,23 @@ class ElementContentsPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, title } = this.props;
+    const {
+      classes,
+      title,
+      open,
+      children
+    } = this.props;
 
     return (
-      <div className={ classes.root }>
-        <div className={ classes.container }>
+      <div className={ classes.root } style={{ width: open ? 320 : 0 }}>
+        <div className={ classNames( classes.container, this.props.open ? "" : "closed" ) }>
           { title &&
             <div className={ classes.header }>
               <h3>{ title }</h3>
             </div>
           }
           <div className={ classes.content }>
-            { this.props.children }
+            { children }
           </div>
         </div>
       </div>
@@ -59,4 +68,4 @@ class ElementContentsPane extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(ElementContentsPane);
+export default withStyles(styles)(ElementPropertiesPane);

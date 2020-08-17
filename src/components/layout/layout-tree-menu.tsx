@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -220,6 +220,18 @@ class LayoutTreeMenu extends React.Component<Props, State> {
             { subLayoutItems }
           </Select>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.name }
+          </InputLabel>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            name="name"
+            disabled={ newPageLayoutView ? false : true }
+            value={ newPageLayoutView ? newPageLayoutView.name : "" }
+            onChange={ this.onNameChange }
+          />
         </Grid>
       </Grid>
     </>);
@@ -334,7 +346,25 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       newPageLayoutView : pageLayoutView,
       selectedSubLayoutId: undefined
     });
+  }
 
+  /**
+   * On name change handler
+   *
+   * @param event react text field event 
+   */
+  private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { newPageLayoutView } = this.state;
+
+    const key = event.target.name;
+    const value = event.target.value;
+    if (!newPageLayoutView || !key || !value) {
+      return;
+    }
+
+    this.setState({
+      newPageLayoutView : { ...newPageLayoutView, [key] : value }
+    });
   }
 
   /**

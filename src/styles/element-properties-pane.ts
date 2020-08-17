@@ -4,10 +4,13 @@ import theme from "./theme";
 export default createStyles({
   root: {
     position: "relative",
-    gridArea: "navigation",
+    gridArea: "properties",
     borderLeft: "1px solid #ddd",
     overflow: "hidden",
-    transition: "width 0.4s ease-in-out"
+    transition: "width 0.4s ease-in-out",
+    "&.closed": {
+      width: 0
+    }
   },
   container: {
     backgroundColor: "#fbfbfb",
@@ -18,7 +21,7 @@ export default createStyles({
     width: 320,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
-      opacity: 0
+      opacity: 0,
     }
   },
   header: {
