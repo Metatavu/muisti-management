@@ -117,7 +117,6 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public componentDidUpdate = (prevProps: Props) => {
     const { layout } = this.props;
-    console.log(layout);
     if (layout && layout !== prevProps.layout) {
       this.setState({
         jsonCode: JSON.stringify(layout.data, null, 2),

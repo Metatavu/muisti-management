@@ -13,8 +13,6 @@ export default class ResourceUtils {
   public static getResourcesFromLayoutData = (layoutView: PageLayoutView): ExhibitionPageResource[] => {
     const foundResources: ExhibitionPageResource[] = [];
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
-    console.log("LKJSDNFLKJSNDFLKJNSDFLKJNSDLFJKNSLDKFJN")
-    console.log(resourceProperties);
     resourceProperties.forEach(property => {
       const resource = translateLayoutPropertyToResource(property, layoutView);
       if (resource) {

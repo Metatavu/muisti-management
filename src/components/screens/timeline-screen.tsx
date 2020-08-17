@@ -287,7 +287,6 @@ class TimelineScreen extends React.Component<Props, State> {
     const { classes } = this.props;
     const { pages, devices } = this.state;
     const { resources, eventTriggers } = pageData;
-    console.log(resources);
 
     return (
       <div className={ classes.toolbarContent }>
@@ -607,7 +606,6 @@ class TimelineScreen extends React.Component<Props, State> {
    * @param pageId selected page id
    */
   private onPageClick = (deviceId: string, pageId: string) => {
-    console.log(deviceId);
     const { devices, pages } = this.state;
     const selectedDevice = devices.find(device => device.id === deviceId);
     const selectedPage = pages.find(page => page.id === pageId);
