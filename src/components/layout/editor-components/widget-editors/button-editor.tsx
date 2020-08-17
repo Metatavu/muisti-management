@@ -54,7 +54,7 @@ class ButtonEditor extends React.Component<Props, State> {
       <>
         { this.renderWidth() }
         { this.renderHeight() }
-        { this.renderbackgroundColor() }
+        { this.renderBackgroundColor() }
         { this.renderTextColor() }
         { this.renderTextResource() }
         { this.renderTextSize() }
