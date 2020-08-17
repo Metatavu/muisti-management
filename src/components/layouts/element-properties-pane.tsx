@@ -1,8 +1,6 @@
 import * as React from "react";
 
-import CloseIcon from "@material-ui/icons/ChevronLeftSharp";
-import OpenIcon from "@material-ui/icons/ChevronRightSharp";
-import { WithStyles, withStyles, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
 

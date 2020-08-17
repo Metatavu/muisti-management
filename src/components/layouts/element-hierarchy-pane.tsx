@@ -1,10 +1,7 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/components/generic/element-hierarchy-pane";
-import OpenIcon from "@material-ui/icons/ChevronLeftSharp";
-import CloseIcon from "@material-ui/icons/ChevronRightSharp";
-import classNames from "classnames";
 
 /**
  * Interface representing component properties
@@ -20,7 +17,6 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
 }
 
-const minimizedWidth = 50;
 
 /**
  * Component for element settings pane
