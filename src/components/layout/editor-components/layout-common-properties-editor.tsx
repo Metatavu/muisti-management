@@ -298,7 +298,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const key = event.target.name;
     const value = event.target.value;
 
-    if (!layout || !key || !value) {
+    if (!layout || !key) {
       return;
     }
 

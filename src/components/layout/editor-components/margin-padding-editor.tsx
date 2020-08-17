@@ -82,6 +82,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
 
   /**
    * Render text field
+   *
    * @param propertyName name of the property
    */
   private renderTextField = (propertyName: string) => {
@@ -110,19 +111,20 @@ class MarginPaddingEditor extends React.Component<Props, State> {
 
   /**
    * Handler when linked value changed is enabled
+   *
    * @param event react change event
    */
   private onLinkedTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onMultipleValueChange, properties } = this.props;
     const key = event.target.name;
     const value = event.target.value;
-    if (!key || !value) {
+    if (!key) {
       return;
     }
     const propertiesToUpdate: PageLayoutViewProperty[] = [];
     properties.forEach(prop => {
       const propertyToUpdate = prop;
-      propertyToUpdate.value = value + "dp";
+      propertyToUpdate.value = (value || 0) + "dp";
       propertiesToUpdate.push(propertyToUpdate);
     });
 
@@ -131,6 +133,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
 
   /**
    * Handler when linked value changed is disabled (single filed is updated)
+   *
    * @param event react change event
    */
   private onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +141,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
 
     const key = event.target.name;
     const value = event.target.value;
-    if (!key || !value) {
+    if (!key) {
       return;
     }
 
@@ -146,7 +149,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     if (!propertyToUpdate) {
       return;
     }
-    propertyToUpdate.value = value + "dp";
+    propertyToUpdate.value = (value || 0) + "dp";
     onSingleValueChange(propertyToUpdate);
   }
 
@@ -161,6 +164,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
 
   /**
    * Get property to display handler
+   *
    * @param propertyName property name (key) to find
    * @returns found page layout view property of undefined
    */
