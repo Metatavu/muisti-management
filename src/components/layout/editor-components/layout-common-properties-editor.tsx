@@ -184,7 +184,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.backgroundPickerContainer }>
+      <div className={ classes.colorPickerContainer }>
         <Typography variant="h6">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <div style={{ marginRight: theme.spacing(2) }}>

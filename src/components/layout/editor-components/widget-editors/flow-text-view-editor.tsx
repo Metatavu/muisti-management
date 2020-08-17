@@ -95,7 +95,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.backgroundPickerContainer }>
+      <div className={ classes.colorPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: theme.spacing(2) }}>

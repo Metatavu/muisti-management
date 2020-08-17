@@ -119,25 +119,28 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button background color editor
    */
   private renderbackgroundColor = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, classes } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundColor, PageLayoutViewPropertyType.Color);
 
     return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.button.backgroundColor }:
-          </Typography>
-          <ColorPicker
+      <div className={ classes.colorPickerContainer }>
+        <Typography variant="h4">{ strings.layoutEditor.button.backgroundColor }:</Typography>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <div style={{ marginRight: theme.spacing(2) }}>
+            <ColorPicker
+              property={ foundProp }
+              onColorChange={ onValueChange }
+            />
+          </div>
+          <GenericPropertyTextField
+            textFieldId={ LayoutButtonPropKeys.BackgroundColor }
+            textFieldType="text"
             property={ foundProp }
-            onColorChange={ onValueChange }
+            onTextFieldChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </div>
     );
   }
 
@@ -170,21 +173,25 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text color editor
    */
   private renderTextColor = () => {
-    const { classes } = this.props;
+    const { classes, onValueChange } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.backgroundPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.button.color }</Typography>
-        <ColorPicker
-          property={ foundProp }
-          onColorChange={ this.props.onValueChange }
-        />
-        <GenericPropertyTextField
-          textFieldId={ LayoutButtonPropKeys.TextColor }
-          textFieldType="text"
-          property={ foundProp }
-          onTextFieldChange={ this.props.onValueChange }
-        />
+      <div className={ classes.colorPickerContainer }>
+        <Typography variant="h4">{ strings.layoutEditor.button.color }:</Typography>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <div style={{ marginRight: theme.spacing(2) }}>
+            <ColorPicker
+              property={ foundProp }
+              onColorChange={ onValueChange }
+            />
+          </div>
+          <GenericPropertyTextField
+            textFieldId={ LayoutButtonPropKeys.TextColor }
+            textFieldType="text"
+            property={ foundProp }
+            onTextFieldChange={ onValueChange }
+          />
+        </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </div>
     );

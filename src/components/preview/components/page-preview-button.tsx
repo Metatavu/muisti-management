@@ -148,6 +148,9 @@ class PagePreviewButton extends React.Component<Props, State> {
           }
           break;
         }
+        case "textColor": {
+          result.color = property.value;
+        }
         default:
       }
     });
