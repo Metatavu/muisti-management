@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout, SubLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, TextField } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
 import GenericPropertySelect from "./generic-property-select";
 import MarginPaddingEditor from "./margin-padding-editor";
@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import { constructTreeUpdateData, updateLayoutView, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
+import { constructTreeUpdateData, updateLayoutViewProperty, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
 import GenericPropertyTextField from "./generic-property-textfield";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 
@@ -30,6 +30,8 @@ interface Props extends WithStyles<typeof styles> {
   subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
+
+  onPageLayoutViewUpdate: (pageLayoutView: PageLayoutView) => void;
 }
 
 /**
@@ -89,6 +91,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   public render() {
     return (
       <>
+        { this.renderName() }
         { this.renderLayoutWidth() }
         { this.renderLayoutHeight() }
         { this.renderLayoutBackgroundColor() }
@@ -99,6 +102,34 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
         { this.renderLayoutGravity() }
       </>
+    );
+  }
+
+  /**
+   * Render layout name editor
+   */
+  private renderName = () => {
+    const { pageLayoutView } = this.props;
+
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.commonComponents.name }:
+        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            name="name"
+            value={ (pageLayoutView && pageLayoutView.name) ? pageLayoutView.name : "" }
+            onChange={ this.onNameChange }
+          />
+        </div>
+      </div>
     );
   }
 
@@ -256,6 +287,33 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 
   /**
+   * On name change handler
+   *
+   * @param event react text field event 
+   */
+  private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
+    const { layout } = this.state;
+
+    const key = event.target.name;
+    const value = event.target.value;
+
+    if (!layout || !key) {
+      return;
+    }
+
+    const layoutView = { ...this.props.pageLayoutView, [key] : value } as PageLayoutView;
+    const tempLayout = { ...layout } as PageLayout | SubLayout;
+    const layoutToUpdate = constructTreeUpdateData(tempLayout, layoutView, selectedElementPath);
+    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    this.setState({
+      layout : layoutToUpdate,
+    });
+
+    onPageLayoutViewUpdate(layoutView);
+  }
+
+  /**
    * Generic handler for single page layout property value changes
    *
    * @param updatedPageLayoutView page layout view property object to update
@@ -268,7 +326,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     }
 
     const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
-    const updatedLayoutView = updateLayoutView(pageLayoutViewProperty, layoutView);
+    const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutView);
     const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
     editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
     this.setState({
@@ -291,7 +349,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
 
     pageLayoutViewProperties.forEach(property => {
-      updateLayoutView(property, layoutViewToUpdate);
+      updateLayoutViewProperty(property, layoutViewToUpdate);
     });
 
     const layoutToUpdate = constructTreeUpdateData(currentLayout, layoutViewToUpdate, selectedElementPath);

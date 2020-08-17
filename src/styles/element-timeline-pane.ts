@@ -8,7 +8,6 @@ export default createStyles({
     overflow: "hidden",
     minHeight: 250,
     borderTop: "1px solid #ddd",
-    borderRight: "1px solid #ddd",
     backgroundColor: "#fbfbfb",
   }
 
