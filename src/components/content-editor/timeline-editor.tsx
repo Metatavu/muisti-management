@@ -61,7 +61,7 @@ const renderDraggableItem = (page: ExhibitionPage, props: Props) => {
     <Draggable
       key={ page.id }
       axis="x"
-      grid={[5, 0]}
+      grid={[ 5, 0 ]}
       defaultClassName={ classes.pageItem }
       bounds={ `.${classes.timelineRow}` }
     >
