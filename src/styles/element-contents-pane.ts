@@ -20,6 +20,7 @@ export default createStyles({
     width: 50
   },
   container: {
+    overflowY: "auto",
     backgroundColor: "#fbfbfb",
     height: "100%",
     width: 400,

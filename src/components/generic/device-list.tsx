@@ -50,9 +50,7 @@ class DeviceList extends React.Component<Props, State> {
       >
         { this.renderTabButtons() }
 
-        {/**
-         * Temporary link to new timeline component
-         */}
+        { /* Temporary link to new timeline component */ }
         <ListItem
           button
           selected={ false }
@@ -81,6 +79,7 @@ class DeviceList extends React.Component<Props, State> {
     return devices.map(device => {
       return (
         <ListItem
+          key={ device.id }
           button
           selected={ selectedDevice && selectedDevice.id === device.id }
           onClick={ this.selectDeviceTab(device) }

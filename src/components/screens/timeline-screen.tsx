@@ -329,10 +329,10 @@ class TimelineScreen extends React.Component<Props, State> {
     return (
       <>
         <Typography variant="h3">{ selectedResource.id }</Typography>
-        <ResourceEditor
+        {/* <ResourceEditor
           resource={ selectedResource }
           onUpdate={ this.onUpdateResource }
-        />
+        /> */}
       </>
     );
   }

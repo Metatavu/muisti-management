@@ -1,6 +1,6 @@
 import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../generated/client";
 
-export interface Custom {
+export interface ResourceHolder {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string>;
 }
@@ -11,12 +11,13 @@ export interface Custom {
 export default class ResourceUtils {
 
   /**
-   * Returns a list of resources from page layout data
+   * Returns a custom resource holder object that contains all page layout resources and
+   * map of resource ID's mapped by widget UUID
    *
    * @param layoutView layout view
-   * @returns exhibition page resources list
+   * @returns custom resource holder
    */
-  public static getResourcesFromLayoutData = (layoutView: PageLayoutView): Custom => {
+  public static getResourcesFromLayoutData = (layoutView: PageLayoutView): ResourceHolder => {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string> = new Map();
 
@@ -28,7 +29,7 @@ export default class ResourceUtils {
         if (splitPropertyValue.length < 2) {
           return;
         }
-        console.log(resource);
+
         const id = splitPropertyValue[1];
         ids.set(layoutView.id, id);
         foundResources.push(resource);
@@ -43,45 +44,8 @@ export default class ResourceUtils {
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
       });
     }
-    const custom: Custom = {
+    const custom: ResourceHolder = {
       resources: foundResources,
-      widgetIds: ids
-    };
-    return custom;
-  }
-
-  /**
-   * Returns a list of resources from page layout data
-   *
-   * @param layoutView layout view
-   * @returns exhibition page resources list
-   */
-  public static getResourceIdsFromLayoutData = (layoutView: PageLayoutView): Custom => {
-    let ids: Map<string, string> = new Map();
-
-    const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
-    resourceProperties.forEach(property => {
-      const resource = translateLayoutPropertyToResource(property, layoutView);
-      if (resource) {
-        const splitPropertyValue = property.value.split("/");
-        if (splitPropertyValue.length < 2) {
-          return;
-        }
-        console.log(resource);
-        const id = splitPropertyValue[1];
-        ids.set(layoutView.id, id);
-      }
-    });
-
-    const { children } = layoutView;
-    if (children && children.length) {
-      children.forEach(child => {
-        const childResources = ResourceUtils.getResourceIdsFromLayoutData(child);
-        ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
-      });
-    }
-    const custom: Custom = {
-      resources: [],
       widgetIds: ids
     };
     return custom;

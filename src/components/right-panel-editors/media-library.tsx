@@ -12,7 +12,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { AccessToken, MediaType } from "../../types";
 import Api from "../../api/api";
-import { StoredFile } from "../../generated/client";
+import { StoredFile, ExhibitionPageResource } from "../../generated/client";
 import FileUploader from "../generic/file-uploader";
 import FileUpload from "../../utils/file-upload";
 
@@ -22,7 +22,7 @@ import FileUpload from "../../utils/file-upload";
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   mediaType: MediaType;
-  currentUrl: string;
+  resource: ExhibitionPageResource;
   onUrlChange: (newUrl: string) => void;
 }
 
@@ -187,11 +187,11 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    * @param folder folder where files are
    */
   private getFileItems = (filteredFiles: StoredFile[], folder: StoredFile) => {
-    const { currentUrl } = this.props;
+    const { resource } = this.props;
 
     return filteredFiles.map(file => {
       const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
-      const selected = decodeURI(currentUrl) === file.uri;
+      const selected = decodeURI(resource.data) === file.uri;
 
       return(
         <TableRow

@@ -502,6 +502,7 @@
     "open": "Open timeline",
     "editor": {
       "pageName": "Page name",
+      "device": "Device",
       "layout": "Layout",
       "content": "Content",
       "properties": "Properties"

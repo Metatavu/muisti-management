@@ -499,6 +499,7 @@
     "open": "Avaa timeline",
     "editor": {
       "pageName": "Sivun nimi",
+      "device": "Laite",
       "layout": "Asettelu",
       "content": "Sisältö",
       "properties": "Ominaisuudet"

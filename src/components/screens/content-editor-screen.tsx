@@ -7,12 +7,12 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-import { WithStyles, withStyles, CircularProgress, Accordion, AccordionSummary, Typography, AccordionDetails, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Accordion, AccordionSummary, Typography, AccordionDetails, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, TextField, Divider } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, MediaType } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType } from "../../generated/client";
+import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType, ExhibitionPageResource } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -29,6 +29,10 @@ import FolderClosedIcon from "@material-ui/icons/FolderOutlined";
 import FolderOpenIcon from "@material-ui/icons/FolderOpenOutlined";
 import theme from "../../styles/theme";
 import ResourceUtils from "../../utils/resource-utils";
+import ResourceEditor from "../right-panel-editors/resource-editor";
+import MediaLibrary from "../right-panel-editors/media-library";
+import CommonSettingsEditor from "../content-editor/common-settings-editor";
+
 type View = "CODE" | "VISUAL";
 
 /**
@@ -46,7 +50,6 @@ interface Props extends WithStyles<typeof styles> {
   contentVersionId: string;
   groupContentVersionId: string;
   deviceModels: DeviceModel[];
-  layouts: PageLayout[];
 }
 
 /**
@@ -55,10 +58,9 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   error?: Error;
   loading: boolean;
-  room?: ExhibitionRoom;
-  contentVersion?: ContentVersion;
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
+  layouts: PageLayout[];
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
   view: View;
@@ -73,6 +75,18 @@ interface State {
 class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
+   * All widget types that can have editable resources
+   */
+  private allowedWidgetTypes = [
+    PageLayoutWidgetType.Button,
+    PageLayoutWidgetType.FlowTextView,
+    PageLayoutWidgetType.ImageView,
+    PageLayoutWidgetType.MediaView,
+    PageLayoutWidgetType.PlayerView,
+    PageLayoutWidgetType.TextView
+  ];
+
+  /**
    * Constructor
    *
    * @param props component properties
@@ -83,6 +97,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       loading: false,
       devices: [],
       pages: [],
+      layouts: [],
       view: "VISUAL"
     };
   }
@@ -92,22 +107,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public componentDidMount = async () => {
     const { exhibition, exhibitionId, accessToken, setSelectedExhibition } = this.props;
-
     if (!exhibition || exhibitionId !== exhibition.id) {
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       setSelectedExhibition(await exhibitionsApi.findExhibition({ exhibitionId }));
       return;
     }
-
-    this.fetchComponentData();
+    await this.fetchComponentData();
   }
 
   /**
    * Component did update life cycle handler
    */
-  public componentDidUpdate = (prevProps: Props) => {
+  public componentDidUpdate = async (prevProps: Props) => {
     if (!prevProps.exhibition && this.props.exhibition) {
-      this.fetchComponentData();
+      await this.fetchComponentData();
     }
   }
 
@@ -117,7 +130,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
     const { groupContentVersion, devices } = this.state;
-
     if (this.state.loading) {
       return (
         <BasicLayout
@@ -157,29 +169,24 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { this.renderTimeline() }
           </ElementTimelinePane>
 
-          {/* <ElementSettingsPane
-            width={ 380 }
-            title={ "" }
-            open={ false }
-          >
-
-          </ElementSettingsPane> */}
-
-          <ElementContentsPane
-            title={ strings.contentEditor.editor.content }
-          >
+          <ElementContentsPane>
             { this.renderContentAccordion() }
           </ElementContentsPane>
 
-          <ElementPropertiesPane>
-            <h1>{ strings.contentEditor.editor.properties }</h1>
-          </ElementPropertiesPane>
         </div>
       </BasicLayout>
     );
   }
 
+  /**
+   * Render content accordion
+   */
   private renderContentAccordion = () => {
+    const { devices, layouts, selectedPage } = this.state;
+
+    if (!selectedPage) {
+      return null;
+    }
 
     const pageElements = this.constructPageElements();
 
@@ -189,7 +196,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <Typography variant="h3">{ strings.contentEditor.editor.properties }</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ strings.contentEditor.editor.pageName }</Typography>
+          <CommonSettingsEditor
+            devices={ devices }
+            layouts={ layouts }
+            pageData={ selectedPage }
+            onChange={ this.onPageDataChange }
+            onLayoutChange={ this.onLayoutChange }
+          />
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </AccordionDetails>
           { pageElements }
       </Accordion>
@@ -200,14 +214,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Construct page elements
    */
   private constructPageElements = () => {
-    const { classes } = this.props;
-    const { selectedPage, pageLayout, selectedDevice } = this.state;
+    const { selectedPage, pageLayout } = this.state;
 
     if (!selectedPage || !pageLayout) {
       return null;
     }
 
-    const folderOpen = true;
     const elementList: JSX.Element[] = [];
     return this.constructSingleElement(elementList, [pageLayout.data]);
 
@@ -220,19 +232,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutViews list of page layout views
    */
   private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+    const { allowedWidgetTypes } = this;
     const { selectedPage, resourceWidgetIdList } = this.state;
     if (!selectedPage || !resourceWidgetIdList) {
       return;
     }
 
     pageLayoutViews.forEach(pageLayoutView => {
-      if (
-        pageLayoutView.widget === PageLayoutWidgetType.TextView ||
-        pageLayoutView.widget === PageLayoutWidgetType.Button ||
-        pageLayoutView.widget === PageLayoutWidgetType.FlowTextView ||
-        pageLayoutView.widget === PageLayoutWidgetType.ImageView ||
-        pageLayoutView.widget === PageLayoutWidgetType.MediaView
-      ) {
+      if (allowedWidgetTypes.includes(pageLayoutView.widget)) {
         const id = resourceWidgetIdList.get(pageLayoutView.id);
         const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === id);
 
@@ -240,19 +247,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           return;
         }
 
-        elementList.push(
-          <Accordion>
-            <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
-              <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ pageLayoutView.name || "" }</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TextField
-                fullWidth
-                value={ selectedPage.resources[resourceIndex].data || "" }
-              />
-            </AccordionDetails>
-          </Accordion>
-        );
+        elementList.push(this.renderResourcesEditor(selectedPage, pageLayoutView, resourceIndex));
       }
 
       if (pageLayoutView.children.length > 0) {
@@ -263,30 +258,113 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return elementList;
   }
 
-  private onElementClick = (resourceId?: string) => () => {
-    console.log(resourceId);
+  /**
+   * Render individual resource editors inside accordion element
+   *
+   * @param selectedPage selected page
+   * @param pageLayoutView page layout view
+   * @param resourceIndex resource index
+   */
+  private renderResourcesEditor = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, resourceIndex: number) => {
+    const resource = selectedPage.resources[resourceIndex];
+
+    return (
+      <Accordion key={ resourceIndex }>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ pageLayoutView.name || "" }</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ResourceEditor
+            resource={ resource }
+            resourceIndex={ resourceIndex }
+            onUpdate={ this.onUpdateResource }
+          />
+        </AccordionDetails>
+      </Accordion>
+    );
+  }
+
+  /**
+   * Event handler for page data change
+   *
+   * @param event event
+   */
+  private onPageDataChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { selectedPage } = this.state;
+    const { name, value } = event.target;
+    if (!selectedPage || !name) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = { ...draft.selectedPage!, [name]: value };
+      })
+    );
+  }
+
+  /**
+   * Event handler for layout change
+   *
+   * @param event event
+   */
+  private onLayoutChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { selectedPage, layouts } = this.state;
+    if (!selectedPage) {
+      return;
+    }
+
+    const layoutId = event.target.value;
+    const selectedLayout = layouts.find(layout => layout.id === layoutId);
+    if (!selectedLayout) {
+      return;
+    }
+
+    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage!.layoutId = layoutId;
+        draft.selectedPage!.resources = resourceHolder.resources;
+        draft.resourceWidgetIdList = resourceHolder.widgetIds;
+      })
+    );
+  }
+
+  /**
+   * Event handler for name input change
+   *
+   * @param event event
+   */
+  private onUpdateResource = (resourceIndex: number, resource: ExhibitionPageResource) => {
+    this.setState(
+      produce((draft: State) => {
+        if (resourceIndex === undefined ||
+            !draft.selectedPage ||
+            draft.selectedPage.resources.length < resourceIndex) {
+          return;
+        }
+
+        draft.selectedPage.resources[resourceIndex] = resource;
+      })
+    );
   }
 
   /**
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, roomId, contentVersionId, groupContentVersionId, layouts } = this.props;
+    const { accessToken, exhibitionId, groupContentVersionId } = this.props;
 
-    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
 
-    const [ room, contentVersion, groupContentVersion ] = await Promise.all([
-      roomsApi.findExhibitionRoom({ exhibitionId, roomId }),
-      contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
+    const [ groupContentVersion ] = await Promise.all([
       groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId })
     ]);
 
     const exhibitionGroupId = groupContentVersion.deviceGroupId;
-
     const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId });
 
     const devicePages = await Promise.all(
@@ -298,42 +376,41 @@ class ContentEditorScreen extends React.Component<Props, State> {
       )
     );
 
-    const pages = devicePages.flat();
+    const pages: ExhibitionPage[] = devicePages.flat();
 
-    const selectedDevice = devices.find(device => device.id === pages[0].deviceId);
-    const selectedPage = pages[0];
-    console.log(pages);
+    const selectedPage = pages[2];
+    const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
+
+    const layoutsApi = Api.getPageLayoutsApi(accessToken);
+    const layouts = await layoutsApi.listPageLayouts({ });
     const pageLayout = layouts.find(layout => layout.id === selectedPage.layoutId);
 
     if (!pageLayout) {
       return;
     }
-
+    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
     if (selectedPage.resources.length < 1) {
-      const custom = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
-      selectedPage.resources = custom.resources;
+      selectedPage.resources = resourceHolder.resources;
     }
 
-    const widgetIds = ResourceUtils.getResourceIdsFromLayoutData(pageLayout.data).widgetIds;
-
     this.setState({
-      room,
-      contentVersion,
       groupContentVersion,
       devices,
       pages,
+      layouts,
       selectedPage,
       selectedDevice,
       pageLayout,
-      resourceWidgetIdList: widgetIds
+      resourceWidgetIdList: resourceHolder.widgetIds
     });
 
   }
 
   /**
    * Renders element timeline
+   * TODO: Add timeline functionalities
    */
-  private renderTimeline = () => { // To do
+  private renderTimeline = () => {
     return null;
   }
 
@@ -508,7 +585,6 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     exhibition: state.exhibitions.selectedExhibition as Exhibition,
     deviceModels: state.devices.deviceModels,
-    layouts: state.layouts.layouts,
   };
 }
 

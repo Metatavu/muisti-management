@@ -47,7 +47,12 @@ class EditorUtilityBar extends React.Component<Props, State> {
 
     return (
       <>
-        <DeviceList history={ history } devices={ devices } setSelectedDevice={ setSelectedDevice } />
+        <DeviceList
+          key={ "DeviceList" }
+          history={ history }
+          devices={ devices }
+          setSelectedDevice={ setSelectedDevice }
+        />
         { this.renderActionBar() }
       </>
     );
@@ -61,7 +66,9 @@ class EditorUtilityBar extends React.Component<Props, State> {
 
     return (
       <div className={ classes.toolbar }>
-        <ActionBar buttons={ actionBarButtons || [] } />
+        <ActionBar
+          buttons={ actionBarButtons || [] }
+        />
       </div>
     );
   }

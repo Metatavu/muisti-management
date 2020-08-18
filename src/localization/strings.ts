@@ -503,6 +503,7 @@ export interface IStrings extends LocalizedStringsMethods {
     open: string;
     editor: {
       pageName: string;
+      device: string;
       layout: string;
       content: string;
       properties: string;
