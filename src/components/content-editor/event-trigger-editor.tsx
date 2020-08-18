@@ -5,14 +5,13 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
-import { History } from "history";
 import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
-import { AccessToken, PhysicalButton, PhysicalButtonData } from '../../types';
+import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
@@ -27,8 +26,6 @@ import produce from "immer";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-    history: History;
-    accessToken: AccessToken;
     selectedEventTrigger: ExhibitionPageEventTrigger;
     pages: ExhibitionPage[];
     layout: PageLayout;
@@ -72,7 +69,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
         { this.renderDelayField() }
 
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
-          { strings.exhibition.eventTriggers.actions }
+          { strings.contentEditor.editor.eventTriggers.actions }
         </Typography>
         { this.renderEventActionTypeSelect() }
         { this.props.selectedEventTrigger &&
@@ -94,11 +91,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.clickViewIdTitle }
+          { strings.contentEditor.editor.eventTriggers.clickViewIdTitle }
         </Typography>
         <Select
           variant="filled"
-          label={ strings.exhibition.eventTriggers.clickViewId }
+          label={ strings.contentEditor.editor.eventTriggers.clickViewId }
           fullWidth
           name="clickViewId"
           value={ clickViewId || "" }
@@ -122,7 +119,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     _.forIn(PhysicalButton, value => {
       physicalButtons.push({
-        name: `${strings.exhibition.eventTriggers.physicalButton} ${value}`,
+        name: `${strings.contentEditor.editor.eventTriggers.physicalButton} ${value}`,
         value: value
       });
     });
@@ -138,11 +135,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.physicalButtonDownTitle }
+          { strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }
         </Typography>
         <Select
           variant="filled"
-          label={ strings.exhibition.eventTriggers.physicalButton }
+          label={ strings.contentEditor.editor.eventTriggers.physicalButton }
           fullWidth
           name="keyDown"
           value={ trigger.keyDown || "" }
@@ -154,11 +151,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { menuItems }
         </Select>
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
-          { strings.exhibition.eventTriggers.physicalButtonUpTitle }
+          { strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }
         </Typography>
         <Select
           variant="filled"
-          label={ strings.exhibition.eventTriggers.physicalButton }
+          label={ strings.contentEditor.editor.eventTriggers.physicalButton }
           fullWidth
           name="keyUp"
           value={ trigger.keyUp || "" }
@@ -184,12 +181,12 @@ class EventTriggerEditor extends React.Component<Props, State> {
           variant="h6"
           style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
         >
-          { strings.exhibition.eventTriggers.deviceGroupEventTitle }
+          { strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }
         </Typography>
         <TextField
           type="text"
-          className={ classes.textResourceEditor } 
-          label={ strings.exhibition.eventTriggers.deviceGroupEvent }
+          className={ classes.textResourceEditor }
+          label={ strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
           variant="filled"
           name="deviceGroupEvent"
           value={ this.props.selectedEventTrigger?.deviceGroupEvent || "" }
@@ -210,11 +207,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
           variant="h6"
           style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
         >
-          { strings.exhibition.eventTriggers.delayTitle }
+          { strings.contentEditor.editor.eventTriggers.delayTitle }
         </Typography>
         <TextField
           className={ classes.textResourceEditor } 
-          label={ strings.exhibition.eventTriggers.delay }
+          label={ strings.contentEditor.editor.eventTriggers.delay }
           variant="filled"
           name="delay"
           value={ this.props.selectedEventTrigger?.delay || 0 }
@@ -292,7 +289,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.variableName }
+          { strings.contentEditor.editor.eventTriggers.variableName }
         </Typography>
         <TextField
           name="name"
@@ -303,7 +300,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
         />
 
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.variableValue }
+          { strings.contentEditor.editor.eventTriggers.variableValue }
         </Typography>
         <TextField
           name="value"
@@ -329,7 +326,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.selectPage }
+          { strings.contentEditor.editor.eventTriggers.selectPage }
         </Typography>
         <Select
           variant="filled"
@@ -360,7 +357,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.exhibition.eventTriggers.deviceGroupEvent }
+          { strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
         </Typography>
         <TextField
           name="name"
@@ -375,6 +372,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Construct view id list handler
+   *
+   * @param items list of JSX elements
+   * @param pageLayoutViews list of page layout views
    */
   private constructViewIdList = (items: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
 
@@ -395,6 +395,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Gets action type of selected event
+   *
+   * @returns exhibition page event action type of undefined
    */
   private getSelectedEventActionType = (): ExhibitionPageEventActionType | undefined => {
     const { selectedEventTrigger } = this.props;
@@ -418,8 +420,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Resolves selected navigate event page id 
-   * 
+   * Resolves selected navigate event page id
+   *
    * @return selected navigate event page id or null if not found
    */
   private resolveSelectedPageId = (): string | null => {
@@ -434,13 +436,14 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for event trigger change
+   *
    * @param event React change event
    */
   private onEventTriggerChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { selectedEventTrigger, onSave } = this.props;
     const propertyName = event.target.name as keyof ExhibitionPageEventTrigger;
     const value = event.target.value as string === "" ? undefined : event.target.value;
-    
+
     switch (propertyName) {
       case "delay":
         const valueString = value as string;
@@ -465,6 +468,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Event handler event trigger event property change
+   *
    * @param event react change event
    */
   private onEventTriggerEventPropertyChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
@@ -497,9 +501,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * On select event action handler
+   *
    * @param event react change event
    */
-  private onSelectEventActionType = (event: React.ChangeEvent<{ value: unknown }>)=> {
+  private onSelectEventActionType = (event: React.ChangeEvent<{ value: unknown }>) => {
     const value = event.target.value as ExhibitionPageEventActionType;
 
     /**
@@ -510,6 +515,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Overwrite event in json handler
+   *
    * @param actionType new event action type
    */
   private overwriteEventInJson = (actionType: ExhibitionPageEventActionType) => {
@@ -525,7 +531,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Get event properties based on action type
+   *
    * @param actionType ExhibitionPageEventActionType
+   * @returns list of exhibition page event properties
    */
   private getEventPropertiesByType = (actionType: ExhibitionPageEventActionType): ExhibitionPageEventProperty[] => {
     switch (actionType) {
@@ -548,7 +556,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Get string type property
+   *
    * @param name property name
+   * @param value property value
+   * @returns exhibition page event property
    */
   private getStringProperty = (name: string, value?: string): ExhibitionPageEventProperty => {
     return {
@@ -560,7 +571,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
   /**
    * Create event based on the given values
+   *
    * @param actionType given action type
+   * @returns exhibition page event
    */
   private createEvent = (actionType: ExhibitionPageEventActionType): ExhibitionPageEvent => {
     const eventProperties: ExhibitionPageEventProperty[] = this.getEventPropertiesByType(actionType);
@@ -576,6 +589,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
 /**
  * Returns whether string contains valid number
  *
+ * @param value value to be checked
  * @return whether string contains valid number
  */
 function isNumber(value: string): boolean {
@@ -589,8 +603,7 @@ function isNumber(value: string): boolean {
  */
 function mapStateToProps(state: ReduxState) {
   return {
-    keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
+    keycloak: state.auth.keycloak as KeycloakInstance
   };
 }
 

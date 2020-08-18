@@ -14,7 +14,7 @@ import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 // tslint:disable-next-line: max-line-length
 import { Exhibition, ExhibitionPage, PageLayout, DeviceModel, ExhibitionRoom, ExhibitionPageEventTrigger, ExhibitionDevice, ContentVersion, ExhibitionDeviceGroup, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageTransition, GroupContentVersion, ExhibitionPageResource } from "../../generated/client";
-import EventTriggerEditor from "../right-panel-editors/event-trigger-editor";
+import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import ExhibitionTreeMenu from "../left-panel-editors/exhibition-tree-menu";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -22,8 +22,6 @@ import ElementNavigationPane from "../layouts/element-navigation-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
 import EditorView from "../editor/editor-view";
 import CodeEditor from "../editor/code-editor";
-import ResourceEditor from "../right-panel-editors/resource-editor";
-import PageSettingsEditor from "../left-middle-panel-editors/page-settings-editor";
 import DeviceSettingsEditor from "../left-middle-panel-editors/device-settings-editor";
 import { AccessToken, BreadcrumbData, ActionButton } from '../../types';
 import strings from "../../localization/strings";
@@ -285,24 +283,9 @@ class TimelineScreen extends React.Component<Props, State> {
    */
   private renderPageSettings = (pageData: ExhibitionPage) => {
     const { classes } = this.props;
-    const { pages, devices } = this.state;
-    const { resources, eventTriggers } = pageData;
 
     return (
       <div className={ classes.toolbarContent }>
-        <PageSettingsEditor
-          devices={ devices }
-          pages={ pages }
-          resources={ resources }
-          eventTriggers={ eventTriggers }
-          pageData={ pageData }
-          onChange={ this.onPageDataChange }
-          onPageTransitionChange={ this.onTransitionChange }
-          onLayoutChange={ this.onLayoutChange }
-          onAddEventTriggerClick={ this.onAddEventTriggerClick }
-          onResourceClick={ this.onResourceNodeClick }
-          onEventTriggerClick={ this.onEventTriggerNodeClick }
-        />
       </div>
     );
   }
@@ -341,7 +324,7 @@ class TimelineScreen extends React.Component<Props, State> {
    * Renders event trigger editor
    */
   private renderEventTriggerEditor = () => {
-    const { history, classes } = this.props;
+    const { classes } = this.props;
     const { selectedEventTriggerIndex, pageLayout, selectedDevice, pages, selectedPage } = this.state;
     if (selectedEventTriggerIndex === undefined || !pageLayout || !selectedDevice || !selectedDevice.id || !selectedPage) {
       return null;
@@ -362,7 +345,6 @@ class TimelineScreen extends React.Component<Props, State> {
         { strings.formatString(strings.exhibition.eventTrigger, selectedEventTriggerIndex + 1) }
       </Typography>
       <EventTriggerEditor
-        history={ history }
         classes={ classes }
         selectedEventTrigger={ selectedEventTrigger }
         pages={ PageUtils.getSortedPages(pages.filter(page => page.deviceId === selectedDevice.id)) }

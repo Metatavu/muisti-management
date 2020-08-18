@@ -204,42 +204,10 @@ export interface IStrings extends LocalizedStringsMethods {
     pageSettingsEditor: {
       pageLayoutLabel: string;
       pageDeviceLabel: string;
-      enterTransitions: string;
-      exitTransitions: string;
-      addTransition: string;
-      editTransition: string;
-      removeTransition: string;
-
-      dialog: {
-        animation: string;
-        timeInterpolation: string;
-        duration: string;
-        viewPairs: string;
-        addViewPair: string;
-        startOfTransition: string;
-        endOfTransition: string;
-      };
     };
 
     deviceSettingsEditor: {
       indexPageId: string;
-    };
-
-    eventTriggers: {
-      title: string;
-      clickViewIdTitle: string;
-      clickViewId: string;
-      physicalButtonDownTitle: string;
-      physicalButtonUpTitle: string;
-      physicalButton: string;
-      deviceGroupEventTitle: string;
-      deviceGroupEvent: string;
-      delayTitle: string;
-      delay: string;
-      actions: string;
-      variableName: string;
-      variableValue: string;
-      selectPage: string;
     };
 
     addDeviceEditor: {
@@ -503,10 +471,44 @@ export interface IStrings extends LocalizedStringsMethods {
     open: string;
     editor: {
       pageName: string;
+      indexPageId: string;
       device: string;
       layout: string;
       content: string;
       properties: string;
+      transitions: {
+        title: string;
+        enterTransitions: string;
+        exitTransitions: string;
+        addTransition: string;
+        editTransition: string;
+        removeTransition: string;
+      };
+      eventTriggers: {
+        title: string;
+        clickViewIdTitle: string;
+        clickViewId: string;
+        physicalButtonDownTitle: string;
+        physicalButtonUpTitle: string;
+        physicalButton: string;
+        deviceGroupEventTitle: string;
+        deviceGroupEvent: string;
+        delayTitle: string;
+        delay: string;
+        actions: string;
+        variableName: string;
+        variableValue: string;
+        selectPage: string;
+      };
+      dialog: {
+        animation: string;
+        timeInterpolation: string;
+        duration: string;
+        viewPairs: string;
+        addViewPair: string;
+        startOfTransition: string;
+        endOfTransition: string;
+      };
     },
   };
 

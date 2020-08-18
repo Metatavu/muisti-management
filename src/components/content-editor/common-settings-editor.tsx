@@ -4,9 +4,6 @@ import { ExhibitionPage, PageLayout, ExhibitionDevice } from "../../generated/cl
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import theme from "../../styles/theme";
 
 /**

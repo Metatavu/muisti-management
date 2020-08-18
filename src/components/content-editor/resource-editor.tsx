@@ -1,13 +1,12 @@
 import * as React from "react";
-import { ExhibitionPageResource, PageLayout, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageResource, ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, Typography, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, TextField } from "@material-ui/core";
 import styles from "../../styles/exhibition-view";
-import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import MediaLibrary from "./media-library";
+import MediaLibrary from "../right-panel-editors/media-library";
 import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
 
@@ -98,7 +97,7 @@ class ResourceEditor extends React.Component<Props, State> {
   /**
    * Event handler for resource data change
    *
-   * @param event event
+   * @param event React change event
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.updateResource(event.target.value);

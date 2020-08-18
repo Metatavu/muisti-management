@@ -203,44 +203,12 @@
 
     "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
-      "pageDeviceLabel": "Sivun laite",
-      "enterTransitions": "Siirtymä saapuessa",
-      "exitTransitions": "Siirtymä lähtiessä",
-      "addTransition": "Lisää siirtymä",
-      "editTransition": "Muokkaa siirtymää",
-      "removeTransition": "Poista siirtymä",
-
-      "dialog": {
-        "animation": "Animaatio",
-        "timeInterpolation": "Interpolointi",
-        "duration": "Kesto (millisekunttia)",
-        "viewPairs": "Elementtiparit",
-        "addViewPair": "Lisää elementtipari",
-        "startOfTransition": "Elementistä",
-        "endOfTransition" : "Elementille"
-      }
+      "pageDeviceLabel": "Sivun laite"
     },
 
     "deviceSettingsEditor": {
-      "indexPageId": "Laitteen etusivu"
     },
-    
-    "eventTriggers": {
-      "title": "Tapahtumat",
-      "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
-      "clickViewId": "Elementti",
-      "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
-      "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
-      "physicalButton": "Nappi",
-      "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
-      "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
-      "delayTitle": "Tapahtuu viiveen jälkeen",
-      "delay": "Viive (millisekunneissa)",
-      "actions": "Toiminnot",
-      "variableName": "Käyttäjän muuttujan nimi",
-      "variableValue": "Käyttäjän muuttujan arvo",
-      "selectPage": "Valitse sivu"
-    },
+
     "addDeviceEditor": {
       "title": "Lisää uusi laite",
       "defaultName": "Uusi laite",
@@ -498,11 +466,46 @@
   "contentEditor": {
     "open": "Avaa timeline",
     "editor": {
+      "indexPageId": "Laitteen etusivu",
       "pageName": "Sivun nimi",
       "device": "Laite",
       "layout": "Asettelu",
       "content": "Sisältö",
-      "properties": "Ominaisuudet"
+      "properties": "Ominaisuudet",
+
+      "transitions" : {
+        "title": "Siirtymät",
+        "enterTransitions": "Siirtymä saapuessa",
+        "exitTransitions": "Siirtymä lähtiessä",
+        "addTransition": "Lisää siirtymä",
+        "editTransition": "Muokkaa siirtymää",
+        "removeTransition": "Poista siirtymä"
+      },
+      "eventTriggers": {
+        "title": "Tapahtumat",
+        "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
+        "clickViewId": "Elementti",
+        "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
+        "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
+        "physicalButton": "Nappi",
+        "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
+        "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
+        "delayTitle": "Tapahtuu viiveen jälkeen",
+        "delay": "Viive (millisekunneissa)",
+        "actions": "Toiminnot",
+        "variableName": "Käyttäjän muuttujan nimi",
+        "variableValue": "Käyttäjän muuttujan arvo",
+        "selectPage": "Valitse sivu"
+      },
+      "dialog": {
+        "animation": "Animaatio",
+        "timeInterpolation": "Interpolointi",
+        "duration": "Kesto (millisekunttia)",
+        "viewPairs": "Elementtiparit",
+        "addViewPair": "Lisää elementtipari",
+        "startOfTransition": "Elementistä",
+        "endOfTransition" : "Elementille"
+      }
     }
   },
 

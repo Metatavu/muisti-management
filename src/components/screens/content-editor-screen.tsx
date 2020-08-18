@@ -7,17 +7,17 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-import { WithStyles, withStyles, CircularProgress, Accordion, AccordionSummary, Typography, AccordionDetails, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, TextField, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton, MediaType } from '../../types';
+import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType, ExhibitionPageResource } from "../../generated/client";
+import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType, ExhibitionPageResource, ExhibitionPageTransition } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
-import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
-import ElementPropertiesPane from "../layouts/element-properties-pane";
+import TimelineDevicesList from "../content-editor/timeline-devices-list";
+import TimelineEditor from "../content-editor/timeline-editor";
 import PagePreview from "../preview/page-preview";
 import produce from "immer";
 import CodeEditor from "../editor/code-editor";
@@ -25,13 +25,11 @@ import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 import strings from "../../localization/strings";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FolderClosedIcon from "@material-ui/icons/FolderOutlined";
-import FolderOpenIcon from "@material-ui/icons/FolderOpenOutlined";
 import theme from "../../styles/theme";
 import ResourceUtils from "../../utils/resource-utils";
-import ResourceEditor from "../right-panel-editors/resource-editor";
-import MediaLibrary from "../right-panel-editors/media-library";
+import ResourceEditor from "../content-editor/resource-editor";
 import CommonSettingsEditor from "../content-editor/common-settings-editor";
+import TransitionsEditor from "../content-editor/transitions-editor";
 
 type View = "CODE" | "VISUAL";
 
@@ -171,6 +169,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
           <ElementContentsPane>
             { this.renderContentAccordion() }
+            { this.renderTransitionAccordion() }
+            { this.renderEventTriggerAccordion() }
           </ElementContentsPane>
 
         </div>
@@ -285,6 +285,63 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Render content accordion
+   */
+  private renderTransitionAccordion = () => {
+    const { devices, pages, selectedPage } = this.state;
+    if (!selectedPage) {
+      return null;
+    }
+
+    return(
+      <Accordion>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
+          <Typography variant="h3">{ strings.contentEditor.editor.transitions.title }</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <TransitionsEditor
+            selectedPage={ selectedPage }
+            devices={ devices }
+            pages={ pages }
+            onPageTransitionChange={ this.onTransitionChange }
+          />
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </AccordionDetails>
+      </Accordion>
+    );
+  }
+
+  /**
+   * Render content accordion
+   */
+  private renderEventTriggerAccordion = () => {
+    const { pageLayout } = this.state;
+
+    if (!pageLayout) {
+      return null;
+    }
+
+    return(
+      <Accordion>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
+          <Typography variant="h3">{ strings.contentEditor.editor.eventTriggers.title }</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {/* TODO: Move & modify event trigger editor to new layout */}
+          {/* <EventTriggerEditor
+            pages={ pages }
+            layout={ pageLayout }
+            pageData={ selectedPage }
+            onChange={ this.onPageDataChange }
+            onLayoutChange={ this.onLayoutChange }
+          /> */}
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </AccordionDetails>
+      </Accordion>
+    );
+  }
+
+  /**
    * Event handler for page data change
    *
    * @param event event
@@ -351,6 +408,31 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for transition change
+   *
+   * @param transitions transition list to be updated
+   * @param transitionType transition type to update
+   */
+  private onTransitionChange = (transitions: ExhibitionPageTransition[], transitionType: string) => {
+    const { selectedPage } = this.state;
+    if (!selectedPage) {
+      return;
+    }
+
+    if (transitionType === "enter") {
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage!.enterTransitions = transitions;
+        })
+      );
+    } else if (transitionType === "exit") {
+      produce((draft: State) => {
+        draft.selectedPage!.exitTransitions = transitions;
+      });
+    }
+  }
+
+  /**
    * Fetches component data
    */
   private fetchComponentData = async () => {
@@ -407,11 +489,27 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders element timeline
-   * TODO: Add timeline functionalities
+   * Renders timeline content
    */
   private renderTimeline = () => {
-    return null;
+    const { classes } = this.props;
+    const { devices, selectedDevice, pages, selectedPage } = this.state;
+    return (
+      <div className={ classes.timelineContent }>
+        <TimelineDevicesList
+          devices={ devices }
+          selectedDevice={ selectedDevice }
+          onClick={ this.onDeviceClick }
+        />
+        <Divider orientation="vertical" flexItem />
+        <TimelineEditor
+          devices={ devices }
+          pages={ pages }
+          selectedPage={ selectedPage }
+          onClick={ this.onPageClick }
+        />
+      </div>
+    );
   }
 
   /**
@@ -572,6 +670,30 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return result;
   }
 
+  /**
+   * Event handler for device click
+   *
+   * @param selectedDevice selected device
+   */
+  private onDeviceClick = (selectedDevice: ExhibitionDevice) => () => {
+    this.setState({
+      selectedDevice,
+      selectedPage: undefined
+    });
+  }
+
+  /**
+   * Event handler for page click
+   *
+   * @param selectedPage selected page
+   */
+  private onPageClick = (selectedPage: ExhibitionPage) => () => {
+    const { devices } = this.state;
+    this.setState({
+      selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
+      selectedPage
+    });
+  }
 }
 
 /**
