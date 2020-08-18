@@ -501,6 +501,8 @@
   "contentEditor": {
     "open": "Open timeline",
     "editor": {
+      "pageName": "Page name",
+      "layout": "Layout",
       "content": "Content",
       "properties": "Properties"
     }

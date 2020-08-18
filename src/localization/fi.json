@@ -496,10 +496,12 @@
   },
 
   "contentEditor": {
-    "open": "Open timeline",
+    "open": "Avaa timeline",
     "editor": {
-      "content": "Content",
-      "properties": "Properties"
+      "pageName": "Sivun nimi",
+      "layout": "Asettelu",
+      "content": "Sisältö",
+      "properties": "Ominaisuudet"
     }
   },
 

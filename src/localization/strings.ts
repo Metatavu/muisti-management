@@ -502,9 +502,11 @@ export interface IStrings extends LocalizedStringsMethods {
   contentEditor: {
     open: string;
     editor: {
+      pageName: string;
+      layout: string;
       content: string;
       properties: string;
-    }
+    },
   };
 
   genericDialog: {

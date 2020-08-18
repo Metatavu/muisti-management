@@ -7,12 +7,12 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Accordion, AccordionSummary, Typography, AccordionDetails, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout } from "../../generated/client";
+import { ContentVersion, ExhibitionRoom, GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -24,6 +24,11 @@ import CodeEditor from "../editor/code-editor";
 import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 import strings from "../../localization/strings";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FolderClosedIcon from "@material-ui/icons/FolderOutlined";
+import FolderOpenIcon from "@material-ui/icons/FolderOpenOutlined";
+import theme from "../../styles/theme";
+import ResourceUtils from "../../utils/resource-utils";
 type View = "CODE" | "VISUAL";
 
 /**
@@ -41,6 +46,7 @@ interface Props extends WithStyles<typeof styles> {
   contentVersionId: string;
   groupContentVersionId: string;
   deviceModels: DeviceModel[];
+  layouts: PageLayout[];
 }
 
 /**
@@ -58,6 +64,7 @@ interface State {
   view: View;
   selectedPage?: ExhibitionPage;
   pageLayout?: PageLayout;
+  resourceWidgetIdList?: Map<string, string>;
 }
 
 /**
@@ -161,6 +168,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <ElementContentsPane
             title={ strings.contentEditor.editor.content }
           >
+            { this.renderContentAccordion() }
           </ElementContentsPane>
 
           <ElementPropertiesPane>
@@ -171,11 +179,99 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
   }
 
+  private renderContentAccordion = () => {
+
+    const pageElements = this.constructPageElements();
+
+    return(
+      <Accordion>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
+          <Typography variant="h3">{ strings.contentEditor.editor.properties }</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ strings.contentEditor.editor.pageName }</Typography>
+        </AccordionDetails>
+          { pageElements }
+      </Accordion>
+    );
+  }
+
+  /**
+   * Construct page elements
+   */
+  private constructPageElements = () => {
+    const { classes } = this.props;
+    const { selectedPage, pageLayout, selectedDevice } = this.state;
+
+    if (!selectedPage || !pageLayout) {
+      return null;
+    }
+
+    const folderOpen = true;
+    const elementList: JSX.Element[] = [];
+    return this.constructSingleElement(elementList, [pageLayout.data]);
+
+  }
+
+  /**
+   * Construct single page layout view element for accordion listing
+   *
+   * @param elementList JSX element list
+   * @param pageLayoutViews list of page layout views
+   */
+  private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+    const { selectedPage, resourceWidgetIdList } = this.state;
+    if (!selectedPage || !resourceWidgetIdList) {
+      return;
+    }
+
+    pageLayoutViews.forEach(pageLayoutView => {
+      if (
+        pageLayoutView.widget === PageLayoutWidgetType.TextView ||
+        pageLayoutView.widget === PageLayoutWidgetType.Button ||
+        pageLayoutView.widget === PageLayoutWidgetType.FlowTextView ||
+        pageLayoutView.widget === PageLayoutWidgetType.ImageView ||
+        pageLayoutView.widget === PageLayoutWidgetType.MediaView
+      ) {
+        const id = resourceWidgetIdList.get(pageLayoutView.id);
+        const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === id);
+
+        if (resourceIndex < 0) {
+          return;
+        }
+
+        elementList.push(
+          <Accordion>
+            <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
+              <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ pageLayoutView.name || "" }</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextField
+                fullWidth
+                value={ selectedPage.resources[resourceIndex].data || "" }
+              />
+            </AccordionDetails>
+          </Accordion>
+        );
+      }
+
+      if (pageLayoutView.children.length > 0) {
+        this.constructSingleElement(elementList, pageLayoutView.children);
+      }
+    });
+
+    return elementList;
+  }
+
+  private onElementClick = (resourceId?: string) => () => {
+    console.log(resourceId);
+  }
+
   /**
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, roomId, contentVersionId, groupContentVersionId } = this.props;
+    const { accessToken, exhibitionId, roomId, contentVersionId, groupContentVersionId, layouts } = this.props;
 
     const roomsApi = Api.getExhibitionRoomsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
@@ -204,13 +300,34 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const pages = devicePages.flat();
 
+    const selectedDevice = devices.find(device => device.id === pages[0].deviceId);
+    const selectedPage = pages[0];
+    console.log(pages);
+    const pageLayout = layouts.find(layout => layout.id === selectedPage.layoutId);
+
+    if (!pageLayout) {
+      return;
+    }
+
+    if (selectedPage.resources.length < 1) {
+      const custom = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+      selectedPage.resources = custom.resources;
+    }
+
+    const widgetIds = ResourceUtils.getResourceIdsFromLayoutData(pageLayout.data).widgetIds;
+
     this.setState({
       room,
       contentVersion,
       groupContentVersion,
       devices,
-      pages
+      pages,
+      selectedPage,
+      selectedDevice,
+      pageLayout,
+      resourceWidgetIdList: widgetIds
     });
+
   }
 
   /**
@@ -232,6 +349,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
       default:
         return null;
     }
+  }
+
+  /**
+   * Event handler for switch view button click
+   */
+  private onSwitchViewClick = () => {
+    this.setState(
+      produce((draft: State) => {
+        draft.view = draft.view === "CODE" ? "VISUAL" : "CODE";
+      })
+    );
   }
 
   /**
@@ -288,7 +416,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = () => {
-    return [] as ActionButton[];
+    return [{
+      name: this.state.view === "CODE" ?
+        strings.exhibitionLayouts.editView.switchToVisualButton :
+        strings.exhibitionLayouts.editView.switchToCodeButton,
+      action: this.onSwitchViewClick
+    }] as ActionButton[];
   }
 
   /**
@@ -375,6 +508,7 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     exhibition: state.exhibitions.selectedExhibition as Exhibition,
     deviceModels: state.devices.deviceModels,
+    layouts: state.layouts.layouts,
   };
 }
 

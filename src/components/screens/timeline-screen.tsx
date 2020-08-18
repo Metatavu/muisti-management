@@ -617,7 +617,8 @@ class TimelineScreen extends React.Component<Props, State> {
     const pageLayout = this.props.layouts.find(layout => layout.id === selectedPage.layoutId);
     if (selectedPage.resources.length < 1) {
       if (pageLayout) {
-        selectedPage.resources = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+        const temp = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+        selectedPage.resources = temp.resources;
       }
     }
 
@@ -750,12 +751,12 @@ class TimelineScreen extends React.Component<Props, State> {
       return;
     }
 
-    const resources = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
+    const temp = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
 
     this.setState(
       produce((draft: State) => {
         draft.selectedPage!.layoutId = layoutId;
-        draft.selectedPage!.resources = resources;
+        draft.selectedPage!.resources = temp.resources;
       })
     );
   }
@@ -831,7 +832,7 @@ class TimelineScreen extends React.Component<Props, State> {
 
     const layoutId = layouts && layouts.length ? layouts[0].id : null;
     const deviceId = selectedDevice.id;
-    const resources = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
+    const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
     if (!layoutId || !deviceId || !contentVersionId) {
       return null;
@@ -843,7 +844,7 @@ class TimelineScreen extends React.Component<Props, State> {
       contentVersionId: contentVersionId,
       name: strings.exhibition.newPage,
       eventTriggers: [],
-      resources: resources,
+      resources: temp.resources,
       enterTransitions: [],
       exitTransitions: []
     };
