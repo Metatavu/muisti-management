@@ -372,6 +372,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for device click
+   * 
+   * @param selectedDevice selected device
+   * @param e React mouse event
    */
   private onDeviceClick = (selectedDevice: ExhibitionDevice) => (e: React.MouseEvent) => {
     this.setState({
