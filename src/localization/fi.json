@@ -495,8 +495,12 @@
     "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
   },
 
-  "timeline": {
-    "open": "Avaa timeline"
+  "contentEditor": {
+    "open": "Open timeline",
+    "editor": {
+      "content": "Content",
+      "properties": "Properties"
+    }
   },
 
   "genericDialog": {

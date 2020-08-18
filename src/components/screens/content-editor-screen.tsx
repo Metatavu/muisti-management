@@ -23,6 +23,7 @@ import produce from "immer";
 import CodeEditor from "../editor/code-editor";
 import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
+import strings from "../../localization/strings";
 type View = "CODE" | "VISUAL";
 
 /**
@@ -149,20 +150,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { this.renderTimeline() }
           </ElementTimelinePane>
 
-          <ElementSettingsPane
+          {/* <ElementSettingsPane
             width={ 380 }
             title={ "" }
             open={ false }
           >
 
-          </ElementSettingsPane>
+          </ElementSettingsPane> */}
 
-          <ElementContentsPane>
-            <h1>Contents</h1>
+          <ElementContentsPane
+            title={ strings.contentEditor.editor.content }
+          >
           </ElementContentsPane>
 
           <ElementPropertiesPane>
-            <h1>Properties</h1>
+            <h1>{ strings.contentEditor.editor.properties }</h1>
           </ElementPropertiesPane>
         </div>
       </BasicLayout>

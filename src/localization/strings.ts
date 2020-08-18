@@ -499,8 +499,12 @@ export interface IStrings extends LocalizedStringsMethods {
     deleteText: string;
   };
 
-  timeline: {
+  contentEditor: {
     open: string;
+    editor: {
+      content: string;
+      properties: string;
+    }
   };
 
   genericDialog: {

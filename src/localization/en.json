@@ -498,8 +498,12 @@
     "deleteText": "Are you sure you want to delete this group content version and all its content?"
   },
 
-  "timeline": {
-    "open": "Open timeline"
+  "contentEditor": {
+    "open": "Open timeline",
+    "editor": {
+      "content": "Content",
+      "properties": "Properties"
+    }
   },
 
   "genericDialog": {
