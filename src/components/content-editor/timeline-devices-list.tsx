@@ -10,7 +10,7 @@ import { ExhibitionDevice } from "../../generated/client/models";
 interface Props extends WithStyles<typeof styles> {
   devices: ExhibitionDevice[];
   selectedDevice?: ExhibitionDevice;
-  onClick: (device: ExhibitionDevice) => (e: React.MouseEvent) => void;
+  onClick: (device: ExhibitionDevice) => () => void;
 }
 
 /**
