@@ -32,6 +32,13 @@ export default createStyles({
     `,
   },
 
+  timelineContent: {
+    display: "flex",
+    flexDirection: "row",
+    height: "100%",
+    minHeight: 250
+  },
+
   visualEditorContainer: {
     height: "100%",
     display: "flex",

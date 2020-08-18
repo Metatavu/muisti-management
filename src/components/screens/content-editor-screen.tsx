@@ -7,7 +7,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
@@ -19,6 +19,7 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
 import ElementPropertiesPane from "../layouts/element-properties-pane";
 import TimelineDevicesList from "../content-editor/timeline-devices-list";
+import TimelineEditor from "../content-editor/timeline-editor";
 import PagePreview from "../preview/page-preview";
 import produce from "immer";
 import CodeEditor from "../editor/code-editor";
@@ -216,13 +217,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Renders timeline content
    */
   private renderTimeline = () => {
-    const { devices, selectedDevice } = this.state;
+    const { classes } = this.props;
+    const { devices, selectedDevice, pages, selectedPage } = this.state;
     return (
-      <div>
+      <div className={ classes.timelineContent }>
         <TimelineDevicesList
           devices={ devices }
           selectedDevice={ selectedDevice }
           onClick={ this.onDeviceClick }
+        />
+        <Divider orientation="vertical" flexItem />
+        <TimelineEditor
+          devices={ devices }
+          pages={ pages }
+          selectedPage={ selectedPage }
+          onClick={ this.onPageClick }
         />
       </div>
     );
@@ -379,6 +388,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       selectedDevice,
       selectedPage: undefined
+    });
+  }
+
+  /**
+   * Event handler for page click
+   * 
+   * @param selectedPage selected page
+   */
+  private onPageClick = (selectedPage: ExhibitionPage) => () => {
+    const { devices } = this.state;
+    this.setState({
+      selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
+      selectedPage
     });
   }
 }
