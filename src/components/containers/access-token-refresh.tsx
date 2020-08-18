@@ -120,7 +120,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    */
   private keycloakInit = () => {
     return new Promise(resolve => {
-      this.keycloak.init({ onLoad: "login-required" }).success(resolve);
+      this.keycloak.init({ onLoad: "login-required", checkLoginIframe: false }).success(resolve);
     });
   }
 }
