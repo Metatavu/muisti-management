@@ -392,8 +392,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * 
-   * @param selectedPage Event handler for page click
+   * Event handler for page click
    * 
    * @param selectedPage selected page
    */
