@@ -54,6 +54,7 @@ class DeviceList extends React.Component<Props, State> {
          * Temporary link to new timeline component
          */}
         <ListItem
+          key="newTimeline"
           button
           selected={ false }
           onClick={ () => { this.props.history.push(this.props.history.location.pathname.replace("timeline", "newTimeline")) } }
@@ -81,6 +82,7 @@ class DeviceList extends React.Component<Props, State> {
     return devices.map(device => {
       return (
         <ListItem
+          key={ device.id }
           button
           selected={ selectedDevice && selectedDevice.id === device.id }
           onClick={ this.selectDeviceTab(device) }

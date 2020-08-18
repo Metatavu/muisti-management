@@ -18,6 +18,7 @@ import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
 import ElementPropertiesPane from "../layouts/element-properties-pane";
+import TimelineDevicesList from "../content-editor/timeline-devices-list";
 import PagePreview from "../preview/page-preview";
 import produce from "immer";
 import CodeEditor from "../editor/code-editor";
@@ -212,10 +213,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders element timeline
+   * Renders timeline content
    */
-  private renderTimeline = () => { // To do
-    return null;
+  private renderTimeline = () => {
+    const { devices, selectedDevice } = this.state;
+    return (
+      <div>
+        <TimelineDevicesList
+          devices={ devices }
+          selectedDevice={ selectedDevice }
+          onClick={ this.onDeviceClick }
+        />
+      </div>
+    );
   }
 
   /**
@@ -360,6 +370,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return result;
   }
 
+  /**
+   * Event handler for device click
+   * 
+   * @param selectedDevice selected device
+   */
+  private onDeviceClick = (selectedDevice: ExhibitionDevice) => () => {
+    this.setState({
+      selectedDevice,
+      selectedPage: undefined
+    });
+  }
 }
 
 /**
