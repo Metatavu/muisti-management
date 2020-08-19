@@ -118,13 +118,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public componentDidUpdate = async (prevProps: Props, prevState: State) => {
     const { exhibition } = this.props;
-    const { selectedPage } = this.state;
+    const { selectedPage, layouts } = this.state;
     if (!prevProps.exhibition && exhibition) {
       await this.fetchComponentData();
     }
 
-    if (prevState.selectedPage !== selectedPage && selectedPage) {
-      this.updateResources(this.state.layouts, selectedPage);
+    if (
+      selectedPage &&
+      prevState.selectedPage &&
+      (prevState.selectedPage.id !== selectedPage.id || prevState.selectedPage.layoutId !== selectedPage.layoutId)
+    ) {
+      this.updateResources(layouts, selectedPage);
     }
   }
 
@@ -588,12 +592,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = () => {
-    return [{
-      name: this.state.view === "CODE" ?
+    return [
+      { name: this.state.view === "CODE" ?
         strings.exhibitionLayouts.editView.switchToVisualButton :
         strings.exhibitionLayouts.editView.switchToCodeButton,
-      action: this.onSwitchViewClick
-    }] as ActionButton[];
+        action: this.onSwitchViewClick
+      }, {
+        name: strings.generic.save,
+        action: this.onPageSave
+      }
+    ] as ActionButton[];
   }
 
   /**
@@ -704,16 +712,52 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
+    const tempPage = { ...selectedPage } as ExhibitionPage;
     const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
-    if (selectedPage.resources.length < 1) {
-      selectedPage.resources = resourceHolder.resources;
+    if (tempPage.resources.length < 1) {
+      tempPage.resources = resourceHolder.resources;
     }
 
     this.setState({
-      selectedPage,
+      selectedPage: tempPage,
       pageLayout,
       resourceWidgetIdList: resourceHolder.widgetIds
     });
+  }
+
+  /**
+   * Event handler for page save
+   */
+  private onPageSave = async () => {
+    const { selectedPage, pages } = this.state;
+
+    if (!selectedPage || !selectedPage.id) {
+      return;
+    }
+
+    try {
+      const exhibitionPagesApi = Api.getExhibitionPagesApi(this.props.accessToken);
+      const updatedPage = await exhibitionPagesApi.updateExhibitionPage({
+        exhibitionId: this.props.exhibitionId,
+        pageId: selectedPage.id,
+        exhibitionPage: selectedPage
+      });
+
+      const newPages = produce(pages, draft => {
+        const pageIndex = draft.findIndex(page => page.id === updatedPage.id);
+        if (pageIndex > -1) {
+          draft[pageIndex] = updatedPage;
+        }
+      });
+
+        this.setState({ pages: newPages });
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
   }
 }
 
