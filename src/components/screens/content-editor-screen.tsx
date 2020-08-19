@@ -720,17 +720,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     this.setState(
-      produce((draft: State) =>
+      produce((draft: State) => {
         const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
         draft.selectedPage = selectedPage;
-        
+
         if (draft.selectedPage.resources.length < 1) {
           draft.selectedPage.resources = resourceHolder.resources;
         }
-        
+
         draft.resourceWidgetIdList = resourceHolder.widgetIds;
         draft.pageLayout = pageLayout;
-      )
+      })
     );
   }
 
