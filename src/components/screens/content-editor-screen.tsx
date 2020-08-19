@@ -115,6 +115,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Component did update life cycle handler
+   *
+   * @param prevProps previous props
+   * @param prevState previous state
    */
   public componentDidUpdate = async (prevProps: Props, prevState: State) => {
     const { exhibition } = this.props;
@@ -281,7 +284,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return (
       <Accordion key={ resourceIndex }>
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">{ pageLayoutView.name || "" }</Typography>
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+            { pageLayoutView.name || "" }
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <ResourceEditor
@@ -295,7 +300,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render content accordion
+   * Render transition accordion
    */
   private renderTransitionAccordion = () => {
     const { devices, pages, selectedPage } = this.state;
@@ -322,7 +327,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render content accordion
+   * Render event trigger accordion
    */
   private renderEventTriggerAccordion = () => {
     const { pageLayout } = this.state;
@@ -399,9 +404,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for name input change
+   * On update resource handler
    *
-   * @param event event
+   * @param resourceIndex resource index
+   * @param resource page resource
    */
   private onUpdateResource = (resourceIndex: number, resource: ExhibitionPageResource) => {
     this.setState(
@@ -593,7 +599,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private getActionButtons = () => {
     return [
-      { name: this.state.view === "CODE" ?
+      {
+        name: this.state.view === "CODE" ?
         strings.exhibitionLayouts.editView.switchToVisualButton :
         strings.exhibitionLayouts.editView.switchToCodeButton,
         action: this.onSwitchViewClick

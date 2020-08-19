@@ -1,6 +1,6 @@
 import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../generated/client";
 
-export interface ResourceHolder {
+export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string>;
 }
@@ -17,7 +17,7 @@ export default class ResourceUtils {
    * @param layoutView layout view
    * @returns custom resource holder
    */
-  public static getResourcesFromLayoutData = (layoutView: PageLayoutView): ResourceHolder => {
+  public static getResourcesFromLayoutData = (layoutView: PageLayoutView): PageResourceCache => {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string> = new Map();
 
@@ -44,7 +44,7 @@ export default class ResourceUtils {
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
       });
     }
-    const custom: ResourceHolder = {
+    const custom: PageResourceCache = {
       resources: foundResources,
       widgetIds: ids
     };
