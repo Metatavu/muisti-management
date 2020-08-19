@@ -281,7 +281,11 @@ class TransitionsEditor extends React.Component<Props, State> {
    */
   private onDeleteTransitionClick = (type: string, transitionIndex: number) => {
     const { selectedPage } = this.props;
-    const pageToUpdate = { ...selectedPage };
+    const pageToUpdate = {
+      ...selectedPage,
+      enterTransitions: [ ...selectedPage.enterTransitions ],
+      exitTransitions: [ ...selectedPage.exitTransitions ]
+    };
     if (!pageToUpdate.exhibitionId || !pageToUpdate.id) {
       this.resetValues();
       return;
@@ -333,7 +337,11 @@ class TransitionsEditor extends React.Component<Props, State> {
     const { selectedPage } = this.props;
     const { selectedTransition, selectedTransitionType, selectedTransitionIndex } = this.state;
 
-    const pageToUpdate = { ...selectedPage };
+    const pageToUpdate = {
+      ...selectedPage,
+      enterTransitions: [ ...selectedPage.enterTransitions ],
+      exitTransitions: [ ...selectedPage.exitTransitions ]
+    };
     if (!selectedTransition || !selectedTransitionType || !pageToUpdate.exhibitionId || !pageToUpdate.id) {
       return;
     }

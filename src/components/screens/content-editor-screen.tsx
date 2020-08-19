@@ -442,9 +442,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
         })
       );
     } else if (transitionType === "exit") {
-      produce((draft: State) => {
-        draft.selectedPage!.exitTransitions = transitions;
-      });
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage!.exitTransitions = transitions;
+        })
+      );
     }
   }
 
