@@ -116,9 +116,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Component did update life cycle handler
    */
-  public componentDidUpdate = async (prevProps: Props) => {
-    if (!prevProps.exhibition && this.props.exhibition) {
+  public componentDidUpdate = async (prevProps: Props, prevState: State) => {
+    const { exhibition } = this.props;
+    const { selectedPage } = this.state;
+    if (!prevProps.exhibition && exhibition) {
       await this.fetchComponentData();
+    }
+
+    if (prevState.selectedPage !== selectedPage && selectedPage) {
+      this.updateResources(this.state.layouts, selectedPage);
     }
   }
 
@@ -438,12 +444,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private fetchComponentData = async () => {
     const { accessToken, exhibitionId, groupContentVersionId } = this.props;
 
+    const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
 
-    const [ groupContentVersion ] = await Promise.all([
-      groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId })
+    const [ groupContentVersion, layouts ] = await Promise.all([
+      groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId }),
+      layoutsApi.listPageLayouts({ })
     ]);
 
     const exhibitionGroupId = groupContentVersion.deviceGroupId;
@@ -459,20 +467,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
 
     const pages: ExhibitionPage[] = devicePages.flat();
+    const selectedDevice = devices[0];
 
-    const selectedPage = pages[2];
-    const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
+    const selectedPage = pages.find(page => page.deviceId === selectedDevice.id);
 
-    const layoutsApi = Api.getPageLayoutsApi(accessToken);
-    const layouts = await layoutsApi.listPageLayouts({ });
-    const pageLayout = layouts.find(layout => layout.id === selectedPage.layoutId);
-
-    if (!pageLayout) {
-      return;
-    }
-    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
-    if (selectedPage.resources.length < 1) {
-      selectedPage.resources = resourceHolder.resources;
+    if (selectedPage) {
+      this.updateResources(layouts, selectedPage);
     }
 
     this.setState({
@@ -480,10 +480,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices,
       pages,
       layouts,
-      selectedPage,
       selectedDevice,
-      pageLayout,
-      resourceWidgetIdList: resourceHolder.widgetIds
     });
 
   }
@@ -692,6 +689,30 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
       selectedPage
+    });
+  }
+
+  /**
+   * Update page resources and id mappings
+   *
+   * @param layouts list of layouts
+   * @param selectedPage selected page
+   */
+  private updateResources = (layouts: PageLayout[], selectedPage: ExhibitionPage) => {
+    const pageLayout = layouts.find(layout => layout.id === selectedPage.layoutId);
+    if (!pageLayout) {
+      return;
+    }
+
+    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+    if (selectedPage.resources.length < 1) {
+      selectedPage.resources = resourceHolder.resources;
+    }
+
+    this.setState({
+      selectedPage,
+      pageLayout,
+      resourceWidgetIdList: resourceHolder.widgetIds
     });
   }
 }
