@@ -1,13 +1,12 @@
 import * as React from "react";
-import { ExhibitionPageResource, PageLayout, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageResource, ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, Typography, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, TextField } from "@material-ui/core";
 import styles from "../../styles/exhibition-view";
-import theme from "../../styles/theme";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import MediaLibrary from "./media-library";
+import MediaLibrary from "../right-panel-editors/media-library";
 import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
 
@@ -16,9 +15,10 @@ import { AccessToken, MediaType } from "../../types";
  */
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
+  title?: string;
+  resourceIndex: number;
   resource: ExhibitionPageResource;
-  layouts: PageLayout[];
-  onUpdate: (resource: ExhibitionPageResource) => void;
+  onUpdate: (resourceIndex: number, resource: ExhibitionPageResource) => void;
 }
 
 /**
@@ -48,13 +48,7 @@ class ResourceEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, resource, accessToken } = this.props;
-
-    const title = (
-      <Typography variant="h6" style={{ marginBottom: theme.spacing(2) }}>
-        { strings.exhibition.properties.title }
-      </Typography>
-    );
+    const { classes, resource, accessToken, title } = this.props;
 
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
@@ -64,7 +58,7 @@ class ResourceEditor extends React.Component<Props, State> {
             <MediaLibrary
               accessToken={ accessToken }
               mediaType={ MediaType.IMAGE }
-              currentUrl={ resource.data }
+              resource={ resource }
               onUrlChange={ this.updateResource }
             />
           </>
@@ -76,7 +70,7 @@ class ResourceEditor extends React.Component<Props, State> {
             <MediaLibrary
               accessToken={ accessToken }
               mediaType={ MediaType.VIDEO }
-              currentUrl={ resource.data }
+              resource={ resource }
               onUrlChange={ this.updateResource }
             />
           </>
@@ -103,7 +97,7 @@ class ResourceEditor extends React.Component<Props, State> {
   /**
    * Event handler for resource data change
    *
-   * @param event event
+   * @param event React change event
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.updateResource(event.target.value);
@@ -115,8 +109,9 @@ class ResourceEditor extends React.Component<Props, State> {
    * @param value value as string
    */
   private updateResource = (value: string) => {
-    const { resource } = this.props;
-    this.props.onUpdate(
+    const { resource, resourceIndex } = this.props;
+
+    this.props.onUpdate(resourceIndex,
       produce(resource, draft => {
         draft.data = value;
       })
@@ -131,7 +126,6 @@ class ResourceEditor extends React.Component<Props, State> {
  */
 function mapStateToProps(state: ReduxState) {
   return {
-    layouts: state.layouts.layouts,
     accessToken: state.auth.accessToken as AccessToken
   };
 }

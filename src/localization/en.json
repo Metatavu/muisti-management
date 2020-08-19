@@ -203,44 +203,12 @@
     
     "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
-      "pageDeviceLabel": "Page device",
-      "enterTransitions": "Enter transitions",
-      "exitTransitions": "Exit transitions",
-      "addTransition": "Add transition",
-      "editTransition": "Edit transition",
-      "removeTransition": "Remove transition",
-
-      "dialog": {
-        "animation": "Animation",
-        "timeInterpolation": "Time interpolation",
-        "duration": "Duration (milliseconds)",
-        "viewPairs": "Element pairs",
-        "addViewPair": "Add element pair",
-        "startOfTransition": "From element",
-        "endOfTransition" : "To element"
-      }
+      "pageDeviceLabel": "Page device"
     },
 
     "deviceSettingsEditor": {
-      "indexPageId": "Device front page"
     },
 
-    "eventTriggers": {
-      "title": "Events",
-      "clickViewIdTitle": "Triggers when element is clicked",
-      "clickViewId": "Element",
-      "physicalButtonDownTitle": "Triggers when button is pressed",
-      "physicalButtonUpTitle": "Triggers when button is released",
-      "physicalButton": "Button",
-      "deviceGroupEventTitle": "Triggers when device group event is detected",
-      "deviceGroupEvent": "Device group event name",
-      "delayTitle": "Triggers after delay",
-      "delay": "Delay (in milliseconds)",
-      "actions": "Actions",
-      "variableName": "User variable name",
-      "variableValue": "User variable value",
-      "selectPage": "Select page"
-    },
     "addDeviceEditor": {
       "title": "Add new device",
       "defaultName": "New device",
@@ -498,8 +466,52 @@
     "deleteText": "Are you sure you want to delete this group content version and all its content?"
   },
 
-  "timeline": {
-    "open": "Open timeline"
+  "contentEditor": {
+    "open": "Open timeline",
+    "editor": {
+      "pageName": "Page name",
+      "indexPageId": "Device front page",
+      "device": "Device",
+      "layout": "Layout",
+      "content": "Content",
+      "properties": "Properties",
+
+      "transitions" :{
+        "title": "Transitions",
+        "enterTransitions": "Enter transitions",
+        "exitTransitions": "Exit transitions",
+        "addTransition": "Add transition",
+        "editTransition": "Edit transition",
+        "removeTransition": "Remove transition"
+      },
+  
+      "eventTriggers": {
+        "title": "Events",
+        "clickViewIdTitle": "Triggers when element is clicked",
+        "clickViewId": "Element",
+        "physicalButtonDownTitle": "Triggers when button is pressed",
+        "physicalButtonUpTitle": "Triggers when button is released",
+        "physicalButton": "Button",
+        "deviceGroupEventTitle": "Triggers when device group event is detected",
+        "deviceGroupEvent": "Device group event name",
+        "delayTitle": "Triggers after delay",
+        "delay": "Delay (in milliseconds)",
+        "actions": "Actions",
+        "variableName": "User variable name",
+        "variableValue": "User variable value",
+        "selectPage": "Select page"
+      },
+  
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Time interpolation",
+        "duration": "Duration (milliseconds)",
+        "viewPairs": "Element pairs",
+        "addViewPair": "Add element pair",
+        "startOfTransition": "From element",
+        "endOfTransition" : "To element"
+      }
+    }
   },
 
   "genericDialog": {

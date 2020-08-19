@@ -85,7 +85,12 @@ class TopBar extends React.Component<Props, State> {
 
           <nav className={ classes.nav }>
             { this.props.onDashboardButtonClick &&
-              <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ this.props.onDashboardButtonClick }>
+              <IconButton
+                size="small"
+                className={ classes.backBtn }
+                edge="start"
+                onClick={ this.props.onDashboardButtonClick }
+              >
                 <HomeIcon />
               </IconButton>
             }
@@ -102,7 +107,12 @@ class TopBar extends React.Component<Props, State> {
 
         <div className={ classes.middleRow }>
           { this.props.history.length > 1 && !noBackButton &&
-            <IconButton size="small" className={ classes.backBtn } edge="start" onClick={ () => this.props.history.goBack() }>
+            <IconButton
+              size="small"
+              className={ classes.backBtn }
+              edge="start"
+              onClick={ () => this.props.history.goBack() }
+            >
               <ArrowBackIcon />
             </IconButton>
           }
@@ -115,11 +125,20 @@ class TopBar extends React.Component<Props, State> {
             <>
               { // Temporary path to new timeline included
                 !history.location.pathname.includes("timeline") && !history.location.pathname.includes("newTimeline") &&
-                <ContentUtilityBar history={ history } actionBarButtons={ actionBarButtons } noTabs={ noTabs } />
+                <ContentUtilityBar
+                  history={ history }
+                  actionBarButtons={ actionBarButtons }
+                  noTabs={ noTabs }
+                />
               }
               {  // Temporary path to new timeline included
                 (history.location.pathname.includes("timeline") || history.location.pathname.includes("newTimeline")) &&
-                <EditorUtilityBar history={ history } actionBarButtons={ actionBarButtons } devices={ devices } setSelectedDevice={ setSelectedDevice } />
+                <EditorUtilityBar
+                  history={ history }
+                  actionBarButtons={ actionBarButtons }
+                  devices={ devices }
+                  setSelectedDevice={ setSelectedDevice }
+                />
               }
             </>
           }

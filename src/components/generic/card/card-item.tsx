@@ -108,7 +108,9 @@ class CardItem extends React.Component<Props, State> {
           </CardContent>
         </Card>
         <div className={ classNames(`${ classes.cardActionArea } ${ selected ? "visible" : "" }`) }>
-          <Button onClick={ this.props.onActionClick } variant="outlined">{ strings.timeline.open }</Button>
+          <Button onClick={ this.props.onActionClick } variant="outlined">
+            { strings.contentEditor.open }
+          </Button>
         </div>
       </div>
     );
