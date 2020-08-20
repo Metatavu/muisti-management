@@ -430,6 +430,9 @@ export interface IStrings extends LocalizedStringsMethods {
       fontStyle: string;
       textSize: string;
       backgroundColor: string;
+      allCaps: string;
+      gravity: string;
+      backgroundImage: string;
     };
 
     linearLayout: {

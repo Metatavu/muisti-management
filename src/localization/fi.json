@@ -426,7 +426,10 @@
       "textResource": "Napin teksti",
       "fontStyle": "Napin fontin tyyli",
       "textSize": "Napin tekstin koko (dp)",
-      "backgroundColor": "Napin taustaväri"
+      "backgroundColor": "Napin taustaväri",
+      "allCaps": "Kaikki kirjaimet isolla",
+      "gravity": "Napin tekstin painotus",
+      "backgroundImage": "Napin taustakuva"
     },
 
     "linearLayout": {

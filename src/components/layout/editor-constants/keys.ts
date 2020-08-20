@@ -56,11 +56,14 @@ export enum LayoutImageViewPropKeys {
 export enum LayoutButtonPropKeys {
   Width = "width",
   Height = "height",
-  BackgroundColor = "backgroundColor",
+  Background = "background",
+  BackgroundImage = "backgroundImage",
   TextColor = "textColor",
   TextResources = "text",
   TextStyle = "textStyle",
   TextSize = "textSize",
+  AllCaps = "allCaps",
+  Gravity = "gravity"
 }
 
 /**
