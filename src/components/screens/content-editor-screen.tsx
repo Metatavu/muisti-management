@@ -64,7 +64,7 @@ interface State {
   view: View;
   selectedPage?: ExhibitionPage;
   pageLayout?: PageLayout;
-  resourceWidgetIdList?: Map<string, string>;
+  resourceWidgetIdList?: Map<string, string[]>;
 }
 
 /**
@@ -253,14 +253,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     pageLayoutViews.forEach(pageLayoutView => {
       if (allowedWidgetTypes.includes(pageLayoutView.widget)) {
-        const id = resourceWidgetIdList.get(pageLayoutView.id);
-        const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === id);
-
-        if (resourceIndex < 0) {
+        const idList = resourceWidgetIdList.get(pageLayoutView.id);
+        if (!idList) {
           return;
         }
-
-        elementList.push(this.renderResourcesEditor(selectedPage, pageLayoutView, resourceIndex));
+        elementList.push(this.renderResourcesEditor(selectedPage, pageLayoutView, idList));
       }
 
       if (pageLayoutView.children.length > 0) {
@@ -276,25 +273,41 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param selectedPage selected page
    * @param pageLayoutView page layout view
-   * @param resourceIndex resource index
+   * @param idList list resource id's
    */
-  private renderResourcesEditor = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, resourceIndex: number) => {
-    const resource = selectedPage.resources[resourceIndex];
+  private renderResourcesEditor = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
+
+    const items = idList.map(elementId => {
+      const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === elementId);
+
+      if (resourceIndex < 0) {
+        return null;
+      }
+
+      const foundResource = selectedPage.resources[resourceIndex];
+
+      return (
+        <AccordionDetails>
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+            { foundResource.id || "" }
+          </Typography>
+          <ResourceEditor
+            resource={ foundResource }
+            resourceIndex={ resourceIndex }
+            onUpdate={ this.onUpdateResource }
+          />
+        </AccordionDetails>
+      );
+    });
 
     return (
-      <Accordion key={ resourceIndex }>
+      <Accordion key={ pageLayoutView.name }>
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
           <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          <ResourceEditor
-            resource={ resource }
-            resourceIndex={ resourceIndex }
-            onUpdate={ this.onUpdateResource }
-          />
-        </AccordionDetails>
+          { items }
       </Accordion>
     );
   }
@@ -726,7 +739,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
         const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
         draft.selectedPage = selectedPage;
 
-        if (draft.selectedPage.resources.length < 1) {
+        /**
+         * TODO: Will need a update handler that can update page resources when layout is changed
+         * WITHOUT deleting already existing data
+         */
+        if (selectedPage.resources.length < 1) {
           draft.selectedPage.resources = resourceHolder.resources;
         }
 

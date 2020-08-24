@@ -2,7 +2,7 @@ import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, Exhibit
 
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
-  widgetIds: Map<string, string>;
+  widgetIds: Map<string, string[]>;
 }
 
 /**
@@ -19,7 +19,7 @@ export default class ResourceUtils {
    */
   public static getResourcesFromLayoutData = (layoutView: PageLayoutView): PageResourceCache => {
     const foundResources: ExhibitionPageResource[] = [];
-    let ids: Map<string, string> = new Map();
+    let ids: Map<string, string[]> = new Map();
 
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
     resourceProperties.forEach(property => {
@@ -31,7 +31,16 @@ export default class ResourceUtils {
         }
 
         const id = splitPropertyValue[1];
-        ids.set(layoutView.id, id);
+
+        const foundElement = ids.get(layoutView.id);
+        if (foundElement) {
+          foundElement.push(id);
+          ids.set(layoutView.id, foundElement);
+        } else {
+          const newList = [];
+          newList.push(id);
+          ids.set(layoutView.id, newList);
+        }
         foundResources.push(resource);
       }
     });
@@ -57,6 +66,7 @@ export default class ResourceUtils {
  *
  * @param property page layout view property
  * @param layoutView page layout view containing the property
+ *
  * @returns exhibition page resource
  */
 function translateLayoutPropertyToResource(property: PageLayoutViewProperty, layoutView: PageLayoutView): ExhibitionPageResource | undefined {
@@ -66,22 +76,30 @@ function translateLayoutPropertyToResource(property: PageLayoutViewProperty, lay
   }
 
   const id = splitPropertyValue[1];
-  const type = resolveResourceType(layoutView);
+  const type = resolveResourceType(layoutView, property);
   const data = "";
   return { id, type, data } as ExhibitionPageResource;
 }
 
 /**
- * Returns resource type from given layout view
+ * Returns resource type from given layout view and property key
  *
  * @param layoutView page layout view
+ * @param property page layout view property
+ * @returns correct exhibition page resource type
  */
-function resolveResourceType(layoutView: PageLayoutView): ExhibitionPageResourceType {
-  switch (layoutView.widget) {
-    case "ImageView": return ExhibitionPageResourceType.Image;
-    case "MediaView": return ExhibitionPageResourceType.Video;
-    case "TextView":
-    case "FlowTextView": return ExhibitionPageResourceType.Text;
-    default: return ExhibitionPageResourceType.Text;
+function resolveResourceType(layoutView: PageLayoutView, property: PageLayoutViewProperty): ExhibitionPageResourceType {
+  switch (property.name) {
+    case "backgroundImage":
+      return ExhibitionPageResourceType.Image;
+    case "src":
+      if (layoutView.widget === "ImageView") {
+        return ExhibitionPageResourceType.Image;
+      }
+      return ExhibitionPageResourceType.Video;
+    case "text":
+      return ExhibitionPageResourceType.Text;
+    default:
+      return ExhibitionPageResourceType.Text;
   }
 }
