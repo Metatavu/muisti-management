@@ -5,6 +5,7 @@ export default createStyles({
 
   timeLineRowList: {
     padding: 0,
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
@@ -22,31 +23,37 @@ export default createStyles({
   },
 
   timelineRow: {
-    padding: 15,
+    padding: 5,
     height: 70,
-    width: 5000
+    width: "100%"
   },
 
   pageList: {
     display: "flex",
-    padding: 0,
+    padding: 10,
     height: "100%",
-    width: "auto"
+    width: "100%",
+    transition: "background-color 0.25s linear"
   },
 
-  pageItem: {
+  isDraggedOver: {
+    backgroundColor: theme.palette.grey[200]
+  },
+
+  pageItemContent: {
     display: "flex",
     alignItems: "center",
     padding: "0 10px",
     marginRight: 5,
     height: "100%",
-    width: 350
-  },
-
-  pageItemContent: {
+    width: 350,
     borderRadius: 2,
     borderColor: theme.palette.primary.main,
-    transitionDuration: "0s"
+    transition: "background-color 0.25s linear"
+  },
+
+  isDragged: {
+    backgroundColor: "#B3E5FC"
   },
 
   selected: {

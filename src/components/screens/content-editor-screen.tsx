@@ -30,6 +30,7 @@ import ResourceUtils from "../../utils/resource-utils";
 import ResourceEditor from "../content-editor/resource-editor";
 import CommonSettingsEditor from "../content-editor/common-settings-editor";
 import TransitionsEditor from "../content-editor/transitions-editor";
+import { DropResult } from "react-beautiful-dnd";
 
 type View = "CODE" | "VISUAL";
 
@@ -58,6 +59,7 @@ interface State {
   loading: boolean;
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
+  extendedDevices: ExtendedDevice[];
   layouts: PageLayout[];
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
@@ -65,6 +67,16 @@ interface State {
   selectedPage?: ExhibitionPage;
   pageLayout?: PageLayout;
   resourceWidgetIdList?: Map<string, string[]>;
+}
+
+/**
+ * TODO:
+ * Remove when device includes page order
+ * 
+ * Interface describing device extended with page order
+ */
+interface ExtendedDevice extends ExhibitionDevice {
+  pageOrder: string[];
 }
 
 /**
@@ -94,6 +106,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       devices: [],
+      extendedDevices: [],
       pages: [],
       layouts: [],
       view: "VISUAL"
@@ -481,7 +494,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const exhibitionGroupId = groupContentVersion.deviceGroupId;
     const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId });
-
     const devicePages = await Promise.all(
       devices.map(device =>
         exhibitionPagesApi.listExhibitionPages({
@@ -490,6 +502,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
         })
       )
     );
+    
+    /**
+     * TODO: Remove extendedDevices when device includes page order
+     */
+    const extendedDevices: ExtendedDevice[] = devices.map((device, index) => {
+      return {
+        ...device,
+        pageOrder: devicePages[index].map(page => page.id!)
+      }
+    });
 
     const pages: ExhibitionPage[] = devicePages.flat();
     const selectedDevice = devices[0];
@@ -503,6 +525,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       groupContentVersion,
       devices,
+      extendedDevices,
       pages,
       layouts,
       selectedDevice,
@@ -515,7 +538,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderTimeline = () => {
     const { classes } = this.props;
-    const { devices, selectedDevice, pages, selectedPage } = this.state;
+    /**
+     * TODO: Remove extendedDevices when device includes page order
+     */
+    const { devices, extendedDevices, selectedDevice, pages, selectedPage } = this.state;
     return (
       <div className={ classes.timelineContent }>
         <TimelineDevicesList
@@ -525,10 +551,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
         />
         <Divider orientation="vertical" flexItem />
         <TimelineEditor
-          devices={ devices }
+          devices={ extendedDevices }
           pages={ pages }
           selectedPage={ selectedPage }
           onClick={ this.onPageClick }
+          onDragEnd={ this.onPageDragEnd }
         />
       </div>
     );
@@ -720,6 +747,53 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
       selectedPage
     });
+  }
+
+  /**
+   * Event handler for page drag end
+   * 
+   * @param deviceId device id
+   * @param result drop result
+   */
+  private onPageDragEnd = (deviceId: string) => (result: DropResult) => {
+    this.setState(
+      produce((draft: State) => {
+        if (!result.destination) {
+          return;
+        }
+
+        const deviceIndex = draft.extendedDevices.findIndex(device => device.id === deviceId);
+        if (deviceIndex < 0) {
+          return;
+        }
+
+        const device = this.state.extendedDevices[deviceIndex];
+        draft.extendedDevices[deviceIndex] = {
+          ...device,
+          pageOrder: this.reorderPages(
+            device.pageOrder,
+            result.source.index,
+            result.destination.index
+          )
+        };
+      })
+    );
+  }
+
+  /**
+   * Reorders device pages
+   * 
+   * @param pageOrder page order
+   * @param prevIndex previous index
+   * @param newIndex new index
+   * @returns new order as string list
+   */
+  private reorderPages = (pageOrder: string[], prevIndex: number, newIndex: number): string[] => {
+    const result = Array.from(pageOrder);
+    const [removed] = result.splice(prevIndex, 1);
+    result.splice(newIndex, 0, removed);
+
+    return result;
   }
 
   /**

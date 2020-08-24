@@ -86,7 +86,8 @@ class CommonSettingsEditor extends React.Component<Props, State> {
         <Select
           variant="filled"
           labelId="pageLayoutId"
-          fullWidth value={ page.layoutId }
+          fullWidth
+          value={ page.layoutId }
           onChange={ onLayoutChange }
         >
           { layoutSelectItems }
@@ -104,7 +105,7 @@ class CommonSettingsEditor extends React.Component<Props, State> {
     const { devices, onChange } = this.props;
     const selectItems = devices.map(device => {
       return (
-        <MenuItem key={ device.id || "" } value={ device.id }>
+        <MenuItem key={ device.id! } value={ device.id }>
           { device.name }
         </MenuItem>
       );
