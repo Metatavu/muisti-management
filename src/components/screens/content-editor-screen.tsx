@@ -273,7 +273,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param selectedPage selected page
    * @param pageLayoutView page layout view
-   * @param idList list resource id's
+   * @param idList list resource ids
    */
   private renderResourcesEditor = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
 
