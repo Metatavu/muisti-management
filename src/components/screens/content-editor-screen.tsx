@@ -753,6 +753,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Event handler for page drag end
    * 
    * @param deviceId device id
+   * @param result drop result
    */
   private onPageDragEnd = (deviceId: string) => (result: DropResult) => {
     this.setState(
@@ -785,6 +786,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageOrder page order
    * @param prevIndex previous index
    * @param newIndex new index
+   * @returns new order as string list
    */
   private reorderPages = (pageOrder: string[], prevIndex: number, newIndex: number): string[] => {
     const result = Array.from(pageOrder);

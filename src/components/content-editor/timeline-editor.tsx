@@ -107,6 +107,7 @@ const renderDroppableContent = (
 /**
  * Renders page as draggable item
  * 
+ * @param index page index in pages list
  * @param page page
  * @param props component props
  */
