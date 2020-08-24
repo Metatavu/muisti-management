@@ -429,7 +429,10 @@
       "textResource": "Button text resource",
       "fontStyle": "Button font style",
       "textSize": "Button text size (dp)",
-      "backgroundColor": "Button background color"
+      "backgroundColor": "Button background color",
+      "allCaps": "All upper case",
+      "gravity": "Button gravity",
+      "backgroundImage": "Button background image"
     },
 
     "linearLayout": {

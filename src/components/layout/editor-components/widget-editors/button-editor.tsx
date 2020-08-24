@@ -10,6 +10,8 @@ import ColorPicker from "../color-picker";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
+import GenericPropertyCheckbox from "../generic-property-checkbox";
+import GravityEditor from "../gravity-editor";
 
 /**
  * Interface representing component properties
@@ -19,6 +21,7 @@ interface Props extends WithStyles<typeof styles> {
 
   /**
    * On value change handler
+   *
    * @param updatedPageLayoutView updated page layout view object
    */
   onValueChange: (updatedPageLayoutView: PageLayoutViewProperty) => void;
@@ -54,11 +57,13 @@ class ButtonEditor extends React.Component<Props, State> {
       <>
         { this.renderWidth() }
         { this.renderHeight() }
-        { this.renderBackgroundColor() }
         { this.renderTextColor() }
         { this.renderTextResource() }
         { this.renderTextSize() }
         { this.renderTextStyle() }
+        { this.renderAllCaps() }
+        { this.renderButtonGravity() }
+        { this.renderBackgroundImage() }
       </>
     );
   }
@@ -112,35 +117,6 @@ class ButtonEditor extends React.Component<Props, State> {
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
-    );
-  }
-
-  /**
-   * Render button background color editor
-   */
-  private renderBackgroundColor = () => {
-    const { pageLayoutView, onValueChange, classes } = this.props;
-    const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundColor, PageLayoutViewPropertyType.Color);
-
-    return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.button.backgroundColor }:</Typography>
-        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
-          <div style={{ marginRight: theme.spacing(2) }}>
-            <ColorPicker
-              property={ foundProp }
-              onColorChange={ onValueChange }
-            />
-          </div>
-          <GenericPropertyTextField
-            textFieldId={ LayoutButtonPropKeys.BackgroundColor }
-            textFieldType="text"
-            property={ foundProp }
-            onTextFieldChange={ onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
     );
   }
 
@@ -232,6 +208,71 @@ class ButtonEditor extends React.Component<Props, State> {
             textFieldUnit="dp"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
+    );
+  }
+
+  /**
+   * Render button all caps editor
+   */
+  private renderAllCaps = () => {
+    const { pageLayoutView, onValueChange, classes } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.AllCaps, PageLayoutViewPropertyType.Boolean);
+
+    return (
+      <div className={ classes.colorPickerContainer }>
+        <Typography variant="h4">{ strings.layoutEditor.button.allCaps }:</Typography>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <GenericPropertyCheckbox
+            property={ foundProp }
+            onCheckboxChange={ onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </div>
+    );
+  }
+
+  /**
+   * Render button gravity editor
+   */
+  private renderButtonGravity = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+
+    return (
+      <div>
+        <Typography variant="h6">{ strings.layoutEditor.button.gravity }</Typography>
+        <GravityEditor
+          property={ getProperty(pageLayoutView, LayoutButtonPropKeys.Gravity, PageLayoutViewPropertyType.String) }
+          onSingleValueChange={ onValueChange }
+        />
+      </div>
+    );
+  }
+
+  /**
+   * Render button background image resource editor
+   */
+  private renderBackgroundImage = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h4"
+          >
+            { strings.layoutEditor.button.backgroundImage }:
+          </Typography>
+          <GenericPropertyTextField
+            textFieldId={ LayoutButtonPropKeys.BackgroundImage }
+            textFieldType="text"
+            property={ getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundImage, PageLayoutViewPropertyType.String) }
+            onTextFieldChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
