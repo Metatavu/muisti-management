@@ -41,7 +41,7 @@ const Breadcrumbs: React.FC<Props> = ({ breadcrumbs }) => {
 const renderBreadcrumb = (breadcrumb: BreadcrumbData) => {
   return breadcrumb.url ? (
     <Link key={ breadcrumb.url } component={ RouterLink } to={ breadcrumb.url || "" }>
-      { breadcrumb.name }
+      { breadcrumb.name ?? "" }
     </Link>
   ) : (
     <span key={ breadcrumb.name }>{ breadcrumb.name }</span>

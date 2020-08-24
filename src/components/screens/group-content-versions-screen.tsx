@@ -152,10 +152,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           subtitle={ contentVersion?.name }
           context={
             <div>
-              <Typography variant="body1">
-                <div>{ `${room.name} /` }</div>
-                <div>{ deviceGroupName }</div>
-              </Typography>
+              <Typography variant="body1">{ `${room.name} /` }</Typography>
+              <Typography variant="body1">{ deviceGroupName }</Typography>
             </div>
           }
           onClick={ () => this.onCardClick(groupContentVersion) }

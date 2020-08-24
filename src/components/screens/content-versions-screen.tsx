@@ -246,6 +246,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
       }
       return (
         <FormControlLabel
+          key={ room.id }
           style={{ marginTop: theme.spacing(2) }}
           control={
             <Switch
