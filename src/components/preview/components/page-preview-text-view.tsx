@@ -136,24 +136,22 @@ class PagePreviewTextView extends React.Component<Props, State> {
       }
 
       switch (property.name) {
-        case "width": {
+        case "width":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
             result.width = px;
           } else {
             console.log("Button: unknown width", property.value);
           }
-          break;
-        }
-        case "height": {
+        break;
+        case "height":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
             result.height = px;
           } else {
             console.log("Button: unknown height", property.value);
           }
-          break;
-        }
+        break;
         case "background":
           const color = AndroidUtils.toCssColor(property.value);
           if (color) {
