@@ -121,7 +121,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
   /**
    * Resolves text view styles
    *
-   * @returns tesxt view styles
+   * @returns text view styles
    */
   private resolveTextViewStyles = (): CSSProperties => {
     const { displayMetrics, scale } = this.props;
