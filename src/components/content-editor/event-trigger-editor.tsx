@@ -7,7 +7,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Button, Accordion, AccordionSummary, Divider, AccordionDetails, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
@@ -21,6 +21,7 @@ import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 /**
  * Component props
@@ -37,6 +38,7 @@ interface Props extends WithStyles<typeof styles> {
   interface State {
     error?: Error;
     loading: boolean;
+    selectedPageEventIndex?: number;
   }
 
 /**
@@ -62,6 +64,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   public render() {
     return(
       <div style={{ marginTop: theme.spacing(2) }}>
+        { this.renderTriggerName() }
         { this.renderPhysicalButtonSelects() }
         { this.renderDeviceGroupEventNameField() }
         { this.renderDelayField() }
@@ -69,10 +72,32 @@ class EventTriggerEditor extends React.Component<Props, State> {
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
           { strings.contentEditor.editor.eventTriggers.actions }
         </Typography>
-        { this.renderEventActionTypeSelect() }
-        { this.props.selectedEventTrigger &&
-          this.renderEventActionSettings()
-        }
+        { this.renderActionList() }
+        <Button
+          variant="text"
+          onClick={ this.onAddPageEventClick }
+        >
+          { strings.contentEditor.editor.eventTriggers.addEvent }
+        </Button>
+
+      </div>
+    );
+  }
+
+  private renderTriggerName = () => {
+    const { classes, selectedEventTrigger } = this.props;
+    return (
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">
+          { strings.contentEditor.editor.eventTriggers.variableName }
+        </Typography>
+        <TextField
+          name="name"
+          className={ classes.textResourceEditor }
+          variant="filled"
+          value={ selectedEventTrigger.name }
+          onChange={ this.onEventTriggerNameChange }
+        />
       </div>
     );
   }
@@ -185,6 +210,47 @@ class EventTriggerEditor extends React.Component<Props, State> {
           onChange={ this.onEventTriggerChange }
         />
       </>
+    );
+  }
+
+  /**
+   * Render action list
+   */
+  private renderActionList = () => {
+    const { selectedEventTrigger } = this.props;
+    const { selectedPageEventIndex } = this.state;
+
+    const events = selectedEventTrigger.events || [];
+    const eventItems = events.map((event, index) => {
+      return (
+        <ListItem
+          key={ index }
+          button
+          onClick={ this.onPageEventClick(index) }
+        >
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+            { event.action }
+          </Typography>
+          <ListItemSecondaryAction>
+            <IconButton
+              size="small"
+              edge="end"
+              aria-label="delete"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
+    });
+
+    return (
+      <List
+        disablePadding
+        dense
+      >
+        { eventItems }
+      </List>
     );
   }
 
@@ -402,6 +468,23 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler event trigger event property change
+   *
+   * @param event react change event
+   */
+  private onEventTriggerNameChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+    const key = event.target.name;
+    const value = event.target.value as string;
+    if (!key) {
+      return;
+    }
+
+    trigger.name = value;
+    this.props.onSave(trigger);
+  }
+
+  /**
    * Event handler for event trigger change
    *
    * @param event React change event
@@ -431,6 +514,42 @@ class EventTriggerEditor extends React.Component<Props, State> {
         console.warn("Error in onEventTriggerChange: Unknown or invalid property name");
       break;
     }
+  }
+
+  /**
+   * On add page event click handler
+   */
+  private onAddPageEventClick = () => {
+    const newPageEvent: ExhibitionPageEvent = {
+      action: ExhibitionPageEventActionType.Show,
+      properties: []
+    };
+
+    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+
+    trigger.events = produce(trigger.events, draft => {
+      if (!draft) {
+        draft = [];
+      }
+      draft.push(newPageEvent);
+    });
+
+    this.setState({
+      selectedPageEventIndex: trigger.events ? trigger.events.length - 1 : undefined
+    });
+
+    this.props.onSave(trigger);
+  }
+
+  /**
+   * On page event click handler
+   *
+   * @param pageEventIndex page event index 
+   */
+  private onPageEventClick = (pageEventIndex: number) => () => {
+    this.setState({
+      selectedPageEventIndex: pageEventIndex
+    });
   }
 
   /**

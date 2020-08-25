@@ -28,6 +28,18 @@ import {
 export interface ExhibitionPageEventTrigger {
     /**
      * 
+     * @type {string}
+     * @memberof ExhibitionPageEventTrigger
+     */
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionPageEventTrigger
+     */
+    name: string;
+    /**
+     * 
      * @type {Array<ExhibitionPageEvent>}
      * @memberof ExhibitionPageEventTrigger
      */
@@ -80,6 +92,8 @@ export function ExhibitionPageEventTriggerFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
+        'id': json['id'],
+        'name': json['name'],
         'events': !exists(json, 'events') ? undefined : ((json['events'] as Array<any>).map(ExhibitionPageEventFromJSON)),
         'delay': !exists(json, 'delay') ? undefined : json['delay'],
         'clickViewId': !exists(json, 'clickViewId') ? undefined : json['clickViewId'],
@@ -99,6 +113,8 @@ export function ExhibitionPageEventTriggerToJSON(value?: ExhibitionPageEventTrig
     }
     return {
         
+        'id': value.id,
+        'name': value.name,
         'events': value.events === undefined ? undefined : ((value.events as Array<any>).map(ExhibitionPageEventToJSON)),
         'delay': value.delay,
         'clickViewId': value.clickViewId,

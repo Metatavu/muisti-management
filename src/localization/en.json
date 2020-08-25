@@ -478,6 +478,7 @@
       "layout": "Layout",
       "content": "Content",
       "properties": "Properties",
+      "resources": "Resources",
 
       "transitions" :{
         "title": "Transitions",
@@ -489,8 +490,10 @@
       },
   
       "eventTriggers": {
-        "add": "Add event",
+        "add": "Add action",
+        "addEvent": "Add event",
         "title": "Events",
+        "name": "Name",
         "clickViewIdTitle": "Triggers when element is clicked",
         "clickViewId": "Element",
         "physicalButtonDownTitle": "Triggers when button is pressed",

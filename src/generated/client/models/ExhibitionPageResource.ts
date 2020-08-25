@@ -40,6 +40,12 @@ export interface ExhibitionPageResource {
     data: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof ExhibitionPageResource
+     */
+    scripted?: boolean;
+    /**
+     * 
      * @type {ExhibitionPageResourceType}
      * @memberof ExhibitionPageResource
      */
@@ -58,6 +64,7 @@ export function ExhibitionPageResourceFromJSONTyped(json: any, ignoreDiscriminat
         
         'id': json['id'],
         'data': json['data'],
+        'scripted': !exists(json, 'scripted') ? undefined : json['scripted'],
         'type': ExhibitionPageResourceTypeFromJSON(json['type']),
     };
 }
@@ -73,6 +80,7 @@ export function ExhibitionPageResourceToJSON(value?: ExhibitionPageResource | nu
         
         'id': value.id,
         'data': value.data,
+        'scripted': value.scripted,
         'type': ExhibitionPageResourceTypeToJSON(value.type),
     };
 }

@@ -479,6 +479,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layout: string;
       content: string;
       properties: string;
+      resources: string;
       transitions: {
         title: string;
         enterTransitions: string;
@@ -489,7 +490,9 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       eventTriggers: {
         add: string;
+        addEvent: string;
         title: string;
+        name: string;
         clickViewIdTitle: string;
         clickViewId: string;
         physicalButtonDownTitle: string;
