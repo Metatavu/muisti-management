@@ -34,7 +34,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -52,7 +52,9 @@ class PagePreviewTextView extends React.Component<Props, State> {
       <Measure onResize={ this.props.onResize } bounds={ true }>
         {({ measureRef }) => (
           <div ref={ measureRef } style={ this.resolveStyles() }>
-            { this.getText() }      
+            <div style={ this.resolveTextViewStyles() }>
+              { this.getText() }
+            </div>
           </div>
         )}
       </Measure>
@@ -88,11 +90,41 @@ class PagePreviewTextView extends React.Component<Props, State> {
   }
 
   /**
-   * Resolves component styles
-   * 
-   * @returns component styles
+   * Resolves container styles
+   *
+   * @returns container styles
    */
   private resolveStyles = (): CSSProperties => {
+    const properties = this.props.view.properties;
+    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
+      display: "flex"
+    });
+
+    properties.forEach(property => {
+      if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
+        return;
+      }
+
+      switch (property.name) {
+        case "gravity":
+          result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
+        break;
+        default:
+          this.handleUnknownProperty(property, "Unknown property");
+        break;
+      }
+    });
+
+    return result;
+  }
+
+  /**
+   * Resolves text view styles
+   *
+   * @returns tesxt view styles
+   */
+  private resolveTextViewStyles = (): CSSProperties => {
+    const { displayMetrics, scale } = this.props;
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
       display: "inline-block"
@@ -104,6 +136,24 @@ class PagePreviewTextView extends React.Component<Props, State> {
       }
 
       switch (property.name) {
+        case "width": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.width = px;
+          } else {
+            console.log("Button: unknown width", property.value);
+          }
+          break;
+        }
+        case "height": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.height = px;
+          } else {
+            console.log("Button: unknown height", property.value);
+          }
+          break;
+        }
         case "background":
           const color = AndroidUtils.toCssColor(property.value);
           if (color) {
@@ -111,6 +161,10 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown background");
           }
+        break;
+        case "gravity":
+          result.position = "initial";
+          result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
         break;
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
@@ -122,15 +176,30 @@ class PagePreviewTextView extends React.Component<Props, State> {
         break;
         case "textAlignment":
           switch (property.value) {
-            case "center": 
+            case "inherit":
               result.textAlign = property.value;
+            break;
+            case "center":
+              result.textAlign = property.value;
+            break;
+            case "text_start":
+              result.textAlign = "left";
+            break;
+            case "text_end":
+              result.textAlign = "right";
+            break;
+            case "view_start":
+              result.textAlign = "left";
+            break;
+            case "view_end":
+              result.textAlign = "right";
             break;
             default:
           }
         break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
 

@@ -46,6 +46,46 @@ export default class AndroidUtils {
   }
 
   /**
+   * Converts gravity to align self
+   *
+   * @param gravity gravity
+   * @returns string
+   */
+  public static gravityToAlignSelf(gravity: string) {
+    const match = gravity.match(/top|center|bottom/);
+    const alignment = match && match.length ? match[0] : undefined;
+    switch (alignment) {
+      case "top":
+        return "start";
+      case "center":
+        return "center";
+      case "bottom":
+        return "end";
+      default:
+        return "start";
+    }
+  }
+
+  /**
+   * Converts gravity to justify content
+   *
+   * @param gravity gravity
+   * @returns string
+   */
+  public static gravityToJustifyContent(gravity: string) {
+    const match = gravity.match(/left|right/);
+    const alignment = match && match.length ? match[0] : undefined;
+    switch (alignment) {
+      case "left":
+        return "start";
+      case "right":
+        return "end";
+      default:
+        return "center";
+    }
+  }
+
+  /**
    * Parses string to pixels
    *
    * @param value string
