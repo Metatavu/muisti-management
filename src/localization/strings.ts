@@ -488,6 +488,7 @@ export interface IStrings extends LocalizedStringsMethods {
         removeTransition: string;
       };
       eventTriggers: {
+        add: string;
         title: string;
         clickViewIdTitle: string;
         clickViewId: string;

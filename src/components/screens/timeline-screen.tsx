@@ -348,7 +348,7 @@ class TimelineScreen extends React.Component<Props, State> {
         classes={ classes }
         selectedEventTrigger={ selectedEventTrigger }
         pages={ PageUtils.getSortedPages(pages.filter(page => page.deviceId === selectedDevice.id)) }
-        layout={ pageLayout }
+        // layout={ pageLayout }
         onSave={ this.updateEventTrigger }
       />
     </>;

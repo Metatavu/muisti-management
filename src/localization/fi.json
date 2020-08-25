@@ -485,6 +485,7 @@
         "removeTransition": "Poista siirtymä"
       },
       "eventTriggers": {
+        "add": "Lisää tapahtuma",
         "title": "Tapahtumat",
         "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
         "clickViewId": "Elementti",

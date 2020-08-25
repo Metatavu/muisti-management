@@ -489,6 +489,7 @@
       },
   
       "eventTriggers": {
+        "add": "Add event",
         "title": "Events",
         "clickViewIdTitle": "Triggers when element is clicked",
         "clickViewId": "Element",

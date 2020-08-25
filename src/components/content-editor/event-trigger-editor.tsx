@@ -28,7 +28,6 @@ import produce from "immer";
 interface Props extends WithStyles<typeof styles> {
     selectedEventTrigger: ExhibitionPageEventTrigger;
     pages: ExhibitionPage[];
-    layout: PageLayout;
     onSave: (selectedEventTrigger: ExhibitionPageEventTrigger) => void;
   }
 
@@ -63,7 +62,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
   public render() {
     return(
       <div style={{ marginTop: theme.spacing(2) }}>
-        { this.renderClickViewIdSelect() }
         { this.renderPhysicalButtonSelects() }
         { this.renderDeviceGroupEventNameField() }
         { this.renderDelayField() }
@@ -75,37 +73,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
         { this.props.selectedEventTrigger &&
           this.renderEventActionSettings()
         }
-      </div>
-    );
-  }
-
-  /**
-   * Render click view id select
-   */
-  private renderClickViewIdSelect = () => {
-    const { selectedEventTrigger, layout } = this.props;
-    const clickViewId = selectedEventTrigger.clickViewId;
-    const tempList: JSX.Element[] = [];
-    const clickViewIdList = this.constructViewIdList(tempList, layout.data.children);
-
-    return (
-      <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.clickViewIdTitle }
-        </Typography>
-        <Select
-          variant="filled"
-          label={ strings.contentEditor.editor.eventTriggers.clickViewId }
-          fullWidth
-          name="clickViewId"
-          value={ clickViewId || "" }
-          onChange={ this.onEventTriggerChange }
-        >
-          <MenuItem key={ `clickViewId-empty` } value="">
-            { strings.removeSelection }
-          </MenuItem>
-          { clickViewIdList }
-        </Select>
       </div>
     );
   }
