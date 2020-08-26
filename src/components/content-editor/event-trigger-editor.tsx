@@ -565,7 +565,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * On add page event click handler
+   * Event handler for add page event click
    */
   private onAddPageEventClick = () => {
     const { onSave } = this.props;
