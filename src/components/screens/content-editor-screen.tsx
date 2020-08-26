@@ -832,7 +832,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On trigger click handler
+   * Event handler for trigger click
    *
    * @param triggerIndex trigger index within selected pages triggers
    */
