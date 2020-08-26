@@ -684,9 +684,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
       trigger.events = [];
       trigger.events.push(newAction);
     } else {
-      const temp = [ ...trigger.events ] as ExhibitionPageEvent[];
-      temp.splice(selectedPageEventIndex, 1, newAction);
-      trigger.events = temp;
+      trigger.events = produce(trigger.events, draft => {
+        draft.splice(selectedPageEventIndex, 1, newAction);
+      });
     }
 
     onSave(trigger);

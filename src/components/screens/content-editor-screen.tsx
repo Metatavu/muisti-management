@@ -77,19 +77,6 @@ interface State {
 }
 
 /**
-<<<<<<< HEAD
- * TODO:
- * Remove when device includes page order
- *
- * Interface describing device extended with page order
- */
-interface ExtendedDevice extends ExhibitionDevice {
-  pageOrder: string[];
-}
-
-/**
-=======
->>>>>>> 1c09acf1f02f2c50ea9d1beb3181268978a8649f
  * Component for content editor screen
  */
 class ContentEditorScreen extends React.Component<Props, State> {
