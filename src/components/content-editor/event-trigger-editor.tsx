@@ -592,7 +592,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * On page event click handler
+   * Event handler for page event click
    *
    * @param pageEventIndex page event index
    */
