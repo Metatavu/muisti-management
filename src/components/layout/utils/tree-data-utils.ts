@@ -1,5 +1,6 @@
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout } from "../../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout, PageLayoutWidgetType } from "../../../generated/client";
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { v4 as uuid } from "uuid";
 
 /**
  * Delete item from tree structure while keeping rest of there data
@@ -159,7 +160,6 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
   return treeData;
 };
 
-
 /**
  * Update layout view with property
  *
@@ -197,6 +197,7 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
  * @param type page layout view property type
  * @returns Found property or new property to be modified
  */
+// tslint:disable-next-line: max-line-length
 export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
   const layoutProps = pageLayoutView.properties;
   const foundIndex = layoutProps.findIndex(prop => prop.name === key);
@@ -238,4 +239,105 @@ export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enu
   });
 
   return propertyList;
+};
+
+/**
+ * Get initialized page layout view based on page layout widget type.
+ *
+ * This is needed for automatic resource ID generation. If widget type will
+ * include some resources we will automatically generate unique ID in order to
+ * prevent users from typing non-unique ID's. This would break content editors
+ * ability to update correct page resource.
+ *
+ * If widget type doesn't include any resources we return new page layout view without
+ * any properties.
+ *
+ * @param widget widget type
+ * @returns initialized page layout view
+ */
+export const getInitializedPageLayoutViewByWidgetType = (widget: PageLayoutWidgetType): PageLayoutView => {
+
+  const layoutView: PageLayoutView = {
+    id: uuid(),
+    widget: widget,
+    properties: [],
+    children: []
+  };
+
+  switch (widget) {
+    case PageLayoutWidgetType.Button:
+      fillButtonProperties(layoutView);
+      break;
+    case PageLayoutWidgetType.FlowTextView:
+    case PageLayoutWidgetType.TextView:
+      fillTextProperties(layoutView);
+      break;
+    case PageLayoutWidgetType.ImageView:
+    case PageLayoutWidgetType.PlayerView:
+    case PageLayoutWidgetType.MediaView:
+      fillMediaProperties(layoutView);
+      break;
+    default:
+      break;
+  }
+
+  return layoutView;
+};
+
+/**
+ * Fill Button specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillButtonProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const text: PageLayoutViewProperty = {
+    name: "text",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  const backgroundImage: PageLayoutViewProperty = {
+    name: "backgroundImage",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(text);
+  layoutView.properties.push(backgroundImage);
+  return layoutView;
+};
+
+/**
+ * Fill TextView and FlowTextView specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillTextProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const text: PageLayoutViewProperty = {
+    name: "text",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(text);
+  return layoutView;
+};
+
+/**
+ * Fill ImagePlayer, PlayerView and MediaView specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillMediaProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const text: PageLayoutViewProperty = {
+    name: "src",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(text);
+  return layoutView;
 };

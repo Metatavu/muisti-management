@@ -15,6 +15,7 @@ import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 import { v4 as uuid } from "uuid";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
+import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
 
 /**
  * Interface representing component properties
@@ -336,12 +337,8 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const widget = event.target.value as PageLayoutWidgetType;
 
-    const pageLayoutView: PageLayoutView = {
-      id: uuid(),
-      widget: widget,
-      properties: [],
-      children: []
-    };
+    const pageLayoutView = getInitializedPageLayoutViewByWidgetType(widget);
+
     this.setState({
       newPageLayoutView : pageLayoutView,
       selectedSubLayoutId: undefined
@@ -351,14 +348,14 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   /**
    * On name change handler
    *
-   * @param event react text field event 
+   * @param event react text field event
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { newPageLayoutView } = this.state;
 
     const key = event.target.name;
     const value = event.target.value;
-    if (!newPageLayoutView || !key || !value) {
+    if (!newPageLayoutView || !key) {
       return;
     }
 
