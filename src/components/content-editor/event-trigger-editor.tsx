@@ -516,7 +516,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler event trigger event property change
+   * Event handler for event trigger event property change
    *
    * @param event react change event
    */
