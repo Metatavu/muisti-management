@@ -475,7 +475,7 @@
       "layout": "Asettelu",
       "content": "Sisältö",
       "properties": "Ominaisuudet",
-
+      "resources": "Resurssit",
       "transitions" : {
         "title": "Siirtymät",
         "enterTransitions": "Siirtymä saapuessa",
@@ -485,7 +485,11 @@
         "removeTransition": "Poista siirtymä"
       },
       "eventTriggers": {
+        "add": "Lisää tapahtuma",
+        "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
+        "name": "Nimi",
+        "options": "Toiminnon asetukset",
         "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
         "clickViewId": "Elementti",
         "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",

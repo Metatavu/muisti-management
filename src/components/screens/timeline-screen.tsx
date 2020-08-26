@@ -348,7 +348,6 @@ class TimelineScreen extends React.Component<Props, State> {
         classes={ classes }
         selectedEventTrigger={ selectedEventTrigger }
         pages={ PageUtils.getSortedPages(pages.filter(page => page.deviceId === selectedDevice.id)) }
-        layout={ pageLayout }
         onSave={ this.updateEventTrigger }
       />
     </>;
@@ -543,26 +542,6 @@ class TimelineScreen extends React.Component<Props, State> {
   private toJsonCode = (page: Partial<ExhibitionPage>): string => {
     const { resources, eventTriggers } = page;
     return JSON.stringify({ resources, eventTriggers }, null, 2);
-  }
-
-  /**
-   * Event handler for event trigger add click
-   */
-  private onAddEventTriggerClick = () => {
-    this.setState(
-      produce((draft: State) => {
-        if (!draft.selectedPage) {
-          return;
-        }
-
-        draft.selectedPage.eventTriggers.push({
-          clickViewId: (draft.selectedPage.eventTriggers.length + 1).toString(),
-          delay: 0,
-          events: [],
-          next: []
-        });
-      })
-    );
   }
 
   /**

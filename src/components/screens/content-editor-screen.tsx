@@ -7,15 +7,18 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails } from "@material-ui/core";
+// tslint:disable-next-line: max-line-length
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, PageLayoutWidgetType, ExhibitionPageResource, ExhibitionPageTransition } from "../../generated/client";
+// tslint:disable-next-line: max-line-length
+import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
+import ElementPropertiesPane from "../layouts/element-properties-pane";
 import TimelineDevicesList from "../content-editor/timeline-devices-list";
 import TimelineEditor from "../content-editor/timeline-editor";
 import PagePreview from "../preview/page-preview";
@@ -31,6 +34,10 @@ import ResourceEditor from "../content-editor/resource-editor";
 import CommonSettingsEditor from "../content-editor/common-settings-editor";
 import TransitionsEditor from "../content-editor/transitions-editor";
 import { DropResult } from "react-beautiful-dnd";
+import EventTriggerEditor from "../content-editor/event-trigger-editor";
+import { v4 as uuid } from "uuid";
+import DeleteIcon from '@material-ui/icons/Delete';
+import { allowedWidgetTypes } from "../content-editor/constants";
 
 type View = "CODE" | "VISUAL";
 
@@ -66,24 +73,13 @@ interface State {
   selectedPage?: ExhibitionPage;
   pageLayout?: PageLayout;
   resourceWidgetIdList?: Map<string, string[]>;
+  selectedTriggerIndex?: number;
 }
 
 /**
  * Component for content editor screen
  */
 class ContentEditorScreen extends React.Component<Props, State> {
-
-  /**
-   * All widget types that can have editable resources
-   */
-  private allowedWidgetTypes = [
-    PageLayoutWidgetType.Button,
-    PageLayoutWidgetType.FlowTextView,
-    PageLayoutWidgetType.ImageView,
-    PageLayoutWidgetType.MediaView,
-    PageLayoutWidgetType.PlayerView,
-    PageLayoutWidgetType.TextView
-  ];
 
   /**
    * Constructor
@@ -141,7 +137,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
-    const { groupContentVersion, devices } = this.state;
+    const { groupContentVersion, devices, selectedTriggerIndex } = this.state;
     if (this.state.loading) {
       return (
         <BasicLayout
@@ -184,8 +180,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <ElementContentsPane>
             { this.renderContentAccordion() }
             { this.renderTransitionAccordion() }
-            { this.renderEventTriggerAccordion() }
           </ElementContentsPane>
+
+          <ElementPropertiesPane
+            open={ selectedTriggerIndex !== undefined }
+            title={ strings.contentEditor.editor.eventTriggers.title }
+          >
+            { this.renderEventProperties() }
+          </ElementPropertiesPane>
 
         </div>
       </BasicLayout>
@@ -246,7 +248,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutViews list of page layout views
    */
   private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
-    const { allowedWidgetTypes } = this;
     const { selectedPage, resourceWidgetIdList } = this.state;
     if (!selectedPage || !resourceWidgetIdList) {
       return;
@@ -277,29 +278,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param idList list resource ids
    */
   private renderResourcesEditor = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
-
-    const items = idList.map(elementId => {
-      const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === elementId);
-
-      if (resourceIndex < 0) {
-        return null;
-      }
-
-      const foundResource = selectedPage.resources[resourceIndex];
-
-      return (
-        <AccordionDetails>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
-            { foundResource.id || "" }
-          </Typography>
-          <ResourceEditor
-            resource={ foundResource }
-            resourceIndex={ resourceIndex }
-            onUpdate={ this.onUpdateResource }
-          />
-        </AccordionDetails>
-      );
-    });
+    const elementItems = this.getElementItems(idList, selectedPage);
+    const eventTriggerItems = this.getEventTriggerItems(selectedPage, pageLayoutView);
 
     return (
       <Accordion key={ pageLayoutView.name }>
@@ -307,8 +287,25 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
+          <Button
+            variant="text"
+            onClick={ this.onAddEventTrigger(pageLayoutView.id) }
+          >
+            { strings.contentEditor.editor.eventTriggers.add }
+          </Button>
         </AccordionSummary>
-          { items }
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+            { strings.contentEditor.editor.resources }
+          </Typography>
+          { elementItems }
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+            { strings.contentEditor.editor.eventTriggers.title }
+          </Typography>
+          { eventTriggerItems }
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+
       </Accordion>
     );
   }
@@ -341,32 +338,120 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render event trigger accordion
+   * Render event properties
    */
-  private renderEventTriggerAccordion = () => {
-    const { pageLayout } = this.state;
-
-    if (!pageLayout) {
+  private renderEventProperties = () => {
+    const { selectedPage, selectedTriggerIndex, pages } = this.state;
+    if (!selectedPage || selectedTriggerIndex === undefined) {
       return null;
     }
 
+    const foundTrigger = selectedPage.eventTriggers[selectedTriggerIndex];
+
     return(
-      <Accordion>
-        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
-          <Typography variant="h3">{ strings.contentEditor.editor.eventTriggers.title }</Typography>
-        </AccordionSummary>
+      <EventTriggerEditor
+        selectedEventTrigger={ foundTrigger }
+        pages={ pages }
+        onSave={ this.updateEventTrigger }
+      />
+    );
+  }
+
+  /**
+   * Get element JSX items
+   *
+   * @param idList list of element id
+   * @param selectedPage selected page
+   */
+  private getElementItems = (idList: string[], selectedPage: ExhibitionPage) => {
+    return idList.map(elementId => {
+      const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === elementId);
+
+      if (resourceIndex < 0) {
+        return null;
+      }
+
+      const foundResource = selectedPage.resources[resourceIndex];
+
+      return (
         <AccordionDetails>
-          {/* TODO: Move & modify event trigger editor to new layout */}
-          {/* <EventTriggerEditor
-            pages={ pages }
-            layout={ pageLayout }
-            pageData={ selectedPage }
-            onChange={ this.onPageDataChange }
-            onLayoutChange={ this.onLayoutChange }
-          /> */}
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+            { foundResource.id || "" }
+          </Typography>
+          <ResourceEditor
+            resource={ foundResource }
+            resourceIndex={ resourceIndex }
+            onUpdate={ this.onUpdateResource }
+          />
         </AccordionDetails>
-      </Accordion>
+      );
+    });
+  }
+
+  /**
+   * Get event trigger items
+   *
+   * @param selectedPage selected page
+   * @param pageLayoutView page layout view
+   */
+  private getEventTriggerItems = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView) => {
+
+      const triggerList = selectedPage.eventTriggers.filter(trigger => trigger.clickViewId === pageLayoutView.id);
+
+      if (triggerList.length < 1) {
+        return null;
+      }
+
+      return triggerList.map((trigger, index) => {
+        const pageEventTriggerIndex = selectedPage.eventTriggers.findIndex(pageTrigger => pageTrigger.id === trigger.id);
+
+        return (
+          <List
+            disablePadding
+            dense
+          >
+            <ListItem
+              key={ index }
+              button
+              onClick={ this.onTriggerClick(pageEventTriggerIndex) }
+            >
+              <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+                { trigger.name }
+              </Typography>
+              <ListItemSecondaryAction>
+                <IconButton
+                  size="small"
+                  edge="end"
+                  aria-label="delete"
+                  onClick={ this.onDeleteTriggerClick(pageEventTriggerIndex) }
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+        );
+      });
+  }
+
+  /**
+   * Updates event trigger
+   *
+   * @param eventTrigger event trigger
+   */
+  private updateEventTrigger = (eventTrigger: ExhibitionPageEventTrigger) => {
+    this.setState(
+      produce((draft: State) => {
+        const { selectedTriggerIndex } = draft;
+        if (selectedTriggerIndex === undefined ||
+          !draft.selectedPage ||
+          draft.selectedPage.eventTriggers.length < selectedTriggerIndex)
+        {
+          return;
+        }
+
+        draft.selectedPage.eventTriggers[selectedTriggerIndex] = eventTrigger;
+      })
     );
   }
 
@@ -707,6 +792,67 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for add event trigger
+   *
+   * @param pageLayoutViewId page layout view id
+   * @param event react mouse event
+   */
+  private onAddEventTrigger = (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const { selectedPage } = this.state;
+
+    if (!selectedPage) {
+      return;
+    }
+
+    event.stopPropagation();
+    const newTrigger: ExhibitionPageEventTrigger = {
+      clickViewId: pageLayoutViewId,
+      id: uuid(),
+      name: "New trigger"
+    };
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = selectedPage;
+        draft.selectedPage.eventTriggers.push(newTrigger);
+        draft.selectedTriggerIndex = draft.selectedPage.eventTriggers.length - 1;
+      })
+    );
+  }
+
+  /**
+   * Event handler for trigger click
+   *
+   * @param triggerIndex trigger index within selected pages triggers
+   */
+  private onTriggerClick = (triggerIndex: number) => () => {
+    this.setState({
+      selectedTriggerIndex: triggerIndex
+    });
+  }
+
+  /**
+   * Event handler for delete trigger click
+   *
+   * @param triggerIndex trigger index within selected pages triggers
+   */
+  private onDeleteTriggerClick = (triggerIndex: number) => () => {
+    const { selectedPage } = this.state;
+
+    if (!selectedPage) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = selectedPage;
+        draft.selectedPage.eventTriggers.splice(triggerIndex, 1);
+        draft.selectedTriggerIndex = undefined;
+      })
+    );
+  }
+
+  /**
    * Event handler for device click
    *
    * @param selectedDevice selected device
@@ -727,13 +873,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { devices } = this.state;
     this.setState({
       selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
-      selectedPage
+      selectedPage,
+      selectedTriggerIndex: undefined
     });
   }
 
   /**
    * Event handler for page drag end
-   * 
+   *
    * @param deviceId device id
    * @param result drop result
    */
@@ -774,7 +921,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Reorders device pages
-   * 
+   *
    * @param pageOrder page order
    * @param prevIndex previous index
    * @param newIndex new index
@@ -813,6 +960,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
           draft.selectedPage.resources = resourceHolder.resources;
         }
 
+        const tempTriggers = [ ...draft.selectedPage.eventTriggers ] as ExhibitionPageEventTrigger[];
+        tempTriggers.forEach(trigger => {
+          if (!trigger.id) {
+            trigger.id = uuid();
+          }
+          if (!trigger.name) {
+            trigger.name = "Name";
+          }
+        });
+
+        draft.selectedPage.eventTriggers = tempTriggers;
         draft.resourceWidgetIdList = resourceHolder.widgetIds;
         draft.pageLayout = pageLayout;
       })
