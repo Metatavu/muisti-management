@@ -493,6 +493,7 @@ export interface IStrings extends LocalizedStringsMethods {
         addEvent: string;
         title: string;
         name: string;
+        options: string;
         clickViewIdTitle: string;
         clickViewId: string;
         physicalButtonDownTitle: string;

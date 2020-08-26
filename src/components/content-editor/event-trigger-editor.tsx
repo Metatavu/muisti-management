@@ -6,11 +6,10 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-// eslint-disable-next-line max-len
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Button, Accordion, AccordionSummary, Divider, AccordionDetails, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Button, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, PageLayout, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
+import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
@@ -74,11 +73,13 @@ class EventTriggerEditor extends React.Component<Props, State> {
         </Typography>
         { this.renderActionList() }
         <Button
-          variant="text"
+          variant="contained"
           onClick={ this.onAddPageEventClick }
+          style={{ backgroundColor: "rgb(23, 23, 23)" }}
         >
           { strings.contentEditor.editor.eventTriggers.addEvent }
         </Button>
+        { this.renderEventOptions() }
 
       </div>
     );
@@ -218,7 +219,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderActionList = () => {
     const { selectedEventTrigger } = this.props;
-    const { selectedPageEventIndex } = this.state;
 
     const events = selectedEventTrigger.events || [];
     const eventItems = events.map((event, index) => {
@@ -236,6 +236,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
               size="small"
               edge="end"
               aria-label="delete"
+              onClick={ this.onPageEventDeleteClick(index) }
             >
               <DeleteIcon />
             </IconButton>
@@ -255,16 +256,50 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Render event options
+   */
+  private renderEventOptions = () => {
+    const { selectedEventTrigger } = this.props;
+    const { selectedPageEventIndex } = this.state;
+
+    if (selectedPageEventIndex === undefined || !selectedEventTrigger.events || !selectedEventTrigger.events.length) {
+      return null;
+    }
+
+    return (
+      <>
+        <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+          { strings.contentEditor.editor.eventTriggers.options }
+        </Typography>
+        { this.renderEventActionTypeSelect() }
+        { this.renderEventActionSettings() }
+      </>
+    );
+
+  }
+
+  /**
    * Render event action type list
    */
   private renderEventActionTypeSelect = () => {
     const selectedActionType = this.getSelectedEventActionType();
-    const eventActionTypeList = Object.keys(ExhibitionPageEventActionType).map((actionType, index) => {
-      return (
-        <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>
-          { actionType }
-        </MenuItem>
-      );
+    const eventActionTypeList = Object.values(ExhibitionPageEventActionType).map((actionType, index) => {
+
+      /**
+       * TODO: Remove these when all page event action types have been implemented
+       */
+      if (
+        actionType === ExhibitionPageEventActionType.Setuservalue ||
+        actionType === ExhibitionPageEventActionType.Navigate
+      ) {
+        return (
+          <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>
+            { actionType }
+          </MenuItem>
+        );
+      }
+
+      return null;
     });
 
     return (
@@ -309,13 +344,13 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Render set user value settings
    */
   private renderSetUserValueSettings = () => {
-    const { classes, selectedEventTrigger } = this.props;
+    const { classes } = this.props;
     const actionType = this.getSelectedEventActionType();
     if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
       return;
     }
 
-    const event = (selectedEventTrigger.events && selectedEventTrigger.events.length) ? selectedEventTrigger.events[0] : undefined;
+    const event = this.getCurrentPageEvent();
     const userValuePropertyName = event ? event.properties.find(property => property.name === "name") : undefined;
     const userValuePropertyValue = event ? event.properties.find(property => property.name === "value") : undefined;
 
@@ -354,8 +389,13 @@ class EventTriggerEditor extends React.Component<Props, State> {
       return;
     }
 
-    const selectedNavigationPageId = this.resolveSelectedPageId();
+    const selectedPageEvent = this.getCurrentPageEvent();
 
+    if (!selectedPageEvent) {
+      return null;
+    }
+
+    const property = selectedPageEvent.properties.find(prop => prop.name === "pageId");
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
@@ -365,7 +405,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           variant="filled"
           fullWidth
           name={ "pageId" }
-          value={ selectedNavigationPageId || "" }
+          value={ property ? property.value : "" }
           onChange={ this.onEventTriggerEventPropertyChange }
         >
           { this.fetchPagesInExhibition() }
@@ -394,7 +434,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
         </Typography>
         <TextField
           name="name"
-          className={ classes.textResourceEditor } 
+          className={ classes.textResourceEditor }
           variant="filled"
           value={ deviceGroupEventNameProperty?.value || "" }
           onChange={ this.onEventTriggerEventPropertyChange }
@@ -433,8 +473,29 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private getSelectedEventActionType = (): ExhibitionPageEventActionType | undefined => {
     const { selectedEventTrigger } = this.props;
-    const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? selectedEventTrigger.events[0] : undefined;
+    const { selectedPageEventIndex } = this.state;
+    if (selectedPageEventIndex === undefined) {
+      return;
+    }
+
+    const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? selectedEventTrigger.events[selectedPageEventIndex] : undefined;
     return event ? event.action : undefined;
+  }
+
+  /**
+   * Get current page event
+   *
+   * @returns found exhibition page event or undefined
+   */
+  private getCurrentPageEvent = (): ExhibitionPageEvent | undefined => {
+    const { selectedEventTrigger } = this.props;
+    const { selectedPageEventIndex } = this.state;
+
+    if (selectedPageEventIndex === undefined || !selectedEventTrigger.events) {
+      return;
+    }
+
+    return selectedEventTrigger.events[selectedPageEventIndex];
   }
 
   /**
@@ -450,21 +511,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
       );
     });
     return pageSelectionItems;
-  }
-
-  /**
-   * Resolves selected navigate event page id
-   *
-   * @return selected navigate event page id or null if not found
-   */
-  private resolveSelectedPageId = (): string | null => {
-    const navigateEvent = (this.props.selectedEventTrigger.events || []).find(event => event.action === ExhibitionPageEventActionType.Navigate);
-    if (navigateEvent) {
-      const pageIdProperty = navigateEvent.properties.find(property => property.name === "pageId");
-      return pageIdProperty?.value || null;
-    }
-
-    return null;
   }
 
   /**
@@ -520,31 +566,30 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * On add page event click handler
    */
   private onAddPageEventClick = () => {
+    const { onSave } = this.props;
     const newPageEvent: ExhibitionPageEvent = {
-      action: ExhibitionPageEventActionType.Show,
+      action: ExhibitionPageEventActionType.Navigate,
       properties: []
     };
 
     const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+    if (!trigger.events) {
+      trigger.events = [];
+    }
 
-    trigger.events = produce(trigger.events, draft => {
-      if (!draft) {
-        draft = [];
-      }
-      draft.push(newPageEvent);
-    });
+    trigger.events = [ ...trigger.events, newPageEvent ];
 
     this.setState({
       selectedPageEventIndex: trigger.events ? trigger.events.length - 1 : undefined
     });
 
-    this.props.onSave(trigger);
+    onSave(trigger);
   }
 
   /**
    * On page event click handler
    *
-   * @param pageEventIndex page event index 
+   * @param pageEventIndex page event index
    */
   private onPageEventClick = (pageEventIndex: number) => () => {
     this.setState({
@@ -553,36 +598,55 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler event trigger event property change
+   * On page event delete click handler
    *
-   * @param event react change event
+   * @param pageEventIndex page event index 
    */
-  private onEventTriggerEventPropertyChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
-    const propertyName = event.target.name;
-    const propertyValue = event.target.value as string;
-    if (propertyName === undefined || !trigger.events || !trigger.events.length) {
-      return;
-    }
+  private onPageEventDeleteClick = (pageEventIndex: number) => () => {
+    const { onSave } = this.props;
 
-    if (!trigger.events[0].properties || !trigger.events[0].properties.length) {
+    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+    if (!trigger.events) {
       return;
     }
 
     trigger.events = produce(trigger.events, draft => {
-      const propertyIndex = draft[0].properties.findIndex(property => property.name === propertyName);
+      draft.splice(pageEventIndex, 1);
+    });
+
+    onSave(trigger);
+  }
+
+  /**
+   * Event handler event trigger event property change
+   *
+   * @param event react change event
+   */
+  private onEventTriggerEventPropertyChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const { onSave } = this.props;
+    const { selectedPageEventIndex } = this.state;
+
+    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+    const propertyName = event.target.name;
+    const propertyValue = event.target.value as string;
+    if (propertyName === undefined || !trigger.events || selectedPageEventIndex === undefined) {
+      return;
+    }
+
+    trigger.events = produce(trigger.events, draft => {
+      const propertyIndex = draft[selectedPageEventIndex].properties.findIndex(property => property.name === propertyName);
       if (propertyIndex === -1) {
-        draft[0].properties.push({
+        draft[selectedPageEventIndex].properties.push({
           name: propertyName,
           value: propertyValue,
           type: ExhibitionPageEventPropertyType.String
         });
       } else {
-        draft[0].properties[propertyIndex].value = propertyValue;
+        draft[selectedPageEventIndex].properties[propertyIndex].value = propertyValue;
       }
     });
 
-    this.props.onSave(trigger);
+    onSave(trigger);
   }
 
   /**
@@ -605,14 +669,25 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param actionType new event action type
    */
   private overwriteEventInJson = (actionType: ExhibitionPageEventActionType) => {
-    const trigger: ExhibitionPageEventTrigger = Object.assign({}, this.props.selectedEventTrigger);
-    if (trigger.events?.length !== 0 && trigger.events![0].action === actionType) {
+    const { onSave } = this.props;
+    const { selectedPageEventIndex } = this.state;
+    const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
+    if (selectedPageEventIndex === undefined) {
       return;
     }
 
     const newAction = this.createEvent(actionType);
-    trigger.events = [newAction];
-    this.props.onSave(trigger);
+
+    if (!trigger.events) {
+      trigger.events = [];
+      trigger.events.push(newAction);
+    } else {
+      const temp = [ ...trigger.events ] as ExhibitionPageEvent[];
+      temp.splice(selectedPageEventIndex, 1, newAction);
+      trigger.events = temp;
+    }
+
+    onSave(trigger);
   }
 
   /**
@@ -652,7 +727,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
       name: name,
       value: value || "",
       type: ExhibitionPageEventPropertyType.String
-    }
+    };
   }
 
   /**

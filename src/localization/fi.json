@@ -489,6 +489,7 @@
         "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
         "name": "Nimi",
+        "options": "Toiminnon asetukset",
         "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
         "clickViewId": "Elementti",
         "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
