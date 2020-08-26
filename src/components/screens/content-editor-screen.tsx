@@ -394,7 +394,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <ResourceEditor
             resource={ foundResource }
             resourceIndex={ resourceIndex }
-            onUpdate={ this.onUpdateResource } />
+            onUpdate={ this.onUpdateResource }
+          />
         </AccordionDetails>
       );
     });
