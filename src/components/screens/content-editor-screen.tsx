@@ -351,7 +351,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render event trigger accordion
+   * Render event properties
    */
   private renderEventProperties = () => {
     const { selectedPage, selectedTriggerIndex, pages } = this.state;
