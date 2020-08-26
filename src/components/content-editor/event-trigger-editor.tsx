@@ -478,7 +478,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
       return;
     }
 
-    const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? selectedEventTrigger.events[selectedPageEventIndex] : undefined;
+    const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? 
+      selectedEventTrigger.events[selectedPageEventIndex] :
+      undefined;
     return event ? event.action : undefined;
   }
 
