@@ -457,7 +457,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
         const { selectedTriggerIndex } = draft;
         if (selectedTriggerIndex === undefined ||
           !draft.selectedPage ||
-          draft.selectedPage.eventTriggers.length < selectedTriggerIndex) {
+          draft.selectedPage.eventTriggers.length < selectedTriggerIndex)
+        {
           return;
         }
 
