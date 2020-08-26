@@ -85,6 +85,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Render trigger name
+   */
   private renderTriggerName = () => {
     const { classes, selectedEventTrigger } = this.props;
     return (
