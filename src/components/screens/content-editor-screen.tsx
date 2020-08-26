@@ -843,7 +843,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On delete trigger click handler
+   * Event handler for delete trigger click
    *
    * @param triggerIndex trigger index within selected pages triggers
    */
