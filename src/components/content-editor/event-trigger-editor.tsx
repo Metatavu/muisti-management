@@ -603,7 +603,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
-   * On page event delete click handler
+   * Event handler for page event delete click
    *
    * @param pageEventIndex page event index 
    */
