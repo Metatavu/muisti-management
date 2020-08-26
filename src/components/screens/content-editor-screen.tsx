@@ -803,7 +803,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On add event trigger handler
+   * Event handler for add event trigger
    *
    * @param pageLayoutViewId page layout view id
    * @param event react mouse event
