@@ -332,12 +332,12 @@ const fillTextProperties = (layoutView: PageLayoutView): PageLayoutView => {
  * @returns layout view with resource properties
  */
 const fillMediaProperties = (layoutView: PageLayoutView): PageLayoutView => {
-  const text: PageLayoutViewProperty = {
+  const src: PageLayoutViewProperty = {
     name: "src",
     type: PageLayoutViewPropertyType.String,
     value: `@resources/${uuid()}`
   };
 
-  layoutView.properties.push(text);
+  layoutView.properties.push(src);
   return layoutView;
 };
