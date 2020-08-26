@@ -66,7 +66,6 @@ interface State {
   loading: boolean;
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
-  extendedDevices: ExtendedDevice[];
   layouts: PageLayout[];
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
@@ -78,6 +77,7 @@ interface State {
 }
 
 /**
+<<<<<<< HEAD
  * TODO:
  * Remove when device includes page order
  *
@@ -88,6 +88,8 @@ interface ExtendedDevice extends ExhibitionDevice {
 }
 
 /**
+=======
+>>>>>>> 1c09acf1f02f2c50ea9d1beb3181268978a8649f
  * Component for content editor screen
  */
 class ContentEditorScreen extends React.Component<Props, State> {
@@ -102,7 +104,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       devices: [],
-      extendedDevices: [],
       pages: [],
       layouts: [],
       view: "VISUAL"
@@ -586,19 +587,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
       )
     );
 
-    /**
-     * TODO: Remove extendedDevices when device includes page order
-     */
-    const extendedDevices: ExtendedDevice[] = devices.map((device, index) => {
+    const devicesWithPageOrders: ExhibitionDevice[] = devices.map((device, index) => {
       return {
         ...device,
-        pageOrder: devicePages[index].map(page => page.id!)
+        pageOrder: device.pageOrder.length < 1 ?
+          devicePages[index].map(page => page.id!) :
+          device.pageOrder
       }
     });
 
     const pages: ExhibitionPage[] = devicePages.flat();
-    const selectedDevice = devices[0];
-
+    const selectedDevice = devicesWithPageOrders[0];
     const selectedPage = pages.find(page => page.deviceId === selectedDevice.id);
 
     if (selectedPage) {
@@ -607,11 +606,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     this.setState({
       groupContentVersion,
-      devices,
-      extendedDevices,
+      devices: devicesWithPageOrders,
       pages,
       layouts,
-      selectedDevice,
+      selectedDevice
     });
 
   }
@@ -621,10 +619,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderTimeline = () => {
     const { classes } = this.props;
-    /**
-     * TODO: Remove extendedDevices when device includes page order
-     */
-    const { devices, extendedDevices, selectedDevice, pages, selectedPage } = this.state;
+    const { devices, selectedDevice, pages, selectedPage } = this.state;
     return (
       <div className={ classes.timelineContent }>
         <TimelineDevicesList
@@ -634,7 +629,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         />
         <Divider orientation="vertical" flexItem />
         <TimelineEditor
-          devices={ extendedDevices }
+          devices={ devices }
           pages={ pages }
           selectedPage={ selectedPage }
           onClick={ this.onPageClick }
@@ -900,29 +895,39 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param deviceId device id
    * @param result drop result
    */
-  private onPageDragEnd = (deviceId: string) => (result: DropResult) => {
+  private onPageDragEnd = (deviceId: string) => async (result: DropResult) => {
+    const { accessToken, exhibitionId } = this.props;
+    const { devices } = this.state;
+    if (!result.destination) {
+      return;
+    }
+
+    const deviceIndex = devices.findIndex(device => device.id === deviceId);
+    if (deviceIndex < 0) {
+      return;
+    }
+
+    const exhibitionDevice = {
+      ...devices[deviceIndex],
+      pageOrder: this.reorderPages(
+        devices[deviceIndex].pageOrder,
+        result.source.index,
+        result.destination!.index
+      )
+    };
+
     this.setState(
       produce((draft: State) => {
-        if (!result.destination) {
-          return;
-        }
-
-        const deviceIndex = draft.extendedDevices.findIndex(device => device.id === deviceId);
-        if (deviceIndex < 0) {
-          return;
-        }
-
-        const device = this.state.extendedDevices[deviceIndex];
-        draft.extendedDevices[deviceIndex] = {
-          ...device,
-          pageOrder: this.reorderPages(
-            device.pageOrder,
-            result.source.index,
-            result.destination.index
-          )
-        };
+        draft.devices[deviceIndex] = exhibitionDevice;
       })
     );
+
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    await devicesApi.updateExhibitionDevice({
+      exhibitionId,
+      deviceId,
+      exhibitionDevice
+    });
   }
 
   /**

@@ -383,14 +383,14 @@ export default class SpacesMap extends React.Component<Props, State> {
 
       const exhibitionDevice: ExhibitionDevice = {
         name: strings.floorPlan.device.new,
+        pageOrder: [],
         groupId: selectedItems.deviceGroup.id,
         modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,
         location: {
           x: marker._latlng.lat,
           y: marker._latlng.lng
-        },
-        pageOrder: []
+        }
       };
       onDeviceAdd(exhibitionDevice);
     }
