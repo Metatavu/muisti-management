@@ -83,7 +83,7 @@ export interface ExhibitionDevice {
      * @type {Array<string>}
      * @memberof ExhibitionDevice
      */
-    pageOrder?: Array<string>;
+    pageOrder: Array<string>;
     /**
      * 
      * @type {string}
@@ -128,7 +128,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         'name': json['name'],
         'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
         'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
-        'pageOrder': !exists(json, 'pageOrder') ? undefined : json['pageOrder'],
+        'pageOrder': json['pageOrder'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
