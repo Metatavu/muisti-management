@@ -66,10 +66,21 @@ class TopBar extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, keycloak, history, breadcrumbs, noBackButton, title, noTabs, setSelectedDevice, actionBarButtons, devices } = this.props;
+    const {
+      classes,
+      keycloak,
+      history,
+      breadcrumbs,
+      noBackButton,
+      title,
+      noTabs,
+      setSelectedDevice,
+      actionBarButtons,
+      devices
+    } = this.props;
 
-    const firstName = keycloak.profile && keycloak.profile.firstName ? keycloak.profile.firstName : "";
-    const lastName = keycloak.profile && keycloak.profile.lastName ? keycloak.profile.lastName : "";
+    const firstName = (keycloak.profile && keycloak.profile.firstName) ?? "";
+    const lastName = (keycloak.profile && keycloak.profile.lastName) ?? "";
     const initials = `${ firstName.charAt(0).toUpperCase() }`;
 
     return (
@@ -121,26 +132,20 @@ class TopBar extends React.Component<Props, State> {
         </div>
 
         <div className={ classes.bottomRow }>
-          { history.location.pathname.includes("v4") &&
-            <>
-              { // Temporary path to new timeline included
-                !history.location.pathname.includes("timeline") && !history.location.pathname.includes("newTimeline") &&
-                <ContentUtilityBar
-                  history={ history }
-                  actionBarButtons={ actionBarButtons }
-                  noTabs={ noTabs }
-                />
-              }
-              {  // Temporary path to new timeline included
-                (history.location.pathname.includes("timeline") || history.location.pathname.includes("newTimeline")) &&
-                <EditorUtilityBar
-                  history={ history }
-                  actionBarButtons={ actionBarButtons }
-                  devices={ devices }
-                  setSelectedDevice={ setSelectedDevice }
-                />
-              }
-            </>
+          { !history.location.pathname.includes("timeline") &&
+            <ContentUtilityBar
+              history={ history }
+              actionBarButtons={ actionBarButtons }
+              noTabs={ noTabs }
+            />
+          }
+          { history.location.pathname.includes("timeline") &&
+            <EditorUtilityBar
+              history={ history }
+              actionBarButtons={ actionBarButtons }
+              devices={ devices }
+              setSelectedDevice={ setSelectedDevice }
+            />
           }
         </div>
       </header>
@@ -183,11 +188,7 @@ class TopBar extends React.Component<Props, State> {
   private renderNavigationButton = (navigationButton: NavigationButton) => {
     const { history } = this.props;
 
-    const isV4Path = history.location.pathname.includes("v4");
-    const v3ExhibitionPath = "/dashboard/overview";
-    const targetUrl = isV4Path ? `/v4/${navigationButton.postfix}` : (
-      navigationButton.postfix === "exhibitions" ? v3ExhibitionPath : `/dashboard/${navigationButton.postfix}`
-    );
+    const targetUrl = `/${navigationButton.postfix}`;
     const selected = history.location.pathname.includes(targetUrl);
 
     return (

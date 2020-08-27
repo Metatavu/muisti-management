@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, IconButton, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
@@ -178,8 +178,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementTimelinePane>
 
           <ElementContentsPane>
-            { this.renderContentAccordion() }
-            { this.renderTransitionAccordion() }
+            { this.renderElementContentsPaneContent() }
+
           </ElementContentsPane>
 
           <ElementPropertiesPane
@@ -192,6 +192,35 @@ class ContentEditorScreen extends React.Component<Props, State> {
         </div>
       </BasicLayout>
     );
+  }
+
+  /**
+   * Renders element contents pane content
+   */
+  private renderElementContentsPaneContent = () => {
+    const { selectedPage, selectedDevice } = this.state;
+    if (selectedPage) {
+      return (
+        <>
+          { this.renderContentAccordion() }
+          { this.renderTransitionAccordion() }
+        </>
+      );
+    }
+
+    if (selectedDevice) {
+      return (
+        <TextField
+          variant="filled"
+          fullWidth
+          label={ strings.generic.name }
+          name="name"
+          value={ selectedDevice.name }
+          onChange={ this.onDeviceDataChange }
+          style={{ marginTop: 10 }}
+        />
+      );
+    }
   }
 
   /**
@@ -706,18 +735,37 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @returns action buttons as array
    */
-  private getActionButtons = () => {
-    return [
-      {
-        name: this.state.view === "CODE" ?
+  private getActionButtons = (): ActionButton[] => {
+    const { selectedDevice, selectedPage, view } = this.state;
+
+    const actionButtons: ActionButton[] = [{
+      name: view === "CODE" ?
         strings.exhibitionLayouts.editView.switchToVisualButton :
         strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: this.onSwitchViewClick
+      action: this.onSwitchViewClick
+    }];
+
+    if (selectedDevice) {
+      actionButtons.push({
+        name: strings.contentEditor.editor.saveDevice,
+        action: this.onSaveDeviceClick
       }, {
-        name: strings.generic.save,
+        name: strings.exhibition.addPage,
+        action: this.onAddPageClick
+      });
+    }
+
+    if (selectedPage) {
+      actionButtons.push({
+        name: strings.contentEditor.editor.savePage,
         action: this.onPageSave
-      }
-    ] as ActionButton[];
+      }, {
+        name: strings.exhibition.deletePage,
+        action: this.onDeletePageClick
+      });
+    }
+    
+    return actionButtons;
   }
 
   /**
@@ -732,6 +780,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedDevice: selectedDevice
     });
     return selectedDevice;
+  }
+
+  /**
+   * Event handler for device change
+   *
+   * @param event event
+   */
+  private onDeviceDataChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const { selectedDevice } = this.state;
+    const { name, value } = event.target;
+    if (!selectedDevice || !name) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedDevice = {
+          ...selectedDevice,
+          [name]: value !== strings.generic.undefined ? value : undefined
+        };
+      })
+    );
   }
 
   /**
@@ -978,6 +1048,99 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for save device click
+   */
+  private onSaveDeviceClick = async () => {
+    try {
+      const { selectedDevice } = this.state;
+      if (!selectedDevice || !selectedDevice.id) {
+        return;
+      }
+
+      const exhibitionDevicesApi = Api.getExhibitionDevicesApi(this.props.accessToken);
+      const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
+        exhibitionId: this.props.exhibitionId,
+        deviceId: selectedDevice.id,
+        exhibitionDevice: selectedDevice
+      });
+
+      this.setState(
+        produce((draft: State) => {
+          const deviceIndex = draft.devices.findIndex(device => device.id === selectedDevice.id);
+          if (deviceIndex > -1) {
+            draft.devices[deviceIndex] = updatedDevice;
+          }
+        })
+      );
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
+  }
+
+  /**
+   * Event handler for add page click
+   */
+  private onAddPageClick = async () => {
+    const { contentVersionId, accessToken, exhibitionId } = this.props;
+    const { layouts, selectedDevice, devices } = this.state;
+    if (!selectedDevice) {
+      return;
+    }
+
+    const layoutId = layouts && layouts.length ? layouts[0].id : null;
+    const deviceId = selectedDevice.id;
+    const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
+
+    if (!layoutId || !deviceId || !contentVersionId) {
+      return null;
+    }
+
+    const newPage: ExhibitionPage = {
+      layoutId: layoutId,
+      deviceId: deviceId,
+      contentVersionId: contentVersionId,
+      name: strings.exhibition.newPage,
+      eventTriggers: [],
+      resources: temp.resources,
+      enterTransitions: [],
+      exitTransitions: []
+    };
+
+    const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+    const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const createdPage = await exhibitionPagesApi.createExhibitionPage({
+      exhibitionId: exhibitionId,
+      exhibitionPage: newPage
+    });
+    const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
+      exhibitionId: exhibitionId,
+      deviceId: selectedDevice.id!,
+      exhibitionDevice: {
+        ...selectedDevice,
+        pageOrder: [ ...selectedDevice.pageOrder, createdPage.id! ]
+      }
+    });
+
+    this.setState(
+      produce((draft: State) => {
+        const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
+        if (deviceIndex < 0) {
+          return;
+        }
+
+        draft.devices[deviceIndex] = updatedDevice;
+        draft.selectedDevice!.pageOrder.push(createdPage.id!);
+        draft.pages.push(createdPage);
+        draft.selectedPage = createdPage;
+      })
+    );
+  }
+
+  /**
    * Event handler for page save
    */
   private onPageSave = async () => {
@@ -1003,6 +1166,49 @@ class ContentEditorScreen extends React.Component<Props, State> {
       });
 
         this.setState({ pages: newPages });
+    } catch (e) {
+      console.error(e);
+
+      this.setState({
+        error: e
+      });
+    }
+  }
+
+  /**
+   * Event handler for page delete
+   */
+  private onDeletePageClick = async () => {
+    try {
+      const { accessToken, exhibitionId } = this.props;
+      const { selectedPage } = this.state;
+      if (!selectedPage || !selectedPage.id) {
+        return;
+      }
+
+      /**
+       * TODO:
+       * Add cleaner confirm dialog
+       */
+      if (!window.confirm(strings.exhibition.confirmDeletePage)) {
+        return;
+      }
+
+      const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+      await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
+
+      this.setState(
+        produce((draft: State) => {
+          const pageIndex = draft.pages.findIndex(page => page.id === selectedPage.id);
+
+          if (pageIndex > -1) {
+            draft.pages.splice(pageIndex, 1);
+          }
+
+          draft.selectedPage = undefined;
+          draft.selectedTriggerIndex = undefined;
+        })
+      );
     } catch (e) {
       console.error(e);
 
