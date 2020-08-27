@@ -476,6 +476,8 @@ export interface IStrings extends LocalizedStringsMethods {
       pageName: string;
       indexPageId: string;
       device: string;
+      saveDevice: string;
+      savePage: string;
       layout: string;
       content: string;
       properties: string;
