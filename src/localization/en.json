@@ -490,6 +490,7 @@
       },
   
       "eventTriggers": {
+        "noTriggers": "No events",
         "add": "Add action",
         "addEvent": "Add event",
         "title": "Events",
