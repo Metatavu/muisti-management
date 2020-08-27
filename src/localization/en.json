@@ -439,6 +439,29 @@
       "orientation": "Orientation"
     },
 
+    "tab": {
+      "mode": {
+        "title": "Tab mode",
+        "scrollable": "Scrollable",
+        "fixed": "Fixed"
+      },
+      "gravity": {
+        "title": "Tab gravity",
+        "center": "Center",
+        "fill": "Fill"
+      },
+      "selectedIndicatorColor": "Selected tab indicator color",
+      "selectedIndicatorGravity": {
+        "title": "Selected tab indicator gravity",
+        "bottom": "Bottom",
+        "center": "Center",
+        "top": "Top",
+        "stretch": "Stretch"
+      },
+      "textColorNormal": "Tab text color",
+      "textColorSelected": "Tab text color when selected"
+    },
+
     "addLayoutViewDialog": {
       "title": "Add layout view element",
       "name": "Element name",

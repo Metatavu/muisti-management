@@ -439,6 +439,29 @@ export interface IStrings extends LocalizedStringsMethods {
       orientation: string;
     };
 
+    tab: {
+      mode: {
+        title: string;
+        scrollable: string;
+        fixed: string;
+      };
+      gravity: {
+        title: string;
+        center: string;
+        fill: string;
+      };
+      selectedIndicatorColor: string;
+      selectedIndicatorGravity: {
+        title: string;
+        bottom: string;
+        center: string;
+        top: string;
+        stretch: string;
+      };
+      textColorNormal: string;
+      textColorSelected: string;
+    }
+
     addLayoutViewDialog: {
       name: string;
       title: string;
@@ -447,7 +470,6 @@ export interface IStrings extends LocalizedStringsMethods {
       cancel: string;
       subLayout: string;
     };
-
   };
 
   contentVersion: {
