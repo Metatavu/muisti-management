@@ -360,8 +360,8 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     const { exhibitionId } = this.props;
     const { exhibition, room } = this.state;
     return [
-      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/content` },
+      { name: strings.exhibitions.listTitle, url: "/exhibitions" },
+      { name: exhibition?.name, url: `/exhibitions/${exhibitionId}/content` },
       { name: room?.name || "" }
     ] as BreadcrumbData[];
   }

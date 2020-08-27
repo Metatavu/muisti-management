@@ -365,19 +365,19 @@ class TimelineScreen extends React.Component<Props, State> {
     return [
       {
         name: strings.exhibitions.listTitle,
-        url: `/v4/exhibitions`
+        url: `/exhibitions`
       },
       {
         name: exhibition.name,
-        url: `/v4/exhibitions/${exhibitionId}/content`
+        url: `/exhibitions/${exhibitionId}/content`
       },
       {
         name: room?.name || "",
-        url: `/v4/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}`
+        url: `/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}`
       },
       {
         name: contentVersion?.name || "",
-        url: `/v4/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}/contentVersions/${contentVersionId}`
+        url: `/exhibitions/${exhibitionId}/content/floors/${floorId}/rooms/${roomId}/contentVersions/${contentVersionId}`
       },
       {
         name: groupContentVersion?.name || ""

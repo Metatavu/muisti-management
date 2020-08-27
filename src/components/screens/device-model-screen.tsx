@@ -115,7 +115,7 @@ export class DeviceModelScreen extends React.Component<Props, State> {
   private getBreadcrumbsData = () => {
     const { deviceModel } = this.state;
     return [
-      { name: strings.exhibitions.listTitle, url: "/v4/deviceModels" },
+      { name: strings.exhibitions.listTitle, url: "/deviceModels" },
       { name: deviceModel?.model || "" }
     ] as BreadcrumbData[];
   }
