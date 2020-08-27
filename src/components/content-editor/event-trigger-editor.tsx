@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Button, List, ListItem, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Button, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
@@ -14,13 +14,14 @@ import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript"
+import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
 /**
  * Component props
@@ -67,20 +68,24 @@ class EventTriggerEditor extends React.Component<Props, State> {
         { this.renderPhysicalButtonSelects() }
         { this.renderDeviceGroupEventNameField() }
         { this.renderDelayField() }
-
-        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
-          { strings.contentEditor.editor.eventTriggers.actions }
-        </Typography>
-        { this.renderActionList() }
-        <Button
-          variant="contained"
-          onClick={ this.onAddPageEventClick }
-          style={{ backgroundColor: "rgb(23, 23, 23)" }}
-        >
-          { strings.contentEditor.editor.eventTriggers.addEvent }
-        </Button>
-        { this.renderEventOptions() }
-
+        <Paper variant="outlined" square style={{ marginTop: theme.spacing(2) }} >
+          <div style={{ display: "flex", justifyContent: "space-between", padding: theme.spacing(1), paddingLeft: theme.spacing(2), alignItems: "center" }}>
+            <Typography variant="h5">
+              { strings.contentEditor.editor.eventTriggers.actions }
+            </Typography>
+            <IconButton
+              title={ strings.contentEditor.editor.eventTriggers.addEvent }
+              color="primary"
+              onClick={ this.onAddPageEventClick }
+              >
+              <AddIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          { this.renderActionList() }
+          <Divider />
+          { this.renderEventOptions() }
+        </Paper>
       </div>
     );
   }
@@ -96,9 +101,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.variableName }
         </Typography>
         <TextField
+          fullWidth={ false }
           name="name"
           className={ classes.textResourceEditor }
-          variant="filled"
           value={ selectedEventTrigger.name }
           onChange={ this.onEventTriggerNameChange }
         />
@@ -133,35 +138,41 @@ class EventTriggerEditor extends React.Component<Props, State> {
         <Typography variant="h6">
           { strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }
         </Typography>
-        <Select
-          variant="filled"
-          label={ strings.contentEditor.editor.eventTriggers.physicalButton }
-          fullWidth
-          name="keyDown"
-          value={ trigger.keyDown || "" }
-          onChange={ this.onEventTriggerChange }
-        >
-          <MenuItem key={ `clickViewId-empty` } value="">
-            { strings.removeSelection }
-          </MenuItem>
-          { menuItems }
-        </Select>
+        <FormControl>
+          <InputLabel>
+            { strings.contentEditor.editor.eventTriggers.physicalButton }
+          </InputLabel>
+          <Select
+            label={ strings.contentEditor.editor.eventTriggers.physicalButton }
+            name="keyDown"
+            value={ trigger.keyDown || "" }
+            onChange={ this.onEventTriggerChange }
+            >
+            <MenuItem key={ `clickViewId-empty` } value="">
+              { strings.removeSelection }
+            </MenuItem>
+            { menuItems }
+          </Select>
+        </FormControl>
         <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
           { strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }
         </Typography>
-        <Select
-          variant="filled"
-          label={ strings.contentEditor.editor.eventTriggers.physicalButton }
-          fullWidth
-          name="keyUp"
-          value={ trigger.keyUp || "" }
-          onChange={ this.onEventTriggerChange }
-        >
-          <MenuItem key={ `clickViewId-empty` } value="">
-            { strings.removeSelection }
-          </MenuItem>
-          { menuItems }
-        </Select>
+        <FormControl>
+          <InputLabel>
+            { strings.contentEditor.editor.eventTriggers.physicalButton }
+          </InputLabel>
+          <Select
+            label={ strings.contentEditor.editor.eventTriggers.physicalButton }
+            name="keyUp"
+            value={ trigger.keyUp || "" }
+            onChange={ this.onEventTriggerChange }
+            >
+            <MenuItem key={ `clickViewId-empty` } value="">
+              { strings.removeSelection }
+            </MenuItem>
+            { menuItems }
+          </Select>
+        </FormControl>
       </div>
     );
   }
@@ -183,7 +194,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
           type="text"
           className={ classes.textResourceEditor }
           label={ strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
-          variant="filled"
           name="deviceGroupEvent"
           value={ this.props.selectedEventTrigger?.deviceGroupEvent || "" }
           onChange={ this.onEventTriggerChange }
@@ -208,7 +218,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
         <TextField
           className={ classes.textResourceEditor } 
           label={ strings.contentEditor.editor.eventTriggers.delay }
-          variant="filled"
           name="delay"
           value={ this.props.selectedEventTrigger?.delay || 0 }
           onChange={ this.onEventTriggerChange }
@@ -249,10 +258,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return (
-      <List
-        disablePadding
-        dense
-      >
+      <List disablePadding >
         { eventItems }
       </List>
     );
@@ -270,13 +276,13 @@ class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     return (
-      <>
-        <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+      <div style={{ padding: theme.spacing(1), paddingTop: theme.spacing(2) }}>
+        <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
           { strings.contentEditor.editor.eventTriggers.options }
         </Typography>
         { this.renderEventActionTypeSelect() }
         { this.renderEventActionSettings() }
-      </>
+      </div>
     );
 
   }
@@ -308,8 +314,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Select
-          variant="filled"
-          fullWidth
           value={ selectedActionType || "" }
           onChange={ this.onSelectEventActionType }
         >
@@ -363,9 +367,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.variableName }
         </Typography>
         <TextField
+          fullWidth={ false }
           name="name"
           className={ classes.textResourceEditor } 
-          variant="filled"
           value={ userValuePropertyName?.value || "" }
           onChange={ this.onEventTriggerEventPropertyChange }
         />
@@ -374,9 +378,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.variableValue }
         </Typography>
         <TextField
+          fullWidth={ false }
           name="value"
           className={ classes.textResourceEditor }
-          variant="filled"
           value={ userValuePropertyValue?.value || "" }
           onChange={ this.onEventTriggerEventPropertyChange }
         />
@@ -405,8 +409,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.selectPage }
         </Typography>
         <Select
-          variant="filled"
-          fullWidth
           name={ "pageId" }
           value={ property ? property.value : "" }
           onChange={ this.onEventTriggerEventPropertyChange }
@@ -436,9 +438,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
         </Typography>
         <TextField
+          fullWidth={ false }
           name="name"
           className={ classes.textResourceEditor }
-          variant="filled"
           value={ deviceGroupEventNameProperty?.value || "" }
           onChange={ this.onEventTriggerEventPropertyChange }
         />

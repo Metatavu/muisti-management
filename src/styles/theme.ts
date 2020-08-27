@@ -1,6 +1,9 @@
 import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
+const theme = createMuiTheme();
+const { spacing } = theme;
+
 const uiHighlightMain = "#0079E9";
 const uiHighlightLight = "rgba(0, 121, 233, 0.25)";
 
@@ -46,8 +49,8 @@ export default createMuiTheme({
       fontWeight: "normal"
     },
     h5: {
-      fontFamily: "TTNorms-Bold",
-      fontSize: "14px",
+      fontFamily: "TTNorms-Medium",
+      fontSize: "16px",
       fontWeight: "normal"
     },
     h6: {
@@ -96,6 +99,9 @@ export default createMuiTheme({
     },
     MuiAccordionSummary: {
       root: {
+        backgroundColor: "#eaeaea",
+        padding: "0 12px",
+        flexDirection: "row-reverse",
         "&.Mui-expanded": {
           minHeight: 48
         }
@@ -103,13 +109,16 @@ export default createMuiTheme({
       content: {
         alignItems: "center",
         justifyContent: "space-between",
+        "&.Mui-expanded": {
+          margin: "12px 0"
+        }
       }
     },
     MuiAccordionDetails: {
       root: {
         flexDirection: "column",
-        padding: 0,
-        backgroundColor: "#f7f7f7"
+        padding: spacing(1),
+        backgroundColor: "##fff"
       }
     },
     MuiBackdrop: {
@@ -126,6 +135,9 @@ export default createMuiTheme({
       root: {
         fontFamily: "TTNorms-Medium",
         textTransform: "initial",
+      },
+      text: {
+        fontFamily: "TTNorms-Bold",
       },
       textPrimary: {
         fontFamily: "TTNorms-Medium",
@@ -199,11 +211,17 @@ export default createMuiTheme({
     MuiInputBase: {
       root: {
         fontSize: 14
+      },
+      input: {
+        background: "#fff"
       }
     },
     MuiSelect: {
       filled: {
         padding: "10px 12px"
+      },
+      outlined: {
+        padding: "18.5px 14px"
       },
       select: {
         lineHeight: 1,
@@ -288,6 +306,28 @@ export default createMuiTheme({
         fontWeight: "normal",
         color: "#000"
       }
+    }
+  },
+  props: {
+    MuiAccordionSummary: {
+      IconButtonProps: {
+        edge: "start"
+      }
+    },
+    MuiAccordion: {
+      elevation: 0,
+    },
+    MuiTextField: {
+      fullWidth: true,
+      variant: "outlined"
+    },
+    MuiSelect: {
+      fullWidth: true,
+      variant: "outlined"
+    },
+    MuiFormControl: {
+      fullWidth: true,
+      variant: "outlined"
     }
   }
 });

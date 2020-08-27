@@ -16,14 +16,14 @@ export default createStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: 55,
-    width: 50
+    height: 48,
+    width: 48
   },
   container: {
     overflowY: "auto",
     backgroundColor: "#fbfbfb",
     height: "100%",
-    width: 400,
+    width: 420,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
@@ -35,7 +35,7 @@ export default createStyles({
     alignItems: "center",
     padding: "0 12px",
     borderBottom: "1px solid #ddd",
-    height: 55,
+    height: 48,
     "& h3": {
       whiteSpace: "nowrap",
       width: "calc(100% - 50px)",
@@ -44,6 +44,6 @@ export default createStyles({
     }
   },
   content: {
-    padding: theme.spacing(2)
+    borderBottom: "1px solid #ddd",
   },
 });

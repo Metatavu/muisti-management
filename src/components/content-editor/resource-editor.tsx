@@ -93,10 +93,10 @@ class ResourceEditor extends React.Component<Props, State> {
           <>
             { title }
             <TextField
+              fullWidth={ false }
               multiline
               className={ classes.textResourceEditor }
               label={ strings.exhibition.resources.textView.properties.text }
-              variant="filled"
               name="data"
               value={ resource.data }
               onChange={ this.onResourceDataChange }
@@ -121,6 +121,12 @@ class ResourceEditor extends React.Component<Props, State> {
     const { resource } = this.props;
     return (
       <IconButton
+        size="small"
+        title={
+          resource.scripted ?
+          strings.exhibition.resources.textView.properties.typeScripted :
+          strings.exhibition.resources.textView.properties.typeText
+        }
         onClick={ () => this.onResourceScriptedClick() }
         edge="end"
       >

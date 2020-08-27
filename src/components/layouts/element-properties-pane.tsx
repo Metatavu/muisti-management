@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Typography } from "@material-ui/core";
 import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
 
@@ -52,11 +52,11 @@ class ElementPropertiesPane extends React.Component<Props, State> {
     } = this.props;
 
     return (
-      <div className={ classes.root } style={{ width: open ? 320 : 0 }}>
+      <div className={ classes.root } style={{ width: open ? 400 : 0 }}>
         <div className={ classNames( classes.container, this.props.open ? "" : "closed" ) }>
           { title &&
             <div className={ classes.header }>
-              <h3>{ title }</h3>
+              <Typography variant="h3">{ title }</Typography>
             </div>
           }
           <div className={ classes.content }>
