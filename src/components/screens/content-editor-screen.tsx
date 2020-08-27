@@ -305,7 +305,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Typography>
           { eventTriggerItems }
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-
       </Accordion>
     );
   }
@@ -372,12 +371,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       }
 
       const foundResource = selectedPage.resources[resourceIndex];
-
       return (
         <AccordionDetails>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
-            { foundResource.id || "" }
-          </Typography>
           <ResourceEditor
             resource={ foundResource }
             resourceIndex={ resourceIndex }

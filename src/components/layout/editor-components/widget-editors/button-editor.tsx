@@ -134,6 +134,7 @@ class ButtonEditor extends React.Component<Props, State> {
             { strings.layoutEditor.button.textResource }:
           </Typography>
           <GenericPropertyTextField
+            disabled
             textFieldId={ LayoutButtonPropKeys.TextResources }
             textFieldType="text"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
@@ -269,6 +270,7 @@ class ButtonEditor extends React.Component<Props, State> {
             { strings.layoutEditor.button.backgroundImage }:
           </Typography>
           <GenericPropertyTextField
+            disabled
             textFieldId={ LayoutButtonPropKeys.BackgroundImage }
             textFieldType="text"
             property={ getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundImage, PageLayoutViewPropertyType.String) }

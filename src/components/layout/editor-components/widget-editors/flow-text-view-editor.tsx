@@ -77,6 +77,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
             { strings.layoutEditor.textView.textResource }:
           </Typography>
           <GenericPropertyTextField
+            disabled
             textFieldId={ LayoutTextViewPropKeys.TextResources }
             textFieldType="text"
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
