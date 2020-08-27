@@ -485,6 +485,7 @@
         "removeTransition": "Poista siirtymä"
       },
       "eventTriggers": {
+        "noTriggers": "Ei tapahtumia",
         "add": "Lisää tapahtuma",
         "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
