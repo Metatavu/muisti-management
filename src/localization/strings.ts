@@ -489,6 +489,7 @@ export interface IStrings extends LocalizedStringsMethods {
         removeTransition: string;
       };
       eventTriggers: {
+        noTriggers: string;
         add: string;
         addEvent: string;
         title: string;

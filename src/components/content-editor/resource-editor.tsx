@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ExhibitionPageResource, ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, InputAdornment, IconButton } from "@material-ui/core";
+import theme from "../../styles/theme";
 import styles from "../../styles/exhibition-view";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -9,6 +10,8 @@ import { Dispatch } from "redux";
 import MediaLibrary from "../right-panel-editors/media-library";
 import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
+import CodeIcon from '@material-ui/icons/Code';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
 
 /**
  * Interface representing component properties
@@ -55,24 +58,34 @@ class ResourceEditor extends React.Component<Props, State> {
         return (
           <>
             { title }
-            <MediaLibrary
-              accessToken={ accessToken }
-              mediaType={ MediaType.IMAGE }
-              resource={ resource }
-              onUrlChange={ this.updateResource }
-            />
+            <div style={{ display: "flex" }}>
+              <div style={{ flexGrow: 1 }}>
+                <MediaLibrary
+                  accessToken={ accessToken }
+                  mediaType={ MediaType.IMAGE }
+                  resource={ resource }
+                  onUrlChange={ this.updateResource }
+                />
+              </div>
+              <div style={{ flexGrow: 0, marginRight: theme.spacing(2) }}>
+                { this.renderScriptedButton() }
+              </div>
+            </div>
           </>
         );
       case ExhibitionPageResourceType.Video:
         return (
           <>
             { title }
-            <MediaLibrary
-              accessToken={ accessToken }
-              mediaType={ MediaType.VIDEO }
-              resource={ resource }
-              onUrlChange={ this.updateResource }
-            />
+            <div style={{ display: "flex" }}>
+              <MediaLibrary
+                accessToken={ accessToken }
+                mediaType={ MediaType.VIDEO }
+                resource={ resource }
+                onUrlChange={ this.updateResource }
+              />
+              { this.renderScriptedButton() }
+            </div>
           </>
         );
       case ExhibitionPageResourceType.Text:
@@ -87,11 +100,36 @@ class ResourceEditor extends React.Component<Props, State> {
               name="data"
               value={ resource.data }
               onChange={ this.onResourceDataChange }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    { this.renderScriptedButton() }
+                  </InputAdornment>
+                )
+              }}
             />
           </>
         );
       default: return <div>{ title }</div>;
     }
+  }
+
+  /**
+   * Renders scripted button
+   */
+  private renderScriptedButton = () => {
+    const { resource } = this.props;
+    return (
+      <IconButton
+        onClick={ () => this.onResourceScriptedClick() }
+        edge="end"
+      >
+        { resource.scripted ?
+          <CodeIcon /> :
+          <TextFieldsIcon />
+        }
+      </IconButton>
+    );
   }
 
   /**
@@ -104,14 +142,27 @@ class ResourceEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for resource scripted click
+   */
+  private onResourceScriptedClick = () => {
+    const { resource, resourceIndex, onUpdate } = this.props;
+
+    onUpdate(resourceIndex,
+      produce(resource, draft => {
+        draft.scripted = !draft.scripted;
+      })
+    );
+  }
+
+  /**
    * Event handler for media change
    *
    * @param value value as string
    */
   private updateResource = (value: string) => {
-    const { resource, resourceIndex } = this.props;
+    const { resource, resourceIndex, onUpdate } = this.props;
 
-    this.props.onUpdate(resourceIndex,
+    onUpdate(resourceIndex,
       produce(resource, draft => {
         draft.data = value;
       })

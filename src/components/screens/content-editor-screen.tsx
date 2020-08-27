@@ -284,7 +284,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return (
       <Accordion key={ pageLayoutView.name }>
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
           <Button
@@ -294,17 +294,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { strings.contentEditor.editor.eventTriggers.add }
           </Button>
         </AccordionSummary>
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+        <AccordionDetails>
+          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { strings.contentEditor.editor.resources }
           </Typography>
           { elementItems }
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
+          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { strings.contentEditor.editor.eventTriggers.title }
           </Typography>
-          { eventTriggerItems }
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          {
+            eventTriggerItems ??
+            <Typography variant="caption" style={{ marginLeft: theme.spacing(1), marginBottom: theme.spacing(1) }}>
+              { strings.contentEditor.editor.eventTriggers.noTriggers }
+            </Typography>
+          }
+        </AccordionDetails>
       </Accordion>
     );
   }
@@ -394,7 +398,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       const triggerList = selectedPage.eventTriggers.filter(trigger => trigger.clickViewId === pageLayoutView.id);
 
       if (triggerList.length < 1) {
-        return null;
+        return;
       }
 
       return triggerList.map((trigger, index) => {
@@ -404,6 +408,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <List
             disablePadding
             dense
+            style={{ marginBottom: theme.spacing(1) }}
           >
             <ListItem
               key={ index }
