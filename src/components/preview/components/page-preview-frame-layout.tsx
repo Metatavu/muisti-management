@@ -162,9 +162,17 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             property.value.split("|").forEach(gravityValue => {
               switch (gravityValue) {
                 case "top":
+                  if (!(result.left === 0) && !(result.right === 0)) {
+                    result.right = "50%";
+                    result.left = "50%";
+                  }
                   result.top = 0;
                 break;
                 case "bottom":
+                  if (!(result.left === 0) && !(result.right === 0)) {
+                    result.right = "50%";
+                    result.left = "50%";
+                  }
                   result.bottom = 0;
                 break;
                 case "right":
@@ -173,6 +181,16 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
                 case "left":
                   result.left = 0;
                 break;
+                case "center":
+                  if (result.left === 0 || result.right === 0) {
+                    result.top = "50%";
+                    result.bottom = "50%";
+                  } else {
+                    result.top = "50%";
+                    result.bottom = "50%";
+                    result.right = "50%";
+                    result.left = "50%";
+                  }
                 default:
               }
             });
