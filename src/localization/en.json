@@ -459,7 +459,10 @@
         "stretch": "Stretch"
       },
       "textColorNormal": "Tab text color",
-      "textColorSelected": "Tab text color when selected"
+      "textColorSelected": "Tab text color when selected",
+      "unboundedRipple": "Unbounded ripple",
+      "tabIndicatorFullWidth": "Tab indicator full width",
+      "data": "Data"
     },
 
     "addLayoutViewDialog": {
@@ -534,6 +537,12 @@
         "variableName": "User variable name",
         "variableValue": "User variable value",
         "selectPage": "Select page"
+      },
+
+      "tabs" : {
+        "title": "Tabs",
+        "add": "Add tab",
+        "label": "Label"
       },
   
       "dialog": {

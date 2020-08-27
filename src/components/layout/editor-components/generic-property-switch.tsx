@@ -2,7 +2,6 @@ import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, Switch, Grid } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
-import { LayoutModeValues } from "../editor-constants/values";
 
 /**
  * Interface representing component properties
@@ -58,7 +57,7 @@ class GenericPropertySwitch extends React.Component<Props, State> {
           <Switch
             disabled={ disabled }
             name={ switchId }
-            value={ property.value === LayoutModeValues.Scrollable }
+            value={ property.value === switchOptions[0] }
             onChange={ this.handleSwitchChange }
           />
         </Grid>
@@ -83,6 +82,5 @@ class GenericPropertySwitch extends React.Component<Props, State> {
   }
 
 }
-
 
 export default (withStyles(styles)(GenericPropertySwitch));

@@ -10,7 +10,8 @@ import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
 import GravityEditor from "../gravity-editor";
 import GenericPropertySwitch from "../generic-property-switch";
-import { LayoutModeValues } from "../../editor-constants/values";
+import { TabModeValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../../editor-constants/values";
+import GenericPropertyCheckbox from "../generic-property-checkbox";
 
 /**
  * Interface representing component properties
@@ -60,6 +61,8 @@ class TabLayoutEditor extends React.Component<Props, State> {
         { this.renderSelectedTabIndicatorGravity() }
         { this.renderTabTextColorNormal() }
         { this.renderTabTextColorSelected() }
+        { this.renderUnboundedRipple() }
+        { this.renderTabIndicatorFullWidth() }
       </>
     );
   }
@@ -83,7 +86,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertySwitch
             switchId={ LayoutTabPropKeys.TabMode }
             property={ foundProp }
-            switchOptions={ [LayoutModeValues.Scrollable, LayoutModeValues.Fixed] }
+            switchOptions={ [ TabModeValues.Scrollable, TabModeValues.Fixed ] }
             onSwitchChange={ onValueChange }
           />
         </div>
@@ -105,6 +108,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
         <GravityEditor
           property={ foundProp }
           onSingleValueChange={ onValueChange }
+          gravityOptions={ TabGravityValues }
         />
       </div>
     );
@@ -152,6 +156,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
         <GravityEditor
           property={ foundProp }
           onSingleValueChange={ onValueChange }
+          gravityOptions={ SelectedTabIndicatorGravityValues }
         />
       </div>
     );
@@ -214,6 +219,49 @@ class TabLayoutEditor extends React.Component<Props, State> {
       </div>
     );
   }
+
+  /**
+   * Render unbounded ripple editor
+   */
+  private renderUnboundedRipple = () => {
+    const { pageLayoutView, onValueChange, classes } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.UnboundedRipple, PageLayoutViewPropertyType.Boolean);
+
+    return (
+      <div className={ classes.colorPickerContainer }>
+        <Typography variant="h4">{ strings.layoutEditor.tab.unboundedRipple }:</Typography>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <GenericPropertyCheckbox
+            property={ foundProp }
+            onCheckboxChange={ onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </div>
+    );
+  }
+
+  /**
+   * Render tab indicator full width editor
+   */
+  private renderTabIndicatorFullWidth = () => {
+    const { pageLayoutView, onValueChange, classes } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabIndicatorFullWidth, PageLayoutViewPropertyType.Boolean);
+
+    return (
+      <div className={ classes.colorPickerContainer }>
+        <Typography variant="h4">{ strings.layoutEditor.tab.tabIndicatorFullWidth }:</Typography>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <GenericPropertyCheckbox
+            property={ foundProp }
+            onCheckboxChange={ onValueChange }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </div>
+    );
+  }
+
 }
 
 export default (withStyles(styles)(TabLayoutEditor));

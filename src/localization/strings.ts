@@ -460,6 +460,9 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       textColorNormal: string;
       textColorSelected: string;
+      unboundedRipple: string;
+      tabIndicatorFullWidth: string;
+      data: string;
     }
 
     addLayoutViewDialog: {
@@ -532,6 +535,11 @@ export interface IStrings extends LocalizedStringsMethods {
         variableName: string;
         variableValue: string;
         selectPage: string;
+      };
+      tabs: {
+        title: string;
+        add: string;
+        label: string;
       };
       dialog: {
         animation: string;

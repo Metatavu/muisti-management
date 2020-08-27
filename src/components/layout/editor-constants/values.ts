@@ -4,7 +4,7 @@
 export enum LayoutWidthValues {
   MatchParent = "match_parent",
   WrapContent = "wrap_content",
-  FillParent = "fill_parent",
+  FillParent = "fill_parent"
 }
 
 /**
@@ -38,7 +38,7 @@ export enum LayoutGravityValuePairs {
  */
 export enum TextViewTextStyleValues {
   Normal = "normal",
-  Bold = "bold",
+  Bold = "bold"
 }
 
 /**
@@ -51,7 +51,7 @@ export enum TextViewTextAlignValues {
   TextEnd = "text_end",
   Center = "center",
   ViewStart = "view_start",
-  ViewEnd = "view_end",
+  ViewEnd = "view_end"
 }
 
 /**
@@ -59,14 +59,31 @@ export enum TextViewTextAlignValues {
  */
 export enum LinearLayoutOrientationValues {
   Horizontal = "horizontal",
-  Vertical = "vertical",
+  Vertical = "vertical"
 }
-
 
 /**
  * Tab layout mode options
  */
-export enum LayoutModeValues {
+export enum TabModeValues {
   Scrollable = "scrollable",
-  Fixed = "fixed",
+  Fixed = "fixed"
+}
+
+/**
+ * Tab gravity values
+ */
+export enum TabGravityValues {
+  Center = "center",
+  Fill = "fill"
+}
+
+/**
+ * Selected tab indicator gravity values
+ */
+export enum SelectedTabIndicatorGravityValues {
+  Bottom = "bottom",
+  Center = "center",
+  Top = "top",
+  Stretch = "stretch",
 }

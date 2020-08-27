@@ -83,4 +83,7 @@ export enum LayoutTabPropKeys {
   SelectedTabIndicatorGravity = "selectedTabIndicatorGravity",
   TabTextColorNormal = "tabTextColorNormal",
   TabTextColorSelected = "tabTextColorSelected",
+  UnboundedRipple = "unboundedRipple",
+  TabIndicatorFullWidth = "tabIndicatorFullWidth",
+  Data = "data",
 }

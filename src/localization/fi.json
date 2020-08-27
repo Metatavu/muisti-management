@@ -456,7 +456,10 @@
         "stretch": "Venytä"
       },
       "textColorNormal": "Välilehden tekstin värin",
-      "textColorSelected": "Valitun välilehden tekstin väri"
+      "textColorSelected": "Valitun välilehden tekstin väri",
+      "unboundedRipple": "Rajoittamaton väre",
+      "tabIndicatorFullWidth": "Välilehden indikaattorin täysi leveys???",
+      "data": "Data"
     },
 
     "addLayoutViewDialog": {
@@ -530,6 +533,13 @@
         "variableValue": "Käyttäjän muuttujan arvo",
         "selectPage": "Valitse sivu"
       },
+
+      "tabs" : {
+        "title": "Välilehdet",
+        "add": "Lisää välilehti",
+        "label": "Otsikko"
+      },
+
       "dialog": {
         "animation": "Animaatio",
         "timeInterpolation": "Interpolointi",
