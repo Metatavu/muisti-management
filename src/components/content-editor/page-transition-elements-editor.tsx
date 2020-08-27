@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionPageTransition, ExhibitionPageTransitionOptionsMorphView } from "../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, Divider, IconButton, FormControl, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
