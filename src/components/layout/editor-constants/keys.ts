@@ -72,3 +72,15 @@ export enum LayoutButtonPropKeys {
 export enum LayoutLinearLayoutPropKeys {
   Orientation = "orientation",
 }
+
+/**
+ * Tab layout property keys
+ */
+export enum LayoutTabPropKeys {
+  TabMode = "tabMode",
+  TabGravity = "tabGravity",
+  SelectedTabIndicatorColor = "selectedTabIndicatorColor",
+  SelectedTabIndicatorGravity = "selectedTabIndicatorGravity",
+  TabTextColorNormal = "tabTextColorNormal",
+  TabTextColorSelected = "tabTextColorSelected",
+}

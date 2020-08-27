@@ -61,3 +61,12 @@ export enum LinearLayoutOrientationValues {
   Horizontal = "horizontal",
   Vertical = "vertical",
 }
+
+
+/**
+ * Tab layout mode options
+ */
+export enum LayoutModeValues {
+  Scrollable = "scrollable",
+  Fixed = "fixed",
+}

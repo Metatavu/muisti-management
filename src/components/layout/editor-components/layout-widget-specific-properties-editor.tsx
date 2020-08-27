@@ -14,6 +14,7 @@ import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
 import ImageViewEditor from "./widget-editors/image-view-editor";
 import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
+import TabLayoutEditor from "./widget-editors/tab-layout-editor";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 
 /**
@@ -113,6 +114,8 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
         return this.renderButtonEditor();
       case (PageLayoutWidgetType.LinearLayout):
         return this.renderLinearLayoutEditor();
+      case (PageLayoutWidgetType.MaterialTabLayout):
+        return this.renderTabLayoutEditor();
       default:
         return (<div/>);
     }
@@ -172,6 +175,18 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
   private renderLinearLayoutEditor = () => {
     return (
       <LinearLayoutEditor
+        pageLayoutView={ this.props.pageLayoutView }
+        onValueChange={ this.onSingleValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render button editor
+   */
+  private renderTabLayoutEditor = () => {
+    return (
+      <TabLayoutEditor
         pageLayoutView={ this.props.pageLayoutView }
         onValueChange={ this.onSingleValueChange }
       />
