@@ -475,6 +475,8 @@
       "pageName": "Page name",
       "indexPageId": "Device front page",
       "device": "Device",
+      "saveDevice": "Save device",
+      "savePage": "Save page",
       "layout": "Layout",
       "content": "Content",
       "properties": "Properties",
@@ -490,6 +492,7 @@
       },
   
       "eventTriggers": {
+        "noTriggers": "No events",
         "add": "Add action",
         "addEvent": "Add event",
         "title": "Events",

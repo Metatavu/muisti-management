@@ -476,6 +476,8 @@ export interface IStrings extends LocalizedStringsMethods {
       pageName: string;
       indexPageId: string;
       device: string;
+      saveDevice: string;
+      savePage: string;
       layout: string;
       content: string;
       properties: string;
@@ -489,6 +491,7 @@ export interface IStrings extends LocalizedStringsMethods {
         removeTransition: string;
       };
       eventTriggers: {
+        noTriggers: string;
         add: string;
         addEvent: string;
         title: string;
@@ -517,7 +520,7 @@ export interface IStrings extends LocalizedStringsMethods {
         startOfTransition: string;
         endOfTransition: string;
       };
-    },
+    };
   };
 
   genericDialog: {

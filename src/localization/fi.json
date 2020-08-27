@@ -472,6 +472,8 @@
       "indexPageId": "Laitteen etusivu",
       "pageName": "Sivun nimi",
       "device": "Laite",
+      "saveDevice": "Tallenna laite",
+      "savePage": "Tallenna sivu",
       "layout": "Asettelu",
       "content": "Sisältö",
       "properties": "Ominaisuudet",
@@ -485,6 +487,7 @@
         "removeTransition": "Poista siirtymä"
       },
       "eventTriggers": {
+        "noTriggers": "Ei tapahtumia",
         "add": "Lisää tapahtuma",
         "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
