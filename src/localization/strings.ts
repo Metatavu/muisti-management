@@ -520,7 +520,7 @@ export interface IStrings extends LocalizedStringsMethods {
         startOfTransition: string;
         endOfTransition: string;
       };
-    },
+    };
   };
 
   genericDialog: {

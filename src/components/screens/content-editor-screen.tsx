@@ -606,12 +606,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
 
     const devicesWithPageOrders: ExhibitionDevice[] = devices.map((device, index) => {
+      const pageOrder = device.pageOrder ?? devicePages[index].map(page => page.id!);
+      const indexPageId = pageOrder[0] ?? undefined;
       return {
         ...device,
-        pageOrder: device.pageOrder.length < 1 ?
-          devicePages[index].map(page => page.id!) :
-          device.pageOrder
-      }
+        pageOrder,
+        indexPageId
+      };
     });
 
     const pages: ExhibitionPage[] = devicePages.flat();
@@ -649,6 +650,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         <TimelineEditor
           devices={ devices }
           pages={ pages }
+          selectedDevice={ selectedDevice }
           selectedPage={ selectedPage }
           onClick={ this.onPageClick }
           onDragEnd={ this.onPageDragEnd }
@@ -966,13 +968,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    const exhibitionDevice = {
+    const pageOrder = this.reorderPages(
+      devices[deviceIndex].pageOrder,
+      result.source.index,
+      result.destination!.index
+    );
+    const indexPageId = pageOrder.length > 0 ? pageOrder[0] : "";
+
+    const exhibitionDevice: ExhibitionDevice = {
       ...devices[deviceIndex],
-      pageOrder: this.reorderPages(
-        devices[deviceIndex].pageOrder,
-        result.source.index,
-        result.destination!.index
-      )
+      pageOrder,
+      indexPageId
     };
 
     this.setState(
