@@ -66,7 +66,7 @@ class TabEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Component did update life cycle handler
+   * Component did update life cycle method
    */
   public componentDidUpdate = (prevProps: Props) => {
     const { selectedTab } = this.props;
