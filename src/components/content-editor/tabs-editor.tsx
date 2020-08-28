@@ -115,7 +115,7 @@ class TabEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render tab properties
+   * Render tab resources
    */
   private renderTabResources = () => {
     const { selectedResourceType } = this.state;
