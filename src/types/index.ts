@@ -105,3 +105,12 @@ export enum LanguageOptions {
   SV = "SV",
   RU = "RU"
 }
+
+/**
+ * Enum for media types
+ */
+export enum MediaType {
+  IMAGE = "image",
+  VIDEO = "video",
+  MEDIA = "media"
+}

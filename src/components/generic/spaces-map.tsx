@@ -89,7 +89,7 @@ interface SelectedItems {
 /**
  * Component for floor plan map
  */
-export default class FloorPlanMap extends React.Component<Props, State> {
+export default class SpacesMap extends React.Component<Props, State> {
 
   // tslint:disable-next-line
   private mapInstance?: MapInstance;
@@ -383,6 +383,7 @@ export default class FloorPlanMap extends React.Component<Props, State> {
 
       const exhibitionDevice: ExhibitionDevice = {
         name: strings.floorPlan.device.new,
+        pageOrder: [],
         groupId: selectedItems.deviceGroup.id,
         modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,

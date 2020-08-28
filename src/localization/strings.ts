@@ -12,6 +12,21 @@ export interface IStrings extends LocalizedStringsMethods {
     cancel: string;
   };
 
+  mediaLibrary: {
+    title: string;
+    selected: string;
+    addMedia: string;
+    addFolder: string;
+    addFile: string;
+    createFolder: string;
+    search: string;
+    files: {
+      name: string;
+      modified: string;
+      type: string;
+    };
+  };
+
   exhibitions: {
     listTitle: string;
     newExhibitionLabel: string;
@@ -140,32 +155,6 @@ export interface IStrings extends LocalizedStringsMethods {
     users: {
       title: string;
     };
-    devices: {
-      title: string;
-      capabilities: string;
-      newDevice: string;
-      dialog: {
-        deleteDeviceTitle: string;
-        deleteDeviceText: string;
-        brand: string;
-        model: string;
-        displayMetrics: {
-          displayInfo: string;
-          widthPixels: string;
-          heightPixels: string;
-        };
-        dimensions: {
-          physicalSize: string;
-          width: string;
-          height: string;
-          depth: string;
-          screenWidth: string;
-          screenHeight: string;
-        };
-        touchscreen: string;
-        type: string;
-      };
-    };
     layouts: {
       title: string;
       lastModified: string;
@@ -208,6 +197,8 @@ export interface IStrings extends LocalizedStringsMethods {
       textView: {
         properties: {
           text: string;
+          typeScripted: string;
+          typeText: string;
         };
       };
     };
@@ -215,42 +206,10 @@ export interface IStrings extends LocalizedStringsMethods {
     pageSettingsEditor: {
       pageLayoutLabel: string;
       pageDeviceLabel: string;
-      enterTransitions: string;
-      exitTransitions: string;
-      addTransition: string;
-      editTransition: string;
-      removeTransition: string;
-
-      dialog: {
-        animation: string;
-        timeInterpolation: string;
-        duration: string;
-        viewPairs: string;
-        addViewPair: string;
-        startOfTransition: string;
-        endOfTransition: string;
-      };
     };
 
     deviceSettingsEditor: {
       indexPageId: string;
-    };
-
-    eventTriggers: {
-      title: string;
-      clickViewIdTitle: string;
-      clickViewId: string;
-      physicalButtonDownTitle: string;
-      physicalButtonUpTitle: string;
-      physicalButton: string;
-      deviceGroupEventTitle: string;
-      deviceGroupEvent: string;
-      delayTitle: string;
-      delay: string;
-      actions: string;
-      variableName: string;
-      variableValue: string;
-      selectPage: string;
     };
 
     addDeviceEditor: {
@@ -282,6 +241,15 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     properties: {
       title: string;
+    };
+  };
+
+  subLayout: {
+    title: string;
+    addNew: string;
+    preview: {
+      height: string;
+      width: string;
     };
   };
 
@@ -347,9 +315,41 @@ export interface IStrings extends LocalizedStringsMethods {
       readerId: string;
       deviceGroup: string;
       room: string;
+      antennaNumber: string;
     };
     hasChildElements: string;
     brokenData: string;
+  };
+
+  device: {
+    title: string;
+    capabilities: string;
+    newDevice: string;
+    dialog: {
+      deleteDeviceTitle: string;
+      deleteDeviceText: string;
+      brand: string;
+      model: string;
+      displayMetrics: {
+        displayInfo: string;
+        widthPixels: string;
+        heightPixels: string;
+      };
+      dimensions: {
+        physicalSize: string;
+        width: string;
+        height: string;
+        depth: string;
+        screenWidth: string;
+        screenHeight: string;
+      };
+      type: string;
+      orientation: string;
+      defaultOrientation: string;
+      landscape: string;
+      portrait: string;
+      touchscreen: string;
+    };
   };
 
   deviceTypes: {
@@ -384,6 +384,7 @@ export interface IStrings extends LocalizedStringsMethods {
   layoutEditor: {
     commonComponents: {
       id: string;
+      name: string;
       layoutWidth: string;
       layoutHeight: string;
       backgroundColor: string;
@@ -430,6 +431,10 @@ export interface IStrings extends LocalizedStringsMethods {
       textResource: string;
       fontStyle: string;
       textSize: string;
+      backgroundColor: string;
+      allCaps: string;
+      gravity: string;
+      backgroundImage: string;
     };
 
     linearLayout: {
@@ -437,10 +442,12 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
     addLayoutViewDialog: {
+      name: string;
       title: string;
       widget: string;
       confirm: string;
       cancel: string;
+      subLayout: string;
     };
 
   };
@@ -465,6 +472,58 @@ export interface IStrings extends LocalizedStringsMethods {
     deleteText: string;
   };
 
+  contentEditor: {
+    open: string;
+    editor: {
+      pageName: string;
+      indexPageId: string;
+      device: string;
+      saveDevice: string;
+      savePage: string;
+      layout: string;
+      content: string;
+      properties: string;
+      resources: string;
+      transitions: {
+        title: string;
+        enterTransitions: string;
+        exitTransitions: string;
+        addTransition: string;
+        editTransition: string;
+        removeTransition: string;
+      };
+      eventTriggers: {
+        noTriggers: string;
+        add: string;
+        addEvent: string;
+        title: string;
+        name: string;
+        options: string;
+        clickViewIdTitle: string;
+        clickViewId: string;
+        physicalButtonDownTitle: string;
+        physicalButtonUpTitle: string;
+        physicalButton: string;
+        deviceGroupEventTitle: string;
+        deviceGroupEvent: string;
+        delayTitle: string;
+        delay: string;
+        actions: string;
+        variableName: string;
+        variableValue: string;
+        selectPage: string;
+      };
+      dialog: {
+        animation: string;
+        timeInterpolation: string;
+        duration: string;
+        viewPairs: string;
+        addViewPair: string;
+        startOfTransition: string;
+        endOfTransition: string;
+      };
+    };
+  };
 
   genericDialog: {
     confirm: string;
@@ -483,6 +542,7 @@ export interface IStrings extends LocalizedStringsMethods {
     confirmDelete: string;
     or: string;
     undefined: string;
+    refresh: string;
   };
 
   spaces: {

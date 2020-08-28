@@ -34,7 +34,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -54,7 +54,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           <div ref={ measureRef } style={ this.resolveStyles() }>
             <div style={ this.resolveButtonStyles() }>
               { this.getText() }
-            </div>  
+            </div>
           </div>
         )}
       </Measure>
@@ -63,7 +63,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -73,7 +73,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Returns button text from properties
-   * 
+   *
    * @returns button text from properties
    */
   private getText = () => {
@@ -83,15 +83,17 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Resolves button styles
-   * 
+   *
    * @return button styles
    */
   private resolveButtonStyles = (): CSSProperties => {
+    const { displayMetrics, scale, view } = this.props;
+    const { properties } = view;
     const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
 
     const result: CSSProperties = {
       display: "inline-block",
-      background: "#eee",      
+      background: "#eee",
       padding: "5px 10px",
       border: "1px outset #000",
       fontSize: "14px",
@@ -100,8 +102,6 @@ class PagePreviewButton extends React.Component<Props, State> {
       marginBottom: defaultMargin,
       marginLeft: defaultMargin
     };
-
-    const properties = this.props.view.properties;
 
     properties.forEach(property => {
       if (property.name.startsWith("inset")) {
@@ -126,20 +126,49 @@ class PagePreviewButton extends React.Component<Props, State> {
           default:
         }
       }
+      switch (property.name) {
+        case "backgroundColor":
+          result.backgroundColor = property.value;
+        break;
+        case "width": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.width = px;
+          } else {
+            console.log("Button: unknown width", property.value);
+          }
+          break;
+        }
+        case "height": {
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.height = px;
+          } else {
+            console.log("Button: unknown height", property.value);
+          }
+          break;
+        }
+        case "textColor": {
+          result.color = property.value;
+          break;
+        }
+        default:
+      }
     });
-    
+
     return result;
   }
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
+    const { view } = this.props;
+    const { properties } = view;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      
+
     });
 
     properties.forEach(property => {
@@ -150,7 +179,7 @@ class PagePreviewButton extends React.Component<Props, State> {
       switch (property.name) {
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
 

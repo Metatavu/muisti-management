@@ -10,7 +10,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ContentVersion } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, ExhibitionRoom, ContentVersion, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, GroupContentVersion } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -18,12 +18,8 @@ import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
 import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
-import FloorPlanCrop from "./floor-plan-crop";
-import FloorPlanCropProperties from "./floor-plan-crop-properties";
-import * as cropperjs from "cropperjs";
-import FileUpload from "../../utils/file-upload";
 import { LatLngExpression, LatLngBounds } from "leaflet";
-import FloorPlanMap from "../generic/floor-plan-map";
+import ContentMap from "../generic/content-map";
 
 /**
  * Component props
@@ -35,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
   exhibitionId?: string;
   exhibitionFloorId?: string;
   roomId?: string;
+  groupContentVersion?: GroupContentVersion;
   contentVersionId?: string;
   exhibitions: Exhibition[];
   readOnly: boolean;
@@ -48,20 +45,25 @@ interface State {
   loading: boolean;
   name: string;
   toolbarOpen: boolean;
-  cropping: boolean;
-  cropImageDataUrl?: string;
-  cropImageData?: Blob;
-  cropImageDetails?: cropperjs.default.ImageData;
 
   exhibition?: Exhibition;
-  exhibitionFloor?: ExhibitionFloor;
-  room?: ExhibitionRoom;
+  selectedFloor?: ExhibitionFloor;
+  rooms?: ExhibitionRoom[];
+  selectedRoom?: ExhibitionRoom;
+  deviceGroups?: ExhibitionDeviceGroup[];
+  selectedDeviceGroup?: ExhibitionDeviceGroup;
+  devices?: ExhibitionDevice[];
+  antennas?: RfidAntenna[];
   contentVersion?: ContentVersion;
+  groupContentVersions?: GroupContentVersion[];
   breadCrumbs: BreadcrumbData[];
 }
 
 /**
  * Component for exhibition floor plan editor
+ *
+ * TODO: Functionalities and structure of content/floor plan needs to be re-designed -->
+ * This component will NOT at the moment contain logic for selecting things from the map.
  */
 export class FloorPlanEditorView extends React.Component<Props, State> {
 
@@ -76,22 +78,22 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       loading: false,
       name: "",
       toolbarOpen: true,
-      cropping: false,
       breadCrumbs: []
     };
   }
 
   /**
-   * Component did mount life-cycle handler
+   * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
     this.setState({ loading: true });
     await this.loadViewData();
+    await this.loadDevices();
     this.setState({ loading: false });
   }
 
   /**
-   * Component did update life-cycle handler
+   * Component did update life cycle handler
    */
   public componentDidUpdate = async (prevProps: Props) => {
     if (prevProps.exhibitions !== this.props.exhibitions) {
@@ -135,7 +137,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
           <ElementSettingsPane open={ true } width={ 320 } title={ strings.floorPlan.properties.title }>
-            { this.renderProperties() }
           </ElementSettingsPane>
         </div>
 
@@ -147,20 +148,11 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    * Renders editor view
    */
   private renderEditor = () => {
-    const { exhibitionFloor, room } = this.state;
+    const { selectedFloor, selectedRoom, selectedDeviceGroup } = this.state;
     const { exhibitionId, readOnly } = this.props;
-    if (this.state.cropping && this.state.cropImageDataUrl) {
-      return (
-        <FloorPlanCrop
-          imageDataUrl={ this.state.cropImageDataUrl }
-          onDetailsUpdate={ this.onCropDetailsUpdate }
-          onDataUpdate={ this.onCropDataUpdate }
-        />
-      );
-    }
 
-    if (exhibitionFloor && exhibitionFloor.floorPlanUrl && exhibitionFloor.floorPlanBounds) {
-      const floorBounds = exhibitionFloor.floorPlanBounds;
+    if (selectedFloor && selectedFloor.floorPlanUrl && selectedFloor.floorPlanBounds) {
+      const floorBounds = selectedFloor.floorPlanBounds;
       const swCorner = floorBounds.southWestCorner;
       const neCorner = floorBounds.northEastCorner;
       const sw: LatLngExpression = [ swCorner.longitude, swCorner.latitude ];
@@ -169,20 +161,23 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
       const floorPlanInfo = {
         bounds: bounds,
-        url: exhibitionFloor.floorPlanUrl,
+        url: selectedFloor.floorPlanUrl,
         imageHeight: 965,
         imageWidth: 1314,
         readOnly: readOnly
       };
 
       const selectedItems = {
-        floor: exhibitionFloor,
-        room: room
+        floor: selectedFloor,
+        room: selectedRoom,
+        deviceGroup: selectedDeviceGroup
       };
 
+      const mapData = this.filterMapData();
+
       return (
-        <FloorPlanMap
-          mapData={{ }}
+        <ContentMap
+          mapData={ mapData }
           floorPlanInfo={ floorPlanInfo }
           selectedItems={ selectedItems }
           exhibitionId={ exhibitionId }
@@ -193,31 +188,36 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
   }
 
   /**
-   * Renders properties
+   * Filter map data for leaflet
    */
-  private renderProperties = () => {
-    if (this.state.cropping && this.state.cropImageDataUrl) {
-      return <FloorPlanCropProperties
-        imageHeight={ this.state.cropImageDetails?.height }
-        imageWidth={ this.state.cropImageDetails?.width }
-        naturalWidth={ this.state.cropImageDetails?.naturalWidth }
-        naturalHeight={ this.state.cropImageDetails?.naturalHeight }
-        onCropPropertyChange={ this.onCropPropertyChange }
-      />;
+  private filterMapData = () => {
+    const { selectedFloor, rooms, selectedRoom, deviceGroups, devices, antennas } = this.state;
+    const data: any = { };
+
+    if (selectedRoom || selectedFloor) {
+      const floorId = selectedFloor ? selectedFloor.id : "";
+      const roomId = selectedRoom ? selectedRoom.id : "";
+      const foundDeviceGroups = deviceGroups ? deviceGroups.filter(deviceGroup => deviceGroup.roomId === roomId) : [];
+
+      data.rooms = rooms ? rooms.filter(room => room.floorId === floorId) : [];
+      data.deviceGroups = foundDeviceGroups;
+      data.devices = devices;
+      data.antennas = antennas;
+      return data;
     }
 
-    return null;
+    return data;
   }
 
   /**
    * Loads view data
    */
   private loadViewData = async () => {
-    const { exhibitionId, roomId, contentVersionId, accessToken } = this.props;
+    const { exhibitionId, exhibitionFloorId, roomId, contentVersionId, accessToken } = this.props;
 
     const breadCrumbs: BreadcrumbData[] = [];
+    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/exhibitions" });
 
-    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/v4/exhibitions" });
     if (!exhibitionId) {
       return;
     }
@@ -227,153 +227,91 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       exhibitionsApi.findExhibition({ exhibitionId }),
     ]);
 
-    breadCrumbs.push({ name: exhibition?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan` });
+    breadCrumbs.push({ name: exhibition?.name, url: "" });
     this.setState({ exhibition, breadCrumbs });
+
+    if (!exhibitionFloorId) {
+      return;
+    }
+
+    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const [ floor ] = await Promise.all<ExhibitionFloor>([
+      exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: exhibitionFloorId }),
+    ]);
+
+    breadCrumbs.push({ name: floor.name, url: `/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}` });
+    this.setState({ selectedFloor: floor, breadCrumbs });
 
     if (!roomId) {
       return;
     }
 
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(accessToken);
-    const [ room ] = await Promise.all<ExhibitionRoom>([
-      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId })
+    const [ selectedRoom, rooms ] = await Promise.all<ExhibitionRoom, ExhibitionRoom[]>([
+      exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
+      exhibitionRoomsApi.listExhibitionRooms({ exhibitionId: exhibitionId})
     ]);
 
-    if (!room) {
+    if (!selectedRoom) {
       return;
     }
 
-    const [ floor ] = await Promise.all<ExhibitionFloor>([
-      exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: room.floorId }),
-    ]);
-
-    breadCrumbs.push({ name: room?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${room?.floorId}/rooms/${roomId}` });
-    this.setState({ exhibitionFloor: floor, room: room, breadCrumbs });
+    breadCrumbs.push({ name: selectedRoom?.name, url: `/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}/rooms/${roomId}` });
+    this.setState({ selectedRoom: selectedRoom, rooms: rooms, breadCrumbs });
 
     if (!contentVersionId) {
       return;
     }
 
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
-    const [ contentVersion ] = await Promise.all<ContentVersion>([
-      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId })
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
+    const [ contentVersion, deviceGroups, groupContentVersions ] = await Promise.all<ContentVersion, ExhibitionDeviceGroup[], GroupContentVersion[]>([
+      contentVersionsApi.findContentVersion({ exhibitionId: exhibitionId, contentVersionId: contentVersionId }),
+      deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId: exhibitionId, roomId: selectedRoom.id }),
+      groupContentVersionsApi.listGroupContentVersions({ exhibitionId: exhibitionId })
     ]);
 
     breadCrumbs.push({ name: contentVersion?.name || "" });
-
-    this.setState({ contentVersion, breadCrumbs });
+    this.setState({ contentVersion, breadCrumbs, deviceGroups, groupContentVersions });
 
   }
 
   /**
-   * Updates floor's floor plan image
-   *
-   * @param data image data
+   * Load device data
    */
-  private updateFloorPlan = async (data: Blob) => {
-    const exhibitionFloor = this.state.exhibitionFloor;
-    if (!exhibitionFloor || !exhibitionFloor.id || !exhibitionFloor.exhibitionId) {
-      return;
-    }
-    const exhibitionFloorsApi = Api.getExhibitionFloorsApi(this.props.accessToken);
-    const uploadedFile = await FileUpload.uploadFile(data, `/floorplans/${exhibitionFloor.exhibitionId}`);
-
-    const floorPlanToUpdate = { ...exhibitionFloor,
-      floorPlanUrl: uploadedFile.uri,
-      floorPlanBounds : this.getBounds()
-    };
-
-    await exhibitionFloorsApi.updateExhibitionFloor({
-      floorId: exhibitionFloor.id,
-      exhibitionId: exhibitionFloor.exhibitionId,
-      exhibitionFloor: floorPlanToUpdate
-    });
-  }
-
-  /**
-   * Event handler for crop details update
-   *
-   * @param details details
-   */
-  private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
-    this.setState({
-      cropImageDetails: details
-    });
-  }
-
-  /**
-   * Event handler for crop data update
-   *
-   * @param data
-   */
-  private onCropDataUpdate = (data: Blob) => {
-    this.setState({
-      cropImageData: data,
-    });
-  }
-
-  /**
-   * Event handler for property data change
-   */
-  private onCropPropertyChange = (key: string, value: number) => {
-    const updatedDetails = { ...this.state.cropImageDetails!, [key] : value };
-    this.setState({
-      cropImageDetails : updatedDetails
-    });
-  }
-
-  /**
-   * Get bounds from cropImageDetails
-   */
-  private getBounds = (): Bounds | undefined => {
-    const { cropImageDetails } = this.state;
-
-    if (!cropImageDetails) {
+  private loadDevices = async () => {
+    const { exhibitionId, groupContentVersion, accessToken } = this.props;
+    const { deviceGroups } = this.state;
+    if (!exhibitionId || !deviceGroups) {
       return;
     }
 
-    const swCorner: Coordinates = {
-      latitude: 0.0,
-      longitude: 0.0
-    };
+    let tempDeviceGroups = [ ...deviceGroups ] as ExhibitionDeviceGroup[];
 
-    const neCorner: Coordinates = {
-      latitude: cropImageDetails.naturalWidth,
-      longitude: cropImageDetails.naturalHeight
-    };
-
-    const floorBounds: Bounds = {
-      northEastCorner : neCorner,
-      southWestCorner : swCorner
-    };
-
-    return floorBounds;
-  }
-
-  /**
-   * Event handler for upload save click
-   *
-   * @param files files
-   * @param key  upload key
-   */
-  private onUploadSave = (files: File[], _key?: string) => {
-    const file = files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = event => {
-        const dataUrl = event.target?.result;
-        if (dataUrl) {
-          this.setState({
-            cropImageDataUrl: dataUrl as string,
-            cropping: true
-          });
-        }
-      };
-
-      reader.readAsDataURL(file);
+    if (groupContentVersion) {
+      tempDeviceGroups = tempDeviceGroups.filter(group => group.id === groupContentVersion.deviceGroupId);
     }
+
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const antennasApi = Api.getRfidAntennasApi(accessToken);
+    const [ allDevices, allAntennas ] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+      devicesApi.listExhibitionDevices({ exhibitionId: exhibitionId }),
+      antennasApi.listRfidAntennas({ exhibitionId: exhibitionId })
+    ]);
+
+    const filteredDevices: ExhibitionDevice[] = [];
+    const filteredAntennas: RfidAntenna[] = [];
+    tempDeviceGroups.forEach(group => {
+      filteredDevices.push.apply(filteredDevices, allDevices.filter(device => device.groupId === group.id));
+      filteredAntennas.push.apply(filteredAntennas, allAntennas.filter(antenna => antenna.groupId === group.id))
+    });
+
+    this.setState({
+      devices: filteredDevices,
+      antennas: filteredAntennas,
+      selectedDeviceGroup: groupContentVersion ? tempDeviceGroups[0] : undefined
+    });
   }
 
   /**
@@ -383,22 +321,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
    */
   private getActionButtons = () => {
     return [
-      { name: strings.floorPlan.toolbar.save, action: this.onSaveClick },
-      { name: strings.floorPlan.toolbar.upload, action: this.onUploadSave }
     ] as ActionButton[];
-  }
-
-  /**
-   * Event handler for save button click
-   */
-  private onSaveClick = async () => {
-    if (this.state.cropping && this.state.cropImageData) {
-      await this.updateFloorPlan(this.state.cropImageData);
-
-      this.setState({
-        cropping: false
-      });
-    }
   }
 
   /**
@@ -418,7 +341,7 @@ function mapStateToProps(state: ReduxState) {
   return {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
-    exhibitions: state.exhibitions.exhibitions
+    exhibitions: state.exhibitions.exhibitions,
   };
 }
 

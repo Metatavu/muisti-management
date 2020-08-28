@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutView, PageLayout, PageLayoutWidgetType } from "../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutView, PageLayout, PageLayoutWidgetType, SubLayout } from "../../../generated/client";
 import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
 
@@ -7,29 +7,34 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import { constructTreeUpdateData, updateLayoutView } from "../utils/tree-data-utils";
+import { constructTreeUpdateData, updateLayoutViewProperty } from "../utils/tree-data-utils";
 
 import TextViewEditor from "./widget-editors/text-view-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
 import ImageViewEditor from "./widget-editors/image-view-editor";
 import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
+import { setSelectedSubLayout } from "../../../actions/subLayouts";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  editingSubLayout: boolean;
   pageLayoutView: PageLayoutView;
   selectedElementPath: string;
   selectedWidgetType: PageLayoutWidgetType;
   pageLayout: PageLayout;
+  subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
+  setSelectedSubLayout: typeof setSelectedSubLayout;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  layout?: PageLayout | SubLayout;
 }
 
 /**
@@ -46,6 +51,34 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     super(props);
     this.state = {
     };
+  }
+
+  /**
+   * Component did mount life cycle handler
+   */
+  public componentDidMount = () => {
+    const { editingSubLayout, pageLayout, subLayout } = this.props;
+
+    this.setState({
+      layout: editingSubLayout ? subLayout : pageLayout
+    });
+  }
+
+  /**
+   * Component did mount life cycle handler
+   *
+   * @param prevProps previous props
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+    const { pageLayout, subLayout, editingSubLayout } = this.props;
+    if (
+      JSON.stringify(prevProps.pageLayout) !== JSON.stringify(pageLayout) ||
+      JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout))
+    {
+      this.setState({
+        layout: editingSubLayout ? subLayout : pageLayout
+      });
+    }
   }
 
   /**
@@ -147,15 +180,23 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
   /**
    * Generic handler for single page layout property value changes
+   *
    * @param updatedPageLayoutView page layout view property object to update
    */
-  private onSingleValueChange = (updatedPageLayoutView: PageLayoutViewProperty) => {
-    const { selectedElementPath } = this.props;
-    const currentPageLayout = { ...this.props.pageLayout } as PageLayout;
+  private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
+    const { selectedElementPath, editingSubLayout } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
-    updateLayoutView(updatedPageLayoutView, layoutViewToUpdate);
-    const pageLayoutToUpdate = constructTreeUpdateData(currentPageLayout, layoutViewToUpdate, selectedElementPath);
-    this.props.setSelectedLayout(pageLayoutToUpdate);
+    const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutViewToUpdate);
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
+    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    this.setState({
+      layout : layoutToUpdate
+    });
   }
 }
 
@@ -167,6 +208,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 function mapStateToProps(state: ReduxState) {
   return {
     pageLayout: state.layouts.selectedLayout as PageLayout,
+    subLayout: state.subLayouts.selectedSubLayout as SubLayout
   };
 }
 
@@ -178,6 +220,7 @@ function mapStateToProps(state: ReduxState) {
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
+    setSelectedSubLayout: (subLayout: SubLayout) => dispatch(setSelectedSubLayout(subLayout))
   };
 }
 

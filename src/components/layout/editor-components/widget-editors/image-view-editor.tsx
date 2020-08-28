@@ -68,6 +68,7 @@ class ImageViewEditor extends React.Component<Props, State> {
             { strings.layoutEditor.imageView.src }:
           </Typography>
           <GenericPropertyTextField
+            disabled
             textFieldId={ LayoutImageViewPropKeys.Src }
             textFieldType="text"
             property={ getProperty(this.props.pageLayoutView, LayoutImageViewPropKeys.Src, PageLayoutViewPropertyType.String) }

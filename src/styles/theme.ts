@@ -1,6 +1,9 @@
 import { createMuiTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
+const theme = createMuiTheme();
+const { spacing } = theme;
+
 const uiHighlightMain = "#0079E9";
 const uiHighlightLight = "rgba(0, 121, 233, 0.25)";
 
@@ -46,8 +49,8 @@ export default createMuiTheme({
       fontWeight: "normal"
     },
     h5: {
-      fontFamily: "TTNorms-Bold",
-      fontSize: "14px",
+      fontFamily: "TTNorms-Medium",
+      fontSize: "16px",
       fontWeight: "normal"
     },
     h6: {
@@ -58,9 +61,66 @@ export default createMuiTheme({
     },
     body1: {
       fontSize: "14px"
+    },
+    body2: {
+      fontSize: "14px",
+      fontFamily: "TTNorms-Bold",
     }
   },
   overrides: {
+    MuiTableRow: {
+      root: {
+        cursor: "pointer",
+        transition: "background 0.2s ease-out",
+        "&.Mui-selected": {
+          backgroundColor: "rgba(0, 121, 233, 0.25)"
+        },
+        "&:hover": {
+          backgroundColor: "rgba(0, 121, 233, 0.15)"
+        }
+      }
+    },
+    MuiTableCell: {
+      root: {
+        fontFamily: "TTNorms-Regular",
+        padding: 10
+      },
+      head: {
+        fontFamily: "TTNorms-Bold",
+        backgroundColor: "#efefef"
+      }
+    },
+    MuiAccordion: {
+      root: {
+        "&.Mui-expanded": {
+          margin: 0
+        }
+      }
+    },
+    MuiAccordionSummary: {
+      root: {
+        backgroundColor: "#eaeaea",
+        padding: "0 12px",
+        flexDirection: "row-reverse",
+        "&.Mui-expanded": {
+          minHeight: 48
+        }
+      },
+      content: {
+        alignItems: "center",
+        justifyContent: "space-between",
+        "&.Mui-expanded": {
+          margin: "12px 0"
+        }
+      }
+    },
+    MuiAccordionDetails: {
+      root: {
+        flexDirection: "column",
+        padding: spacing(1),
+        backgroundColor: "##fff"
+      }
+    },
     MuiBackdrop: {
       root: {
         backgroundColor: "rgba(0,0,0,0.1)"
@@ -75,6 +135,9 @@ export default createMuiTheme({
       root: {
         fontFamily: "TTNorms-Medium",
         textTransform: "initial",
+      },
+      text: {
+        fontFamily: "TTNorms-Bold",
       },
       textPrimary: {
         fontFamily: "TTNorms-Medium",
@@ -148,11 +211,17 @@ export default createMuiTheme({
     MuiInputBase: {
       root: {
         fontSize: 14
+      },
+      input: {
+        background: "#fff"
       }
     },
     MuiSelect: {
       filled: {
         padding: "10px 12px"
+      },
+      outlined: {
+        padding: "18.5px 14px"
       },
       select: {
         lineHeight: 1,
@@ -237,6 +306,28 @@ export default createMuiTheme({
         fontWeight: "normal",
         color: "#000"
       }
+    }
+  },
+  props: {
+    MuiAccordionSummary: {
+      IconButtonProps: {
+        edge: "start"
+      }
+    },
+    MuiAccordion: {
+      elevation: 0,
+    },
+    MuiTextField: {
+      fullWidth: true,
+      variant: "outlined"
+    },
+    MuiSelect: {
+      fullWidth: true,
+      variant: "outlined"
+    },
+    MuiFormControl: {
+      fullWidth: true,
+      variant: "outlined"
     }
   }
 });

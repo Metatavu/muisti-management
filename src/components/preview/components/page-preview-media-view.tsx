@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ContentRect } from 'react-measure'
+import { ContentRect } from 'react-measure';
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../../../generated/client";
@@ -35,7 +35,7 @@ class PagePreviewMediaView extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -53,21 +53,21 @@ class PagePreviewMediaView extends React.Component<Props, State> {
 
     switch (srcType) {
       case ExhibitionPageResourceType.Image:
-        return <PagePreviewImageView 
-          onResize={ this.props.onResize } 
-          handleLayoutProperties={ this.props.handleLayoutProperties } 
-          view={ this.props.view } 
-          displayMetrics={ this.props.displayMetrics } 
+        return <PagePreviewImageView
+          onResize={ this.props.onResize }
+          handleLayoutProperties={ this.props.handleLayoutProperties }
+          view={ this.props.view }
+          displayMetrics={ this.props.displayMetrics }
           scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/> 
+          resourceMap={ this.props.resourceMap }/>;
       case ExhibitionPageResourceType.Video:
-        return <PagePreviewPlayerView 
-          onResize={ this.props.onResize } 
-          handleLayoutProperties={ this.props.handleLayoutProperties } 
-          view={ this.props.view } 
-          displayMetrics={ this.props.displayMetrics } 
+        return <PagePreviewPlayerView
+          onResize={ this.props.onResize }
+          handleLayoutProperties={ this.props.handleLayoutProperties }
+          view={ this.props.view }
+          displayMetrics={ this.props.displayMetrics }
           scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/> 
+          resourceMap={ this.props.resourceMap }/>;
       default:
     }
 

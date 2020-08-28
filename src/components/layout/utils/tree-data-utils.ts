@@ -1,23 +1,26 @@
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
+import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout, PageLayoutWidgetType } from "../../../generated/client";
 import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { v4 as uuid } from "uuid";
 
 /**
  * Delete item from tree structure while keeping rest of there data
+ *
  * @param pageLayout exhibition page layout
  * @param layoutViewPath path of the item to be deleted inside the tree
  * @returns updated page layout
  */
-export const constructTreeDeleteData = (pageLayout: PageLayout, layoutViewPath: string): PageLayout => {
+export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layoutViewPath: string): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data = { ...pageLayout.data, children: [] };
   } else {
     pageLayout.data.children = deleteViewFromLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id);
   }
   return pageLayout;
-}
+};
 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the item to be deleted.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path to the item to be deleted from tree
  * @param currentPath current path inside the recursion
@@ -51,22 +54,24 @@ const deleteViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
 
 /**
  * Update item from tree structure while keeping rest of there data
- * @param pageLayout exhibition page layout
+ *
+ * @param layout layout
  * @param pageLayoutView updated page layout view
  * @param layoutViewPath path of the item to be updated inside the tree
  * @returns updated page layout
  */
-export const constructTreeUpdateData = (pageLayout: PageLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout => {
-  if (pageLayout.data.id === layoutViewPath) {
-    pageLayout.data = pageLayoutView;
+export const constructTreeUpdateData = (layout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
+  if (layout.data.id === layoutViewPath) {
+    layout.data = pageLayoutView;
   } else {
-    pageLayout.data.children = updateViewFromLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id, pageLayoutView);
+    layout.data.children = updateViewFromLayoutTree(layout.data.children, layoutViewPath, layout.data.id, pageLayoutView);
   }
-  return pageLayout;
+  return layout;
 };
 
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the item to be updated.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path to the item to be updated from tree
  * @param currentPath current path inside the recursion
@@ -102,12 +107,13 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
 
 /**
  * Adds new item to tree structure while keeping rest of there data
+ *
  * @param pageLayout exhibition page layout
  * @param pageLayoutView new page layout view
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
  * @returns updated page layout
  */
-export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout => {
+export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data.children.push(pageLayoutView);
   } else {
@@ -119,6 +125,7 @@ export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout, pageLayoutVi
 /**
  * Recursive function that checks the PageLayoutView objects child objects and tries to find the parent item where the new child item
  * will be added.
+ *
  * @param treeData list of page layout views
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
  * @param currentPath current path inside the recursion
@@ -153,14 +160,14 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
   return treeData;
 };
 
-
 /**
  * Update layout view with property
+ *
  * @param updatedPageLayoutViewProperty updated layout view property
  * @param layoutViewToUpdate layout view to update
  * @returns updated page layout view
  */
-export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
   const name = updatedPageLayoutViewProperty.name;
   const value = updatedPageLayoutViewProperty.value;
   const type = updatedPageLayoutViewProperty.type;
@@ -184,11 +191,13 @@ export const updateLayoutView = (updatedPageLayoutViewProperty: PageLayoutViewPr
 
 /**
  * Find property from given page layout view with given key
+ *
  * @param pageLayoutView page layout view to search from
  * @param key property to find
  * @param type page layout view property type
  * @returns Found property or new property to be modified
  */
+// tslint:disable-next-line: max-line-length
 export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
   const layoutProps = pageLayoutView.properties;
   const foundIndex = layoutProps.findIndex(prop => prop.name === key);
@@ -205,6 +214,7 @@ export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: P
 
 /**
  * Get padding and margin properties from given page layout view
+ *
  * @param pageLayoutView page layout view to search from
  * @param enumObject enum object that is used to find/generate property
  * @returns list of page layout view properties
@@ -229,4 +239,105 @@ export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enu
   });
 
   return propertyList;
+};
+
+/**
+ * Get initialized page layout view based on page layout widget type.
+ *
+ * This is needed for automatic resource ID generation. If widget type will
+ * include some resources we will automatically generate unique ID in order to
+ * prevent users from typing non-unique ID's. This would break content editors
+ * ability to update correct page resource.
+ *
+ * If widget type doesn't include any resources we return new page layout view without
+ * any properties.
+ *
+ * @param widget widget type
+ * @returns initialized page layout view
+ */
+export const getInitializedPageLayoutViewByWidgetType = (widget: PageLayoutWidgetType): PageLayoutView => {
+
+  const layoutView: PageLayoutView = {
+    id: uuid(),
+    widget: widget,
+    properties: [],
+    children: []
+  };
+
+  switch (widget) {
+    case PageLayoutWidgetType.Button:
+      fillButtonProperties(layoutView);
+      break;
+    case PageLayoutWidgetType.FlowTextView:
+    case PageLayoutWidgetType.TextView:
+      fillTextProperties(layoutView);
+      break;
+    case PageLayoutWidgetType.ImageView:
+    case PageLayoutWidgetType.PlayerView:
+    case PageLayoutWidgetType.MediaView:
+      fillMediaProperties(layoutView);
+      break;
+    default:
+      break;
+  }
+
+  return layoutView;
+};
+
+/**
+ * Fill Button specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillButtonProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const text: PageLayoutViewProperty = {
+    name: "text",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  const backgroundImage: PageLayoutViewProperty = {
+    name: "backgroundImage",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(text);
+  layoutView.properties.push(backgroundImage);
+  return layoutView;
+};
+
+/**
+ * Fill TextView and FlowTextView specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillTextProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const text: PageLayoutViewProperty = {
+    name: "text",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(text);
+  return layoutView;
+};
+
+/**
+ * Fill ImagePlayer, PlayerView and MediaView specific resource properties
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillMediaProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const src: PageLayoutViewProperty = {
+    name: "src",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(src);
+  return layoutView;
 };

@@ -10,6 +10,7 @@ export * from './GroupContentVersionsApi';
 export * from './PageLayoutsApi';
 export * from './RfidAntennasApi';
 export * from './StoredFilesApi';
+export * from './SubLayoutsApi';
 export * from './SystemApi';
 export * from './VisitorSessionsApi';
 export * from './VisitorsApi';

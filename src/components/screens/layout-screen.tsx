@@ -12,13 +12,13 @@ import styles from "../../styles/components/layout-screen/layout-editor-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation } from "../../generated/client";
+import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
@@ -34,6 +34,7 @@ import { TreeNodeInArray } from "react-simple-tree-menu";
 import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
+import theme from "../../styles/theme";
 
 type View = "CODE" | "VISUAL";
 
@@ -49,6 +50,7 @@ interface Props extends WithStyles<typeof styles> {
   layoutId: string;
   layout?: PageLayout;
   layouts: PageLayout[];
+  subLayouts: SubLayout[];
   setLayouts: typeof setLayouts;
   setSelectedLayout: typeof setSelectedLayout;
 }
@@ -102,21 +104,23 @@ export class LayoutScreen extends React.Component<Props, State> {
   /**
    * Component did mount life cycle handler
    */
-  public async componentDidMount() {
+  public componentDidMount = async () => {
     this.setState({ loading: true });
     await this.fetchEditorData();
     this.setState({ loading: false });
   }
 
   /**
-   * Component di update life cycle handler
+   * Component did update life cycle handler
    *
    * @param prevProps previous component props
    */
   public componentDidUpdate = (prevProps: Props) => {
     const { layout } = this.props;
     if (layout && layout !== prevProps.layout) {
-      this.setState({ jsonCode: JSON.stringify(layout.data, null, 2) });
+      this.setState({
+        jsonCode: JSON.stringify(layout.data, null, 2),
+      });
     }
   }
 
@@ -139,7 +143,7 @@ export class LayoutScreen extends React.Component<Props, State> {
       <BasicLayout
         history={ history }
         title={ layout.name }
-        breadcrumbs={ this.getBreadcrumbsData() }
+        breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         keycloak={ this.props.keycloak }
         error={ this.state.error }
@@ -147,7 +151,7 @@ export class LayoutScreen extends React.Component<Props, State> {
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
-            <div className={ classes.toolbarContent }>
+            <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
                 variant="filled"
                 fullWidth
@@ -157,7 +161,7 @@ export class LayoutScreen extends React.Component<Props, State> {
               />
               { this.renderDeviceModelSelect() }
               { this.renderScreenOrientationSelect() }
-              { this.renderPageLayoutComponentStructure() }
+              { this.renderLayoutComponentStructure() }
             </div>
           </ElementNavigationPane>
           <EditorView>
@@ -166,13 +170,16 @@ export class LayoutScreen extends React.Component<Props, State> {
 
           <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
             { pageLayoutView && selectedPropertyPath &&
-              <CommonLayoutPropertiesEditor 
+              <CommonLayoutPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
+                editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
+                editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
                 selectedWidgetType={ selectedWidgetType }
@@ -189,7 +196,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
-    const deviceModelSelectItems = deviceModels.map(model => 
+    const deviceModelSelectItems = deviceModels.map(model =>
       <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
     );
 
@@ -233,10 +240,10 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders page layout component structure
+   * Renders layout component structure
    */
-  private renderPageLayoutComponentStructure = () => {
-    const { layout } = this.props;
+  private renderLayoutComponentStructure = () => {
+    const { layout, subLayouts } = this.props;
 
     if (!layout) {
       return (<div/>);
@@ -244,6 +251,8 @@ export class LayoutScreen extends React.Component<Props, State> {
 
     return (
       <LayoutTreeMenu
+        editingSubLayout={ false }
+        subLayouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onLayoutViewAdd }
         onDelete={ this.onLayoutViewDelete }
@@ -288,7 +297,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             onBeforeChange={ this.onBeforeJsonCodeChange } />
         </div>
       </div>
-    )
+    );
   }
 
   /**
@@ -306,6 +315,10 @@ export class LayoutScreen extends React.Component<Props, State> {
     const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
     const scale = 1;
 
+    if (!deviceModel) {
+      return;
+    }
+
     return (
       <div className={ classes.editors }>
         <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
@@ -314,23 +327,11 @@ export class LayoutScreen extends React.Component<Props, State> {
             displayMetrics={ displayMetrics }
             scale={ scale }
             screenOrientation={ screenOrientation }
+            deviceOrientation={ deviceModel.screenOrientation}
           />
-        </PanZoom>        
+        </PanZoom>
       </div>
     );
-  }
-
-  /**
-   * Get breadcrumbs data
-   * 
-   * @returns breadcrumbs data as array
-   */
-  private getBreadcrumbsData = (): BreadcrumbData[] => {
-    const { layout } = this.props;
-    return [
-      { name: strings.layout.title, url: "/v4/layouts" },
-      { name: layout?.name || "" }
-    ];
   }
 
   /**
@@ -386,7 +387,7 @@ export class LayoutScreen extends React.Component<Props, State> {
     const treeData = [{
       key: pageLayout.data.id,
       path: path,
-      label: pageLayout.data.widget,
+      label: `${pageLayout.data.name || ""} | ${pageLayout.data.widget}`,
       element: pageLayout.data,
       type: type,
       onSelect: () => this.onLayoutPageViewSelect(pageLayout.data, type, path),
@@ -409,11 +410,11 @@ export class LayoutScreen extends React.Component<Props, State> {
   private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
     const type = layoutView.widget;
-    
+
     return {
       key: layoutView.id,
       path: path,
-      label: layoutView.widget,
+      label: `${layoutView.name || ""} | ${layoutView.widget}`,
       element: layoutView,
       type: type,
       onSelect: () => this.onLayoutPageViewSelect(layoutView, type, path),
@@ -494,6 +495,15 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
+   * On page layout view update handler
+   *
+   * @param pageLayoutView page layout view to update
+   */
+  private onPageLayoutViewUpdate = (pageLayoutView: PageLayoutView) => {
+    this.setState({ pageLayoutView });
+  }
+
+  /**
    * Event handler for save button click
    */
   private onSaveClick = () => {
@@ -540,12 +550,13 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view add
-   * 
+   *
    * @param layoutView layout view
    * @param path path in tree structure
    */
   private onLayoutViewAdd = async (layoutView: PageLayoutView, path: string) => {
     const { layout } = this.props;
+
     if (!layout) {
       return;
     }
@@ -557,12 +568,14 @@ export class LayoutScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view delete
-   * 
+   *
    * @param path path in tree structure
    */
   private onLayoutViewDelete = async (path: string) => {
     const { layout } = this.props;
-    if (!layout) {
+
+    // TODO: Add better confirmation dialog
+    if (!layout || !window.confirm(strings.generic.confirmDelete)) {
       return;
     }
 
@@ -592,6 +605,7 @@ function mapStateToProps(state: ReduxState) {
     accessToken: state.auth.accessToken as AccessToken,
     layout: state.layouts.selectedLayout as PageLayout,
     layouts: state.layouts.layouts,
+    subLayouts: state.subLayouts.subLayouts,
     exhibitions: state.exhibitions.exhibitions,
     deviceModels: state.devices.deviceModels
   };

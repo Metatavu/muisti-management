@@ -5,19 +5,9 @@ export default createStyles({
   root: {
     position: "relative",
     gridArea: "navigation",
-    borderRight: "1px solid #ddd",
+    borderLeft: "1px solid #ddd",
     overflow: "hidden",
     transition: "width 0.4s ease-in-out"
-  },
-  btnContainer: {
-    position: "absolute",
-    zIndex: 1,
-    right: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 55,
-    width: 50
   },
   container: {
     backgroundColor: "#fbfbfb",
@@ -25,7 +15,7 @@ export default createStyles({
     gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     height: "100%",
-    width: 320,
+    width: 400,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
@@ -37,7 +27,7 @@ export default createStyles({
     alignItems: "center",
     padding: "0 12px",
     borderBottom: "1px solid #ddd",
-    height: 55,
+    height: 48,
     "& h3": {
       whiteSpace: "nowrap",
       width: "calc(100% - 50px)",
@@ -45,7 +35,7 @@ export default createStyles({
       textOverflow: "ellipsis"
     }
   },
-  content: {   
+  content: {
     padding: theme.spacing(2),
     overflowY: "auto"
   },

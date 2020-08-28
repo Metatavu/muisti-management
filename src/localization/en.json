@@ -23,6 +23,21 @@
     "cancel": "Cancel"
   },
 
+  "mediaLibrary": {
+    "title": "Media library",
+    "selected": "selected",
+    "addMedia": "Add media",
+    "addFolder": "Add folder",
+    "addFile": "Add file",
+    "createFolder": "Create folder",
+    "search": "Search media",
+    "files": {
+      "name": "Name",
+      "modified": "Modified",
+      "type": "Type"
+    }
+  },
+
   "exhibitions": {
     "listTitle": "Exhibitions",
     "newExhibitionLabel": "New exhibition",
@@ -139,35 +154,6 @@
     "users": {
       "title": "Users"
     },
-    "devices": {
-      "title": "Devices",
-      "capabilities": "Capabilities",
-      "newDevice": "New device",
-      "dialog": {
-        "deleteDeviceTitle": "Delete device",
-        "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
-        "brand": "Brand",
-        "model": "Model",
-        "displayMetrics": {
-          "displayInfo": "Screen info",
-          "widthPixels": "Screen pixel width",
-          "heightPixels": "Screen pixel height"
-        },
-        "dimensions" : {
-          "physicalSize": "Device physical size",
-          "width": "Width",
-          "height": "Height",
-          "depth": "Depth",
-          "screenWidth": "Screen physical width",
-          "screenHeight": "Screen physical height"
-        },
-        "type": "Type",
-        "orientation": "Orientation",
-        "landscape": "Landscape",
-        "portrait": "Portrait",
-        "touchscreen": "Touchscreen"
-      }
-    },
     "layouts": {
       "title": "Layouts",
       "lastModified": "Last modified"
@@ -210,51 +196,21 @@
       },
       "textView": {
         "properties": {
-          "text": "Text"
+          "text": "Text",
+          "typeScripted": "Type: scripted",
+          "typeText:": "Type: text"
         }
       }
     },
     
     "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
-      "pageDeviceLabel": "Page device",
-      "enterTransitions": "Enter transitions",
-      "exitTransitions": "Exit transitions",
-      "addTransition": "Add transition",
-      "editTransition": "Edit transition",
-      "removeTransition": "Remove transition",
-
-      "dialog": {
-        "animation": "Animation",
-        "timeInterpolation": "Time interpolation",
-        "duration": "Duration (milliseconds)",
-        "viewPairs": "Element pairs",
-        "addViewPair": "Add element pair",
-        "startOfTransition": "From element",
-        "endOfTransition" : "To element"
-      }
+      "pageDeviceLabel": "Page device"
     },
 
     "deviceSettingsEditor": {
-      "indexPageId": "Device front page"
     },
 
-    "eventTriggers": {
-      "title": "Events",
-      "clickViewIdTitle": "Triggers when element is clicked",
-      "clickViewId": "Element",
-      "physicalButtonDownTitle": "Triggers when button is pressed",
-      "physicalButtonUpTitle": "Triggers when button is released",
-      "physicalButton": "Button",
-      "deviceGroupEventTitle": "Triggers when device group event is detected",
-      "deviceGroupEvent": "Device group event name",
-      "delayTitle": "Triggers after delay",
-      "delay": "Delay (in milliseconds)",
-      "actions": "Actions",
-      "variableName": "User variable name",
-      "variableValue": "User variable value",
-      "selectPage": "Select page"
-    },
     "addDeviceEditor": {
       "title": "Add new device",
       "defaultName": "New device",
@@ -284,6 +240,15 @@
     },
     "properties": {
       "title": "properties"
+    }
+  },
+
+  "subLayout": {
+    "title": "Sub layout",
+    "addNew": "Add new sub layout",
+    "preview": {
+      "width": "Preview width (px)",
+      "height": "Preview height (px)"
     }
   },
 
@@ -349,10 +314,42 @@
       "name": "Name",
       "readerId": "Antenna reader Id",
       "deviceGroup": "Device group where antenna belongs to",
-      "room": "Room where antenna belongs to"
+      "room": "Room where antenna belongs to",
+      "antennaNumber": "Antenna number"
     },
     "hasChildElements": "Selected element has child elements. Cannot delete!",
     "brokenData": "Map got invalid data and cannot be instantiated and all controls are disabled!"
+  },
+
+  "device": {
+    "title": "Devices",
+    "capabilities": "Capabilities",
+    "newDevice": "New device",
+    "dialog": {
+      "deleteDeviceTitle": "Delete device",
+      "deleteDeviceText": "Are you sure you want to delete this device? This action cannot be reversed.",
+      "brand": "Brand",
+      "model": "Model",
+      "displayMetrics": {
+        "displayInfo": "Screen info",
+        "widthPixels": "Screen pixel width",
+        "heightPixels": "Screen pixel height"
+      },
+      "dimensions" : {
+        "physicalSize": "Device physical size",
+        "width": "Width",
+        "height": "Height",
+        "depth": "Depth",
+        "screenWidth": "Screen physical width",
+        "screenHeight": "Screen physical height"
+      },
+      "type": "Type",
+      "orientation": "Orientation",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "defaultOrientation": "Default orientation",
+      "touchscreen": "Touchscreen"
+    }
   },
 
   "sorting": {
@@ -387,6 +384,7 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
+      "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
       "backgroundColor": "Layout background color",
@@ -432,7 +430,11 @@
       "color": "Button text color",
       "textResource": "Button text resource",
       "fontStyle": "Button font style",
-      "textSize": "Button text size (dp)"
+      "textSize": "Button text size (dp)",
+      "backgroundColor": "Button background color",
+      "allCaps": "All upper case",
+      "gravity": "Button gravity",
+      "backgroundImage": "Button background image"
     },
 
     "linearLayout": {
@@ -441,9 +443,11 @@
 
     "addLayoutViewDialog": {
       "title": "Add layout view element",
+      "name": "Element name",
       "widget": "Select widget",
       "confirm": "Add",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "subLayout": "Sub layout"
     }
   },
 
@@ -467,6 +471,62 @@
     "deleteText": "Are you sure you want to delete this group content version and all its content?"
   },
 
+  "contentEditor": {
+    "open": "Open timeline",
+    "editor": {
+      "pageName": "Page name",
+      "indexPageId": "Device front page",
+      "device": "Device",
+      "saveDevice": "Save device",
+      "savePage": "Save page",
+      "layout": "Layout",
+      "content": "Content",
+      "properties": "Properties",
+      "resources": "Resources",
+
+      "transitions" :{
+        "title": "Transitions",
+        "enterTransitions": "Enter transitions",
+        "exitTransitions": "Exit transitions",
+        "addTransition": "Add transition",
+        "editTransition": "Edit transition",
+        "removeTransition": "Remove transition"
+      },
+  
+      "eventTriggers": {
+        "noTriggers": "No events",
+        "add": "Add action",
+        "addEvent": "Add event",
+        "title": "Events",
+        "name": "Name",
+        "options": "Event options",
+        "clickViewIdTitle": "Triggers when element is clicked",
+        "clickViewId": "Element",
+        "physicalButtonDownTitle": "Triggers when button is pressed",
+        "physicalButtonUpTitle": "Triggers when button is released",
+        "physicalButton": "Button",
+        "deviceGroupEventTitle": "Triggers when device group event is detected",
+        "deviceGroupEvent": "Device group event name",
+        "delayTitle": "Triggers after delay",
+        "delay": "Delay (in milliseconds)",
+        "actions": "Actions",
+        "variableName": "User variable name",
+        "variableValue": "User variable value",
+        "selectPage": "Select page"
+      },
+  
+      "dialog": {
+        "animation": "Animation",
+        "timeInterpolation": "Time interpolation",
+        "duration": "Duration (milliseconds)",
+        "viewPairs": "Element pairs",
+        "addViewPair": "Add element pair",
+        "startOfTransition": "From element",
+        "endOfTransition" : "To element"
+      }
+    }
+  },
+
   "genericDialog": {
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -483,7 +543,8 @@
     "name": "Name",
     "confirmDelete": "Are you sure you want to remove selected element?",
     "or": "or",
-    "undefined": "Undefined"
+    "undefined": "Undefined",
+    "refresh": "Refresh"
   },
 
   "spaces": {

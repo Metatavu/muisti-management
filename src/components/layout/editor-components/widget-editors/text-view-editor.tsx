@@ -71,6 +71,9 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view width editor
    */
   private renderWidth = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Width, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -83,17 +86,20 @@ class TextViewEditor extends React.Component<Props, State> {
           textFieldId={ LayoutTextViewPropKeys.Width }
           textFieldType="number"
           textFieldUnit="dp"
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Width, PageLayoutViewPropertyType.String) }
-          onTextFieldChange={ this.props.onValueChange }
+          property={ foundProp }
+          onTextFieldChange={ onValueChange }
         />
       </div>
     );
   }
 
   /**
-   * Render  text view height editor
+   * Render text view height editor
    */
   private renderHeight = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Height, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -106,8 +112,8 @@ class TextViewEditor extends React.Component<Props, State> {
           textFieldId={ LayoutTextViewPropKeys.Height }
           textFieldType="number"
           textFieldUnit="dp"
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Height, PageLayoutViewPropertyType.String) }
-          onTextFieldChange={ this.props.onValueChange }
+          property={ foundProp }
+          onTextFieldChange={ onValueChange }
         />
       </div>
     );
@@ -117,6 +123,9 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text resource editor
    */
   private renderTextResource = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -126,10 +135,11 @@ class TextViewEditor extends React.Component<Props, State> {
           { strings.layoutEditor.textView.textResource }:
         </Typography>
         <GenericPropertyTextField
+          disabled
           textFieldId={ LayoutTextViewPropKeys.TextResources }
           textFieldType="text"
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
-          onTextFieldChange={ this.props.onValueChange }
+          property={ foundProp }
+          onTextFieldChange={ onValueChange }
         />
       </div>
     );
@@ -139,10 +149,11 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text color editor
    */
   private renderTextColor = () => {
-    const { classes } = this.props;
-    const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
+    const { pageLayoutView, onValueChange, classes } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
+
     return (
-      <div className={ classes.backgroundPickerContainer } style={{ marginBottom: theme.spacing(2) }}>
+      <div className={ classes.colorPickerContainer } style={{ marginBottom: theme.spacing(2) }}>
         <Typography variant="h6">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(1) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
@@ -155,7 +166,7 @@ class TextViewEditor extends React.Component<Props, State> {
             textFieldId={ LayoutTextViewPropKeys.TextColor }
             textFieldType="text"
             property={ foundProp }
-            onTextFieldChange={ this.props.onValueChange }
+            onTextFieldChange={ onValueChange }
           />
         </div>
       </div>
@@ -166,12 +177,15 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text style editor
    */
   private renderTextStyle = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextStyle, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ marginBottom: theme.spacing(2) }}>
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.fontStyle }</Typography>
         <GenericPropertySelect
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextStyle, PageLayoutViewPropertyType.String) }
-          onSelectChange={ this.props.onValueChange }
+          property={ foundProp }
+          onSelectChange={ onValueChange }
           selectItemType={ TextViewTextStyleValues }
         />
       </div>
@@ -182,12 +196,15 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text align editor
    */
   private renderTextAlign = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextAlignment, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ marginBottom: theme.spacing(2) }}>
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.textView.textAlign }</Typography>
         <GenericPropertySelect
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextAlignment, PageLayoutViewPropertyType.String) }
-          onSelectChange={ this.props.onValueChange }
+          property={ foundProp }
+          onSelectChange={ onValueChange }
           selectItemType={ TextViewTextAlignValues }
         />
       </div>
@@ -198,6 +215,9 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text size editor
    */
   private renderTextSize = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -210,8 +230,8 @@ class TextViewEditor extends React.Component<Props, State> {
           textFieldId={ LayoutTextViewPropKeys.TextSize }
           textFieldType="number"
           textFieldUnit="dp"
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String) }
-          onTextFieldChange={ this.props.onValueChange }
+          property={ foundProp }
+          onTextFieldChange={ onValueChange }
         />
       </div>
     );
@@ -221,6 +241,9 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view typeface editor
    */
   private renderTypeface = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -232,8 +255,8 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Typeface }
           textFieldType="text"
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String) }
-          onTextFieldChange={ this.props.onValueChange }
+          property={ foundProp }
+          onTextFieldChange={ onValueChange }
         />
       </div>
     );
@@ -243,12 +266,15 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view gravity editor
    */
   private renderTextViewGravity = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Gravity, PageLayoutViewPropertyType.String);
+
     return (
       <div>
         <Typography variant="h6">{ strings.layoutEditor.textView.textGravity }</Typography>
         <GravityEditor
-          property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Gravity, PageLayoutViewPropertyType.String) }
-          onSingleValueChange={ this.props.onValueChange }
+          property={ foundProp }
+          onSingleValueChange={ onValueChange }
         />
       </div>
     );

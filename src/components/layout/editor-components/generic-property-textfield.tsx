@@ -11,6 +11,7 @@ interface Props extends WithStyles<typeof styles> {
   textFieldType: string;
   textFieldId: string;
   textFieldUnit?: string;
+  disabled?: boolean;
 
   /**
    * On text field change handler
@@ -44,9 +45,10 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, textFieldUnit } = this.props;
+    const { property, textFieldType, textFieldId, textFieldUnit, disabled } = this.props;
     return (
       <TextField
+        disabled={ disabled }
         variant="filled"
         fullWidth
         type={ textFieldType }

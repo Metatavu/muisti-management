@@ -29,6 +29,12 @@ export const SET_DEVICES = "SET_DEVICES";
 export type SET_DEVICES = typeof SET_DEVICES;
 
 /**
+ * Set group content versions action
+ */
+export const SET_SELECTED_GROUP_CONTENT_VERSIONS = "SET_SELECTED_GROUP_CONTENT_VERSIONS";
+export type SET_SELECTED_GROUP_CONTENT_VERSIONS = typeof SET_SELECTED_GROUP_CONTENT_VERSIONS;
+
+/**
  * Set device groups action
  */
 export const SET_DEVICE_GROUPS = "SET_DEVICE_GROUPS";
@@ -51,3 +57,15 @@ export type SET_LAYOUTS = typeof SET_LAYOUTS;
  */
 export const SET_SELECTED_LAYOUT = "SET_SELECTED_LAYOUT";
 export type SET_SELECTED_LAYOUT = typeof SET_SELECTED_LAYOUT;
+
+/**
+ * Set sub layouts action
+ */
+export const SET_SUB_LAYOUTS = "SET_SUB_LAYOUTS";
+export type SET_SUB_LAYOUTS = typeof SET_SUB_LAYOUTS;
+
+/**
+ * Set selected sub layout action
+ */
+export const SET_SELECTED_SUB_LAYOUT = "SET_SELECTED_SUB_LAYOUT";
+export type SET_SELECTED_SUB_LAYOUT = typeof SET_SELECTED_SUB_LAYOUT;

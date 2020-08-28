@@ -1,8 +1,8 @@
 import * as React from "react";
-import { PageLayoutView } from "../../generated/client";
+import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -15,11 +15,14 @@ import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 import { v4 as uuid } from "uuid";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
+import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  editingSubLayout: boolean;
+  subLayouts: SubLayout[];
   treeData: TreeNodeInArray[];
   onSelect: (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => void;
   onAdd: (pageLayoutView: PageLayoutView, path: string) => void;
@@ -33,12 +36,13 @@ interface State {
   addPropertyDialogOpen: boolean;
   newPageLayoutViewPath?: string;
   newPageLayoutView?: PageLayoutView;
+  selectedSubLayoutId?: string;
 }
 
 /**
  * Component for exhibition tree menu
  */
-class LayoutEditorTreeMenu extends React.Component<Props, State> {
+class LayoutTreeMenu extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -63,13 +67,13 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
         <div className={ classes.treeView }>
           <TreeMenu
             data={ treeData }
-            onClickItem={({ key, label, ...props }) => {
+            onClickItem={ ({ key, label, ...props }) => {
               props.onSelect(props.element, props.type, props.path);
             }}
           >
             {({ search, items }) => (
               <>
-                <FilledInput 
+                <FilledInput
                   onChange={ e => search && search(e.target.value) }
                   placeholder={ strings.exhibition.navigation.search }
                   className={ classes.searchBar }
@@ -109,17 +113,26 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
    *
    * @param item tree menu item
    */
-  private renderTreeMenuItem = (item: TreeMenuItem) => {
+  private renderTreeMenuItem = ({
+    level,
+    focused,
+    hasNodes,
+    toggleNode,
+    isOpen,
+    label,
+    path,
+    active,
+    ...otherProps
+  }: TreeMenuItem) => {
     const { classes } = this.props;
     const toggleIcon = (on: boolean) => on ? 
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label, path } = item;
     return (
       <>
-        <ListItem { ...item }
+        <ListItem { ...otherProps }
           className={ classNames(classes.listItem, focused ? "focused" : "") }
-          style={{ paddingLeft: level * 20 }}
+          style={{ paddingLeft: level * 10 }}
         >
           { hasNodes ?
             <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
@@ -131,11 +144,11 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
           { label }
           <ListItemSecondaryAction>
             { level > 0 &&
-              <IconButton edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
+              <IconButton size="small" edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
                 <DeleteIcon />
               </IconButton>
             }
-            <IconButton edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
+            <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
               <AddIcon />
             </IconButton>
           </ListItemSecondaryAction>
@@ -145,21 +158,100 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
   }
 
   /**
-   * Render dialog content
+   * Render dialog content based on editingSubLayout boolean
    */
   private renderDialogContent = () => {
-    const { newPageLayoutView } = this.state;
-    if (!newPageLayoutView) {
-      return (<div/>);
+    const { editingSubLayout } = this.props;
+
+    if (editingSubLayout) {
+      return this.renderSubLayoutDialog();
+    } else {
+      return this.renderLayoutDialog();
     }
+  }
+
+  /**
+   * Render layout view dialog
+   */
+  private renderLayoutDialog = () => {
+    const { subLayouts } = this.props;
+    const { newPageLayoutView, selectedSubLayoutId } = this.state;
+
+    const subLayoutItems = subLayouts.map(layout => {
+      return (
+        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
+      );
+    });
 
     const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
       return (
         <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
-      );      
+      );
     });
 
     return (<>
+      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={ 12 }>
+          <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.widget }
+          </InputLabel>
+          <Select
+            variant="filled"
+            labelId="widget"
+            fullWidth
+            name="widget"
+            value={ (!selectedSubLayoutId && newPageLayoutView) ? newPageLayoutView.widget : "" }
+            onChange={ this.onWidgetChange }>
+            { widgetItems }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </Grid>
+        <Grid item xs={ 12 }>
+          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.subLayout }
+          </InputLabel>
+          <Select
+            variant="filled"
+            labelId="subLayout"
+            fullWidth
+            name="subLayout"
+            value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
+            onChange={ this.onSubLayoutChange }
+          >
+            { subLayoutItems }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.name }
+          </InputLabel>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            name="name"
+            disabled={ newPageLayoutView ? false : true }
+            value={ newPageLayoutView ? newPageLayoutView.name : "" }
+            onChange={ this.onNameChange }
+          />
+        </Grid>
+      </Grid>
+    </>);
+  }
+
+  /**
+   * Render sub layout view dialog
+   */
+  private renderSubLayoutDialog = () => {
+    const { newPageLayoutView } = this.state;
+
+    const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
+      return (
+        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+      );
+    });
+
+    return (
+      <>
         <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
           <Grid item xs={ 12 }>
             <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
@@ -170,14 +262,15 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
               labelId="widget"
               fullWidth
               name="widget"
-              value={ newPageLayoutView.widget }
+              value={ newPageLayoutView ? newPageLayoutView.widget : "" }
               onChange={ this.onWidgetChange }>
               { widgetItems }
             </Select>
             <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
           </Grid>
         </Grid>
-    </>);
+      </>
+    );
   }
 
   /**
@@ -192,24 +285,16 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
     }
     event.stopPropagation();
   }
-  
+
   /**
    * Event handler for layout view property add click
-   * 
+   *
    * @param path path to the parent element where the new child item will be added
    */
   private onLayoutViewPropertyAddClick = (path: string) => {
-    const newPageLayoutView: PageLayoutView = {
-      id: uuid(),
-      widget: PageLayoutWidgetType.TextView,
-      properties: [],
-      children: []
-    };
-
     this.setState({
       addPropertyDialogOpen: true,
       newPageLayoutViewPath: path,
-      newPageLayoutView: newPageLayoutView
     });
   }
 
@@ -239,27 +324,77 @@ class LayoutEditorTreeMenu extends React.Component<Props, State> {
     this.setState({
       addPropertyDialogOpen : false,
       newPageLayoutView: undefined,
-      newPageLayoutViewPath: ""
+      newPageLayoutViewPath: "",
+      selectedSubLayoutId: undefined
     });
   }
 
   /**
-   * Event handler for add dialog widget change
-   * 
+   * Event handler for widget change event
+   *
    * @param event React change event
    */
   private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+    const widget = event.target.value as PageLayoutWidgetType;
+
+    const pageLayoutView = getInitializedPageLayoutViewByWidgetType(widget);
+
+    this.setState({
+      newPageLayoutView : pageLayoutView,
+      selectedSubLayoutId: undefined
+    });
+  }
+
+  /**
+   * On name change handler
+   *
+   * @param event react text field event
+   */
+  private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { newPageLayoutView } = this.state;
-    if (!newPageLayoutView) {
+
+    const key = event.target.name;
+    const value = event.target.value;
+    if (!newPageLayoutView || !key) {
       return;
     }
 
-    const widget = event.target.value as PageLayoutWidgetType;
-    
     this.setState({
-      newPageLayoutView : { ...newPageLayoutView, widget: widget }
+      newPageLayoutView : { ...newPageLayoutView, [key] : value }
     });
+  }
+
+  /**
+   * Event handler for sub layout change event
+   *
+   * @param event React change event
+   */
+  private onSubLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+    const { subLayouts } = this.props;
+    const subLayoutId = event.target.value;
+
+    if (!subLayoutId) {
+      return;
+    }
+
+    const subLayout = subLayouts.find(layout => layout.id === subLayoutId);
+
+    if (!subLayout) {
+      return;
+    }
+
+    const pageLayoutView: PageLayoutView = {
+      ...subLayout.data,
+      id : uuid(),
+      sublayoutId: subLayoutId
+    };
+
+    this.setState({
+      newPageLayoutView : pageLayoutView,
+      selectedSubLayoutId: subLayoutId
+    });
+
   }
 }
 
-export default withStyles(styles)(LayoutEditorTreeMenu);
+export default withStyles(styles)(LayoutTreeMenu);

@@ -18,6 +18,7 @@ interface Props extends WithStyles<typeof styles> {
   scale: number;
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
+  deviceOrientation?: ScreenOrientation;
 }
 
 /**
@@ -33,7 +34,7 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -47,22 +48,22 @@ class PagePreview extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, screenOrientation, displayMetrics, scale, view } = this.props;
+    const { classes, screenOrientation, displayMetrics, scale, view, deviceOrientation } = this.props;
 
     let height = displayMetrics.heightPixels * scale;
     let width = displayMetrics.widthPixels * scale;
 
-    if(screenOrientation && screenOrientation === ScreenOrientation.Landscape){
+    if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
       height = displayMetrics.widthPixels * scale;
       width = displayMetrics.heightPixels * scale;
     }
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
-        <PagePreviewComponentEditor 
-          view={ view } 
-          displayMetrics={ displayMetrics } 
-          scale={ scale } 
+        <PagePreviewComponentEditor
+          view={ view }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }/>
       </div>
@@ -106,10 +107,10 @@ class PagePreview extends React.Component<Props, State> {
             } else {
               const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
               if (px) {
-                result.height = px
+                result.height = px;
               } else {
                 this.handleUnknownProperty(property, "Unknown value");
-              }  
+              }
             }
           break;
           default:

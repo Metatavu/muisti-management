@@ -152,10 +152,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           subtitle={ contentVersion?.name }
           context={
             <div>
-              <Typography variant="body1">
-                <div>{`${room.name} /`}</div>
-                <div>{ deviceGroupName }</div>
-              </Typography>
+              <Typography variant="body1">{ `${room.name} /` }</Typography>
+              <Typography variant="body1">{ deviceGroupName }</Typography>
             </div>
           }
           onClick={ () => this.onCardClick(groupContentVersion) }
@@ -284,7 +282,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Gets card menu options
-   * 
+   *
    * @param groupContentVersion selected group content version
    * @returns card menu options as action button array
    */
@@ -304,9 +302,9 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     const { exhibitionId, roomId } = this.props;
     const { exhibition, room, contentVersion } = this.state;
     return [
-      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name || "", url: `/v4/exhibitions/${exhibitionId}/content` },
-      { name: room?.name || "", url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
+      { name: strings.exhibitions.listTitle, url: "/exhibitions" },
+      { name: exhibition?.name || "", url: `/exhibitions/${exhibitionId}/content` },
+      { name: room?.name || "", url: `/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
       { name: contentVersion?.name || "" }
     ];
   }
@@ -325,7 +323,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Deletes group content version
-   * 
+   *
    * @param groupContentVersion selected group content version
    */
   private deleteGroupContentVersion = (groupContentVersion: GroupContentVersion) => {
@@ -349,7 +347,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for value change
-   * 
+   *
    * @param event react change event
    */
   private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
@@ -377,11 +375,11 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
   }
 
-  /** 
+  /**
    * Opens timeline screen
-   * 
+   *
    * @param groupContentVersion selected group content version
-  */
+   */
   private openTimeline = (groupContentVersion: GroupContentVersion) => {
     const { history } = this.props;
     history.push(`${history.location.pathname}/groupContentVersions/${groupContentVersion.id}/timeline`);
@@ -389,7 +387,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for group content value change
-   * 
+   *
    * @param groupContentVersion group content version
    */
   private onGroupContentValueChange = (groupContentVersion: GroupContentVersion) => {
@@ -424,7 +422,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
 
     const groupContentVersions = produce(this.state.groupContentVersions, draft => {
-      draft.push(createdContentVersion)
+      draft.push(createdContentVersion);
     });
 
     this.setState({

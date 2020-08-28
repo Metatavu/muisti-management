@@ -17,6 +17,7 @@ import ChevronRightIcon from '@material-ui/icons/ArrowRight';
  */
 interface Props extends WithStyles<typeof styles> {
   treeData: TreeNodeInArray[];
+  focusKey?: string;
 }
 
 /**
@@ -32,7 +33,7 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -46,12 +47,13 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, treeData } = this.props;
-    
+    const { classes, treeData, focusKey } = this.props;
+
     return (
       <div className={ classes.treeView }>
         <TreeMenu
           data={ treeData }
+          focusKey={ focusKey ? focusKey : "" }
           onClickItem={({ key, label, ...props }) => {
             props.onSelect(props.parents, props.element);
           }}
@@ -85,15 +87,22 @@ class ExhibitionTreeMenu extends React.Component<Props, State> {
    *
    * @param item tree menu item
    */
-  private renderTreeMenuItem = (item: TreeMenuItem) => {
+  private renderTreeMenuItem = ({
+    level,
+    focused,
+    hasNodes,
+    toggleNode,
+    isOpen,
+    label,
+    ...otherProps
+  }: TreeMenuItem) => {
     const { classes } = this.props;
     const toggleIcon = (on: boolean) => on ? 
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
-    const { level, focused, hasNodes, toggleNode, isOpen, label } = item;
 
     return (
-      <ListItem { ...item }
+      <ListItem { ...otherProps }
         className={ classNames( classes.listItem, focused ? "focused" : "" ) }
         style={{ paddingLeft: level * 20 }}
       >

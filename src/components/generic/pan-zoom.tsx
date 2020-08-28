@@ -1,18 +1,23 @@
 import * as React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import Measure, { ContentRect } from 'react-measure'
+import Measure, { ContentRect } from "react-measure";
+import { Button, WithStyles, withStyles } from '@material-ui/core';
+import ZoomInIcon from "@material-ui/icons/Add";
+import ZoomOutIcon from "@material-ui/icons/Remove";
+import styles from "../../styles/components/generic/pan-zoom";
 
 /**
  * Interface representing component properties
  */
-interface Props {
+interface Props extends WithStyles<typeof styles> {
   fitContent?: boolean;
   minScale?: number;
   defaultScale?: number;
   defaultPositionX?: number;
-  defaultPositionY?: number; 
+  defaultPositionY?: number;
   contentWidth?: number;
   contentHeight?: number;
+  disabled?: boolean;
 }
 
 /**
@@ -27,11 +32,11 @@ interface State {
 /**
  * Component for adding pan and zoom functionalities
  */
-export default class PanZoom extends React.Component<Props, State> {
+const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -55,24 +60,33 @@ export default class PanZoom extends React.Component<Props, State> {
           </div>
         )}
       </Measure>
-    );    
+    );
   }
 
   /**
    * Renders wrapper component
    */
   private renderWrapper = () => {
-    if (!this.state.containerHeight || !this.state.containerWidth) {
+    const { containerHeight, containerWidth } = this.state;
+    const { defaultPositionX, defaultPositionY, minScale, disabled } = this.props;
+
+    if (!containerHeight || !containerWidth) {
       return null;
     }
 
     const options = {
-      minScale: this.props.minScale || 1,
-      limitToBounds: false
+      minScale: minScale || 1,
+      limitToBounds: false,
+      disabled: disabled
     };
 
     return (
-      <TransformWrapper options={ options } defaultScale={ this.getDefaultScale() } defaultPositionX={ this.props.defaultPositionX } defaultPositionY={ this.props.defaultPositionY }>
+      <TransformWrapper
+        options={ options }
+        defaultScale={ this.getDefaultScale() }
+        defaultPositionX={ defaultPositionX }
+        defaultPositionY={ defaultPositionY }
+      >
         { (opts: any ) => this.renderContents(opts) }
       </TransformWrapper>
     );
@@ -80,16 +94,18 @@ export default class PanZoom extends React.Component<Props, State> {
 
   /**
    * Renders contents
-   * 
+   *
    * @param opts transform wrapper options
    */
   private renderContents = (opts: any) => {
+    const { classes } = this.props;
+
     return (
       <div style={{ position: "relative" }}>
-        <div style={{ position: "fixed", zIndex: 9999, bottom: 10, right: 10 }}>
-          <button onClick={ opts.zoomIn }>+</button>
-          <button onClick={ opts.zoomOut }>-</button>
-          <button onClick={ opts.resetTransform }>x</button>
+        <div className={ classes.controlContainer }>
+          <Button variant="contained" color="primary" onClick={ opts.zoomIn }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
+          <Button variant="contained" color="primary" onClick={ opts.zoomOut }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
+          <Button variant="contained" color="primary" onClick={ opts.resetTransform }>100%</Button>
           <span> { (opts.scale || 0).toFixed(2) } </span>
         </div>
         <TransformComponent>
@@ -103,7 +119,7 @@ export default class PanZoom extends React.Component<Props, State> {
 
   /**
    * Returns default scale
-   * 
+   *
    * @returns default scale
    */
   private getDefaultScale = () => {
@@ -115,12 +131,12 @@ export default class PanZoom extends React.Component<Props, State> {
       return Math.min(this.state.containerHeight / this.props.contentHeight, this.state.containerWidth / this.props.contentWidth);      
     }
 
-    return undefined;    
+    return undefined;
   }
 
   /**
    * Event handler for container resize
-   * 
+   *
    * @param contentRect content size details
    */
   private onContainerResize = (contentRect: ContentRect) => {
@@ -130,4 +146,6 @@ export default class PanZoom extends React.Component<Props, State> {
     });
   }
 
-}
+});
+
+export default PanZoom;

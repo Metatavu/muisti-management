@@ -10,8 +10,9 @@ import { setDeviceModels } from "../../actions/devices";
 import { AccessToken } from "../../types"
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, DeviceModel } from "../../generated/client";
+import { Exhibition, PageLayout, DeviceModel, SubLayout } from "../../generated/client";
 import Api from "../../api/api";
+import { setSubLayouts } from "../../actions/subLayouts";
 
 
 /**
@@ -22,9 +23,11 @@ interface Props {
   accessToken: AccessToken;
   exhibitions?: Exhibition[];
   layouts?: PageLayout[];
+  subLayouts?: SubLayout[];
   deviceModels: DeviceModel[];
   setExhibitions: typeof setExhibitions;
   setLayouts: typeof setLayouts;
+  setSubLayouts: typeof setSubLayouts;
   setDeviceModels: typeof setDeviceModels;
 };
 
@@ -51,23 +54,26 @@ class StoreInitializer extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life-cycle event
+   * Component did mount life cycle event
    */
   public componentDidMount = async () => {
     try {
       const { accessToken } = this.props;
       const exhibitionsApi = Api.getExhibitionsApi(accessToken);
       const layoutsApi = Api.getPageLayoutsApi(accessToken);
+      const subLayoutsApi = Api.getSubLayoutsApi(accessToken);
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
-      const [ exhibitions, layouts, deviceModels ] = await Promise.all([
+      const [ exhibitions, layouts, subLayouts, deviceModels ] = await Promise.all([
         exhibitionsApi.listExhibitions(),
         layoutsApi.listPageLayouts({}),
+        subLayoutsApi.listSubLayouts(),
         deviceModelsApi.listDeviceModels()
       ]);
 
       this.props.setExhibitions(exhibitions);
       this.props.setLayouts(layouts);
+      this.props.setSubLayouts(subLayouts);
       this.props.setDeviceModels(deviceModels);
     } catch (e) {
       this.setState({
@@ -80,15 +86,17 @@ class StoreInitializer extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+    const { exhibitions, layouts, subLayouts, deviceModels, children } = this.props;
     if (this.state.error) {
       return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
     }
 
     return (
-      this.props.exhibitions &&
-      this.props.layouts &&
-      this.props.deviceModels ?
-      this.props.children : null
+      exhibitions &&
+      layouts &&
+      subLayouts &&
+      deviceModels ?
+      children : null
     );
   }
 }
@@ -104,6 +112,7 @@ function mapStateToProps(state: ReduxState) {
     keycloak: state.auth.keycloak as KeycloakInstance,
     exhibitions: state.exhibitions.exhibitions,
     layouts: state.layouts.layouts,
+    subLayouts: state.subLayouts.subLayouts,
     deviceModels: state.devices.deviceModels
   };
 }
@@ -117,6 +126,7 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   return {
     setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions)),
     setLayouts: (layouts: PageLayout[]) => dispatch(setLayouts(layouts)),
+    setSubLayouts: (subLayouts: SubLayout[]) => dispatch(setSubLayouts(subLayouts)),
     setDeviceModels: (deviceModels: DeviceModel[]) => dispatch(setDeviceModels(deviceModels))
   };
 }

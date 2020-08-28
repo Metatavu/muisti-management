@@ -26,6 +26,10 @@ import {
     DeviceModelDisplayMetricsFromJSON,
     DeviceModelDisplayMetricsFromJSONTyped,
     DeviceModelDisplayMetricsToJSON,
+    ScreenOrientation,
+    ScreenOrientationFromJSON,
+    ScreenOrientationFromJSONTyped,
+    ScreenOrientationToJSON,
 } from './';
 
 /**
@@ -72,6 +76,12 @@ export interface DeviceModel {
     capabilities: DeviceModelCapabilities;
     /**
      * 
+     * @type {ScreenOrientation}
+     * @memberof DeviceModel
+     */
+    screenOrientation: ScreenOrientation;
+    /**
+     * 
      * @type {string}
      * @memberof DeviceModel
      */
@@ -112,6 +122,7 @@ export function DeviceModelFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'dimensions': DeviceModelDimensionsFromJSON(json['dimensions']),
         'displayMetrics': DeviceModelDisplayMetricsFromJSON(json['displayMetrics']),
         'capabilities': DeviceModelCapabilitiesFromJSON(json['capabilities']),
+        'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -133,6 +144,7 @@ export function DeviceModelToJSON(value?: DeviceModel | null): any {
         'dimensions': DeviceModelDimensionsToJSON(value.dimensions),
         'displayMetrics': DeviceModelDisplayMetricsToJSON(value.displayMetrics),
         'capabilities': DeviceModelCapabilitiesToJSON(value.capabilities),
+        'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
     };
 }
 

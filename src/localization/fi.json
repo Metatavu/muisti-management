@@ -29,6 +29,21 @@
     "cancel": "Peruuta"
   },
 
+  "mediaLibrary": {
+    "title": "Mediakirjasto",
+    "selected": "valittu",
+    "addMedia": "Lisää media",
+    "addFolder": "Lisää kansio",
+    "addFile": "Lisää tiedosto",
+    "createFolder": "Luo kansio",
+    "search": "Hae mediaa",
+    "files": {
+      "name": "Nimi",
+      "modified": "Muokattu",
+      "type": "Tyyppi"
+    }
+  },
+
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
@@ -139,35 +154,6 @@
     "users": {
       "title": "Käyttäjät"
     },
-    "devices": {
-      "deleteDeviceTitle": "Poista laite",
-      "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
-      "title": "Laitteet",
-      "capabilities": "Ominaisuudet",
-      "newDevice": "Uusi laite",
-      "dialog": {
-        "brand": "Merkki",
-        "model": "Malli",
-        "displayMetrics": {
-          "displayInfo": "Näytön tiedot",
-          "widthPixels": "Ruudun pikselileveys",
-          "heightPixels": "Ruudun pikselikorkeus"
-        },
-        "dimensions" : {
-          "physicalSize": "Laitteen fyysinen koko",
-          "width": "Leveys",
-          "height": "Korkeus",
-          "depth": "Syvyys",
-          "screenWidth": "Ruudun fyysinen leveys",
-          "screenHeight": "Ruudun fyysinen korkeus"
-        },
-        "type": "Tyyppi",
-        "orientation": "Orientation",
-        "landscape": "Landscape",
-        "portrait": "Portrait",
-        "touchscreen": "Kosketusnäyttö"
-      }
-    },
     "layouts": {
       "title": "Asettelut",
       "lastModified": "Viimeksi muokattu"
@@ -210,51 +196,21 @@
       },
       "textView": {
         "properties": {
-          "text": "Teksti"
+          "text": "Teksti",
+          "typeScripted": "Tyyppi: scripti",
+          "typeText:": "Tyyppi: teksti"
         }
       }
     },
 
     "pageSettingsEditor": {
       "pageLayoutLabel": "Sivun asettelu",
-      "pageDeviceLabel": "Sivun laite",
-      "enterTransitions": "Siirtymä saapuessa",
-      "exitTransitions": "Siirtymä lähtiessä",
-      "addTransition": "Lisää siirtymä",
-      "editTransition": "Muokkaa siirtymää",
-      "removeTransition": "Poista siirtymä",
-
-      "dialog": {
-        "animation": "Animaatio",
-        "timeInterpolation": "Interpolointi",
-        "duration": "Kesto (millisekunttia)",
-        "viewPairs": "Elementtiparit",
-        "addViewPair": "Lisää elementtipari",
-        "startOfTransition": "Elementistä",
-        "endOfTransition" : "Elementille"
-      }
+      "pageDeviceLabel": "Sivun laite"
     },
 
     "deviceSettingsEditor": {
-      "indexPageId": "Laitteen etusivu"
     },
-    
-    "eventTriggers": {
-      "title": "Tapahtumat",
-      "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
-      "clickViewId": "Elementti",
-      "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
-      "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
-      "physicalButton": "Nappi",
-      "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
-      "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
-      "delayTitle": "Tapahtuu viiveen jälkeen",
-      "delay": "Viive (millisekunneissa)",
-      "actions": "Toiminnot",
-      "variableName": "Käyttäjän muuttujan nimi",
-      "variableValue": "Käyttäjän muuttujan arvo",
-      "selectPage": "Valitse sivu"
-    },
+
     "addDeviceEditor": {
       "title": "Lisää uusi laite",
       "defaultName": "Uusi laite",
@@ -283,7 +239,16 @@
       "landscape": "Vaaka"
     },
     "properties": {
-      "title": "ominaisuudet"
+      "title": "Ominaisuudet"
+    }
+  },
+
+  "subLayout": {
+    "title": "Aliasettelu",
+    "addNew": "Lisää uusi aliasettelu",
+    "preview": {
+      "width": "Esikatselun leveys (px)",
+      "height": "Esikatselun korkeus (px)"
     }
   },
 
@@ -347,11 +312,43 @@
       "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
       "readerId": "Antennin lukijan Id",
       "deviceGroup": "Laiteryhmä johon antenni kuuluu",
-      "room": "Huone johon antenni kuuluu"
+      "room": "Huone johon antenni kuuluu",
+      "antennaNumber": "Antennin numero"
     },
     
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
     "brokenData": "Kartan saamat tiedot ovat viallisia eikä karttaa voida luoda!"
+  },
+
+  "device": {
+    "deleteDeviceTitle": "Poista laite",
+    "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
+    "title": "Laitteet",
+    "capabilities": "Ominaisuudet",
+    "newDevice": "Uusi laite",
+    "dialog": {
+      "brand": "Merkki",
+      "model": "Malli",
+      "displayMetrics": {
+        "displayInfo": "Näytön tiedot",
+        "widthPixels": "Ruudun pikselileveys",
+        "heightPixels": "Ruudun pikselikorkeus"
+      },
+      "dimensions" : {
+        "physicalSize": "Laitteen fyysinen koko",
+        "width": "Leveys",
+        "height": "Korkeus",
+        "depth": "Syvyys",
+        "screenWidth": "Ruudun fyysinen leveys",
+        "screenHeight": "Ruudun fyysinen korkeus"
+      },
+      "type": "Tyyppi",
+      "orientation": "Orientation",
+      "defaultOrientation": "Oletus orientaatio",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "touchscreen": "Kosketusnäyttö"
+    }
   },
 
   "sorting": {
@@ -386,6 +383,7 @@
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
+      "name": "Elementin nimi",
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
       "backgroundColor": "Asettelun taustaväri",
@@ -429,7 +427,11 @@
       "color": "Napin tekstin väri",
       "textResource": "Napin teksti",
       "fontStyle": "Napin fontin tyyli",
-      "textSize": "Napin tekstin koko (dp)"
+      "textSize": "Napin tekstin koko (dp)",
+      "backgroundColor": "Napin taustaväri",
+      "allCaps": "Kaikki kirjaimet isolla",
+      "gravity": "Napin tekstin painotus",
+      "backgroundImage": "Napin taustakuva"
     },
 
     "linearLayout": {
@@ -438,9 +440,11 @@
 
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
+      "name": "Elementin nimi",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
-      "cancel": "Peruuta"
+      "cancel": "Peruuta",
+      "subLayout": "Aliasettelu"
     }
   },
 
@@ -464,6 +468,59 @@
     "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
   },
 
+  "contentEditor": {
+    "open": "Avaa timeline",
+    "editor": {
+      "indexPageId": "Laitteen etusivu",
+      "pageName": "Sivun nimi",
+      "device": "Laite",
+      "saveDevice": "Tallenna laite",
+      "savePage": "Tallenna sivu",
+      "layout": "Asettelu",
+      "content": "Sisältö",
+      "properties": "Ominaisuudet",
+      "resources": "Resurssit",
+      "transitions" : {
+        "title": "Siirtymät",
+        "enterTransitions": "Siirtymä saapuessa",
+        "exitTransitions": "Siirtymä lähtiessä",
+        "addTransition": "Lisää siirtymä",
+        "editTransition": "Muokkaa siirtymää",
+        "removeTransition": "Poista siirtymä"
+      },
+      "eventTriggers": {
+        "noTriggers": "Ei tapahtumia",
+        "add": "Lisää tapahtuma",
+        "addEvent": "Lisää toiminto",
+        "title": "Tapahtumat",
+        "name": "Nimi",
+        "options": "Toiminnon asetukset",
+        "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
+        "clickViewId": "Elementti",
+        "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
+        "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
+        "physicalButton": "Nappi",
+        "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
+        "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
+        "delayTitle": "Tapahtuu viiveen jälkeen",
+        "delay": "Viive (millisekunneissa)",
+        "actions": "Toiminnot",
+        "variableName": "Käyttäjän muuttujan nimi",
+        "variableValue": "Käyttäjän muuttujan arvo",
+        "selectPage": "Valitse sivu"
+      },
+      "dialog": {
+        "animation": "Animaatio",
+        "timeInterpolation": "Interpolointi",
+        "duration": "Kesto (millisekunttia)",
+        "viewPairs": "Elementtiparit",
+        "addViewPair": "Lisää elementtipari",
+        "startOfTransition": "Elementistä",
+        "endOfTransition" : "Elementille"
+      }
+    }
+  },
+
   "genericDialog": {
     "confirm": "Vahvista",
     "cancel": "Peruuta",
@@ -480,7 +537,8 @@
     "name": "Nimi",
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
     "or": "tai",
-    "undefined": "Ei määritelty"
+    "undefined": "Ei määritelty",
+    "refresh": "Päivitä"
   },
 
   "spaces": {

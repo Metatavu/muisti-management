@@ -174,7 +174,7 @@ class RoomsScreen extends React.Component<Props, State> {
   private getBreadcrumbsData = () => {
     const { exhibition } = this.state;
     return [
-      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
+      { name: strings.exhibitions.listTitle, url: "/exhibitions" },
       { name: exhibition?.name || "" }
     ] as BreadcrumbData[];
   }

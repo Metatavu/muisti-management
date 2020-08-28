@@ -26,7 +26,8 @@ export enum PageLayoutWidgetType {
     MediaView = 'MediaView',
     LinearLayout = 'LinearLayout',
     FrameLayout = 'FrameLayout',
-    RelativeLayout = 'RelativeLayout'
+    RelativeLayout = 'RelativeLayout',
+    MapView = 'MapView'
 }
 
 export function PageLayoutWidgetTypeFromJSON(json: any): PageLayoutWidgetType {

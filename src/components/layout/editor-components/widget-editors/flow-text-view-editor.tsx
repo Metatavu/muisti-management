@@ -77,6 +77,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
             { strings.layoutEditor.textView.textResource }:
           </Typography>
           <GenericPropertyTextField
+            disabled
             textFieldId={ LayoutTextViewPropKeys.TextResources }
             textFieldType="text"
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
@@ -95,7 +96,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.backgroundPickerContainer }>
+      <div className={ classes.colorPickerContainer }>
         <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: theme.spacing(2) }}>
