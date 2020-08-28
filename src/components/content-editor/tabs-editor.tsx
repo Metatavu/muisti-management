@@ -53,7 +53,7 @@ class TabEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Component did mount life cycle handler
+   * Component did mount life cycle method
    */
   public componentDidMount = () => {
     const { selectedTab } = this.props;
