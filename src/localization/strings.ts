@@ -388,6 +388,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutWidth: string;
       layoutHeight: string;
       backgroundColor: string;
+      hasBackgroundImage: string;
       paddings: {
         title: string;
         left: string;
@@ -434,7 +435,6 @@ export interface IStrings extends LocalizedStringsMethods {
       backgroundColor: string;
       allCaps: string;
       gravity: string;
-      backgroundImage: string;
     };
 
     linearLayout: {

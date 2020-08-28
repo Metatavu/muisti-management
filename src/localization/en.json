@@ -388,6 +388,7 @@
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
       "backgroundColor": "Layout background color",
+      "hasBackgroundImage": "Layout has background image",
       "paddings": {
         "title": "Layout paddings",
         "left": "Padding left",
@@ -433,8 +434,7 @@
       "textSize": "Button text size (dp)",
       "backgroundColor": "Button background color",
       "allCaps": "All upper case",
-      "gravity": "Button gravity",
-      "backgroundImage": "Button background image"
+      "gravity": "Button gravity"
     },
 
     "linearLayout": {

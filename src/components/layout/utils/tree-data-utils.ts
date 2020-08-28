@@ -1,5 +1,5 @@
 import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout, PageLayoutWidgetType } from "../../../generated/client";
-import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { LayoutPaddingPropKeys, LayoutMarginPropKeys, LayoutPropKeys } from "../editor-constants/keys";
 import { v4 as uuid } from "uuid";
 
 /**
@@ -190,6 +190,34 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
 };
 
 /**
+ * Remove property from layout view
+ * 
+ * @param layoutPropertyToRemove layout view property to remove
+ * @param layoutViewToUpdate layout vie to update
+ * @returns page layout view without removed property
+ */
+export const removeLayoutViewProperty = (layoutPropertyToRemove: LayoutPropKeys, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+  const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === layoutPropertyToRemove);
+  if (foundIndex < 0) {
+    return layoutViewToUpdate;
+  }
+
+  layoutViewToUpdate.properties.splice(foundIndex, 1);
+  return layoutViewToUpdate;
+}
+
+/**
+ * Checks if page layout view has property with given key and type
+ * 
+ * @param pageLayoutView page layout vie
+ * @param key property key
+ * @param type property type
+ */
+export const hasProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): boolean => {
+  return !!pageLayoutView.properties.find(property => property.name === key && property.type === type);
+}
+
+/**
  * Find property from given page layout view with given key
  *
  * @param pageLayoutView page layout view to search from
@@ -300,14 +328,7 @@ const fillButtonProperties = (layoutView: PageLayoutView): PageLayoutView => {
     value: `@resources/${uuid()}`
   };
 
-  const backgroundImage: PageLayoutViewProperty = {
-    name: "backgroundImage",
-    type: PageLayoutViewPropertyType.String,
-    value: `@resources/${uuid()}`
-  };
-
   layoutView.properties.push(text);
-  layoutView.properties.push(backgroundImage);
   return layoutView;
 };
 
