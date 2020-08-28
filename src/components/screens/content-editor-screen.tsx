@@ -471,7 +471,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Get tabs JSX items
    */
   private getTabs = () => {
-
     const tabs = this.renderTabList();
     return (
       <AccordionDetails>
