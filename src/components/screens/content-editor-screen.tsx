@@ -1323,6 +1323,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onAddPageClick = async () => {
     const { contentVersionId, accessToken, exhibitionId } = this.props;
     const { layouts, selectedDevice, devices } = this.state;
+
     if (!selectedDevice) {
       return;
     }
@@ -1352,6 +1353,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       exhibitionPage: newPage
     });
+
     const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
       exhibitionId: exhibitionId,
       deviceId: selectedDevice.id!,
@@ -1417,8 +1419,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onDeletePageClick = async () => {
     try {
       const { accessToken, exhibitionId } = this.props;
-      const { selectedPage } = this.state;
-      if (!selectedPage || !selectedPage.id) {
+      const { selectedPage, selectedDevice, devices } = this.state;
+      if (!selectedPage || !selectedPage.id || !selectedDevice) {
         return;
       }
 
@@ -1431,7 +1433,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
       }
 
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+      const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
       await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
+
+      const updatedPageOrder = [ ...selectedDevice.pageOrder ];
+      const pageOrderIndex = updatedPageOrder.findIndex(pageId => pageId === selectedPage.id);
 
       this.setState(
         produce((draft: State) => {
@@ -1445,6 +1451,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
           draft.selectedTriggerIndex = undefined;
         })
       );
+
+      if (pageOrderIndex > -1) {
+        updatedPageOrder.splice(pageOrderIndex, 1);
+        const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
+          exhibitionId: exhibitionId,
+          deviceId: selectedDevice.id!,
+          exhibitionDevice: {
+            ...selectedDevice,
+            pageOrder: updatedPageOrder
+          }
+        });
+
+        const deviceIndex = devices.findIndex(device => device.id === updatedDevice.id);
+        if (deviceIndex > -1) {
+          this.setState(
+            produce((draft: State) => {
+              draft.devices[deviceIndex] = updatedDevice;
+              draft.selectedDevice = updatedDevice;
+            })
+          );
+        }
+      }
     } catch (e) {
       console.error(e);
 
@@ -1460,7 +1488,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private getTabStructure = () => {
     const { tabResourceIndex, selectedPage } = this.state;
 
-    if (tabResourceIndex !== undefined && selectedPage) {
+    if (tabResourceIndex !== undefined && selectedPage && selectedPage.resources.length > 0) {
       const data = selectedPage.resources[tabResourceIndex].data;
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       if (!parsed) {
