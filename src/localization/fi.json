@@ -542,7 +542,8 @@
         "add": "Lisää välilehti",
         "label": "Otsikko",
         "properties": "Ominaisuudet",
-        "resources": "Resurssit"
+        "resources": "Resurssit",
+        "edit": "Editoi"
       },
 
       "dialog": {

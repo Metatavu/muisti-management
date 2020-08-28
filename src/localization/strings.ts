@@ -545,6 +545,7 @@ export interface IStrings extends LocalizedStringsMethods {
         label: string;
         properties: string;
         resources: string;
+        edit: string;
       };
       dialog: {
         animation: string;
