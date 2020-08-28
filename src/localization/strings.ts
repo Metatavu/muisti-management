@@ -387,6 +387,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
       layoutWidth: string;
       layoutHeight: string;
+      elevation: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {
@@ -460,6 +461,7 @@ export interface IStrings extends LocalizedStringsMethods {
         top: string;
         stretch: string;
       };
+      selectedIndicatorHeight: string;
       textColorNormal: string;
       textColorSelected: string;
       unboundedRipple: string;
@@ -544,6 +546,7 @@ export interface IStrings extends LocalizedStringsMethods {
         label: string;
         properties: string;
         resources: string;
+        edit: string;
       };
       dialog: {
         animation: string;

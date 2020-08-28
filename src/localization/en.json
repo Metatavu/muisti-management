@@ -387,6 +387,7 @@
       "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
+      "elevation": "Layout elevation",
       "backgroundColor": "Layout background color",
       "hasBackgroundImage": "Layout has background image",
       "paddings": {
@@ -460,6 +461,7 @@
         "top": "Top",
         "stretch": "Stretch"
       },
+      "selectedIndicatorHeight": "Selected tab indicator height",
       "textColorNormal": "Tab text color",
       "textColorSelected": "Tab text color when selected",
       "unboundedRipple": "Unbounded ripple",
@@ -546,7 +548,8 @@
         "add": "Add tab",
         "label": "Label",
         "properties": "Properties",
-        "resources": "Resources"
+        "resources": "Resources",
+        "edit": "Edit"
       },
   
       "dialog": {

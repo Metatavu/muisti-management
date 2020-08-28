@@ -386,6 +386,7 @@
       "name": "Elementin nimi",
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
+      "elevation": "Asettelun korotus",
       "backgroundColor": "Asettelun taustaväri",
       "hasBackgroundImage": "Asettelulla on taustakuva",
       "paddings": {
@@ -457,7 +458,8 @@
         "top": "Ylös",
         "stretch": "Venytä"
       },
-      "textColorNormal": "Välilehden tekstin värin",
+      "selectedIndicatorHeight": "Valitun välilehden korkeus",
+      "textColorNormal": "Välilehden tekstin väri",
       "textColorSelected": "Valitun välilehden tekstin väri",
       "unboundedRipple": "Rajoittamaton väre",
       "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",
@@ -541,7 +543,8 @@
         "add": "Lisää välilehti",
         "label": "Otsikko",
         "properties": "Ominaisuudet",
-        "resources": "Resurssit"
+        "resources": "Resurssit",
+        "edit": "Editoi"
       },
 
       "dialog": {
