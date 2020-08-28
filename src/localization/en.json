@@ -196,7 +196,9 @@
       },
       "textView": {
         "properties": {
-          "text": "Text"
+          "text": "Text",
+          "typeScripted": "Type: scripted",
+          "typeText:": "Type: text"
         }
       }
     },

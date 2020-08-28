@@ -2,7 +2,7 @@ import * as React from "react";
 // eslint-disable-next-line max-len
 import { ExhibitionPage, PageLayout, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, FormControl } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import theme from "../../styles/theme";
 
@@ -47,14 +47,14 @@ class CommonSettingsEditor extends React.Component<Props, State> {
 
     return (
       <>
-        <TextField
-          fullWidth
-          variant="filled"
-          label={ strings.contentEditor.editor.pageName }
-          name="name"
-          value={ pageData.name }
-          onChange={ onChange }
-        />
+        <div style={{ paddingTop: theme.spacing(2) }}>
+          <TextField
+            label={ strings.contentEditor.editor.pageName }
+            name="name"
+            value={ pageData.name }
+            onChange={ onChange }
+          />
+        </div>
         <div className={ classes.selectFields }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
@@ -80,18 +80,19 @@ class CommonSettingsEditor extends React.Component<Props, State> {
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <InputLabel id="pageLayoutId">
-        { strings.contentEditor.editor.layout }
-        </InputLabel>
-        <Select
-          variant="filled"
-          labelId="pageLayoutId"
-          fullWidth
-          value={ page.layoutId }
-          onChange={ onLayoutChange }
-        >
-          { layoutSelectItems }
-        </Select>
+        <FormControl>
+          <InputLabel id="pageLayoutId">
+            { strings.contentEditor.editor.layout }
+          </InputLabel>
+          <Select
+            label={ strings.contentEditor.editor.layout }
+            labelId="pageLayoutId"
+            value={ page.layoutId }
+            onChange={ onLayoutChange }
+          >
+            { layoutSelectItems }
+          </Select>
+        </FormControl>
       </div>
     );
   }
@@ -112,21 +113,20 @@ class CommonSettingsEditor extends React.Component<Props, State> {
     });
 
     return (
-      <>
+      <FormControl>
         <InputLabel id="pageDeviceId">
           { strings.contentEditor.editor.device }
         </InputLabel>
         <Select
-          variant="filled"
+          label={ strings.contentEditor.editor.device }
           labelId="pageDeviceId"
-          fullWidth
           name="deviceId"
           value={ page.deviceId }
           onChange={ onChange }
         >
           { selectItems }
         </Select>
-      </>
+      </FormControl>
     );
   }
 }

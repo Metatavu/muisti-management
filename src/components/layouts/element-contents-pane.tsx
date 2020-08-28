@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Typography } from '@material-ui/core';
 import styles from "../../styles/element-contents-pane";
 
 
@@ -47,7 +47,7 @@ class ElementContentsPane extends React.Component<Props, State> {
         <div className={ classes.container }>
           { title &&
             <div className={ classes.header }>
-              <h3>{ title }</h3>
+              <Typography variant="h3">{ title }</Typography>
             </div>
           }
           <div className={ classes.content }>

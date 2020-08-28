@@ -197,6 +197,8 @@ export interface IStrings extends LocalizedStringsMethods {
       textView: {
         properties: {
           text: string;
+          typeScripted: string;
+          typeText: string;
         };
       };
     };
