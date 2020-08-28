@@ -105,7 +105,7 @@ class PagePreviewImageView extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    console.log(`PagePreviewImageView: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    // console.log(`PagePreviewImageView: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**

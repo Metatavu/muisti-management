@@ -39,6 +39,7 @@ import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { allowedWidgetTypes, TabStructure, Tab } from "../content-editor/constants";
 import TabEditor from "../content-editor/tabs-editor";
+import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
 type View = "CODE" | "VISUAL";
 
@@ -76,7 +77,6 @@ interface State {
   resourceWidgetIdList?: Map<string, string[]>;
   selectedTriggerIndex?: number;
   tabResourceIndex?: number;
-  tabStructure?: TabStructure;
   selectedTabIndex?: number;
 }
 
@@ -412,7 +412,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render properties
    */
   private renderProperties = () => {
-    const { selectedPage, selectedTriggerIndex, selectedTabIndex, pages, tabStructure } = this.state;
+    const { selectedPage, selectedTriggerIndex, selectedTabIndex, pages, tabResourceIndex } = this.state;
     if (!selectedPage) {
       return null;
     }
@@ -429,8 +429,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
       );
     }
 
-    if (tabStructure && tabStructure.tabs && selectedTabIndex !== undefined) {
-      const foundTab = tabStructure.tabs[selectedTabIndex];
+    if (tabResourceIndex !== undefined && selectedTabIndex !== undefined) {
+      const test = selectedPage.resources[tabResourceIndex].data;
+      const parsed = parseStringToJsonObject<typeof test, TabStructure>(test);
+      if (!parsed || !parsed.tabs) {
+        return null;
+      }
+
+      const foundTab = parsed.tabs[selectedTabIndex];
 
       return(
         <TabEditor
@@ -486,8 +492,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render tab list
    */
   private renderTabList = () => {
-    const { tabStructure } = this.state;
-
+    const tabStructure = this.getTabStructure();
     if (!tabStructure || !tabStructure.tabs) {
       return null;
     }
@@ -605,18 +610,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private updateTab = (updatedTab: Tab) => {
     this.setState(
       produce((draft: State) => {
-        const { tabResourceIndex, selectedTabIndex, tabStructure, selectedPage } = draft;
+        const { tabResourceIndex, selectedTabIndex, selectedPage } = draft;
         if (tabResourceIndex === undefined ||
           selectedTabIndex === undefined ||
-          !selectedPage ||
-          !tabStructure ||
-          !tabStructure.tabs
+          !selectedPage
         ) {
         return;
       }
+      const tabData = this.getTabStructure();
+      if (tabData && tabData.tabs) {
+        tabData.tabs[selectedTabIndex] = updatedTab;
+        selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
+      }
 
-      tabStructure.tabs[selectedTabIndex] = updatedTab;
-      selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabStructure);
       })
     );
   }
@@ -1238,8 +1244,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage.resources.forEach((resource, index) => {
           const resourceWidgetType = resourceHolder.resourceToWidgetType.get(resource.id);
           if (resourceWidgetType && resourceWidgetType === PageLayoutWidgetType.MaterialTabLayout) {
-            const parsedTabStructure: TabStructure = JSON.parse(resource.data);
-            draft.tabStructure = parsedTabStructure;
             draft.tabResourceIndex = index;
             return;
           }
@@ -1420,6 +1424,23 @@ class ContentEditorScreen extends React.Component<Props, State> {
       this.setState({
         error: e
       });
+    }
+  }
+
+  /**
+   * Get tab structure from resources
+   */
+  private getTabStructure = () => {
+    const { tabResourceIndex, selectedPage } = this.state;
+
+    if (tabResourceIndex !== undefined && selectedPage) {
+      const data = selectedPage.resources[tabResourceIndex].data;
+      const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+      if (!parsed || !parsed.tabs) {
+        return;
+      }
+
+      return parsed;
     }
   }
 }
