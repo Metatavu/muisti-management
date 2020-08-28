@@ -160,24 +160,22 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           break;
           case "layout_gravity":
             property.value.split("|").forEach(gravityValue => {
+              const width = parseFloat(String(result.width));
+              const height = parseFloat(String(result.height));
               switch (gravityValue) {
-                case "top": {
+                case "top":
                   if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
-                    const width = parseFloat(String(result.width));
                     result.marginLeft = (width / 2) - width;
                   }
                   result.top = 0;
-                }
                 break;
-                case "bottom": {
+                case "bottom":
                   if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
-                    const width = parseFloat(String(result.width));
                     result.marginLeft = (width / 2) - width;
                   }
                   result.bottom = 0;
-                }
                 break;
                 case "right":
                   result.right = 0;
@@ -185,20 +183,16 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
                 case "left":
                   result.left = 0;
                 break;
-                case "center": {
+                case "center":
                   if (result.left === 0 || result.right === 0) {
                     result.top = "50%";
-                    const height = parseFloat(String(result.height));
                     result.marginTop = (height / 2) - height;
                   } else {
                     result.top = "50%";
                     result.left = "50%";
-                    const width = parseFloat(String(result.width));
                     result.marginLeft = (width / 2) - width;
-                    const height = parseFloat(String(result.height));
                     result.marginTop = (height / 2) - height;
                   }
-                }
                 break;
                 default:
               }
