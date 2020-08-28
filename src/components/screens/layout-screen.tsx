@@ -168,7 +168,19 @@ export class LayoutScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
+          <ElementSettingsPane
+            open={ panelOpen }
+            width={ 420 }
+            title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
+            menuOptions={
+              [
+                {
+                  name: strings.genericDialog.delete,
+                  action: () => this.onLayoutViewDelete(selectedPropertyPath || "")
+                }
+              ]
+            }
+          >
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
@@ -255,7 +267,6 @@ export class LayoutScreen extends React.Component<Props, State> {
         subLayouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onLayoutViewAdd }
-        onDelete={ this.onLayoutViewDelete }
         treeData={ this.constructTreeData(layout) }
       />
     );
