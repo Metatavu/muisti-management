@@ -47,14 +47,12 @@ class CommonSettingsEditor extends React.Component<Props, State> {
 
     return (
       <>
-        <div style={{ paddingTop: theme.spacing(2) }}>
-          <TextField
-            label={ strings.contentEditor.editor.pageName }
-            name="name"
-            value={ pageData.name }
-            onChange={ onChange }
-          />
-        </div>
+        <TextField
+          label={ strings.contentEditor.editor.pageName }
+          name="name"
+          value={ pageData.name }
+          onChange={ onChange }
+        />
         <div className={ classes.selectFields }>
           { this.renderDeviceSelect(pageData) }
           { this.renderLayoutSelect(pageData) }
