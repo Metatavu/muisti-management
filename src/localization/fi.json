@@ -387,6 +387,7 @@
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
       "backgroundColor": "Asettelun taustaväri",
+      "hasBackgroundImage": "Asettelulla on taustakuva",
       "paddings": {
         "left": "Täyte vasemmalla",
         "right": "Täyte oikealla",
@@ -430,8 +431,7 @@
       "textSize": "Napin tekstin koko (dp)",
       "backgroundColor": "Napin taustaväri",
       "allCaps": "Kaikki kirjaimet isolla",
-      "gravity": "Napin tekstin painotus",
-      "backgroundImage": "Napin taustakuva"
+      "gravity": "Napin tekstin painotus"
     },
 
     "linearLayout": {

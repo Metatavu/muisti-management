@@ -15,9 +15,11 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import { constructTreeUpdateData, updateLayoutViewProperty, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
+import { constructTreeUpdateData, updateLayoutViewProperty, removeLayoutViewProperty, hasProperty, getProperty, getPaddingOrMarginProperties } from "../utils/tree-data-utils";
 import GenericPropertyTextField from "./generic-property-textfield";
+import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
+import { v4 as uuid } from "uuid";
 
 /**
  * Interface representing component properties
@@ -95,6 +97,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         { this.renderLayoutWidth() }
         { this.renderLayoutHeight() }
         { this.renderLayoutBackgroundColor() }
+        { this.renderBackgroundImage() }
         <div style={{ display: "flex" }}>
           { this.renderLayoutPadding() }
           { this.renderLayoutMargin() }
@@ -237,6 +240,33 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Render button background image resource editor
+   */
+  private renderBackgroundImage = () => {
+    const { pageLayoutView } = this.props;
+
+    const hasBackgroundImage = hasProperty(pageLayoutView, LayoutPropKeys.BackgroundImage, PageLayoutViewPropertyType.String);
+
+    return (
+      <>
+        <Typography
+          display="inline"
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h4"
+        >
+          { strings.layoutEditor.commonComponents.hasBackgroundImage }:
+        </Typography>
+        <GenericPropertyEnabledCheckbox
+          propertyName={ LayoutPropKeys.BackgroundImage }
+          enabled={ hasBackgroundImage }
+          onCheckboxChange={ this.onToggleProperty }
+        />
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
+    );
+  }
+
+  /**
    * Render layout padding editor
    */
   private renderLayoutPadding = () => {
@@ -335,6 +365,27 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Generic handler for single page layout property value removals
+   * 
+   * @param layoutPropertyKey layout property key
+   */
+  private onSingleValueRemove = (layoutPropertyKey: LayoutPropKeys) => {
+    const { selectedElementPath, editingSubLayout } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
+    const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
+    const updatedLayoutView = removeLayoutViewProperty(layoutPropertyKey, layoutView);
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
+    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    this.setState({
+      layout : layoutToUpdate
+    });
+  }
+
+  /**
    * Generic handler for multiple page layout property value changes
    *
    * @param updatedPageLayoutViews list of page layout view property objects to update
@@ -357,6 +408,30 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     this.setState({
       layout : layoutToUpdate
     });
+  }
+
+  /**
+   * Event handler for toggle property
+   * 
+   * @param layoutPropertyKey layout property key
+   * @param enabled is property enabled
+   */
+  private onToggleProperty = (layoutPropertyKey: LayoutPropKeys, enabled: boolean) => {
+    if (enabled) {
+      switch (layoutPropertyKey) {
+        case LayoutPropKeys.BackgroundImage:
+          this.onSingleValueChange({
+            name: "backgroundImage",
+            type: PageLayoutViewPropertyType.String,
+            value: `@resources/${uuid()}`
+          });
+        break;
+        default:
+        break;
+      }
+    } else {
+      this.onSingleValueRemove(layoutPropertyKey);
+    }
   }
 }
 
