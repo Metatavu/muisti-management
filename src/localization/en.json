@@ -546,7 +546,8 @@
         "add": "Add tab",
         "label": "Label",
         "properties": "Properties",
-        "resources": "Resources"
+        "resources": "Resources",
+        "edit": "Edit"
       },
   
       "dialog": {

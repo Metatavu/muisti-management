@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, Typography, MenuItem, Select } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, Typography, MenuItem, Select, Button } from "@material-ui/core";
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
@@ -11,6 +11,9 @@ import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
 import { Tab, TabResource } from "./constants";
 import { ExhibitionPageResourceType } from "../../generated/client";
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import GenericDialog from "../generic/generic-dialog";
 
 /**
  * Component props
@@ -27,6 +30,8 @@ interface Props extends WithStyles<typeof styles> {
   interface State {
     error?: Error;
     loading: boolean;
+    selectedResourceType?: ExhibitionPageResourceType;
+    showCKEditorModal: boolean;
   }
 
 /**
@@ -43,7 +48,36 @@ class TabEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
+      showCKEditorModal: false
     };
+  }
+
+  /**
+   * Component did mount life cycle handler
+   */
+  public componentDidMount = () => {
+    const { selectedTab } = this.props;
+
+    if (selectedTab.resources[0]) {
+      this.setState({
+        selectedResourceType: selectedTab.resources[0].type
+      });
+    }
+  }
+
+  /**
+   * Component did update life cycle handler
+   */
+  public componentDidUpdate = (prevProps: Props) => {
+    const { selectedTab } = this.props;
+
+    if (prevProps.selectedTab !== selectedTab) {
+      if (selectedTab.resources[0]) {
+        this.setState({
+          selectedResourceType: selectedTab.resources[0].type
+        });
+      }
+    }
   }
 
   /**
@@ -54,6 +88,7 @@ class TabEditor extends React.Component<Props, State> {
       <div style={{ marginTop: theme.spacing(2) }}>
         { this.renderTabLabel() }
         { this.renderTabResources() }
+        { this.renderModifyButton() }
       </div>
     );
   }
@@ -83,6 +118,11 @@ class TabEditor extends React.Component<Props, State> {
    * Render tab properties
    */
   private renderTabResources = () => {
+    const { selectedResourceType } = this.state;
+
+    if (selectedResourceType && selectedResourceType === ExhibitionPageResourceType.Html) {
+      return null;
+    }
 
     const resourceSelectItems = this.getResourceSelectOptions();
     const resourceItems = this.getResourceItems();
@@ -95,6 +135,70 @@ class TabEditor extends React.Component<Props, State> {
         { resourceSelectItems }
         { resourceItems }
       </div>
+    );
+  }
+
+  /**
+   * Render modify button
+   */
+  private renderModifyButton = () => {
+    const { selectedResourceType, showCKEditorModal } = this.state;
+    if (!selectedResourceType || selectedResourceType !== ExhibitionPageResourceType.Html) {
+      return null;
+    }
+
+    return (
+      <>
+        <Button
+          variant="text"
+          onClick={ this.openEditModalClick }
+        >
+          { strings.contentEditor.editor.tabs.edit }
+        </Button>
+        <GenericDialog
+          open={ showCKEditorModal }
+          error={ false }
+          title={ strings.contentEditor.editor.tabs.edit }
+          onClose={ this.onEditModalClose }
+          onCancel={ this.onEditModalClose }
+          onConfirm={ this.onEditModalClose }
+          positiveButtonText={ strings.errorDialog.close }
+          fullScreen={ true }
+        >
+          { this.renderDialogContent() }
+        </GenericDialog>
+      </>
+    );
+  }
+
+  /**
+   * Render dialog content
+   */
+  private renderDialogContent = () => {
+    const { selectedTab } = this.props;
+    const { resources } = selectedTab;
+
+    if (!resources[0]) {
+      return null;
+    }
+
+    const ckEditorConfig = {
+      table: {
+          toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+      },
+      toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'insertTable' ],
+      heading: {
+          options: []
+      }
+    };
+
+    return (
+      <CKEditor
+        editor={ ClassicEditor }
+        data={ resources[0].data }
+        config={ ckEditorConfig }
+        onChange={ this.onCKEditorChange }
+      />
     );
   }
 
@@ -200,6 +304,43 @@ class TabEditor extends React.Component<Props, State> {
       tabToUpdate.resources[0].data = "";
     }
 
+    this.setState({
+      selectedResourceType: value
+    });
+
+    onSave(tabToUpdate);
+  }
+
+  /**
+   * Event handler for open edit modal click
+   */
+  private openEditModalClick = () => {
+    this.setState({
+      showCKEditorModal: true
+    });
+  }
+
+  /**
+   * Event handler for edit modal close
+   */
+  private onEditModalClose = () => {
+    this.setState({
+      showCKEditorModal: false
+    });
+  }
+
+  /**
+   * Event handler for CKEditor change
+   *
+   * @param event event
+   * @param editor editor data
+   */
+  private onCKEditorChange = (event: any, editor: any) => {
+    const { onSave } = this.props;
+    const data = editor.getData() as string;
+
+    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    tabToUpdate.resources[0].data = data;
     onSave(tabToUpdate);
   }
 
