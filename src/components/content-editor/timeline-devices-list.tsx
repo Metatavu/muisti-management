@@ -26,7 +26,7 @@ const TimelineDevicesList: React.FC<Props> = ({
 }) => {
   return (
     <List className={ classes.list }>
-      { 
+      {
         devices.map(device => {
           return (
             <ListItem

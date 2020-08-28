@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionPageTransition, ExhibitionPageTransitionOptionsMorphView } from "../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, Divider, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -108,20 +108,21 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
     }
 
     return selectedTransition.options.morph.views.map((view, index) => {
-      return (<>
-        <Grid item xs={ 5 }>
-          { this.renderSourceSelect(view, index, sourcePageLayout) }
-        </Grid>
-        <Grid item xs={ 5 }>
-          { this.renderTargetSelect(view, index, targetLayouts) }
-        </Grid>
-        <Grid item xs={ 2 }>
-          <IconButton color="primary" onClick={ () => this.onDeleteViewPair(index) }>
-            <DeleteIcon />
-          </IconButton>
-        </Grid>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-      </>);
+      return (
+        <>
+          <Grid item xs={ 5 }>
+            { this.renderSourceSelect(view, index, sourcePageLayout) }
+          </Grid>
+          <Grid item xs={ 5 }>
+            { this.renderTargetSelect(view, index, targetLayouts) }
+          </Grid>
+          <Grid item xs={ 2 }>
+            <IconButton color="primary" onClick={ () => this.onDeleteViewPair(index) }>
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        </>
+      );
     });
   }
 
@@ -134,19 +135,25 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
    */
   private renderSourceSelect = (view: ExhibitionPageTransitionOptionsMorphView, index: number, sourcePageLayout: PageLayout) => {
 
-    return (<>
-      <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.startOfTransition }</Typography>
-      <Select
-        fullWidth
-        label={ view.sourceId }
-        id="sourceId"
-        onChange={ this.handleViewSelectChange(index) }
-        name="sourceId"
-        value={ view.sourceId }
-      >
-        { this.getSourceLayoutViews(sourcePageLayout) }
-      </Select>
-    </>);
+    return (
+      <>
+        <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.startOfTransition }</Typography>
+        <FormControl>
+          <InputLabel>
+            { view.sourceId }
+          </InputLabel>
+          <Select
+            label={ view.sourceId }
+            id="sourceId"
+            onChange={ this.handleViewSelectChange(index) }
+            name="sourceId"
+            value={ view.sourceId }
+          >
+            { this.getSourceLayoutViews(sourcePageLayout) }
+          </Select>
+        </FormControl>
+      </>
+    );
   }
 
   /**
@@ -160,16 +167,20 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
     const { selectedTransition } = this.props;
     return (<>
       <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.endOfTransition }</Typography>
-      <Select
-        fullWidth
-        label={ view.targetId }
-        id="targetId"
-        onChange={ this.handleViewSelectChange(index) }
-        name="targetId"
-        value={ `${selectedTransition.targetLayoutId}:${view.targetId}` }
-      >
-        { this.getTargetLayoutViews(targetLayouts) }
-      </Select>
+      <FormControl>
+        <InputLabel>
+          { view.targetId }
+        </InputLabel>
+        <Select
+          label={ view.targetId }
+          id="targetId"
+          onChange={ this.handleViewSelectChange(index) }
+          name="targetId"
+          value={ `${selectedTransition.targetLayoutId}:${view.targetId}` }
+        >
+          { this.getTargetLayoutViews(targetLayouts) }
+        </Select>
+      </FormControl>
     </>);
   }
 

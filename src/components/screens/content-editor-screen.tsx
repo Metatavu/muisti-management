@@ -213,8 +213,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedDevice) {
       return (
         <TextField
-          variant="filled"
-          fullWidth
           label={ strings.generic.name }
           name="name"
           value={ selectedDevice.name }
@@ -250,7 +248,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
             onChange={ this.onPageDataChange }
             onLayoutChange={ this.onLayoutChange }
           />
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </AccordionDetails>
           { pageElements }
       </Accordion>
@@ -319,7 +316,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return (
       <Accordion key={ pageLayoutView.name }>
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
+          <Typography variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
           <Button
@@ -402,7 +399,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
             pages={ pages }
             onPageTransitionChange={ this.onTransitionChange }
           />
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </AccordionDetails>
       </Accordion>
     );
@@ -464,13 +460,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       const foundResource = selectedPage.resources[resourceIndex];
       return (
-        <AccordionDetails>
-          <ResourceEditor
-            resource={ foundResource }
-            resourceIndex={ resourceIndex }
-            onUpdate={ this.onUpdateResource }
-          />
-        </AccordionDetails>
+        <ResourceEditor
+          resource={ foundResource }
+          resourceIndex={ resourceIndex }
+          onUpdate={ this.onUpdateResource }
+        />
       );
     });
   }
@@ -909,7 +903,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         action: this.onDeletePageClick
       });
     }
-    
     return actionButtons;
   }
 

@@ -196,7 +196,9 @@
       },
       "textView": {
         "properties": {
-          "text": "Teksti"
+          "text": "Teksti",
+          "typeScripted": "Tyyppi: scripti",
+          "typeText:": "Tyyppi: teksti"
         }
       }
     },

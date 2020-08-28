@@ -87,7 +87,7 @@ class TransitionsEditor extends React.Component<Props, State> {
   private renderPageTransitions(transitionType: string, transitions: ExhibitionPageTransition[]) {
 
     const transitionItems = transitions.map((transition, transitionIndex) => {
-      return (<>
+      return (
         <ListItem button onClick={ () => this.onTransitionClick(transitionType, transition, transitionIndex) }>
           <Typography variant="h6">{ transition.transition.animation }</Typography>
           <ListItemSecondaryAction>
@@ -99,8 +99,7 @@ class TransitionsEditor extends React.Component<Props, State> {
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-
-      </>);
+      );
     });
 
     return (
@@ -145,54 +144,51 @@ class TransitionsEditor extends React.Component<Props, State> {
    */
   private renderDialogContent = () => {
     const { selectedTransition } = this.state;
-    return (<>
-        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-          <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.animation }</Typography>
-            <Select
-              fullWidth
-              labelId={ strings.contentEditor.editor.dialog.animation }
-              id="transitionDialogAnimation"
-              onChange={ this.handleSelectChange }
-              name="animation"
-              value={ selectedTransition?.transition.animation }
-            >
-              { this.getSelectItems(Object.keys(Animation)) }
-            </Select>
-            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          </Grid>
-          <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.timeInterpolation }</Typography>
-            <Select
-              fullWidth
-              labelId={ strings.contentEditor.editor.dialog.timeInterpolation }
-              id="transitionDialogTimeInterpolation"
-              onChange={ this.handleSelectChange }
-              name="timeInterpolation"
-              value={ selectedTransition?.transition.timeInterpolation }
-            >
-              { this.getSelectItems(Object.keys(AnimationTimeInterpolation)) }
-            </Select>
-            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          </Grid>
-          <Grid item xs={ 12 }>
-            <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.duration }</Typography>
-            <TextField
-              fullWidth
-              type="number"
-              name="duration"
-              value={ selectedTransition?.transition.duration }
-              onChange={ this.handleSelectChange }
-            />
-            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          </Grid>
-          <Grid item xs={ 12 }>
-            { selectedTransition?.transition.animation !== Animation.Fade &&
-              this.renderTransitionElementEditor()
-            }
-          </Grid>
+    return (
+      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={ 12 }>
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.animation }</Typography>
+          <Select
+            labelId={ strings.contentEditor.editor.dialog.animation }
+            id="transitionDialogAnimation"
+            onChange={ this.handleSelectChange }
+            name="animation"
+            value={ selectedTransition?.transition.animation }
+          >
+            { this.getSelectItems(Object.keys(Animation)) }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
-    </>);
+        <Grid item xs={ 12 }>
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.timeInterpolation }</Typography>
+          <Select
+            labelId={ strings.contentEditor.editor.dialog.timeInterpolation }
+            id="transitionDialogTimeInterpolation"
+            onChange={ this.handleSelectChange }
+            name="timeInterpolation"
+            value={ selectedTransition?.transition.timeInterpolation }
+          >
+            { this.getSelectItems(Object.keys(AnimationTimeInterpolation)) }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </Grid>
+        <Grid item xs={ 12 }>
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.duration }</Typography>
+          <TextField
+            type="number"
+            name="duration"
+            value={ selectedTransition?.transition.duration }
+            onChange={ this.handleSelectChange }
+          />
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+        </Grid>
+        <Grid item xs={ 12 }>
+          { selectedTransition?.transition.animation !== Animation.Fade &&
+            this.renderTransitionElementEditor()
+          }
+        </Grid>
+      </Grid>
+    );
   }
 
   /**
@@ -205,14 +201,14 @@ class TransitionsEditor extends React.Component<Props, State> {
     if (!selectedTransition) {
       return <div/>;
     }
-    return (<>
+    return (
       <PageTransitionViewsEditor
         pages={ this.getCorrectPages() }
         selectedPage={ selectedPage }
         selectedTransition={ selectedTransition }
         onTransitionUpdate={ this.onTransitionUpdate }
       />
-    </>);
+    );
   }
 
   /**
