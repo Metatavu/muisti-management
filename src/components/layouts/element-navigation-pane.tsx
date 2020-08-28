@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Typography } from '@material-ui/core';
 import styles from "../../styles/element-navigation-pane";
 
 /**
@@ -14,7 +14,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Panel width (optional)
    *
-   * default: 320px
+   * default: 400px
    */
   width?: number;
 }
@@ -48,11 +48,11 @@ class ElementNavigationPane extends React.Component<Props, State> {
     const { classes, title, width, children } = this.props;
 
     return (
-      <div className={ classes.root } style={{ width: width ? width : 320 }}>
+      <div className={ classes.root } style={{ width: width ? width : 400 }}>
         <div className={ classes.container }>
           { title &&
             <div className={ classes.header }>
-              <h3>{ title }</h3>
+              <Typography variant="h3">{ title }</Typography>
             </div>
           }
           <div className={ classes.content }>

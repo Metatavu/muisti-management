@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -120,6 +120,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     toggleNode,
     isOpen,
     label,
+    name,
     path,
     active,
     ...otherProps
@@ -129,31 +130,29 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
     return (
-      <>
-        <ListItem { ...otherProps }
-          className={ classNames(classes.listItem, focused ? "focused" : "") }
-          style={{ paddingLeft: level * 10 }}
-        >
-          { hasNodes ?
-            <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
-              { toggleIcon(isOpen) }
-            </div>
-            :
-            <div style={{ display: 'inline-block', marginLeft: 25 }} />
-          }
-          { label }
-          <ListItemSecondaryAction>
-            { level > 0 &&
-              <IconButton size="small" edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
-                <DeleteIcon />
-              </IconButton>
-            }
-            <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
-              <AddIcon />
+      <ListItem { ...otherProps }
+        className={ classNames(classes.listItem, focused ? "focused" : "") }
+        style={{ paddingLeft: level * 10 }}
+      >
+        { hasNodes ?
+          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
+            { toggleIcon(isOpen) }
+          </div>
+          :
+          <div style={{ display: 'inline-block', marginLeft: 25 }} />
+        }
+        <ListItemText primary={ name } secondary={ label } />
+        <ListItemSecondaryAction>
+          { level > 0 &&
+            <IconButton size="small" edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
+              <DeleteIcon />
             </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-      </>
+          }
+          <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
+            <AddIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
     );
   }
 
@@ -189,7 +188,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       );
     });
 
-    return (<>
+    return (
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={ 12 }>
           <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
@@ -235,7 +234,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
           />
         </Grid>
       </Grid>
-    </>);
+    );
   }
 
   /**
@@ -251,25 +250,23 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     });
 
     return (
-      <>
-        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-          <Grid item xs={ 12 }>
-            <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
-              { strings.layoutEditor.addLayoutViewDialog.widget }
-            </InputLabel>
-            <Select
-              variant="filled"
-              labelId="widget"
-              fullWidth
-              name="widget"
-              value={ newPageLayoutView ? newPageLayoutView.widget : "" }
-              onChange={ this.onWidgetChange }>
-              { widgetItems }
-            </Select>
-            <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          </Grid>
+      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={ 12 }>
+          <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+            { strings.layoutEditor.addLayoutViewDialog.widget }
+          </InputLabel>
+          <Select
+            variant="filled"
+            labelId="widget"
+            fullWidth
+            name="widget"
+            value={ newPageLayoutView ? newPageLayoutView.widget : "" }
+            onChange={ this.onWidgetChange }>
+            { widgetItems }
+          </Select>
+          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
-      </>
+      </Grid>
     );
   }
 
