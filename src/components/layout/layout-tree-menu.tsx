@@ -6,7 +6,6 @@ import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, Li
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/AddCircle';
 import classNames from "classnames";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
