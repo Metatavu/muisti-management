@@ -9,7 +9,7 @@ import styles from "../../../styles/add-device-editor";
 interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
   switchId: string;
-  switchOptions: string[] ;
+  switchOptions: string[];
   disabled?: boolean;
 
   /**
