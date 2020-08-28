@@ -539,7 +539,9 @@
       "tabs" : {
         "title": "Välilehdet",
         "add": "Lisää välilehti",
-        "label": "Otsikko"
+        "label": "Otsikko",
+        "properties": "Ominaisuudet",
+        "resources": "Resurssit"
       },
 
       "dialog": {

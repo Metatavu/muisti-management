@@ -1,4 +1,4 @@
-import { PageLayoutWidgetType, PageLayoutViewPropertyType } from "../../generated/client";
+import { PageLayoutWidgetType, ExhibitionPageResourceType } from "../../generated/client";
 
 /**
  * File containing all constants/filters for content editor.
@@ -23,8 +23,7 @@ export const allowedWidgetTypes = [
  * TODO: This should be defined in api-spec
  */
 export interface TabStructure {
-  contentContainerId: string;
-  tabs?: Tab[];
+  tabs: Tab[];
 }
 
 /**
@@ -32,8 +31,8 @@ export interface TabStructure {
  */
 export interface Tab {
   label: string;
-  properties?: TabProperty[];
-  resources?: TabResource[];
+  properties: TabProperty[];
+  resources: TabResource[];
 }
 
 /**
@@ -51,5 +50,5 @@ export interface TabProperty {
 export interface TabResource {
   id: string;
   data: string;
-  type: PageLayoutViewPropertyType;
+  type: ExhibitionPageResourceType;
 }

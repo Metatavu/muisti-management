@@ -37,7 +37,7 @@ import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
-import { allowedWidgetTypes, TabStructure, Tab } from "../content-editor/constants";
+import { allowedWidgetTypes, TabStructure, Tab, TabProperty } from "../content-editor/constants";
 import TabEditor from "../content-editor/tabs-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
@@ -348,12 +348,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Render tabs
    *
-   * @param selectedPage selected page
    * @param pageLayoutView page layout view
-   * @param idList list resource ids
    */
   private renderTabs = (pageLayoutView: PageLayoutView) => {
-    const elementItems = this.getTabs();
+    const tabItems = this.getTabs();
 
     return (
       <Accordion key={ pageLayoutView.name }>
@@ -363,7 +361,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Typography>
           <Button
             variant="text"
-            onClick={ this.onAddTab(pageLayoutView.id) }
+            onClick={ this.onAddTab() }
           >
             { strings.contentEditor.editor.tabs.add }
           </Button>
@@ -372,7 +370,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { strings.contentEditor.editor.tabs.title }
           </Typography>
-          { elementItems }
+          { tabItems }
         </AccordionDetails>
       </Accordion>
     );
@@ -486,6 +484,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render tab list
    */
   private renderTabList = () => {
+    const { selectedTabIndex } = this.state;
     const tabStructure = this.getTabStructure();
     if (!tabStructure || !tabStructure.tabs) {
       return null;
@@ -499,6 +498,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           key={ tabIndex }
           button
           onClick={ this.onTabClick(tabIndex) }
+          selected={ selectedTabIndex === tabIndex }
         >
           <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
             { tab.label }
@@ -508,7 +508,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
               size="small"
               edge="end"
               aria-label="delete"
-              // onClick={ this.onDeleteTriggerClick(pageEventTriggerIndex) }
+              onClick={ this.onDeleteTabClick(tabIndex) }
             >
               <DeleteIcon />
             </IconButton>
@@ -1031,40 +1031,49 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Event handler for add tab
    *
-   * @param pageLayoutViewId page layout view id
    * @param event react mouse event
    */
-  private onAddTab = (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const { selectedPage } = this.state;
+  private onAddTab = () => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const { selectedPage, tabResourceIndex } = this.state;
+    event.stopPropagation();
 
-    if (!selectedPage) {
+    if (!selectedPage || tabResourceIndex === undefined) {
       return;
     }
 
-    event.stopPropagation();
+    /**
+     * TODO: This is needed for the first version of the tab editor.
+     * Remove this once we have more complex support for tab resources
+     */
+    const newProperty: TabProperty = {
+      name: "src",
+      type: "string",
+      value: "@resources/src"
+    };
 
-    const tabs: Tab[] = [];
     const newTab: Tab = {
-      label: "Tab 1",
-      properties: [],
+      label: "New tab",
+      properties: [
+        newProperty
+      ],
       resources: []
     };
-    tabs.push(newTab);
 
-    const newTabStructure: TabStructure = {
-      contentContainerId: pageLayoutViewId,
-      tabs
-    };
+    const currentTabStructure = this.getTabStructure();
 
-    console.log(newTabStructure);
+    if (!currentTabStructure) {
+      return;
+    }
 
-    // this.setState(
-    //   produce((draft: State) => {
-    //     draft.selectedPage = selectedPage;
-    //     draft.selectedPage.eventTriggers.push(newTrigger);
-    //     draft.selectedTriggerIndex = draft.selectedPage.eventTriggers.length - 1;
-    //   })
-    // );
+    currentTabStructure.tabs.push(newTab);
+
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = selectedPage;
+        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(currentTabStructure);
+      })
+    );
   }
 
   /**
@@ -1110,6 +1119,32 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedTriggerIndex: undefined,
       selectedTabIndex: tabIndex
     });
+  }
+
+  /**
+   * Event handler for delete tab click
+   *
+   * @param tabIndex tab index to be deleted 
+   */
+  private onDeleteTabClick = (tabIndex: number) => () => {
+    const { selectedPage, tabResourceIndex } = this.state;
+    const tabStructure = this.getTabStructure();
+
+    if (!tabStructure || !tabStructure.tabs || !selectedPage || tabResourceIndex === undefined) {
+      return;
+    }
+
+    const tempTabs = tabStructure.tabs;
+    tempTabs.splice(tabIndex, 1);
+    tabStructure.tabs = tempTabs;
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = selectedPage;
+        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabStructure);
+        draft.selectedTabIndex = undefined;
+      })
+    );
   }
 
   /**
@@ -1429,8 +1464,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (tabResourceIndex !== undefined && selectedPage) {
       const data = selectedPage.resources[tabResourceIndex].data;
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
-      if (!parsed || !parsed.tabs) {
-        return;
+      if (!parsed) {
+        return { tabs: [] } as TabStructure;
       }
 
       return parsed;

@@ -544,7 +544,9 @@
       "tabs" : {
         "title": "Tabs",
         "add": "Add tab",
-        "label": "Label"
+        "label": "Label",
+        "properties": "Properties",
+        "resources": "Resources"
       },
   
       "dialog": {
