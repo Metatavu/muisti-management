@@ -63,7 +63,7 @@ export enum LinearLayoutOrientationValues {
 }
 
 /**
- * Tab layout mode options
+ * Tab layout mode values
  */
 export enum TabModeValues {
   Scrollable = "scrollable",
