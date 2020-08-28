@@ -63,7 +63,6 @@ class ButtonEditor extends React.Component<Props, State> {
         { this.renderTextStyle() }
         { this.renderAllCaps() }
         { this.renderButtonGravity() }
-        { this.renderBackgroundImage() }
       </>
     );
   }
@@ -251,34 +250,6 @@ class ButtonEditor extends React.Component<Props, State> {
           onSingleValueChange={ onValueChange }
         />
       </div>
-    );
-  }
-
-  /**
-   * Render button background image resource editor
-   */
-  private renderBackgroundImage = () => {
-    const { pageLayoutView, onValueChange } = this.props;
-
-    return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.button.backgroundImage }:
-          </Typography>
-          <GenericPropertyTextField
-            disabled
-            textFieldId={ LayoutButtonPropKeys.BackgroundImage }
-            textFieldType="text"
-            property={ getProperty(pageLayoutView, LayoutButtonPropKeys.BackgroundImage, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ onValueChange }
-          />
-        </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
     );
   }
 }

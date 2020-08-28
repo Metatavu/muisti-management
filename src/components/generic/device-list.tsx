@@ -49,17 +49,6 @@ class DeviceList extends React.Component<Props, State> {
         className={ classes.tabs }
       >
         { this.renderTabButtons() }
-
-        { /* Temporary link to new timeline component */ }
-        <ListItem
-          key="newTimeline"
-          button
-          selected={ false }
-          onClick={ () => { this.props.history.push(this.props.history.location.pathname.replace("timeline", "newTimeline")) } }
-        >
-          <Typography>{ "Uusi timeline" }</Typography>
-        </ListItem>
-
       </List>
     );
   }

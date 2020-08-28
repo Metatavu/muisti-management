@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Typography } from '@material-ui/core';
 import styles from "../../styles/components/generic/element-hierarchy-pane";
 
 /**
@@ -25,7 +25,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -50,10 +50,10 @@ class ElementSettingsPane extends React.Component<Props, State> {
   public render() {
     const { classes, width } = this.props;
     return (
-      <div className={ classes.root } style={{ width: width ? width : 320 }}>
+      <div className={ classes.root } style={{ width: width ? width : 400 }}>
         <div style={{ minWidth: width }} className={ classes.container }>
           <div className={ classes.header }>
-            <h3>{ this.props.title }</h3>
+            <Typography variant="h3">{ this.props.title }</Typography>
           </div>
           <div className={ classes.content }>
             { this.props.children }

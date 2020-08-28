@@ -388,6 +388,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutWidth: string;
       layoutHeight: string;
       backgroundColor: string;
+      hasBackgroundImage: string;
       paddings: {
         title: string;
         left: string;
@@ -434,12 +435,37 @@ export interface IStrings extends LocalizedStringsMethods {
       backgroundColor: string;
       allCaps: string;
       gravity: string;
-      backgroundImage: string;
     };
 
     linearLayout: {
       orientation: string;
     };
+
+    tab: {
+      mode: {
+        title: string;
+        scrollable: string;
+        fixed: string;
+      };
+      gravity: {
+        title: string;
+        center: string;
+        fill: string;
+      };
+      selectedIndicatorColor: string;
+      selectedIndicatorGravity: {
+        title: string;
+        bottom: string;
+        center: string;
+        top: string;
+        stretch: string;
+      };
+      textColorNormal: string;
+      textColorSelected: string;
+      unboundedRipple: string;
+      tabIndicatorFullWidth: string;
+      data: string;
+    }
 
     addLayoutViewDialog: {
       name: string;
@@ -449,7 +475,6 @@ export interface IStrings extends LocalizedStringsMethods {
       cancel: string;
       subLayout: string;
     };
-
   };
 
   contentVersion: {
@@ -512,6 +537,13 @@ export interface IStrings extends LocalizedStringsMethods {
         variableName: string;
         variableValue: string;
         selectPage: string;
+      };
+      tabs: {
+        title: string;
+        add: string;
+        label: string;
+        properties: string;
+        resources: string;
       };
       dialog: {
         animation: string;

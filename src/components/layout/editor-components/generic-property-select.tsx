@@ -2,7 +2,8 @@ import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
-import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues } from "../editor-constants/values";
+// tslint:disable-next-line: max-line-length
+import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";
 
 /**
  * Interface representing component properties
@@ -15,7 +16,9 @@ interface Props extends WithStyles<typeof styles> {
     typeof LayoutGravityValuePairs |
     typeof TextViewTextStyleValues |
     typeof TextViewTextAlignValues |
-    typeof LinearLayoutOrientationValues;
+    typeof LinearLayoutOrientationValues |
+    typeof TabGravityValues |
+    typeof SelectedTabIndicatorGravityValues;
 
   /**
    * On select change handler
@@ -84,6 +87,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
 
   /**
    * Handle select value change
+   *
    * @param event react change event
    */
   private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
@@ -113,6 +117,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
 
 /**
  * Get any enum keys
+ *
  * @param enumObject enum object
  */
 function enumKeys<T>(enumObject: T) {
@@ -121,6 +126,7 @@ function enumKeys<T>(enumObject: T) {
 
 /**
  * Get any enum values
+ *
  * @param enumObject enum object
  */
 function enumValues<T>(enumObject: T) {
