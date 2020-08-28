@@ -26,7 +26,6 @@ import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
-// import TimelineScreen from "./screens/timeline-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
 import ContentEditorScreen from "./screens/content-editor-screen";
 
@@ -160,23 +159,6 @@ class App extends React.Component<Props, State> {
                         />
                       )}
                     />
-                    {/* <Route
-                      path={[
-                        "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/oldTimeline",
-                        "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/oldTimeline"
-                      ]}
-                      exact={ true }
-                      render={({ history, match }) => (
-                        <TimelineScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          floorId={ match.params.floorId }
-                          roomId={ match.params.roomId }
-                          contentVersionId={ match.params.contentVersionId }
-                          groupContentVersionId={ match.params.groupContentVersionId }
-                        />
-                      )}
-                    /> */}
                     <Route
                       path={[
                         "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
