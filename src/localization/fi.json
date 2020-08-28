@@ -438,6 +438,32 @@
       "orientation": "Orientaatio"
     },
 
+    "tab": {
+      "mode": {
+        "title": "Välilehtien tila",
+        "scrollable": "Rullattavissa",
+        "fixed": "Kiinteä"
+      },
+      "gravity": {
+        "title": "Välilehden painotus",
+        "center": "Keskitys",
+        "fill": "Täytetty"
+      },
+      "selectedIndicatorColor": "Valitun välilehden väri",
+      "selectedIndicatorGravity": {
+        "title": "Valitun välilehden painotus",
+        "bottom": "Alas",
+        "center": "Keskitys",
+        "top": "Ylös",
+        "stretch": "Venytä"
+      },
+      "textColorNormal": "Välilehden tekstin värin",
+      "textColorSelected": "Valitun välilehden tekstin väri",
+      "unboundedRipple": "Rajoittamaton väre",
+      "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",
+      "data": "Data"
+    },
+
     "addLayoutViewDialog": {
       "title": "Lisää asettelun elementti",
       "name": "Elementin nimi",
@@ -509,6 +535,15 @@
         "variableValue": "Käyttäjän muuttujan arvo",
         "selectPage": "Valitse sivu"
       },
+
+      "tabs" : {
+        "title": "Välilehdet",
+        "add": "Lisää välilehti",
+        "label": "Otsikko",
+        "properties": "Ominaisuudet",
+        "resources": "Resurssit"
+      },
+
       "dialog": {
         "animation": "Animaatio",
         "timeInterpolation": "Interpolointi",

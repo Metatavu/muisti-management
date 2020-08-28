@@ -117,7 +117,7 @@ export default createMuiTheme({
     MuiAccordionDetails: {
       root: {
         flexDirection: "column",
-        padding: spacing(1),
+        padding: spacing(2),
         backgroundColor: "##fff"
       }
     },

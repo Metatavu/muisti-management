@@ -20,7 +20,8 @@
 export enum ExhibitionPageResourceType {
     Text = 'text',
     Image = 'image',
-    Video = 'video'
+    Video = 'video',
+    Html = 'html'
 }
 
 export function ExhibitionPageResourceTypeFromJSON(json: any): ExhibitionPageResourceType {

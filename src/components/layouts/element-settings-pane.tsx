@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Typography } from "@material-ui/core";
 import styles from "../../styles/components/generic/element-settings-pane";
 import MenuIcon from "@material-ui/icons/Menu";
 import classNames from "classnames";
@@ -87,7 +87,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
         </div>
         <div style={{ minWidth: width }} className={ classNames( classes.container, open ? "" : "closed" ) }>
           <div className={ classes.header }>
-            <h3>{ this.props.title }</h3>
+            <Typography variant="h3">{ this.props.title }</Typography>
           </div>
           <div className={ classes.content }>
             { this.props.children }
