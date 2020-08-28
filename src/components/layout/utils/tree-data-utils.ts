@@ -277,6 +277,9 @@ export const getInitializedPageLayoutViewByWidgetType = (widget: PageLayoutWidge
     case PageLayoutWidgetType.MediaView:
       fillMediaProperties(layoutView);
       break;
+    case PageLayoutWidgetType.MaterialTabLayout:
+      fillTabProperties(layoutView);
+      break;
     default:
       break;
   }
@@ -334,6 +337,23 @@ const fillTextProperties = (layoutView: PageLayoutView): PageLayoutView => {
 const fillMediaProperties = (layoutView: PageLayoutView): PageLayoutView => {
   const src: PageLayoutViewProperty = {
     name: "src",
+    type: PageLayoutViewPropertyType.String,
+    value: `@resources/${uuid()}`
+  };
+
+  layoutView.properties.push(src);
+  return layoutView;
+};
+
+/**
+ * Fill TabLayout specific resources
+ *
+ * @param layoutView layout view
+ * @returns layout view with resource properties
+ */
+const fillTabProperties = (layoutView: PageLayoutView): PageLayoutView => {
+  const src: PageLayoutViewProperty = {
+    name: "data",
     type: PageLayoutViewPropertyType.String,
     value: `@resources/${uuid()}`
   };
