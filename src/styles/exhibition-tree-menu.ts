@@ -18,10 +18,13 @@ export default createStyles({
   listItem: {
     cursor: 'pointer',
     position: 'relative',
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 0,
+    paddingBottom: 0,
     borderRadius: 0,
     transition: "background-color 0.2s ease-out, color 0.2s ease-out",
+    "& p": {
+      fontSize: 12,
+    },
     "&:hover": {
       backgroundColor: "#f2f2f2"
     },
@@ -29,6 +32,9 @@ export default createStyles({
       backgroundColor: theme.palette.secondary.main,
       color: "#fff",
       zIndex: 999,
+      "& p": {
+        color: "#fff",
+      }
     }
   },
 

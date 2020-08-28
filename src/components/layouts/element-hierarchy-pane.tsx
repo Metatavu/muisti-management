@@ -25,7 +25,7 @@ class ElementSettingsPane extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {

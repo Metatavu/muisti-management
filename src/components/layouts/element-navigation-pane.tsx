@@ -14,7 +14,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Panel width (optional)
    *
-   * default: 320px
+   * default: 400px
    */
   width?: number;
 }
