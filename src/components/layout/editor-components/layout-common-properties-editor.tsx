@@ -96,6 +96,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         { this.renderName() }
         { this.renderLayoutWidth() }
         { this.renderLayoutHeight() }
+        { this.renderLayoutElevation() }
         { this.renderLayoutBackgroundColor() }
         { this.renderBackgroundImage() }
         <div style={{ display: "flex" }}>
@@ -180,7 +181,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     return (
       <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h6"
@@ -203,6 +204,36 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
               />
+            <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  /**
+   * Render layout elevation editor
+   */
+  private renderLayoutElevation = () => {
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.Elevation, PageLayoutViewPropertyType.String);
+
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.commonComponents.elevation }:
+          </Typography>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyTextField
+              textFieldId={ LayoutPropKeys.Elevation }
+              textFieldType="number"
+              textFieldUnit="dp"
+              property={ foundProp }
+              onTextFieldChange={ this.onSingleValueChange }
+            />
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
           </div>
         </div>

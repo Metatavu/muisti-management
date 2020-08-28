@@ -387,6 +387,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
       layoutWidth: string;
       layoutHeight: string;
+      elevation: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {

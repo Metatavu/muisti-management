@@ -387,6 +387,7 @@
       "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
+      "elevation": "Layout elevation",
       "backgroundColor": "Layout background color",
       "hasBackgroundImage": "Layout has background image",
       "paddings": {
