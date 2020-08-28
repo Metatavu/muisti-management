@@ -161,21 +161,23 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           case "layout_gravity":
             property.value.split("|").forEach(gravityValue => {
               switch (gravityValue) {
-                case "top":
-                  if (!(result.left === 0) && !(result.right === 0)) {
+                case "top": {
+                  if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
                     const width = parseFloat(String(result.width));
                     result.marginLeft = (width / 2) - width;
                   }
                   result.top = 0;
+                }
                 break;
-                case "bottom":
-                  if (!(result.left === 0) && !(result.right === 0)) {
+                case "bottom": {
+                  if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
                     const width = parseFloat(String(result.width));
                     result.marginLeft = (width / 2) - width;
                   }
                   result.bottom = 0;
+                }
                 break;
                 case "right":
                   result.right = 0;
@@ -183,7 +185,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
                 case "left":
                   result.left = 0;
                 break;
-                case "center":
+                case "center": {
                   if (result.left === 0 || result.right === 0) {
                     result.top = "50%";
                     const height = parseFloat(String(result.height));
@@ -196,6 +198,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
                     const height = parseFloat(String(result.height));
                     result.marginTop = (height / 2) - height;
                   }
+                }
+                break;
                 default:
               }
             });
