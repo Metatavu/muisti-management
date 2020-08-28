@@ -461,6 +461,7 @@ export interface IStrings extends LocalizedStringsMethods {
         top: string;
         stretch: string;
       };
+      selectedIndicatorHeight: string;
       textColorNormal: string;
       textColorSelected: string;
       unboundedRipple: string;

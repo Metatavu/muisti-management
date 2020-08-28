@@ -458,7 +458,8 @@
         "top": "Ylös",
         "stretch": "Venytä"
       },
-      "textColorNormal": "Välilehden tekstin värin",
+      "selectedIndicatorHeight": "Valitun välilehden korkeus",
+      "textColorNormal": "Välilehden tekstin väri",
       "textColorSelected": "Valitun välilehden tekstin väri",
       "unboundedRipple": "Rajoittamaton väre",
       "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",

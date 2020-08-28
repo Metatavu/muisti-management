@@ -461,6 +461,7 @@
         "top": "Top",
         "stretch": "Stretch"
       },
+      "selectedIndicatorHeight": "Selected tab indicator height",
       "textColorNormal": "Tab text color",
       "textColorSelected": "Tab text color when selected",
       "unboundedRipple": "Unbounded ripple",
