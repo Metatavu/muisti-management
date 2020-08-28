@@ -9,7 +9,7 @@ import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
 import GravityIcon from '@material-ui/icons/OpenWith';
 
 import theme from "../../../styles/theme";
-import { LayoutGravityValuePairs } from "../editor-constants/values";
+import { LayoutGravityValuePairs, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";
 import GenericPropertySelect from "./generic-property-select";
 
 /**
@@ -17,6 +17,7 @@ import GenericPropertySelect from "./generic-property-select";
  */
 interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
+  gravityOptions?: typeof TabGravityValues | typeof SelectedTabIndicatorGravityValues;
 
   /**
    * On singe page layout view property change handler
@@ -52,7 +53,24 @@ class GravityEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, property } = this.props;
+    const { classes, property, gravityOptions } = this.props;
+
+    if (gravityOptions) {
+      return (
+        <div style={{ display: "flex" }}>
+          <div style={{ marginTop: theme.spacing(2), marginLeft: theme.spacing(4), display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <GravityIcon style={{ marginRight: theme.spacing(2) }} />
+              <GenericPropertySelect
+                property={ property }
+                onSelectChange={ this.props.onSingleValueChange }
+                selectItemType={ gravityOptions }
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div style={{ display: "flex" }}>
@@ -94,6 +112,7 @@ class GravityEditor extends React.Component<Props, State> {
 
   /**
    * Render gravity button
+   *
    * @param value current property value
    * @param cssProp css property for rotating the arrow icon
    */
@@ -111,6 +130,7 @@ class GravityEditor extends React.Component<Props, State> {
 
   /**
    * On gravity icon click handler
+   *
    * @param value button element value
    */
   private onGravityClick = (value: string) => {

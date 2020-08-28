@@ -216,7 +216,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const { exhibitionId, exhibitionFloorId, roomId, contentVersionId, accessToken } = this.props;
 
     const breadCrumbs: BreadcrumbData[] = [];
-    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/v4/exhibitions" });
+    breadCrumbs.push({ name: strings.exhibitions.listTitle, url: "/exhibitions" });
 
     if (!exhibitionId) {
       return;
@@ -239,7 +239,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       exhibitionFloorsApi.findExhibitionFloor({ exhibitionId: exhibitionId, floorId: exhibitionFloorId }),
     ]);
 
-    breadCrumbs.push({ name: floor.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}` });
+    breadCrumbs.push({ name: floor.name, url: `/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}` });
     this.setState({ selectedFloor: floor, breadCrumbs });
 
     if (!roomId) {
@@ -256,7 +256,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
       return;
     }
 
-    breadCrumbs.push({ name: selectedRoom?.name, url: `/v4/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}/rooms/${roomId}` });
+    breadCrumbs.push({ name: selectedRoom?.name, url: `/exhibitions/${exhibitionId}/floorplan/floors/${exhibitionFloorId}/rooms/${roomId}` });
     this.setState({ selectedRoom: selectedRoom, rooms: rooms, breadCrumbs });
 
     if (!contentVersionId) {

@@ -18,7 +18,7 @@ export default createStyles({
     gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     height: "100%",
-    width: 320,
+    width: 400,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0,
@@ -30,7 +30,7 @@ export default createStyles({
     alignItems: "center",
     padding: "0 12px",
     borderBottom: "1px solid #ddd",
-    height: 55,
+    height: 48,
     "& h3": {
       whiteSpace: "nowrap",
       width: "calc(100% - 50px)",

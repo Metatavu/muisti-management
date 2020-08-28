@@ -5,6 +5,7 @@ export enum LayoutPropKeys {
   LayoutWidth = "layout_width",
   LayoutHeight = "layout_height",
   LayoutBackgroundColor = "background",
+  BackgroundImage = "backgroundImage",
   LayoutGravity = "layout_gravity"
 }
 
@@ -57,7 +58,6 @@ export enum LayoutButtonPropKeys {
   Width = "width",
   Height = "height",
   Background = "background",
-  BackgroundImage = "backgroundImage",
   TextColor = "textColor",
   TextResources = "text",
   TextStyle = "textStyle",
@@ -71,4 +71,19 @@ export enum LayoutButtonPropKeys {
  */
 export enum LayoutLinearLayoutPropKeys {
   Orientation = "orientation",
+}
+
+/**
+ * Tab layout property keys
+ */
+export enum LayoutTabPropKeys {
+  TabMode = "tabMode",
+  TabGravity = "tabGravity",
+  SelectedTabIndicatorColor = "selectedTabIndicatorColor",
+  SelectedTabIndicatorGravity = "selectedTabIndicatorGravity",
+  TabTextColorNormal = "tabTextColorNormal",
+  TabTextColorSelected = "tabTextColorSelected",
+  UnboundedRipple = "unboundedRipple",
+  TabIndicatorFullWidth = "tabIndicatorFullWidth",
+  Data = "data",
 }

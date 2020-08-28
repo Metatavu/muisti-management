@@ -196,7 +196,9 @@
       },
       "textView": {
         "properties": {
-          "text": "Teksti"
+          "text": "Teksti",
+          "typeScripted": "Tyyppi: scripti",
+          "typeText:": "Tyyppi: teksti"
         }
       }
     },
@@ -385,6 +387,7 @@
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
       "backgroundColor": "Asettelun taustaväri",
+      "hasBackgroundImage": "Asettelulla on taustakuva",
       "paddings": {
         "left": "Täyte vasemmalla",
         "right": "Täyte oikealla",
@@ -428,12 +431,37 @@
       "textSize": "Napin tekstin koko (dp)",
       "backgroundColor": "Napin taustaväri",
       "allCaps": "Kaikki kirjaimet isolla",
-      "gravity": "Napin tekstin painotus",
-      "backgroundImage": "Napin taustakuva"
+      "gravity": "Napin tekstin painotus"
     },
 
     "linearLayout": {
       "orientation": "Orientaatio"
+    },
+
+    "tab": {
+      "mode": {
+        "title": "Välilehtien tila",
+        "scrollable": "Rullattavissa",
+        "fixed": "Kiinteä"
+      },
+      "gravity": {
+        "title": "Välilehden painotus",
+        "center": "Keskitys",
+        "fill": "Täytetty"
+      },
+      "selectedIndicatorColor": "Valitun välilehden väri",
+      "selectedIndicatorGravity": {
+        "title": "Valitun välilehden painotus",
+        "bottom": "Alas",
+        "center": "Keskitys",
+        "top": "Ylös",
+        "stretch": "Venytä"
+      },
+      "textColorNormal": "Välilehden tekstin värin",
+      "textColorSelected": "Valitun välilehden tekstin väri",
+      "unboundedRipple": "Rajoittamaton väre",
+      "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",
+      "data": "Data"
     },
 
     "addLayoutViewDialog": {
@@ -472,6 +500,8 @@
       "indexPageId": "Laitteen etusivu",
       "pageName": "Sivun nimi",
       "device": "Laite",
+      "saveDevice": "Tallenna laite",
+      "savePage": "Tallenna sivu",
       "layout": "Asettelu",
       "content": "Sisältö",
       "properties": "Ominaisuudet",
@@ -505,6 +535,15 @@
         "variableValue": "Käyttäjän muuttujan arvo",
         "selectPage": "Valitse sivu"
       },
+
+      "tabs" : {
+        "title": "Välilehdet",
+        "add": "Lisää välilehti",
+        "label": "Otsikko",
+        "properties": "Ominaisuudet",
+        "resources": "Resurssit"
+      },
+
       "dialog": {
         "animation": "Animaatio",
         "timeInterpolation": "Interpolointi",

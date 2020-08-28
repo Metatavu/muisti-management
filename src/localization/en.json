@@ -196,7 +196,9 @@
       },
       "textView": {
         "properties": {
-          "text": "Text"
+          "text": "Text",
+          "typeScripted": "Type: scripted",
+          "typeText:": "Type: text"
         }
       }
     },
@@ -386,6 +388,7 @@
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
       "backgroundColor": "Layout background color",
+      "hasBackgroundImage": "Layout has background image",
       "paddings": {
         "title": "Layout paddings",
         "left": "Padding left",
@@ -431,12 +434,37 @@
       "textSize": "Button text size (dp)",
       "backgroundColor": "Button background color",
       "allCaps": "All upper case",
-      "gravity": "Button gravity",
-      "backgroundImage": "Button background image"
+      "gravity": "Button gravity"
     },
 
     "linearLayout": {
       "orientation": "Orientation"
+    },
+
+    "tab": {
+      "mode": {
+        "title": "Tab mode",
+        "scrollable": "Scrollable",
+        "fixed": "Fixed"
+      },
+      "gravity": {
+        "title": "Tab gravity",
+        "center": "Center",
+        "fill": "Fill"
+      },
+      "selectedIndicatorColor": "Selected tab indicator color",
+      "selectedIndicatorGravity": {
+        "title": "Selected tab indicator gravity",
+        "bottom": "Bottom",
+        "center": "Center",
+        "top": "Top",
+        "stretch": "Stretch"
+      },
+      "textColorNormal": "Tab text color",
+      "textColorSelected": "Tab text color when selected",
+      "unboundedRipple": "Unbounded ripple",
+      "tabIndicatorFullWidth": "Tab indicator full width",
+      "data": "Data"
     },
 
     "addLayoutViewDialog": {
@@ -475,6 +503,8 @@
       "pageName": "Page name",
       "indexPageId": "Device front page",
       "device": "Device",
+      "saveDevice": "Save device",
+      "savePage": "Save page",
       "layout": "Layout",
       "content": "Content",
       "properties": "Properties",
@@ -509,6 +539,14 @@
         "variableName": "User variable name",
         "variableValue": "User variable value",
         "selectPage": "Select page"
+      },
+
+      "tabs" : {
+        "title": "Tabs",
+        "add": "Add tab",
+        "label": "Label",
+        "properties": "Properties",
+        "resources": "Resources"
       },
   
       "dialog": {

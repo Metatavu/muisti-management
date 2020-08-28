@@ -302,9 +302,9 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     const { exhibitionId, roomId } = this.props;
     const { exhibition, room, contentVersion } = this.state;
     return [
-      { name: strings.exhibitions.listTitle, url: "/v4/exhibitions" },
-      { name: exhibition?.name || "", url: `/v4/exhibitions/${exhibitionId}/content` },
-      { name: room?.name || "", url: `/v4/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
+      { name: strings.exhibitions.listTitle, url: "/exhibitions" },
+      { name: exhibition?.name || "", url: `/exhibitions/${exhibitionId}/content` },
+      { name: room?.name || "", url: `/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
       { name: contentVersion?.name || "" }
     ];
   }

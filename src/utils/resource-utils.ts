@@ -1,8 +1,9 @@
-import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../generated/client";
+import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType } from "../generated/client";
 
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string[]>;
+  resourceToWidgetType: Map<string, PageLayoutWidgetType>;
 }
 
 /**
@@ -20,6 +21,7 @@ export default class ResourceUtils {
   public static getResourcesFromLayoutData = (layoutView: PageLayoutView): PageResourceCache => {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string[]> = new Map();
+    let resourceToWidgetType: Map<string, PageLayoutWidgetType> = new Map();
 
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
     resourceProperties.forEach(property => {
@@ -36,10 +38,12 @@ export default class ResourceUtils {
         if (foundElement) {
           foundElement.push(id);
           ids.set(layoutView.id, foundElement);
+          resourceToWidgetType.set(id, layoutView.widget);
         } else {
           const newList = [];
           newList.push(id);
           ids.set(layoutView.id, newList);
+          resourceToWidgetType.set(id, layoutView.widget);
         }
         foundResources.push(resource);
       }
@@ -51,13 +55,15 @@ export default class ResourceUtils {
         const childResources = ResourceUtils.getResourcesFromLayoutData(child);
         foundResources.push(...childResources.resources);
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
+        resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
       });
     }
-    const custom: PageResourceCache = {
+
+    return {
       resources: foundResources,
-      widgetIds: ids
-    };
-    return custom;
+      widgetIds: ids,
+      resourceToWidgetType: resourceToWidgetType
+    } as PageResourceCache;
   }
 }
 

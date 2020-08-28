@@ -1,33 +1,23 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, Paper } from "@material-ui/core";
+import { WithStyles, withStyles, List, ListItem, Paper, Typography } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/timeline-editor";
 import { ExhibitionDevice, ExhibitionPage } from "../../generated/client/models";
 import classNames from "classnames";
+import theme from "../../styles/theme";
+import strings from "../../localization/strings";
 import { DragDropContext, Droppable, Draggable, DropResult, ResponderProvided, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  /**
-   * TODO: Change to ExhibitionDevice when it supports page order
-   */
-  devices: ExtendedDevice[];
+  devices: ExhibitionDevice[];
   pages: ExhibitionPage[];
+  selectedDevice?: ExhibitionDevice;
   selectedPage?: ExhibitionPage;
   onClick: (page: ExhibitionPage) => () => void;
   onDragEnd: (deviceId: string) => (result: DropResult, provided: ResponderProvided) => void;
-}
-
-/**
- * TODO:
- * Remove when device includes page order
- * 
- * Interface describing device extended with page order
- */
-interface ExtendedDevice extends ExhibitionDevice {
-  pageOrder: string[];
 }
 
 /**
@@ -50,7 +40,7 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
  * @param device device
  * @param props component props
  */
-const renderTimelineRow = (device: ExtendedDevice, props: Props) => {
+const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
   const { classes, onDragEnd } = props;
   const pages: ExhibitionPage[] = [];
   device.pageOrder.forEach(pageId => {
@@ -118,7 +108,7 @@ const renderDraggablePage = (index: number, page: ExhibitionPage, props: Props) 
       draggableId={ page.id ?? "" }
       index={ index }
     >
-      { (provided, snapshot) => renderPageContent(page, props, provided, snapshot) }
+      { (provided, snapshot) => renderPageContent(index, page, props, provided, snapshot) }
     </Draggable>
   );
 }
@@ -126,12 +116,14 @@ const renderDraggablePage = (index: number, page: ExhibitionPage, props: Props) 
 /**
  * Render page content
  * 
+ * @param index index
  * @param page page
  * @param props component props
  * @param provided draggable provided by Draggable parent
  * @param snapshot snapshot from draggable state
  */
 const renderPageContent = (
+  index: number,
   page: ExhibitionPage,
   props: Props,
   provided: DraggableProvided,
@@ -142,6 +134,7 @@ const renderPageContent = (
   const { isDragging } = snapshot;
   const { selectedPage } = props;
   const selected = selectedPage?.id === page.id;
+  const isDeviceIndexPage = index === 0;
 
   return (
     <Paper
@@ -159,6 +152,17 @@ const renderPageContent = (
       { ...dragHandleProps }
     >
       { page.name }
+      { isDeviceIndexPage &&
+        <Typography
+          variant="body1"
+          style={{
+            marginLeft: theme.spacing(1),
+            fontSize: 12
+          }}
+        >
+          { `(${strings.contentEditor.editor.indexPageId})` }
+        </Typography>
+      }
     </Paper>
   );
 }

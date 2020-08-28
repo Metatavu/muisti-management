@@ -387,7 +387,8 @@ export class LayoutScreen extends React.Component<Props, State> {
     const treeData = [{
       key: pageLayout.data.id,
       path: path,
-      label: `${pageLayout.data.name || ""} | ${pageLayout.data.widget}`,
+      label: pageLayout.data.widget,
+      name: pageLayout.data.name,
       element: pageLayout.data,
       type: type,
       onSelect: () => this.onLayoutPageViewSelect(pageLayout.data, type, path),
@@ -414,7 +415,8 @@ export class LayoutScreen extends React.Component<Props, State> {
     return {
       key: layoutView.id,
       path: path,
-      label: `${layoutView.name || ""} | ${layoutView.widget}`,
+      label: layoutView.widget,
+      name: layoutView.name,
       element: layoutView,
       type: type,
       onSelect: () => this.onLayoutPageViewSelect(layoutView, type, path),
