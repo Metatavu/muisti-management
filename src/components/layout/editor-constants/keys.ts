@@ -5,6 +5,7 @@ export enum LayoutPropKeys {
   LayoutWidth = "layout_width",
   LayoutHeight = "layout_height",
   LayoutBackgroundColor = "background",
+  BackgroundImage = "backgroundImage",
   LayoutGravity = "layout_gravity"
 }
 
@@ -57,7 +58,6 @@ export enum LayoutButtonPropKeys {
   Width = "width",
   Height = "height",
   Background = "background",
-  BackgroundImage = "backgroundImage",
   TextColor = "textColor",
   TextResources = "text",
   TextStyle = "textStyle",
