@@ -160,20 +160,20 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           break;
           case "layout_gravity":
             property.value.split("|").forEach(gravityValue => {
-              const width = parseFloat(String(result.width));
-              const height = parseFloat(String(result.height));
+              const layoutWidth = parseFloat(String(result.width));
+              const layoutHeight = parseFloat(String(result.height));
               switch (gravityValue) {
                 case "top":
                   if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
-                    result.marginLeft = (width / 2) - width;
+                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
                   }
                   result.top = 0;
                 break;
                 case "bottom":
                   if ((result.left !== 0) && (result.right !== 0)) {
                     result.left = "50%";
-                    result.marginLeft = (width / 2) - width;
+                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
                   }
                   result.bottom = 0;
                 break;
@@ -186,12 +186,12 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
                 case "center":
                   if (result.left === 0 || result.right === 0) {
                     result.top = "50%";
-                    result.marginTop = (height / 2) - height;
+                    result.marginTop = (layoutHeight / 2) - layoutHeight;
                   } else {
                     result.top = "50%";
                     result.left = "50%";
-                    result.marginLeft = (width / 2) - width;
-                    result.marginTop = (height / 2) - height;
+                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
+                    result.marginTop = (layoutHeight / 2) - layoutHeight;
                   }
                 break;
                 default:
