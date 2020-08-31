@@ -68,7 +68,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
     if (src) {
       return (
-        <video key={ src } style={ videoStyles } autoPlay={ true }>
+        <video key={ src } style={ videoStyles } autoPlay={ true } controls={ true }>
           <source src={ src } />
         </video>
       );
