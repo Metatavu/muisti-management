@@ -122,17 +122,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public componentDidUpdate = async (prevProps: Props, prevState: State) => {
     const { exhibition } = this.props;
-    const { selectedPage, layouts } = this.state;
+    const { layouts } = this.state;
+
     if (!prevProps.exhibition && exhibition) {
       await this.fetchComponentData();
     }
 
-    if (
-      selectedPage &&
-      prevState.selectedPage &&
-      (prevState.selectedPage.id !== selectedPage.id || prevState.selectedPage.layoutId !== selectedPage.layoutId)
-    ) {
-      this.updateResources(layouts, selectedPage);
+    const previousPage = prevState.selectedPage;
+    const currentPage = this.state.selectedPage;
+
+    const pageChanged = this.isPageChanged(previousPage, currentPage);
+    const layoutChanged = this.isLayoutChanged(previousPage, currentPage);
+
+    if (currentPage && (pageChanged || layoutChanged)) {
+      this.updateResources(layouts, currentPage);
     }
   }
 
@@ -314,7 +317,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const eventTriggerItems = this.getEventTriggerItems(selectedPage, pageLayoutView);
 
     return (
-      <Accordion key={ pageLayoutView.name }>
+      <Accordion key={ pageLayoutView.id }>
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
           <Typography variant="h5">
             { pageLayoutView.name || "" }
@@ -459,6 +462,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       const foundResource = selectedPage.resources[resourceIndex];
       return (
         <ResourceEditor
+          key={ foundResource.id }
           resource={ foundResource }
           resourceIndex={ resourceIndex }
           onUpdate={ this.onUpdateResource }
@@ -546,6 +550,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
         return (
           <List
+            key={ trigger.id }
             disablePadding
             dense
             style={{ marginBottom: theme.spacing(1) }}
@@ -1497,6 +1502,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       return parsed;
     }
+  }
+
+  /**
+   * Checks if selected page has changed
+   * 
+   * @param previousPage previous selected page
+   * @param currentPage current selected page
+   * @returns true if selected page has changed, otherwise false
+   */
+  private isPageChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage): boolean => {
+    return !!((!previousPage && currentPage) || (previousPage && currentPage && currentPage.id !== previousPage.id));
+  }
+
+  /**
+   * Checks if page layout has changed
+   * 
+   * @param previousPage previous selected page
+   * @param currentPage current selected page
+   * @returns true if layout has changed, otherwise false
+   */
+  private isLayoutChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage) => {
+    return !!(previousPage && currentPage && previousPage.layoutId !== currentPage.layoutId);
   }
 }
 
