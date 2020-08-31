@@ -95,14 +95,14 @@ class PagePreview extends React.Component<Props, State> {
       .forEach(property => {
         switch (property.name) {
           case "layout_width":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value || "fill_parent" === property.value) {
               result.width = "100%";
             } else {
               this.handleUnknownProperty(property, "Unknown value");
             }
           break;
           case "layout_height":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value|| "fill_parent" === property.value) {
               result.height = "100%";
             } else {
               const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
