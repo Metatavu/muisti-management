@@ -50,7 +50,7 @@
     "react-redux": "^7.1.3",
     "react-resizable": "^1.10.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.3.0",
+    "react-scripts": "3.4.3",
     "react-simple-tree-menu": "^1.1.15",
     "react-zoom-pan-pinch": "^1.6.1",
     "slugify": "^1.4.0",
