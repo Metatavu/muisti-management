@@ -93,10 +93,9 @@ class FlowTextViewEditor extends React.Component<Props, State> {
    * Render flow text view text color editor
    */
   private renderTextColor = () => {
-    const { classes } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.colorPickerContainer }>
+      <>
         <Typography variant="h4">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: theme.spacing(2) }}>
@@ -113,7 +112,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
             />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
