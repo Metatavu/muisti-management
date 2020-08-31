@@ -99,6 +99,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     return (
       <TextField
         className={ classes.input }
+        fullWidth={ false }
         id="outlined-basic"
         name={ foundProperty.name }
         variant="standard"

@@ -149,11 +149,11 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text color editor
    */
   private renderTextColor = () => {
-    const { pageLayoutView, onValueChange, classes } = this.props;
+    const { pageLayoutView, onValueChange } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer } style={{ marginBottom: theme.spacing(2) }}>
+      <div style={{ marginBottom: theme.spacing(2) }}>
         <Typography variant="h6">{ strings.layoutEditor.textView.color }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(1) }}>
           <div style={{ marginRight: theme.spacing(2) }}>

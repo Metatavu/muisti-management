@@ -129,11 +129,11 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indicator color editor
    */
   private renderSelectedTabIndicatorColor = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorColor, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
+      <>
         <Typography
           style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
           variant="h6"
@@ -155,7 +155,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -220,11 +220,11 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render tab text color editor
    */
   private renderTabTextColorNormal = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorNormal, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
+      <>
         <Typography
           style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
           variant="h6"
@@ -246,7 +246,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -254,11 +254,11 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab text color editor
    */
   private renderTabTextColorSelected = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorSelected, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
+      <>
         <Typography
           style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
           variant="h6"
@@ -280,7 +280,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
