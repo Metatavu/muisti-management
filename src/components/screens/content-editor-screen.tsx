@@ -1512,7 +1512,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns true if selected page has changed, otherwise false
    */
   private isPageChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage): boolean => {
-    return !!((!previousPage && currentPage) || (previousPage && currentPage && currentPage.id !== previousPage.id));
+    return previousPage?.id !== currentPage?.id;
   }
 
   /**
