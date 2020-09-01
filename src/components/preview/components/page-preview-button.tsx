@@ -130,29 +130,35 @@ class PagePreviewButton extends React.Component<Props, State> {
         case "backgroundColor":
           result.backgroundColor = property.value;
         break;
-        case "width": {
-          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
-          if (px) {
-            result.width = px;
+        case "width":
+          const widthPixels = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (widthPixels) {
+            result.width = widthPixels;
           } else {
-            console.log("Button: unknown width", property.value);
+            this.handleUnknownProperty(property, `unknown width ${property.value}`);
           }
-          break;
-        }
-        case "height": {
-          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
-          if (px) {
-            result.height = px;
+        break;
+        case "height":
+          const heightPixels = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (heightPixels) {
+            result.height = heightPixels;
           } else {
-            console.log("Button: unknown height", property.value);
+            this.handleUnknownProperty(property, `unknown height ${property.value}`);
           }
-          break;
-        }
-        case "textColor": {
+        break;
+        case "textColor":
           result.color = property.value;
-          break;
-        }
+        break;
+        case "textSize":
+          const fontSizePixels = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (fontSizePixels) {
+            result.fontSize = fontSizePixels;
+          } else {
+            this.handleUnknownProperty(property, `unknown font size ${property.value}`);
+          }
+        break;
         default:
+        break;
       }
     });
 
