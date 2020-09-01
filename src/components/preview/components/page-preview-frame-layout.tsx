@@ -9,6 +9,7 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import PagePreviewUtils from "./page-preview-utils";
+import AndroidUtils from "../../../utils/android-utils";
 
 /**
  * Interface representing component properties
@@ -52,8 +53,10 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     return (
       <Measure onResize={ this.props.onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } style={ this.resolveStyles() }>
-            { this.renderChildren() }
+          <div ref={ measureRef } style={ this.resolveContainerStyles() }>
+            <div style={ this.resolveStyles() }>
+              { this.renderChildren() }
+            </div>
           </div>
         )}
       </Measure>
@@ -65,12 +68,12 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private renderChildren = () => {
     const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
-      return <PagePreviewComponentEditor key={ `child-${index}` } 
+      return <PagePreviewComponentEditor key={ `child-${index}` }
         view={ child }
         resourceMap={ this.props.resourceMap }
-        displayMetrics={ this.props.displayMetrics } 
-        scale={ this.props.scale }        
-        handleLayoutProperties={ this.onHandleLayoutProperties }/>
+        displayMetrics={ this.props.displayMetrics }
+        scale={ this.props.scale }
+        handleLayoutProperties={ this.onHandleLayoutProperties }/>;
     });
 
     return (
@@ -91,19 +94,26 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   }
 
   /**
-   * Resolves component styles
-   * 
-   * @returns component styles
+   * Resolves component container styles
+   *
+   * @returns component container styles
    */
-  private resolveStyles = (): CSSProperties => {
+  private resolveContainerStyles = (): CSSProperties => {
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
+      display: "flex",
       position: "absolute"
     });
 
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
-        return;
+        switch (property.name) {
+          case "layout_gravity":
+            result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
+          break;
+          default:
+        }
+        return result;
       }
 
       switch (property.name) {
@@ -115,7 +125,31 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         break;
       }
     });
-    result.boxSizing = "border-box"
+    result.boxSizing = "border-box";
+
+    return result;
+  }
+
+  /**
+   * Resolves component styles
+   *
+   * @returns component styles
+   */
+  private resolveStyles = (): CSSProperties => {
+    const properties = this.props.view.properties;
+    const result: CSSProperties = this.props.handleLayoutProperties(properties, {});
+
+    properties.forEach(property => {
+      if (property.name.startsWith("layout_")) {
+        switch (property.name) {
+          case "layout_gravity":
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          break;
+        }
+        return result;
+      }
+    });
+    result.boxSizing = "border-box";
 
     return result;
   }
@@ -157,46 +191,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             if (margin) {
               result[property.name.substring(7)] = margin;
             }
-          break;
-          case "layout_gravity":
-            property.value.split("|").forEach(gravityValue => {
-              const layoutWidth = parseFloat(String(result.width));
-              const layoutHeight = parseFloat(String(result.height));
-              switch (gravityValue) {
-                case "top":
-                  if ((result.left !== 0) && (result.right !== 0)) {
-                    result.left = "50%";
-                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
-                  }
-                  result.top = 0;
-                break;
-                case "bottom":
-                  if ((result.left !== 0) && (result.right !== 0)) {
-                    result.left = "50%";
-                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
-                  }
-                  result.bottom = 0;
-                break;
-                case "right":
-                  result.right = 0;
-                break;
-                case "left":
-                  result.left = 0;
-                break;
-                case "center":
-                  if (result.left === 0 || result.right === 0) {
-                    result.top = "50%";
-                    result.marginTop = (layoutHeight / 2) - layoutHeight;
-                  } else {
-                    result.top = "50%";
-                    result.left = "50%";
-                    result.marginLeft = (layoutWidth / 2) - layoutWidth;
-                    result.marginTop = (layoutHeight / 2) - layoutHeight;
-                  }
-                break;
-                default:
-              }
-            });
           break;
           default:
             this.handleUnknownProperty(property, "Unknown layout property");
