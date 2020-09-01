@@ -184,6 +184,11 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     resources: {
       title: string;
+      mode: {
+        scripted: string;
+        dynamic: string;
+        static: string;
+      };
       imageView: {
         properties: {
           imageUrl: string;
@@ -197,8 +202,6 @@ export interface IStrings extends LocalizedStringsMethods {
       textView: {
         properties: {
           text: string;
-          typeScripted: string;
-          typeText: string;
         };
       };
     };

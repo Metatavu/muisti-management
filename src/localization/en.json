@@ -184,6 +184,11 @@
     },
     "resources": {
       "title": "Resources",
+      "mode": {
+        "scripted": "Scripted",
+        "dynamic": "Dynamic",
+        "static": "Static"
+      },
       "imageView": {
         "properties": {
           "imageUrl": "Image URL address"
@@ -196,9 +201,7 @@
       },
       "textView": {
         "properties": {
-          "text": "Text",
-          "typeScripted": "Type: scripted",
-          "typeText:": "Type: text"
+          "text": "Text"
         }
       }
     },
