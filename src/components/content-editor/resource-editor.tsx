@@ -139,14 +139,12 @@ class ResourceEditor extends React.Component<Props, State> {
    * @returns icon as JSX element
    */
   private renderModeIcon = (mode?: PageResourceMode): JSX.Element => {
-    switch (mode) {
+    switch (mode || PageResourceMode.Static) {
       case PageResourceMode.Scripted:
         return <CodeIcon />;
       case PageResourceMode.Dynamic:
         return <DynamicFeedIcon />;
-      case PageResourceMode.Static:
-      case undefined:
-      case null:
+      default:
         return <TextFieldsIcon />;
     }
   }
@@ -158,14 +156,12 @@ class ResourceEditor extends React.Component<Props, State> {
    * @returns title string
    */
   private resolveModeTitle = (mode?: PageResourceMode): string => {
-    switch (mode) {
+    switch (mode || PageResourceMode.Static) {
       case PageResourceMode.Scripted:
         return strings.exhibition.resources.mode.scripted;
       case PageResourceMode.Dynamic:
         return strings.exhibition.resources.mode.dynamic;
-      case PageResourceMode.Static:
-      case undefined:
-      case null:
+      default:
         return strings.exhibition.resources.mode.static;
     }
   }
