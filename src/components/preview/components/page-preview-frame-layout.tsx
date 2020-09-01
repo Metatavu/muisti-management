@@ -67,12 +67,13 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Renders layout child components
    */
   private renderChildren = () => {
+    const { displayMetrics, scale } = this.props;
     const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
       return <PagePreviewComponentEditor key={ `child-${index}` }
         view={ child }
         resourceMap={ this.props.resourceMap }
-        displayMetrics={ this.props.displayMetrics }
-        scale={ this.props.scale }
+        displayMetrics={ displayMetrics }
+        scale={ scale }
         handleLayoutProperties={ this.onHandleLayoutProperties }/>;
     });
 
@@ -136,8 +137,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {});
+    const { view, handleLayoutProperties } = this.props;
+    const properties = view.properties;
+    const result: CSSProperties = handleLayoutProperties(properties, {});
 
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
