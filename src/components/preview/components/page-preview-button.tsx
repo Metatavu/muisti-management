@@ -143,7 +143,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           if (heightPixels) {
             result.height = heightPixels;
           } else {
-            console.log("Button: unknown height: ", property.value);
+            this.handleUnknownProperty(property, `unknown height ${property.value}`);
           }
         break;
         case "textColor":
