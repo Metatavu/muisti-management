@@ -1523,7 +1523,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns true if layout has changed, otherwise false
    */
   private isLayoutChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage) => {
-    return !!(previousPage && currentPage && previousPage.layoutId !== currentPage.layoutId);
+    return previousPage?.layoutId !== currentPage?.layoutId;
   }
 }
 
