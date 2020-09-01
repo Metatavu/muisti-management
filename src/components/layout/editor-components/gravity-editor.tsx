@@ -140,8 +140,9 @@ class GravityEditor extends React.Component<Props, State> {
       return;
     }
 
+    const alreadySelected = value === property.value;
     const propertyToUpdate = property;
-    propertyToUpdate.value = value;
+    propertyToUpdate.value = !alreadySelected ? value : "";
     onSingleValueChange(propertyToUpdate);
   }
 }
