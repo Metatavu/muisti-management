@@ -135,7 +135,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           if (widthPixels) {
             result.width = widthPixels;
           } else {
-            console.log("Button: unknown width: ", property.value);
+            this.handleUnknownProperty(property, `unknown width ${property.value}`);
           }
         break;
         case "height":
