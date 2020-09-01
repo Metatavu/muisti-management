@@ -95,14 +95,14 @@ class PagePreview extends React.Component<Props, State> {
       .forEach(property => {
         switch (property.name) {
           case "layout_width":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value || "fill_parent" === property.value) {
               result.width = "100%";
             } else {
               this.handleUnknownProperty(property, "Unknown value");
             }
           break;
           case "layout_height":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value|| "fill_parent" === property.value) {
               result.height = "100%";
             } else {
               const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
@@ -111,6 +111,22 @@ class PagePreview extends React.Component<Props, State> {
               } else {
                 this.handleUnknownProperty(property, "Unknown value");
               }
+            }
+          break;
+          case "layout_marginTop":
+          case "layout_marginRight":
+          case "layout_marginBottom":
+          case "layout_marginLeft":
+          case "layout_paddingTop":
+          case "layout_paddingRight":
+          case "layout_paddingBottom":
+          case "layout_paddingLeft":
+            const propertyName = property.name.substring(7);
+            const pixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+            if (pixels) {
+              result[propertyName] = pixels;
+            } else {
+              this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
             }
           break;
           default:

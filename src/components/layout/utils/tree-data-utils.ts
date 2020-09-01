@@ -172,8 +172,9 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
   const value = updatedPageLayoutViewProperty.value;
   const type = updatedPageLayoutViewProperty.type;
 
+  const valueNotEmpty = value !== undefined && value !== "";
   const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
-  if (foundIndex < 0) {
+  if (foundIndex < 0 && valueNotEmpty) {
     const propertyToCreate: PageLayoutViewProperty = {
       name: name,
       value: value,
@@ -183,8 +184,12 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
   }
   else {
     const propToUpdate = { ...layoutViewToUpdate.properties[foundIndex] };
-    propToUpdate.value = value;
-    layoutViewToUpdate.properties.splice(foundIndex, 1, propToUpdate);
+    if (valueNotEmpty) {
+      propToUpdate.value = value;
+      layoutViewToUpdate.properties.splice(foundIndex, 1, propToUpdate);
+    } else {
+      layoutViewToUpdate.properties.splice(foundIndex, 1);
+    }
   }
   return layoutViewToUpdate;
 };
