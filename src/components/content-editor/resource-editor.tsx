@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ExhibitionPageResource, ExhibitionPageResourceType } from "../../generated/client";
+import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, InputAdornment, IconButton } from "@material-ui/core";
 import theme from "../../styles/theme";
@@ -11,6 +11,7 @@ import MediaLibrary from "../right-panel-editors/media-library";
 import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
 import CodeIcon from '@material-ui/icons/Code';
+import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
 
 /**
@@ -68,7 +69,7 @@ class ResourceEditor extends React.Component<Props, State> {
                 />
               </div>
               <div style={{ flexGrow: 0, marginRight: theme.spacing(2) }}>
-                { this.renderScriptedButton() }
+                { this.renderModeButton() }
               </div>
             </div>
           </>
@@ -84,7 +85,7 @@ class ResourceEditor extends React.Component<Props, State> {
                 resource={ resource }
                 onUrlChange={ this.updateResource }
               />
-              { this.renderScriptedButton() }
+              { this.renderModeButton() }
             </div>
           </>
         );
@@ -103,7 +104,7 @@ class ResourceEditor extends React.Component<Props, State> {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    { this.renderScriptedButton() }
+                    { this.renderModeButton() }
                   </InputAdornment>
                 )
               }}
@@ -115,27 +116,54 @@ class ResourceEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Renders scripted button
+   * Renders mode button
    */
-  private renderScriptedButton = () => {
+  private renderModeButton = () => {
     const { resource } = this.props;
     return (
       <IconButton
         size="small"
-        title={
-          resource.scripted ?
-          strings.exhibition.resources.textView.properties.typeScripted :
-          strings.exhibition.resources.textView.properties.typeText
-        }
+        title={ this.resolveModeTitle(resource.mode) }
         onClick={ () => this.onResourceScriptedClick() }
         edge="end"
       >
-        { resource.scripted ?
-          <CodeIcon /> :
-          <TextFieldsIcon />
-        }
+        { this.renderModeIcon(resource.mode) }
       </IconButton>
     );
+  }
+
+  /**
+   * Renders mode icon
+   * 
+   * @param mode page resource mode
+   * @returns icon as JSX element
+   */
+  private renderModeIcon = (mode?: PageResourceMode): JSX.Element => {
+    switch (mode || PageResourceMode.Static) {
+      case PageResourceMode.Scripted:
+        return <CodeIcon />;
+      case PageResourceMode.Dynamic:
+        return <DynamicFeedIcon />;
+      default:
+        return <TextFieldsIcon />;
+    }
+  }
+
+  /**
+   * Resolves mode title
+   * 
+   * @param mode page resource mode
+   * @returns title string
+   */
+  private resolveModeTitle = (mode?: PageResourceMode): string => {
+    switch (mode || PageResourceMode.Static) {
+      case PageResourceMode.Scripted:
+        return strings.exhibition.resources.mode.scripted;
+      case PageResourceMode.Dynamic:
+        return strings.exhibition.resources.mode.dynamic;
+      default:
+        return strings.exhibition.resources.mode.static;
+    }
   }
 
   /**
@@ -155,7 +183,17 @@ class ResourceEditor extends React.Component<Props, State> {
 
     onUpdate(resourceIndex,
       produce(resource, draft => {
-        draft.scripted = !draft.scripted;
+        switch (draft.mode || PageResourceMode.Static) {
+          case PageResourceMode.Scripted:
+            draft.mode = PageResourceMode.Dynamic;
+          break;
+          case PageResourceMode.Dynamic:
+            draft.mode = PageResourceMode.Static;
+          break;
+          default:
+            draft.mode = PageResourceMode.Scripted;
+          break;
+        }
       })
     );
   }
