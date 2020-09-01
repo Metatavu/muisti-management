@@ -113,6 +113,22 @@ class PagePreview extends React.Component<Props, State> {
               }
             }
           break;
+          case "layout_marginTop":
+          case "layout_marginRight":
+          case "layout_marginBottom":
+          case "layout_marginLeft":
+          case "layout_paddingTop":
+          case "layout_paddingRight":
+          case "layout_paddingBottom":
+          case "layout_paddingLeft":
+            const propertyName = property.name.substring(7);
+            const pixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+            if (pixels) {
+              result[propertyName] = pixels;
+            }else {
+              this.handleUnknownProperty(property, "Unknown value");
+            }
+          break;
           default:
             this.handleUnknownProperty(property, "Unknown layout property");
           break;
