@@ -116,7 +116,7 @@ class ResourceEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Renders scripted button
+   * Renders mode button
    */
   private renderModeButton = () => {
     const { resource } = this.props;
@@ -146,6 +146,7 @@ class ResourceEditor extends React.Component<Props, State> {
         return <DynamicFeedIcon />;
       case PageResourceMode.Static:
       case undefined:
+      case null:
         return <TextFieldsIcon />;
     }
   }
@@ -164,6 +165,7 @@ class ResourceEditor extends React.Component<Props, State> {
         return strings.exhibition.resources.mode.dynamic;
       case PageResourceMode.Static:
       case undefined:
+      case null:
         return strings.exhibition.resources.mode.static;
     }
   }
@@ -185,7 +187,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
     onUpdate(resourceIndex,
       produce(resource, draft => {
-        switch (draft.mode) {
+        switch (draft.mode || PageResourceMode.Static) {
           case PageResourceMode.Scripted:
             draft.mode = PageResourceMode.Dynamic;
           break;
