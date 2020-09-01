@@ -154,7 +154,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           if (fontSizePixels) {
             result.fontSize = fontSizePixels;
           } else {
-            console.log("Button: unknown font size: ", property.value)
+            this.handleUnknownProperty(property, `unknown font size ${property.value}`);
           }
         break;
         default:
