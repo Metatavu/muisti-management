@@ -125,8 +125,8 @@ class PagePreview extends React.Component<Props, State> {
             const pixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
             if (pixels) {
               result[propertyName] = pixels;
-            }else {
-              this.handleUnknownProperty(property, "Unknown value");
+            } else {
+              this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
             }
           break;
           default:
