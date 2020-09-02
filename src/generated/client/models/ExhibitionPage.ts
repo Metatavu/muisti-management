@@ -96,6 +96,12 @@ export interface ExhibitionPage {
     exitTransitions: Array<ExhibitionPageTransition>;
     /**
      * 
+     * @type {number}
+     * @memberof ExhibitionPage
+     */
+    orderNumber: number;
+    /**
+     * 
      * @type {string}
      * @memberof ExhibitionPage
      */
@@ -140,6 +146,7 @@ export function ExhibitionPageFromJSONTyped(json: any, ignoreDiscriminator: bool
         'eventTriggers': ((json['eventTriggers'] as Array<any>).map(ExhibitionPageEventTriggerFromJSON)),
         'enterTransitions': ((json['enterTransitions'] as Array<any>).map(ExhibitionPageTransitionFromJSON)),
         'exitTransitions': ((json['exitTransitions'] as Array<any>).map(ExhibitionPageTransitionFromJSON)),
+        'orderNumber': json['orderNumber'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -164,6 +171,7 @@ export function ExhibitionPageToJSON(value?: ExhibitionPage | null): any {
         'eventTriggers': ((value.eventTriggers as Array<any>).map(ExhibitionPageEventTriggerToJSON)),
         'enterTransitions': ((value.enterTransitions as Array<any>).map(ExhibitionPageTransitionToJSON)),
         'exitTransitions': ((value.exitTransitions as Array<any>).map(ExhibitionPageTransitionToJSON)),
+        'orderNumber': value.orderNumber,
     };
 }
 

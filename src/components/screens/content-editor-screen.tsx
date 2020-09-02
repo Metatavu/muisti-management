@@ -73,11 +73,13 @@ interface State {
   pages: ExhibitionPage[];
   view: View;
   selectedPage?: ExhibitionPage;
+  selectedLayoutView?: PageLayoutView;
   pageLayout?: PageLayout;
   resourceWidgetIdList?: Map<string, string[]>;
   selectedTriggerIndex?: number;
   tabResourceIndex?: number;
   selectedTabIndex?: number;
+  propertiesExpanded: boolean;
 }
 
 /**
@@ -97,7 +99,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices: [],
       pages: [],
       layouts: [],
-      view: "VISUAL"
+      view: "VISUAL",
+      propertiesExpanded: false
     };
   }
 
@@ -230,7 +233,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render content accordion
    */
   private renderContentAccordion = () => {
-    const { devices, layouts, selectedPage } = this.state;
+    const {
+      devices,
+      layouts,
+      selectedPage,
+      propertiesExpanded
+    } = this.state;
 
     if (!selectedPage) {
       return null;
@@ -239,7 +247,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const pageElements = this.constructPageElements();
 
     return(
-      <Accordion>
+      <Accordion
+        expanded={ propertiesExpanded }
+        onChange={ (_e, expanded) => this.setState({ propertiesExpanded: expanded }) }
+      >
         <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
           <Typography variant="h3">{ strings.contentEditor.editor.properties }</Typography>
         </AccordionSummary>
@@ -313,11 +324,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param idList list resource ids
    */
   private renderResources = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
+    const { selectedLayoutView } = this.state;
     const elementItems = this.getElementItems(idList, selectedPage);
     const eventTriggerItems = this.getEventTriggerItems(selectedPage, pageLayoutView);
 
     return (
-      <Accordion key={ pageLayoutView.id }>
+      <Accordion
+        key={ pageLayoutView.id }
+        expanded={ selectedLayoutView?.id === pageLayoutView.id }
+        onChange={ this.onExpandElement(pageLayoutView) }
+      >
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
           <Typography variant="h5">
             { pageLayoutView.name || "" }
@@ -354,10 +370,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    */
   private renderTabs = (pageLayoutView: PageLayoutView) => {
+    const { selectedLayoutView } = this.state;
     const tabItems = this.getTabs();
 
     return (
-      <Accordion key={ pageLayoutView.name }>
+      <Accordion
+        key={ pageLayoutView.name }
+        expanded={ selectedLayoutView?.id === pageLayoutView.id }
+        onChange={ this.onExpandElement(pageLayoutView) }
+      >
         <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { pageLayoutView.name || "" }
@@ -847,7 +868,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
-    const { selectedPage, pageLayout } = this.state;
+    const { selectedPage, pageLayout, selectedLayoutView } = this.state;
 
     if (!selectedPage || !pageLayout) {
       return;
@@ -865,9 +886,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <PagePreview
             screenOrientation={ pageLayout.screenOrientation }
             view={ view }
+            selectedView={ selectedLayoutView }
             resources={ resources }
             displayMetrics={ displayMetrics }
-            scale={ scale } />
+            scale={ scale }
+            onViewClick={ this.onLayoutViewClick }
+          />
         </PanZoom>
       </div>
     );
@@ -1178,6 +1202,29 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for layout view click
+   * 
+   * @param view page layout view
+   */
+  private onLayoutViewClick = (view: PageLayoutView) => {
+    this.setState({
+      selectedLayoutView: view,
+      propertiesExpanded: true
+    });
+  }
+
+  /**
+   * Event handler for expand element
+   * 
+   * @param view page layout view
+   */
+  private onExpandElement = (view: PageLayoutView) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
+    this.setState({
+      selectedLayoutView: expanded ? view : undefined
+    });
+  }
+
+  /**
    * Event handler for page drag end
    *
    * @param deviceId device id
@@ -1254,6 +1301,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       produce((draft: State) => {
         const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
         draft.selectedPage = selectedPage;
+        draft.selectedLayoutView = undefined;
 
         /**
          * TODO: Will need a update handler that can update page resources when layout is changed

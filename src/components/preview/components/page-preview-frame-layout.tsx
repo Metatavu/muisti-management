@@ -15,11 +15,14 @@ import PagePreviewUtils from "./page-preview-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
@@ -41,7 +44,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
     };
   }
 
@@ -49,10 +51,17 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { onResize } = this.props;
     return (
-      <Measure onResize={ this.props.onResize } bounds={ true }>
+      <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } style={ this.resolveStyles() }>
+          <div
+            ref={ measureRef }
+            style={ this.resolveStyles() }
+            onClick={ this.onClick }
+            onMouseOver={ this.onMouseOver }
+            onMouseOut={ this.onMouseOut }
+          >
             { this.renderChildren() }
           </div>
         )}
@@ -64,13 +73,29 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Renders layout child components
    */
   private renderChildren = () => {
-    const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
-      return <PagePreviewComponentEditor key={ `child-${index}` } 
-        view={ child }
-        resourceMap={ this.props.resourceMap }
-        displayMetrics={ this.props.displayMetrics } 
-        scale={ this.props.scale }        
-        handleLayoutProperties={ this.onHandleLayoutProperties }/>
+    const {
+      view,
+      selectedView,
+      layer,
+      resourceMap,
+      displayMetrics,
+      scale,
+      onViewClick
+    } = this.props;
+    
+    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
+      return (
+        <PagePreviewComponentEditor key={ `child-${index}` }
+          view={ child }
+          selectedView={ selectedView }
+          layer={ layer }
+          resourceMap={ resourceMap }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          handleLayoutProperties={ this.onHandleLayoutProperties }
+          onViewClick={ onViewClick }
+        />
+      );
     });
 
     return (
@@ -96,9 +121,11 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      position: "absolute"
+    const { view, layer, handleLayoutProperties } = this.props;
+    const properties = view.properties;
+    const result: CSSProperties = handleLayoutProperties(properties, {
+      position: "absolute",
+      zIndex: layer
     });
 
     properties.forEach(property => {
@@ -184,6 +211,33 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     });
 
     return result;
+  }
+
+  /**
+   * Event handler for mouse over
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  }
+
+  /**
+   * Event handler for mouse out
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  }
+
+  /**
+   * Event handler for mouse over
+   * 
+   * @param event react mouse event
+   */
+  private onClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
   }
 }
 
