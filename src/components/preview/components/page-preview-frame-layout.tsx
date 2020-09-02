@@ -35,7 +35,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -65,12 +65,12 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private renderChildren = () => {
     const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
-      return <PagePreviewComponentEditor key={ `child-${index}` } 
+      return <PagePreviewComponentEditor key={ `child-${index}` }
         view={ child }
         resourceMap={ this.props.resourceMap }
-        displayMetrics={ this.props.displayMetrics } 
-        scale={ this.props.scale }        
-        handleLayoutProperties={ this.onHandleLayoutProperties }/>
+        displayMetrics={ this.props.displayMetrics }
+        scale={ this.props.scale }
+        handleLayoutProperties={ this.onHandleLayoutProperties }/>;
     });
 
     return (
@@ -82,7 +82,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -92,7 +92,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
@@ -115,14 +115,14 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         break;
       }
     });
-    result.boxSizing = "border-box"
+    result.boxSizing = "border-box";
 
     return result;
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
