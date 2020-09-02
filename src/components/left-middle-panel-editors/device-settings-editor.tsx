@@ -63,19 +63,6 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
           value={ deviceData.name }
           onChange={ this.props.onChange }
         />
-        <InputLabel id="indexPageId">
-          { strings.exhibition.deviceSettingsEditor.indexPageId }
-        </InputLabel>
-        <Select
-          variant="filled"
-          labelId="indexPageId"
-          fullWidth
-          name="indexPageId"
-          value={ deviceData.indexPageId || strings.generic.undefined }
-          onChange={ this.props.onChange }
-        >
-          { selectIndexPageItems }
-        </Select>
       </>
     );
   }

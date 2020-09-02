@@ -36,34 +36,40 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
 
 /**
  * Renders single timeline row
- * 
+ *
  * @param device device
  * @param props component props
  */
 const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
-  const { classes, onDragEnd } = props;
-  const pages: ExhibitionPage[] = [];
-  device.pageOrder.forEach(pageId => {
-    const page = props.pages.find(page => page.id === pageId);
-    if (page) {
-      pages.push(page);
+  const { classes, onDragEnd, pages } = props;
+  const devicePages: ExhibitionPage[] = pages
+  .filter(page => page.deviceId === device.id)
+  .sort((page1, page2) => {
+    if (page1.orderNumber > page2.orderNumber) {
+      return 1;
     }
+
+    if (page1.orderNumber < page2.orderNumber) {
+      return -1;
+    }
+
+    return 0;
   });
 
   return (
-    <ListItem divider key={ device.id! } className={ classes.timelineRow }>
+    <ListItem divider key={ device.id } className={ classes.timelineRow }>
       <DragDropContext onDragEnd={ onDragEnd(device.id!) }>
         <Droppable droppableId="droppable" direction="horizontal">
-          { (provided, snapshot) => renderDroppableContent(pages, props, provided, snapshot) }
+          { (provided, snapshot) => renderDroppableContent(devicePages, props, provided, snapshot) }
         </Droppable>
       </DragDropContext>
     </ListItem>
   );
-}
+};
 
 /**
  * Renders timeline row droppable content
- * 
+ *
  * @param pages pages
  * @param props component props
  * @param provided droppable provided by Droppable parent
@@ -92,11 +98,11 @@ const renderDroppableContent = (
       { placeholder }
     </List>
   );
-}
+};
 
 /**
  * Renders page as draggable item
- * 
+ *
  * @param index page index in pages list
  * @param page page
  * @param props component props
@@ -111,11 +117,11 @@ const renderDraggablePage = (index: number, page: ExhibitionPage, props: Props) 
       { (provided, snapshot) => renderPageContent(index, page, props, provided, snapshot) }
     </Draggable>
   );
-}
+};
 
 /**
  * Render page content
- * 
+ *
  * @param index index
  * @param page page
  * @param props component props
@@ -165,6 +171,6 @@ const renderPageContent = (
       }
     </Paper>
   );
-}
+};
 
 export default withStyles(styles)(TimelineEditor);
