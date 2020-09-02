@@ -15,12 +15,17 @@ export default createStyles({
   },
 
   popover: {
-    position: "absolute"
+    position: "absolute",
+    zIndex: 2,
+    "& .sketch-picker": {
+      position: "relative",
+      zIndex: 4
+    }
   },
 
   overlay: {
-    zIndex: 2,
     position: "fixed",
+    zIndex: 3,
     top: 0,
     left: 0,
     bottom: 0,

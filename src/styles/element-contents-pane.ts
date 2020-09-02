@@ -22,7 +22,7 @@ export default createStyles({
     overflowY: "auto",
     backgroundColor: "#fbfbfb",
     height: "100%",
-    width: 420,
+    width: 450,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
