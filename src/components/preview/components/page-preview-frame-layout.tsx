@@ -74,9 +74,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     });
 
     return (
-      <div>
+      <>
         { result }
-      </div>
+      </>
     );
   }
 

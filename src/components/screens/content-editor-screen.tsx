@@ -27,7 +27,7 @@ import CodeEditor from "../editor/code-editor";
 import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 import strings from "../../localization/strings";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandMoreIcon from "@material-ui/icons/ChevronRight";
 import theme from "../../styles/theme";
 import ResourceUtils from "../../utils/resource-utils";
 import ResourceEditor from "../content-editor/resource-editor";
@@ -215,13 +215,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (selectedDevice) {
       return (
-        <TextField
-          label={ strings.generic.name }
-          name="name"
-          value={ selectedDevice.name }
-          onChange={ this.onDeviceDataChange }
-          style={{ marginTop: 10 }}
-        />
+        <div style={{ padding: theme.spacing(2) }}>
+          <TextField
+            label={ strings.generic.name }
+            name="name"
+            value={ selectedDevice.name }
+            onChange={ this.onDeviceDataChange }
+            style={{ marginTop: theme.spacing(1) }}
+          />
+        </div>
       );
     }
   }
@@ -313,12 +315,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param idList list resource ids
    */
   private renderResources = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
+    const { classes } = this.props;
     const elementItems = this.getElementItems(idList, selectedPage);
     const eventTriggerItems = this.getEventTriggerItems(selectedPage, pageLayoutView);
 
     return (
-      <Accordion key={ pageLayoutView.id }>
-        <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
+      <Accordion key={ pageLayoutView.id } className={ classes.resource }>
+        <AccordionSummary  expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
           <Typography variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
@@ -354,11 +357,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    */
   private renderTabs = (pageLayoutView: PageLayoutView) => {
+    const { classes } = this.props;
     const tabItems = this.getTabs();
 
     return (
-      <Accordion key={ pageLayoutView.name }>
-        <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
+      <Accordion key={ pageLayoutView.name } className={ classes.resource }>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
