@@ -184,6 +184,11 @@
     },
     "resources": {
       "title": "Resurssit",
+      "mode": {
+        "scripted": "Ohjelmoitu",
+        "dynamic": "Dynaaminen",
+        "static": "Staattinen"
+      },
       "imageView": {
         "properties": {
           "imageUrl": "Kuvan URL-osoite"
@@ -196,9 +201,7 @@
       },
       "textView": {
         "properties": {
-          "text": "Teksti",
-          "typeScripted": "Tyyppi: scripti",
-          "typeText:": "Tyyppi: teksti"
+          "text": "Teksti"
         }
       }
     },

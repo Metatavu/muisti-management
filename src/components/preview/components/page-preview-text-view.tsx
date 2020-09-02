@@ -189,7 +189,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
           if (px) {
-            result.fontSize = px
+            result.fontSize = px;
           } else {
             console.log("TextView: unknown textSize", property.value);
           }
