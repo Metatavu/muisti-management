@@ -1218,7 +1218,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       page.id !== movedPage.id
     ));
 
-    console.log(filteredPages);
     const updatedPages = this.resolvesNewPageOrderNumber(filteredPages, movedPage.orderNumber, newIndex);
     updatedPages.push( { ...movedPage, orderNumber: newIndex } );
 
