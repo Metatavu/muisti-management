@@ -1410,7 +1410,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       deviceId: selectedDevice.id!,
       exhibitionDevice: {
         ...selectedDevice,
-        // pageOrder: [ ...selectedDevice.pageOrder, createdPage.id! ]
       }
     });
 
