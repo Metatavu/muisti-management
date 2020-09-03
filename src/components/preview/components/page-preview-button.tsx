@@ -231,7 +231,7 @@ class PagePreviewButton extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for mouse over
+   * Event handler for mouse click
    * 
    * @param event react mouse event
    */
