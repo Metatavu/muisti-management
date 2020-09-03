@@ -13,6 +13,10 @@ export default createStyles({
     overflow: "auto"
   },
 
+  highlighted: {
+    boxShadow: "0px 0px 2px 5px rgba(0, 121, 233, 1)"
+  },
+
   previewComponent: {},
   relativeLayout: {}
 });

@@ -52,22 +52,17 @@ class PagePreviewVideoView extends React.Component<Props, State> {
    * Render
    */
   public render() {
-    const { view, selectedView, onResize } = this.props;
+    const { classes, view, selectedView, onResize } = this.props;
     const { mouseOver } = this.state;
     const selected = selectedView?.id === view.id;
-    const selectedHighlight = mouseOver || selected ?
-      "0px 0px 2px 5px rgba(0, 121, 233, 1)" :
-      "none";
 
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
           <div
             ref={ measureRef }
-            style={{
-              ...this.resolveStyles(),
-              boxShadow: selectedHighlight
-            }}
+            style={ this.resolveStyles() }
+            className={ mouseOver || selected ? classes.highlighted : "" }
             onClick={ this.onClick }
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }

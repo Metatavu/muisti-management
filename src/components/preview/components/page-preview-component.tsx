@@ -77,7 +77,6 @@ class PagePreviewComponent extends React.Component<Props, State> {
     const {
       view,
       selectedView,
-      layer,
       displayMetrics,
       scale,
       resourceMap,
@@ -90,8 +89,6 @@ class PagePreviewComponent extends React.Component<Props, State> {
       return null;
     }
 
-    const zIndex = layer ? layer + 1 : 1;
-
     switch (view.widget) {
       case "FrameLayout":
         return <PagePreviewFrameLayout
@@ -99,7 +96,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -111,7 +108,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -123,7 +120,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -135,7 +132,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -147,7 +144,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -159,7 +156,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -171,7 +168,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -183,7 +180,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -195,7 +192,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
           selectedView={ selectedView }
-          layer={ zIndex }
+          layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ resourceMap }
@@ -204,6 +201,15 @@ class PagePreviewComponent extends React.Component<Props, State> {
       default:
         return <Typography> Unsupported widget { view.widget } </Typography>;
     }
+  }
+
+  /**
+   * Returns current layer
+   * 
+   * @returns layer as number
+   */
+  private getLayer = (): number => {
+    return this.props.layer ? this.props.layer + 1 : 1;
   }
 }
 
