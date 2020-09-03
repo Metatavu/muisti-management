@@ -750,7 +750,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, groupContentVersionId } = this.props;
+    const { accessToken, exhibitionId, groupContentVersionId, contentVersionId } = this.props;
 
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
@@ -768,23 +768,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices.map(device =>
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId,
-          exhibitionDeviceId: device.id
+          exhibitionDeviceId: device.id,
+          contentVersionId: contentVersionId
         })
       )
     );
 
-    const devicesWithPageOrders: ExhibitionDevice[] = devices.map((device, index) => {
-      const pageOrder = device.pageOrder ?? devicePages[index].map(page => page.id!);
-      const indexPageId = pageOrder[0] ?? undefined;
-      return {
-        ...device,
-        pageOrder,
-        indexPageId
-      };
-    });
-
     const pages: ExhibitionPage[] = devicePages.flat();
-    const selectedDevice = devicesWithPageOrders[0];
+    const selectedDevice = devices[0];
     const selectedPage = pages.find(page => page.deviceId === selectedDevice.id);
 
     if (selectedPage) {
@@ -793,7 +784,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     this.setState({
       groupContentVersion,
-      devices: devicesWithPageOrders,
+      devices,
       pages,
       layouts,
       selectedDevice
@@ -1236,59 +1227,107 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param deviceId device id
    * @param result drop result
    */
-  private onPageDragEnd = (deviceId: string) => async (result: DropResult) => {
-    const { accessToken, exhibitionId } = this.props;
-    const { devices } = this.state;
+  private onPageDragEnd = (deviceId: string) => (result: DropResult) => {
     if (!result.destination) {
       return;
     }
 
-    const deviceIndex = devices.findIndex(device => device.id === deviceId);
-    if (deviceIndex < 0) {
+    const movedPageId = result.draggableId;
+    const oldIndex = result.source.index;
+    const newIndex = result.destination.index;
+
+    if (oldIndex === newIndex) {
       return;
     }
 
-    const pageOrder = this.reorderPages(
-      devices[deviceIndex].pageOrder,
-      result.source.index,
-      result.destination!.index
-    );
-    const indexPageId = pageOrder.length > 0 ? pageOrder[0] : "";
-
-    const exhibitionDevice: ExhibitionDevice = {
-      ...devices[deviceIndex],
-      pageOrder,
-      indexPageId
-    };
-
-    this.setState(
-      produce((draft: State) => {
-        draft.devices[deviceIndex] = exhibitionDevice;
-      })
-    );
-
-    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
-    await devicesApi.updateExhibitionDevice({
-      exhibitionId,
-      deviceId,
-      exhibitionDevice
-    });
+    this.updatePageOrderNumber(newIndex, movedPageId, deviceId);
   }
 
   /**
-   * Reorders device pages
+   * Update page order number
    *
-   * @param pageOrder page order
-   * @param prevIndex previous index
    * @param newIndex new index
+   * @param movedPageId moved pages uuid
+   * @param deviceId device where page belongs to
    * @returns new order as string list
    */
-  private reorderPages = (pageOrder: string[], prevIndex: number, newIndex: number): string[] => {
-    const result = Array.from(pageOrder);
-    const [removed] = result.splice(prevIndex, 1);
-    result.splice(newIndex, 0, removed);
+  private updatePageOrderNumber = (newIndex: number, movedPageId: string, deviceId: string) => {
+    const { contentVersionId } = this.props;
+    const { pages } = this.state;
 
-    return result;
+    const movedPage = pages.find(page => page.id === movedPageId);
+
+    if (!movedPage) {
+      return;
+    }
+
+    const filteredPages = pages.filter(page => (
+      page.deviceId === deviceId &&
+      page.contentVersionId === contentVersionId &&
+      page.id !== movedPage.id
+    ));
+
+    const updatedPages = this.resolvesNewPageOrderNumber(filteredPages, movedPage.orderNumber, newIndex);
+    updatedPages.push( { ...movedPage, orderNumber: newIndex } );
+
+    this.doPageOrderUpdate(updatedPages);
+  }
+
+  /**
+   * Updates new order numbers to pages within given list
+   *
+   * @param filteredPages list of pages that have been filtered by device and content version
+   * @param oldIndex old index of moved page
+   * @param newIndex new index of moved page
+   */
+  private resolvesNewPageOrderNumber = (filteredPages: ExhibitionPage[], oldIndex: number, newIndex: number): ExhibitionPage[] => {
+    const updatedPages: ExhibitionPage[] = [];
+
+    filteredPages.forEach(page => {
+      const pagesOrderNumber = page.orderNumber;
+      if (pagesOrderNumber > oldIndex && pagesOrderNumber <= newIndex) {
+        const newOrderNumber = page.orderNumber - 1;
+        updatedPages.push( { ...page, orderNumber: newOrderNumber } );
+      } else if (pagesOrderNumber < oldIndex && pagesOrderNumber >= newIndex) {
+        const newOrderNumber = page.orderNumber + 1;
+        updatedPages.push( { ...page, orderNumber: newOrderNumber } );
+      }
+    });
+
+    return updatedPages;
+  }
+
+  /**
+   * Do page order update to API and state
+   *
+   * @param pagesToUpdate list of pages that needs to be updated
+   */
+  private doPageOrderUpdate = async (pagesToUpdate: ExhibitionPage[]) => {
+    const { accessToken, exhibitionId } = this.props;
+
+    pagesToUpdate.forEach(pageToUpdate => {
+      this.setState(
+        produce((draft: State) => {
+          const pageIndex = draft.pages.findIndex(page => page.id === pageToUpdate.id);
+          if (pageIndex > -1) {
+            draft.pages[pageIndex] = pageToUpdate;
+          }
+        })
+      );
+    });
+
+    const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+    for (const pageToUpdate of pagesToUpdate) {
+      if (!pageToUpdate.id) {
+        return;
+      }
+
+      await exhibitionPagesApi.updateExhibitionPage({
+        exhibitionId: exhibitionId,
+        exhibitionPage: pageToUpdate,
+        pageId: pageToUpdate.id
+      });
+    }
   }
 
   /**
@@ -1381,7 +1420,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onAddPageClick = async () => {
     const { contentVersionId, accessToken, exhibitionId } = this.props;
-    const { layouts, selectedDevice, devices } = this.state;
+    const { layouts, selectedDevice, devices, pages } = this.state;
 
     if (!selectedDevice) {
       return;
@@ -1390,6 +1429,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const layoutId = layouts && layouts.length ? layouts[0].id : null;
     const deviceId = selectedDevice.id;
     const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
+
+    const filteredPages = pages.filter(page => (page.deviceId === deviceId && page.contentVersionId === contentVersionId));
 
     if (!layoutId || !deviceId || !contentVersionId) {
       return null;
@@ -1402,6 +1443,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       name: strings.exhibition.newPage,
       eventTriggers: [],
       resources: temp.resources,
+      orderNumber: filteredPages.length,
       enterTransitions: [],
       exitTransitions: []
     };
@@ -1418,7 +1460,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       deviceId: selectedDevice.id!,
       exhibitionDevice: {
         ...selectedDevice,
-        pageOrder: [ ...selectedDevice.pageOrder, createdPage.id! ]
       }
     });
 
@@ -1430,7 +1471,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
 
         draft.devices[deviceIndex] = updatedDevice;
-        draft.selectedDevice!.pageOrder.push(createdPage.id!);
         draft.pages.push(createdPage);
         draft.selectedPage = createdPage;
       })
@@ -1478,7 +1518,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onDeletePageClick = async () => {
     try {
       const { accessToken, exhibitionId } = this.props;
-      const { selectedPage, selectedDevice, devices } = this.state;
+      const { selectedPage, selectedDevice } = this.state;
       if (!selectedPage || !selectedPage.id || !selectedDevice) {
         return;
       }
@@ -1492,11 +1532,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       }
 
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
-      const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
       await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
-
-      const updatedPageOrder = [ ...selectedDevice.pageOrder ];
-      const pageOrderIndex = updatedPageOrder.findIndex(pageId => pageId === selectedPage.id);
 
       this.setState(
         produce((draft: State) => {
@@ -1510,28 +1546,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
           draft.selectedTriggerIndex = undefined;
         })
       );
-
-      if (pageOrderIndex > -1) {
-        updatedPageOrder.splice(pageOrderIndex, 1);
-        const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
-          exhibitionId: exhibitionId,
-          deviceId: selectedDevice.id!,
-          exhibitionDevice: {
-            ...selectedDevice,
-            pageOrder: updatedPageOrder
-          }
-        });
-
-        const deviceIndex = devices.findIndex(device => device.id === updatedDevice.id);
-        if (deviceIndex > -1) {
-          this.setState(
-            produce((draft: State) => {
-              draft.devices[deviceIndex] = updatedDevice;
-              draft.selectedDevice = updatedDevice;
-            })
-          );
-        }
-      }
     } catch (e) {
       console.error(e);
 

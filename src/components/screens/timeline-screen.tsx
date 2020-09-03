@@ -763,7 +763,6 @@ class TimelineScreen extends React.Component<Props, State> {
 
     this.onDeviceSave({
       ...selectedDevice,
-      indexPageId: selectedDevice.indexPageId,
       groupId: selectedDevice.groupId,
       name: selectedDevice.name
     });
@@ -806,6 +805,7 @@ class TimelineScreen extends React.Component<Props, State> {
       name: strings.exhibition.newPage,
       eventTriggers: [],
       resources: temp.resources,
+      orderNumber: 0,
       enterTransitions: [],
       exitTransitions: []
     };

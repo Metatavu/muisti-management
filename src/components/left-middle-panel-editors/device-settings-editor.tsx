@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem } from "@material-ui/core";
 import styles from "../../styles/device-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -63,19 +63,6 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
           value={ deviceData.name }
           onChange={ this.props.onChange }
         />
-        <InputLabel id="indexPageId">
-          { strings.exhibition.deviceSettingsEditor.indexPageId }
-        </InputLabel>
-        <Select
-          variant="filled"
-          labelId="indexPageId"
-          fullWidth
-          name="indexPageId"
-          value={ deviceData.indexPageId || strings.generic.undefined }
-          onChange={ this.props.onChange }
-        >
-          { selectIndexPageItems }
-        </Select>
       </>
     );
   }
