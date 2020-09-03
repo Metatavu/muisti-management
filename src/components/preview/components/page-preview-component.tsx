@@ -61,12 +61,10 @@ class PagePreviewComponent extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, style } = this.props;
-
     return (
-      <div className={ classes.previewComponent } style={ style }>
+      <>
         { this.renderComponent() }
-      </div>
+      </>
     );
   }
 

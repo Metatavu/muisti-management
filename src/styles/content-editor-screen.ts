@@ -3,6 +3,13 @@ import theme from "./theme";
 
 export default createStyles({
 
+  resource: {
+    backgroundColor: "#fff"
+  },
+  resourceItem: {
+    backgroundColor: "#fff",
+    marginLeft: theme.spacing(1)
+  },
   loader: {
     height: "100%",
     position: "absolute",

@@ -39,7 +39,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -102,15 +102,15 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     });
 
     return (
-      <div>
+      <>
         { result }
-      </div>
+      </>
     );
   }
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -183,8 +183,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
