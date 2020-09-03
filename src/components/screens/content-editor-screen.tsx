@@ -1421,7 +1421,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
 
         draft.devices[deviceIndex] = updatedDevice;
-        // draft.selectedDevice!.pageOrder.push(createdPage.id!);
         draft.pages.push(createdPage);
         draft.selectedPage = createdPage;
       })
