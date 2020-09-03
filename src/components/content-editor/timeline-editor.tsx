@@ -43,18 +43,8 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
 const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
   const { classes, onDragEnd, pages } = props;
   const devicePages: ExhibitionPage[] = pages
-  .filter(page => page.deviceId === device.id)
-  .sort((page1, page2) => {
-    if (page1.orderNumber > page2.orderNumber) {
-      return 1;
-    }
-
-    if (page1.orderNumber < page2.orderNumber) {
-      return -1;
-    }
-
-    return 0;
-  });
+    .filter(page => page.deviceId === device.id)
+    .sort((page1, page2) => page1.orderNumber - page2.orderNumber);
 
   return (
     <ListItem divider key={ device.id } className={ classes.timelineRow }>
