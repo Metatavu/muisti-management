@@ -425,7 +425,9 @@ export default class SpacesMap extends React.Component<Props, State> {
         location: {
           x: marker._latlng.lat,
           y: marker._latlng.lng
-        }
+        },
+        visitorSessionStartThreshold: 80,
+        visitorSessionEndThreshold: 10
       };
       onAntennaAdd(rfidAntenna);
     }
