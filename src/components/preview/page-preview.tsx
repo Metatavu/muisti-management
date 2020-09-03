@@ -14,11 +14,14 @@ import { ResourceMap } from "../../types";
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer?: number;
   resources?: ExhibitionPageResource[];
   scale: number;
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
@@ -48,7 +51,17 @@ class PagePreview extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, screenOrientation, displayMetrics, scale, view, deviceOrientation } = this.props;
+    const {
+      classes,
+      screenOrientation,
+      displayMetrics,
+      scale,
+      view,
+      selectedView,
+      layer,
+      deviceOrientation,
+      onViewClick
+    } = this.props;
 
     let height = displayMetrics.heightPixels * scale;
     let width = displayMetrics.widthPixels * scale;
@@ -62,10 +75,14 @@ class PagePreview extends React.Component<Props, State> {
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
         <PagePreviewComponentEditor
           view={ view }
+          selectedView={ selectedView }
+          layer={ layer }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ this.getResourceMap() }
-          handleLayoutProperties={ this.onHandleLayoutProperties }/>
+          handleLayoutProperties={ this.onHandleLayoutProperties }
+          onViewClick={ onViewClick }
+        />
       </div>
     );
   }

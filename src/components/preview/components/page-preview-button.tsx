@@ -14,17 +14,21 @@ import { ResourceMap } from "../../../types";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  mouseOver: boolean;
 }
 
 /**
@@ -40,7 +44,7 @@ class PagePreviewButton extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      mouseOver: false
     };
   }
 
@@ -48,11 +52,22 @@ class PagePreviewButton extends React.Component<Props, State> {
    * Render
    */
   public render() {
+    const { classes, view, selectedView, onResize } = this.props;
+    const { mouseOver } = this.state;
+    const selected = selectedView?.id === view.id;
+
     return (
-      <Measure onResize={ this.props.onResize } bounds={ true }>
+      <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
           <div ref={ measureRef } style={ this.resolveStyles() }>
-            <div style={ this.resolveButtonStyles() }>
+            <div
+              ref={ measureRef }
+              style={ this.resolveStyles() }
+              className={ mouseOver || selected ? classes.highlighted : "" }
+              onClick={ this.onClick }
+              onMouseOver={ this.onMouseOver }
+              onMouseOut={ this.onMouseOut }
+            >
               { this.getText() }
             </div>
           </div>
@@ -87,7 +102,7 @@ class PagePreviewButton extends React.Component<Props, State> {
    * @return button styles
    */
   private resolveButtonStyles = (): CSSProperties => {
-    const { displayMetrics, scale, view } = this.props;
+    const { displayMetrics, scale, view, layer } = this.props;
     const { properties } = view;
     const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
 
@@ -100,7 +115,8 @@ class PagePreviewButton extends React.Component<Props, State> {
       marginTop: defaultMargin,
       marginRight: defaultMargin,
       marginBottom: defaultMargin,
-      marginLeft: defaultMargin
+      marginLeft: defaultMargin,
+      zIndex: layer
     };
 
     properties.forEach(property => {
@@ -190,6 +206,37 @@ class PagePreviewButton extends React.Component<Props, State> {
     });
 
     return result;
+  }
+
+  /**
+   * Event handler for mouse over
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: true });
+  }
+
+  /**
+   * Event handler for mouse out
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: false });
+  }
+
+  /**
+   * Event handler for mouse click
+   * 
+   * @param event react mouse event
+   */
+  private onClick = (event: React.MouseEvent) => {
+    const { view, onViewClick } = this.props;
+    event.stopPropagation();
+    onViewClick && onViewClick(view);
   }
 }
 

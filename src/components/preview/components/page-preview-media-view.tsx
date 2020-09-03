@@ -15,11 +15,14 @@ import { ResourceMap } from "../../../types";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
@@ -49,25 +52,45 @@ class PagePreviewMediaView extends React.Component<Props, State> {
    * Render
    */
   public render() {
+    const {
+      view,
+      selectedView,
+      layer,
+      onResize,
+      handleLayoutProperties,
+      displayMetrics,
+      scale,
+      resourceMap,
+      onViewClick,
+    } = this.props;
+    
     const srcType = this.getSrcType();
 
     switch (srcType) {
       case ExhibitionPageResourceType.Image:
         return <PagePreviewImageView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          selectedView={ selectedView }
+          layer={ layer }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case ExhibitionPageResourceType.Video:
         return <PagePreviewPlayerView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          selectedView={ selectedView }
+          layer={ layer }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       default:
     }
 
