@@ -302,7 +302,11 @@ class FloorPlanInfo extends React.Component<Props, State> {
           { strings.floorPlan.room.color }
         </InputLabel>
 
-        <div className={ classes.color } style={{ backgroundColor: selectedRoom.color }} onClick={ this.onColorBoxClick }></div>
+        <div
+          className={ classes.color }
+          style={{ backgroundColor: selectedRoom.color }}
+          onClick={ this.onColorBoxClick }
+        />
         { showColorPicker &&
           <SketchPicker
             color={ selectedRoom.color }
