@@ -192,8 +192,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementContentsPane>
 
           <ElementPropertiesPane
-            open={ selectedTriggerIndex !== undefined || selectedTabIndex !== undefined}
+            open={ selectedTriggerIndex !== undefined || selectedTabIndex !== undefined }
             title={ strings.contentEditor.editor.eventTriggers.title }
+            onCloseClick={ this.onPropertiesClose }
           >
             { this.renderProperties() }
           </ElementPropertiesPane>
@@ -1553,6 +1554,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
         error: e
       });
     }
+  }
+
+  /**
+   * On properties panel close
+   */
+  private onPropertiesClose = () => {
+    this.setState({
+      selectedTabIndex: undefined,
+      selectedTriggerIndex: undefined
+    });
   }
 
   /**
