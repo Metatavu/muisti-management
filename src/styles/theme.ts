@@ -68,6 +68,22 @@ export default createMuiTheme({
     }
   },
   overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "::-webkit-scrollbar-track": {
+          backgroundColor: theme.palette.grey[300]
+        },
+        "::-webkit-scrollbar": {
+          height: 10,
+          width: 10
+        },
+        "::-webkit-scrollbar-thumb": {
+          backgroundColor: theme.palette.text.primary,
+          border: "none"
+        }
+      }
+    },
+
     MuiTableRow: {
       root: {
         cursor: "pointer",
