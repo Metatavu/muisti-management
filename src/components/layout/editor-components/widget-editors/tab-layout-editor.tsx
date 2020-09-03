@@ -205,7 +205,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorHeight }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />

@@ -148,7 +148,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.TextSize }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />

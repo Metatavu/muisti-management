@@ -83,7 +83,7 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.Width }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Width, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -109,7 +109,7 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.Height }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Height, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -205,7 +205,7 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextSize }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />

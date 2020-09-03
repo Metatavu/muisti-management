@@ -85,7 +85,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Width }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -111,7 +111,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Height }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -229,7 +229,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.TextSize }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />

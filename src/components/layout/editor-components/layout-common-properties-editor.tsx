@@ -163,7 +163,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutWidth }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
             />
@@ -200,7 +200,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <GenericPropertyTextField
               textFieldId={ LayoutPropKeys.LayoutHeight }
               textFieldType="number"
-              textFieldUnit="dp"
+              textFieldUnit="px"
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
               />
@@ -230,7 +230,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <GenericPropertyTextField
               textFieldId={ LayoutPropKeys.Elevation }
               textFieldType="number"
-              textFieldUnit="dp"
+              textFieldUnit="px"
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
             />
@@ -397,6 +397,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     if (!currentLayout) {
       return;
     }
+
+    console.log("pageLayoutViewProperty",pageLayoutViewProperty);
 
     const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
     const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutView);
