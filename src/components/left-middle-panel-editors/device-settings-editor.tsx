@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem } from "@material-ui/core";
 import styles from "../../styles/device-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
