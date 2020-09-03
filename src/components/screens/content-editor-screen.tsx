@@ -355,14 +355,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { strings.contentEditor.editor.resources }
           </Typography>
           { elementItems }
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { strings.contentEditor.editor.eventTriggers.title }
-          </Typography>
-          {
-            eventTriggerItems ??
-            <Typography variant="caption" style={{ marginLeft: theme.spacing(1), marginBottom: theme.spacing(1) }}>
-              { strings.contentEditor.editor.eventTriggers.noTriggers }
-            </Typography>
+          { eventTriggerItems &&
+            <>
+              <Typography style={{ padding: theme.spacing(1) }} variant="h5">
+                { strings.contentEditor.editor.eventTriggers.title }
+              </Typography>
+              { eventTriggerItems }
+            </>
           }
         </AccordionDetails>
       </Accordion>
