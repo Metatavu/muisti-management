@@ -840,7 +840,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const groupToCreate: ExhibitionDeviceGroup = {
       name: strings.floorPlan.deviceGroup.new,
       allowVisitorSessionCreation: false,
-      roomId: selectedRoom.id
+      roomId: selectedRoom.id,
+      visitorSessionEndTimeout: 5000
     };
 
     const newDeviceGroup = await this.createDeviceGroup(accessToken, exhibitionId, groupToCreate);
@@ -1306,9 +1307,20 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private onChangeAntennaProperties = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
     const { selectedAntenna } = this.state;
-    const { name, value } = event.target;
+    const { name } = event.target;
+    let value = event.target.value;
     if (!selectedAntenna) {
       return;
+    }
+
+    if (name === "visitorSessionStartThreshold" || name === "visitorSessionEndThreshold") {
+      if (value > 100) {
+        value = 100;
+      }
+
+      if (value < 0) {
+        value = 0;
+      }
     }
 
     const updatedAntenna: RfidAntenna = { ...selectedAntenna, [name as keyof RfidAntenna]: value };

@@ -50,6 +50,12 @@ export interface ExhibitionDeviceGroup {
      */
     allowVisitorSessionCreation: boolean;
     /**
+     * Timeout for visitor session
+     * @type {number}
+     * @memberof ExhibitionDeviceGroup
+     */
+    visitorSessionEndTimeout: number;
+    /**
      * 
      * @type {string}
      * @memberof ExhibitionDeviceGroup
@@ -90,6 +96,7 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
         'roomId': !exists(json, 'roomId') ? undefined : json['roomId'],
         'name': json['name'],
         'allowVisitorSessionCreation': json['allowVisitorSessionCreation'],
+        'visitorSessionEndTimeout': json['visitorSessionEndTimeout'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -109,6 +116,7 @@ export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null
         'roomId': value.roomId,
         'name': value.name,
         'allowVisitorSessionCreation': value.allowVisitorSessionCreation,
+        'visitorSessionEndTimeout': value.visitorSessionEndTimeout,
     };
 }
 
