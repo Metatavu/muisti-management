@@ -131,7 +131,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indicator color editor
    */
   private renderSelectedTabIndicatorColor = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorColor, PageLayoutViewPropertyType.Color);
 
     return (
@@ -152,6 +152,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -223,7 +224,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render tab text color editor
    */
   private renderTabTextColorNormal = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorNormal, PageLayoutViewPropertyType.Color);
 
     return (
@@ -244,6 +245,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorNormal }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -257,7 +259,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab text color editor
    */
   private renderTabTextColorSelected = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorSelected, PageLayoutViewPropertyType.Color);
 
     return (
@@ -278,6 +280,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorSelected }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />

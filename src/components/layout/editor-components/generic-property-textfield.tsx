@@ -14,7 +14,7 @@ interface Props extends WithStyles<typeof styles> {
   textFieldId: string;
   textFieldUnit?: string;
   disabled?: boolean;
-  displayMetrics?: DisplayMetrics;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On text field change handler
@@ -48,7 +48,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, disabled, displayMetrics } = this.props;
+    const { property, textFieldType, textFieldId, disabled, textFieldUnit } = this.props;
 
     return (
       <TextField
@@ -57,7 +57,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
         fullWidth
         type={ textFieldType }
         name={ textFieldId }
-        value={ displayMetrics ? this.convertTextFieldUnit(property.value) : property.value }
+        value={ textFieldUnit ? this.convertTextFieldUnit(property.value) : property.value }
         onChange={ this.handleTextFieldChange }
       />
     );
@@ -73,9 +73,6 @@ class GenericPropertyTextField extends React.Component<Props, State> {
     let value = event.target.value as string;
 
     if (value && textFieldUnit) {
-      if (!displayMetrics) {
-        throw new Error("displayMetrics was undefined");
-      }
       const px = parseFloat(value);
       const dp = AndroidUtils.convertPixelsToDp(displayMetrics, px, 1);
       value = `${dp}dp`;
@@ -92,13 +89,8 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * @param value string
    * @returns dp converted to px
    */
-  private convertTextFieldUnit = (value: string) => {
+  private convertTextFieldUnit = (value: string): number => {
     const { displayMetrics } = this.props;
-
-    if (!displayMetrics) {
-      throw new Error("displayMetrics is undefined");
-    }
-
     const dp = parseFloat(value.substring(0, value.length - 2));
     const px = AndroidUtils.convertDpToPixel(displayMetrics, dp, 1);
     return px;

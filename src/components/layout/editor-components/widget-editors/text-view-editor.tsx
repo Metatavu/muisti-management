@@ -127,7 +127,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text resource editor
    */
   private renderTextResource = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String);
 
     return (
@@ -142,6 +142,7 @@ class TextViewEditor extends React.Component<Props, State> {
           disabled
           textFieldId={ LayoutTextViewPropKeys.TextResources }
           textFieldType="text"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -153,7 +154,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text color editor
    */
   private renderTextColor = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
 
     return (
@@ -169,6 +170,7 @@ class TextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.TextColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -246,7 +248,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view typeface editor
    */
   private renderTypeface = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String);
 
     return (
@@ -260,6 +262,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Typeface }
           textFieldType="text"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />

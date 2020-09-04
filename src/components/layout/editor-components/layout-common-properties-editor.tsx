@@ -254,6 +254,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout background color editor
    */
   private renderLayoutBackgroundColor = () => {
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
       <>
@@ -268,6 +269,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
           />

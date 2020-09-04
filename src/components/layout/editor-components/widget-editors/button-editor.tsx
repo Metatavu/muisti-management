@@ -131,6 +131,8 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text resource editor
    */
   private renderTextResource = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -144,6 +146,7 @@ class ButtonEditor extends React.Component<Props, State> {
             disabled
             textFieldId={ LayoutButtonPropKeys.TextResources }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -157,7 +160,7 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text color editor
    */
   private renderTextColor = () => {
-    const { onValueChange } = this.props;
+    const { onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
       <>
@@ -172,6 +175,7 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />

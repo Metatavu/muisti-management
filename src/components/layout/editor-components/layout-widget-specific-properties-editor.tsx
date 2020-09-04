@@ -127,10 +127,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render text view editor
    */
   private renderTextViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+    
     return (
       <TextViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        displayMetrics={ this.props.displayMetrics }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -140,10 +142,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render flow text view editor
    */
   private renderFlowTextViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <FlowTextViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        displayMetrics={ this.props.displayMetrics }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -153,9 +157,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render image view editor
    */
   private renderImageViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <ImageViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -165,10 +172,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render button editor
    */
   private renderButtonEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <ButtonEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        displayMetrics={ this.props.displayMetrics }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -178,9 +187,11 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render linear layout editor
    */
   private renderLinearLayoutEditor = () => {
+    const { pageLayoutView } = this.props;
+
     return (
       <LinearLayoutEditor
-        pageLayoutView={ this.props.pageLayoutView }
+        pageLayoutView={ pageLayoutView }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -190,10 +201,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render button editor
    */
   private renderTabLayoutEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <TabLayoutEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        displayMetrics={ this.props.displayMetrics }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
