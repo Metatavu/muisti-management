@@ -48,7 +48,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, textFieldUnit, disabled, displayMetrics } = this.props;
+    const { property, textFieldType, textFieldId, disabled, displayMetrics } = this.props;
 
     return (
       <TextField

@@ -129,7 +129,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, layout, deviceModels } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, deviceModelId, screenOrientation } = this.state;
+    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, deviceModelId } = this.state;
 
     if (!layout || !layout.id || loading || deviceModels.length === 0) {
       return (
