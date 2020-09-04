@@ -2,6 +2,8 @@ import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, TextField } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
+import AndroidUtils from "../../../utils/android-utils";
+import DisplayMetrics from "../../../types/display-metrics";
 
 /**
  * Interface representing component properties
@@ -12,6 +14,7 @@ interface Props extends WithStyles<typeof styles> {
   textFieldId: string;
   textFieldUnit?: string;
   disabled?: boolean;
+  displayMetrics?: DisplayMetrics;
 
   /**
    * On text field change handler
@@ -45,7 +48,8 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, textFieldUnit, disabled } = this.props;
+    const { property, textFieldType, textFieldId, textFieldUnit, disabled, displayMetrics } = this.props;
+
     return (
       <TextField
         disabled={ disabled }
@@ -53,7 +57,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
         fullWidth
         type={ textFieldType }
         name={ textFieldId }
-        value={ textFieldUnit && property.value.includes(textFieldUnit) ? property.value.substring(0, property.value.length - 2) : property.value }
+        value={ displayMetrics ? this.convertTextFieldUnit(property.value) : property.value }
         onChange={ this.handleTextFieldChange }
       />
     );
@@ -64,17 +68,39 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * @param event react change event
    */
   private handleTextFieldChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
-    const { property, onTextFieldChange, textFieldUnit } = this.props;
+    const { property, onTextFieldChange, textFieldUnit, displayMetrics } = this.props;
 
     let value = event.target.value as string;
 
     if (value && textFieldUnit) {
-      value = value + textFieldUnit;
+      if (!displayMetrics) {
+        throw new Error("displayMetrics was undefined");
+      }
+      const px = parseFloat(value);
+      const dp = AndroidUtils.convertPixelsToDp(displayMetrics, px, 1);
+      value = `${dp}dp`;
     }
 
     const propertyToUpdate = { ...property } as PageLayoutViewProperty;
     propertyToUpdate.value = value;
     onTextFieldChange(propertyToUpdate);
+  }
+
+  /**
+   * Converts textfield units to units used by the preview
+   *
+   * @param value string
+   */
+  private convertTextFieldUnit = (value: string) => {
+    const { displayMetrics } = this.props;
+
+    if (!displayMetrics) {
+      throw new Error("displayMetrics is undefined");
+    }
+
+    const dp = parseFloat(value.substring(0, value.length - 2));
+    const px = AndroidUtils.convertDpToPixel(displayMetrics, dp, 1);
+    return px;
   }
 
 }

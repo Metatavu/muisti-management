@@ -20,6 +20,7 @@ import GenericPropertyTextField from "./generic-property-textfield";
 import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import { v4 as uuid } from "uuid";
+import DisplayMetrics from "../../../types/display-metrics";
 
 /**
  * Interface representing component properties
@@ -32,6 +33,7 @@ interface Props extends WithStyles<typeof styles> {
   subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
+  displayMetrics: DisplayMetrics;
 
   onPageLayoutViewUpdate: (pageLayoutView: PageLayoutView) => void;
 }
@@ -141,8 +143,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutWidth = () => {
-
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -164,6 +167,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             textFieldId={ LayoutPropKeys.LayoutWidth }
             textFieldType="number"
             textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
             />
@@ -177,6 +181,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutHeight = () => {
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String);
 
     return (
@@ -201,6 +206,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               textFieldId={ LayoutPropKeys.LayoutHeight }
               textFieldType="number"
               textFieldUnit="px"
+              displayMetrics={ displayMetrics }
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
               />
@@ -215,6 +221,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout elevation editor
    */
   private renderLayoutElevation = () => {
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.Elevation, PageLayoutViewPropertyType.String);
 
     return (
@@ -231,6 +238,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               textFieldId={ LayoutPropKeys.Elevation }
               textFieldType="number"
               textFieldUnit="px"
+              displayMetrics={ displayMetrics }
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
             />
@@ -397,8 +405,6 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     if (!currentLayout) {
       return;
     }
-
-    console.log("pageLayoutViewProperty",pageLayoutViewProperty);
 
     const layoutView = { ...this.props.pageLayoutView } as PageLayoutView;
     const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutView);

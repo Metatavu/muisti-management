@@ -12,12 +12,14 @@ import GravityEditor from "../gravity-editor";
 import GenericPropertySwitch from "../generic-property-switch";
 import { TabModeValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../../editor-constants/values";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -190,7 +192,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indication height editor
    */
   private renderSelectedTabIndicatorHeight = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorHeight, PageLayoutViewPropertyType.String);
 
     return (
@@ -206,6 +208,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorHeight }
             textFieldType="number"
             textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />

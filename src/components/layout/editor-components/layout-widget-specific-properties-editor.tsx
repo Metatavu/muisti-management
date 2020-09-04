@@ -16,6 +16,7 @@ import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
+import DisplayMetrics from "../../../types/display-metrics";
 
 /**
  * Interface representing component properties
@@ -29,6 +30,7 @@ interface Props extends WithStyles<typeof styles> {
   subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
+  displayMetrics: DisplayMetrics;
 }
 
 /**
@@ -128,6 +130,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     return (
       <TextViewEditor
         pageLayoutView={ this.props.pageLayoutView }
+        displayMetrics={ this.props.displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -140,6 +143,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     return (
       <FlowTextViewEditor
         pageLayoutView={ this.props.pageLayoutView }
+        displayMetrics={ this.props.displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -164,6 +168,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     return (
       <ButtonEditor
         pageLayoutView={ this.props.pageLayoutView }
+        displayMetrics={ this.props.displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
@@ -188,6 +193,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     return (
       <TabLayoutEditor
         pageLayoutView={ this.props.pageLayoutView }
+        displayMetrics={ this.props.displayMetrics }
         onValueChange={ this.onSingleValueChange }
       />
     );
