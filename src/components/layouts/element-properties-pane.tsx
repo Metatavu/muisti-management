@@ -1,8 +1,9 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, IconButton } from "@material-ui/core";
 import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 /**
  * Interface representing component properties
@@ -16,6 +17,10 @@ interface Props extends WithStyles<typeof styles> {
    * Set panel open/closed
    */
   open?: boolean;
+  /**
+   * Handler for on close click
+   */
+  onCloseClick?: () => void;
 }
 
 /**
@@ -48,7 +53,8 @@ class ElementPropertiesPane extends React.Component<Props, State> {
       classes,
       title,
       open,
-      children
+      children,
+      onCloseClick
     } = this.props;
 
     return (
@@ -57,6 +63,11 @@ class ElementPropertiesPane extends React.Component<Props, State> {
           { title &&
             <div className={ classes.header }>
               <Typography variant="h3">{ title }</Typography>
+              { onCloseClick &&
+                <IconButton onClick={ () => onCloseClick() }>
+                  <ChevronRightIcon />
+                </IconButton>
+              }
             </div>
           }
           <div className={ classes.content }>

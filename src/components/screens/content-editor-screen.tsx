@@ -192,8 +192,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementContentsPane>
 
           <ElementPropertiesPane
-            open={ selectedTriggerIndex !== undefined || selectedTabIndex !== undefined}
+            open={ selectedTriggerIndex !== undefined || selectedTabIndex !== undefined }
             title={ strings.contentEditor.editor.eventTriggers.title }
+            onCloseClick={ this.onPropertiesClose }
           >
             { this.renderProperties() }
           </ElementPropertiesPane>
@@ -354,14 +355,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { strings.contentEditor.editor.resources }
           </Typography>
           { elementItems }
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { strings.contentEditor.editor.eventTriggers.title }
-          </Typography>
-          {
-            eventTriggerItems ??
-            <Typography variant="caption" style={{ marginLeft: theme.spacing(1), marginBottom: theme.spacing(1) }}>
-              { strings.contentEditor.editor.eventTriggers.noTriggers }
-            </Typography>
+          { eventTriggerItems &&
+            <>
+              <Typography style={{ padding: theme.spacing(1) }} variant="h5">
+                { strings.contentEditor.editor.eventTriggers.title }
+              </Typography>
+              { eventTriggerItems }
+            </>
           }
         </AccordionDetails>
       </Accordion>
@@ -1553,6 +1553,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
         error: e
       });
     }
+  }
+
+  /**
+   * On properties panel close
+   */
+  private onPropertiesClose = () => {
+    this.setState({
+      selectedTabIndex: undefined,
+      selectedTriggerIndex: undefined
+    });
   }
 
   /**

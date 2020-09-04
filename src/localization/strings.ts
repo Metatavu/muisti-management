@@ -314,6 +314,9 @@ export interface IStrings extends LocalizedStringsMethods {
       landscape: string;
       portrait: string;
       allowVisitorSessionCreation: string;
+      visitorSessionEndTimeout: string;
+      visitorSessionStartThreshold: string;
+      visitorSessionEndThreshold: string;
       name: string;
       readerId: string;
       deviceGroup: string;
