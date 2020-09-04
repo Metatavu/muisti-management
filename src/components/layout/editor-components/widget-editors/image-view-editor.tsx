@@ -7,12 +7,14 @@ import { LayoutImageViewPropKeys } from "../../editor-constants/keys";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -58,6 +60,7 @@ class ImageViewEditor extends React.Component<Props, State> {
    * Render flow text view text resource editor
    */
   private renderSrcEditor = () => {
+    const { displayMetrics } = this.props;
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -71,6 +74,7 @@ class ImageViewEditor extends React.Component<Props, State> {
             disabled
             textFieldId={ LayoutImageViewPropKeys.Src }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutImageViewPropKeys.Src, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />

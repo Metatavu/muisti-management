@@ -11,12 +11,14 @@ import ColorPicker from "./../color-picker";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -71,7 +73,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view width editor
    */
   private renderWidth = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Width, PageLayoutViewPropertyType.String);
 
     return (
@@ -85,7 +87,8 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Width }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -97,7 +100,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view height editor
    */
   private renderHeight = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Height, PageLayoutViewPropertyType.String);
 
     return (
@@ -111,7 +114,8 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Height }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -123,7 +127,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text resource editor
    */
   private renderTextResource = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String);
 
     return (
@@ -138,6 +142,7 @@ class TextViewEditor extends React.Component<Props, State> {
           disabled
           textFieldId={ LayoutTextViewPropKeys.TextResources }
           textFieldType="text"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -149,7 +154,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text color editor
    */
   private renderTextColor = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
 
     return (
@@ -165,6 +170,7 @@ class TextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.TextColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -215,7 +221,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view text size editor
    */
   private renderTextSize = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String);
 
     return (
@@ -229,7 +235,8 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.TextSize }
           textFieldType="number"
-          textFieldUnit="dp"
+          textFieldUnit="px"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />
@@ -241,7 +248,7 @@ class TextViewEditor extends React.Component<Props, State> {
    * Render text view typeface editor
    */
   private renderTypeface = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String);
 
     return (
@@ -255,6 +262,7 @@ class TextViewEditor extends React.Component<Props, State> {
         <GenericPropertyTextField
           textFieldId={ LayoutTextViewPropKeys.Typeface }
           textFieldType="text"
+          displayMetrics={ displayMetrics }
           property={ foundProp }
           onTextFieldChange={ onValueChange }
         />

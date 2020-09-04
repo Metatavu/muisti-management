@@ -12,12 +12,14 @@ import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
 import GravityEditor from "../gravity-editor";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -71,6 +73,8 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button width editor
    */
   private renderWidth = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -83,7 +87,8 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.Width }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Width, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -97,6 +102,8 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button height editor
    */
   private renderHeight = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -109,7 +116,8 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.Height }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Height, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -123,6 +131,8 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text resource editor
    */
   private renderTextResource = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -136,6 +146,7 @@ class ButtonEditor extends React.Component<Props, State> {
             disabled
             textFieldId={ LayoutButtonPropKeys.TextResources }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -149,7 +160,7 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text color editor
    */
   private renderTextColor = () => {
-    const { onValueChange } = this.props;
+    const { onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
       <>
@@ -164,6 +175,7 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -193,6 +205,8 @@ class ButtonEditor extends React.Component<Props, State> {
    * Render button text size editor
    */
   private renderTextSize = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -205,7 +219,8 @@ class ButtonEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutButtonPropKeys.TextSize }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />

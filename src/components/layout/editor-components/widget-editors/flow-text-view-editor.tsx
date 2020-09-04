@@ -11,12 +11,14 @@ import ColorPicker from "../color-picker";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
 import GenericPropertyTextField from "../generic-property-textfield";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -67,6 +69,8 @@ class FlowTextViewEditor extends React.Component<Props, State> {
    * Render flow text view text resource editor
    */
   private renderTextResource = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -80,6 +84,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
             disabled
             textFieldId={ LayoutTextViewPropKeys.TextResources }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextResources, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -93,6 +98,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
    * Render flow text view text color editor
    */
   private renderTextColor = () => {
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextColor, PageLayoutViewPropertyType.Color);
     return (
       <>
@@ -107,6 +113,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.TextColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ this.props.onValueChange }
             />
@@ -136,6 +143,8 @@ class FlowTextViewEditor extends React.Component<Props, State> {
    * Render flow text view text size editor
    */
   private renderTextSize = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -148,7 +157,8 @@ class FlowTextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.TextSize }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
@@ -162,6 +172,8 @@ class FlowTextViewEditor extends React.Component<Props, State> {
    * Render flow text view typeface editor
    */
   private renderTypeface = () => {
+    const { displayMetrics } = this.props;
+
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -174,6 +186,7 @@ class FlowTextViewEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTextViewPropKeys.Typeface }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ getProperty(this.props.pageLayoutView, LayoutTextViewPropKeys.Typeface, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />

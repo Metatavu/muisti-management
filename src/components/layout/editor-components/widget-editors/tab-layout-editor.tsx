@@ -12,12 +12,14 @@ import GravityEditor from "../gravity-editor";
 import GenericPropertySwitch from "../generic-property-switch";
 import { TabModeValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../../editor-constants/values";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
+import DisplayMetrics from "../../../../types/display-metrics";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
 
   /**
    * On value change handler
@@ -129,7 +131,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indicator color editor
    */
   private renderSelectedTabIndicatorColor = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorColor, PageLayoutViewPropertyType.Color);
 
     return (
@@ -150,6 +152,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -190,7 +193,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indication height editor
    */
   private renderSelectedTabIndicatorHeight = () => {
-    const { pageLayoutView, onValueChange } = this.props;
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorHeight, PageLayoutViewPropertyType.String);
 
     return (
@@ -205,7 +208,8 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorHeight }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -220,7 +224,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render tab text color editor
    */
   private renderTabTextColorNormal = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorNormal, PageLayoutViewPropertyType.Color);
 
     return (
@@ -241,6 +245,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorNormal }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
@@ -254,7 +259,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab text color editor
    */
   private renderTabTextColorSelected = () => {
-    const { onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorSelected, PageLayoutViewPropertyType.Color);
 
     return (
@@ -275,6 +280,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorSelected }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />

@@ -140,6 +140,19 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       height
     } = this.state;
 
+    /**
+     * Easiest way for now is to fake display metrics for preview.
+     * TODO: Must add logic for calculating pixel density based on the size of the preview
+     */
+    const displayMetrics: DisplayMetrics = {
+      density: 3,
+      heightPixels: height,
+      widthPixels: width,
+      xdpi: 515,
+      ydpi: 515,
+      densityDpi: 480
+    };
+
     if (!subLayout || !subLayout.id || loading) {
       return (
         <div className={ classes.loader }>
@@ -212,6 +225,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
               <CommonLayoutPropertiesEditor
                 onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ true }
+                displayMetrics={ displayMetrics }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
@@ -219,6 +233,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
                 editingSubLayout={ true }
+                displayMetrics={ displayMetrics }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
                 selectedWidgetType={ selectedWidgetType }
