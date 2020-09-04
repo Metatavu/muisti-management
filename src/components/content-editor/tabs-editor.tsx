@@ -11,8 +11,7 @@ import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
 import { Tab, TabResource } from "./constants";
 import { ExhibitionPageResourceType } from "../../generated/client";
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from 'ckeditor4-react';
 import GenericDialog from "../generic/generic-dialog";
 
 /**
@@ -38,6 +37,24 @@ interface Props extends WithStyles<typeof styles> {
  * Component for tab editor
  */
 class TabEditor extends React.Component<Props, State> {
+
+  /**
+   * CKEditor configurations
+   */
+  private CKEditorConfig = {
+    toolbar: [
+      { name: 'document', items: [ 'Source'] },
+      { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
+      { name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
+      { name: 'insert', items: [ 'Table', 'SpecialChar', 'PageBreak' ] },
+      '/',
+      { name: 'styles', items: [ 'Styles', 'Format' ] },
+      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+      { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
+    ]
+  };
 
   /**
    * Constructor
@@ -164,6 +181,7 @@ class TabEditor extends React.Component<Props, State> {
           onConfirm={ this.onEditModalClose }
           positiveButtonText={ strings.errorDialog.close }
           fullScreen={ true }
+          disableEnforceFocus={ true }
         >
           { this.renderDialogContent() }
         </GenericDialog>
@@ -182,22 +200,13 @@ class TabEditor extends React.Component<Props, State> {
       return null;
     }
 
-    const ckEditorConfig = {
-      table: {
-          toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-      },
-      toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'insertTable' ],
-      heading: {
-          options: []
-      }
-    };
-
     return (
       <CKEditor
-        editor={ ClassicEditor }
         data={ resources[0].data }
-        config={ ckEditorConfig }
+        config={ this.CKEditorConfig }
         onChange={ this.onCKEditorChange }
+        type="classic"
+        readOnly={ false }
       />
     );
   }
@@ -335,9 +344,9 @@ class TabEditor extends React.Component<Props, State> {
    * @param event event
    * @param editor editor data
    */
-  private onCKEditorChange = (event: any, editor: any) => {
+  private onCKEditorChange = (event: any) => {
     const { onSave } = this.props;
-    const data = editor.getData() as string;
+    const data = event.editor.getData() as string;
 
     const tabToUpdate = { ...this.props.selectedTab } as Tab;
     tabToUpdate.resources[0].data = data;

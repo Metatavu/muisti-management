@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^22.0.0",
-    "@ckeditor/ckeditor5-build-classic": "^22.0.0",
-    "@ckeditor/ckeditor5-react": "^2.1.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.46",
@@ -21,6 +18,7 @@
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "^16.9.0",
     "@types/react-resizable": "^1.7.2",
+    "ckeditor4-react": "^1.1.1",
     "classnames": "^2.2.6",
     "clsx": "^1.1.0",
     "codemirror": "^5.52.0",
