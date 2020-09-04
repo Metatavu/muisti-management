@@ -90,6 +90,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Converts textfield units to units used by the preview
    *
    * @param value string
+   * @returns dp converted to px
    */
   private convertTextFieldUnit = (value: string) => {
     const { displayMetrics } = this.props;
