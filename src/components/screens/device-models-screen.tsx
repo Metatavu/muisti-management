@@ -422,7 +422,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             type="density"
             label={ strings.device.dialog.displayMetrics.density }
             variant="outlined"
-            value={ deviceData ? deviceData.displayMetrics.density : "" }
+            value={ deviceData.displayMetrics.density ?? "" }
             name="displayMetrics.density"
             onChange={ this.onDeviceInfoChange }
           />
