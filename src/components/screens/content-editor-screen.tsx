@@ -471,7 +471,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
         expanded={ selectedLayoutView?.id === pageLayoutView.id }
         onChange={ this.onExpandElement(pageLayoutView) }
       >
-        <AccordionSummary expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
+        <AccordionSummary
+          expandIcon={ <ExpandMoreIcon/> }
+          className={ classes.resourceItem }
+        >
           <Typography variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
