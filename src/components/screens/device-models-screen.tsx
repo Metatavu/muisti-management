@@ -411,7 +411,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             type="ydpi"
             label={ strings.device.dialog.displayMetrics.ydpi }
             variant="outlined"
-            value={ deviceData ? deviceData.displayMetrics.ydpi : "" }
+            value={ deviceData.displayMetrics.ydpi ?? "" }
             name="displayMetrics.ydpi"
             onChange={ this.onDeviceInfoChange }
           />
