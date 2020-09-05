@@ -43,7 +43,7 @@ class TabEditor extends React.Component<Props, State> {
    */
   private CKEditorConfig = {
     toolbar: [
-      { name: 'document', items: [ 'Source'] },
+      { name: 'document', items: [ 'Source' ] },
       { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
       { name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
