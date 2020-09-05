@@ -3,13 +3,6 @@ import theme from "./theme";
 
 export default createStyles({
 
-  resource: {
-    backgroundColor: "#fff"
-  },
-  resourceItem: {
-    backgroundColor: "#fff",
-    marginLeft: theme.spacing(1)
-  },
   loader: {
     height: "100%",
     position: "absolute",
@@ -40,11 +33,47 @@ export default createStyles({
   },
 
   timelineContent: {
-    display: "flex",
-    flexDirection: "row",
     minHeight: 300,
     maxHeight: 300,
-    overflowY: "auto"
+    overflowY: "auto",
+  },
+
+  timelineContentVersion: {
+    backgroundColor: "#fff",
+    borderTop: "3px solid #000"
+  },
+
+  timelineContentVersionTitle: {
+    padding: "0 16px",
+    boxSizing: "border-box",
+    backgroundColor: "#fff",
+    minWidth: 253,
+    maxWidth: 253,
+    borderRight: "3px solid #000"
+  },
+
+  timelineContentVersionContent: {
+    padding: 0,
+    display: "flex",
+    flexDirection: "row"
+  },
+
+  timelineDivider: {
+    width: 3,
+    backgroundColor: "#000"
+  },
+
+  selected: {
+    color: theme.palette.secondary.main
+  },
+
+  resource: {
+    backgroundColor: "#fff"
+  },
+
+  resourceItem: {
+    backgroundColor: "#fff",
+    marginLeft: theme.spacing(1)
   },
 
   visualEditorContainer: {

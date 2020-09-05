@@ -2,15 +2,17 @@ import * as React from "react";
 
 import { WithStyles, withStyles, List, ListItem } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/timeline-devices-list";
-import { ExhibitionDevice } from "../../generated/client/models";
+import { ExhibitionDevice, ContentVersion } from "../../generated/client/models";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  contentVersion: ContentVersion;
+  selectedContentVersion?: ContentVersion;
   devices: ExhibitionDevice[];
   selectedDevice?: ExhibitionDevice;
-  onClick: (device: ExhibitionDevice) => () => void;
+  onClick: (contentVersion: ContentVersion, device: ExhibitionDevice) => () => void;
 }
 
 /**
@@ -19,22 +21,26 @@ interface Props extends WithStyles<typeof styles> {
  * @param props component props
  */
 const TimelineDevicesList: React.FC<Props> = ({
+  contentVersion,
+  selectedContentVersion,
   devices,
   selectedDevice,
   onClick,
   classes
 }) => {
+  const contentVersionSelected = selectedContentVersion?.id === contentVersion.id;
   return (
     <List className={ classes.list }>
       {
         devices.map(device => {
+          const deviceSelected = selectedDevice?.id === device.id;
           return (
             <ListItem
               button
               divider
               key={ device.id }
-              selected={ selectedDevice && selectedDevice.id === device.id }
-              onClick={ onClick(device) }
+              selected={ contentVersionSelected && deviceSelected }
+              onClick={ onClick(contentVersion, device) }
               className={ classes.listItem }
             >
               { device.name || "" }
