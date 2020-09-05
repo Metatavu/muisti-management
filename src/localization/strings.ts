@@ -340,6 +340,9 @@ export interface IStrings extends LocalizedStringsMethods {
         displayInfo: string;
         widthPixels: string;
         heightPixels: string;
+        density: string;
+        xdpi: string;
+        ydpi: string;
       };
       dimensions: {
         physicalSize: string;

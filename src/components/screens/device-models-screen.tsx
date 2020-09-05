@@ -309,7 +309,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
           style={{ marginTop: theme.spacing(2) }}
           control={
             <Switch
-              checked={ selectedDeviceModel?.capabilities.touch }
+              checked={ selectedDeviceModel.capabilities.touch }
               onChange={ this.onDeviceInfoChange }
               color="secondary"
               name="capabilities.touch"
@@ -391,6 +391,39 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             variant="outlined"
             value={ deviceData ? deviceData.displayMetrics.heightPixels : "" }
             name="displayMetrics.heightPixels"
+            onChange={ this.onDeviceInfoChange }
+          />
+        </Grid>
+        <Grid item xs={ 4 }>
+          <TextField
+            fullWidth
+            type="xdpi"
+            label={ strings.device.dialog.displayMetrics.xdpi }
+            variant="outlined"
+            value={ deviceData ? deviceData.displayMetrics.xdpi : "" }
+            name="displayMetrics.xdpi"
+            onChange={ this.onDeviceInfoChange }
+          />
+        </Grid>
+        <Grid item xs={ 4 }>
+          <TextField
+            fullWidth
+            type="ydpi"
+            label={ strings.device.dialog.displayMetrics.ydpi }
+            variant="outlined"
+            value={ deviceData ? deviceData.displayMetrics.ydpi : "" }
+            name="displayMetrics.ydpi"
+            onChange={ this.onDeviceInfoChange }
+          />
+        </Grid>
+        <Grid item xs={ 4 }>
+          <TextField
+            fullWidth
+            type="density"
+            label={ strings.device.dialog.displayMetrics.density }
+            variant="outlined"
+            value={ deviceData ? deviceData.displayMetrics.density : "" }
+            name="displayMetrics.density"
             onChange={ this.onDeviceInfoChange }
           />
         </Grid>
@@ -497,7 +530,6 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
     const { target } = event;
     const value: string | boolean = target.name === "capabilities.touch" ? target.checked : target.value;
-
     const keys = target.name.split(".");
 
     if (keys.length > 1) {
@@ -605,8 +637,6 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
 
     this.setState({ formError: false });
     const device = this.assignDeviceDataToDevice(deviceData, selectedDeviceModel, false);
-    const updatedHiddenDisplayMetrics = this.updateHiddenDisplayMetricsValues(device.displayMetrics, device.dimensions);
-    device.displayMetrics = updatedHiddenDisplayMetrics;
     if (newDevice) {
       this.createNewDevice(device);
     }
@@ -685,79 +715,16 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    * @returns updated property
    */
   private updateSubProperty = (property: DeviceModelDataProperty, key: DeviceModelDataSubPropertyKey, value: string | boolean): DeviceModelDataProperty => {
-    if (isTypeOfDeviceModelDimensionsData(property)) {
-      property[key as keyof DeviceModelDimensionsData] = value as string;
-    } else if (isTypeOfDeviceModelDisplayMetricsData(property)) {
-      property[key as keyof DeviceModelDisplayMetricsData] = value as string;
-    } else if (isTypeOfDeviceModelCapabilitiesData(property)) {
-      property[key as keyof DeviceModelCapabilities] = value as boolean;
+    const updatedProperty = { ...property } as DeviceModelDataProperty;
+    if (isTypeOfDeviceModelDimensionsData(updatedProperty)) {
+      updatedProperty[key as keyof DeviceModelDimensionsData] = value as string;
+    } else if (isTypeOfDeviceModelDisplayMetricsData(updatedProperty)) {
+      updatedProperty[key as keyof DeviceModelDisplayMetricsData] = value as string;
+    } else if (isTypeOfDeviceModelCapabilitiesData(updatedProperty)) {
+      updatedProperty[key as keyof DeviceModelCapabilities] = value as boolean;
     }
 
-    return property;
-  }
-
-  /**
-   * Calculates device model dpi in X and Y axis.
-   * Based on device model's physical width, physical height and pixel amount in Y and X axis.
-   *
-   * @param physicalWidth physical width
-   * @param physicalHeight physical height
-   * @param pixelAmountX pixel amount in X axis
-   * @param pixelAmountY pixel amount in Y axis
-   * @returns calculated X and Y axis dpi in array
-   */
-  private calculatePixelDensity = (physicalWidth: number, physicalHeight: number, pixelAmountX: number, pixelAmountY: number): number[] => {
-    const conversionDivider = 25.4;
-    const widthInInches = physicalWidth / conversionDivider;
-    const heightInInches = physicalHeight / conversionDivider;
-    const densityX = pixelAmountX / heightInInches;
-    const densityY = pixelAmountY / widthInInches;
-
-    return [Math.ceil(densityX), Math.ceil(densityY)];
-  }
-
-  /**
-   * Calculates device model overall dpi.
-   * Needed in resolving device pixel density.
-   * Based on device model's physical width, physical height and pixel amount in Y and X axis.
-   *
-   * @param physicalWidth physical width
-   * @param physicalHeight physical height
-   * @param pixelAmountX pixel amount in X axis
-   * @param pixelAmountY pixel amount in Y axis
-   * @returns calculated X and Y axis pixel densities in array
-   */
-  private calculateOverallDpi = (physicalWidth: number, physicalHeight: number, pixelAmountX: number, pixelAmountY: number) => {
-    const conversionDivider = 25.4;
-    const widthInInches = physicalWidth / conversionDivider;
-    const heightInInches = physicalHeight / conversionDivider;
-    const diagonalScreenSize = Math.sqrt(Math.pow(widthInInches, 2) + Math.pow(heightInInches, 2));
-    const screenResolution = Math.sqrt(Math.pow(pixelAmountX , 2) + Math.pow(pixelAmountY, 2));
-    const overallDpi = screenResolution / diagonalScreenSize;
-    return Math.ceil(overallDpi);
-  }
-
-  /**
-   * Resolves device model pixel density value.
-   * Based on device model's overall screen dpi.
-   *
-   * @param overallDpi overall dpi
-   * @returns density value based on ranges between approximated dpi values
-   */
-  private resolveDensity = (overallDpi: number): number => {
-    if (overallDpi > 0 && overallDpi <= 140) {
-      return 0.75;
-    } else if (overallDpi > 140 && overallDpi <= 200) {
-      return 1.0;
-    } else if (overallDpi > 200 && overallDpi <= 280) {
-      return 1.5;
-    } else if (overallDpi > 280 && overallDpi <= 400) {
-      return 2.0;
-    } else if (overallDpi > 400 && overallDpi <= 560) {
-      return 3.0;
-    } else {
-      return 4.0;
-    }
+    return updatedProperty;
   }
 
   /**
@@ -826,29 +793,6 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       dimensions: deviceDimensions,
       displayMetrics: deviceDisplayMetrics
     } as DeviceModel;
-  }
-
-  /**
-   * Updates hidden display metrics values
-   *
-   * @param displayMetrics display metrics
-   * @param dimensions dimensions
-   * @returns device model display metrics
-   */
-  private updateHiddenDisplayMetricsValues = (displayMetrics: DeviceModelDisplayMetrics, dimensions: DeviceModelDimensions): DeviceModelDisplayMetrics => {
-    const { screenWidth, screenHeight } = dimensions;
-    const { heightPixels, widthPixels } = displayMetrics;
-    const pixelDensities = this.calculatePixelDensity(screenWidth || 0, screenHeight || 0, heightPixels || 0, widthPixels || 0);
-    const overallDpi = this.calculateOverallDpi(screenWidth || 0, screenHeight || 0, heightPixels || 0, widthPixels || 0);
-    const density = this.resolveDensity(overallDpi);
-    const updatedDisplayMetrics = {
-      ...displayMetrics,
-      density: density,
-      xdpi: pixelDensities[0],
-      ydpi: pixelDensities[1]
-    }
-
-    return updatedDisplayMetrics;
   }
 
 }
