@@ -28,13 +28,13 @@ interface Props {
   error: boolean;
 
   fullScreen?: boolean;
+  disableEnforceFocus?: boolean;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-
 }
 
 /**
@@ -56,9 +56,10 @@ export default class GenericDialog extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { open, positiveButtonText, cancelButtonText, onClose, onCancel, title, onConfirm, error, fullScreen } = this.props;
+    const { open, positiveButtonText, cancelButtonText, onClose, onCancel, title, onConfirm, error, fullScreen, disableEnforceFocus } = this.props;
     return (
       <Dialog
+        disableEnforceFocus={ disableEnforceFocus }
         open={ open }
         onClose={ () => onClose() }
         aria-labelledby="alert-dialog-title"
