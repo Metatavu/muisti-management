@@ -400,7 +400,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
             type="xdpi"
             label={ strings.device.dialog.displayMetrics.xdpi }
             variant="outlined"
-            value={ deviceData ? deviceData.displayMetrics.xdpi : "" }
+            value={ deviceData.displayMetrics.xdpi ?? "" }
             name="displayMetrics.xdpi"
             onChange={ this.onDeviceInfoChange }
           />
