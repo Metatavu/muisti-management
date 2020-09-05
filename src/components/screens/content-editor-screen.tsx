@@ -14,7 +14,7 @@ import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
-import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType } from "../../generated/client";
+import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
@@ -66,9 +66,11 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   error?: Error;
   loading: boolean;
+  contentVersions: ContentVersion[];
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
   layouts: PageLayout[];
+  selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
   view: View;
@@ -99,6 +101,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices: [],
       pages: [],
       layouts: [],
+      contentVersions: [],
       view: "VISUAL",
       propertiesExpanded: false
     };
@@ -200,6 +203,135 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementPropertiesPane>
         </div>
       </BasicLayout>
+    );
+  }
+
+  /**
+   * Renders editor
+   */
+  private renderEditor = () => {
+    switch (this.state.view) {
+      case "CODE":
+        return this.renderCodeEditor();
+      case "VISUAL":
+        return this.renderVisualEditor();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Renders code editor
+   */
+  private renderCodeEditor = () => {
+    const { selectedPage } = this.state;
+    if (!selectedPage) {
+      return;
+    }
+
+    return (
+      <CodeEditor
+        json={ this.toJsonCode(selectedPage) }
+        onChange={ (json: string) => this.applyCodeEditorChanges(json) }
+      />
+    );
+  }
+
+  /**
+   * Renders visual editor
+   */
+  private renderVisualEditor = () => {
+    const { classes, deviceModels } = this.props;
+    const { selectedPage, pageLayout, selectedLayoutView } = this.state;
+
+    if (!selectedPage || !pageLayout) {
+      return;
+    }
+
+    const view = pageLayout.data;
+    const resources = selectedPage.resources;
+    const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
+    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
+    const scale = 1;
+
+    return (
+      <div className={ classes.visualEditorContainer }>
+        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+          <PagePreview
+            screenOrientation={ pageLayout.screenOrientation }
+            view={ view }
+            selectedView={ selectedLayoutView }
+            resources={ resources }
+            displayMetrics={ displayMetrics }
+            scale={ scale }
+            onViewClick={ this.onLayoutViewClick }
+          />
+        </PanZoom>
+      </div>
+    );
+  }
+
+    /**
+   * Renders timeline content
+   */
+  private renderTimeline = () => {
+    const { classes } = this.props;
+    const {
+      contentVersions,
+      selectedContentVersion,
+      devices,
+      selectedDevice,
+      pages,
+      selectedPage
+    } = this.state;
+
+    return (
+      <div className={ classes.timelineContent }>
+        {
+          contentVersions.map(contentVersion => {
+            const selected = contentVersion.id === selectedContentVersion?.id;
+            return (
+              <Accordion
+                className={ classes.timelineContentVersion }
+                expanded={ selected }
+                onChange={ this.onExpandContentVersion(contentVersion) }
+              >
+                <AccordionSummary
+                  expandIcon={ <ExpandMoreIcon/> }
+                  className={ classes.timelineContentVersionTitle }
+                >
+                  <Typography
+                    variant="body2"
+                    className={ selected ? classes.selected : undefined }
+                  >
+                    { contentVersion.language }
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={ classes.timelineContentVersionContent }>
+                  <TimelineDevicesList
+                    contentVersion={ contentVersion }
+                    selectedContentVersion={ selectedContentVersion }
+                    devices={ devices }
+                    selectedDevice={ selectedDevice }
+                    onClick={ this.onDeviceClick }
+                  />
+                  <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
+                  <TimelineEditor
+                    contentVersion={ contentVersion }
+                    devices={ devices }
+                    pages={ pages }
+                    selectedContentVersion={ selectedContentVersion }
+                    selectedDevice={ selectedDevice }
+                    selectedPage={ selectedPage }
+                    onClick={ this.onPageClick }
+                    onDragEnd={ this.onPageDragEnd }
+                  />
+                </AccordionDetails>
+              </Accordion>
+            );
+          })
+        }
+      </div>
     );
   }
 
@@ -339,7 +471,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         expanded={ selectedLayoutView?.id === pageLayoutView.id }
         onChange={ this.onExpandElement(pageLayoutView) }
       >
-        <AccordionSummary  expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
           <Typography variant="h5">
             { pageLayoutView.name || "" }
           </Typography>
@@ -750,9 +882,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, groupContentVersionId, contentVersionId } = this.props;
+    const { accessToken, exhibitionId, groupContentVersionId } = this.props;
 
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
@@ -762,136 +895,49 @@ class ContentEditorScreen extends React.Component<Props, State> {
       layoutsApi.listPageLayouts({ })
     ]);
 
-    const exhibitionGroupId = groupContentVersion.deviceGroupId;
-    const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId });
+    const deviceGroupId = groupContentVersion.deviceGroupId;
+    const [ devices, groupContentVersions ] = await Promise.all([
+      exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId: deviceGroupId }),
+      groupContentVersionsApi.listGroupContentVersions({ exhibitionId, deviceGroupId })
+    ]);
+
+    const contentVersions: ContentVersion[] = [];
+    groupContentVersions.forEach(async groupContentVersion => {
+      const { contentVersionId } = groupContentVersion;
+      if (!contentVersions.find(contentVersion => contentVersion.id === contentVersionId)) {
+        const contentVersion = await contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId });
+        contentVersions.push(contentVersion);
+      }
+    });
+
     const devicePages = await Promise.all(
       devices.map(device =>
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId,
-          exhibitionDeviceId: device.id,
-          contentVersionId: contentVersionId
+          exhibitionDeviceId: device.id
         })
       )
     );
 
     const pages: ExhibitionPage[] = devicePages.flat();
     const selectedDevice = devices[0];
-    const selectedPage = pages.find(page => page.deviceId === selectedDevice.id);
+    const selectedContentVersion = contentVersions[0];
+    const selectedPage = pages.find(page => page.deviceId === selectedDevice.id && page.contentVersionId === selectedContentVersion.id);
 
     if (selectedPage) {
       this.updateResources(layouts, selectedPage);
     }
 
     this.setState({
+      contentVersions,
       groupContentVersion,
       devices,
       pages,
       layouts,
+      selectedContentVersion,
       selectedDevice
     });
 
-  }
-
-  /**
-   * Renders timeline content
-   */
-  private renderTimeline = () => {
-    const { classes } = this.props;
-    const { devices, selectedDevice, pages, selectedPage } = this.state;
-    return (
-      <div className={ classes.timelineContent }>
-        <TimelineDevicesList
-          devices={ devices }
-          selectedDevice={ selectedDevice }
-          onClick={ this.onDeviceClick }
-        />
-        <Divider orientation="vertical" flexItem />
-        <TimelineEditor
-          devices={ devices }
-          pages={ pages }
-          selectedDevice={ selectedDevice }
-          selectedPage={ selectedPage }
-          onClick={ this.onPageClick }
-          onDragEnd={ this.onPageDragEnd }
-        />
-      </div>
-    );
-  }
-
-  /**
-   * Renders editor
-   */
-  private renderEditor = () => {
-    switch (this.state.view) {
-      case "CODE":
-        return this.renderCodeEditor();
-      case "VISUAL":
-        return this.renderVisualEditor();
-      default:
-        return null;
-    }
-  }
-
-  /**
-   * Event handler for switch view button click
-   */
-  private onSwitchViewClick = () => {
-    this.setState(
-      produce((draft: State) => {
-        draft.view = draft.view === "CODE" ? "VISUAL" : "CODE";
-      })
-    );
-  }
-
-  /**
-   * Renders code editor
-   */
-  private renderCodeEditor = () => {
-    const { selectedPage } = this.state;
-    if (!selectedPage) {
-      return;
-    }
-
-    return (
-      <CodeEditor
-        json={ this.toJsonCode(selectedPage) }
-        onChange={ (json: string) => this.applyCodeEditorChanges(json) }
-      />
-    );
-  }
-
-  /**
-   * Renders visual editor
-   */
-  private renderVisualEditor = () => {
-    const { classes, deviceModels } = this.props;
-    const { selectedPage, pageLayout, selectedLayoutView } = this.state;
-
-    if (!selectedPage || !pageLayout) {
-      return;
-    }
-
-    const view = pageLayout.data;
-    const resources = selectedPage.resources;
-    const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
-    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
-    const scale = 1;
-
-    return (
-      <div className={ classes.visualEditorContainer }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
-          <PagePreview
-            screenOrientation={ pageLayout.screenOrientation }
-            view={ view }
-            selectedView={ selectedLayoutView }
-            resources={ resources }
-            displayMetrics={ displayMetrics }
-            scale={ scale }
-            onViewClick={ this.onLayoutViewClick }
-          />
-        </PanZoom>
-      </div>
-    );
   }
 
   /**
@@ -1173,12 +1219,25 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for switch view button click
+   */
+  private onSwitchViewClick = () => {
+    this.setState(
+      produce((draft: State) => {
+        draft.view = draft.view === "CODE" ? "VISUAL" : "CODE";
+      })
+    );
+  }
+
+  /**
    * Event handler for device click
    *
+   * @param selectedContentVersion selected content version
    * @param selectedDevice selected device
    */
-  private onDeviceClick = (selectedDevice: ExhibitionDevice) => () => {
+  private onDeviceClick = (selectedContentVersion: ContentVersion, selectedDevice: ExhibitionDevice) => () => {
     this.setState({
+      selectedContentVersion,
       selectedDevice,
       selectedPage: undefined
     });
@@ -1187,11 +1246,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Event handler for page click
    *
+   * @param selectedContentVersion selected content version
    * @param selectedPage selected page
    */
-  private onPageClick = (selectedPage: ExhibitionPage) => () => {
+  private onPageClick = (selectedContentVersion: ContentVersion, selectedPage: ExhibitionPage) => () => {
     const { devices } = this.state;
     this.setState({
+      selectedContentVersion,
       selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
       selectedPage,
       selectedTriggerIndex: undefined
@@ -1214,6 +1275,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Event handler for expand element
    * 
    * @param view page layout view
+   * @param event React change event
+   * @param expanded is element expanded
    */
   private onExpandElement = (view: PageLayoutView) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
     this.setState({
@@ -1222,12 +1285,46 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for expand content version
+   * 
+   * @param contentVersion content version
+   * @param event React change event
+   * @param expanded is content version expanded
+   */
+  private onExpandContentVersion = (contentVersion: ContentVersion) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
+    this.setState({
+      selectedContentVersion: expanded ? contentVersion : undefined,
+      selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined
+    });
+  }
+
+  /**
+   * Get corresponding selected page from given content version.
+   * 
+   * Used when content version is changed.
+   * Uses selected device and order number of the currently selected page
+   * to find corresponding page from new selected content version.
+   * 
+   * @param contentVersion new content version
+   * @returns corresponding selected page if one is found, otherwise false
+   */
+  private getCorrespondingSelectedPage = (contentVersion: ContentVersion): ExhibitionPage | undefined => {
+    const { selectedDevice, selectedPage, pages } = this.state;
+    return pages.find(page => 
+      page.contentVersionId === contentVersion.id &&
+      page.deviceId === selectedDevice?.id &&
+      page.orderNumber === selectedPage?.orderNumber
+    );
+  }
+
+  /**
    * Event handler for page drag end
    *
+   * @param contentVersionId content version id
    * @param deviceId device id
    * @param result drop result
    */
-  private onPageDragEnd = (deviceId: string) => (result: DropResult) => {
+  private onPageDragEnd = (contentVersionId: string, deviceId: string) => (result: DropResult) => {
     if (!result.destination) {
       return;
     }
@@ -1240,7 +1337,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.updatePageOrderNumber(newIndex, movedPageId, deviceId);
+    this.updatePageOrderNumber(newIndex, movedPageId, contentVersionId, deviceId);
   }
 
   /**
@@ -1248,11 +1345,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param newIndex new index
    * @param movedPageId moved pages uuid
-   * @param deviceId device where page belongs to
+   * @param contentVersionId id of content version where page belongs to
+   * @param deviceId id of device where page belongs to
    * @returns new order as string list
    */
-  private updatePageOrderNumber = (newIndex: number, movedPageId: string, deviceId: string) => {
-    const { contentVersionId } = this.props;
+  private updatePageOrderNumber = (newIndex: number, movedPageId: string, contentVersionId: string, deviceId: string) => {
     const { pages } = this.state;
 
     const movedPage = pages.find(page => page.id === movedPageId);
