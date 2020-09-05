@@ -339,7 +339,10 @@
       "displayMetrics": {
         "displayInfo": "Screen info",
         "widthPixels": "Screen pixel width",
-        "heightPixels": "Screen pixel height"
+        "heightPixels": "Screen pixel height",
+        "density": "Pixel density",
+        "xdpi": "Pixels per inch in X-axis",
+        "ydpi": "Pixels per inch in y-axis"
       },
       "dimensions" : {
         "physicalSize": "Device physical size",

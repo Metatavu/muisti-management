@@ -338,7 +338,10 @@
       "displayMetrics": {
         "displayInfo": "Näytön tiedot",
         "widthPixels": "Ruudun pikselileveys",
-        "heightPixels": "Ruudun pikselikorkeus"
+        "heightPixels": "Ruudun pikselikorkeus",
+        "density": "Pikselitiheys",
+        "xdpi": "Pikseliä tuumalle X-akselilla",
+        "ydpi": "Pikseliä tuumalle y-akselilla"
       },
       "dimensions" : {
         "physicalSize": "Laitteen fyysinen koko",
