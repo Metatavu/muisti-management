@@ -271,7 +271,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
   }
 
-    /**
+  /**
    * Renders timeline content
    */
   private renderTimeline = () => {
@@ -512,6 +512,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { classes } = this.props;
     const { selectedLayoutView } = this.state;
     const tabItems = this.getTabs();
+    const tabStructure = this.getTabStructure();
 
     return (
       <Accordion
@@ -533,7 +534,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
         </AccordionSummary>
         <AccordionDetails>
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { strings.contentEditor.editor.tabs.title }
+            {
+              !tabStructure || tabStructure.tabs.length === 0 ?
+              strings.contentEditor.editor.tabs.noTabs :
+              strings.contentEditor.editor.tabs.title
+            }
           </Typography>
           { tabItems }
         </AccordionDetails>
@@ -905,12 +910,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
     ]);
 
     const contentVersions: ContentVersion[] = [];
-    groupContentVersions.forEach(async groupContentVersion => {
-      const { contentVersionId } = groupContentVersion;
+    for (const gContentVersion of groupContentVersions) {
+      const { contentVersionId } = gContentVersion;
       if (!contentVersions.find(contentVersion => contentVersion.id === contentVersionId)) {
         const contentVersion = await contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId });
         contentVersions.push(contentVersion);
       }
+    }
+
+    contentVersions.sort((a, b) => {
+      return a.language.localeCompare(b.language);
     });
 
     const devicePages = await Promise.all(

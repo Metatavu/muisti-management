@@ -551,6 +551,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       tabs: {
         title: string;
+        noTabs: string;
         add: string;
         label: string;
         properties: string;

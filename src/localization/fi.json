@@ -549,6 +549,7 @@
 
       "tabs" : {
         "title": "Välilehdet",
+        "noTabs": "Ei välilehtiä",
         "add": "Lisää välilehti",
         "label": "Otsikko",
         "properties": "Ominaisuudet",
