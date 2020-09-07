@@ -124,7 +124,7 @@ class TabEditor extends React.Component<Props, State> {
         name="name"
         className={ classes.textResourceEditor }
         variant="filled"
-        value={ selectedTab.label }
+        value={ selectedTab.label ?? "" }
         onChange={ this.onLabelChange }
       />
     </div>
@@ -137,7 +137,7 @@ class TabEditor extends React.Component<Props, State> {
   private renderTabResources = () => {
     const { selectedResourceType } = this.state;
 
-    if (selectedResourceType && selectedResourceType === ExhibitionPageResourceType.Html) {
+    if (!selectedResourceType) {
       return null;
     }
 

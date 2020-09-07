@@ -5,6 +5,10 @@
  * @returns parsed data or undefined
  */
 export function parseStringToJsonObject<T, R>(data: string): R | undefined {
+  if (data.length < 1) {
+    return;
+  }
+
   try {
     const parsed: R = JSON.parse(data);
     return parsed;

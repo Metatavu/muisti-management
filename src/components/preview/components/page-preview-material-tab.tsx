@@ -1,15 +1,18 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles, withStyles, Tabs, Tab, AppBar } from "@material-ui/core";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import PagePreviewUtils from "./page-preview-utils";
 import AndroidUtils from "../../../utils/android-utils";
+import { TabStructure } from "../../content-editor/constants";
+import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
+import TabItem from "../../generic/tab-item";
 
 /**
  * Interface representing component properties
@@ -33,9 +36,9 @@ interface State {
 }
 
 /**
- * Component for rendering FrameLayout views
+ * Component for rendering MaterialTabLayout views
  */
-class PagePreviewFrameLayout extends React.Component<Props, State> {
+class PagePreviewMaterialTab extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -64,13 +67,99 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            <div style={ this.resolveStyles() }>
-              { this.renderChildren() }
-            </div>
+            { this.renderTabs() }
           </div>
         )}
       </Measure>
     );
+  }
+
+  private renderTabs = () => {
+    const { resourceMap } = this.props;
+    const tabResource = this.getTabResource();
+    if (!tabResource) {
+      return null;
+    }
+
+    const tabItems = tabResource.tabs.map((tab, index) => {
+      console.log(tab.resources);
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <Tab
+          label={ tab.label }
+          value={ index }
+        />
+      );
+    });
+
+    const tabData = tabResource.tabs.map((tab, index) => {
+      console.log(tab.resources);
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <TabItem
+          index={ index }
+          value={ index }
+          data= { tab.resources[0].data }
+        />
+      );
+    });
+
+    return (
+      <>
+        <AppBar style={{ width: "inherit", height: "inherit" }}>
+          <Tabs
+            value={ 0 }
+            // onChange={handleChange}
+            aria-label="simple tabs example"
+          >
+            { tabItems }
+          </Tabs>
+        </AppBar>
+
+        { tabData }
+      </>
+    );
+  }
+
+  /**
+   * Get tab resource from resource map
+   *
+   * @returns found tab structure or undefined
+   */
+  private getTabResource = (): TabStructure | undefined => {
+    const { resourceMap, view } = this.props;
+    if (view.widget !== PageLayoutWidgetType.MaterialTabLayout) {
+      return;
+    }
+
+    const tabData = view.properties.find(prop => prop.name === "data");
+    if (!tabData) {
+      return;
+    }
+
+    const keySplit = tabData.value.split("@resources/");
+
+    if (keySplit.length < 2) {
+      return;
+    }
+
+    const key = keySplit[1];
+
+    const tabResource = resourceMap[key];
+    if (!tabResource) {
+      return;
+    }
+
+    const data = tabResource.data;
+    const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+    console.log(parsed);
+    return parsed;
   }
 
   /**
@@ -132,7 +221,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       position: "absolute",
       zIndex: layer
     });
-
+    console.log(properties);
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
         switch (property.name) {
@@ -260,4 +349,4 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(PagePreviewFrameLayout);
+export default withStyles(styles)(PagePreviewMaterialTab);

@@ -593,9 +593,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
       );
     }
 
-    if (tabResourceIndex !== undefined && selectedTabIndex !== undefined) {
-      const test = selectedPage.resources[tabResourceIndex].data;
-      const parsed = parseStringToJsonObject<typeof test, TabStructure>(test);
+    if (tabResourceIndex !== undefined && selectedTabIndex !== undefined && selectedPage.resources[tabResourceIndex] !== undefined) {
+      const data = selectedPage.resources[tabResourceIndex].data;
+      const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       if (!parsed || !parsed.tabs) {
         return null;
       }
@@ -780,13 +780,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
           selectedTabIndex === undefined ||
           !selectedPage
         ) {
-        return;
-      }
-      const tabData = this.getTabStructure();
-      if (tabData && tabData.tabs) {
-        tabData.tabs[selectedTabIndex] = updatedTab;
-        selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
-      }
+          return;
+        }
+
+        const tabData = this.getTabStructure();
+        if (tabData && tabData.tabs) {
+          tabData.tabs[selectedTabIndex] = updatedTab;
+          selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
+        }
 
       })
     );

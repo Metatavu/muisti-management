@@ -50,7 +50,7 @@ class PagePreview extends React.Component<Props, State> {
   /**
    * Render basic layout
    */
-  public render() {
+  public render = () => {
     const {
       classes,
       screenOrientation,
@@ -89,7 +89,7 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -98,8 +98,8 @@ class PagePreview extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
@@ -157,13 +157,13 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Returns resources as a map
-   * 
+   *
    * @returns resources as a map
    */
   private getResourceMap = () => {
-    const result: ResourceMap = {};
+    const result: ResourceMap = { };
 
-    (this.props.resources || []).forEach((resource) => {
+    (this.props.resources || []).forEach(resource => {
       result[resource.id] = resource;
     });
 

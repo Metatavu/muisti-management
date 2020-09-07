@@ -13,6 +13,7 @@ import PagePreviewRelativeLayout from "./page-preview-relative-layout";
 import PagePreviewPlayerView from "./page-preview-player-view";
 import PagePreviewMediaView from "./page-preview-media-view";
 import PagePreviewLinearLayout from "./page-preview-linear-layout";
+import PagePreviewMaterialTab from "./page-preview-material-tab";
 
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -186,6 +187,18 @@ class PagePreviewComponent extends React.Component<Props, State> {
         />;
       case "RelativeLayout":
         return <PagePreviewRelativeLayout
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
+      case "MaterialTabLayout":
+        return <PagePreviewMaterialTab
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
