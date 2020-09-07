@@ -9,6 +9,7 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
+import { TabHolder } from "../../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -20,6 +21,7 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -52,8 +54,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render = () => {
-    const { onResize } = this.props;
-
+    const { onResize, tabMap } = this.props;
+    console.log(tabMap);
+    const test = this.tabContainerComponent();
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -82,6 +85,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
+      tabMap,
       onViewClick,
       onTabClick,
       handleLayoutProperties
@@ -99,6 +103,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       );
     });
@@ -108,6 +113,26 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         { result }
       </>
     );
+  }
+
+  private tabContainerComponent = () => {
+    const { tabMap, view } = this.props;
+
+    if (!tabMap) {
+      return;
+    }
+
+    const test: TabHolder[] = [];
+
+    tabMap.forEach((value, key) => {
+      if (value.tabComponent.contentContainerId === view.id) {
+        console.log("----------------------------------------------------------------------------------------")
+        test.push(value);
+      }
+    });
+
+    console.log(test);
+
   }
 
   /**

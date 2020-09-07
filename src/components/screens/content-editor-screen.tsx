@@ -153,6 +153,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
     const { groupContentVersion, devices, selectedTriggerIndex, selectedTabIndex } = this.state;
+    console.log(this.state.tabMap);
     if (this.state.loading) {
       return (
         <BasicLayout
@@ -244,8 +245,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
-    const { selectedPage, pageLayout, selectedLayoutView } = this.state;
-
+    const { selectedPage, pageLayout, selectedLayoutView, tabMap } = this.state;
+    console.log(tabMap)
     if (!selectedPage || !pageLayout) {
       return;
     }
@@ -268,6 +269,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
             scale={ scale }
             onViewClick={ this.onLayoutViewClick }
             onTabClick={ this.onPreviewTabClick }
+            tabMap={ tabMap }
           />
         </PanZoom>
       </div>
@@ -778,9 +780,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private updateTab = (updatedTab: Tab) => {
     this.setState(
       produce((draft: State) => {
-        const { tabResourceIndex, selectedTabIndex, selectedPage } = draft;
+        const { tabResourceIndex, selectedTabIndex, selectedPage, selectedLayoutView, tabMap } = draft;
         if (tabResourceIndex === undefined ||
           selectedTabIndex === undefined ||
+          !selectedLayoutView ||
+          !tabMap ||
           !selectedPage
         ) {
           return;
@@ -788,6 +792,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
         const tabData = this.getTabStructure();
         if (tabData && tabData.tabs) {
+          const test = tabMap.get(selectedLayoutView.id);
+          if (test) {
+            test.tabComponent = tabData;
+            draft.tabMap.set(selectedLayoutView.id, test);
+          }
           tabData.tabs[selectedTabIndex] = updatedTab;
           selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
         }
@@ -1121,7 +1130,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param event react mouse event
    */
   private onAddTab = () => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const { selectedPage, tabResourceIndex } = this.state;
+    const { selectedPage, tabResourceIndex, selectedLayoutView, tabMap } = this.state;
     event.stopPropagation();
 
     if (!selectedPage || tabResourceIndex === undefined) {
@@ -1152,13 +1161,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    currentTabStructure.tabs.push(newTab);
+    const test = produce(currentTabStructure, draft => {
+      draft.tabs.push(newTab);
+      if (!draft.contentContainerId && selectedLayoutView) {
+        const temp = tabMap.get(selectedLayoutView.id);
+        draft.contentContainerId = temp?.tabComponent.contentContainerId;
+      }
+    })
 
 
     this.setState(
       produce((draft: State) => {
         draft.selectedPage = selectedPage;
-        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(currentTabStructure);
+        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(test);
       })
     );
   }
@@ -1295,14 +1310,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onPreviewTabClick = (viewId: string, newIndex: number) => {
     const { tabMap } = this.state;
-    console.log(viewId);
-    console.log(newIndex);
 
-    const tabToUpdate = tabMap.get(viewId);
+    this.setState(
+      produce((draft: State) => {
+        const tabToUpdate = tabMap.get(viewId);
+        if (!tabToUpdate) {
+          return;
+        }
 
-    if (!tabToUpdate) {
-      return;
-    }
+        const newTabHolder = { ...tabToUpdate, "activeTabIndex": newIndex };
+        draft.tabMap.set(viewId, newTabHolder);
+      })
+    );
   }
 
   /**
@@ -1500,12 +1519,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage.resources.forEach((resource, index) => {
           const resourceWidgetType = resourceHolder.resourceToWidgetType.get(resource.id);
           if (resourceWidgetType && resourceWidgetType === PageLayoutWidgetType.MaterialTabLayout) {
-
-            console.log(resourceHolder)
-            // resourceHolder.widgetIds.get
-            // draft.tabMap.set()
             draft.tabResourceIndex = index;
             return;
+          }
+        });
+        console.log("lkjnsdflkkjjjjjjnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
+          const tabIndex = draft.selectedPage?.resources.findIndex(resource => resource.id === value.tabResourceId);
+          if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
+            const test = ResourceUtils.getResourcesForTabComponent(draft.selectedPage.resources, tabIndex, value.tabContentContainerId);
+            draft.tabMap.set(key, {
+              activeTabIndex: 0,
+              tabComponent: test
+            });
           }
         });
 
@@ -1708,6 +1734,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (tabResourceIndex !== undefined && selectedPage && selectedPage.resources.length > 0) {
       const data = selectedPage.resources[tabResourceIndex].data;
+      console.log(data);
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       if (!parsed) {
         return { tabs: [] } as TabStructure;

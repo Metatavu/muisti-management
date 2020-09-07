@@ -8,6 +8,7 @@ import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import AndroidUtils from "../../utils/android-utils";
 import { ResourceMap } from "../../types";
+import { TabHolder } from "../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -21,6 +22,8 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
+  tabMap?: Map<string, TabHolder>;
+
   onViewClick?: (view: PageLayoutView) => void;
   onTabClick?: (viewId: string, newIndex: number) => void;
 }
@@ -61,6 +64,7 @@ class PagePreview extends React.Component<Props, State> {
       selectedView,
       layer,
       deviceOrientation,
+      tabMap,
       onViewClick,
       onTabClick
     } = this.props;
@@ -72,6 +76,7 @@ class PagePreview extends React.Component<Props, State> {
       height = displayMetrics.widthPixels * scale;
       width = displayMetrics.heightPixels * scale;
     }
+    console.log(tabMap)
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
@@ -85,6 +90,7 @@ class PagePreview extends React.Component<Props, State> {
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       </div>
     );

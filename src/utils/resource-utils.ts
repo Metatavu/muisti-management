@@ -1,10 +1,17 @@
 import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType } from "../generated/client";
+import { TabStructure } from "../components/content-editor/constants";
+import { parseStringToJsonObject } from "./content-editor-utils";
 
+
+export interface TabResourceCache {
+  tabResourceId: string;
+  tabContentContainerId?: string;
+}
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string[]>;
   resourceToWidgetType: Map<string, PageLayoutWidgetType>;
-  tabIdList: string[];
+  tabPropertyIdToTabResourceId: Map<string, TabResourceCache>;
 }
 
 /**
@@ -23,7 +30,7 @@ export default class ResourceUtils {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string[]> = new Map();
     let resourceToWidgetType: Map<string, PageLayoutWidgetType> = new Map();
-    const tabIdList: string[] = [];
+    let tabPropertyIdToTabResourceId: Map<string, TabResourceCache> = new Map();
 
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
     resourceProperties.forEach(property => {
@@ -34,23 +41,29 @@ export default class ResourceUtils {
           return;
         }
 
-        const id = splitPropertyValue[1];
+        const propertyId = splitPropertyValue[1];
 
         const foundElement = ids.get(layoutView.id);
         if (foundElement) {
-          foundElement.push(id);
+          foundElement.push(propertyId);
           ids.set(layoutView.id, foundElement);
-          resourceToWidgetType.set(id, layoutView.widget);
+          resourceToWidgetType.set(propertyId, layoutView.widget);
           if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
-            tabIdList.push(layoutView.id);
+            tabPropertyIdToTabResourceId.set(
+              layoutView.id,
+              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
+            );
           }
         } else {
           const newList = [];
-          newList.push(id);
+          newList.push(propertyId);
           ids.set(layoutView.id, newList);
-          resourceToWidgetType.set(id, layoutView.widget);
+          resourceToWidgetType.set(propertyId, layoutView.widget);
           if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
-            tabIdList.push(layoutView.id);
+            tabPropertyIdToTabResourceId.set(
+              layoutView.id,
+              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
+            );
           }
         }
         foundResources.push(resource);
@@ -64,7 +77,7 @@ export default class ResourceUtils {
         foundResources.push(...childResources.resources);
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
         resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
-        tabIdList.push(...childResources.tabIdList);
+        tabPropertyIdToTabResourceId = new Map([...Array.from(tabPropertyIdToTabResourceId.entries()), ...Array.from(childResources.tabPropertyIdToTabResourceId.entries())]);
       });
     }
 
@@ -72,9 +85,20 @@ export default class ResourceUtils {
       resources: foundResources,
       widgetIds: ids,
       resourceToWidgetType: resourceToWidgetType,
-      tabIdList: tabIdList
+      tabPropertyIdToTabResourceId
     } as PageResourceCache;
   }
+
+  public static getResourcesForTabComponent = (resources: ExhibitionPageResource[], tabResourceIndex: number, contentContainerId?: string): TabStructure => {
+    const data = resources[tabResourceIndex].data;
+    const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+    if (!parsed) {
+      return { contentContainerId: contentContainerId, tabs: [] } as TabStructure;
+    }
+
+    return parsed;
+  }
+
 }
 
 /**

@@ -18,6 +18,7 @@ import PagePreviewMaterialTab from "./page-preview-material-tab";
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { ResourceMap } from "../../../types";
+import { TabHolder } from "../../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -30,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -80,6 +82,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
       displayMetrics,
       scale,
       resourceMap,
+      tabMap,
       onResize,
       handleLayoutProperties,
       onViewClick,
@@ -89,7 +92,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
     if (!view) {
       return null;
     }
-
+    console.log(tabMap);
     console.log(`Layer index of: ${view.name} is ${this.getLayer()}`);
 
     switch (view.widget) {
@@ -105,6 +108,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />;
       case "LinearLayout":
         return <PagePreviewLinearLayout

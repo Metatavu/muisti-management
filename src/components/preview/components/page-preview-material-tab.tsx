@@ -57,7 +57,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   public render = () => {
     const { onResize } = this.props;
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -163,7 +163,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    * @param reason reason why the property was unknown
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
-    // console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
+    // // console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
   }
 
   /**
@@ -220,39 +220,39 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     properties.forEach(property => {
       switch (property.name) {
         case "tabGravity":
-          console.log("tabGravity")
+          // console.log("tabGravity")
           break;
 
         case "selectedTabIndicatorColor":
-          console.log("selectedTabIndicatorColor")
+          // console.log("selectedTabIndicatorColor")
           break;
 
         case "selectedTabIndicatorGravity":
-          console.log("selectedTabIndicatorGravity")
+          // console.log("selectedTabIndicatorGravity")
           break;
 
         case "selectedTabIndicatorHeight":
-          console.log("selectedTabIndicatorHeight")
+          // console.log("selectedTabIndicatorHeight")
           break;
 
         case "tabTextColorNormal":
-          console.log("tabTextColorNormal")
+          // console.log("tabTextColorNormal")
           break;
 
         case "tabTextColorSelected":
-          console.log("tabTextColorSelected")
+          // console.log("tabTextColorSelected")
           break;
 
         case "unboundedRipple":
-          console.log("unboundedRipple")
+          // console.log("unboundedRipple")
           break;
 
         case "tabIndicatorFullWidth":
-          console.log("tabIndicatorFullWidth")
+          // console.log("tabIndicatorFullWidth")
           break;
 
         default:
-          console.log(`Unknown property: ${property.name}`)
+          // console.log(`Unknown property: ${property.name}`)
       }
     });
 
@@ -308,7 +308,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
   private onTabClickHandler = (viewId: string) => (event: React.ChangeEvent<{}>, value: any) => {
     const { onTabClick } = this.props;
-    console.log("asd")
     if (!onTabClick) {
       return;
     }
