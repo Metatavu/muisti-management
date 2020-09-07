@@ -9,7 +9,6 @@ import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap } from "../../../types";
 import PagePreviewComponentEditor from "./page-preview-component";
-import PagePreviewUtils from "./page-preview-utils";
 import ReactHtmlParser from "react-html-parser";
 
 /**
@@ -90,6 +89,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
+      handleLayoutProperties
     } = this.props;
 
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
@@ -100,7 +100,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           displayMetrics={ displayMetrics }
           scale={ scale }
-          handleLayoutProperties={ this.onHandleLayoutProperties }
+          handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
         />
       );
@@ -168,6 +168,12 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
     properties.forEach(property => {
       if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
+        switch(property.name) {
+          case "layout_gravity":
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          break;
+          default:
+        }
         return;
       }
 
@@ -175,68 +181,16 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
           if (px) {
-            result.fontSize = px
+            result.fontSize = px;
           } else {
             console.log("FlowTextView: unknown layout_height", property.value);
           }
         break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
-
-    return result;
-  }
-
-  /**
-   * Handles a child component layouting 
-   * 
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
-   */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles,
-      shapeOutside: "content-box"
-    };
-
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          case "layout_alignParentLeft":
-            result.float = "left";
-          break;
-          case "layout_alignParentRight":
-            result.float = "right";
-          break; 
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-      });
 
     return result;
   }
@@ -253,7 +207,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {

@@ -8,7 +8,6 @@ import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
-import PagePreviewUtils from "./page-preview-utils";
 import AndroidUtils from "../../../utils/android-utils";
 
 /**
@@ -83,7 +82,8 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
-      onTabClick
+      onTabClick,
+      handleLayoutProperties
     } = this.props;
 
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
@@ -96,7 +96,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           displayMetrics={ displayMetrics }
           scale={ scale }
-          handleLayoutProperties={ this.onHandleLayoutProperties }
+          handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
         />
@@ -129,103 +129,50 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
     const { view, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
     const result: CSSProperties = handleLayoutProperties(properties, {
+      display: "flex",
       zIndex: layer
     });
 
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
-        return;
+        switch (property.name) {
+          case "layout_gravity":
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          break;
+          default:
+            this.handleUnknownProperty(property, "unknown property");
+          break;
+        }
+        return result;
       }
 
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-          break;
+        break;
+        case "gravity":
+          result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
+        break;
         case "padding":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale)
           if (px) {
             result.padding = px;
           }
-          break;
+        break;
         case "orientation":
           if (property.value === "vertical") {
-            result.flexDirection = "column"
+            result.flexDirection = "column";
           } else if (property.value === "horizontal") {
-            result.flexDirection = "row"
+            result.flexDirection = "row";
           }
-          break;
+        break;
         default:
           this.handleUnknownProperty(property, "unknown property");
         break;
       }
     });
-
     result.boxSizing = "border-box";
     result.display = "flex";
-    return result;
-  }
-
-  /**
-   * Handles a child component layouting
-   *
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
-   */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles, 
-      overflow: "hidden"
-    };
-
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          case "layout_gravity":
-            property.value.split("|").forEach(gravityValue => {
-              switch (gravityValue) {
-                case "top":
-                  result.top = 0;
-                break;
-                case "bottom":
-                  result.bottom = 0;
-                break;
-                case "right":
-                  result.right = 0;
-                break;
-                case "left":
-                  result.left = 0;
-                break;
-                default:
-              }
-            });
-          break;
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-    });
     return result;
   }
 

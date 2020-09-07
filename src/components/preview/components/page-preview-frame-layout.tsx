@@ -1,14 +1,13 @@
 import * as React from "react";
 
-import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles } from "@material-ui/core";
+import Measure, { ContentRect } from 'react-measure';
+import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
-import PagePreviewUtils from "./page-preview-utils";
 import AndroidUtils from "../../../utils/android-utils";
 
 /**
@@ -60,14 +59,12 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         {({ measureRef }) => (
           <div
             ref={ measureRef }
-            style={ this.resolveContainerStyles() }
+            style={ this.resolveStyles() }
             onClick={ this.onClick }
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            <div style={ this.resolveStyles() }>
-              { this.renderChildren() }
-            </div>
+            { this.renderChildren() }
           </div>
         )}
       </Measure>
@@ -86,7 +83,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
-      onTabClick
+      onTabClick,
+      handleLayoutProperties
     } = this.props;
 
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
@@ -98,7 +96,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           displayMetrics={ displayMetrics }
           scale={ scale }
-          handleLayoutProperties={ this.onHandleLayoutProperties }
+          handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
         />
@@ -127,12 +125,11 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    *
    * @returns component container styles
    */
-  private resolveContainerStyles = (): CSSProperties => {
+  private resolveStyles = (): CSSProperties => {
     const { view, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "flex",
-      position: "absolute",
       zIndex: layer
     });
 
@@ -140,7 +137,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       if (property.name.startsWith("layout_")) {
         switch (property.name) {
           case "layout_gravity":
-            result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
           break;
           default:
         }
@@ -157,80 +154,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       }
     });
     result.boxSizing = "border-box";
-
-    return result;
-  }
-
-  /**
-   * Resolves component styles
-   *
-   * @returns component styles
-   */
-  private resolveStyles = (): CSSProperties => {
-    const { view, handleLayoutProperties } = this.props;
-    const properties = view.properties;
-    const result: CSSProperties = handleLayoutProperties(properties, {});
-
-    properties.forEach(property => {
-      if (property.name.startsWith("layout_")) {
-        switch (property.name) {
-          case "layout_gravity":
-            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
-          break;
-          default:
-            break;
-        }
-        return result;
-      }
-    });
-    result.boxSizing = "border-box";
-
-    return result;
-  }
-
-  /**
-   * Handles a child component layouting
-   *
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
-   */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles,
-      position: "absolute",
-      overflow: "hidden"
-    };
-
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-    });
 
     return result;
   }
