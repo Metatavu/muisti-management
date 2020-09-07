@@ -115,7 +115,12 @@ class PagePreview extends React.Component<Props, State> {
             if ("match_parent" === property.value || "fill_parent" === property.value) {
               result.width = "100%";
             } else {
-              this.handleUnknownProperty(property, "Unknown value");
+              const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+              if (px) {
+                result.width = px;
+              } else {
+                this.handleUnknownProperty(property, "Unknown value");
+              }
             }
           break;
           case "layout_height":
