@@ -31,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
   displayMetrics: DisplayMetrics;
+  onPageLayoutViewUpdate: (pageLayoutView: PageLayoutView) => void;
 }
 
 /**
@@ -128,12 +129,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    */
   private renderTextViewEditor = () => {
     const { pageLayoutView, displayMetrics } = this.props;
-    
+
     return (
       <TextViewEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -148,7 +149,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       <FlowTextViewEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -163,7 +164,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       <ImageViewEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -178,7 +179,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       <ButtonEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -192,7 +193,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     return (
       <LinearLayoutEditor
         pageLayoutView={ pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -201,13 +202,15 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render button editor
    */
   private renderTabLayoutEditor = () => {
-    const { pageLayoutView, displayMetrics } = this.props;
+    const { pageLayoutView, displayMetrics, pageLayout } = this.props;
 
     return (
       <TabLayoutEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
-        onValueChange={ this.onSingleValueChange }
+        onValueChange={ this.onSinglePropertyValueChange }
+        onPageLayoutViewMetadataChange={ this.onSingleMetadataValueChange }
+        pageLayout={ pageLayout }
       />
     );
   }
@@ -217,7 +220,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    *
    * @param updatedPageLayoutView page layout view property object to update
    */
-  private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
+  private onSinglePropertyValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
     const { selectedElementPath, editingSubLayout } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
@@ -231,6 +234,26 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     this.setState({
       layout : layoutToUpdate
     });
+  }
+
+  /**
+   * Generic handler for single page layout property value changes
+   *
+   * @param updatedPageLayoutView page layout view property object to update
+   */
+  private onSingleMetadataValueChange = (updatedPageLayoutView: PageLayoutView) => {
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedPageLayoutView, selectedElementPath);
+    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    this.setState({
+      layout : layoutToUpdate
+    });
+    onPageLayoutViewUpdate(updatedPageLayoutView);
   }
 }
 

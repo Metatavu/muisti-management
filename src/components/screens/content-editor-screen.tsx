@@ -37,7 +37,7 @@ import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
-import { allowedWidgetTypes, TabStructure, Tab, TabProperty } from "../content-editor/constants";
+import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tabs-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
@@ -82,6 +82,7 @@ interface State {
   tabResourceIndex?: number;
   selectedTabIndex?: number;
   propertiesExpanded: boolean;
+  tabMap: Map<string, TabHolder>;
 }
 
 /**
@@ -103,7 +104,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       layouts: [],
       contentVersions: [],
       view: "VISUAL",
-      propertiesExpanded: false
+      propertiesExpanded: false,
+      tabMap: new Map()
     };
   }
 
@@ -265,6 +267,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
             displayMetrics={ displayMetrics }
             scale={ scale }
             onViewClick={ this.onLayoutViewClick }
+            onTabClick={ this.onPreviewTabClick }
           />
         </PanZoom>
       </div>
@@ -1274,7 +1277,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for layout view click
-   * 
+   *
    * @param view page layout view
    */
   private onLayoutViewClick = (view: PageLayoutView) => {
@@ -1285,8 +1288,26 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for preview tab click
+   *
+   * @param viewId tab component view id 
+   * @param newIndex new active tab index
+   */
+  private onPreviewTabClick = (viewId: string, newIndex: number) => {
+    const { tabMap } = this.state;
+    console.log(viewId);
+    console.log(newIndex);
+
+    const tabToUpdate = tabMap.get(viewId);
+
+    if (!tabToUpdate) {
+      return;
+    }
+  }
+
+  /**
    * Event handler for expand element
-   * 
+   *
    * @param view page layout view
    * @param event React change event
    * @param expanded is element expanded
@@ -1299,7 +1320,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for expand content version
-   * 
+   *
    * @param contentVersion content version
    * @param event React change event
    * @param expanded is content version expanded
@@ -1313,11 +1334,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Get corresponding selected page from given content version.
-   * 
+   *
    * Used when content version is changed.
    * Uses selected device and order number of the currently selected page
    * to find corresponding page from new selected content version.
-   * 
+   *
    * @param contentVersion new content version
    * @returns corresponding selected page if one is found, otherwise false
    */
@@ -1479,6 +1500,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage.resources.forEach((resource, index) => {
           const resourceWidgetType = resourceHolder.resourceToWidgetType.get(resource.id);
           if (resourceWidgetType && resourceWidgetType === PageLayoutWidgetType.MaterialTabLayout) {
+
+            console.log(resourceHolder)
+            // resourceHolder.widgetIds.get
+            // draft.tabMap.set()
             draft.tabResourceIndex = index;
             return;
           }
@@ -1694,7 +1719,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Checks if selected page has changed
-   * 
+   *
    * @param previousPage previous selected page
    * @param currentPage current selected page
    * @returns true if selected page has changed, otherwise false
@@ -1705,7 +1730,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Checks if page layout has changed
-   * 
+   *
    * @param previousPage previous selected page
    * @param currentPage current selected page
    * @returns true if layout has changed, otherwise false

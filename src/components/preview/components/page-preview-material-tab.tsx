@@ -27,6 +27,7 @@ interface Props extends WithStyles<typeof styles> {
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -56,7 +57,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   public render = () => {
     const { onResize } = this.props;
-
+    console.log(this.props);
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -75,18 +76,13 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
   }
 
   private renderTabs = () => {
-    const { resourceMap } = this.props;
+    const { resourceMap, view } = this.props;
     const tabResource = this.getTabResource();
     if (!tabResource) {
       return null;
     }
 
     const tabItems = tabResource.tabs.map((tab, index) => {
-      console.log(tab.resources);
-      if (!tab.resources[0]) {
-        return null;
-      }
-
       return (
         <Tab
           label={ tab.label }
@@ -96,7 +92,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     });
 
     const tabData = tabResource.tabs.map((tab, index) => {
-      console.log(tab.resources);
       if (!tab.resources[0]) {
         return null;
       }
@@ -112,15 +107,15 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
     return (
       <>
-        <AppBar style={{ width: "inherit", height: "inherit" }}>
-          <Tabs
-            value={ 0 }
-            // onChange={handleChange}
-            aria-label="simple tabs example"
-          >
-            { tabItems }
-          </Tabs>
-        </AppBar>
+        <Tabs
+          style={ this.resolveStyles() }
+          value={ 0 }
+          name={ view.id }
+          onChange={ this.onTabClickHandler(view.id) }
+          aria-label="simple tabs example"
+        >
+          { tabItems }
+        </Tabs>
 
         { tabData }
       </>
@@ -158,44 +153,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
     const data = tabResource.data;
     const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
-    console.log(parsed);
     return parsed;
-  }
-
-  /**
-   * Renders layout child components
-   */
-  private renderChildren = () => {
-    const {
-      view,
-      selectedView,
-      layer,
-      resourceMap,
-      displayMetrics,
-      scale,
-      onViewClick
-    } = this.props;
-
-    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
-      return (
-        <PagePreviewComponentEditor key={ `child-${index}` }
-          view={ child }
-          selectedView={ selectedView }
-          layer={ layer }
-          resourceMap={ resourceMap }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-          handleLayoutProperties={ this.onHandleLayoutProperties }
-          onViewClick={ onViewClick }
-        />
-      );
-    });
-
-    return (
-      <>
-        { result }
-      </>
-    );
   }
 
   /**
@@ -216,12 +174,12 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
   private resolveContainerStyles = (): CSSProperties => {
     const { view, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
+
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "flex",
-      position: "absolute",
-      zIndex: layer
+      zIndex: layer + 1
     });
-    console.log(properties);
+
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
         switch (property.name) {
@@ -253,23 +211,50 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const { view, handleLayoutProperties } = this.props;
+    const { view, handleLayoutProperties, layer } = this.props;
     const properties = view.properties;
-    const result: CSSProperties = handleLayoutProperties(properties, {});
+    const result: CSSProperties = handleLayoutProperties(properties, {
+      zIndex: layer + 1
+    });
 
     properties.forEach(property => {
-      if (property.name.startsWith("layout_")) {
-        switch (property.name) {
-          case "layout_gravity":
-            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+      switch (property.name) {
+        case "tabGravity":
+          console.log("tabGravity")
           break;
-          default:
-            break;
-        }
-        return result;
+
+        case "selectedTabIndicatorColor":
+          console.log("selectedTabIndicatorColor")
+          break;
+
+        case "selectedTabIndicatorGravity":
+          console.log("selectedTabIndicatorGravity")
+          break;
+
+        case "selectedTabIndicatorHeight":
+          console.log("selectedTabIndicatorHeight")
+          break;
+
+        case "tabTextColorNormal":
+          console.log("tabTextColorNormal")
+          break;
+
+        case "tabTextColorSelected":
+          console.log("tabTextColorSelected")
+          break;
+
+        case "unboundedRipple":
+          console.log("unboundedRipple")
+          break;
+
+        case "tabIndicatorFullWidth":
+          console.log("tabIndicatorFullWidth")
+          break;
+
+        default:
+          console.log(`Unknown property: ${property.name}`)
       }
     });
-    result.boxSizing = "border-box";
 
     return result;
   }
@@ -319,6 +304,17 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     });
 
     return result;
+  }
+
+  private onTabClickHandler = (viewId: string) => (event: React.ChangeEvent<{}>, value: any) => {
+    const { onTabClick } = this.props;
+    console.log("asd")
+    if (!onTabClick) {
+      return;
+    }
+
+    const selectedTabIndex = value;
+    onTabClick(viewId, selectedTabIndex);
   }
 
   /**

@@ -91,7 +91,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       scale,
       onViewClick,
     } = this.props;
-    
+
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
         <PagePreviewComponentEditor key={ `child-${index}` }
@@ -122,7 +122,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       return null;
     }
 
-    return ReactHtmlParser(text)
+    return ReactHtmlParser(text);
   }
 
   /**
@@ -137,7 +137,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Returns text from view properties
-   * 
+   *
    * @return text from view properties
    */
   private getText = () => {
@@ -155,7 +155,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
@@ -185,7 +185,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
         break; 
       }
     });
-    
+
     return result;
   }
 

@@ -135,14 +135,10 @@ class TabEditor extends React.Component<Props, State> {
    * Render tab resources
    */
   private renderTabResources = () => {
-    const { selectedResourceType } = this.state;
-
-    if (!selectedResourceType) {
-      return null;
-    }
-
     const resourceSelectItems = this.getResourceSelectOptions();
     const resourceItems = this.getResourceItems();
+
+    console.log(resourceSelectItems);
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>

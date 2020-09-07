@@ -33,6 +33,7 @@ interface Props extends WithStyles<typeof styles> {
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -81,12 +82,15 @@ class PagePreviewComponent extends React.Component<Props, State> {
       resourceMap,
       onResize,
       handleLayoutProperties,
-      onViewClick
+      onViewClick,
+      onTabClick
     } = this.props;
 
     if (!view) {
       return null;
     }
+
+    console.log(`Layer index of: ${view.name} is ${this.getLayer()}`);
 
     switch (view.widget) {
       case "FrameLayout":
@@ -100,6 +104,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />;
       case "LinearLayout":
         return <PagePreviewLinearLayout
@@ -112,6 +117,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />;
       case "TextView":
         return <PagePreviewTextView
@@ -196,6 +202,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />;
       case "MaterialTabLayout":
         return <PagePreviewMaterialTab
@@ -208,6 +215,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />;
       default:
         return <Typography> Unsupported widget { view.widget } </Typography>;

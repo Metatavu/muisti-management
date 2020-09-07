@@ -1,7 +1,7 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, TextField, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import { LayoutTabPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
@@ -13,6 +13,7 @@ import GenericPropertySwitch from "../generic-property-switch";
 import { TabModeValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../../editor-constants/values";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
 import DisplayMetrics from "../../../../types/display-metrics";
+import { allowedContainerTypes } from "../../editor-constants/constants";
 
 /**
  * Interface representing component properties
@@ -20,6 +21,7 @@ import DisplayMetrics from "../../../../types/display-metrics";
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
   displayMetrics: DisplayMetrics;
+  pageLayout: PageLayout;
 
   /**
    * On value change handler
@@ -27,6 +29,8 @@ interface Props extends WithStyles<typeof styles> {
    * @param updatedPageLayoutView updated page layout view object
    */
   onValueChange: (updatedPageLayoutView: PageLayoutViewProperty) => void;
+
+  onPageLayoutViewMetadataChange: (pageLayoutView: PageLayoutView) => void;
 }
 
 /**
@@ -57,6 +61,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
   public render() {
     return (
       <>
+        { this.renderContentContainer() }
         { this.renderTabMode() }
         { this.renderTabGravity() }
         { this.renderSelectedTabIndicatorColor() }
@@ -68,6 +73,43 @@ class TabLayoutEditor extends React.Component<Props, State> {
         { this.renderTabIndicatorFullWidth() }
       </>
     );
+  }
+
+  /**
+   * Render tab component content container selection
+   */
+  private renderContentContainer = () => {
+    const { pageLayoutView } = this.props;
+
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.tab.contentContainer }:
+        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Select
+            variant="filled"
+            fullWidth
+            onChange={ this.handleSelectChange }
+            name="contentContainerId"
+            value={ pageLayoutView.contentContainerId }
+          >
+            { this.renderNoSelection() }
+            { this.getSelectItems() }
+          </Select>
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * Renders no selection item
+   */
+  private renderNoSelection = () => {
+    return <MenuItem key={ "undefined" } value={ "undefined" }>{ strings.generic.undefined }</MenuItem>;
   }
 
   /**
@@ -310,7 +352,6 @@ class TabLayoutEditor extends React.Component<Props, State> {
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
-          
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -341,6 +382,57 @@ class TabLayoutEditor extends React.Component<Props, State> {
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
     );
+  }
+
+  /**
+   * Get content container select items
+   */
+  private getSelectItems = () => {
+    const { pageLayout } = this.props;
+
+    const elementList: JSX.Element[] = [];
+    this.constructSingleElement(elementList, pageLayout.data.children);
+    return elementList;
+  }
+
+  /**
+   * Recursive function that onstructs single menu item element
+   *
+   * @param elementList JSX element list
+   * @param pageLayoutViews list of page layout views
+   */
+  private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+    pageLayoutViews.forEach(pageLayoutView => {
+      if (allowedContainerTypes.includes(pageLayoutView.widget)) {
+        const selectItem = <MenuItem key={ pageLayoutView.id } value={ pageLayoutView.id }>{ pageLayoutView.name ?? "" }</MenuItem>;
+        elementList.push(selectItem);
+      }
+
+      if (pageLayoutView.children.length > 0) {
+        this.constructSingleElement(elementList, pageLayoutView.children);
+      }
+    });
+
+    return elementList;
+  }
+
+  /**
+   * Handle content container id select value change
+   *
+   * @param event react change event
+   */
+  private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { pageLayoutView, onPageLayoutViewMetadataChange } = this.props;
+
+    const key = event.target.name;
+    const value = event.target.value as string;
+
+    if (!key) {
+      return;
+    }
+
+    const pageLayoutViewToUpdate = { ...pageLayoutView, [key] : value } as PageLayoutView;
+    onPageLayoutViewMetadataChange(pageLayoutViewToUpdate);
   }
 
 }

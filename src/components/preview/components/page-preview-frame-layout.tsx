@@ -24,6 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -84,7 +85,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
-      onViewClick
+      onViewClick,
+      onTabClick
     } = this.props;
 
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
@@ -98,6 +100,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           scale={ scale }
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
       );
     });

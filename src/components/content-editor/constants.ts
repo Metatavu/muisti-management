@@ -1,4 +1,5 @@
 import { PageLayoutWidgetType, ExhibitionPageResourceType } from "../../generated/client";
+import { TabScrollButtonClassKey } from "@material-ui/core";
 
 /**
  * File containing all constants/filters for content editor.
@@ -23,6 +24,7 @@ export const allowedWidgetTypes = [
  * TODO: This should be defined in api-spec
  */
 export interface TabStructure {
+  contentContainerId?: string;
   tabs: Tab[];
 }
 
@@ -51,4 +53,9 @@ export interface TabResource {
   id: string;
   data: string;
   type: ExhibitionPageResourceType;
+}
+
+export interface TabHolder {
+  tabComponent: TabStructure;
+  activeTabIndex: number;
 }

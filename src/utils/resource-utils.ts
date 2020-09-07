@@ -4,6 +4,7 @@ export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string[]>;
   resourceToWidgetType: Map<string, PageLayoutWidgetType>;
+  tabIdList: string[];
 }
 
 /**
@@ -22,6 +23,7 @@ export default class ResourceUtils {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string[]> = new Map();
     let resourceToWidgetType: Map<string, PageLayoutWidgetType> = new Map();
+    const tabIdList: string[] = [];
 
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
     resourceProperties.forEach(property => {
@@ -39,11 +41,17 @@ export default class ResourceUtils {
           foundElement.push(id);
           ids.set(layoutView.id, foundElement);
           resourceToWidgetType.set(id, layoutView.widget);
+          if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
+            tabIdList.push(layoutView.id);
+          }
         } else {
           const newList = [];
           newList.push(id);
           ids.set(layoutView.id, newList);
           resourceToWidgetType.set(id, layoutView.widget);
+          if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
+            tabIdList.push(layoutView.id);
+          }
         }
         foundResources.push(resource);
       }
@@ -56,13 +64,15 @@ export default class ResourceUtils {
         foundResources.push(...childResources.resources);
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
         resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
+        tabIdList.push(...childResources.tabIdList);
       });
     }
 
     return {
       resources: foundResources,
       widgetIds: ids,
-      resourceToWidgetType: resourceToWidgetType
+      resourceToWidgetType: resourceToWidgetType,
+      tabIdList: tabIdList
     } as PageResourceCache;
   }
 }

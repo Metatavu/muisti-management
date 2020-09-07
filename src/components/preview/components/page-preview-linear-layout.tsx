@@ -24,6 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -39,7 +40,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -81,21 +82,23 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
-      onViewClick
+      onViewClick,
+      onTabClick
     } = this.props;
 
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
         <PagePreviewComponentEditor
-          key={ `child-${index}` } 
+          key={ `child-${index}` }
           view={ child }
           selectedView={ selectedView }
           layer={ layer }
           resourceMap={ resourceMap }
-          displayMetrics={ displayMetrics } 
-          scale={ scale }        
+          displayMetrics={ displayMetrics }
+          scale={ scale }
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
       );
     });
@@ -109,7 +112,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -119,7 +122,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
@@ -156,14 +159,15 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
         break;
       }
     });
-    result.boxSizing = "border-box"
-    result.display = "flex"
+
+    result.boxSizing = "border-box";
+    result.display = "flex";
     return result;
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
@@ -227,7 +231,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
@@ -236,7 +240,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {
@@ -245,7 +249,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse click
-   * 
+   *
    * @param event react mouse event
    */
   private onClick = (event: React.MouseEvent) => {

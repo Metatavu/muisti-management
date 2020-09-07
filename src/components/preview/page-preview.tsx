@@ -22,6 +22,7 @@ interface Props extends WithStyles<typeof styles> {
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -60,7 +61,8 @@ class PagePreview extends React.Component<Props, State> {
       selectedView,
       layer,
       deviceOrientation,
-      onViewClick
+      onViewClick,
+      onTabClick
     } = this.props;
 
     let height = displayMetrics.heightPixels * scale;
@@ -82,6 +84,7 @@ class PagePreview extends React.Component<Props, State> {
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
       </div>
     );

@@ -23,6 +23,7 @@ interface Props extends WithStyles<typeof styles> {
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 type ChildBounds = { [id: string]: BoundingRect }
@@ -88,8 +89,9 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
+      onTabClick
     } = this.props;
-    
+
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
         <PagePreviewComponentEditor
@@ -104,8 +106,9 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
-      );      
+      );
     });
 
     return (
@@ -135,11 +138,11 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     const rightOfChildId = child.properties
       .find(item => item.name === "layout_toRightOf")
       ?.value;
-    
+
     const result: CSSProperties = {
       "position": "absolute"
     };
-    
+
     if (rightOfChildId) {
       const rightOfBounds = this.state.childBounds[rightOfChildId];
       if (rightOfBounds) {
