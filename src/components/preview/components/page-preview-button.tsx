@@ -62,7 +62,7 @@ class PagePreviewButton extends React.Component<Props, State> {
           <div ref={ measureRef } style={ this.resolveStyles() }>
             <div
               ref={ measureRef }
-              style={ this.resolveStyles() }
+              style={ this.resolveButtonStyles() }
               className={ mouseOver || selected ? classes.highlighted : "" }
               onClick={ this.onClick }
               onMouseOver={ this.onMouseOver }
