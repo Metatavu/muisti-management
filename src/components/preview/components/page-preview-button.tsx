@@ -59,17 +59,15 @@ class PagePreviewButton extends React.Component<Props, State> {
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } style={ this.resolveStyles() }>
-            <div
-              ref={ measureRef }
-              style={ this.resolveStyles() }
-              className={ mouseOver || selected ? classes.highlighted : "" }
-              onClick={ this.onClick }
-              onMouseOver={ this.onMouseOver }
-              onMouseOut={ this.onMouseOut }
-            >
-              { this.getText() }
-            </div>
+          <div
+            ref={ measureRef }
+            style={ this.resolveStyles() }
+            className={ mouseOver || selected ? classes.highlighted : "" }
+            onClick={ this.onClick }
+            onMouseOver={ this.onMouseOver }
+            onMouseOut={ this.onMouseOut }
+          >
+            { this.getText() }
           </div>
         )}
       </Measure>
@@ -101,7 +99,7 @@ class PagePreviewButton extends React.Component<Props, State> {
    *
    * @return button styles
    */
-  private resolveButtonStyles = (): CSSProperties => {
+  private resolveStyles = (): CSSProperties => {
     const { displayMetrics, scale, view, layer } = this.props;
     const { properties } = view;
     const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
@@ -173,34 +171,10 @@ class PagePreviewButton extends React.Component<Props, State> {
             this.handleUnknownProperty(property, `unknown font size ${property.value}`);
           }
         break;
-        default:
+        case "layout_gravity":
+          result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
         break;
-      }
-    });
-
-    return result;
-  }
-
-  /**
-   * Resolves component styles
-   *
-   * @returns component styles
-   */
-  private resolveStyles = (): CSSProperties => {
-    const { view } = this.props;
-    const { properties } = view;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-
-    });
-
-    properties.forEach(property => {
-      if (property.name === "text" || property.name.startsWith("layout_")) {
-        return;
-      }
-
-      switch (property.name) {
         default:
-          this.handleUnknownProperty(property, "Unknown property");
         break;
       }
     });

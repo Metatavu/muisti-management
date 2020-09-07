@@ -123,9 +123,6 @@ class PagePreviewTextView extends React.Component<Props, State> {
       }
 
       switch (property.name) {
-        case "gravity":
-          result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
-        break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
         break;
@@ -149,7 +146,13 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
     properties.forEach(property => {
       if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
-        return;
+        switch(property.name) {
+          case "layout_gravity":
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          break;
+          default:
+        }
+        return result;
       }
 
       switch (property.name) {
@@ -176,10 +179,6 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown background");
           }
-        break;
-        case "gravity":
-          result.position = "initial";
-          result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
         break;
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
@@ -223,7 +222,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
@@ -233,7 +232,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {

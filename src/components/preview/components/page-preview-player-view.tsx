@@ -8,6 +8,7 @@ import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import VideoIcon from '@material-ui/icons/OndemandVideo';
 import { ResourceMap } from "../../../types";
+import AndroidUtils from "../../../utils/android-utils";
 
 /**
  * Interface representing component properties
@@ -88,7 +89,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
         </video>
       );
     } else {
-      return <VideoIcon style={ videoStyles }/>
+      return <VideoIcon style={ videoStyles }/>;
     }
   }
 
@@ -149,6 +150,12 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
     properties.forEach(property => {
       if (property.name === "text" || property.name.startsWith("layout_")) {
+        switch(property.name) {
+          case "layout_gravity":
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          break;
+          default:
+        }
         return;
       }
 
