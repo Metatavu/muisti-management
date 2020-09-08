@@ -91,7 +91,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       onViewClick,
       handleLayoutProperties
     } = this.props;
-    
+
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
         <PagePreviewComponentEditor key={ `child-${index}` }
@@ -127,7 +127,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -137,7 +137,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Returns text from view properties
-   * 
+   *
    * @return text from view properties
    */
   private getText = () => {
@@ -155,7 +155,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
@@ -197,7 +197,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {

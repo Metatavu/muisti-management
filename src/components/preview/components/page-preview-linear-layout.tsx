@@ -9,6 +9,9 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
+import PreviewUtils from "../../../utils/preview-utils";
+import { TabHolder } from "../../content-editor/constants";
+import TabItem from "../../generic/tab-item";
 
 /**
  * Interface representing component properties
@@ -20,9 +23,11 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -32,7 +37,7 @@ interface State {
 }
 
 /**
- * Component for rendering FrameLayout views
+ * Component for rendering LinearLayout views
  */
 class PagePreviewLinearLayout extends React.Component<Props, State> {
 
@@ -51,7 +56,9 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { onResize } = this.props;
+    const { onResize, view, tabMap } = this.props;
+    const tabData = PreviewUtils.getTabContent(view, tabMap);
+
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -62,7 +69,10 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            { this.renderChildren() }
+            { tabData.length > 0 ?
+              this.renderTabContent(tabData) :
+              this.renderChildren()
+            }
           </div>
         )}
       </Measure>
@@ -81,6 +91,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
+      onTabClick,
       handleLayoutProperties
     } = this.props;
 
@@ -96,6 +107,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
           scale={ scale }
           handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
       );
     });
@@ -108,8 +120,35 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
   }
 
   /**
+   * Renders tab contents
+   *
+   * @param tabData list of tab holders
+   */
+  private renderTabContent = (tabData: TabHolder[]) => {
+    const tabContentHolder = tabData[0];
+    const activeIndex = tabContentHolder.activeTabIndex;
+    const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <TabItem
+          key={ `TabItem-${index}` }
+          index={ index }
+          value={ index }
+          data= { tab.resources[0].data }
+          visible={ index === activeIndex }
+        />
+      );
+    });
+
+    return tabItems;
+  }
+
+  /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -175,7 +214,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
@@ -184,7 +223,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {
@@ -193,7 +232,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse click
-   * 
+   *
    * @param event react mouse event
    */
   private onClick = (event: React.MouseEvent) => {

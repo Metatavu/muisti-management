@@ -452,6 +452,7 @@
     },
 
     "tab": {
+      "contentContainer": "Element where tabs are displayed",
       "mode": {
         "title": "Tab mode",
         "scrollable": "Scrollable",

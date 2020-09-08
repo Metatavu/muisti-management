@@ -195,6 +195,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }

@@ -1,9 +1,23 @@
 import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType } from "../generated/client";
+import { TabStructure } from "../components/content-editor/constants";
+import { parseStringToJsonObject } from "./content-editor-utils";
 
+/**
+ * Tab resource cache object
+ */
+export interface TabResourceCache {
+  tabResourceId: string;
+  tabContentContainerId?: string;
+}
+
+/**
+ * Page resource cache
+ */
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string[]>;
   resourceToWidgetType: Map<string, PageLayoutWidgetType>;
+  tabPropertyIdToTabResourceId: Map<string, TabResourceCache>;
 }
 
 /**
@@ -22,6 +36,7 @@ export default class ResourceUtils {
     const foundResources: ExhibitionPageResource[] = [];
     let ids: Map<string, string[]> = new Map();
     let resourceToWidgetType: Map<string, PageLayoutWidgetType> = new Map();
+    let tabPropertyIdToTabResourceId: Map<string, TabResourceCache> = new Map();
 
     const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
     resourceProperties.forEach(property => {
@@ -32,18 +47,30 @@ export default class ResourceUtils {
           return;
         }
 
-        const id = splitPropertyValue[1];
+        const propertyId = splitPropertyValue[1];
 
         const foundElement = ids.get(layoutView.id);
         if (foundElement) {
-          foundElement.push(id);
+          foundElement.push(propertyId);
           ids.set(layoutView.id, foundElement);
-          resourceToWidgetType.set(id, layoutView.widget);
+          resourceToWidgetType.set(propertyId, layoutView.widget);
+          if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
+            tabPropertyIdToTabResourceId.set(
+              layoutView.id,
+              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
+            );
+          }
         } else {
           const newList = [];
-          newList.push(id);
+          newList.push(propertyId);
           ids.set(layoutView.id, newList);
-          resourceToWidgetType.set(id, layoutView.widget);
+          resourceToWidgetType.set(propertyId, layoutView.widget);
+          if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
+            tabPropertyIdToTabResourceId.set(
+              layoutView.id,
+              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
+            );
+          }
         }
         foundResources.push(resource);
       }
@@ -56,15 +83,39 @@ export default class ResourceUtils {
         foundResources.push(...childResources.resources);
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
         resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
+        tabPropertyIdToTabResourceId = new Map([
+          ...Array.from(tabPropertyIdToTabResourceId.entries()),
+          ...Array.from(childResources.tabPropertyIdToTabResourceId.entries())
+        ]);
       });
     }
 
     return {
       resources: foundResources,
       widgetIds: ids,
-      resourceToWidgetType: resourceToWidgetType
+      resourceToWidgetType: resourceToWidgetType,
+      tabPropertyIdToTabResourceId
     } as PageResourceCache;
   }
+
+  /**
+   * Get resources from tab component
+   *
+   * @param resources list of exhibition page resources
+   * @param tabResourceIndex tab resource index
+   * @param contentContainerId content container id
+   * @returns Tab structure object
+   */
+  public static getResourcesForTabComponent = (resources: ExhibitionPageResource[], tabResourceIndex: number, contentContainerId?: string): TabStructure => {
+    const data = resources[tabResourceIndex].data;
+    const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+    if (!parsed) {
+      return { contentContainerId: contentContainerId, tabs: [] } as TabStructure;
+    }
+
+    return parsed;
+  }
+
 }
 
 /**

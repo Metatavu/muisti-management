@@ -9,6 +9,9 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
+import { TabHolder } from "../../content-editor/constants";
+import TabItem from "../../generic/tab-item";
+import PreviewUtils from "../../../utils/preview-utils";
 
 /**
  * Interface representing component properties
@@ -20,9 +23,11 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -50,8 +55,10 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   /**
    * Render basic layout
    */
-  public render() {
-    const { onResize } = this.props;
+  public render = () => {
+    const { onResize, tabMap, view } = this.props;
+    const tabData = PreviewUtils.getTabContent(view, tabMap);
+
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -62,7 +69,10 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            { this.renderChildren() }
+            { tabData.length > 0 ?
+              this.renderTabContent(tabData) :
+              this.renderChildren()
+            }
           </div>
         )}
       </Measure>
@@ -80,7 +90,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
+      tabMap,
       onViewClick,
+      onTabClick,
       handleLayoutProperties
     } = this.props;
 
@@ -95,6 +107,8 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
           scale={ scale }
           handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       );
     });
@@ -104,6 +118,33 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         { result }
       </>
     );
+  }
+
+  /**
+   * Renders tab contents
+   *
+   * @param tabData list of tab holders
+   */
+  private renderTabContent = (tabData: TabHolder[]) => {
+    const tabContentHolder = tabData[0];
+    const activeIndex = tabContentHolder.activeTabIndex;
+    const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <TabItem
+          key={ `TabItem-${index}` }
+          index={ index }
+          value={ index }
+          data= { tab.resources[0].data }
+          visible={ index === activeIndex }
+        />
+      );
+    });
+
+    return tabItems;
   }
 
   /**
@@ -156,7 +197,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
@@ -165,7 +206,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {
@@ -174,7 +215,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse click
-   * 
+   *
    * @param event react mouse event
    */
   private onClick = (event: React.MouseEvent) => {
