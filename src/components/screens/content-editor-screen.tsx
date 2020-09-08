@@ -39,7 +39,7 @@ import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
-import TabEditor from "../content-editor/tabs-editor";
+import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
 type View = "CODE" | "VISUAL";
@@ -186,6 +186,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         strings.contentEditor.editor.eventTriggers.title :
         strings.contentEditor.editor.tabs.title;
 
+    console.log(selectedTabIndex);
     return (
       <BasicLayout
         keycloak={ keycloak }
@@ -212,7 +213,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementContentsPane>
 
           <ElementPropertiesPane
-            open={ !!(selectedResource ?? selectedTriggerIndex ?? selectedTabIndex) }
+            open={
+              !!selectedResource ||
+              selectedTriggerIndex !== undefined ||
+              selectedTabIndex !== undefined
+            }
             title={ propertiesTitle }
             onCloseClick={ this.onPropertiesClose }
           >
@@ -273,7 +278,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.visualEditorContainer }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+        <PanZoom
+          minScale={ 0.1 }
+          fitContent={ true }
+          contentWidth={ displayMetrics.widthPixels }
+          contentHeight={ displayMetrics.heightPixels }
+        >
           <PagePreview
             screenOrientation={ pageLayout.screenOrientation }
             view={ view }

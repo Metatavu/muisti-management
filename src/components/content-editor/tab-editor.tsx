@@ -227,7 +227,7 @@ class TabEditor extends React.Component<Props, State> {
       fullWidth
       onChange={ this.handleSelectChange }
       name="type"
-      value={ currentValue?.type }
+      value={ currentValue?.type || "" }
     >
       { items }
     </Select>
@@ -247,7 +247,7 @@ class TabEditor extends React.Component<Props, State> {
 
     return selectedTab.resources.map(resource => {
       return (
-        <div>
+        <div key={ resource.id }>
           <Typography variant="h6">
             { strings.contentEditor.editor.tabs.resources }
           </Typography>
