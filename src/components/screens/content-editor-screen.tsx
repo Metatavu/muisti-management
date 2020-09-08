@@ -1171,7 +1171,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         const temp = tabMap.get(selectedLayoutView.id);
         draft.contentContainerId = temp?.tabComponent.contentContainerId;
       }
-    })
+    });
 
 
     this.setState(
