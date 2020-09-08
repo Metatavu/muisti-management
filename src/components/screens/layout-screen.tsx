@@ -344,7 +344,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             displayMetrics={ displayMetrics }
             scale={ scale }
             screenOrientation={ screenOrientation }
-            deviceOrientation={ deviceModel.screenOrientation}
+            deviceOrientation={ deviceModel.screenOrientation }
           />
         </PanZoom>
       </div>

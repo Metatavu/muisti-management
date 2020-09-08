@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles, Tabs, Tab } from "@material-ui/core";
+import { WithStyles, withStyles, Tabs, Tab, TabScrollButtonProps } from "@material-ui/core";
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
@@ -9,6 +9,8 @@ import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import { TabStructure } from "../../content-editor/constants";
 import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
+import { property } from "lodash";
+import AndroidUtils from "../../../utils/android-utils";
 
 /**
  * Interface representing component properties
@@ -53,6 +55,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   public render = () => {
     const { onResize } = this.props;
+    console.log("äsdöl,fäösld,fäöl");
 
     return (
       <Measure onResize={ onResize } bounds={ true }>
@@ -84,6 +87,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     const tabItems = tabResource.tabs.map((tab, index) => {
       return (
         <Tab
+          style={{ height: "100px", color: "#ffffff" }}
           key={ `${tab.label}-${index}` }
           label={ tab.label }
           value={ index }
@@ -94,7 +98,13 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     return (
       <>
         <Tabs
-          style={ this.resolveStyles() }
+          variant={ this.findTabProperties("variant") }
+          TabIndicatorProps={{
+            style: {
+            }
+          }}
+
+          style={ this.resolveTabStyles() }
           value={ 0 }
           name={ view.id }
           onChange={ this.onTabClick(view.id) }
@@ -104,6 +114,25 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         </Tabs>
       </>
     );
+  }
+
+  private findTabProperties = (key: string) => {
+    switch (key) {
+      case "variant":
+        const tabMode = this.searchForTabProperty("tabMode");
+        if (!tabMode) {
+          return;
+        }
+        return (tabMode.name === "fixed") ? "standard" : "scrollable";
+
+      default:
+        break;
+    }
+  }
+
+  private searchForTabProperty = (propertyName: string) => {
+    const { view } = this.props;
+    return view.properties.find(property => property.name === propertyName);
   }
 
   /**
@@ -159,12 +188,44 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, handleLayoutProperties, layer } = this.props;
     const properties = view.properties;
+    console.log(properties);
     const result: CSSProperties = handleLayoutProperties(properties, {
       zIndex: layer + 1
     });
 
     properties.forEach(property => {
       switch (property.name) {
+        case "background":
+          result.backgroundColor = property.value;
+          break;
+
+        default:
+          // console.log(`Unknown property: ${property.name}`)
+          break;
+      }
+    });
+
+    return result;
+  }
+
+  private resolveTabStyles = (): CSSProperties => {
+    const { view, displayMetrics, scale } = this.props;
+    const properties = view.properties;
+    const result: CSSProperties = {};
+    console.log(properties);
+    properties.forEach(property => {
+      switch (property.name) {
+        case "background":
+          result.backgroundColor = property.value;
+          break;
+        case "layout_height":
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.height = px;
+          } else {
+            this.handleUnknownProperty(property, "Unknown value");
+          }
+          break;
         case "tabGravity":
           // console.log("tabGravity")
           break;

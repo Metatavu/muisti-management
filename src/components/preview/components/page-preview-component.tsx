@@ -95,6 +95,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
 
     switch (view.widget) {
       case "FrameLayout":
+        console.log("frame")
         return <PagePreviewFrameLayout
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }

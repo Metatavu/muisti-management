@@ -96,6 +96,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
+      tabMap,
       onViewClick,
       onTabClick,
       handleLayoutProperties
@@ -116,6 +117,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
           onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       );
     });
