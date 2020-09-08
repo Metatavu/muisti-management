@@ -11,6 +11,7 @@ import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
 import DynamicResourceEditor from "./dynamic-resource-editor";
+import { resourceModes } from "./constants";
 
 /**
  * Interface representing component properties
@@ -62,11 +63,7 @@ class ResourceEditor extends React.Component<Props, State> {
   private renderModeSelect = () => {
     const { classes, resource } = this.props;
 
-    const selectOptions = [
-      PageResourceMode.Static,
-      PageResourceMode.Dynamic,
-      PageResourceMode.Scripted
-    ].map((option) => {
+    const selectOptions = resourceModes.map((option) => {
       return (
         <MenuItem key={ option } value={ option }>
           { ResourceUtils.getModeDisplayName(option) }
