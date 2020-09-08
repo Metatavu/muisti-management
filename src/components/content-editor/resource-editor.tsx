@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import MediaLibrary from "../right-panel-editors/media-library";
 import produce from "immer";
-import { AccessToken, MediaType } from "../../types";
+import { AccessToken } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
 import DynamicResourceEditor from "./dynamic-resource-editor";
 import { resourceModes } from "./constants";
@@ -141,13 +141,15 @@ class ResourceEditor extends React.Component<Props, State> {
   private renderResourceField = () => {
     const { classes, accessToken, resource } = this.props;
 
+    console.log("static resource - type: ", resource.type);
+
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
       case ExhibitionPageResourceType.Video:
         return (  
           <MediaLibrary
             accessToken={ accessToken }
-            mediaType={ ResourceUtils.getResourceMediaType(resource.type) ?? MediaType.MEDIA }
+            mediaType={ ResourceUtils.getResourceMediaType(resource.type)! }
             resource={ resource }
             onUrlChange={ this.updateResourceData }
           />

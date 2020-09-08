@@ -197,7 +197,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
   private getFileItems = (filteredFiles: StoredFile[], folder: StoredFile) => {
     const { currentUrl, resource } = this.props;
 
-    if (!!(currentUrl ?? resource)) {
+    if (!(currentUrl ?? resource)) {
       return null;
     }
 
