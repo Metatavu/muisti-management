@@ -11,6 +11,7 @@ import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
 import { TabHolder } from "../../content-editor/constants";
 import TabItem from "../../generic/tab-item";
+import PreviewUtils from "../../../utils/preview-utils";
 
 /**
  * Interface representing component properties
@@ -55,8 +56,9 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render = () => {
-    const { onResize } = this.props;
-    const tabData = this.getTabContent();
+    const { onResize, tabMap, view } = this.props;
+    const tabData = PreviewUtils.getTabContent(view, tabMap);
+
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -116,25 +118,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         { result }
       </>
     );
-  }
-
-  /**
-   * Get tab content from tabmap
-   *
-   * @returns List of tab holders
-   */
-  private getTabContent = (): TabHolder[] => {
-    const { tabMap, view } = this.props;
-    const tabData: TabHolder[] = [];
-
-    if (tabMap) {
-      tabMap.forEach((value, key) => {
-        if (value.tabComponent.contentContainerId === view.id) {
-          tabData.push(value);
-        }
-      });
-    }
-    return tabData;
   }
 
   /**

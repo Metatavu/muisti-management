@@ -120,6 +120,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />;
       case "TextView":
         return <PagePreviewTextView
@@ -205,6 +206,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />;
       case "MaterialTabLayout":
         return <PagePreviewMaterialTab
