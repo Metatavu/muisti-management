@@ -7,8 +7,6 @@ import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "..
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
-import PagePreviewUtils from "./page-preview-utils";
-import AndroidUtils from "../../../utils/android-utils";
 import { TabStructure } from "../../content-editor/constants";
 import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
 
