@@ -599,7 +599,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
       );
     }
 
-    if (tabResourceIndex !== undefined && selectedTabIndex !== undefined && selectedPage.resources[tabResourceIndex] !== undefined) {
+    if (tabResourceIndex !== undefined &&
+      selectedTabIndex !== undefined &&
+      selectedPage.resources[tabResourceIndex] !== undefined
+    ) {
       const data = selectedPage.resources[tabResourceIndex].data;
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       if (!parsed || !parsed.tabs) {
