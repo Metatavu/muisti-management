@@ -22,7 +22,9 @@ import FileUpload from "../../utils/file-upload";
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   mediaType: MediaType;
-  resource: ExhibitionPageResource;
+  currentUrl?: string;
+  resource?: ExhibitionPageResource;
+  startsOpen?: boolean;
   onUrlChange: (newUrl: string) => void;
 }
 
@@ -36,6 +38,7 @@ interface State {
   openFolders: Map<string, StoredFile[]>;
   uploadOpen: boolean;
   selectedUploadFolder?: StoredFile;
+  expanded: boolean;
 }
 
 /**
@@ -54,7 +57,8 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       loading: false,
       folders: [],
       openFolders: new Map(),
-      uploadOpen: false
+      uploadOpen: false,
+      expanded: props.startsOpen ?? false
     };
   }
 
@@ -70,13 +74,17 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    */
   public render() {
     const { classes } = this.props;
+    const { expanded } = this.state;
 
     const folders = this.constructFolders();
 
     return (
       <div className={ classes.root }>
-        <Accordion>
-          <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
+        <Accordion expanded={ expanded }>
+          <AccordionSummary
+            expandIcon={ <ExpandMoreIcon /> }
+            onClick={ () => this.setState({ expanded: !expanded }) }
+          >
             <Typography variant="h3">{ strings.mediaLibrary.title }</Typography>
             {/* TODO: Needs API support creating new folders */}
             {/* <IconButton size="small" title="Add media" onClick={ this.onFolderAddClick() } onFocus={ event => event.stopPropagation() }>
@@ -187,11 +195,15 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
    * @param folder folder where files are
    */
   private getFileItems = (filteredFiles: StoredFile[], folder: StoredFile) => {
-    const { resource } = this.props;
+    const { currentUrl, resource } = this.props;
+
+    if (!!(currentUrl ?? resource)) {
+      return null;
+    }
 
     return filteredFiles.map(file => {
       const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
-      const selected = decodeURI(resource.data) === file.uri;
+      const selected = decodeURI(currentUrl ?? resource!.data) === file.uri;
 
       return(
         <TableRow

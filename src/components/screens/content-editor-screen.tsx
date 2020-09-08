@@ -21,6 +21,7 @@ import ElementContentsPane from "../layouts/element-contents-pane";
 import ElementPropertiesPane from "../layouts/element-properties-pane";
 import TimelineDevicesList from "../content-editor/timeline-devices-list";
 import TimelineEditor from "../content-editor/timeline-editor";
+import LayoutViewResourcesList from "../content-editor/layout-view-resources-list";
 import PagePreview from "../preview/page-preview";
 import produce from "immer";
 import CodeEditor from "../editor/code-editor";
@@ -38,7 +39,7 @@ import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
-import TabEditor from "../content-editor/tabs-editor";
+import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
 type View = "CODE" | "VISUAL";
@@ -78,6 +79,7 @@ interface State {
   selectedLayoutView?: PageLayoutView;
   pageLayout?: PageLayout;
   resourceWidgetIdList?: Map<string, string[]>;
+  selectedResource?: ExhibitionPageResource;
   selectedTriggerIndex?: number;
   tabResourceIndex?: number;
   selectedTabIndex?: number;
@@ -152,7 +154,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
-    const { groupContentVersion, devices, selectedTriggerIndex, selectedTabIndex } = this.state;
+    const {
+      groupContentVersion,
+      devices,
+      selectedResource,
+      selectedTriggerIndex,
+      selectedTabIndex
+    } = this.state;
 
     if (this.state.loading) {
       return (
@@ -172,6 +180,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
       );
     }
 
+    const propertiesTitle = selectedResource ?
+      selectedResource.id :
+      selectedTriggerIndex ?
+        strings.contentEditor.editor.eventTriggers.title :
+        strings.contentEditor.editor.tabs.title;
+
+    console.log(selectedTabIndex);
     return (
       <BasicLayout
         keycloak={ keycloak }
@@ -198,8 +213,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementContentsPane>
 
           <ElementPropertiesPane
-            open={ selectedTriggerIndex !== undefined || selectedTabIndex !== undefined }
-            title={ strings.contentEditor.editor.eventTriggers.title }
+            open={
+              !!selectedResource ||
+              selectedTriggerIndex !== undefined ||
+              selectedTabIndex !== undefined
+            }
+            title={ propertiesTitle }
             onCloseClick={ this.onPropertiesClose }
           >
             { this.renderProperties() }
@@ -259,7 +278,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.visualEditorContainer }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ displayMetrics.widthPixels } contentHeight={ displayMetrics.heightPixels }>
+        <PanZoom
+          minScale={ 0.1 }
+          fitContent={ true }
+          contentWidth={ displayMetrics.widthPixels }
+          contentHeight={ displayMetrics.heightPixels }
+        >
           <PagePreview
             screenOrientation={ pageLayout.screenOrientation }
             view={ view }
@@ -466,8 +490,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderResources = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
     const { classes } = this.props;
-    const { selectedLayoutView } = this.state;
-    const elementItems = this.getElementItems(idList, selectedPage);
+    const { selectedLayoutView, selectedResource } = this.state;
+    const resources = this.getResources(idList, selectedPage);
     const eventTriggerItems = this.getEventTriggerItems(selectedPage, pageLayoutView);
 
     return (
@@ -495,7 +519,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             { strings.contentEditor.editor.resources }
           </Typography>
-          { elementItems }
+          <LayoutViewResourcesList
+            resources={ resources }
+            selectedResource={ selectedResource }
+            onClick={ this.onResourceClick }
+          />
           { eventTriggerItems &&
             <>
               <Typography style={{ padding: theme.spacing(1) }} variant="h5">
@@ -541,9 +569,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
         <AccordionDetails>
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
             {
-              !tabStructure || tabStructure.tabs.length === 0 ?
-              strings.contentEditor.editor.tabs.noTabs :
-              strings.contentEditor.editor.tabs.title
+              !tabStructure ||
+              !tabStructure.tabs ||
+              tabStructure.tabs.length === 0 ?
+                strings.contentEditor.editor.tabs.noTabs :
+                strings.contentEditor.editor.tabs.title
             }
           </Typography>
           { tabItems }
@@ -582,9 +612,26 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render properties
    */
   private renderProperties = () => {
-    const { selectedPage, selectedTriggerIndex, selectedTabIndex, pages, tabResourceIndex } = this.state;
+    const {
+      selectedPage,
+      selectedResource,
+      selectedTriggerIndex,
+      selectedTabIndex,
+      pages,
+      tabResourceIndex
+    } = this.state;
+
     if (!selectedPage) {
       return null;
+    }
+
+    if (selectedResource) {
+      return (
+        <ResourceEditor
+          resource={ selectedResource }
+          onUpdate={ this.onUpdateResource }
+        />
+      );
     }
 
     if (selectedTriggerIndex !== undefined) {
@@ -622,29 +669,23 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get element JSX items
+   * Get element resources
    *
    * @param idList list of element id
    * @param selectedPage selected page
    */
-  private getElementItems = (idList: string[], selectedPage: ExhibitionPage) => {
-    return idList.map(elementId => {
+  private getResources = (idList: string[], selectedPage: ExhibitionPage) => {
+    const resources = idList.reduce((filtered: ExhibitionPageResource[], elementId: string) => {
       const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === elementId);
 
-      if (resourceIndex < 0) {
-        return null;
+      if (resourceIndex > -1) {
+        filtered.push(selectedPage.resources[resourceIndex]);
       }
 
-      const foundResource = selectedPage.resources[resourceIndex];
-      return (
-        <ResourceEditor
-          key={ foundResource.id }
-          resource={ foundResource }
-          resourceIndex={ resourceIndex }
-          onUpdate={ this.onUpdateResource }
-        />
-      );
-    });
+      return filtered;
+    }, []);
+
+    return resources;
   }
 
   /**
@@ -859,19 +900,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * On update resource handler
    *
-   * @param resourceIndex resource index
-   * @param resource page resource
+   * @param updatedResource updated page resource
    */
-  private onUpdateResource = (resourceIndex: number, resource: ExhibitionPageResource) => {
+  private onUpdateResource = (updatedResource: ExhibitionPageResource) => {
     this.setState(
       produce((draft: State) => {
-        if (resourceIndex === undefined ||
-            !draft.selectedPage ||
-            draft.selectedPage.resources.length < resourceIndex) {
+        if (!draft.selectedPage) {
           return;
         }
 
-        draft.selectedPage.resources[resourceIndex] = resource;
+        const resourceIndex = draft.selectedPage.resources.findIndex(resource => resource.id === updatedResource.id);
+        if (resourceIndex > -1) {
+          draft.selectedPage.resources[resourceIndex] = updatedResource;
+          draft.selectedResource = updatedResource;
+        }
       })
     );
   }
@@ -1010,6 +1052,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Sets selected device
    *
    * @param deviceId device id
+   * @returns selected device if found or undefined
    */
   private setSelectedDevice = (deviceId: string) => {
     const { devices } = this.state;
@@ -1190,6 +1233,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onTriggerClick = (triggerIndex: number) => () => {
     this.setState({
       selectedTriggerIndex: triggerIndex,
+      selectedResource: undefined,
       selectedTabIndex: undefined
     });
   }
@@ -1222,6 +1266,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onTabClick = (tabIndex: number) => () => {
     this.setState({
+      selectedResource: undefined,
       selectedTriggerIndex: undefined,
       selectedTabIndex: tabIndex
     });
@@ -1288,7 +1333,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       selectedContentVersion,
       selectedDevice,
-      selectedPage: undefined
+      selectedPage: undefined,
+      selectedLayoutView: undefined,
+      selectedResource: undefined,
+      selectedTabIndex: undefined,
+      selectedTriggerIndex: undefined
     });
   }
 
@@ -1304,7 +1353,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedContentVersion,
       selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
       selectedPage,
-      selectedTriggerIndex: undefined
+      selectedResource: undefined,
+      selectedTriggerIndex: undefined,
+      selectedTabIndex: undefined
     });
   }
 
@@ -1319,6 +1370,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
       propertiesExpanded: true
     });
   }
+
+  /**
+   * Event handler for resource click
+   * 
+   * @param resource resource
+   */
+  private onResourceClick = (resource: ExhibitionPageResource) => () => {
+    this.setState({
+      selectedResource: resource,
+      selectedTriggerIndex: undefined,
+      selectedTabIndex: undefined
+    });
+  };
 
   /**
    * Event handler for preview tab click

@@ -14,6 +14,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
   mediaLibrary: {
     title: string;
+    selectMedia: string;
     selected: string;
     addMedia: string;
     addFolder: string;
@@ -184,10 +185,22 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     resources: {
       title: string;
-      mode: {
-        scripted: string;
-        dynamic: string;
-        static: string;
+      mode: string;
+      dynamic: {
+        title: string;
+        dataSource: string;
+        key: string;
+        when: string;
+        addNewWhen: string;
+        equals: string;
+        value: string;
+        default: string;
+      };
+      scripted: {
+        title: string;
+      };
+      static: {
+        title: string;
       };
       imageView: {
         properties: {

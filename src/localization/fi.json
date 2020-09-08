@@ -31,6 +31,7 @@
 
   "mediaLibrary": {
     "title": "Mediakirjasto",
+    "selectMedia": "Valitse media",
     "selected": "valittu",
     "addMedia": "Lisää media",
     "addFolder": "Lisää kansio",
@@ -184,10 +185,22 @@
     },
     "resources": {
       "title": "Resurssit",
-      "mode": {
-        "scripted": "Ohjelmoitu",
-        "dynamic": "Dynaaminen",
-        "static": "Staattinen"
+      "mode": "Tila",
+      "scripted": {
+        "title": "Ohjelmoitu"
+      },
+      "dynamic": {
+        "title": "Dynaaminen",
+        "dataSource": "Tietolähde",
+        "key": "Käyttäjäarvon nimi",
+        "when": "Kun arvo on: ",
+        "addNewWhen": "Lisää uusi arvo",
+        "equals": "Arvo",
+        "value": "Resurssin arvo",
+        "default": "Vakioarvo"
+      },
+      "static": {
+        "title": "Staattinen"
       },
       "imageView": {
         "properties": {
