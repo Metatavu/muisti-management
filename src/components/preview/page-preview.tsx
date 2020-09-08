@@ -8,6 +8,7 @@ import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import AndroidUtils from "../../utils/android-utils";
 import { ResourceMap } from "../../types";
+import { TabHolder } from "../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -21,7 +22,10 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
+  tabMap?: Map<string, TabHolder>;
+
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -50,7 +54,7 @@ class PagePreview extends React.Component<Props, State> {
   /**
    * Render basic layout
    */
-  public render() {
+  public render = () => {
     const {
       classes,
       screenOrientation,
@@ -60,7 +64,9 @@ class PagePreview extends React.Component<Props, State> {
       selectedView,
       layer,
       deviceOrientation,
-      onViewClick
+      tabMap,
+      onViewClick,
+      onTabClick
     } = this.props;
 
     let height = displayMetrics.heightPixels * scale;
@@ -82,6 +88,8 @@ class PagePreview extends React.Component<Props, State> {
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       </div>
     );
@@ -89,7 +97,7 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -98,8 +106,8 @@ class PagePreview extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
@@ -162,13 +170,13 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Returns resources as a map
-   * 
+   *
    * @returns resources as a map
    */
   private getResourceMap = () => {
-    const result: ResourceMap = {};
+    const result: ResourceMap = { };
 
-    (this.props.resources || []).forEach((resource) => {
+    (this.props.resources || []).forEach(resource => {
       result[resource.id] = resource;
     });
 

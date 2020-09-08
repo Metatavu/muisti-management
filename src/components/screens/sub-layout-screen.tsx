@@ -232,6 +232,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ true }
                 displayMetrics={ displayMetrics }
                 pageLayoutView={ pageLayoutView }

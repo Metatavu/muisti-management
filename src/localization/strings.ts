@@ -465,6 +465,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
     tab: {
+      contentContainer: string;
       mode: {
         title: string;
         scrollable: string;

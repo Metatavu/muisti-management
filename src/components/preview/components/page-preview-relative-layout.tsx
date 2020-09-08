@@ -9,6 +9,9 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
+import { TabHolder } from "../../content-editor/constants";
+import PreviewUtils from "../../../utils/preview-utils";
+import TabItem from "../../generic/tab-item";
 
 /**
  * Interface representing component properties
@@ -20,9 +23,11 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 type ChildBounds = { [id: string]: BoundingRect };
@@ -56,7 +61,8 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * Render
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, view, tabMap } = this.props;
+    const tabData = PreviewUtils.getTabContent(view, tabMap);
 
     return (
       <Measure onResize={ this.onRootResize } bounds={ true }>
@@ -69,7 +75,10 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            { this.renderChildren() }
+            { tabData.length > 0 ?
+              this.renderTabContent(tabData) :
+              this.renderChildren()
+            }
           </div>
         )}
       </Measure>
@@ -88,9 +97,10 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       displayMetrics,
       scale,
       onViewClick,
+      onTabClick,
       handleLayoutProperties
     } = this.props;
-    
+
     const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
         <PagePreviewComponentEditor
@@ -105,6 +115,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />
       );
     });
@@ -114,6 +125,33 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
         { result }
       </div>
     );
+  }
+
+  /**
+   * Renders tab contents
+   *
+   * @param tabData list of tab holders
+   */
+  private renderTabContent = (tabData: TabHolder[]) => {
+    const tabContentHolder = tabData[0];
+    const activeIndex = tabContentHolder.activeTabIndex;
+    const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <TabItem
+          key={ `TabItem-${index}` }
+          index={ index }
+          value={ index }
+          data= { tab.resources[0].data }
+          visible={ index === activeIndex }
+        />
+      );
+    });
+
+    return tabItems;
   }
 
   /**

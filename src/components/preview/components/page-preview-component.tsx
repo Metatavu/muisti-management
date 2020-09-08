@@ -13,10 +13,12 @@ import PagePreviewRelativeLayout from "./page-preview-relative-layout";
 import PagePreviewPlayerView from "./page-preview-player-view";
 import PagePreviewMediaView from "./page-preview-media-view";
 import PagePreviewLinearLayout from "./page-preview-linear-layout";
+import PagePreviewMaterialTab from "./page-preview-material-tab";
 
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { ResourceMap } from "../../../types";
+import { TabHolder } from "../../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -29,9 +31,11 @@ interface Props extends WithStyles<typeof styles> {
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -78,9 +82,11 @@ class PagePreviewComponent extends React.Component<Props, State> {
       displayMetrics,
       scale,
       resourceMap,
+      tabMap,
       onResize,
       handleLayoutProperties,
-      onViewClick
+      onViewClick,
+      onTabClick
     } = this.props;
 
     if (!view) {
@@ -99,6 +105,8 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />;
       case "LinearLayout":
         return <PagePreviewLinearLayout
@@ -111,6 +119,8 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />;
       case "TextView":
         return <PagePreviewTextView
@@ -195,6 +205,21 @@ class PagePreviewComponent extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />;
+      case "MaterialTabLayout":
+        return <PagePreviewMaterialTab
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
         />;
       default:
         return <Typography> Unsupported widget { view.widget } </Typography>;

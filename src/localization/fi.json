@@ -462,6 +462,7 @@
     },
 
     "tab": {
+      "contentContainer": "Sisällön näyttävä elementti",
       "mode": {
         "title": "Välilehtien tila",
         "scrollable": "Rullattavissa",

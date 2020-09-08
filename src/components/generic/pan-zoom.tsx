@@ -128,7 +128,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
     }
 
     if (this.props.fitContent && this.props.contentHeight && this.props.contentWidth) {
-      return Math.min(this.state.containerHeight / this.props.contentHeight, this.state.containerWidth / this.props.contentWidth);      
+      return Math.min(this.state.containerHeight / this.props.contentHeight, this.state.containerWidth / this.props.contentWidth);
     }
 
     return undefined;

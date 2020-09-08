@@ -23,6 +23,7 @@ export const allowedWidgetTypes = [
  * TODO: This should be defined in api-spec
  */
 export interface TabStructure {
+  contentContainerId?: string;
   tabs: Tab[];
 }
 
@@ -51,4 +52,12 @@ export interface TabResource {
   id: string;
   data: string;
   type: ExhibitionPageResourceType;
+}
+
+/**
+ * Custom tab holder interface
+ */
+export interface TabHolder {
+  tabComponent: TabStructure;
+  activeTabIndex: number;
 }
