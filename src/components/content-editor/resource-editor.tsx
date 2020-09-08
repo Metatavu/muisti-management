@@ -141,8 +141,6 @@ class ResourceEditor extends React.Component<Props, State> {
   private renderResourceField = () => {
     const { classes, accessToken, resource } = this.props;
 
-    console.log("static resource - type: ", resource.type);
-
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
       case ExhibitionPageResourceType.Video:
