@@ -25,6 +25,7 @@
 
   "mediaLibrary": {
     "title": "Media library",
+    "selectMedia": "Select media",
     "selected": "selected",
     "addMedia": "Add media",
     "addFolder": "Add folder",
@@ -184,10 +185,22 @@
     },
     "resources": {
       "title": "Resources",
-      "mode": {
-        "scripted": "Scripted",
-        "dynamic": "Dynamic",
-        "static": "Static"
+      "mode": "Mode",
+      "scripted": {
+        "title": "Scripted"
+      },
+      "dynamic": {
+        "title": "Dynamic",
+        "dataSource": "Data source",
+        "key": "User value name",
+        "when": "When value is: ",
+        "addNewWhen": "Add new value",
+        "equal": "Value",
+        "value": "Resource value",
+        "default": "Default value"
+      },
+      "static": {
+        "title": "Static"
       },
       "imageView": {
         "properties": {

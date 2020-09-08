@@ -13,6 +13,7 @@ import { Tab, TabResource } from "./constants";
 import { ExhibitionPageResourceType } from "../../generated/client";
 import CKEditor from 'ckeditor4-react';
 import GenericDialog from "../generic/generic-dialog";
+import GenericUtils from "../../utils/generic-utils";
 
 /**
  * Component props
@@ -217,8 +218,8 @@ class TabEditor extends React.Component<Props, State> {
   private getResourceSelectOptions = () => {
     const { selectedTab } = this.props;
 
-    const values = enumValues(ExhibitionPageResourceType);
-    const keys = enumKeys(ExhibitionPageResourceType);
+    const values = GenericUtils.enumValues(ExhibitionPageResourceType);
+    const keys = GenericUtils.enumKeys(ExhibitionPageResourceType);
 
     const items = keys.map((key, index) => {
       return <MenuItem key={ key } value={ values[index] }>{ key }</MenuItem>;
@@ -367,24 +368,6 @@ class TabEditor extends React.Component<Props, State> {
     tabToUpdate.resources[0].data = value;
     onSave(tabToUpdate);
   }
-}
-
-/**
- * Get any enum keys
- *
- * @param enumObject enum object
- */
-function enumKeys<T>(enumObject: T) {
-  return Object.keys(enumObject);
-}
-
-/**
- * Get any enum values
- *
- * @param enumObject enum object
- */
-function enumValues<T>(enumObject: T) {
-  return Object.values(enumObject);
 }
 
 export default withStyles(styles)(TabEditor);

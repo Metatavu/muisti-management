@@ -1,4 +1,6 @@
-import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType } from "../generated/client";
+import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType, PageResourceMode } from "../generated/client";
+import strings from "../localization/strings";
+import { MediaType } from "../types";
 
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
@@ -64,6 +66,40 @@ export default class ResourceUtils {
       widgetIds: ids,
       resourceToWidgetType: resourceToWidgetType
     } as PageResourceCache;
+  }
+  
+  /**
+   * Get resource mode display name
+   * 
+   * @param mode page resource mode
+   * @returns display name string
+   */
+  public static getModeDisplayName = (mode?: PageResourceMode): string => {
+    switch (mode || PageResourceMode.Static) {
+      case PageResourceMode.Scripted:
+        return strings.exhibition.resources.scripted.title;
+      case PageResourceMode.Dynamic:
+        return strings.exhibition.resources.dynamic.title;
+      default:
+        return strings.exhibition.resources.static.title;
+    }
+  }
+
+  /**
+   * Get media type based on resource type
+   * 
+   * @param resourceType resource type
+   * @returns media type if resource is of media type or undefined
+   */
+  public static getResourceMediaType = (resourceType: ExhibitionPageResourceType) => {
+    switch (resourceType) {
+      case ExhibitionPageResourceType.Image:
+        return MediaType.IMAGE;
+      case ExhibitionPageResourceType.Video:
+        return MediaType.VIDEO;
+      default:
+        return undefined;
+    }
   }
 }
 
