@@ -61,7 +61,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         {({ measureRef }) => (
           <div
             ref={ measureRef }
-            style={ this.resolveContainerStyles() }
+            style={ this.resolveStyles() }
             onClick={ this.onClick }
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
@@ -99,7 +99,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           style={ this.resolveStyles() }
           value={ 0 }
           name={ view.id }
-          onChange={ this.onTabClickHandler(view.id) }
+          onChange={ this.onTabClick(view.id) }
           aria-label="simple tabs example"
         >
           { tabItems }
@@ -150,45 +150,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // // console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
-
-  /**
-   * Resolves component container styles
-   *
-   * @returns component container styles
-   */
-  private resolveContainerStyles = (): CSSProperties => {
-    const { view, layer, handleLayoutProperties } = this.props;
-    const properties = view.properties;
-
-    const result: CSSProperties = handleLayoutProperties(properties, {
-      display: "flex",
-      zIndex: layer + 1
-    });
-
-    properties.forEach(property => {
-      if (property.name.startsWith("layout_")) {
-        switch (property.name) {
-          case "layout_gravity":
-            result.justifyContent = AndroidUtils.gravityToJustifyContent(property.value);
-          break;
-          default:
-        }
-        return result;
-      }
-
-      switch (property.name) {
-        case "background":
-          result.backgroundColor = property.value;
-        break;
-        default:
-          this.handleUnknownProperty(property, "unknown property");
-        break;
-      }
-    });
-    result.boxSizing = "border-box";
-
-    return result;
   }
 
   /**
@@ -247,53 +208,12 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting
+   * Event handler for tab click
    *
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
+   * @param viewId view id
+   * @param event react change event
    */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles,
-      position: "absolute",
-      overflow: "hidden"
-    };
-
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-    });
-
-    return result;
-  }
-
-  private onTabClickHandler = (viewId: string) => (event: React.ChangeEvent<{}>, value: any) => {
+  private onTabClick = (viewId: string) => (event: React.ChangeEvent<{}>, value: any) => {
     const { onTabClick } = this.props;
     if (!onTabClick) {
       return;

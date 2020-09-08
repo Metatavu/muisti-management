@@ -2,11 +2,17 @@ import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, Exhibit
 import { TabStructure } from "../components/content-editor/constants";
 import { parseStringToJsonObject } from "./content-editor-utils";
 
-
+/**
+ * Tab resource cache object
+ */
 export interface TabResourceCache {
   tabResourceId: string;
   tabContentContainerId?: string;
 }
+
+/**
+ * Page resource cache
+ */
 export interface PageResourceCache {
   resources: ExhibitionPageResource[];
   widgetIds: Map<string, string[]>;
@@ -77,7 +83,10 @@ export default class ResourceUtils {
         foundResources.push(...childResources.resources);
         ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
         resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
-        tabPropertyIdToTabResourceId = new Map([...Array.from(tabPropertyIdToTabResourceId.entries()), ...Array.from(childResources.tabPropertyIdToTabResourceId.entries())]);
+        tabPropertyIdToTabResourceId = new Map([
+          ...Array.from(tabPropertyIdToTabResourceId.entries()),
+          ...Array.from(childResources.tabPropertyIdToTabResourceId.entries())
+        ]);
       });
     }
 
@@ -89,6 +98,14 @@ export default class ResourceUtils {
     } as PageResourceCache;
   }
 
+  /**
+   * Get resources from tab component
+   *
+   * @param resources list of exhibition page resources
+   * @param tabResourceIndex tab resource index
+   * @param contentContainerId content container id
+   * @returns Tab structure object
+   */
   public static getResourcesForTabComponent = (resources: ExhibitionPageResource[], tabResourceIndex: number, contentContainerId?: string): TabStructure => {
     const data = resources[tabResourceIndex].data;
     const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);

@@ -237,9 +237,9 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
   }
 
   /**
-   * Generic handler for single page layout property value changes
+   * Generic handler for single page layout metadata value changes
    *
-   * @param updatedPageLayoutView page layout view property object to update
+   * @param updatedPageLayoutView page layout view object to update
    */
   private onSingleMetadataValueChange = (updatedPageLayoutView: PageLayoutView) => {
     const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;

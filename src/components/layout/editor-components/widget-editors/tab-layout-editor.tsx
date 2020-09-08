@@ -396,7 +396,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Recursive function that onstructs single menu item element
+   * Recursive function that constructs single menu item element
    *
    * @param elementList JSX element list
    * @param pageLayoutViews list of page layout views
@@ -417,7 +417,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Handle content container id select value change
+   * Event handler for container id select value change
    *
    * @param event react change event
    */

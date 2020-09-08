@@ -793,10 +793,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
         const tabData = this.getTabStructure();
         if (tabData && tabData.tabs) {
-          const test = tabMap.get(selectedLayoutView.id);
-          if (test) {
-            test.tabComponent = tabData;
-            draft.tabMap.set(selectedLayoutView.id, test);
+          const tabHolder = tabMap.get(selectedLayoutView.id);
+          if (tabHolder) {
+            tabHolder.tabComponent = tabData;
+            draft.tabMap.set(selectedLayoutView.id, tabHolder);
           }
           tabData.tabs[selectedTabIndex] = updatedTab;
           selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
@@ -1227,24 +1227,38 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Event handler for delete tab click
    *
-   * @param tabIndex tab index to be deleted 
+   * @param tabIndex tab index to be deleted
    */
   private onDeleteTabClick = (tabIndex: number) => () => {
-    const { selectedPage, tabResourceIndex } = this.state;
-    const tabStructure = this.getTabStructure();
+    const { selectedPage, tabResourceIndex, selectedLayoutView, tabMap } = this.state;
 
-    if (!tabStructure || !tabStructure.tabs || !selectedPage || tabResourceIndex === undefined) {
+    if (tabResourceIndex === undefined ||
+      !selectedLayoutView ||
+      !tabMap ||
+      !selectedPage
+    ) {
       return;
     }
-
-    const tempTabs = tabStructure.tabs;
-    tempTabs.splice(tabIndex, 1);
-    tabStructure.tabs = tempTabs;
 
     this.setState(
       produce((draft: State) => {
         draft.selectedPage = selectedPage;
-        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabStructure);
+
+        const tabData = this.getTabStructure();
+
+        if (tabData && tabData.tabs) {
+
+          const tabHolder = tabMap.get(selectedLayoutView.id);
+
+          if (tabHolder) {
+            const updateTabHolder = produce(tabHolder, draft => {
+              draft.tabComponent.tabs.splice(tabIndex, 1);
+            });
+
+            draft.tabMap.set(selectedLayoutView.id, updateTabHolder);
+            draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(updateTabHolder.tabComponent);
+          }
+        }
         draft.selectedTabIndex = undefined;
       })
     );
