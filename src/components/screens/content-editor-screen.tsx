@@ -683,14 +683,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       }
 
       return filtered;
-      // return (
-      //   <ResourceEditor
-      //     key={ foundResource.id }
-      //     resource={ foundResource }
-      //     resourceIndex={ resourceIndex }
-      //     onUpdate={ this.onUpdateResource }
-      //   />
-      // );
     }, []);
 
     return resources;

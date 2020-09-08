@@ -109,7 +109,6 @@ const getUpdatedSwitchParams = (
     }
   });
 
-  console.log(updatedParams);
   return updatedParams;
 }
 
