@@ -153,7 +153,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
     const { groupContentVersion, devices, selectedTriggerIndex, selectedTabIndex } = this.state;
-    console.log(this.state.tabMap);
+
     if (this.state.loading) {
       return (
         <BasicLayout
@@ -246,7 +246,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
     const { selectedPage, pageLayout, selectedLayoutView, tabMap } = this.state;
-    console.log(tabMap)
+
     if (!selectedPage || !pageLayout) {
       return;
     }
@@ -297,6 +297,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
             const selected = contentVersion.id === selectedContentVersion?.id;
             return (
               <Accordion
+                key={ `ContentVersionAccordion-${contentVersion.id}` }
                 className={ classes.timelineContentVersion }
                 expanded={ selected }
                 onChange={ this.onExpandContentVersion(contentVersion) }
@@ -1523,7 +1524,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
             return;
           }
         });
-        console.log("lkjnsdflkkjjjjjjnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+
         resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
           const tabIndex = draft.selectedPage?.resources.findIndex(resource => resource.id === value.tabResourceId);
           if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
@@ -1734,7 +1735,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (tabResourceIndex !== undefined && selectedPage && selectedPage.resources.length > 0) {
       const data = selectedPage.resources[tabResourceIndex].data;
-      console.log(data);
+
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       if (!parsed) {
         return { tabs: [] } as TabStructure;

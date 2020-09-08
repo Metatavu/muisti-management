@@ -138,8 +138,6 @@ class TabEditor extends React.Component<Props, State> {
     const resourceSelectItems = this.getResourceSelectOptions();
     const resourceItems = this.getResourceItems();
 
-    console.log(resourceSelectItems);
-
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">

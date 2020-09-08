@@ -76,7 +76,6 @@ class PagePreview extends React.Component<Props, State> {
       height = displayMetrics.widthPixels * scale;
       width = displayMetrics.heightPixels * scale;
     }
-    console.log(tabMap)
 
     return (
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>

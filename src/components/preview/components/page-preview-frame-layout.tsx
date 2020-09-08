@@ -10,6 +10,7 @@ import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
 import { TabHolder } from "../../content-editor/constants";
+import TabItem from "../../generic/tab-item";
 
 /**
  * Interface representing component properties
@@ -55,8 +56,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   public render = () => {
     const { onResize, tabMap } = this.props;
-    console.log(tabMap);
-    const test = this.tabContainerComponent();
+    const tabData = this.getTabContent();
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -67,7 +67,10 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            { this.renderChildren() }
+            { tabData.length > 0 ?
+              this.renderTabs(tabData) :
+              this.renderChildren()
+            }
           </div>
         )}
       </Measure>
@@ -115,24 +118,50 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     );
   }
 
-  private tabContainerComponent = () => {
+  /**
+   * Get tab content from tabmap
+   *
+   * @returns List of tab holders
+   */
+  private getTabContent = (): TabHolder[] => {
     const { tabMap, view } = this.props;
+    const tabData: TabHolder[] = [];
 
-    if (!tabMap) {
-      return;
+    if (tabMap) {
+      tabMap.forEach((value, key) => {
+        if (value.tabComponent.contentContainerId === view.id) {
+          tabData.push(value);
+        }
+      });
     }
+    return tabData;
+  }
 
-    const test: TabHolder[] = [];
-
-    tabMap.forEach((value, key) => {
-      if (value.tabComponent.contentContainerId === view.id) {
-        console.log("----------------------------------------------------------------------------------------")
-        test.push(value);
+  /**
+   * Renders tabs
+   *
+   * @param tabData list of tab holders
+   */
+  private renderTabs = (tabData: TabHolder[]) => {
+    const tabContentHolder = tabData[0];
+    const activeIndex = tabContentHolder.activeTabIndex;
+    const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
+      if (!tab.resources[0]) {
+        return null;
       }
+
+      return (
+        <TabItem
+          key={ `TabItem-${index}` }
+          index={ index }
+          value={ index }
+          data= { tab.resources[0].data }
+          visible={ index === activeIndex }
+        />
+      );
     });
 
-    console.log(test);
-
+    return tabItems;
   }
 
   /**

@@ -197,7 +197,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {

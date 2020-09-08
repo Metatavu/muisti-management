@@ -92,8 +92,6 @@ class PagePreviewComponent extends React.Component<Props, State> {
     if (!view) {
       return null;
     }
-    console.log(tabMap);
-    console.log(`Layer index of: ${view.name} is ${this.getLayer()}`);
 
     switch (view.widget) {
       case "FrameLayout":

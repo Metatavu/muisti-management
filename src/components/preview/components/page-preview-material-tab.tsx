@@ -57,7 +57,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   public render = () => {
     const { onResize } = this.props;
-    // console.log(this.props);
+
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
@@ -85,22 +85,9 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     const tabItems = tabResource.tabs.map((tab, index) => {
       return (
         <Tab
+          key={ `${tab.label}-${index}` }
           label={ tab.label }
           value={ index }
-        />
-      );
-    });
-
-    const tabData = tabResource.tabs.map((tab, index) => {
-      if (!tab.resources[0]) {
-        return null;
-      }
-
-      return (
-        <TabItem
-          index={ index }
-          value={ index }
-          data= { tab.resources[0].data }
         />
       );
     });
@@ -116,8 +103,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         >
           { tabItems }
         </Tabs>
-
-        { tabData }
       </>
     );
   }
@@ -207,6 +192,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
+   * TODO: Implement styles
    *
    * @returns component styles
    */
