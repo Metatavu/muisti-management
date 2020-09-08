@@ -55,7 +55,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render = () => {
-    const { onResize, tabMap } = this.props;
+    const { onResize } = this.props;
     const tabData = this.getTabContent();
     return (
       <Measure onResize={ onResize } bounds={ true }>
@@ -68,7 +68,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
             onMouseOut={ this.onMouseOut }
           >
             { tabData.length > 0 ?
-              this.renderTabs(tabData) :
+              this.renderTabContent(tabData) :
               this.renderChildren()
             }
           </div>
@@ -138,11 +138,11 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   }
 
   /**
-   * Renders tabs
+   * Renders tab contents
    *
    * @param tabData list of tab holders
    */
-  private renderTabs = (tabData: TabHolder[]) => {
+  private renderTabContent = (tabData: TabHolder[]) => {
     const tabContentHolder = tabData[0];
     const activeIndex = tabContentHolder.activeTabIndex;
     const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {

@@ -1,18 +1,16 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles, Tabs, Tab, AppBar } from "@material-ui/core";
+import { WithStyles, withStyles, Tabs, Tab } from "@material-ui/core";
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
 import PagePreviewUtils from "./page-preview-utils";
 import AndroidUtils from "../../../utils/android-utils";
 import { TabStructure } from "../../content-editor/constants";
 import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
-import TabItem from "../../generic/tab-item";
 
 /**
  * Interface representing component properties
@@ -75,8 +73,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     );
   }
 
+  /**
+   * Renders tabs
+   */
   private renderTabs = () => {
-    const { resourceMap, view } = this.props;
+    const { view } = this.props;
     const tabResource = this.getTabResource();
     if (!tabResource) {
       return null;
