@@ -186,7 +186,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-          break;
+        break;
 
         default:
           // console.log(`Unknown property: ${property.name}`)
