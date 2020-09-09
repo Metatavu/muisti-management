@@ -309,8 +309,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
         case "tabTextColorNormal":
           result.color = property.value;
-          break;
-
+        break;
         case "tabTextColorSelected":
           if (activeIndex === buttonIndex) {
             result.color = property.value;
