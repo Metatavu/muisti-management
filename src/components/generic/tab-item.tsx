@@ -1,58 +1,132 @@
 import * as React from "react";
 
 import ReactHtmlParser from 'react-html-parser';
+import { TabResource } from "../content-editor/constants";
+import styles from "../../styles/components/generic/tab-item";
+import { withStyles, WithStyles, Typography } from "@material-ui/core";
+import { ExhibitionPageResourceType } from "../../generated/client";
 
 /**
  * Interface representing component properties
  */
-interface Props {
+interface Props extends WithStyles<typeof styles> {
   index: number;
-  value: any;
-  data: string;
+  resource: TabResource;
   visible: boolean;
 }
 
 /**
- * Interface representing component state
+ * React functional component for tab items
+ * 
+ * @param props component props
  */
-interface State {
+const TabItem: React.FC<Props> = (props: Props) => {
+  const { classes, resource, index, visible } = props;
 
+  return (
+    <div
+      hidden={ !visible }
+      id={ `simple-tabpanel-${index}` }
+      className={ visible ? classes.visible : classes.hidden }
+    >
+      { renderTabContent(resource, props) }
+    </div>
+  );
 }
 
 /**
- * React component tab items
+ * Get tab content by content type
+ * 
+ * @param resource tab resource
+ * @param props component props
+ * @returns content as React element
  */
-export default class TabItem extends React.Component<Props, State> {
-
-  /**
-   * Constructor
-   *
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = { };
-  }
-
-  /**
-   * Component render method
-   * TODO: Implement page-preview components
-   */
-  public render = () => {
-    const { data, value, index, visible } = this.props;
-    const html = new DOMParser().parseFromString(data, "text/html");
-    return (
-      <div
-        role="tabpanel"
-        hidden={ value !== index }
-        id={ `simple-tabpanel-${index}` }
-        aria-labelledby={ `simple-tab-${index}` }
-        style={{ display: visible ? "flex" : "none" }}
-      >
-        { value === index &&
-          ReactHtmlParser(html.body.innerHTML)
-        }
-      </div>
-    );
+const renderTabContent = (resource: TabResource, props: Props) => {
+  const { type, data } = resource;
+  switch (type) {
+    case ExhibitionPageResourceType.Text:
+      return getTextContent(data);
+    case ExhibitionPageResourceType.Html:
+      return getHtmlContent(data);
+    case ExhibitionPageResourceType.Image:
+      return getImageContent(data, props);
+    case ExhibitionPageResourceType.Video:
+      return getVideoContent(data, props);
+    case ExhibitionPageResourceType.Svg:
+      return getSvgContent(data);
+    default:
+      return null;
   }
 }
+
+/**
+ * Get text content
+ * 
+ * @param text text string
+ * @returns text as React element
+ */
+const getTextContent = (text: string) => {
+  return <Typography variant="body1">{ text }</Typography>;
+}
+
+/**
+ * Get html content
+ * 
+ * @param htmlData html data
+ * @returns html data as React element
+ */
+const getHtmlContent = (htmlString: string) => {
+  const html = new DOMParser().parseFromString(htmlString, "text/html");
+  return ReactHtmlParser(html.body.innerHTML);
+}
+
+/**
+ * Get image content
+ * 
+ * @param imageUrl image url
+ * @param props component props
+ * @returns image as React element
+ */
+const getImageContent = (imageUrl: string, props: Props) => {
+  const { classes } = props;
+
+  return (
+    <div className={ classes.mediaContainer }>
+      <img src={ imageUrl } alt="preview" className={ classes.image }/>
+    </div>
+  );
+}
+
+/**
+ * Get video content
+ * 
+ * @param videoUrl video url
+ * @param props component props
+ * @returns video as React element
+ */
+const getVideoContent = (videoUrl: string, props: Props) => {
+  const { classes } = props;
+  return (
+    <div className={ classes.mediaContainer }>
+      <video
+        autoPlay={ true }
+        controls={ true }
+        className={ classes.video }
+      >
+        <source src={ videoUrl } />
+      </video>
+    </div>
+  );
+}
+
+/**
+ * Get SVG content
+ * 
+ * @param svg svg string
+ */
+const getSvgContent = (svgString: string) => {
+  const svg = new DOMParser().parseFromString(svgString, "application/xml");
+  return ReactHtmlParser(svg.body.innerHTML);
+}
+
+export default withStyles(styles)(TabItem);

@@ -106,7 +106,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
           <Button variant="contained" color="primary" onClick={ opts.zoomIn }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ opts.zoomOut }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ opts.resetTransform }>100%</Button>
-          <span> { (opts.scale || 0).toFixed(2) } </span>
+          <span> { this.getScalePercentage(opts.scale || 0) } </span>
         </div>
         <TransformComponent>
           <div style={{ width: this.state.containerWidth, height: this.state.containerHeight }}>
@@ -132,6 +132,17 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
     }
 
     return undefined;
+  }
+
+  /**
+   * Returns scale as percentage
+   * 
+   * @param scale scale
+   * @returns scale as percentage string
+   */
+  private getScalePercentage = (scale: any) => {
+    const scaleNumber = !isNaN(Number(scale)) ? Number(scale) : 0;
+    return `${(scaleNumber * 100).toFixed(2)} %`;
   }
 
   /**
