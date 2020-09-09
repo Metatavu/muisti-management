@@ -74,6 +74,12 @@ export interface ExhibitionDevice {
     screenOrientation: ScreenOrientation;
     /**
      * 
+     * @type {boolean}
+     * @memberof ExhibitionDevice
+     */
+    forcedPortraitMode?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof ExhibitionDevice
      */
@@ -115,6 +121,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         'name': json['name'],
         'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
         'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
+        'forcedPortraitMode': !exists(json, 'forcedPortraitMode') ? undefined : json['forcedPortraitMode'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -136,6 +143,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
         'name': value.name,
         'location': PointToJSON(value.location),
         'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
+        'forcedPortraitMode': value.forcedPortraitMode,
     };
 }
 

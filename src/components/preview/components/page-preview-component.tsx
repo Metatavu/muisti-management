@@ -25,6 +25,7 @@ import { TabHolder } from "../../content-editor/constants";
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer?: number;
   resourceMap: ResourceMap;
@@ -78,6 +79,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
   private renderComponent = () => {
     const {
       view,
+      parentView,
       selectedView,
       displayMetrics,
       scale,
@@ -99,6 +101,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -113,6 +116,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -127,6 +131,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -139,6 +144,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -151,6 +157,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -163,6 +170,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -175,6 +183,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -187,6 +196,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -199,6 +209,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
@@ -213,6 +224,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }

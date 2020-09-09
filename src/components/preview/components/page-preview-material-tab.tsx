@@ -15,6 +15,7 @@ import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer: number;
   resourceMap: ResourceMap;
