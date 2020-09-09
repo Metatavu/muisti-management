@@ -186,7 +186,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         strings.contentEditor.editor.eventTriggers.title :
         strings.contentEditor.editor.tabs.title;
 
-    console.log(selectedTabIndex);
     return (
       <BasicLayout
         keycloak={ keycloak }
@@ -1209,11 +1208,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    const test = produce(currentTabStructure, draft => {
+    const newTabStructure = produce(currentTabStructure, draft => {
       draft.tabs.push(newTab);
       if (!draft.contentContainerId && selectedLayoutView) {
-        const temp = tabMap.get(selectedLayoutView.id);
-        draft.contentContainerId = temp?.tabComponent.contentContainerId;
+        draft.contentContainerId = tabMap.get(selectedLayoutView.id)?.tabComponent.contentContainerId;
       }
     });
 
@@ -1221,7 +1219,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
         draft.selectedPage = selectedPage;
-        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(test);
+        draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(newTabStructure);
       })
     );
   }
@@ -1610,10 +1608,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
         resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
           const tabIndex = draft.selectedPage?.resources.findIndex(resource => resource.id === value.tabResourceId);
           if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
-            const test = ResourceUtils.getResourcesForTabComponent(draft.selectedPage.resources, tabIndex, value.tabContentContainerId);
+            const tabComponent = ResourceUtils.getResourcesForTabComponent(draft.selectedPage.resources, tabIndex, value.tabContentContainerId);
             draft.tabMap.set(key, {
               activeTabIndex: 0,
-              tabComponent: test
+              tabComponent: tabComponent
             });
           }
         });

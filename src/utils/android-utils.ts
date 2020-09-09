@@ -1,7 +1,7 @@
 import DisplayMetrics from "../types/display-metrics";
 import { DeviceModel } from "../generated/client";
 import tinycolor from "tinycolor2";
-import { LayoutGravityValuePairs } from "../components/layout/editor-constants/values";
+import { LayoutGravityValuePairs, SelectedTabIndicatorGravityValues } from "../components/layout/editor-constants/values";
 import { CSSPropertyValuePairs } from "../types";
 
 /**
@@ -104,6 +104,34 @@ export default class AndroidUtils {
           { key: "top", value: "50%" },
           { key: "left", value: "50%" },
           { key: "transform", value: "translate(-50%,-50%)" }
+        ];
+      default:
+        return [];
+    }
+  }
+
+  /**
+   * Converts tab indicator gravity to CSS positioning rules
+   *
+   * @param gravity indicator gravity value
+   * @returns array of CSS property value pairs
+   */
+  public static tabIndicatorGravityToCSSPositioning(gravity: SelectedTabIndicatorGravityValues): CSSPropertyValuePairs[] {
+    switch (gravity) {
+      case SelectedTabIndicatorGravityValues.Top:
+        return [
+          { key: "top", value: 0 },
+          { key: "transform", value: "translateX(-50%)" }
+        ];
+      case SelectedTabIndicatorGravityValues.Center:
+        return [
+          { key: "top", value: "50%" },
+          { key: "transform", value: "translate(0,-50%)" }
+        ];
+
+      case SelectedTabIndicatorGravityValues.Stretch:
+        return [
+          { key: "height", value: "100%" },
         ];
       default:
         return [];
