@@ -104,7 +104,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           TabIndicatorProps={{
             style: this.resolveTabIndicatorStyles()
           }}
-
           style={ this.resolveTabContainerStyles() }
           value={ activeIndex }
           name={ view.id }
