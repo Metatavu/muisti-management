@@ -70,7 +70,9 @@ class PagePreviewTextView extends React.Component<Props, State> {
             onMouseOut={ this.onMouseOut }
           >
             <div style={ this.resolveTextViewStyles() }>
-              { this.getText() }
+              <div style={ this.resolveTextStyles() }>
+                <p style={{ margin: 0 }}>{ this.getText() }</p>
+              </div>
             </div>
           </div>
         )}
@@ -80,7 +82,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -90,11 +92,11 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
   /**
    * Returns text from view properties
-   * 
-   * @return text from view properties
+   *
+   * @return text from view properties or undefined
    */
-  private getText = () => {
-    const textProperty = this.props.view.properties.find(property => property.name === "text");
+  private getText = (): string | undefined => {
+    const textProperty: PageLayoutViewProperty | undefined = this.props.view.properties.find(property => property.name === "text");
     const id = textProperty?.value;
     if (id && id.startsWith("@resources/")) {
       const resource = this.props.resourceMap[id.substring(11)];
@@ -144,7 +146,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
 
       switch (property.name) {
         default:
-          this.handleUnknownProperty(property, "Unknown property");
+          this.handleUnknownProperty(property, "Unknown or unsupported property for container");
         break;
       }
     });
@@ -161,7 +163,9 @@ class PagePreviewTextView extends React.Component<Props, State> {
     const { displayMetrics, scale } = this.props;
     const properties = this.props.view.properties;
     const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      display: "inline-block"
+      display: "inline-block",
+      position: "relative",
+      color: "#ffffff"
     });
 
     properties.forEach(property => {
@@ -231,9 +235,51 @@ class PagePreviewTextView extends React.Component<Props, State> {
             default:
           }
         break;
+        case "textColor":
+          const textColor = AndroidUtils.toCssColor(property.value);
+          if (textColor) {
+            result.color = textColor;
+          } else {
+            this.handleUnknownProperty(property, "Unknown text color");
+          }
+        break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
         break;
+      }
+    });
+
+    return result;
+  }
+
+  /**
+   * Resolves text styles
+   *
+   * @returns text styles
+   */
+  private resolveTextStyles = (): CSSProperties => {
+    const { view, parentView } = this.props;
+    const properties = view.properties;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const result: CSSProperties = {
+      margin: 0,
+      position: "absolute",
+    };
+
+    properties.forEach(property => {
+      switch (property.name) {
+        case "gravity":
+          if (parentIsFrameLayout) {
+            const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+            gravityProps.forEach(prop => {
+              result[prop.key] = prop.value;
+            });
+          } else {
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          }
+          return;
+        default:
+          return;
       }
     });
 

@@ -115,7 +115,7 @@ class PagePreview extends React.Component<Props, State> {
     const result = { ...childStyles };
 
     childProperties
-      .filter(property => property.name.startsWith("layout_"))
+      .filter(property => property.name.startsWith("layout_") || property.name.startsWith("padding"))
       .forEach(property => {
         switch (property.name) {
           case "layout_width":
@@ -146,14 +146,29 @@ class PagePreview extends React.Component<Props, State> {
           case "layout_marginRight":
           case "layout_marginBottom":
           case "layout_marginLeft":
-          case "layout_paddingTop":
-          case "layout_paddingRight":
-          case "layout_paddingBottom":
-          case "layout_paddingLeft":
             const propertyName = property.name.substring(7);
+            if (property.value.includes("px")) {
+              result[propertyName] = property.value;
+              break;
+            }
             const pixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
             if (pixels) {
               result[propertyName] = pixels;
+            } else {
+              this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
+            }
+          break;
+          case "paddingTop":
+          case "paddingRight":
+          case "paddingBottom":
+          case "paddingLeft":
+            if (property.value.includes("px")) {
+              result[property.name] = property.value;
+              break;
+            }
+            const paddingPixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+            if (paddingPixels) {
+              result[property.name] = paddingPixels;
             } else {
               this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
             }

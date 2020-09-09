@@ -312,11 +312,21 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         break;
 
         case "tabTextColorNormal":
-          result.color = property.value;
+          const tabTextColorNormal = AndroidUtils.toCssColor(property.value);
+          if (tabTextColorNormal) {
+            result.color = tabTextColorNormal;
+          } else {
+            this.handleUnknownProperty(property, "Unknown text color");
+          }
         break;
         case "tabTextColorSelected":
           if (activeIndex === buttonIndex) {
-            result.color = property.value;
+            const tabTextColorSelected = AndroidUtils.toCssColor(property.value);
+            if (tabTextColorSelected) {
+              result.color = tabTextColorSelected;
+            } else {
+              this.handleUnknownProperty(property, "Unknown text color");
+            }
           }
         break;
         case "unboundedRipple":

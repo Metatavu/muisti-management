@@ -1730,6 +1730,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.devices[deviceIndex] = updatedDevice;
         draft.pages.push(createdPage);
         draft.selectedPage = createdPage;
+        draft.tabResourceIndex = undefined;
       })
     );
   }
