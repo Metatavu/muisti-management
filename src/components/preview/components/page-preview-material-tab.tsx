@@ -100,7 +100,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     return (
       <>
         <Tabs
-          variant={ this.findTabProperties("variant") }
+          variant={ this.findTabProperty("variant") }
           TabIndicatorProps={{
             style: this.resolveTabIndicatorStyles()
           }}
@@ -121,7 +121,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    *
    * @param key key to find
    */
-  private findTabProperties = (key: string) => {
+  private findTabProperty = (key: string) => {
     switch (key) {
       case "variant":
         const tabMode = this.searchForTabProperty("tabMode");
