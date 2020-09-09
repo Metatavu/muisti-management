@@ -100,11 +100,10 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     return (
       <>
         <Tabs
-          variant={ this.findTabProperties("variant") }
+          variant={ this.findTabProperty("variant") }
           TabIndicatorProps={{
             style: this.resolveTabIndicatorStyles()
           }}
-
           style={ this.resolveTabContainerStyles() }
           value={ activeIndex }
           name={ view.id }
@@ -122,7 +121,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    *
    * @param key key to find
    */
-  private findTabProperties = (key: string) => {
+  private findTabProperty = (key: string) => {
     switch (key) {
       case "variant":
         const tabMode = this.searchForTabProperty("tabMode");
@@ -130,9 +129,8 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           return "standard";
         }
         return (tabMode.name === "fixed") ? "standard" : "scrollable";
-
       default:
-        break;
+      break;
     }
   }
 
@@ -188,11 +186,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-          break;
+        break;
 
         default:
           // console.log(`Unknown property: ${property.name}`)
-          break;
+        break;
       }
     });
 
@@ -261,7 +259,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
             result[prop.key] = prop.value;
           });
         break;
-
         case "selectedTabIndicatorHeight":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
@@ -311,20 +308,18 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
         case "tabTextColorNormal":
           result.color = property.value;
-          break;
-
+        break;
         case "tabTextColorSelected":
           if (activeIndex === buttonIndex) {
             result.color = property.value;
           }
         break;
-
         case "unboundedRipple":
           // console.log("unboundedRipple")
         break;
-
         default:
           // console.log(`Unknown property: ${property.name}`)
+        break;
       }
     });
 
