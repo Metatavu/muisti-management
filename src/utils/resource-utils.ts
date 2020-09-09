@@ -99,10 +99,10 @@ export default class ResourceUtils {
       tabPropertyIdToTabResourceId
     } as PageResourceCache;
   }
-  
+
   /**
    * Get resource mode display name
-   * 
+   *
    * @param mode page resource mode
    * @returns display name string
    */
@@ -119,7 +119,7 @@ export default class ResourceUtils {
 
   /**
    * Get media type based on resource type
-   * 
+   *
    * @param resourceType resource type
    * @returns media type if resource is of media type or undefined
    */
@@ -145,11 +145,7 @@ export default class ResourceUtils {
   public static getResourcesForTabComponent = (resources: ExhibitionPageResource[], tabResourceIndex: number, contentContainerId?: string): TabStructure => {
     const data = resources[tabResourceIndex].data;
     const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
-    if (!parsed) {
-      return { contentContainerId: contentContainerId, tabs: [] } as TabStructure;
-    }
-
-    return parsed;
+    return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
   }
 
 }

@@ -60,7 +60,6 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   public render = () => {
     const { onResize, tabMap, view } = this.props;
     const tabData = PreviewUtils.getTabContent(view, tabMap);
-
     return (
       <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (

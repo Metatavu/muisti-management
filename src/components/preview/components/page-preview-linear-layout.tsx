@@ -92,6 +92,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
       resourceMap,
       displayMetrics,
       scale,
+      tabMap,
       onViewClick,
       onTabClick,
       handleLayoutProperties
@@ -111,6 +112,7 @@ class PagePreviewLinearLayout extends React.Component<Props, State> {
           handleLayoutProperties={ handleLayoutProperties }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
+          tabMap={ tabMap }
         />
       );
     });

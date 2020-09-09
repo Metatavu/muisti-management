@@ -71,7 +71,6 @@ class PagePreview extends React.Component<Props, State> {
 
     let height = displayMetrics.heightPixels * scale;
     let width = displayMetrics.widthPixels * scale;
-
     if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
       height = displayMetrics.widthPixels * scale;
       width = displayMetrics.heightPixels * scale;
