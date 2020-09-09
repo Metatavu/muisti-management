@@ -612,6 +612,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render properties
    */
   private renderProperties = () => {
+    const { accessToken } = this.props;
     const {
       selectedPage,
       selectedResource,
@@ -660,6 +661,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       return(
         <TabEditor
+          accessToken={ accessToken }
           selectedTab={ foundTab }
           onSave={ this.updateTab }
         />
