@@ -1661,8 +1661,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Event handler for add page click
    */
   private onAddPageClick = async () => {
-    const { contentVersionId, accessToken, exhibitionId } = this.props;
-    const { layouts, selectedDevice, devices, pages } = this.state;
+    const { accessToken, exhibitionId } = this.props;
+    const {
+      layouts,
+      selectedContentVersion,
+      selectedDevice,
+      devices,
+      pages
+    } = this.state;
 
     if (!selectedDevice) {
       return;
@@ -1672,16 +1678,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const deviceId = selectedDevice.id;
     const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
-    const filteredPages = pages.filter(page => (page.deviceId === deviceId && page.contentVersionId === contentVersionId));
-
-    if (!layoutId || !deviceId || !contentVersionId) {
+    if (!layoutId || !deviceId || !selectedContentVersion) {
       return null;
     }
+
+    const filteredPages = pages.filter(page =>
+      page.deviceId === deviceId &&
+      page.contentVersionId === selectedContentVersion.id!
+    );
 
     const newPage: ExhibitionPage = {
       layoutId: layoutId,
       deviceId: deviceId,
-      contentVersionId: contentVersionId,
+      contentVersionId: selectedContentVersion.id!,
       name: strings.exhibition.newPage,
       eventTriggers: [],
       resources: temp.resources,
