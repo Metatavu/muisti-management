@@ -130,7 +130,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         }
         return (tabMode.name === "fixed") ? "standard" : "scrollable";
       default:
-        break;
+      break;
     }
   }
 
