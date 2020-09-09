@@ -102,7 +102,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         <Tabs
           variant={ this.findTabProperties("variant") }
           TabIndicatorProps={{
-            style: { ...this.resolveTabIndicatorStyles() }
+            style: this.resolveTabIndicatorStyles()
           }}
 
           style={ this.resolveTabContainerStyles() }
