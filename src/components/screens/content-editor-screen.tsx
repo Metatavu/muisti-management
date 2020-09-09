@@ -285,7 +285,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         >
           <PagePreview
             screenOrientation={ pageLayout.screenOrientation }
-            deviceOrientation={ deviceModel ? deviceModel.screenOrientation : undefined }
+            deviceOrientation={ deviceModel?.screenOrientation }
             view={ view }
             selectedView={ selectedLayoutView }
             resources={ resources }

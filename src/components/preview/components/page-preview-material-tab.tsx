@@ -190,7 +190,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
         default:
           // console.log(`Unknown property: ${property.name}`)
-          break;
+        break;
       }
     });
 
@@ -259,7 +259,6 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
             result[prop.key] = prop.value;
           });
         break;
-
         case "selectedTabIndicatorHeight":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
@@ -315,13 +314,12 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
             result.color = property.value;
           }
         break;
-
         case "unboundedRipple":
           // console.log("unboundedRipple")
         break;
-
         default:
           // console.log(`Unknown property: ${property.name}`)
+        break;
       }
     });
 
