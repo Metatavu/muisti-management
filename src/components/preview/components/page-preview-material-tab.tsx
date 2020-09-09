@@ -85,6 +85,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     }
 
     const activeIndex = tabResource.activeTabIndex;
+
+    if (!tabResource.tabComponent.tabs) {
+      return null;
+    }
+
     const tabItems = tabResource.tabComponent.tabs.map((tab, index) => {
       return (
         <Tab

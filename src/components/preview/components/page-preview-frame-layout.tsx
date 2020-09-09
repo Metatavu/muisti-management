@@ -130,6 +130,11 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   private renderTabContent = (tabData: TabHolder[]) => {
     const tabContentHolder = tabData[0];
     const activeIndex = tabContentHolder.activeTabIndex;
+
+    if (!tabContentHolder.tabComponent.tabs) {
+      return null;
+    }
+
     const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
       if (!tab.resources[0]) {
         return null;
