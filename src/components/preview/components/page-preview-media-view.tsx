@@ -15,6 +15,7 @@ import { ResourceMap } from "../../../types";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer: number;
   resourceMap: ResourceMap;
@@ -54,6 +55,7 @@ class PagePreviewMediaView extends React.Component<Props, State> {
   public render() {
     const {
       view,
+      parentView,
       selectedView,
       layer,
       onResize,
@@ -72,6 +74,7 @@ class PagePreviewMediaView extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ layer }
           displayMetrics={ displayMetrics }
@@ -84,6 +87,7 @@ class PagePreviewMediaView extends React.Component<Props, State> {
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
           view={ view }
+          parentView={ parentView }
           selectedView={ selectedView }
           layer={ layer }
           displayMetrics={ displayMetrics }

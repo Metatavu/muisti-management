@@ -17,6 +17,7 @@ import AndroidUtils from "../../../utils/android-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer: number;
   resourceMap: ResourceMap;

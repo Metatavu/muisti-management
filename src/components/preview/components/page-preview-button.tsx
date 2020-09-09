@@ -3,17 +3,19 @@ import * as React from "react";
 import Measure, { ContentRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
-import { ResourceMap } from "../../../types";
+import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
+import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer: number;
   resourceMap: ResourceMap;
@@ -100,8 +102,9 @@ class PagePreviewButton extends React.Component<Props, State> {
    * @return button styles
    */
   private resolveStyles = (): CSSProperties => {
-    const { displayMetrics, scale, view, layer } = this.props;
+    const { displayMetrics, scale, view, parentView, layer } = this.props;
     const { properties } = view;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
 
     const result: CSSProperties = {
@@ -114,7 +117,8 @@ class PagePreviewButton extends React.Component<Props, State> {
       marginRight: defaultMargin,
       marginBottom: defaultMargin,
       marginLeft: defaultMargin,
-      zIndex: layer
+      zIndex: layer,
+      position: parentIsFrameLayout ? "absolute" : "initial"
     };
 
     properties.forEach(property => {
@@ -172,7 +176,14 @@ class PagePreviewButton extends React.Component<Props, State> {
           }
         break;
         case "layout_gravity":
-          result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          if (parentIsFrameLayout) {
+            const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+            gravityProps.forEach(prop => {
+              result[prop.key] = prop.value;
+            });
+          } else {
+            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+          }
         break;
         default:
         break;

@@ -114,3 +114,11 @@ export enum MediaType {
   VIDEO = "video",
   MEDIA = "media"
 }
+
+/**
+ * CSS property value pairs
+ */
+export interface CSSPropertyValuePairs {
+  key: string;
+  value: string | number;
+}

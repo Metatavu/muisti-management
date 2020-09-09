@@ -3,21 +3,23 @@ import * as React from "react";
 import Measure, { ContentRect, BoundingRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
-import { ResourceMap } from "../../../types";
+import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
 import { TabHolder } from "../../content-editor/constants";
 import PreviewUtils from "../../../utils/preview-utils";
 import TabItem from "../../generic/tab-item";
+import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer: number;
   resourceMap: ResourceMap;
@@ -107,6 +109,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
         <PagePreviewComponentEditor
           key={ `child-${index}` }
           view={ child }
+          parentView={ view }
           selectedView={ selectedView }
           layer={ layer }
           resourceMap={ resourceMap }
@@ -197,18 +200,26 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const { view, layer, handleLayoutProperties } = this.props;
+    const { view, parentView, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = handleLayoutProperties(properties, {
-      position: "absolute",
-      zIndex: layer
+      zIndex: layer,
+      position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
         switch(property.name) {
           case "layout_gravity":
-            result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+            if (parentIsFrameLayout) {
+              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+              gravityProps.forEach(prop => {
+                result[prop.key] = prop.value;
+              });
+            } else {
+              result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+            }
           break;
         }
         return;
