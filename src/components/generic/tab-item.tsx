@@ -63,7 +63,6 @@ const renderTabContent = (resource: TabResource, props: Props) => {
  * Get text content
  * 
  * @param text text string
- * @param props component props
  * @returns text as React element
  */
 const getTextContent = (text: string) => {
@@ -90,6 +89,7 @@ const getHtmlContent = (htmlString: string) => {
  */
 const getImageContent = (imageUrl: string, props: Props) => {
   const { classes } = props;
+
   return (
     <div className={ classes.mediaContainer }>
       <img src={ imageUrl } alt="preview" className={ classes.image }/>
@@ -106,10 +106,13 @@ const getImageContent = (imageUrl: string, props: Props) => {
  */
 const getVideoContent = (videoUrl: string, props: Props) => {
   const { classes } = props;
-  console.log(videoUrl);
   return (
     <div className={ classes.mediaContainer }>
-      <video autoPlay={ true } controls={ true } className={ classes.video }>
+      <video
+        autoPlay={ true }
+        controls={ true }
+        className={ classes.video }
+      >
         <source src={ videoUrl } />
       </video>
     </div>
