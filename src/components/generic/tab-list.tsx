@@ -7,7 +7,7 @@ import { Link as RouterLink } from 'react-router-dom';
 /**
  * Interface representing component properties
  */
-interface Props extends WithStyles<typeof styles>  {
+interface Props extends WithStyles<typeof styles> {
   history: History;
   tabButtons: NavigationButton[];
 }
