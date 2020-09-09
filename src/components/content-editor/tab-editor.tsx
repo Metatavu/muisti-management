@@ -14,11 +14,15 @@ import { ExhibitionPageResourceType } from "../../generated/client";
 import CKEditor from 'ckeditor4-react';
 import GenericDialog from "../generic/generic-dialog";
 import GenericUtils from "../../utils/generic-utils";
+import MediaLibrary from "../right-panel-editors/media-library";
+import { AccessToken } from "../../types";
+import ResourceUtils from "../../utils/resource-utils";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
+  accessToken: AccessToken;
   selectedTab: Tab;
 
   onSave: (updatedTab: Tab) => void;
@@ -145,7 +149,12 @@ class TabEditor extends React.Component<Props, State> {
           { strings.contentEditor.editor.tabs.properties }
         </Typography>
         { resourceSelectItems }
-        { resourceItems }
+        <div key={ "resourceContainer" }>
+          <Typography variant="h6">
+            { strings.contentEditor.editor.tabs.resources }
+          </Typography>
+          { resourceItems }
+        </div>
       </div>
     );
   }
@@ -160,27 +169,19 @@ class TabEditor extends React.Component<Props, State> {
     }
 
     return (
-      <>
-        <Button
-          variant="text"
-          onClick={ this.openEditModalClick }
-        >
-          { strings.contentEditor.editor.tabs.edit }
-        </Button>
-        <GenericDialog
-          open={ showCKEditorModal }
-          error={ false }
-          title={ strings.contentEditor.editor.tabs.edit }
-          onClose={ this.onEditModalClose }
-          onCancel={ this.onEditModalClose }
-          onConfirm={ this.onEditModalClose }
-          positiveButtonText={ strings.errorDialog.close }
-          fullScreen={ true }
-          disableEnforceFocus={ true }
-        >
-          { this.renderDialogContent() }
-        </GenericDialog>
-      </>
+      <GenericDialog
+        open={ showCKEditorModal }
+        error={ false }
+        title={ strings.contentEditor.editor.tabs.edit }
+        onClose={ this.onEditModalClose }
+        onCancel={ this.onEditModalClose }
+        onConfirm={ this.onEditModalClose }
+        positiveButtonText={ strings.errorDialog.close }
+        fullScreen={ true }
+        disableEnforceFocus={ true }
+      >
+        { this.renderDialogContent() }
+      </GenericDialog>
     );
   }
 
@@ -239,24 +240,44 @@ class TabEditor extends React.Component<Props, State> {
    * Get resource items
    */
   private getResourceItems = () => {
-    const { selectedTab } = this.props;
+    const { accessToken, selectedTab } = this.props;
 
     if (!selectedTab.resources) {
       return null;
     }
 
     return selectedTab.resources.map(resource => {
-      return (
-        <div key={ resource.id }>
-          <Typography variant="h6">
-            { strings.contentEditor.editor.tabs.resources }
-          </Typography>
-          <TextField
-            onChange={ this.onDataChange }
-            value={ resource.data }
-          />
-        </div>
-      );
+      switch (resource.type) {
+        case ExhibitionPageResourceType.Text:
+          return (
+            <TextField
+              onChange={ this.onDataChange }
+              value={ resource.data }
+            />
+          );
+        case ExhibitionPageResourceType.Image:
+        case ExhibitionPageResourceType.Video:
+        case ExhibitionPageResourceType.Svg:
+          return (
+            <MediaLibrary
+              accessToken={ accessToken }
+              mediaType={ ResourceUtils.getResourceMediaType(resource.type)! }
+              resource={ resource }
+              onUrlChange={ this.onMediaUrlChange }
+            />
+          );
+        case ExhibitionPageResourceType.Html:
+          return (
+            <Button
+              variant="text"
+              onClick={ this.openEditModalClick }
+            >
+              { strings.contentEditor.editor.tabs.edit }
+            </Button>
+          );
+        default:
+          return null;
+      }
     });
   }
 
@@ -349,13 +370,25 @@ class TabEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for media library value change
+   *
+   * @param newUrl  new media url
+   */
+  private onMediaUrlChange = (newUrl: string) => {
+    const { onSave } = this.props;
+
+    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    tabToUpdate.resources[0].data = newUrl;
+    onSave(tabToUpdate);
+  }
+
+  /**
    * Event handler for data change
    *
    * @param event react text field event
    */
   private onDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onSave } = this.props;
-
     const value = event.target.value;
     const tabToUpdate = { ...this.props.selectedTab } as Tab;
 
