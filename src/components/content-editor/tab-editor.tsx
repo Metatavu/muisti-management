@@ -379,7 +379,8 @@ class TabEditor extends React.Component<Props, State> {
     const { onSave } = this.props;
 
     const tabToUpdate = { ...this.props.selectedTab } as Tab;
-    console.log(tabToUpdate);
+    tabToUpdate.resources[0].data = newUrl;
+    onSave(tabToUpdate);
   }
 
   /**
@@ -389,7 +390,6 @@ class TabEditor extends React.Component<Props, State> {
    */
   private onDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onSave } = this.props;
-
     const value = event.target.value;
     const tabToUpdate = { ...this.props.selectedTab } as Tab;
 

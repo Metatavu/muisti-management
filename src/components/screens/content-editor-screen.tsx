@@ -837,14 +837,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
           return;
         }
 
-        const tabData = this.getTabStructure();
+
+        const tabHolder = tabMap.get(selectedLayoutView.id);
+        const tabData = this.getTabStructure(tabHolder?.tabComponent.contentContainerId);
         if (tabData && tabData.tabs) {
-          const tabHolder = tabMap.get(selectedLayoutView.id);
+          tabData.tabs[selectedTabIndex] = updatedTab;
           if (tabHolder) {
             tabHolder.tabComponent = tabData;
             draft.tabMap.set(selectedLayoutView.id, tabHolder);
           }
-          tabData.tabs[selectedTabIndex] = updatedTab;
           selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
         }
 
@@ -1374,7 +1375,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for resource click
-   * 
+   *
    * @param resource resource
    */
   private onResourceClick = (resource: ExhibitionPageResource) => () => {
@@ -1388,7 +1389,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Event handler for preview tab click
    *
-   * @param viewId tab component view id 
+   * @param viewId tab component view id
    * @param newIndex new active tab index
    */
   private onPreviewTabClick = (viewId: string, newIndex: number) => {
@@ -1812,18 +1813,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Get tab structure from resources
    */
-  private getTabStructure = () => {
+  private getTabStructure = (contentContainerId?: string) => {
     const { tabResourceIndex, selectedPage } = this.state;
 
     if (tabResourceIndex !== undefined && selectedPage && selectedPage.resources.length > 0) {
       const data = selectedPage.resources[tabResourceIndex].data;
 
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
-      if (!parsed) {
-        return { tabs: [] } as TabStructure;
-      }
+      return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
 
-      return parsed;
     }
   }
 
