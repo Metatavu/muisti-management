@@ -144,8 +144,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
         <TabItem
           key={ `TabItem-${index}` }
           index={ index }
-          value={ index }
-          data= { tab.resources[0].data }
+          resource={ tab.resources[0] }
           visible={ index === activeIndex }
         />
       );
