@@ -7,7 +7,7 @@ import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "..
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap } from "../../../types";
-import { TabStructure } from "../../content-editor/constants";
+import { TabStructure, TabHolder } from "../../content-editor/constants";
 import { parseStringToJsonObject } from "../../../utils/content-editor-utils";
 import { property } from "lodash";
 import AndroidUtils from "../../../utils/android-utils";
@@ -22,6 +22,7 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -84,10 +85,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       return null;
     }
 
-    const tabItems = tabResource.tabs.map((tab, index) => {
+    const activeIndex = tabResource.activeTabIndex;
+    const tabItems = tabResource.tabComponent.tabs.map((tab, index) => {
       return (
         <Tab
-          style={{ height: "100px", color: "#ffffff" }}
+          style={ this.resolveTabButtonStyles(activeIndex, index) }
           key={ `${tab.label}-${index}` }
           label={ tab.label }
           value={ index }
@@ -104,7 +106,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
             }
           }}
 
-          style={ this.resolveTabStyles() }
+          style={ this.resolveTabContainerStyles() }
           value={ 0 }
           name={ view.id }
           onChange={ this.onTabClick(view.id) }
@@ -121,7 +123,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       case "variant":
         const tabMode = this.searchForTabProperty("tabMode");
         if (!tabMode) {
-          return;
+          return "standard";
         }
         return (tabMode.name === "fixed") ? "standard" : "scrollable";
 
@@ -140,33 +142,34 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    *
    * @returns found tab structure or undefined
    */
-  private getTabResource = (): TabStructure | undefined => {
-    const { resourceMap, view } = this.props;
-    if (view.widget !== PageLayoutWidgetType.MaterialTabLayout) {
+  private getTabResource = (): TabHolder | undefined => {
+    const { view, tabMap } = this.props;
+    if (view.widget !== PageLayoutWidgetType.MaterialTabLayout || !tabMap) {
       return;
     }
 
-    const tabData = view.properties.find(prop => prop.name === "data");
-    if (!tabData) {
-      return;
-    }
+    return tabMap.get(view.id);
 
-    const keySplit = tabData.value.split("@resources/");
+    // const tabData = view.properties.find(prop => prop.name === "data");
+    // if (!tabData) {
+    //   return;
+    // }
 
-    if (keySplit.length < 2) {
-      return;
-    }
+    // const keySplit = tabData.value.split("@resources/");
 
-    const key = keySplit[1];
+    // if (keySplit.length < 2) {
+    //   return;
+    // }
 
-    const tabResource = resourceMap[key];
-    if (!tabResource) {
-      return;
-    }
+    // const key = keySplit[1];
+    // const tabResource = resourceMap[key];
+    // if (!tabResource) {
+    //   return;
+    // }
 
-    const data = tabResource.data;
-    const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
-    return parsed;
+    // const data = tabResource.data;
+    // const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+    // return parsed;
   }
 
   /**
@@ -208,11 +211,16 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     return result;
   }
 
-  private resolveTabStyles = (): CSSProperties => {
+  /**
+   * Resolves styles for material ui tab container
+   *
+   * @returns material ui tab container styles
+   */
+  private resolveTabContainerStyles = (): CSSProperties => {
     const { view, displayMetrics, scale } = this.props;
     const properties = view.properties;
     const result: CSSProperties = {};
-    console.log(properties);
+
     properties.forEach(property => {
       switch (property.name) {
         case "background":
@@ -248,6 +256,71 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
         case "tabTextColorSelected":
           // console.log("tabTextColorSelected")
+          break;
+
+        case "unboundedRipple":
+          // console.log("unboundedRipple")
+          break;
+
+        case "tabIndicatorFullWidth":
+          // console.log("tabIndicatorFullWidth")
+          break;
+
+        default:
+          // console.log(`Unknown property: ${property.name}`)
+      }
+    });
+
+    return result;
+  }
+
+  /**
+   * Resolves tab button styles
+   *
+   * @returns tab button styles
+   */
+  private resolveTabButtonStyles = (activeIndex: number, buttonIndex: number): CSSProperties => {
+    const { view, displayMetrics, scale } = this.props;
+    const properties = view.properties;
+    const result: CSSProperties = {};
+
+    properties.forEach(property => {
+      switch (property.name) {
+        case "background":
+          result.backgroundColor = property.value;
+          break;
+        case "layout_height":
+          const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
+          if (px) {
+            result.height = px;
+          } else {
+            this.handleUnknownProperty(property, "Unknown value");
+          }
+          break;
+        case "tabGravity":
+          // console.log("tabGravity")
+          break;
+
+        case "selectedTabIndicatorColor":
+          // console.log("selectedTabIndicatorColor")
+          break;
+
+        case "selectedTabIndicatorGravity":
+          // console.log("selectedTabIndicatorGravity")
+          break;
+
+        case "selectedTabIndicatorHeight":
+          // console.log("selectedTabIndicatorHeight")
+          break;
+
+        case "tabTextColorNormal":
+          result.color = property.value;
+          break;
+
+        case "tabTextColorSelected":
+          if (activeIndex === buttonIndex) {
+            result.color = property.value;
+          }
           break;
 
         case "unboundedRipple":

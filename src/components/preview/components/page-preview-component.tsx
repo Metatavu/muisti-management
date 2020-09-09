@@ -218,6 +218,7 @@ class PagePreviewComponent extends React.Component<Props, State> {
           layer={ this.getLayer() }
           displayMetrics={ displayMetrics }
           scale={ scale }
+          tabMap={ tabMap }
           resourceMap={ resourceMap }
           onViewClick={ onViewClick }
           onTabClick={ onTabClick }
