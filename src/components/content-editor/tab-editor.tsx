@@ -372,8 +372,7 @@ class TabEditor extends React.Component<Props, State> {
   /**
    * Event handler for media library value change
    *
-   * @param event event
-   * @param editor editor data
+   * @param newUrl  new media url
    */
   private onMediaUrlChange = (newUrl: string) => {
     const { onSave } = this.props;
