@@ -4,6 +4,7 @@ export default createStyles({
 
   list: {
     minWidth: 250,
+    maxWidth: 250,
     padding: 0
   },
 

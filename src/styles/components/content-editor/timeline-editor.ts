@@ -6,20 +6,11 @@ export default createStyles({
   timeLineRowList: {
     padding: 0,
     width: "100%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
     overflowX: "scroll",
-    "&::-webkit-scrollbar-track": {
-      backgroundColor: theme.palette.grey[300]
-    },
-    "&::-webkit-scrollbar": {
-      height: 10
-    },
-    "&::-webkit-scrollbar-thumb": {
-      backgroundColor: theme.palette.text.primary,
-      border: "none"
-    }
   },
 
   timelineRow: {

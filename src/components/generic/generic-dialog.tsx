@@ -8,7 +8,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mate
 interface Props {
   title: string;
   positiveButtonText: string;
-  cancelButtonText: string;
+  cancelButtonText?: string;
 
   /**
    * On close handler
@@ -26,13 +26,15 @@ interface Props {
   onConfirm: () => void | Promise<void>;
   open: boolean;
   error: boolean;
+
+  fullScreen?: boolean;
+  disableEnforceFocus?: boolean;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
-
 }
 
 /**
@@ -54,13 +56,15 @@ export default class GenericDialog extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { open, positiveButtonText, cancelButtonText, onClose, onCancel, title, onConfirm, error } = this.props;
+    const { open, positiveButtonText, cancelButtonText, onClose, onCancel, title, onConfirm, error, fullScreen, disableEnforceFocus } = this.props;
     return (
       <Dialog
+        disableEnforceFocus={ disableEnforceFocus }
         open={ open }
         onClose={ () => onClose() }
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullScreen={ fullScreen }
       >
         <DialogTitle disableTypography id="alert-dialog-title">{ title }</DialogTitle>
         <DialogContent>

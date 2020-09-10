@@ -13,22 +13,30 @@ import PagePreviewRelativeLayout from "./page-preview-relative-layout";
 import PagePreviewPlayerView from "./page-preview-player-view";
 import PagePreviewMediaView from "./page-preview-media-view";
 import PagePreviewLinearLayout from "./page-preview-linear-layout";
+import PagePreviewMaterialTab from "./page-preview-material-tab";
 
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { ResourceMap } from "../../../types";
+import { TabHolder } from "../../content-editor/constants";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  parentView?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer?: number;
   resourceMap: ResourceMap;
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -58,12 +66,10 @@ class PagePreviewComponent extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes } = this.props;
-
     return (
-      <div className={ classes.previewComponent } style={ this.props.style }>
+      <>
         { this.renderComponent() }
-      </div>
+      </>
     );
   }
 
@@ -71,86 +77,175 @@ class PagePreviewComponent extends React.Component<Props, State> {
    * Renders the actual component
    */
   private renderComponent = () => {
-    if (!this.props.view) {
+    const {
+      view,
+      parentView,
+      selectedView,
+      displayMetrics,
+      scale,
+      resourceMap,
+      tabMap,
+      onResize,
+      handleLayoutProperties,
+      onViewClick,
+      onTabClick
+    } = this.props;
+
+    if (!view) {
       return null;
     }
 
-    switch (this.props.view.widget) {
+    switch (view.widget) {
       case "FrameLayout":
         return <PagePreviewFrameLayout
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />;
       case "LinearLayout":
         return <PagePreviewLinearLayout
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />;
       case "TextView":
         return <PagePreviewTextView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "FlowTextView":
         return <PagePreviewFlowTextView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "Button":
         return <PagePreviewButton
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "ImageView":
         return <PagePreviewImageView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "PlayerView":
         return <PagePreviewPlayerView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "MediaView":
         return <PagePreviewMediaView
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+        />;
       case "RelativeLayout":
         return <PagePreviewRelativeLayout
-          onResize={ this.props.onResize }
-          handleLayoutProperties={ this.props.handleLayoutProperties }
-          view={ this.props.view }
-          displayMetrics={ this.props.displayMetrics }
-          scale={ this.props.scale }
-          resourceMap={ this.props.resourceMap }/>;
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />;
+      case "MaterialTabLayout":
+        return <PagePreviewMaterialTab
+          onResize={ onResize }
+          handleLayoutProperties={ handleLayoutProperties }
+          view={ view }
+          parentView={ parentView }
+          selectedView={ selectedView }
+          layer={ this.getLayer() }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          tabMap={ tabMap }
+          resourceMap={ resourceMap }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+        />;
       default:
-        return <Typography> Unsupported widget { this.props.view.widget } </Typography>;
+        return <Typography> Unsupported widget { view.widget } </Typography>;
     }
+  }
+
+  /**
+   * Returns current layer
+   * 
+   * @returns layer as number
+   */
+  private getLayer = (): number => {
+    return this.props.layer ? this.props.layer + 1 : 1;
   }
 }
 

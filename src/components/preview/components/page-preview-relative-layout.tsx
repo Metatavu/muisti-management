@@ -3,26 +3,36 @@ import * as React from "react";
 import Measure, { ContentRect, BoundingRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
-import { ResourceMap } from "../../../types";
-import PagePreviewUtils from "./page-preview-utils";
+import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
+import AndroidUtils from "../../../utils/android-utils";
+import { TabHolder } from "../../content-editor/constants";
+import PreviewUtils from "../../../utils/preview-utils";
+import TabItem from "../../generic/tab-item";
+import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
+  tabMap?: Map<string, TabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
-type ChildBounds = { [id: string]: BoundingRect }
+type ChildBounds = { [id: string]: BoundingRect };
 
 /**
  * Interface representing component state
@@ -39,7 +49,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -53,13 +63,24 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * Render
    */
   public render() {
-    const { classes } = this.props;
+    const { classes, view, tabMap } = this.props;
+    const tabData = PreviewUtils.getTabContent(view, tabMap);
 
     return (
       <Measure onResize={ this.onRootResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } className={ classes.relativeLayout } style={ this.resolveStyles() }>
-            { this.renderChildren() }
+          <div
+            ref={ measureRef }
+            className={ classes.relativeLayout }
+            style={ this.resolveStyles() }
+            onClick={ this.onClick }
+            onMouseOver={ this.onMouseOver }
+            onMouseOut={ this.onMouseOut }
+          >
+            { tabData.length > 0 ?
+              this.renderTabContent(tabData) :
+              this.renderChildren()
+            }
           </div>
         )}
       </Measure>
@@ -70,18 +91,38 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * Renders child component
    */
   private renderChildren = () => {
-    const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
+    const {
+      view,
+      selectedView,
+      layer,
+      resourceMap,
+      displayMetrics,
+      scale,
+      tabMap,
+      onViewClick,
+      onTabClick,
+      handleLayoutProperties
+    } = this.props;
+
+    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
       return (
-        <PagePreviewComponentEditor key={ `child-${index}` } 
+        <PagePreviewComponentEditor
+          key={ `child-${index}` }
           view={ child }
-          resourceMap={ this.props.resourceMap }
-          displayMetrics={ this.props.displayMetrics } 
-          scale={ this.props.scale }
+          parentView={ view }
+          selectedView={ selectedView }
+          layer={ layer }
+          resourceMap={ resourceMap }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
           style={ this.resolveChildStyles(child) }
-          handleLayoutProperties={ this.onHandleLayoutProperties }
+          handleLayoutProperties={ handleLayoutProperties }
           onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
-          />
-      );      
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />
+      );
     });
 
     return (
@@ -89,6 +130,32 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
         { result }
       </div>
     );
+  }
+
+  /**
+   * Renders tab contents
+   *
+   * @param tabData list of tab holders
+   */
+  private renderTabContent = (tabData: TabHolder[]) => {
+    const tabContentHolder = tabData[0];
+    const activeIndex = tabContentHolder.activeTabIndex;
+    const tabItems = tabContentHolder.tabComponent.tabs.map((tab, index) => {
+      if (!tab.resources[0]) {
+        return null;
+      }
+
+      return (
+        <TabItem
+          key={ `TabItem-${index}` }
+          index={ index }
+          resource={ tab.resources[0] }
+          visible={ index === activeIndex }
+        />
+      );
+    });
+
+    return tabItems;
   }
 
   /**
@@ -103,7 +170,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
   /**
    * Resolves child component styles
-   * 
+   *
    * @param child child
    * @return child component styles
    */
@@ -111,18 +178,17 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     const rightOfChildId = child.properties
       .find(item => item.name === "layout_toRightOf")
       ?.value;
-    
+
     const result: CSSProperties = {
       "position": "absolute"
     };
-    
+
     if (rightOfChildId) {
       const rightOfBounds = this.state.childBounds[rightOfChildId];
       if (rightOfBounds) {
         result.left = rightOfBounds.right - (this.state.rootBounds?.left || 0);
       }
     }
-
 
     return result;
   }
@@ -133,13 +199,28 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      position: "absolute"
+    const { view, parentView, layer, handleLayoutProperties } = this.props;
+    const properties = view.properties;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const result: CSSProperties = handleLayoutProperties(properties, {
+      zIndex: layer,
+      position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
     properties.forEach(property => {
       if (property.name.startsWith("layout_")) {
+        switch(property.name) {
+          case "layout_gravity":
+            if (parentIsFrameLayout) {
+              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+              gravityProps.forEach(prop => {
+                result[prop.key] = prop.value;
+              });
+            } else {
+              result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+            }
+          break;
+        }
         return;
       }
 
@@ -199,49 +280,28 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting 
-   *
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
+   * Event handler for mouse over
+   * 
+   * @param event react mouse event
    */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles, 
-      position: "absolute" 
-    };
+  private onMouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  }
 
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-      });
+  /**
+   * Event handler for mouse out
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  }
 
-    return result;
+  /**
+   * Event handler for on click
+   */
+  private onClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
   }
 }
 

@@ -3,31 +3,36 @@ import * as React from "react";
 import Measure, { ContentRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
-import { ResourceMap } from "../../../types";
+import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import PagePreviewComponentEditor from "./page-preview-component";
-import PagePreviewUtils from "./page-preview-utils";
 import ReactHtmlParser from "react-html-parser";
+import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  mouseOver: boolean;
 }
 
 /**
@@ -43,7 +48,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      mouseOver: false
     };
   }
 
@@ -51,10 +56,21 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
+    const { classes, view, selectedView, onResize } = this.props;
+    const { mouseOver } = this.state;
+    const selected = selectedView?.id === view.id;
+
     return (
-      <Measure onResize={ this.props.onResize } bounds={ true }>
+      <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } style={ this.resolveStyles() }>
+          <div
+            ref={ measureRef }
+            style={ this.resolveStyles() }
+            className={ mouseOver || selected ? classes.highlighted : "" }
+            onClick={ this.onClick }
+            onMouseOver={ this.onMouseOver }
+            onMouseOut={ this.onMouseOut }
+          >
             { this.renderChildren() }
             { this.renderText() }
             { this.getText() }
@@ -68,13 +84,29 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
    * Renders layout child components
    */
   private renderChildren = () => {
-    const result = (this.props.view.children || []).map((child: PageLayoutView, index: number) => {
-      return <PagePreviewComponentEditor key={ `child-${index}` } 
-        view={ child }
-        resourceMap={ this.props.resourceMap }
-        displayMetrics={ this.props.displayMetrics } 
-        scale={ this.props.scale }
-        handleLayoutProperties={ this.onHandleLayoutProperties }/>
+    const {
+      view,
+      layer,
+      resourceMap,
+      displayMetrics,
+      scale,
+      onViewClick,
+      handleLayoutProperties
+    } = this.props;
+
+    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
+      return (
+        <PagePreviewComponentEditor key={ `child-${index}` }
+          view={ child }
+          parentView={ view }
+          layer={ layer }
+          resourceMap={ resourceMap }
+          displayMetrics={ displayMetrics }
+          scale={ scale }
+          handleLayoutProperties={ handleLayoutProperties }
+          onViewClick={ onViewClick }
+        />
+      );
     });
 
     return (
@@ -93,12 +125,12 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       return null;
     }
 
-    return ReactHtmlParser(text)
+    return ReactHtmlParser(text);
   }
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -108,7 +140,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Returns text from view properties
-   * 
+   *
    * @return text from view properties
    */
   private getText = () => {
@@ -126,17 +158,34 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
   /**
    * Resolves component styles
-   * 
+   *
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-      display: "inline-block"
+    const { view, parentView, layer, handleLayoutProperties } = this.props;
+    const properties = view.properties;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const result: CSSProperties = handleLayoutProperties(properties, {
+      display: "inline-block",
+      zIndex: layer,
+      position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
     properties.forEach(property => {
       if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
+        switch(property.name) {
+          case "layout_gravity":
+            if (parentIsFrameLayout) {
+              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+              gravityProps.forEach(prop => {
+                result[prop.key] = prop.value;
+              });
+            } else {
+              result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+            }
+          break;
+          default:
+        }
         return;
       }
 
@@ -144,70 +193,47 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
         case "textSize":
           const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
           if (px) {
-            result.fontSize = px
+            result.fontSize = px;
           } else {
             console.log("FlowTextView: unknown layout_height", property.value);
           }
         break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break; 
+        break;
       }
     });
-    
+
     return result;
   }
 
   /**
-   * Handles a child component layouting 
-   * 
-   * @param childProperties child component properties
-   * @param childStyles child component styles
-   * @return modified child component styles
+   * Event handler for mouse over
+   *
+   * @param event react mouse event
    */
-  private onHandleLayoutProperties = (childProperties: PageLayoutViewProperty[], childStyles: CSSProperties): CSSProperties => {
-    const result: CSSProperties = { ...childStyles,
-      shapeOutside: "content-box"
-    };
+  private onMouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: true });
+  }
 
-    PagePreviewUtils.withDefaultLayoutProperties(childProperties)
-      .filter(property => property.name.startsWith("layout_"))
-      .forEach(property => {
-        switch (property.name) {
-          case "layout_width":
-            const width = PagePreviewUtils.getLayoutChildWidth(this.props.displayMetrics, property, this.props.scale);
-            if (width) {
-              result.width = width;
-            }
-          break;
-          case "layout_height":
-            const height = PagePreviewUtils.getLayoutChildHeight(this.props.displayMetrics, property, this.props.scale);
-            if (height) {
-              result.height = height;
-            }
-          break;
-          case "layout_marginTop":
-          case "layout_marginRight":
-          case "layout_marginBottom":
-          case "layout_marginLeft":
-            const margin = PagePreviewUtils.getLayoutChildMargin(this.props.displayMetrics, property, this.props.scale);
-            if (margin) {
-              result[property.name.substring(7)] = margin;
-            }
-          break;
-          case "layout_alignParentLeft":
-            result.float = "left";
-          break;
-          case "layout_alignParentRight":
-            result.float = "right";
-          break; 
-          default:
-            this.handleUnknownProperty(property, "Unknown layout property");
-          break;
-        }
-      });
+  /**
+   * Event handler for mouse out
+   *
+   * @param event react mouse event
+   */
+  private onMouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: false });
+  }
 
-    return result;
+  /**
+   * Event handler for on click
+   */
+  private onClick = (event: React.MouseEvent) => {
+    const { view, onViewClick } = this.props;
+    event.stopPropagation();
+    onViewClick && onViewClick(view);
   }
 }
 

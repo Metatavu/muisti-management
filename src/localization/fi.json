@@ -31,6 +31,7 @@
 
   "mediaLibrary": {
     "title": "Mediakirjasto",
+    "selectMedia": "Valitse media",
     "selected": "valittu",
     "addMedia": "Lisää media",
     "addFolder": "Lisää kansio",
@@ -184,6 +185,23 @@
     },
     "resources": {
       "title": "Resurssit",
+      "mode": "Tila",
+      "scripted": {
+        "title": "Ohjelmoitu"
+      },
+      "dynamic": {
+        "title": "Dynaaminen",
+        "dataSource": "Tietolähde",
+        "key": "Käyttäjäarvon nimi",
+        "when": "Kun arvo on: ",
+        "addNewWhen": "Lisää uusi arvo",
+        "equals": "Arvo",
+        "value": "Resurssin arvo",
+        "default": "Vakioarvo"
+      },
+      "static": {
+        "title": "Staattinen"
+      },
       "imageView": {
         "properties": {
           "imageUrl": "Kuvan URL-osoite"
@@ -196,9 +214,7 @@
       },
       "textView": {
         "properties": {
-          "text": "Teksti",
-          "typeScripted": "Tyyppi: scripti",
-          "typeText:": "Tyyppi: teksti"
+          "text": "Teksti"
         }
       }
     },
@@ -310,6 +326,9 @@
       "landscape": "Vaaka",
       "portrait": "Pysty",
       "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
+      "visitorSessionEndTimeout": "Käyttäjän session lopetuksen viive millisekunneissa",
+      "visitorSessionStartThreshold": "Käyttäjän session aloituksen raja (%)",
+      "visitorSessionEndThreshold": "Käyttäjän session lopetuksen raja (%)",
       "readerId": "Antennin lukijan Id",
       "deviceGroup": "Laiteryhmä johon antenni kuuluu",
       "room": "Huone johon antenni kuuluu",
@@ -332,7 +351,10 @@
       "displayMetrics": {
         "displayInfo": "Näytön tiedot",
         "widthPixels": "Ruudun pikselileveys",
-        "heightPixels": "Ruudun pikselikorkeus"
+        "heightPixels": "Ruudun pikselikorkeus",
+        "density": "Pikselitiheys",
+        "xdpi": "Pikseliä tuumalle X-akselilla",
+        "ydpi": "Pikseliä tuumalle y-akselilla"
       },
       "dimensions" : {
         "physicalSize": "Laitteen fyysinen koko",
@@ -386,6 +408,7 @@
       "name": "Elementin nimi",
       "layoutWidth": "Asettelun leveys",
       "layoutHeight": "Asettelun korkeus",
+      "elevation": "Asettelun korotus",
       "backgroundColor": "Asettelun taustaväri",
       "hasBackgroundImage": "Asettelulla on taustakuva",
       "paddings": {
@@ -414,7 +437,7 @@
       "fontStyle": "Fontin tyyli",
       "textAlign": "Tekstin tasaus",
       "textGravity": "Tekstin painotus",
-      "textSize": "Tekstin koko (dp)",
+      "textSize": "Tekstin koko (px)",
       "typeface": "Fontti"
     },
 
@@ -428,7 +451,7 @@
       "color": "Napin tekstin väri",
       "textResource": "Napin teksti",
       "fontStyle": "Napin fontin tyyli",
-      "textSize": "Napin tekstin koko (dp)",
+      "textSize": "Napin tekstin koko (px)",
       "backgroundColor": "Napin taustaväri",
       "allCaps": "Kaikki kirjaimet isolla",
       "gravity": "Napin tekstin painotus"
@@ -439,6 +462,7 @@
     },
 
     "tab": {
+      "contentContainer": "Sisällön näyttävä elementti",
       "mode": {
         "title": "Välilehtien tila",
         "scrollable": "Rullattavissa",
@@ -457,7 +481,8 @@
         "top": "Ylös",
         "stretch": "Venytä"
       },
-      "textColorNormal": "Välilehden tekstin värin",
+      "selectedIndicatorHeight": "Valitun välilehden korkeus",
+      "textColorNormal": "Välilehden tekstin väri",
       "textColorSelected": "Valitun välilehden tekstin väri",
       "unboundedRipple": "Rajoittamaton väre",
       "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",
@@ -538,10 +563,12 @@
 
       "tabs" : {
         "title": "Välilehdet",
+        "noTabs": "Ei välilehtiä",
         "add": "Lisää välilehti",
         "label": "Otsikko",
         "properties": "Ominaisuudet",
-        "resources": "Resurssit"
+        "resources": "Resurssit",
+        "edit": "Editoi"
       },
 
       "dialog": {

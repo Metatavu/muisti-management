@@ -8,17 +8,24 @@ import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import AndroidUtils from "../../utils/android-utils";
 import { ResourceMap } from "../../types";
+import { TabHolder } from "../content-editor/constants";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer?: number;
   resources?: ExhibitionPageResource[];
   scale: number;
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
+  tabMap?: Map<string, TabHolder>;
+
+  onViewClick?: (view: PageLayoutView) => void;
+  onTabClick?: (viewId: string, newIndex: number) => void;
 }
 
 /**
@@ -47,12 +54,23 @@ class PagePreview extends React.Component<Props, State> {
   /**
    * Render basic layout
    */
-  public render() {
-    const { classes, screenOrientation, displayMetrics, scale, view, deviceOrientation } = this.props;
+  public render = () => {
+    const {
+      classes,
+      screenOrientation,
+      displayMetrics,
+      scale,
+      view,
+      selectedView,
+      layer,
+      deviceOrientation,
+      tabMap,
+      onViewClick,
+      onTabClick
+    } = this.props;
 
     let height = displayMetrics.heightPixels * scale;
     let width = displayMetrics.widthPixels * scale;
-
     if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
       height = displayMetrics.widthPixels * scale;
       width = displayMetrics.heightPixels * scale;
@@ -62,17 +80,23 @@ class PagePreview extends React.Component<Props, State> {
       <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
         <PagePreviewComponentEditor
           view={ view }
+          selectedView={ selectedView }
+          layer={ layer }
           displayMetrics={ displayMetrics }
           scale={ scale }
           resourceMap={ this.getResourceMap() }
-          handleLayoutProperties={ this.onHandleLayoutProperties }/>
+          handleLayoutProperties={ this.onHandleLayoutProperties }
+          onViewClick={ onViewClick }
+          onTabClick={ onTabClick }
+          tabMap={ tabMap }
+        />
       </div>
     );
   }
 
   /**
    * Handles an unknown property logging
-   * 
+   *
    * @param property unknown property
    * @param reason reason why the property was unknown
    */
@@ -81,8 +105,8 @@ class PagePreview extends React.Component<Props, State> {
   }
 
   /**
-   * Handles a child component layouting 
-   * 
+   * Handles a child component layouting
+   *
    * @param childProperties child component properties
    * @param childStyles child component styles
    * @return modified child component styles
@@ -91,18 +115,23 @@ class PagePreview extends React.Component<Props, State> {
     const result = { ...childStyles };
 
     childProperties
-      .filter(property => property.name.startsWith("layout_"))
+      .filter(property => property.name.startsWith("layout_") || property.name.startsWith("padding"))
       .forEach(property => {
         switch (property.name) {
           case "layout_width":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value || "fill_parent" === property.value) {
               result.width = "100%";
             } else {
-              this.handleUnknownProperty(property, "Unknown value");
+              const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+              if (px) {
+                result.width = px;
+              } else {
+                this.handleUnknownProperty(property, "Unknown value");
+              }
             }
           break;
           case "layout_height":
-            if ("match_parent" === property.value) {
+            if ("match_parent" === property.value|| "fill_parent" === property.value) {
               result.height = "100%";
             } else {
               const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
@@ -111,6 +140,37 @@ class PagePreview extends React.Component<Props, State> {
               } else {
                 this.handleUnknownProperty(property, "Unknown value");
               }
+            }
+          break;
+          case "layout_marginTop":
+          case "layout_marginRight":
+          case "layout_marginBottom":
+          case "layout_marginLeft":
+            const propertyName = property.name.substring(7);
+            if (property.value.includes("px")) {
+              result[propertyName] = property.value;
+              break;
+            }
+            const pixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+            if (pixels) {
+              result[propertyName] = pixels;
+            } else {
+              this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
+            }
+          break;
+          case "paddingTop":
+          case "paddingRight":
+          case "paddingBottom":
+          case "paddingLeft":
+            if (property.value.includes("px")) {
+              result[property.name] = property.value;
+              break;
+            }
+            const paddingPixels = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+            if (paddingPixels) {
+              result[property.name] = paddingPixels;
+            } else {
+              this.handleUnknownProperty(property, `Unknown $propertyName value ${property.value}`);
             }
           break;
           default:
@@ -124,13 +184,13 @@ class PagePreview extends React.Component<Props, State> {
 
   /**
    * Returns resources as a map
-   * 
+   *
    * @returns resources as a map
    */
   private getResourceMap = () => {
-    const result: ResourceMap = {};
+    const result: ResourceMap = { };
 
-    (this.props.resources || []).forEach((resource) => {
+    (this.props.resources || []).forEach(resource => {
       result[resource.id] = resource;
     });
 

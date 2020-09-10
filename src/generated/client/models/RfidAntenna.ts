@@ -63,6 +63,18 @@ export interface RfidAntenna {
      */
     antennaNumber: number;
     /**
+     * Strength threshold for login events
+     * @type {number}
+     * @memberof RfidAntenna
+     */
+    visitorSessionStartThreshold: number;
+    /**
+     * Strength threshold for logout events
+     * @type {number}
+     * @memberof RfidAntenna
+     */
+    visitorSessionEndThreshold: number;
+    /**
      * Human-readable name for this antenna
      * @type {string}
      * @memberof RfidAntenna
@@ -116,6 +128,8 @@ export function RfidAntennaFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'groupId': !exists(json, 'groupId') ? undefined : json['groupId'],
         'readerId': json['readerId'],
         'antennaNumber': json['antennaNumber'],
+        'visitorSessionStartThreshold': json['visitorSessionStartThreshold'],
+        'visitorSessionEndThreshold': json['visitorSessionEndThreshold'],
         'name': json['name'],
         'location': PointFromJSON(json['location']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
@@ -138,6 +152,8 @@ export function RfidAntennaToJSON(value?: RfidAntenna | null): any {
         'groupId': value.groupId,
         'readerId': value.readerId,
         'antennaNumber': value.antennaNumber,
+        'visitorSessionStartThreshold': value.visitorSessionStartThreshold,
+        'visitorSessionEndThreshold': value.visitorSessionEndThreshold,
         'name': value.name,
         'location': PointToJSON(value.location),
     };

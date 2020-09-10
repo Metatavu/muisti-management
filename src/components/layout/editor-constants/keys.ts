@@ -4,6 +4,7 @@
 export enum LayoutPropKeys {
   LayoutWidth = "layout_width",
   LayoutHeight = "layout_height",
+  Elevation = "elevation",
   LayoutBackgroundColor = "background",
   BackgroundImage = "backgroundImage",
   LayoutGravity = "layout_gravity"
@@ -81,6 +82,7 @@ export enum LayoutTabPropKeys {
   TabGravity = "tabGravity",
   SelectedTabIndicatorColor = "selectedTabIndicatorColor",
   SelectedTabIndicatorGravity = "selectedTabIndicatorGravity",
+  SelectedTabIndicatorHeight = "selectedTabIndicatorHeight",
   TabTextColorNormal = "tabTextColorNormal",
   TabTextColorSelected = "tabTextColorSelected",
   UnboundedRipple = "unboundedRipple",

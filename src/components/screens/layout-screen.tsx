@@ -128,16 +128,19 @@ export class LayoutScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history, layout } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen } = this.state;
+    const { classes, history, layout, deviceModels } = this.props;
+    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, deviceModelId } = this.state;
 
-    if (!layout || !layout.id || loading ) {
+    if (!layout || !layout.id || loading || deviceModels.length === 0) {
       return (
         <div className={ classes.loader }>
           <CircularProgress size={ 50 } color="secondary"></CircularProgress>
         </div>
       );
     }
+
+    const deviceModel = deviceModels.find(model => model.id === deviceModelId);
+    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
 
     return (
       <BasicLayout
@@ -168,20 +171,35 @@ export class LayoutScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
+          <ElementSettingsPane
+            open={ panelOpen }
+            width={ 420 }
+            title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
+            menuOptions={
+              [
+                {
+                  name: strings.genericDialog.delete,
+                  action: () => this.onLayoutViewDelete(selectedPropertyPath || "")
+                }
+              ]
+            }
+          >
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
+                displayMetrics={ displayMetrics }
                 selectedElementPath={ selectedPropertyPath }
               />
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ false }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
+                displayMetrics={ displayMetrics }
                 selectedWidgetType={ selectedWidgetType }
               />
             }
@@ -255,7 +273,6 @@ export class LayoutScreen extends React.Component<Props, State> {
         subLayouts={ subLayouts }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onLayoutViewAdd }
-        onDelete={ this.onLayoutViewDelete }
         treeData={ this.constructTreeData(layout) }
       />
     );
@@ -327,7 +344,7 @@ export class LayoutScreen extends React.Component<Props, State> {
             displayMetrics={ displayMetrics }
             scale={ scale }
             screenOrientation={ screenOrientation }
-            deviceOrientation={ deviceModel.screenOrientation}
+            deviceOrientation={ deviceModel.screenOrientation }
           />
         </PanZoom>
       </div>

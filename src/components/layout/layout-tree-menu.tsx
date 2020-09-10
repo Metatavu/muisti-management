@@ -6,7 +6,6 @@ import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, Li
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/AddCircle';
 import classNames from "classnames";
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
@@ -26,7 +25,6 @@ interface Props extends WithStyles<typeof styles> {
   treeData: TreeNodeInArray[];
   onSelect: (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => void;
   onAdd: (pageLayoutView: PageLayoutView, path: string) => void;
-  onDelete: (path: string) => void;
 }
 
 /**
@@ -143,11 +141,6 @@ class LayoutTreeMenu extends React.Component<Props, State> {
         }
         <ListItemText primary={ name } secondary={ label } />
         <ListItemSecondaryAction>
-          { level > 0 &&
-            <IconButton size="small" edge="end" aria-label="delete" onClick={ () => this.props.onDelete(path) }>
-              <DeleteIcon />
-            </IconButton>
-          }
           <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
             <AddIcon />
           </IconButton>

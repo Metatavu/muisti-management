@@ -20,6 +20,7 @@ import GenericPropertyTextField from "./generic-property-textfield";
 import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import { v4 as uuid } from "uuid";
+import DisplayMetrics from "../../../types/display-metrics";
 
 /**
  * Interface representing component properties
@@ -32,6 +33,7 @@ interface Props extends WithStyles<typeof styles> {
   subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
+  displayMetrics: DisplayMetrics;
 
   onPageLayoutViewUpdate: (pageLayoutView: PageLayoutView) => void;
 }
@@ -96,6 +98,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
         { this.renderName() }
         { this.renderLayoutWidth() }
         { this.renderLayoutHeight() }
+        { this.renderLayoutElevation() }
         { this.renderLayoutBackgroundColor() }
         { this.renderBackgroundImage() }
         <div style={{ display: "flex" }}>
@@ -140,8 +143,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutWidth = () => {
-
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutWidth, PageLayoutViewPropertyType.String);
+
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
         <Typography
@@ -162,7 +166,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutWidth }
             textFieldType="number"
-            textFieldUnit="dp"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
             />
@@ -176,11 +181,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout width editor
    */
   private renderLayoutHeight = () => {
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutHeight, PageLayoutViewPropertyType.String);
 
     return (
       <>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
             variant="h6"
@@ -199,10 +205,43 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <GenericPropertyTextField
               textFieldId={ LayoutPropKeys.LayoutHeight }
               textFieldType="number"
-              textFieldUnit="dp"
+              textFieldUnit="px"
+              displayMetrics={ displayMetrics }
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
               />
+            <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  /**
+   * Render layout elevation editor
+   */
+  private renderLayoutElevation = () => {
+    const { displayMetrics } = this.props;
+    const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.Elevation, PageLayoutViewPropertyType.String);
+
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.commonComponents.elevation }:
+          </Typography>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyTextField
+              textFieldId={ LayoutPropKeys.Elevation }
+              textFieldType="number"
+              textFieldUnit="px"
+              displayMetrics={ displayMetrics }
+              property={ foundProp }
+              onTextFieldChange={ this.onSingleValueChange }
+            />
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
           </div>
         </div>
@@ -215,10 +254,10 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * Render layout background color editor
    */
   private renderLayoutBackgroundColor = () => {
-    const { classes } = this.props;
+    const { displayMetrics } = this.props;
     const foundProp = getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutBackgroundColor, PageLayoutViewPropertyType.Color);
     return (
-      <div className={ classes.colorPickerContainer }>
+      <>
         <Typography variant="h6">{ strings.layoutEditor.commonComponents.backgroundColor }</Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
@@ -230,12 +269,13 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutBackgroundColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -249,18 +289,19 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
 
     return (
       <>
-        <Typography
-          display="inline"
-          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-          variant="h4"
-        >
-          { strings.layoutEditor.commonComponents.hasBackgroundImage }:
-        </Typography>
-        <GenericPropertyEnabledCheckbox
-          propertyName={ LayoutPropKeys.BackgroundImage }
-          enabled={ hasBackgroundImage }
-          onCheckboxChange={ this.onToggleProperty }
-        />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.commonComponents.hasBackgroundImage }:
+          </Typography>
+          <GenericPropertyEnabledCheckbox
+            propertyName={ LayoutPropKeys.BackgroundImage }
+            enabled={ hasBackgroundImage }
+            onCheckboxChange={ this.onToggleProperty }
+          />
+        </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
     );
@@ -272,7 +313,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutPadding = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.commonComponents.paddings.title }</Typography>
+        <Typography
+          style={{ marginBottom: theme.spacing(1) }}
+          variant="h6"
+        >
+          { strings.layoutEditor.commonComponents.paddings.title }:
+        </Typography>
         <MarginPaddingEditor
           itemKey="layout_padding"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutPaddingPropKeys) }
@@ -289,7 +335,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutMargin = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography style={{ marginBottom: theme.spacing(1) }} variant="h6">{ strings.layoutEditor.commonComponents.margins.title }</Typography>
+        <Typography
+          style={{ marginBottom: theme.spacing(1) }}
+          variant="h6"
+        >
+          { strings.layoutEditor.commonComponents.margins.title }:
+        </Typography>
         <MarginPaddingEditor
           itemKey="layout_margin"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutMarginPropKeys) }
@@ -306,7 +357,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutGravity = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography variant="h6">{ strings.layoutEditor.commonComponents.layoutGravity }</Typography>
+        <Typography variant="h6">
+          { strings.layoutEditor.commonComponents.layoutGravity }:
+        </Typography>
         <GravityEditor
           property={ getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.onSingleValueChange }

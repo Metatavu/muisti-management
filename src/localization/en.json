@@ -25,6 +25,7 @@
 
   "mediaLibrary": {
     "title": "Media library",
+    "selectMedia": "Select media",
     "selected": "selected",
     "addMedia": "Add media",
     "addFolder": "Add folder",
@@ -184,6 +185,23 @@
     },
     "resources": {
       "title": "Resources",
+      "mode": "Mode",
+      "scripted": {
+        "title": "Scripted"
+      },
+      "dynamic": {
+        "title": "Dynamic",
+        "dataSource": "Data source",
+        "key": "User value name",
+        "when": "When value is: ",
+        "addNewWhen": "Add new value",
+        "equal": "Value",
+        "value": "Resource value",
+        "default": "Default value"
+      },
+      "static": {
+        "title": "Static"
+      },
       "imageView": {
         "properties": {
           "imageUrl": "Image URL address"
@@ -196,9 +214,7 @@
       },
       "textView": {
         "properties": {
-          "text": "Text",
-          "typeScripted": "Type: scripted",
-          "typeText:": "Type: text"
+          "text": "Text"
         }
       }
     },
@@ -311,6 +327,9 @@
       "landscape": "Landscape",
       "portrait": "Portrait",
       "allowVisitorSessionCreation": "Allow creation of new session to visitor",
+      "visitorSessionEndTimeout": "Visitor session end timeout in milliseconds",
+      "visitorSessionStartThreshold": "Visitor session start threshold (%)",
+      "visitorSessionEndThreshold": "Visitor session end threshold (%)",
       "name": "Name",
       "readerId": "Antenna reader Id",
       "deviceGroup": "Device group where antenna belongs to",
@@ -333,7 +352,10 @@
       "displayMetrics": {
         "displayInfo": "Screen info",
         "widthPixels": "Screen pixel width",
-        "heightPixels": "Screen pixel height"
+        "heightPixels": "Screen pixel height",
+        "density": "Pixel density",
+        "xdpi": "Pixels per inch in X-axis",
+        "ydpi": "Pixels per inch in y-axis"
       },
       "dimensions" : {
         "physicalSize": "Device physical size",
@@ -387,6 +409,7 @@
       "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
+      "elevation": "Layout elevation",
       "backgroundColor": "Layout background color",
       "hasBackgroundImage": "Layout has background image",
       "paddings": {
@@ -417,7 +440,7 @@
       "fontStyle": "Font style",
       "textAlign": "Text align",
       "textGravity": "Text gravity",
-      "textSize": "Text size (dp)",
+      "textSize": "Text size (px)",
       "typeface": "Typeface"
     },
 
@@ -431,7 +454,7 @@
       "color": "Button text color",
       "textResource": "Button text resource",
       "fontStyle": "Button font style",
-      "textSize": "Button text size (dp)",
+      "textSize": "Button text size (px)",
       "backgroundColor": "Button background color",
       "allCaps": "All upper case",
       "gravity": "Button gravity"
@@ -442,6 +465,7 @@
     },
 
     "tab": {
+      "contentContainer": "Element where tabs are displayed",
       "mode": {
         "title": "Tab mode",
         "scrollable": "Scrollable",
@@ -460,6 +484,7 @@
         "top": "Top",
         "stretch": "Stretch"
       },
+      "selectedIndicatorHeight": "Selected tab indicator height",
       "textColorNormal": "Tab text color",
       "textColorSelected": "Tab text color when selected",
       "unboundedRipple": "Unbounded ripple",
@@ -543,10 +568,12 @@
 
       "tabs" : {
         "title": "Tabs",
+        "noTabs": "No tabs",
         "add": "Add tab",
         "label": "Label",
         "properties": "Properties",
-        "resources": "Resources"
+        "resources": "Resources",
+        "edit": "Edit"
       },
   
       "dialog": {

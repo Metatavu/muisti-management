@@ -1,7 +1,7 @@
 import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
+import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import { LayoutTabPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
@@ -12,12 +12,16 @@ import GravityEditor from "../gravity-editor";
 import GenericPropertySwitch from "../generic-property-switch";
 import { TabModeValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../../editor-constants/values";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
+import DisplayMetrics from "../../../../types/display-metrics";
+import { allowedContainerTypes } from "../../editor-constants/constants";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   pageLayoutView: PageLayoutView;
+  displayMetrics: DisplayMetrics;
+  pageLayout: PageLayout;
 
   /**
    * On value change handler
@@ -25,6 +29,8 @@ interface Props extends WithStyles<typeof styles> {
    * @param updatedPageLayoutView updated page layout view object
    */
   onValueChange: (updatedPageLayoutView: PageLayoutViewProperty) => void;
+
+  onPageLayoutViewMetadataChange: (pageLayoutView: PageLayoutView) => void;
 }
 
 /**
@@ -55,16 +61,55 @@ class TabLayoutEditor extends React.Component<Props, State> {
   public render() {
     return (
       <>
+        { this.renderContentContainer() }
         { this.renderTabMode() }
         { this.renderTabGravity() }
         { this.renderSelectedTabIndicatorColor() }
         { this.renderSelectedTabIndicatorGravity() }
+        { this.renderSelectedTabIndicatorHeight() }
         { this.renderTabTextColorNormal() }
         { this.renderTabTextColorSelected() }
         { this.renderUnboundedRipple() }
         { this.renderTabIndicatorFullWidth() }
       </>
     );
+  }
+
+  /**
+   * Render tab component content container selection
+   */
+  private renderContentContainer = () => {
+    const { pageLayoutView } = this.props;
+
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.tab.contentContainer }:
+        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Select
+            variant="filled"
+            fullWidth
+            onChange={ this.handleSelectChange }
+            name="contentContainerId"
+            value={ pageLayoutView.contentContainerId }
+          >
+            { this.renderNoSelection() }
+            { this.getSelectItems() }
+          </Select>
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * Renders no selection item
+   */
+  private renderNoSelection = () => {
+    return <MenuItem key={ "undefined" } value={ "undefined" }>{ strings.generic.undefined }</MenuItem>;
   }
 
   /**
@@ -79,16 +124,18 @@ class TabLayoutEditor extends React.Component<Props, State> {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography
             style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
+            variant="h6"
           >
             { strings.layoutEditor.tab.mode.title }:
           </Typography>
-          <GenericPropertySwitch
-            switchId={ LayoutTabPropKeys.TabMode }
-            property={ foundProp }
-            switchOptions={ [ TabModeValues.Scrollable, TabModeValues.Fixed ] }
-            onSwitchChange={ onValueChange }
-          />
+          <div style={{ flexGrow: 0 }}>
+            <GenericPropertySwitch
+              switchId={ LayoutTabPropKeys.TabMode }
+              property={ foundProp }
+              switchOptions={ [ TabModeValues.Scrollable, TabModeValues.Fixed ] }
+              onSwitchChange={ onValueChange }
+            />
+          </div>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -103,14 +150,22 @@ class TabLayoutEditor extends React.Component<Props, State> {
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabGravity, PageLayoutViewPropertyType.Color);
 
     return (
-      <div>
-        <Typography variant="h6">{ strings.layoutEditor.tab.gravity.title }</Typography>
-        <GravityEditor
-          property={ foundProp }
-          onSingleValueChange={ onValueChange }
-          gravityOptions={ TabGravityValues }
-        />
-      </div>
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.tab.gravity.title }:
+          </Typography>
+          <GravityEditor
+            property={ foundProp }
+            onSingleValueChange={ onValueChange }
+            gravityOptions={ TabGravityValues }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
     );
   }
 
@@ -118,12 +173,17 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab indicator color editor
    */
   private renderSelectedTabIndicatorColor = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorColor, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.tab.selectedIndicatorColor }:</Typography>
+      <>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.tab.selectedIndicatorColor }:
+        </Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
             <ColorPicker
@@ -134,12 +194,13 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorColor }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -151,14 +212,53 @@ class TabLayoutEditor extends React.Component<Props, State> {
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorGravity, PageLayoutViewPropertyType.Color);
 
     return (
-      <div>
-        <Typography variant="h6">{ strings.layoutEditor.tab.selectedIndicatorGravity.title }</Typography>
-        <GravityEditor
-          property={ foundProp }
-          onSingleValueChange={ onValueChange }
-          gravityOptions={ SelectedTabIndicatorGravityValues }
-        />
-      </div>
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.tab.selectedIndicatorGravity.title }:
+          </Typography>
+          <GravityEditor
+            property={ foundProp }
+            onSingleValueChange={ onValueChange }
+            gravityOptions={ SelectedTabIndicatorGravityValues }
+          />
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
+    );
+  }
+
+  /**
+   * Render selected tab indication height editor
+   */
+  private renderSelectedTabIndicatorHeight = () => {
+    const { pageLayoutView, onValueChange, displayMetrics } = this.props;
+    const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.SelectedTabIndicatorHeight, PageLayoutViewPropertyType.String);
+
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.tab.selectedIndicatorHeight }:
+          </Typography>
+          <GenericPropertyTextField
+            textFieldId={ LayoutTabPropKeys.SelectedTabIndicatorHeight }
+            textFieldType="number"
+            textFieldUnit="px"
+            displayMetrics={ displayMetrics }
+            property={ foundProp }
+            onTextFieldChange={ onValueChange }
+          />
+          <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
+        </div>
+        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+      </>
     );
   }
 
@@ -166,12 +266,17 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render tab text color editor
    */
   private renderTabTextColorNormal = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorNormal, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.tab.textColorNormal }:</Typography>
+      <>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.tab.textColorNormal }:
+        </Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
             <ColorPicker
@@ -182,12 +287,13 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorNormal }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -195,12 +301,17 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render selected tab text color editor
    */
   private renderTabTextColorSelected = () => {
-    const { classes, onValueChange, pageLayoutView } = this.props;
+    const { onValueChange, pageLayoutView, displayMetrics } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabTextColorSelected, PageLayoutViewPropertyType.Color);
 
     return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.tab.textColorSelected }:</Typography>
+      <>
+        <Typography
+          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+          variant="h6"
+        >
+          { strings.layoutEditor.tab.textColorSelected }:
+        </Typography>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <div style={{ marginRight: theme.spacing(2) }}>
             <ColorPicker
@@ -211,12 +322,13 @@ class TabLayoutEditor extends React.Component<Props, State> {
           <GenericPropertyTextField
             textFieldId={ LayoutTabPropKeys.TabTextColorSelected }
             textFieldType="text"
+            displayMetrics={ displayMetrics }
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -224,20 +336,25 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render unbounded ripple editor
    */
   private renderUnboundedRipple = () => {
-    const { pageLayoutView, onValueChange, classes } = this.props;
+    const { pageLayoutView, onValueChange } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.UnboundedRipple, PageLayoutViewPropertyType.Boolean);
 
     return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.tab.unboundedRipple }:</Typography>
-        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.tab.unboundedRipple }:
+          </Typography>
           <GenericPropertyCheckbox
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
   }
 
@@ -245,21 +362,77 @@ class TabLayoutEditor extends React.Component<Props, State> {
    * Render tab indicator full width editor
    */
   private renderTabIndicatorFullWidth = () => {
-    const { pageLayoutView, onValueChange, classes } = this.props;
+    const { pageLayoutView, onValueChange } = this.props;
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabIndicatorFullWidth, PageLayoutViewPropertyType.Boolean);
 
     return (
-      <div className={ classes.colorPickerContainer }>
-        <Typography variant="h4">{ strings.layoutEditor.tab.tabIndicatorFullWidth }:</Typography>
-        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography
+            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
+            variant="h6"
+          >
+            { strings.layoutEditor.tab.tabIndicatorFullWidth }:
+          </Typography>
           <GenericPropertyCheckbox
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </div>
+      </>
     );
+  }
+
+  /**
+   * Get content container select items
+   */
+  private getSelectItems = () => {
+    const { pageLayout } = this.props;
+
+    const elementList: JSX.Element[] = [];
+    this.constructSingleElement(elementList, pageLayout.data.children);
+    return elementList;
+  }
+
+  /**
+   * Recursive function that constructs single menu item element
+   *
+   * @param elementList JSX element list
+   * @param pageLayoutViews list of page layout views
+   */
+  private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+    pageLayoutViews.forEach(pageLayoutView => {
+      if (allowedContainerTypes.includes(pageLayoutView.widget)) {
+        const selectItem = <MenuItem key={ pageLayoutView.id } value={ pageLayoutView.id }>{ pageLayoutView.name ?? "" }</MenuItem>;
+        elementList.push(selectItem);
+      }
+
+      if (pageLayoutView.children.length > 0) {
+        this.constructSingleElement(elementList, pageLayoutView.children);
+      }
+    });
+
+    return elementList;
+  }
+
+  /**
+   * Event handler for container id select value change
+   *
+   * @param event react change event
+   */
+  private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+    const { pageLayoutView, onPageLayoutViewMetadataChange } = this.props;
+
+    const key = event.target.name;
+    const value = event.target.value as string;
+
+    if (!key) {
+      return;
+    }
+
+    const pageLayoutViewToUpdate = { ...pageLayoutView, [key] : value } as PageLayoutView;
+    onPageLayoutViewMetadataChange(pageLayoutViewToUpdate);
   }
 
 }

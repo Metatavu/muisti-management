@@ -66,6 +66,12 @@ export interface PageLayoutView {
      * @memberof PageLayoutView
      */
     sublayoutId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PageLayoutView
+     */
+    contentContainerId?: string;
 }
 
 export function PageLayoutViewFromJSON(json: any): PageLayoutView {
@@ -84,6 +90,7 @@ export function PageLayoutViewFromJSONTyped(json: any, ignoreDiscriminator: bool
         'children': ((json['children'] as Array<any>).map(PageLayoutViewFromJSON)),
         'name': !exists(json, 'name') ? undefined : json['name'],
         'sublayoutId': !exists(json, 'sublayoutId') ? undefined : json['sublayoutId'],
+        'contentContainerId': !exists(json, 'contentContainerId') ? undefined : json['contentContainerId'],
     };
 }
 
@@ -102,6 +109,7 @@ export function PageLayoutViewToJSON(value?: PageLayoutView | null): any {
         'children': ((value.children as Array<any>).map(PageLayoutViewToJSON)),
         'name': value.name,
         'sublayoutId': value.sublayoutId,
+        'contentContainerId': value.contentContainerId,
     };
 }
 

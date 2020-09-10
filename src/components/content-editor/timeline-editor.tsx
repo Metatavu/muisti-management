@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { WithStyles, withStyles, List, ListItem, Paper, Typography } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/timeline-editor";
-import { ExhibitionDevice, ExhibitionPage } from "../../generated/client/models";
+import { ExhibitionDevice, ExhibitionPage, ContentVersion } from "../../generated/client/models";
 import classNames from "classnames";
 import theme from "../../styles/theme";
 import strings from "../../localization/strings";
@@ -12,12 +12,14 @@ import { DragDropContext, Droppable, Draggable, DropResult, ResponderProvided, D
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  contentVersion: ContentVersion;
   devices: ExhibitionDevice[];
   pages: ExhibitionPage[];
+  selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
   selectedPage?: ExhibitionPage;
-  onClick: (page: ExhibitionPage) => () => void;
-  onDragEnd: (deviceId: string) => (result: DropResult, provided: ResponderProvided) => void;
+  onClick: (contentVersion: ContentVersion, page: ExhibitionPage) => () => void;
+  onDragEnd: (contentVersionId: string, deviceId: string) => (result: DropResult, provided: ResponderProvided) => void;
 }
 
 /**
@@ -36,34 +38,30 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
 
 /**
  * Renders single timeline row
- * 
+ *
  * @param device device
  * @param props component props
  */
 const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
-  const { classes, onDragEnd } = props;
-  const pages: ExhibitionPage[] = [];
-  device.pageOrder.forEach(pageId => {
-    const page = props.pages.find(page => page.id === pageId);
-    if (page) {
-      pages.push(page);
-    }
-  });
+  const { classes, onDragEnd, contentVersion, pages } = props;
+  const devicePages: ExhibitionPage[] = pages
+    .filter(page => page.deviceId === device.id && page.contentVersionId === contentVersion.id)
+    .sort((page1, page2) => page1.orderNumber - page2.orderNumber);
 
   return (
-    <ListItem divider key={ device.id! } className={ classes.timelineRow }>
-      <DragDropContext onDragEnd={ onDragEnd(device.id!) }>
+    <ListItem divider key={ device.id } className={ classes.timelineRow }>
+      <DragDropContext onDragEnd={ onDragEnd(contentVersion.id!, device.id!) }>
         <Droppable droppableId="droppable" direction="horizontal">
-          { (provided, snapshot) => renderDroppableContent(pages, props, provided, snapshot) }
+          { (provided, snapshot) => renderDroppableContent(devicePages, props, provided, snapshot) }
         </Droppable>
       </DragDropContext>
     </ListItem>
   );
-}
+};
 
 /**
  * Renders timeline row droppable content
- * 
+ *
  * @param pages pages
  * @param props component props
  * @param provided droppable provided by Droppable parent
@@ -92,11 +90,11 @@ const renderDroppableContent = (
       { placeholder }
     </List>
   );
-}
+};
 
 /**
  * Renders page as draggable item
- * 
+ *
  * @param index page index in pages list
  * @param page page
  * @param props component props
@@ -111,11 +109,11 @@ const renderDraggablePage = (index: number, page: ExhibitionPage, props: Props) 
       { (provided, snapshot) => renderPageContent(index, page, props, provided, snapshot) }
     </Draggable>
   );
-}
+};
 
 /**
  * Render page content
- * 
+ *
  * @param index index
  * @param page page
  * @param props component props
@@ -129,7 +127,7 @@ const renderPageContent = (
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot
 ) => {
-  const { classes, onClick } = props;
+  const { classes, contentVersion, onClick } = props;
   const { innerRef, draggableProps, dragHandleProps } = provided;
   const { isDragging } = snapshot;
   const { selectedPage } = props;
@@ -140,7 +138,7 @@ const renderPageContent = (
     <Paper
       ref={ innerRef }
       variant="outlined"
-      onClick={ onClick(page) }
+      onClick={ onClick(contentVersion, page) }
       className={
         classNames(
           classes.pageItemContent,
@@ -165,6 +163,6 @@ const renderPageContent = (
       }
     </Paper>
   );
-}
+};
 
 export default withStyles(styles)(TimelineEditor);

@@ -4,6 +4,7 @@ import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
 // tslint:disable-next-line: max-line-length
 import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";
+import strings from "../../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -78,11 +79,19 @@ class GenericPropertySelect extends React.Component<Props, State> {
         id={ property.name }
         onChange={ this.handleSelectChange }
         name={ property.name }
-        value={ property.value }
+        value={ property.value || "undefined" }
       >
+        { this.renderNoSelection() }
         { this.getSelectItems() }
       </Select>
     );
+  }
+
+  /**
+   * Renders no selection item
+   */
+  private renderNoSelection = () => {
+    return <MenuItem key={ "undefined" } value={ "undefined" }>{ strings.generic.undefined }</MenuItem>;
   }
 
   /**
@@ -92,15 +101,9 @@ class GenericPropertySelect extends React.Component<Props, State> {
    */
   private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
     const { onSelectChange, property } = this.props;
-
     const value = event.target.value as string;
-
-    if (!value) {
-      return;
-    }
-
     const propertyToUpdate = property;
-    property.value = value;
+    property.value = value !== "undefined" ? value : "";
     onSelectChange(propertyToUpdate);
   }
 

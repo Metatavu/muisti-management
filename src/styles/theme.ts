@@ -68,6 +68,22 @@ export default createMuiTheme({
     }
   },
   overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "::-webkit-scrollbar-track": {
+          backgroundColor: theme.palette.grey[300]
+        },
+        "::-webkit-scrollbar": {
+          height: 10,
+          width: 10
+        },
+        "::-webkit-scrollbar-thumb": {
+          backgroundColor: theme.palette.text.primary,
+          border: "none"
+        }
+      }
+    },
+
     MuiTableRow: {
       root: {
         cursor: "pointer",
@@ -94,6 +110,9 @@ export default createMuiTheme({
       root: {
         "&.Mui-expanded": {
           margin: 0
+        },
+        "&:before": {
+          backgroundColor: "rgba(0,0,0,0)"
         }
       }
     },
@@ -104,13 +123,19 @@ export default createMuiTheme({
         flexDirection: "row-reverse",
         "&.Mui-expanded": {
           minHeight: 48
-        }
+        },
       },
       content: {
         alignItems: "center",
         justifyContent: "space-between",
         "&.Mui-expanded": {
           margin: "12px 0"
+        }
+      },
+      expandIcon: {
+        "&.Mui-expanded": {
+        // Note: this only works with ChevronRight icon - use default setting when using ExpandMore icon
+        transform: "rotate(90deg)"
         }
       }
     },

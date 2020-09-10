@@ -3,28 +3,35 @@ import * as React from "react";
 import Measure, { ContentRect } from 'react-measure';
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import VideoIcon from '@material-ui/icons/OndemandVideo';
-import { ResourceMap } from "../../../types";
+import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
+import AndroidUtils from "../../../utils/android-utils";
+import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
 
 /**
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
   view: PageLayoutView;
+  parentView?: PageLayoutView;
+  selectedView?: PageLayoutView;
+  layer: number;
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  onViewClick?: (view: PageLayoutView) => void;
 }
 
 /**
  * Interface representing component state
  */
 interface State {
+  mouseOver: boolean;
 }
 
 /**
@@ -40,7 +47,7 @@ class PagePreviewVideoView extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false
+      mouseOver: false
     };
   }
 
@@ -48,10 +55,21 @@ class PagePreviewVideoView extends React.Component<Props, State> {
    * Render
    */
   public render() {
+    const { classes, view, selectedView, onResize } = this.props;
+    const { mouseOver } = this.state;
+    const selected = selectedView?.id === view.id;
+
     return (
-      <Measure onResize={ this.props.onResize } bounds={ true }>
+      <Measure onResize={ onResize } bounds={ true }>
         {({ measureRef }) => (
-          <div ref={ measureRef } style={ this.resolveStyles() }>
+          <div
+            ref={ measureRef }
+            style={ this.resolveStyles() }
+            className={ mouseOver || selected ? classes.highlighted : "" }
+            onClick={ this.onClick }
+            onMouseOver={ this.onMouseOver }
+            onMouseOut={ this.onMouseOut }
+          >
             { this.renderVideo() }
           </div>
         )}
@@ -68,12 +86,12 @@ class PagePreviewVideoView extends React.Component<Props, State> {
 
     if (src) {
       return (
-        <video key={ src } style={ videoStyles } autoPlay={ true }>
+        <video key={ src } style={ videoStyles } autoPlay={ true } controls={ true }>
           <source src={ src } />
         </video>
       );
     } else {
-      return <VideoIcon style={ videoStyles }/>
+      return <VideoIcon style={ videoStyles }/>;
     }
   }
 
@@ -126,13 +144,29 @@ class PagePreviewVideoView extends React.Component<Props, State> {
    * @returns component styles
    */
   private resolveStyles = (): CSSProperties => {
-    const properties = this.props.view.properties;
-    const result: CSSProperties = this.props.handleLayoutProperties(properties, {
-
+    const { view, parentView, layer, handleLayoutProperties } = this.props;
+    const properties = view.properties;
+    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const result: CSSProperties = handleLayoutProperties(properties, {
+      zIndex: layer,
+      position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
     properties.forEach(property => {
       if (property.name === "text" || property.name.startsWith("layout_")) {
+        switch(property.name) {
+          case "layout_gravity":
+            if (parentIsFrameLayout) {
+              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+              gravityProps.forEach(prop => {
+                result[prop.key] = prop.value;
+              });
+            } else {
+              result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
+            }
+          break;
+          default:
+        }
         return;
       }
 
@@ -144,6 +178,35 @@ class PagePreviewVideoView extends React.Component<Props, State> {
     });
 
     return result;
+  }
+
+  /**
+   * Event handler for mouse over
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: true });
+  }
+
+  /**
+   * Event handler for mouse out
+   * 
+   * @param event react mouse event
+   */
+  private onMouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    this.setState({ mouseOver: false });
+  }
+
+  /**
+   * Event handler for on click
+   */
+  private onClick = (event: React.MouseEvent) => {
+    const { view, onViewClick } = this.props;
+    event.stopPropagation();
+    onViewClick && onViewClick(view);
   }
 }
 

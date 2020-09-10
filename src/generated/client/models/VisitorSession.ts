@@ -54,6 +54,12 @@ export interface VisitorSession {
     state: VisitorSessionState;
     /**
      * 
+     * @type {string}
+     * @memberof VisitorSession
+     */
+    language: string;
+    /**
+     * 
      * @type {Array<VisitorSessionVariable>}
      * @memberof VisitorSession
      */
@@ -109,6 +115,7 @@ export function VisitorSessionFromJSONTyped(json: any, ignoreDiscriminator: bool
         'id': !exists(json, 'id') ? undefined : json['id'],
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'state': VisitorSessionStateFromJSON(json['state']),
+        'language': json['language'],
         'variables': !exists(json, 'variables') ? undefined : ((json['variables'] as Array<any>).map(VisitorSessionVariableFromJSON)),
         'visitorIds': json['visitorIds'],
         'visitedDeviceGroups': !exists(json, 'visitedDeviceGroups') ? undefined : ((json['visitedDeviceGroups'] as Array<any>).map(VisitorSessionVisitedDeviceGroupFromJSON)),
@@ -129,6 +136,7 @@ export function VisitorSessionToJSON(value?: VisitorSession | null): any {
     return {
         
         'state': VisitorSessionStateToJSON(value.state),
+        'language': value.language,
         'variables': value.variables === undefined ? undefined : ((value.variables as Array<any>).map(VisitorSessionVariableToJSON)),
         'visitorIds': value.visitorIds,
         'visitedDeviceGroups': value.visitedDeviceGroups === undefined ? undefined : ((value.visitedDeviceGroups as Array<any>).map(VisitorSessionVisitedDeviceGroupToJSON)),

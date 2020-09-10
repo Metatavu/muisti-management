@@ -18,6 +18,10 @@ import {
     ExhibitionPageResourceTypeFromJSON,
     ExhibitionPageResourceTypeFromJSONTyped,
     ExhibitionPageResourceTypeToJSON,
+    PageResourceMode,
+    PageResourceModeFromJSON,
+    PageResourceModeFromJSONTyped,
+    PageResourceModeToJSON,
 } from './';
 
 /**
@@ -40,10 +44,10 @@ export interface ExhibitionPageResource {
     data: string;
     /**
      * 
-     * @type {boolean}
+     * @type {PageResourceMode}
      * @memberof ExhibitionPageResource
      */
-    scripted?: boolean;
+    mode?: PageResourceMode;
     /**
      * 
      * @type {ExhibitionPageResourceType}
@@ -64,7 +68,7 @@ export function ExhibitionPageResourceFromJSONTyped(json: any, ignoreDiscriminat
         
         'id': json['id'],
         'data': json['data'],
-        'scripted': !exists(json, 'scripted') ? undefined : json['scripted'],
+        'mode': !exists(json, 'mode') ? undefined : PageResourceModeFromJSON(json['mode']),
         'type': ExhibitionPageResourceTypeFromJSON(json['type']),
     };
 }
@@ -80,7 +84,7 @@ export function ExhibitionPageResourceToJSON(value?: ExhibitionPageResource | nu
         
         'id': value.id,
         'data': value.data,
-        'scripted': value.scripted,
+        'mode': PageResourceModeToJSON(value.mode),
         'type': ExhibitionPageResourceTypeToJSON(value.type),
     };
 }

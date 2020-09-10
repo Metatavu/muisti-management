@@ -33,10 +33,47 @@ export default createStyles({
   },
 
   timelineContent: {
+    minHeight: 300,
+    maxHeight: 300,
+    overflowY: "auto",
+  },
+
+  timelineContentVersion: {
+    backgroundColor: "#fff",
+    borderTop: "3px solid #000"
+  },
+
+  timelineContentVersionTitle: {
+    padding: "0 16px",
+    boxSizing: "border-box",
+    backgroundColor: "#fff",
+    minWidth: 253,
+    maxWidth: 253,
+    borderRight: "3px solid #000"
+  },
+
+  timelineContentVersionContent: {
+    padding: 0,
     display: "flex",
-    flexDirection: "row",
-    height: "100%",
-    minHeight: 250
+    flexDirection: "row"
+  },
+
+  timelineDivider: {
+    width: 3,
+    backgroundColor: "#000"
+  },
+
+  selected: {
+    color: theme.palette.secondary.main
+  },
+
+  resource: {
+    backgroundColor: "#fff"
+  },
+
+  resourceItem: {
+    backgroundColor: "#fff",
+    marginLeft: theme.spacing(1)
   },
 
   visualEditorContainer: {

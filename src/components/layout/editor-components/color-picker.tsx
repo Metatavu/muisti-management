@@ -49,12 +49,19 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const { showColorPicker } = this.state;
     return (
       <>
-        <div className={ classes.color } style={{ backgroundColor: property.value }} onClick={ this.onColorBoxClick }></div>
+        <div
+          className={ classes.color }
+          style={{ backgroundColor: property.value }}
+          onClick={ this.onColorBoxClick }
+        />
         { showColorPicker &&
-          <SketchPicker
-            color={ property.value }
-            onChangeComplete={ this.handleChangeComplete }
-          />
+          <div className={ classes.popover }>
+            <div className={ classes.overlay } onClick={ this.onColorBoxClick } />
+            <SketchPicker
+              color={ property.value }
+              onChangeComplete={ this.handleChangeComplete }
+            />
+          </div>
         }
       </>
     );

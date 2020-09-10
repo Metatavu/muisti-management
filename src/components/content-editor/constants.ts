@@ -1,4 +1,4 @@
-import { PageLayoutWidgetType, ExhibitionPageResourceType } from "../../generated/client";
+import { PageLayoutWidgetType, ExhibitionPageResourceType, PageResourceMode } from "../../generated/client";
 
 /**
  * File containing all constants/filters for content editor.
@@ -19,10 +19,20 @@ export const allowedWidgetTypes = [
 ];
 
 /**
+ * All page resource modes
+ */
+export const resourceModes = [
+  PageResourceMode.Static,
+  PageResourceMode.Dynamic,
+  PageResourceMode.Scripted
+]
+
+/**
  * Custom tab structure
  * TODO: This should be defined in api-spec
  */
 export interface TabStructure {
+  contentContainerId?: string;
   tabs: Tab[];
 }
 
@@ -51,4 +61,12 @@ export interface TabResource {
   id: string;
   data: string;
   type: ExhibitionPageResourceType;
+}
+
+/**
+ * Custom tab holder interface
+ */
+export interface TabHolder {
+  tabComponent: TabStructure;
+  activeTabIndex: number;
 }

@@ -16,6 +16,7 @@ import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
+import DisplayMetrics from "../../../types/display-metrics";
 
 /**
  * Interface representing component properties
@@ -29,6 +30,8 @@ interface Props extends WithStyles<typeof styles> {
   subLayout: SubLayout;
   setSelectedLayout: typeof setSelectedLayout;
   setSelectedSubLayout: typeof setSelectedSubLayout;
+  displayMetrics: DisplayMetrics;
+  onPageLayoutViewUpdate: (pageLayoutView: PageLayoutView) => void;
 }
 
 /**
@@ -125,10 +128,13 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render text view editor
    */
   private renderTextViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <TextViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -137,10 +143,13 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render flow text view editor
    */
   private renderFlowTextViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <FlowTextViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -149,10 +158,13 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render image view editor
    */
   private renderImageViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <ImageViewEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -161,10 +173,13 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render button editor
    */
   private renderButtonEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
     return (
       <ButtonEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -173,10 +188,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render linear layout editor
    */
   private renderLinearLayoutEditor = () => {
+    const { pageLayoutView } = this.props;
+
     return (
       <LinearLayoutEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        onValueChange={ this.onSinglePropertyValueChange }
       />
     );
   }
@@ -185,10 +202,15 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Render button editor
    */
   private renderTabLayoutEditor = () => {
+    const { pageLayoutView, displayMetrics, pageLayout } = this.props;
+
     return (
       <TabLayoutEditor
-        pageLayoutView={ this.props.pageLayoutView }
-        onValueChange={ this.onSingleValueChange }
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
+        onPageLayoutViewMetadataChange={ this.onSingleMetadataValueChange }
+        pageLayout={ pageLayout }
       />
     );
   }
@@ -198,7 +220,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    *
    * @param updatedPageLayoutView page layout view property object to update
    */
-  private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
+  private onSinglePropertyValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
     const { selectedElementPath, editingSubLayout } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
@@ -212,6 +234,27 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     this.setState({
       layout : layoutToUpdate
     });
+  }
+
+  /**
+   * Generic handler for single page layout metadata value changes
+   *
+   * @param updatedPageLayoutView page layout view object to update
+   */
+  private onSingleMetadataValueChange = (updatedPageLayoutView: PageLayoutView) => {
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
+    const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
+    if (!currentLayout) {
+      return;
+    }
+
+    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedPageLayoutView, selectedElementPath);
+    editingSubLayout ?
+      this.props.setSelectedSubLayout(layoutToUpdate) :
+      this.props.setSelectedLayout(layoutToUpdate);
+
+    this.setState({ layout : layoutToUpdate });
+    onPageLayoutViewUpdate(updatedPageLayoutView);
   }
 }
 

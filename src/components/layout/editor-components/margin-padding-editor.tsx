@@ -99,6 +99,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     return (
       <TextField
         className={ classes.input }
+        fullWidth={ false }
         id="outlined-basic"
         name={ foundProperty.name }
         variant="standard"
@@ -124,7 +125,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     const propertiesToUpdate: PageLayoutViewProperty[] = [];
     properties.forEach(prop => {
       const propertyToUpdate = prop;
-      propertyToUpdate.value = (value || 0) + "dp";
+      propertyToUpdate.value = (value || 0) + "px";
       propertiesToUpdate.push(propertyToUpdate);
     });
 
@@ -149,7 +150,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     if (!propertyToUpdate) {
       return;
     }
-    propertyToUpdate.value = (value || 0) + "dp";
+    propertyToUpdate.value = (value || 0) + "px";
     onSingleValueChange(propertyToUpdate);
   }
 

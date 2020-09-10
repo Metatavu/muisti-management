@@ -140,6 +140,19 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       height
     } = this.state;
 
+    /**
+     * Easiest way for now is to fake display metrics for preview.
+     * TODO: Must add logic for calculating pixel density based on the size of the preview
+     */
+    const displayMetrics: DisplayMetrics = {
+      density: 3,
+      heightPixels: height,
+      widthPixels: width,
+      xdpi: 515,
+      ydpi: 515,
+      densityDpi: 480
+    };
+
     if (!subLayout || !subLayout.id || loading) {
       return (
         <div className={ classes.loader }>
@@ -195,18 +208,33 @@ export class SubLayoutScreen extends React.Component<Props, State> {
             { this.renderEditor() }
           </EditorView>
 
-          <ElementSettingsPane open={ panelOpen } width={ 420 } title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }>
+          <ElementSettingsPane
+            open={ panelOpen }
+            width={ 420 }
+            title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
+            menuOptions={
+              [
+                {
+                  name: strings.genericDialog.delete,
+                  action: () => this.onLayoutViewDelete(selectedPropertyPath || "")
+                }
+              ]
+            }
+          >
             { pageLayoutView && selectedPropertyPath &&
               <CommonLayoutPropertiesEditor
                 onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ true }
+                displayMetrics={ displayMetrics }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
               />
             }
             { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
               <LayoutWidgetSpecificPropertiesEditor
+                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
                 editingSubLayout={ true }
+                displayMetrics={ displayMetrics }
                 pageLayoutView={ pageLayoutView }
                 selectedElementPath={ selectedPropertyPath }
                 selectedWidgetType={ selectedWidgetType }
@@ -234,7 +262,6 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         subLayouts={ [] }
         onSelect={ this.onLayoutPageViewSelect }
         onAdd={ this.onSubLayoutViewAdd }
-        onDelete={ this.onLayoutViewDelete }
         treeData={ this.constructTreeData(subLayout) }
       />
     );

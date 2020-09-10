@@ -14,6 +14,7 @@ export interface IStrings extends LocalizedStringsMethods {
 
   mediaLibrary: {
     title: string;
+    selectMedia: string;
     selected: string;
     addMedia: string;
     addFolder: string;
@@ -184,6 +185,23 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     resources: {
       title: string;
+      mode: string;
+      dynamic: {
+        title: string;
+        dataSource: string;
+        key: string;
+        when: string;
+        addNewWhen: string;
+        equals: string;
+        value: string;
+        default: string;
+      };
+      scripted: {
+        title: string;
+      };
+      static: {
+        title: string;
+      };
       imageView: {
         properties: {
           imageUrl: string;
@@ -197,8 +215,6 @@ export interface IStrings extends LocalizedStringsMethods {
       textView: {
         properties: {
           text: string;
-          typeScripted: string;
-          typeText: string;
         };
       };
     };
@@ -311,6 +327,9 @@ export interface IStrings extends LocalizedStringsMethods {
       landscape: string;
       portrait: string;
       allowVisitorSessionCreation: string;
+      visitorSessionEndTimeout: string;
+      visitorSessionStartThreshold: string;
+      visitorSessionEndThreshold: string;
       name: string;
       readerId: string;
       deviceGroup: string;
@@ -334,6 +353,9 @@ export interface IStrings extends LocalizedStringsMethods {
         displayInfo: string;
         widthPixels: string;
         heightPixels: string;
+        density: string;
+        xdpi: string;
+        ydpi: string;
       };
       dimensions: {
         physicalSize: string;
@@ -387,6 +409,7 @@ export interface IStrings extends LocalizedStringsMethods {
       name: string;
       layoutWidth: string;
       layoutHeight: string;
+      elevation: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {
@@ -442,6 +465,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
 
     tab: {
+      contentContainer: string;
       mode: {
         title: string;
         scrollable: string;
@@ -460,6 +484,7 @@ export interface IStrings extends LocalizedStringsMethods {
         top: string;
         stretch: string;
       };
+      selectedIndicatorHeight: string;
       textColorNormal: string;
       textColorSelected: string;
       unboundedRipple: string;
@@ -540,10 +565,12 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       tabs: {
         title: string;
+        noTabs: string;
         add: string;
         label: string;
         properties: string;
         resources: string;
+        edit: string;
       };
       dialog: {
         animation: string;

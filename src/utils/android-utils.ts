@@ -1,6 +1,8 @@
 import DisplayMetrics from "../types/display-metrics";
 import { DeviceModel } from "../generated/client";
 import tinycolor from "tinycolor2";
+import { LayoutGravityValuePairs, SelectedTabIndicatorGravityValues } from "../components/layout/editor-constants/values";
+import { CSSPropertyValuePairs } from "../types";
 
 /**
  * Utilities for Android
@@ -43,6 +45,97 @@ export default class AndroidUtils {
     }
 
     return tinycolor(androidColor).toRgbString();
+  }
+
+  /**
+   * Converts gravity to CSS positioning rules
+   *
+   * @param gravity gravity
+   * @returns array of CSS property value pairs
+   */
+  public static layoutGravityToCSSPositioning(gravity: LayoutGravityValuePairs): CSSPropertyValuePairs[] {
+    switch (gravity) {
+      case LayoutGravityValuePairs.Top:
+        return [
+          { key: "top", value: 0 },
+          { key: "left", value: "50%" },
+          { key: "transform", value: "translateX(-50%)" }
+        ];
+      case LayoutGravityValuePairs.RightTop:
+        return [
+          { key: "right", value: 0 },
+          { key: "top", value: 0 }
+        ];
+      case LayoutGravityValuePairs.RightCenter:
+        return [
+          { key: "top", value: "50%" },
+          { key: "right", value: 0 },
+          { key: "transform", value: "translateY(-50%)" }
+        ];
+      case LayoutGravityValuePairs.RightBottom:
+        return [
+          { key: "right", value: 0 },
+          { key: "bottom", value: 0 }
+        ];
+      case LayoutGravityValuePairs.Bottom:
+        return [
+          { key: "bottom", value: 0 },
+          { key: "left", value: "50%" },
+          { key: "transform", value: "translateX(-50%)" }
+        ];
+      case LayoutGravityValuePairs.LeftBottom:
+        return [
+          { key: "left", value: 0 },
+          { key: "bottom", value: 0 }
+        ];
+      case LayoutGravityValuePairs.LeftCenter:
+        return [
+          { key: "left", value: 0 },
+          { key: "top", value: "50%" },
+          { key: "transform", value: "translateY(-50%)" }
+        ];
+      case LayoutGravityValuePairs.LeftTop:
+        return [
+          { key: "left", value: 0 },
+          { key: "top", value: 0 }
+        ];
+      case LayoutGravityValuePairs.Center:
+        return [
+          { key: "top", value: "50%" },
+          { key: "left", value: "50%" },
+          { key: "transform", value: "translate(-50%,-50%)" }
+        ];
+      default:
+        return [];
+    }
+  }
+
+  /**
+   * Converts tab indicator gravity to CSS positioning rules
+   *
+   * @param gravity indicator gravity value
+   * @returns array of CSS property value pairs
+   */
+  public static tabIndicatorGravityToCSSPositioning(gravity: SelectedTabIndicatorGravityValues): CSSPropertyValuePairs[] {
+    switch (gravity) {
+      case SelectedTabIndicatorGravityValues.Top:
+        return [
+          { key: "top", value: 0 },
+          { key: "transform", value: "translateX(-50%)" }
+        ];
+      case SelectedTabIndicatorGravityValues.Center:
+        return [
+          { key: "top", value: "50%" },
+          { key: "transform", value: "translate(0,-50%)" }
+        ];
+
+      case SelectedTabIndicatorGravityValues.Stretch:
+        return [
+          { key: "height", value: "100%" },
+        ];
+      default:
+        return [];
+    }
   }
 
   /**
