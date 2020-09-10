@@ -45,6 +45,8 @@ class TabEditor extends React.Component<Props, State> {
 
   /**
    * CKEditor configurations
+   * TODO: Needs to add custom build for CKEditor since the default version is
+   * missing text color and text background color options!
    */
   private CKEditorConfig = {
     toolbar: [
@@ -54,7 +56,6 @@ class TabEditor extends React.Component<Props, State> {
       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
       { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
       { name: 'insert', items: [ 'Table', 'SpecialChar', 'PageBreak' ] },
-      '/',
       { name: 'styles', items: [ 'Styles', 'Format' ] },
       { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
       { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },

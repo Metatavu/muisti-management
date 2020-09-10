@@ -69,7 +69,12 @@ class PagePreviewButton extends React.Component<Props, State> {
             onMouseOver={ this.onMouseOver }
             onMouseOut={ this.onMouseOut }
           >
-            { this.getText() }
+            <div style={{ position: "relative", height: "100%", width: "100%" }}>
+              <div style={ this.resolveButtonTextStyles() }>
+                <p style={{ margin: 0 }}>{ this.getText() }</p>
+              </div>
+            </div>
+
           </div>
         )}
       </Measure>
@@ -89,37 +94,37 @@ class PagePreviewButton extends React.Component<Props, State> {
   /**
    * Returns button text from properties
    *
-   * @returns button text from properties
+   * @returns button text from properties or undefined
    */
-  private getText = () => {
-    const textProperty = this.props.view.properties.find(property => property.name === "text");
-    return textProperty?.value;
-  }
+  private getText = (): string | undefined => {
+    const textProperty: PageLayoutViewProperty | undefined = this.props.view.properties.find(property => property.name === "text");
+    const id = textProperty?.value;
+    if (id && id.startsWith("@resources/")) {
+      const resource = this.props.resourceMap[id.substring(11)];
+      if (resource) {
+        return resource.data;
+      }
+    }
 
+    return id;
+  }
   /**
    * Resolves button styles
    *
    * @return button styles
    */
   private resolveStyles = (): CSSProperties => {
-    const { displayMetrics, scale, view, parentView, layer } = this.props;
+    const { displayMetrics, scale, view, parentView, layer, handleLayoutProperties } = this.props;
     const { properties } = view;
     const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
-    const defaultMargin = AndroidUtils.convertDpToPixel(this.props.displayMetrics, 6, this.props.scale);
 
-    const result: CSSProperties = {
+    const result: CSSProperties = handleLayoutProperties(properties, {
       display: "inline-block",
       background: "#eee",
-      padding: "5px 10px",
-      border: "1px outset #000",
-      fontSize: "14px",
-      marginTop: defaultMargin,
-      marginRight: defaultMargin,
-      marginBottom: defaultMargin,
-      marginLeft: defaultMargin,
       zIndex: layer,
-      position: parentIsFrameLayout ? "absolute" : "initial"
-    };
+      position: parentIsFrameLayout ? "absolute" : "initial",
+      overflow: "hidden"
+    });
 
     properties.forEach(property => {
       if (property.name.startsWith("inset")) {
@@ -145,7 +150,7 @@ class PagePreviewButton extends React.Component<Props, State> {
         }
       }
       switch (property.name) {
-        case "backgroundColor":
+        case "background":
           result.backgroundColor = property.value;
         break;
         case "width":
@@ -170,7 +175,13 @@ class PagePreviewButton extends React.Component<Props, State> {
         case "textSize":
           const fontSizePixels = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (fontSizePixels) {
-            result.fontSize = fontSizePixels;
+            /**
+             * It seems that we have somewhat incorrect scaling with the font sizes since
+             * scale is hardcoded to 1.
+             * For example if the pixel value is 80 in android that is closer to 160.
+             * TODO: Define scale dynamically
+             */
+            result.fontSize = fontSizePixels * 2.5;
           } else {
             this.handleUnknownProperty(property, `unknown font size ${property.value}`);
           }
@@ -194,8 +205,38 @@ class PagePreviewButton extends React.Component<Props, State> {
   }
 
   /**
+   * Resolves button text styles
+   *
+   * @returns button text styles
+   */
+  private resolveButtonTextStyles = (): CSSProperties => {
+    const { view } = this.props;
+    const properties = view.properties;
+    const result: CSSProperties = {
+      margin: 0,
+      position: "absolute",
+    };
+
+    properties.forEach(property => {
+      switch (property.name) {
+        case "gravity":
+          const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+          gravityProps.forEach(prop => {
+            result[prop.key] = prop.value;
+          });
+
+          return;
+        default:
+          return;
+      }
+    });
+
+    return result;
+  }
+
+  /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
@@ -205,7 +246,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {
@@ -215,7 +256,7 @@ class PagePreviewButton extends React.Component<Props, State> {
 
   /**
    * Event handler for mouse click
-   * 
+   *
    * @param event react mouse event
    */
   private onClick = (event: React.MouseEvent) => {

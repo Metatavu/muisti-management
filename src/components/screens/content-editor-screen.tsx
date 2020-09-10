@@ -1212,6 +1212,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     const newTabStructure = produce(currentTabStructure, draft => {
+      if (!draft.tabs) {
+        draft.tabs = [];
+      }
       draft.tabs.push(newTab);
       if (!draft.contentContainerId && selectedLayoutView) {
         draft.contentContainerId = tabMap.get(selectedLayoutView.id)?.tabComponent.contentContainerId;
@@ -1727,6 +1730,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.devices[deviceIndex] = updatedDevice;
         draft.pages.push(createdPage);
         draft.selectedPage = createdPage;
+        draft.tabResourceIndex = undefined;
       })
     );
   }

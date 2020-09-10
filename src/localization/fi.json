@@ -437,7 +437,7 @@
       "fontStyle": "Fontin tyyli",
       "textAlign": "Tekstin tasaus",
       "textGravity": "Tekstin painotus",
-      "textSize": "Tekstin koko (dp)",
+      "textSize": "Tekstin koko (px)",
       "typeface": "Fontti"
     },
 
@@ -451,7 +451,7 @@
       "color": "Napin tekstin väri",
       "textResource": "Napin teksti",
       "fontStyle": "Napin fontin tyyli",
-      "textSize": "Napin tekstin koko (dp)",
+      "textSize": "Napin tekstin koko (px)",
       "backgroundColor": "Napin taustaväri",
       "allCaps": "Kaikki kirjaimet isolla",
       "gravity": "Napin tekstin painotus"
