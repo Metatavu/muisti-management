@@ -184,9 +184,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    */
   private getCardMenuOptions = (exhibition: Exhibition): ActionButton[] => {
     return [{
-      name: strings.exhibitions.cardMenu.setStatus,
-      action: () => this.setStatus(exhibition)
-    }, {
       name: strings.exhibitions.cardMenu.delete,
       action: () => this.onDeleteExhibitionClick(exhibition)
     }];
@@ -209,16 +206,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   private onCardClick = (exhibitionId: string) => {
     const { pathname } = this.props.history.location;
     this.props.history.push(`${pathname}/${exhibitionId}/content`);
-  }
-
-  /**
-   * Event handler for set status
-   * 
-   * @param exhibition exhibition
-   */
-  private setStatus = (exhibition: Exhibition) => {
-    alert(strings.comingSoon);
-    return;
   }
 
   /**
