@@ -47,8 +47,6 @@ class TabEditor extends React.Component<Props, State> {
 
   /**
    * CKEditor configurations
-   * TODO: Needs to add custom build for CKEditor since the default version is
-   * missing text color and text background color options!
    */
   private CKEditorConfig = {
     toolbar: [
