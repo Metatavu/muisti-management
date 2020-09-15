@@ -18,6 +18,8 @@ import MediaLibrary from "../right-panel-editors/media-library";
 import { AccessToken } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
 
+(CKEditor as any).editorUrl = '/ckeditor/ckeditor.js';
+
 /**
  * Component props
  */
@@ -50,7 +52,7 @@ class TabEditor extends React.Component<Props, State> {
    */
   private CKEditorConfig = {
     toolbar: [
-      { name: 'document', items: [ 'Source' ] },
+      { name: 'document', items: [ 'Source', 'DocProps' ] },
       { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
       { name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
@@ -59,7 +61,9 @@ class TabEditor extends React.Component<Props, State> {
       { name: 'styles', items: [ 'Styles', 'Format' ] },
       { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
       { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
-    ]
+    ],
+    fullPage: true,
+    allowedContent: true
   };
 
   /**
