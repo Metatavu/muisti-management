@@ -456,22 +456,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Renders execute web script settings
    */
   private renderExecuteWebScriptSettings = () => {
-    const { classes } = this.props;
+    const { classes, view } = this.props;
     if (this.getSelectedEventActionType() !== ExhibitionPageEventActionType.ExecuteWebScript) {
       return;
     }
 
     const selectedPageEvent = this.getCurrentPageEvent();
     if (!selectedPageEvent) {
-      return null;
+      return;
     }
 
-    const webViewProperty = selectedPageEvent.properties.find(prop => prop.name === "webViewId");
-    const scriptProperty = selectedPageEvent.properties.find(prop => prop.name === "script");
-
-    const webViewOptions = this.renderWebViewOptions();
-
-    if (!webViewOptions) {
+    const webViewOptions = this.getWebViewsInLayout(view);
+    if (webViewOptions.length < 1) {
       return (
         <div style={{ marginTop: theme.spacing(2) }}>
           <Typography>
@@ -480,6 +476,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
         </div>
       );
     }
+
+    const webViewOptionItems = this.renderWebViewOptions(webViewOptions);
+    const webViewProperty = selectedPageEvent.properties.find(prop => prop.name === "webViewId");
+    const scriptProperty = selectedPageEvent.properties.find(prop => prop.name === "script");
 
     return (
       <>
@@ -492,7 +492,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
             value={ webViewProperty?.value ?? "" }
             onChange={ this.onEventTriggerEventPropertyChange }
           >
-            { webViewOptions }
+            { webViewOptionItems }
           </Select>
         </div>
         <div style={{ marginTop: theme.spacing(2) }}>
@@ -513,20 +513,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * 
    * @returns options as JSX Elements or undefined if no options found
    */
-  private renderWebViewOptions = (): JSX.Element[] | undefined => {
-    const { view } = this.props;
-    if (!view) {
-      return undefined;
-    }
-
-    const webViews = this.getWebViewsInLayout(view);
-    if (webViews.length < 1) {
-      return undefined;
-    }
-
-    return webViews.map(view =>
+  private renderWebViewOptions = (webViewOptions: PageLayoutView[]): JSX.Element[] | undefined => {
+    return webViewOptions.map(view =>
       <MenuItem key={ view.id } value={ view.id }>
-        { view.name ? view.name : view.id }
+        { view.name ?? view.id }
       </MenuItem>
     );
   }
@@ -609,16 +599,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param view page layout view
    * @returns web views as page layout views
    */
-  private getWebViewsInLayout = (view: PageLayoutView): PageLayoutView[] => {
+  private getWebViewsInLayout = (view?: PageLayoutView): PageLayoutView[] => {
     const webViews: PageLayoutView[] = [];
-    if (view.widget === PageLayoutWidgetType.WebView) {
-      webViews.push(view);
-    }
-
-    if (view.children) {
-      view.children.forEach(childView => {
-        webViews.push(...this.getWebViewsInLayout(childView));
-      });
+    if (view) {
+      if (view.widget === PageLayoutWidgetType.WebView) {
+        webViews.push(view);
+      }
+  
+      if (view.children) {
+        view.children.forEach(childView => {
+          webViews.push(...this.getWebViewsInLayout(childView));
+        });
+      }
     }
 
     return webViews;
