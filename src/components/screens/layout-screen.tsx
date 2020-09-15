@@ -9,7 +9,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel, FormControl } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
@@ -156,8 +156,6 @@ export class LayoutScreen extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.layout.title }>
             <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
-                variant="filled"
-                fullWidth
                 label={ strings.layout.toolbar.name }
                 value={ this.state.name }
                 onChange={ this.onNameChange }
@@ -215,21 +213,22 @@ export class LayoutScreen extends React.Component<Props, State> {
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
     const deviceModelSelectItems = deviceModels.map(model =>
-      <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
+      <MenuItem key={ model.id } value={ model.id }>{ `${ model.manufacturer } ${ model.model }` }</MenuItem>
     );
 
     return (
       <div className={ classes.select }>
-        <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="deviceModelId"
-          value={ this.state.deviceModelId }
-          onChange={ this.onDeviceModelChange }
-        >
-        { deviceModelSelectItems }
-        </Select>
+        <FormControl variant="outlined">
+          <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
+          <Select
+            label={ strings.layout.settings.deviceModelId }
+            labelId="deviceModelId"
+            value={ this.state.deviceModelId }
+            onChange={ this.onDeviceModelChange }
+            >
+          { deviceModelSelectItems }
+          </Select>
+        </FormControl>
       </div>
     );
   }
@@ -242,17 +241,18 @@ export class LayoutScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.select }>
-        <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="screenOrientation"
-          value={ this.state.screenOrientation }
-          onChange={ this.onScreenOrientationChange }
-        >
-          <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-          <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
-        </Select>
+        <FormControl variant="outlined">
+          <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
+          <Select
+            label={ strings.layout.settings.screenOrientation }
+            labelId="screenOrientation"
+            value={ this.state.screenOrientation }
+            onChange={ this.onScreenOrientationChange }
+            >
+            <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
+            <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
+          </Select>
+        </FormControl>
       </div>
     );
   }

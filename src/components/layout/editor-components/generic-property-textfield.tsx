@@ -15,6 +15,8 @@ interface Props extends WithStyles<typeof styles> {
   textFieldUnit?: string;
   disabled?: boolean;
   displayMetrics: DisplayMetrics;
+  tooltip?: string;
+  label?: string;
 
   /**
    * On text field change handler
@@ -48,13 +50,13 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, disabled, textFieldUnit } = this.props;
+    const { property, textFieldType, textFieldId, disabled, textFieldUnit, tooltip, label } = this.props;
 
     return (
       <TextField
+        label={ label }
+        title={ tooltip }
         disabled={ disabled }
-        variant="filled"
-        fullWidth
         type={ textFieldType }
         name={ textFieldId }
         value={ textFieldUnit ? this.convertTextFieldUnit(property.value) : property.value }

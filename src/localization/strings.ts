@@ -410,6 +410,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutWidth: string;
       layoutHeight: string;
       elevation: string;
+      elevationTooltip: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {
@@ -429,6 +430,7 @@ export interface IStrings extends LocalizedStringsMethods {
         link: string;
       };
       layoutGravity: string;
+      layoutGravityTooltip: string;
       layoutAlign: string;
     };
 
@@ -499,6 +501,7 @@ export interface IStrings extends LocalizedStringsMethods {
       confirm: string;
       cancel: string;
       subLayout: string;
+      or: string;
     };
   };
 

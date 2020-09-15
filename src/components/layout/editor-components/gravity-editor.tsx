@@ -3,7 +3,7 @@ import { PageLayoutViewProperty } from "../../../generated/client";
 import { WithStyles, withStyles, Button } from "@material-ui/core";
 import styles from "../../../styles/components/layout-screen/gravity-editor";
 import classNames from "classnames";
-
+import strings from "../../../localization/strings";
 import ArrowIcon from '@material-ui/icons/ArrowBack';
 import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
 import GravityIcon from '@material-ui/icons/OpenWith';
@@ -62,6 +62,7 @@ class GravityEditor extends React.Component<Props, State> {
             <div style={{ display: "flex", alignItems: "center" }}>
               <GravityIcon style={{ marginRight: theme.spacing(2) }} />
               <GenericPropertySelect
+                tooltip={ strings.layoutEditor.commonComponents.layoutGravityTooltip }
                 property={ property }
                 onSelectChange={ this.props.onSingleValueChange }
                 selectItemType={ gravityOptions }
@@ -120,6 +121,7 @@ class GravityEditor extends React.Component<Props, State> {
     const { classes, property } = this.props;
     return (
       <Button
+        title={ strings.layoutEditor.commonComponents.layoutGravityTooltip }
         className={ classNames( classes.button, property.value === value ? "selected" : "") }
         onClick={ () => this.onGravityClick(value) }
       >
