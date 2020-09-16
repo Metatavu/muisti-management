@@ -615,6 +615,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { accessToken } = this.props;
     const {
       selectedPage,
+      pageLayout,
       selectedResource,
       selectedTriggerIndex,
       selectedTabIndex,
@@ -641,6 +642,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return(
         <EventTriggerEditor
           selectedEventTrigger={ foundTrigger }
+          view={ pageLayout?.data }
           pages={ pages }
           onSave={ this.updateEventTrigger }
         />

@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView } from "../../generated/client";
+import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
@@ -28,6 +28,7 @@ import AddIcon from '@material-ui/icons/Add';
  */
 interface Props extends WithStyles<typeof styles> {
     selectedEventTrigger: ExhibitionPageEventTrigger;
+    view?: PageLayoutView;
     pages: ExhibitionPage[];
     onSave: (selectedEventTrigger: ExhibitionPageEventTrigger) => void;
   }
@@ -299,11 +300,12 @@ class EventTriggerEditor extends React.Component<Props, State> {
        */
       if (
         actionType === ExhibitionPageEventActionType.Setuservalue ||
-        actionType === ExhibitionPageEventActionType.Navigate
+        actionType === ExhibitionPageEventActionType.Navigate ||
+        actionType === ExhibitionPageEventActionType.ExecuteWebScript
       ) {
         return (
-          <MenuItem key={ `eventActionType-${ index }` } value={ actionType.toLowerCase() }>
-            { actionType }
+          <MenuItem key={ `eventActionType-${ index }` } value={ actionType }>
+            { strings.contentEditor.editor.eventTriggers.actionTypes[actionType] }
           </MenuItem>
         );
       }
@@ -328,20 +330,22 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderEventActionSettings = () => {
     switch (this.getSelectedEventActionType()) {
-      case ExhibitionPageEventActionType.Hide:
-      case ExhibitionPageEventActionType.Show:
-      case ExhibitionPageEventActionType.Setsrc:
-      case ExhibitionPageEventActionType.Settext:
-        return <h5>{ strings.comingSoon }</h5>;
-        /**
-         * TODO: Needs implementation
-         */
       case ExhibitionPageEventActionType.Setuservalue:
         return this.renderSetUserValueSettings();
       case ExhibitionPageEventActionType.Navigate:
         return this.renderNavigateSettings();
       case ExhibitionPageEventActionType.Triggerdevicegroupevent:
         return this.renderDeviceGroupEventSettings();
+      case ExhibitionPageEventActionType.ExecuteWebScript:
+        return this.renderExecuteWebScriptSettings();
+      /**
+       * TODO: Needs implementation
+       */
+      case ExhibitionPageEventActionType.Hide:
+      case ExhibitionPageEventActionType.Show:
+      case ExhibitionPageEventActionType.Setsrc:
+      case ExhibitionPageEventActionType.Settext:
+        return <h5>{ strings.comingSoon }</h5>;
       default:
         return <></>;
     }
@@ -449,6 +453,74 @@ class EventTriggerEditor extends React.Component<Props, State> {
   }
 
   /**
+   * Renders execute web script settings
+   */
+  private renderExecuteWebScriptSettings = () => {
+    const { classes, view } = this.props;
+    if (this.getSelectedEventActionType() !== ExhibitionPageEventActionType.ExecuteWebScript) {
+      return;
+    }
+
+    const selectedPageEvent = this.getCurrentPageEvent();
+    if (!selectedPageEvent) {
+      return;
+    }
+
+    const webViewOptions = this.getWebViewsInLayout(view);
+    if (webViewOptions.length < 1) {
+      return (
+        <div style={{ marginTop: theme.spacing(2) }}>
+          <Typography>
+            { strings.contentEditor.editor.eventTriggers.noWebViews }
+          </Typography>
+        </div>
+      );
+    }
+
+    const webViewProperty = selectedPageEvent.properties.find(prop => prop.name === "webViewId");
+    const scriptProperty = selectedPageEvent.properties.find(prop => prop.name === "script");
+
+    return (
+      <>
+        <div style={{ marginTop: theme.spacing(2) }}>
+          <Typography variant="h6">
+            { strings.contentEditor.editor.eventTriggers.selectPage }
+          </Typography>
+          <Select
+            name={ "webViewId" }
+            value={ webViewProperty?.value ?? "" }
+            onChange={ this.onEventTriggerEventPropertyChange }
+          >
+            { this.renderWebViewOptions(webViewOptions) }
+          </Select>
+        </div>
+        <div style={{ marginTop: theme.spacing(2) }}>
+          <TextField
+            fullWidth={ false }
+            name="script"
+            className={ classes.textResourceEditor }
+            value={ scriptProperty?.value ?? "" }
+            onChange={ this.onEventTriggerEventPropertyChange }
+          />
+        </div>
+      </>
+    );
+  }
+
+  /**
+   * Renders web view options
+   * 
+   * @returns options as JSX Elements or undefined if no options found
+   */
+  private renderWebViewOptions = (webViewOptions: PageLayoutView[]): JSX.Element[] | undefined => {
+    return webViewOptions.map(view =>
+      <MenuItem key={ view.id } value={ view.id }>
+        { view.name ?? view.id }
+      </MenuItem>
+    );
+  }
+
+  /**
    * Construct view id list handler
    *
    * @param items list of JSX elements
@@ -486,6 +558,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const event = selectedEventTrigger.events && selectedEventTrigger.events.length ? 
       selectedEventTrigger.events[selectedPageEventIndex] :
       undefined;
+
     return event ? event.action : undefined;
   }
 
@@ -509,7 +582,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Render pages in exhibition
    */
   private fetchPagesInExhibition = () => {
-
     const pageSelectionItems = this.props.pages.map(page => {
       return (
         <MenuItem key={ `event-trigger-navigation-${page.id}` } value={ page.id }>
@@ -518,6 +590,29 @@ class EventTriggerEditor extends React.Component<Props, State> {
       );
     });
     return pageSelectionItems;
+  }
+
+  /**
+   * Get web views in page layout
+   * 
+   * @param view page layout view
+   * @returns web views as page layout views
+   */
+  private getWebViewsInLayout = (view?: PageLayoutView): PageLayoutView[] => {
+    const webViews: PageLayoutView[] = [];
+    if (view) {
+      if (view.widget === PageLayoutWidgetType.WebView) {
+        webViews.push(view);
+      }
+  
+      if (view.children) {
+        view.children.forEach(childView => {
+          webViews.push(...this.getWebViewsInLayout(childView));
+        });
+      }
+    }
+
+    return webViews;
   }
 
   /**
@@ -705,20 +800,30 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private getEventPropertiesByType = (actionType: ExhibitionPageEventActionType): ExhibitionPageEventProperty[] => {
     switch (actionType) {
-      case ExhibitionPageEventActionType.Hide: return [];
-      case ExhibitionPageEventActionType.Show: return [];
       case ExhibitionPageEventActionType.Navigate:
-        return [this.getStringProperty("pageId")];
-      case ExhibitionPageEventActionType.Setsrc: return [];
-      case ExhibitionPageEventActionType.Settext: return [];
+        return [
+          this.getStringProperty("pageId")
+        ];
       case ExhibitionPageEventActionType.Setuservalue:
         return [
           this.getStringProperty("name"),
           this.getStringProperty("value")
         ];
       case ExhibitionPageEventActionType.Triggerdevicegroupevent:
-        return [this.getStringProperty("name")];
-      default: return [];
+        return [
+          this.getStringProperty("name")
+        ];
+      case ExhibitionPageEventActionType.ExecuteWebScript:
+        return [
+          this.getStringProperty("webViewId"),
+          this.getStringProperty("script")
+        ];
+      case ExhibitionPageEventActionType.Hide:
+      case ExhibitionPageEventActionType.Show:
+      case ExhibitionPageEventActionType.Setsrc:
+      case ExhibitionPageEventActionType.Settext:
+      default:
+        return [];
     }
   }
 
