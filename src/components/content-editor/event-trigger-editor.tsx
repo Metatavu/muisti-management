@@ -477,7 +477,6 @@ class EventTriggerEditor extends React.Component<Props, State> {
       );
     }
 
-    const webViewOptionItems = this.renderWebViewOptions(webViewOptions);
     const webViewProperty = selectedPageEvent.properties.find(prop => prop.name === "webViewId");
     const scriptProperty = selectedPageEvent.properties.find(prop => prop.name === "script");
 
