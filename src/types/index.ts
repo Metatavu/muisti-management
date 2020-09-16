@@ -122,3 +122,11 @@ export interface CSSPropertyValuePairs {
   key: string;
   value: string | number;
 }
+
+/**
+ * Interface describing preview device data
+ */
+export interface PreviewDeviceData {
+  device: ExhibitionDevice;
+  page?: ExhibitionPage;
+}

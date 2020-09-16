@@ -22,9 +22,7 @@ interface Props extends WithStyles<typeof styles> {
   noTabs?: boolean;
   error?: string | Error;
   devices?: ExhibitionDevice[];
-  setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
-  onDashboardButtonClick?: () => void;
 }
 
 /**
@@ -54,7 +52,17 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history, title, breadcrumbs, actionBarButtons, noBackButton, noTabs, keycloak, devices, setSelectedDevice } = this.props;
+    const {
+      classes,
+      history,
+      title,
+      breadcrumbs,
+      actionBarButtons,
+      noBackButton,
+      noTabs,
+      keycloak
+    } = this.props;
+
     return (
       <div className={ classes.root }>
         <TopBar
@@ -64,10 +72,7 @@ class BasicLayout extends React.Component<Props, State> {
           actionBarButtons={ actionBarButtons }
           noBackButton={ noBackButton }
           noTabs={ noTabs }
-          onDashboardButtonClick={ this.props.onDashboardButtonClick }
           title={ title }
-          devices={ devices }
-          setSelectedDevice={ setSelectedDevice }
         />
         <div className={ classes.content }>
           { this.props.children }

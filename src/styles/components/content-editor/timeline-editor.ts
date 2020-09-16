@@ -47,6 +47,10 @@ export default createStyles({
     backgroundColor: "#B3E5FC"
   },
 
+  inPreview: {
+    boxShadow: `0 0 0 2px ${theme.palette.primary.main}`
+  },
+
   selected: {
     borderColor: theme.palette.secondary.main,
     boxShadow: `0 0 0 2px ${theme.palette.secondary.main}`,
