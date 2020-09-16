@@ -492,7 +492,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
             value={ webViewProperty?.value ?? "" }
             onChange={ this.onEventTriggerEventPropertyChange }
           >
-            { webViewOptionItems }
+            { this.renderWebViewOptions(webViewOptions) }
           </Select>
         </div>
         <div style={{ marginTop: theme.spacing(2) }}>
