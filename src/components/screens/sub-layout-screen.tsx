@@ -370,7 +370,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
           strings.exhibitionLayouts.editView.switchToVisualButton :
           strings.exhibitionLayouts.editView.switchToCodeButton, action: this.onSwitchViewClick },
       { name: strings.exhibitionLayouts.editView.importButton, action: this.onImportClick },
-      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick },
+      // TODO: Check if there is any changes and if not, set the save button disabled: true
+      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick, disabled: false },
     ];
   }
 

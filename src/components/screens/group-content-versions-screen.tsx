@@ -316,7 +316,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    */
   private getActionButtons = (): ActionButton[] => {
     return [
-      { name: strings.generic.save, action: this.onSaveClick },
+      // TODO: Check if there is any changes and if not, set the save button disabled: true
+      { name: strings.generic.save, action: this.onSaveClick, disabled: false },
       { name: strings.groupContentVersion.add, action: this.onAddGroupContentVersionClick }
     ];
   }

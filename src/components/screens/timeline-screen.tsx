@@ -401,7 +401,9 @@ class TimelineScreen extends React.Component<Props, State> {
         action: this.onSwitchViewClick
       }, {
         name: strings.generic.save,
-        action: this.onSavePageClick
+        action: this.onSavePageClick,
+        // TODO: Check if there is any changes and if not, set the save button disabled: true
+        disabled: false
       }, {
         name: strings.exhibition.deletePage,
         action: this.onDeletePageClick
@@ -414,7 +416,9 @@ class TimelineScreen extends React.Component<Props, State> {
         action: this.onAddPageClick
       }, {
         name: strings.generic.save,
-        action: this.onSaveDeviceClick
+        action: this.onSaveDeviceClick,
+        // TODO: Check if there is any changes and if not, set the save button disabled: true
+        disabled: false
       }];
     }
 

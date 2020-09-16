@@ -1032,7 +1032,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedDevice) {
       actionButtons.push({
         name: strings.contentEditor.editor.saveDevice,
-        action: this.onSaveDeviceClick
+        action: this.onSaveDeviceClick,
+        // TODO: Check if there is any changes and if not, set the save button disabled: true
+        disabled: false
       }, {
         name: strings.exhibition.addPage,
         action: this.onAddPageClick
@@ -1042,7 +1044,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedPage) {
       actionButtons.push({
         name: strings.contentEditor.editor.savePage,
-        action: this.onPageSave
+        action: this.onPageSave,
+        // TODO: Check if there is any changes and if not, set the save button disabled: true
+        disabled: false
       }, {
         name: strings.exhibition.deletePage,
         action: this.onDeletePageClick
