@@ -547,6 +547,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       eventTriggers: {
         noTriggers: string;
+        noWebViews: string;
         add: string;
         addEvent: string;
         title: string;
@@ -562,6 +563,17 @@ export interface IStrings extends LocalizedStringsMethods {
         delayTitle: string;
         delay: string;
         actions: string;
+        actionTypes: {
+          hide: string;
+          show: string;
+          setuservalue: string;
+          navigate: string;
+          setsrc: string;
+          settext: string;
+          triggerdevicegroupevent: string;
+          executeWebScript: string;
+          visitorSessionEnd: string;
+        };
         variableName: string;
         variableValue: string;
         selectPage: string;

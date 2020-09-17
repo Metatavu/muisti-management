@@ -549,6 +549,7 @@
   
       "eventTriggers": {
         "noTriggers": "No events",
+        "noWebViews": "No web views in page. In order to use this action, choose a layout that has a web view for the page.",
         "add": "Add action",
         "addEvent": "Add event",
         "title": "Events",
@@ -564,6 +565,17 @@
         "delayTitle": "Triggers after delay",
         "delay": "Delay (in milliseconds)",
         "actions": "Actions",
+        "actionTypes": {
+          "hide": "Hide",
+          "show": "Show",
+          "setuservalue": "Set user value",
+          "navigate": "Navigate",
+          "setsrc": "Set source",
+          "settext": "Set text",
+          "triggerdevicegroupevent": "Trigger device group event",
+          "executeWebScript": "Execute web script",
+          "visitorSessionEnd": "End visitor session"
+        },
         "variableName": "User variable name",
         "variableValue": "User variable value",
         "selectPage": "Select page"
