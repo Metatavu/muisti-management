@@ -1832,9 +1832,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { tabResourceIndex, selectedPage } = this.state;
 
     if (tabResourceIndex !== undefined && selectedPage && selectedPage.resources.length > 0) {
-      const data = selectedPage.resources[tabResourceIndex].data;
+      const tabResource = selectedPage.resources[tabResourceIndex];
+      if (!tabResource) {
+        return;
+      }
+      const tabData = tabResource.data;
 
-      const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
+      const parsed = parseStringToJsonObject<typeof tabData, TabStructure>(tabData);
       return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
 
     }
