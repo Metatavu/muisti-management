@@ -622,7 +622,8 @@
     "confirmDelete": "Are you sure you want to remove selected element?",
     "or": "or",
     "undefined": "Undefined",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "unsaved": "You have unsaved changes, are you sure you want to leave?"
   },
 
   "spaces": {

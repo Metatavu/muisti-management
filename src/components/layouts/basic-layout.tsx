@@ -8,6 +8,9 @@ import ErrorDialog from "../generic/error-dialog";
 import { History } from "history";
 import { BreadcrumbData, ActionButton } from "../../types";
 import { ExhibitionDevice } from "../../generated/client";
+import { Beforeunload } from "react-beforeunload";
+import { Prompt } from "react-router-dom";
+import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -22,6 +25,8 @@ interface Props extends WithStyles<typeof styles> {
   noTabs?: boolean;
   error?: string | Error;
   devices?: ExhibitionDevice[];
+  dataChanged?: boolean;
+  openDataChangedPrompt?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
   onDashboardButtonClick?: () => void;
@@ -54,7 +59,20 @@ class BasicLayout extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, history, title, breadcrumbs, actionBarButtons, noBackButton, noTabs, keycloak, devices, setSelectedDevice } = this.props;
+    const {
+      classes,
+      history,
+      title,
+      breadcrumbs,
+      actionBarButtons,
+      noBackButton,
+      noTabs,
+      keycloak,
+      devices,
+      setSelectedDevice,
+      dataChanged,
+      openDataChangedPrompt
+    } = this.props;
     return (
       <div className={ classes.root }>
         <TopBar
@@ -73,6 +91,15 @@ class BasicLayout extends React.Component<Props, State> {
           { this.props.children }
         </div>
         { this.renderErrorDialog() }
+        { dataChanged &&
+          <Prompt
+            when={ dataChanged }
+            message={ strings.generic.unsaved }
+          />
+        }
+        { openDataChangedPrompt &&
+          <Beforeunload onBeforeunload={ () => "" }/>
+        }
       </div>
     );
   }

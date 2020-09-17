@@ -73,6 +73,7 @@ interface State {
   resizing: boolean;
   height: number;
   width: number;
+  dataChanged: boolean;
 }
 
 /**
@@ -98,7 +99,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       panelOpen: false,
       resizing: false,
       height: 500,
-      width: 500
+      width: 500,
+      dataChanged: false
     };
   }
 
@@ -137,7 +139,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       error,
       name,
       width,
-      height
+      height,
+      dataChanged
     } = this.state;
 
     /**
@@ -170,6 +173,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         keycloak={ keycloak }
         error={ error }
         clearError={ () => this.setState({ error: undefined }) }
+        dataChanged={ dataChanged }
+        openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
@@ -365,13 +370,23 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
+    const { dataChanged } = this.state;
     return [
-      { name: this.state.view === "CODE" ?
-          strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton, action: this.onSwitchViewClick },
-      { name: strings.exhibitionLayouts.editView.importButton, action: this.onImportClick },
-      // TODO: Check if there is any changes and if not, set the save button disabled: true
-      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick, disabled: false },
+      {
+        name: this.state.view === "CODE" ?
+        strings.exhibitionLayouts.editView.switchToVisualButton :
+        strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: this.onSwitchViewClick
+      },
+      {
+        name: strings.exhibitionLayouts.editView.importButton,
+        action: this.onImportClick
+      },
+      {
+        name: strings.exhibitionLayouts.editView.saveButton,
+        action: this.onSaveClick,
+        disabled: !dataChanged
+      },
     ];
   }
 
@@ -500,7 +515,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
+      dataChanged: true
     });
   }
 
@@ -511,7 +527,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   private onWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      width: Number(event.target.value)
+      width: Number(event.target.value),
+      dataChanged: true
     });
   }
 
@@ -522,7 +539,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   private onHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      height: Number(event.target.value)
+      height: Number(event.target.value),
+      dataChanged: true
     });
   }
 
@@ -535,7 +553,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    */
   private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
     this.setState({
-      jsonCode: value
+      jsonCode: value,
+      dataChanged: true
     });
   }
 
@@ -545,7 +564,10 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view to update
    */
   private onPageLayoutViewUpdate = (pageLayoutView: PageLayoutView) => {
-    this.setState({ pageLayoutView });
+    this.setState({
+      pageLayoutView,
+      dataChanged: true
+    });
   }
 
   /**
@@ -582,7 +604,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       setSubLayouts([ ...subLayouts, updatedSubLayout ]);
 
       this.setState({
-        jsonCode: JSON.stringify(updatedSubLayout.data, null, 2)
+        jsonCode: JSON.stringify(updatedSubLayout.data, null, 2),
+        dataChanged: false
       });
     } catch (e) {
       console.error(e);
