@@ -1362,6 +1362,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedPage,
       selectedResource: undefined,
       selectedTriggerIndex: undefined,
+      tabResourceIndex: undefined,
       selectedTabIndex: undefined
     });
   }
