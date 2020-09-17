@@ -587,6 +587,7 @@ export interface IStrings extends LocalizedStringsMethods {
         resources: string;
         edit: string;
         contentType: string;
+        textContentHelp: string;
       };
       dialog: {
         animation: string;

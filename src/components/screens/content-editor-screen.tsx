@@ -1047,12 +1047,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (selectedDevice) {
       actionButtons.push({
+        name: strings.exhibition.addPage,
+        action: this.onAddPageClick
+      }, {
         name: strings.contentEditor.editor.saveDevice,
         action: this.onSaveDeviceClick,
         disabled: !dataChanged
-      }, {
-        name: strings.exhibition.addPage,
-        action: this.onAddPageClick
       });
     }
 

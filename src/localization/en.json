@@ -588,8 +588,9 @@
         "label": "Label",
         "properties": "Properties",
         "resources": "Resources",
-        "edit": "Edit",
-        "contentType": "Select tab content type"
+        "edit": "Edit content",
+        "contentType": "Select tab content type",
+        "textContentHelp":  "Add a single text content"
       },
   
       "dialog": {

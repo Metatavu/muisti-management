@@ -586,8 +586,9 @@
         "label": "Otsikko",
         "properties": "Ominaisuudet",
         "resources": "Resurssit",
-        "edit": "Editoi",
-        "contentType": "Valitse välilehden sisällön tyyppi"
+        "edit": "Editoi sisältöä",
+        "contentType": "Valitse välilehden sisällön tyyppi",
+        "textContentHelp": "Lisää välilehden sisältämä tekstisisältö"
       },
 
       "dialog": {

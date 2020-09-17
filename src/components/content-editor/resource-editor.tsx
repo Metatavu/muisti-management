@@ -1,4 +1,5 @@
 import * as React from "react";
+// tslint:disable-next-line: max-line-length
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, Select, MenuItem, FormControl, InputLabel } from "@material-ui/core";
