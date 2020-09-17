@@ -7,7 +7,8 @@ export default createStyles({
     gridArea: "navigation",
     borderLeft: "1px solid #ddd",
     overflow: "hidden",
-    transition: "width 0.4s ease-in-out"
+    transition: "width 0.4s ease-in-out",
+    boxShadow: "0 0 30px rgba(0,0,0,0.2)"
   },
   container: {
     backgroundColor: "#fbfbfb",
@@ -15,7 +16,8 @@ export default createStyles({
     gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     height: "100%",
-    width: 400,
+    width: 399,
+    borderRight: "1px solid rgba(0,0,0,0.2)",
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
       opacity: 0
