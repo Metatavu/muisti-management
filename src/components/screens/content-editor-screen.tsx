@@ -85,6 +85,7 @@ interface State {
   selectedTabIndex?: number;
   propertiesExpanded: boolean;
   tabMap: Map<string, TabHolder>;
+  dataChanged: boolean;
 }
 
 /**
@@ -100,6 +101,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      dataChanged: false,
       loading: false,
       devices: [],
       pages: [],
@@ -147,6 +149,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (currentPage && (pageChanged || layoutChanged)) {
       this.updateResources(layouts, currentPage);
     }
+
   }
 
   /**
@@ -159,7 +162,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices,
       selectedResource,
       selectedTriggerIndex,
-      selectedTabIndex
+      selectedTabIndex,
+      dataChanged
     } = this.state;
 
     if (this.state.loading) {
@@ -197,6 +201,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
         actionBarButtons={ this.getActionButtons() }
         noBackButton
         noTabs
+        dataChanged={ dataChanged }
+        openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
           <EditorView>
@@ -817,6 +823,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
 
         draft.selectedPage.eventTriggers[selectedTriggerIndex] = eventTrigger;
+        draft.dataChanged = true;
       })
     );
   }
@@ -850,7 +857,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           }
           selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
         }
-
+        draft.dataChanged = true;
       })
     );
   }
@@ -870,6 +877,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
         draft.selectedPage = { ...draft.selectedPage!, [name]: value };
+        draft.dataChanged = true;
       })
     );
   }
@@ -898,6 +906,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage!.layoutId = layoutId;
         draft.selectedPage!.resources = resourceHolder.resources;
         draft.resourceWidgetIdList = resourceHolder.widgetIds;
+        draft.dataChanged = true;
       })
     );
   }
@@ -918,6 +927,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         if (resourceIndex > -1) {
           draft.selectedPage.resources[resourceIndex] = updatedResource;
           draft.selectedResource = updatedResource;
+          draft.dataChanged = true;
         }
       })
     );
@@ -939,12 +949,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
       this.setState(
         produce((draft: State) => {
           draft.selectedPage!.enterTransitions = transitions;
+          draft.dataChanged = true;
         })
       );
     } else if (transitionType === "exit") {
       this.setState(
         produce((draft: State) => {
           draft.selectedPage!.exitTransitions = transitions;
+          draft.dataChanged = true;
         })
       );
     }
@@ -1022,7 +1034,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedDevice, selectedPage, view } = this.state;
+    const { selectedDevice, selectedPage, view, dataChanged } = this.state;
 
     const actionButtons: ActionButton[] = [{
       name: view === "CODE" ?
@@ -1035,8 +1047,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       actionButtons.push({
         name: strings.contentEditor.editor.saveDevice,
         action: this.onSaveDeviceClick,
-        // TODO: Check if there is any changes and if not, set the save button disabled: true
-        disabled: false
+        disabled: !dataChanged
       }, {
         name: strings.exhibition.addPage,
         action: this.onAddPageClick
@@ -1047,8 +1058,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       actionButtons.push({
         name: strings.contentEditor.editor.savePage,
         action: this.onPageSave,
-        // TODO: Check if there is any changes and if not, set the save button disabled: true
-        disabled: false
+        disabled: !dataChanged
       }, {
         name: strings.exhibition.deletePage,
         action: this.onDeletePageClick
@@ -1090,6 +1100,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           ...selectedDevice,
           [name]: value !== strings.generic.undefined ? value : undefined
         };
+        draft.dataChanged = true;
       })
     );
   }
@@ -1125,6 +1136,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         if (parsedCode.eventTriggers) {
           draft.selectedPage.eventTriggers = parsedCode.eventTriggers;
         }
+        draft.dataChanged = true;
       })
     );
   }
@@ -1659,6 +1671,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           if (deviceIndex > -1) {
             draft.devices[deviceIndex] = updatedDevice;
           }
+          draft.dataChanged = false;
         })
       );
     } catch (e) {
@@ -1767,7 +1780,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
       });
 
-        this.setState({ pages: newPages });
+        this.setState({
+          pages: newPages,
+          dataChanged: false
+        });
     } catch (e) {
       console.error(e);
 

@@ -618,7 +618,8 @@
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
     "or": "tai",
     "undefined": "Ei määritelty",
-    "refresh": "Päivitä"
+    "refresh": "Päivitä",
+    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?"
   },
 
   "spaces": {

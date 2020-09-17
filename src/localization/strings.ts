@@ -617,6 +617,7 @@ export interface IStrings extends LocalizedStringsMethods {
     or: string;
     undefined: string;
     refresh: string;
+    unsaved: string;
   };
 
   spaces: {
