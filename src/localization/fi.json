@@ -541,6 +541,7 @@
       },
       "eventTriggers": {
         "noTriggers": "Ei tapahtumia",
+        "noWebViews": "Ei web-näkymiä sivulla. Valitse sivulle asettelu, joka sisältää web-näkymän, jotta voit käyttää tätä toimintoa.",
         "add": "Lisää tapahtuma",
         "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
@@ -556,6 +557,17 @@
         "delayTitle": "Tapahtuu viiveen jälkeen",
         "delay": "Viive (millisekunneissa)",
         "actions": "Toiminnot",
+        "actionTypes": {
+          "hide": "Piilota",
+          "show": "Näytä",
+          "setuservalue": "Aseta käyttäjäarvo",
+          "navigate": "Siirry",
+          "setsrc": "Aseta lähde",
+          "settext": "Aseta teksti",
+          "triggerdevicegroupevent": "Laukaise laiteryhmän tapahtuma",
+          "executeWebScript": "Suorita verkkokomento",
+          "visitorSessionEnd": "Lopeta vierailijan sessio"
+        },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
         "selectPage": "Valitse sivu"
