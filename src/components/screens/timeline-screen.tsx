@@ -992,5 +992,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   };
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TimelineScreen));
