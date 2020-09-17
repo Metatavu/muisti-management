@@ -588,7 +588,8 @@
         "label": "Label",
         "properties": "Properties",
         "resources": "Resources",
-        "edit": "Edit"
+        "edit": "Edit",
+        "contentType": "Select tab content type"
       },
   
       "dialog": {
@@ -615,6 +616,7 @@
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",
+    "delete": "Delete",
     "loadNew": "Load new",
     "name": "Name",
     "confirmDelete": "Are you sure you want to remove selected element?",

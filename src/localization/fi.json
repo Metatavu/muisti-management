@@ -586,7 +586,8 @@
         "label": "Otsikko",
         "properties": "Ominaisuudet",
         "resources": "Resurssit",
-        "edit": "Editoi"
+        "edit": "Editoi",
+        "contentType": "Valitse välilehden sisällön tyyppi"
       },
 
       "dialog": {
@@ -613,6 +614,7 @@
     "add": "Lisää",
     "save": "Tallenna",
     "cancel": "Peruuta",
+    "delete": "Poista",
     "loadNew": "Lataa uusi",
     "name": "Nimi",
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",

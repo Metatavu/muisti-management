@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Select, MenuItem, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, Select, MenuItem, Typography, FormControl, InputLabel } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -72,22 +72,22 @@ class ResourceEditor extends React.Component<Props, State> {
     });
 
     return (
-      <>
-        <Typography className={ classes.fieldLabel }>
-          { strings.exhibition.resources.mode }
-        </Typography>
-        <Select
-          variant="outlined"
-          className={ classes.field }
-          fullWidth
-          id={ resource.id }
-          onChange={ this.onModeChange }
-          name={ "mode" }
-          value={ resource.mode }
-        >
-          { selectOptions }
+        <FormControl variant="outlined">
+          <InputLabel id="modeLabel">{ strings.exhibition.resources.mode }</InputLabel>
+          <Select
+            label={ strings.exhibition.resources.mode }
+            labelId="modeLabel"
+            variant="outlined"
+            className={ classes.field }
+            fullWidth
+            id={ resource.id }
+            onChange={ this.onModeChange }
+            name={ "mode" }
+            value={ resource.mode }
+            >
+            { selectOptions }
         </Select>
-      </>
+      </FormControl>
     );
   }
 
@@ -144,7 +144,7 @@ class ResourceEditor extends React.Component<Props, State> {
     switch (resource.type) {
       case ExhibitionPageResourceType.Image:
       case ExhibitionPageResourceType.Video:
-        return (  
+        return (
           <MediaLibrary
             accessToken={ accessToken }
             mediaType={ ResourceUtils.getResourceMediaType(resource.type)! }
@@ -155,6 +155,7 @@ class ResourceEditor extends React.Component<Props, State> {
       case ExhibitionPageResourceType.Text:
         return (
           <TextField
+            variant="outlined"
             multiline
             className={ classes.field }
             label={ strings.exhibition.resources.textView.properties.text }

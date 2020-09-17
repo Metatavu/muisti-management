@@ -586,6 +586,7 @@ export interface IStrings extends LocalizedStringsMethods {
         properties: string;
         resources: string;
         edit: string;
+        contentType: string;
       };
       dialog: {
         animation: string;
@@ -611,6 +612,7 @@ export interface IStrings extends LocalizedStringsMethods {
     add: string;
     save: string;
     cancel: string;
+    delete: string;
     loadNew: string;
     name: string;
     confirmDelete: string;

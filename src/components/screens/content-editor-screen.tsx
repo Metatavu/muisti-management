@@ -38,6 +38,7 @@ import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import DeleteIcon from '@material-ui/icons/Delete';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
@@ -516,21 +517,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Button>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { strings.contentEditor.editor.resources }
-          </Typography>
           <LayoutViewResourcesList
             resources={ resources }
             selectedResource={ selectedResource }
             onClick={ this.onResourceClick }
           />
           { eventTriggerItems &&
-            <>
+            <div style={{ marginLeft: theme.spacing(4) }}>
               <Typography style={{ padding: theme.spacing(1) }} variant="h5">
                 { strings.contentEditor.editor.eventTriggers.title }
               </Typography>
               { eventTriggerItems }
-            </>
+            </div>
           }
         </AccordionDetails>
       </Accordion>
@@ -567,16 +565,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Button>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            {
-              !tabStructure ||
-              !tabStructure.tabs ||
-              tabStructure.tabs.length === 0 ?
-                strings.contentEditor.editor.tabs.noTabs :
-                strings.contentEditor.editor.tabs.title
-            }
-          </Typography>
-          { tabItems }
+          <div style={{ marginLeft: theme.spacing(4) }}>
+            <Typography style={{ padding: theme.spacing(1) }} variant="h5">
+              {
+                !tabStructure ||
+                !tabStructure.tabs ||
+                tabStructure.tabs.length === 0 ?
+                  strings.contentEditor.editor.tabs.noTabs :
+                  strings.contentEditor.editor.tabs.title
+              }
+            </Typography>
+            { tabItems }
+          </div>
         </AccordionDetails>
       </Accordion>
     );
@@ -708,6 +708,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render tab list
    */
   private renderTabList = () => {
+    const { classes } = this.props;
     const { selectedTabIndex } = this.state;
     const tabStructure = this.getTabStructure();
     if (!tabStructure || !tabStructure.tabs) {
@@ -719,6 +720,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const tabItems = tabs.map((tab, tabIndex) => {
       return (
         <ListItem
+          className={ classes.borderedListItem }
           key={ tabIndex }
           button
           onClick={ this.onTabClick(tabIndex) }
@@ -728,15 +730,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { tab.label }
           </Typography>
           <ListItemSecondaryAction>
-            <IconButton
+            <Button
               size="small"
-              edge="end"
               aria-label="delete"
               onClick={ this.onDeleteTabClick(tabIndex) }
             >
-              <DeleteIcon />
-            </IconButton>
+              { strings.generic.delete }
+            </Button>
           </ListItemSecondaryAction>
+          <ChevronRightIcon htmlColor="#888" />
         </ListItem>
       );
     });
@@ -744,7 +746,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return (
       <List
         disablePadding
-        dense
         style={{ marginBottom: theme.spacing(1) }}
       >
         { tabItems }
@@ -759,6 +760,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    */
   private getEventTriggerItems = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView) => {
+      const { classes } = this.props;
 
       const triggerList = selectedPage.eventTriggers.filter(trigger => trigger.clickViewId === pageLayoutView.id);
 
@@ -773,10 +775,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <List
             key={ trigger.id }
             disablePadding
-            dense
             style={{ marginBottom: theme.spacing(1) }}
           >
             <ListItem
+              className={ classes.borderedListItem }
               key={ index }
               button
               onClick={ this.onTriggerClick(pageEventTriggerIndex) }
@@ -785,15 +787,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
                 { trigger.name }
               </Typography>
               <ListItemSecondaryAction>
-                <IconButton
+                <Button
+                  variant="text"
                   size="small"
-                  edge="end"
                   aria-label="delete"
                   onClick={ this.onDeleteTriggerClick(pageEventTriggerIndex) }
                 >
-                  <DeleteIcon />
-                </IconButton>
+                  { strings.generic.delete }
+                </Button>
               </ListItemSecondaryAction>
+              <ChevronRightIcon htmlColor="#888" />
             </ListItem>
           </List>
         );
