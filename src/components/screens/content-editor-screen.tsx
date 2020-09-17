@@ -70,7 +70,7 @@ interface State {
   contentVersions: ContentVersion[];
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
-  previewDevices: PreviewDeviceData[];
+  previewDevicesData: PreviewDeviceData[];
   layouts: PageLayout[];
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
@@ -103,7 +103,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       devices: [],
-      previewDevices: [],
+      previewDevicesData: [],
       pages: [],
       layouts: [],
       contentVersions: [],
@@ -263,7 +263,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
     const {
-      previewDevices,
+      previewDevicesData,
       pages,
       layouts,
       selectedContentVersion,
@@ -274,7 +274,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     let totalContentWidth: number = 0;
     let totalContentHeight: number = 0;
 
-    const previews = previewDevices.map((previewData, index, array) => {
+    const previews = previewDevicesData.map((previewData, index, array) => {
       const devicePages = pages.filter(page =>
         page.deviceId === previewData.device.id &&
         page.contentVersionId === selectedContentVersion?.id
@@ -347,7 +347,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       contentVersions,
       selectedContentVersion,
       devices,
-      previewDevices,
+      previewDevicesData,
       selectedDevice,
       pages,
       selectedPage
@@ -388,7 +388,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
                   <TimelineEditor
                     contentVersion={ contentVersion }
                     devices={ devices }
-                    previewDevices={ previewDevices }
+                    previewDevicesData={ previewDevicesData }
                     pages={ pages }
                     selectedContentVersion={ selectedContentVersion }
                     selectedDevice={ selectedDevice }
@@ -1036,7 +1036,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const pages: ExhibitionPage[] = devicePages.flat();
     const selectedContentVersion = contentVersions[0];
     const selectedDevice = devices[0];
-    const previewDevices = this.getPreviewDevices(selectedContentVersion, devices, pages);
+    const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
     const selectedPage = pages.find(
       page => page.deviceId === selectedDevice.id &&
       page.contentVersionId === selectedContentVersion.id &&
@@ -1051,7 +1051,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       contentVersions,
       groupContentVersion,
       devices,
-      previewDevices,
+      previewDevicesData,
       pages,
       layouts,
       selectedContentVersion,
@@ -1061,14 +1061,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get preview devices for given content version
+   * Get preview devices data for given content version
    * 
    * @param contentVersion content version
    * @param devices devices
    * @param pages pages
    * @returns preview devices 
    */
-  private getPreviewDevices = (contentVersion: ContentVersion, devices: ExhibitionDevice[], pages: ExhibitionPage[]): PreviewDeviceData[] => {
+  private getPreviewDevicesData = (contentVersion: ContentVersion, devices: ExhibitionDevice[], pages: ExhibitionPage[]): PreviewDeviceData[] => {
     return devices.map((device): PreviewDeviceData => {
       const page = pages.find(page =>
         page.contentVersionId === contentVersion.id &&
@@ -1419,13 +1419,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param selectedPage selected page
    */
   private onPageClick = (selectedContentVersion: ContentVersion, selectedPage: ExhibitionPage) => () => {
-    const { devices, previewDevices } = this.state;
+    const { devices, previewDevicesData } = this.state;
     const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
-    const previewDeviceIndex = previewDevices.findIndex(previewDevice => previewDevice.device.id === selectedDevice?.id);
+    const previewDeviceIndex = previewDevicesData.findIndex(previewData => previewData.device.id === selectedDevice?.id);
     if (previewDeviceIndex > -1) {
       this.setState(
         produce((draft: State) => {
-          draft.previewDevices[previewDeviceIndex].page = selectedPage;
+          draft.previewDevicesData[previewDeviceIndex].page = selectedPage;
         })
       )
     }
@@ -1513,7 +1513,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       selectedContentVersion: expanded ? contentVersion : undefined,
       selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined,
-      previewDevices: expanded ? this.getPreviewDevices(contentVersion, this.state.devices, this.state.pages) : []
+      previewDevicesData: expanded ? this.getPreviewDevicesData(contentVersion, this.state.devices, this.state.pages) : []
     });
   }
 
@@ -1638,9 +1638,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
             draft.pages[pageIndex] = pageToUpdate;
           }
 
-          const previewDeviceIndex = draft.previewDevices.findIndex(data => data.page?.id === pageToUpdate.id);
+          const previewDeviceIndex = draft.previewDevicesData.findIndex(data => data.page?.id === pageToUpdate.id);
           if (previewDeviceIndex > -1) {
-            draft.previewDevices[previewDeviceIndex].page = pageToUpdate;
+            draft.previewDevicesData[previewDeviceIndex].page = pageToUpdate;
           }
         });
       })

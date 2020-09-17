@@ -15,7 +15,7 @@ import { PreviewDeviceData } from "../../types";
 interface Props extends WithStyles<typeof styles> {
   contentVersion: ContentVersion;
   devices: ExhibitionDevice[];
-  previewDevices: PreviewDeviceData[];
+  previewDevicesData: PreviewDeviceData[];
   pages: ExhibitionPage[];
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
@@ -129,11 +129,11 @@ const renderPageContent = (
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot
 ) => {
-  const { classes, previewDevices, contentVersion, onClick } = props;
+  const { classes, previewDevicesData, contentVersion, onClick } = props;
   const { innerRef, draggableProps, dragHandleProps } = provided;
   const { isDragging } = snapshot;
   const { selectedPage } = props;
-  const deviceInPreview = previewDevices.find(previewData => previewData.device.id === page.deviceId);
+  const deviceInPreview = previewDevicesData.find(previewData => previewData.device.id === page.deviceId);
   const inPreview = page.id === deviceInPreview?.page?.id;
   const selected = selectedPage?.id === page.id;
   const isDeviceIndexPage = index === 0;
