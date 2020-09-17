@@ -129,7 +129,7 @@ class TabEditor extends React.Component<Props, State> {
         label={ strings.contentEditor.editor.tabs.label }
         name="name"
         className={ classes.textResourceEditor }
-        value={ selectedTab.label ?? "" }
+        value={ selectedTab?.label ?? "" }
         onChange={ this.onLabelChange }
       />
     </div>

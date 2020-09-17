@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Select, MenuItem, Typography, FormControl, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, Select, MenuItem, FormControl, InputLabel } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -63,7 +63,7 @@ class ResourceEditor extends React.Component<Props, State> {
   private renderModeSelect = () => {
     const { classes, resource } = this.props;
 
-    const selectOptions = resourceModes.map((option) => {
+    const selectOptions = resourceModes.map(option => {
       return (
         <MenuItem key={ option } value={ option }>
           { ResourceUtils.getModeDisplayName(option) }
