@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, IconButton, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
@@ -37,7 +37,6 @@ import TransitionsEditor from "../content-editor/transitions-editor";
 import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
-import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
@@ -1048,12 +1047,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (selectedDevice) {
       actionButtons.push({
+        name: strings.exhibition.addPage,
+        action: this.onAddPageClick
+      }, {
         name: strings.contentEditor.editor.saveDevice,
         action: this.onSaveDeviceClick,
         disabled: !dataChanged
-      }, {
-        name: strings.exhibition.addPage,
-        action: this.onAddPageClick
       });
     }
 

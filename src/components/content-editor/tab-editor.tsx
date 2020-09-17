@@ -248,7 +248,7 @@ class TabEditor extends React.Component<Props, State> {
           return (
             <div style={{ marginTop: theme.spacing(2) }}>
               <Typography variant="h6">
-                Lisää välilehden sisältämä tekstisisältö
+                { strings.contentEditor.editor.tabs.textContentHelp }
               </Typography>
               <TextField
                 onChange={ this.onDataChange }
@@ -270,7 +270,9 @@ class TabEditor extends React.Component<Props, State> {
         case ExhibitionPageResourceType.Html:
           return (
             <Button
-              variant="text"
+              color="primary"
+              style={{ marginTop: theme.spacing(2) }}
+              variant="contained"
               onClick={ this.openEditModalClick }
             >
               { strings.contentEditor.editor.tabs.edit }
