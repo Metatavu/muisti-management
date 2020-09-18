@@ -35,6 +35,7 @@ const renderToolbarButton = (button: ActionButton) => {
       key={ button.name }
       variant="contained"
       disableElevation
+      disabled={ button.disabled }
       color="primary"
       onClick={ button.action }
     >

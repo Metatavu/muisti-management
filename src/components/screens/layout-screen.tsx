@@ -9,7 +9,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel, FormControl } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
@@ -73,6 +73,7 @@ interface State {
   selectedPropertyPath?: string;
   selectedWidgetType?: PageLayoutWidgetType;
   panelOpen: boolean;
+  dataChanged: boolean;
 }
 
 /**
@@ -97,7 +98,8 @@ export class LayoutScreen extends React.Component<Props, State> {
       toolbarOpen: true,
       deleteOpen: false,
       view: "VISUAL",
-      panelOpen: false
+      panelOpen: false,
+      dataChanged: false
     };
   }
 
@@ -129,7 +131,15 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, layout, deviceModels } = this.props;
-    const { loading, pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, deviceModelId } = this.state;
+    const {
+      loading,
+      pageLayoutView,
+      selectedPropertyPath,
+      selectedWidgetType,
+      panelOpen,
+      deviceModelId,
+      dataChanged
+    } = this.state;
 
     if (!layout || !layout.id || loading || deviceModels.length === 0) {
       return (
@@ -151,13 +161,13 @@ export class LayoutScreen extends React.Component<Props, State> {
         keycloak={ this.props.keycloak }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }
+        dataChanged={ dataChanged }
+        openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.layout.title }>
             <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
-                variant="filled"
-                fullWidth
                 label={ strings.layout.toolbar.name }
                 value={ this.state.name }
                 onChange={ this.onNameChange }
@@ -215,21 +225,22 @@ export class LayoutScreen extends React.Component<Props, State> {
   private renderDeviceModelSelect = () => {
     const { deviceModels, classes } = this.props;
     const deviceModelSelectItems = deviceModels.map(model =>
-      <MenuItem key={ model.id } value={ model.id }>{ `${model.manufacturer} ${model.model}` }</MenuItem>
+      <MenuItem key={ model.id } value={ model.id }>{ `${ model.manufacturer } ${ model.model }` }</MenuItem>
     );
 
     return (
       <div className={ classes.select }>
-        <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="deviceModelId"
-          value={ this.state.deviceModelId }
-          onChange={ this.onDeviceModelChange }
-        >
-        { deviceModelSelectItems }
-        </Select>
+        <FormControl variant="outlined">
+          <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
+          <Select
+            label={ strings.layout.settings.deviceModelId }
+            labelId="deviceModelId"
+            value={ this.state.deviceModelId }
+            onChange={ this.onDeviceModelChange }
+            >
+          { deviceModelSelectItems }
+          </Select>
+        </FormControl>
       </div>
     );
   }
@@ -242,17 +253,18 @@ export class LayoutScreen extends React.Component<Props, State> {
 
     return (
       <div className={ classes.select }>
-        <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
-        <Select
-          fullWidth
-          variant="filled"
-          labelId="screenOrientation"
-          value={ this.state.screenOrientation }
-          onChange={ this.onScreenOrientationChange }
-        >
-          <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-          <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
-        </Select>
+        <FormControl variant="outlined">
+          <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
+          <Select
+            label={ strings.layout.settings.screenOrientation }
+            labelId="screenOrientation"
+            value={ this.state.screenOrientation }
+            onChange={ this.onScreenOrientationChange }
+            >
+            <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
+            <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
+          </Select>
+        </FormControl>
       </div>
     );
   }
@@ -357,12 +369,24 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
+    const { dataChanged } = this.state;
+
     return [
-      { name: this.state.view === "CODE" ?
-          strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton, action: this.onSwitchViewClick },
-      { name: strings.exhibitionLayouts.editView.importButton, action: this.onImportClick },
-      { name: strings.exhibitionLayouts.editView.saveButton, action: this.onSaveClick },
+      {
+        name: this.state.view === "CODE" ?
+        strings.exhibitionLayouts.editView.switchToVisualButton :
+        strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: this.onSwitchViewClick,
+      },
+      {
+        name: strings.exhibitionLayouts.editView.importButton,
+        action: this.onImportClick
+      },
+      {
+        name: strings.exhibitionLayouts.editView.saveButton,
+        action: this.onSaveClick,
+        disabled : !dataChanged
+      },
     ];
   }
 
@@ -474,7 +498,8 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
+      dataChanged: true
     });
   }
 
@@ -485,7 +510,8 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private onScreenOrientationChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     this.setState({
-      screenOrientation: event.target.value as ScreenOrientation
+      screenOrientation: event.target.value as ScreenOrientation,
+      dataChanged: true
     });
   }
 
@@ -496,7 +522,8 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     this.setState({
-      deviceModelId: event.target.value as string
+      deviceModelId: event.target.value as string,
+      dataChanged: true
     });
   }
 
@@ -509,7 +536,8 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
     this.setState({
-      jsonCode: value
+      jsonCode: value,
+      dataChanged: true
     });
   }
 
@@ -519,7 +547,10 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view to update
    */
   private onPageLayoutViewUpdate = (pageLayoutView: PageLayoutView) => {
-    this.setState({ pageLayoutView });
+    this.setState({
+      pageLayoutView,
+      dataChanged: true
+    });
   }
 
   /**
@@ -556,7 +587,8 @@ export class LayoutScreen extends React.Component<Props, State> {
       this.props.setLayouts([ ...layouts, layout ]);
 
       this.setState({
-        jsonCode: JSON.stringify(layout.data, null, 2)
+        jsonCode: JSON.stringify(layout.data, null, 2),
+        dataChanged: false
       });
     } catch (e) {
       console.error(e);

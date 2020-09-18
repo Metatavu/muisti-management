@@ -125,14 +125,11 @@ class TabEditor extends React.Component<Props, State> {
     const { selectedTab, classes } = this.props;
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-      <Typography variant="h6">
-        { strings.contentEditor.editor.tabs.label }
-      </Typography>
       <TextField
+        label={ strings.contentEditor.editor.tabs.label }
         name="name"
         className={ classes.textResourceEditor }
-        variant="filled"
-        value={ selectedTab.label ?? "" }
+        value={ selectedTab?.label ?? "" }
         onChange={ this.onLabelChange }
       />
     </div>
@@ -149,13 +146,10 @@ class TabEditor extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.contentEditor.editor.tabs.properties }
+          { strings.contentEditor.editor.tabs.contentType }
         </Typography>
         { resourceSelectItems }
         <div key={ "resourceContainer" }>
-          <Typography variant="h6">
-            { strings.contentEditor.editor.tabs.resources }
-          </Typography>
           { resourceItems }
         </div>
       </div>
@@ -227,12 +221,11 @@ class TabEditor extends React.Component<Props, State> {
 
     return (
       <Select
-      variant="filled"
-      fullWidth
-      onChange={ this.handleSelectChange }
-      name="type"
-      value={ currentValue?.type || "" }
-    >
+        fullWidth
+        onChange={ this.handleSelectChange }
+        name="type"
+        value={ currentValue?.type || "" }
+      >
       { items }
     </Select>
     );
@@ -253,10 +246,15 @@ class TabEditor extends React.Component<Props, State> {
       switch (resource.type) {
         case ExhibitionPageResourceType.Text:
           return (
-            <TextField
-              onChange={ this.onDataChange }
-              value={ resource.data }
-            />
+            <div style={{ marginTop: theme.spacing(2) }}>
+              <Typography variant="h6">
+                { strings.contentEditor.editor.tabs.textContentHelp }
+              </Typography>
+              <TextField
+                onChange={ this.onDataChange }
+                value={ resource.data }
+              />
+            </div>
           );
         case ExhibitionPageResourceType.Image:
         case ExhibitionPageResourceType.Video:
@@ -272,7 +270,9 @@ class TabEditor extends React.Component<Props, State> {
         case ExhibitionPageResourceType.Html:
           return (
             <Button
-              variant="text"
+              color="primary"
+              style={{ marginTop: theme.spacing(2) }}
+              variant="contained"
               onClick={ this.openEditModalClick }
             >
               { strings.contentEditor.editor.tabs.edit }

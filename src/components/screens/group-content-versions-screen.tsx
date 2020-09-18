@@ -50,6 +50,7 @@ interface State {
   selectedGroupContentVersion?: GroupContentVersion;
   deleteDialogOpen: boolean;
   addNewGroupContentVersion: boolean;
+  dataChanged: boolean;
 }
 
 /**
@@ -70,7 +71,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       deviceGroups: [],
       addDialogOpen: false,
       deleteDialogOpen: false,
-      addNewGroupContentVersion: false
+      addNewGroupContentVersion: false,
+      dataChanged: false
     };
   }
 
@@ -315,9 +317,17 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * @returns array of action button objects
    */
   private getActionButtons = (): ActionButton[] => {
+    const { dataChanged } = this.state;
     return [
-      { name: strings.generic.save, action: this.onSaveClick },
-      { name: strings.groupContentVersion.add, action: this.onAddGroupContentVersionClick }
+      {
+        name: strings.generic.save,
+        action: this.onSaveClick,
+        disabled: !dataChanged
+      },
+      {
+        name: strings.groupContentVersion.add,
+        action: this.onAddGroupContentVersionClick
+      }
     ];
   }
 
@@ -359,7 +369,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value }
+      selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value },
     });
 
   }
@@ -400,7 +410,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
     this.setState({
       groupContentVersions: temp,
-      selectedGroupContentVersion: groupContentVersion
+      selectedGroupContentVersion: groupContentVersion,
+      dataChanged: true
     });
   }
 
@@ -428,7 +439,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     this.setState({
       groupContentVersions,
       addDialogOpen: false,
-      selectedGroupContentVersion: undefined
+      selectedGroupContentVersion: undefined,
+      dataChanged: false
     });
   }
 
@@ -480,7 +492,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
     this.setState({
       addDialogOpen: false,
-      selectedGroupContentVersion: updatedGroupContentVersion
+      selectedGroupContentVersion: updatedGroupContentVersion,
+      dataChanged: false
     });
   }
 }

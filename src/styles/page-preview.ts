@@ -1,4 +1,5 @@
 import { createStyles } from "@material-ui/core";
+import theme from "./theme";
 
 export default createStyles({
 
@@ -6,15 +7,15 @@ export default createStyles({
     left: "50%",
     top: "50%",
     transform: "translate3d(-50%, -50%, 0) scale(0.7)",
-    border: "20px solid #ccc",
-    borderRadius: 15,
+    border: "10px solid transparent",
     boxSizing: "content-box",
-    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0.2)",
-    overflow: "auto"
+    boxShadow: "0px 2px 100px rgba(0, 0, 0, 0.2)",
+    overflow: "auto",
+    transition: "border-color 0.2s ease-out"
   },
 
   highlighted: {
-    boxShadow: "0px 0px 2px 5px rgba(0, 121, 233, 1)"
+    borderColor: theme.palette.secondary.main
   },
 
   previewComponent: {},
