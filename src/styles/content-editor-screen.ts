@@ -120,5 +120,20 @@ export default createStyles({
     "&:hover": {
       boxShadow: "0 0 10px rgba(0,0,0,0.2)"
     }
+  },
+
+  borderedListItem: {
+    borderRadius: 3,
+    border: "1px solid rgba(0,0,0,0.2)",
+    marginBottom: theme.spacing(0.5),
+    backgroundColor: "#fff",
+    paddingRight: 110,
+    "& .MuiListItemSecondaryAction-root": {
+      right: theme.spacing(5)
+    },
+    "& .MuiSvgIcon-root": {
+      position: "absolute",
+      right: 14
+    }
   }
 });

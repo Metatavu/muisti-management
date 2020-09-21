@@ -29,7 +29,7 @@ const LayoutViewResourcesList: React.FC<Props> = ({
   return (
     <List className={ classes.list }>
       {
-        resources.map(resource => 
+        resources.map(resource =>
           <ListItem
             key={ resource.id }
             button

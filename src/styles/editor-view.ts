@@ -6,7 +6,7 @@ export default createStyles({
     height: "100%",
     display: "grid",
     gridArea: "editor-view",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#fff",
     gridAutoRows: "auto 1fr",
     overflow: "hidden",
     "& .device-icon": {

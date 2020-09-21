@@ -410,6 +410,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutWidth: string;
       layoutHeight: string;
       elevation: string;
+      elevationTooltip: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {
@@ -429,6 +430,7 @@ export interface IStrings extends LocalizedStringsMethods {
         link: string;
       };
       layoutGravity: string;
+      layoutGravityTooltip: string;
       layoutAlign: string;
     };
 
@@ -499,6 +501,7 @@ export interface IStrings extends LocalizedStringsMethods {
       confirm: string;
       cancel: string;
       subLayout: string;
+      or: string;
     };
   };
 
@@ -544,6 +547,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       eventTriggers: {
         noTriggers: string;
+        noWebViews: string;
         add: string;
         addEvent: string;
         title: string;
@@ -559,6 +563,17 @@ export interface IStrings extends LocalizedStringsMethods {
         delayTitle: string;
         delay: string;
         actions: string;
+        actionTypes: {
+          hide: string;
+          show: string;
+          setuservalue: string;
+          navigate: string;
+          setsrc: string;
+          settext: string;
+          triggerdevicegroupevent: string;
+          executeWebScript: string;
+          visitorSessionEnd: string;
+        };
         variableName: string;
         variableValue: string;
         selectPage: string;
@@ -571,6 +586,8 @@ export interface IStrings extends LocalizedStringsMethods {
         properties: string;
         resources: string;
         edit: string;
+        contentType: string;
+        textContentHelp: string;
       };
       dialog: {
         animation: string;
@@ -596,12 +613,14 @@ export interface IStrings extends LocalizedStringsMethods {
     add: string;
     save: string;
     cancel: string;
+    delete: string;
     loadNew: string;
     name: string;
     confirmDelete: string;
     or: string;
     undefined: string;
     refresh: string;
+    unsaved: string;
   };
 
   spaces: {

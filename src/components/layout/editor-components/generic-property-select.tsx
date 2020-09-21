@@ -10,6 +10,7 @@ import strings from "../../../localization/strings";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  tooltip?: string;
   property: PageLayoutViewProperty;
   selectItemType:
     typeof LayoutWidthValues |
@@ -71,11 +72,10 @@ class GenericPropertySelect extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property } = this.props;
+    const { property, tooltip } = this.props;
     return (
       <Select
-        variant="filled"
-        fullWidth
+        title={ tooltip }
         id={ property.name }
         onChange={ this.handleSelectChange }
         name={ property.name }

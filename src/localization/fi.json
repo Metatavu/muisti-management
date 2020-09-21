@@ -50,7 +50,7 @@
     "newExhibitionLabel": "Uusi näyttely",
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
-      "helpText": "Voit luoda uuden näyttelyn täyttämällä nimi-kentän ja painamalla luo-nappulaa",
+      "helpText": "Voit luoda uuden näyttelyn täyttämällä Nimi -kentän ja painamalla Luo -paniketta",
       "nameLabel": "Nimi",
       "cancelButton": "Peruuta",
       "createButton": "Luo"
@@ -113,7 +113,7 @@
 
   "dashboard": {
     "newExhibitionButton": "Uusi näyttely",
-    "newContentVersionButton": "Uusi sisältöversio",
+    "newContentVersionButton": "Uusi kieli",
     "navigation": {
       "overviewButton": "Työpöytä",
       "recentButton": "Viimeisimmät",
@@ -260,8 +260,8 @@
   },
 
   "subLayout": {
-    "title": "Aliasettelu",
-    "addNew": "Lisää uusi aliasettelu",
+    "title": "Templaatit",
+    "addNew": "Lisää uusi templaatti",
     "preview": {
       "width": "Esikatselun leveys (px)",
       "height": "Esikatselun korkeus (px)"
@@ -325,7 +325,7 @@
       "screenOrientation": "Näytön suunta",
       "landscape": "Vaaka",
       "portrait": "Pysty",
-      "allowVisitorSessionCreation": "Salli uuden session luonti vierailijalle",
+      "allowVisitorSessionCreation": "Ryhmänmuodostuspiste",
       "visitorSessionEndTimeout": "Käyttäjän session lopetuksen viive millisekunneissa",
       "visitorSessionStartThreshold": "Käyttäjän session aloituksen raja (%)",
       "visitorSessionEndThreshold": "Käyttäjän session lopetuksen raja (%)",
@@ -406,12 +406,14 @@
     "commonComponents": {
       "id": "ID",
       "name": "Elementin nimi",
-      "layoutWidth": "Asettelun leveys",
-      "layoutHeight": "Asettelun korkeus",
-      "elevation": "Asettelun korotus",
-      "backgroundColor": "Asettelun taustaväri",
-      "hasBackgroundImage": "Asettelulla on taustakuva",
+      "layoutWidth": "Elementin leveys",
+      "layoutHeight": "Elementin korkeus",
+      "elevation": "Elementin varjo",
+      "elevationTooltip": "Mitä suurempi luku, sitä suurempi varjo",
+      "backgroundColor": "Elementin taustaväri",
+      "hasBackgroundImage": "Elementillä on taustakuva",
       "paddings": {
+        "title": "Elementin täytteet",
         "left": "Täyte vasemmalla",
         "right": "Täyte oikealla",
         "top": "Täyte yläpuolella",
@@ -419,14 +421,16 @@
         "link": "Linkkien täytteet"
       },
       "margins": {
+        "title": "Elementin marginaalit",
         "left": "Marginaali vasemmalla",
         "right": "Marginaali oikealla",
         "top": "Marginaali yläpuolella",
         "bottom": "Marginaali alapuolella",
         "link": "Linkkien marginaalit"
       },
-      "layoutGravity": "Asettelun painotus",
-      "layoutAlign": "Asettelun tasaus"
+      "layoutGravity": "Elementin sisäinen painotus",
+      "layoutGravityTooltip": "Määritä suunta, mihin elementin sisäiset elementit painottuvat",
+      "layoutAlign": "Elementin tasaus"
     },
 
     "textView": {
@@ -458,7 +462,8 @@
     },
 
     "linearLayout": {
-      "orientation": "Orientaatio"
+      "orientation": "Orientaatio",
+      "orientationTooltip": "Elementin sisältämät elementit jäsentyvät joko pysty tai vaakasuuntaan"
     },
 
     "tab": {
@@ -466,12 +471,12 @@
       "mode": {
         "title": "Välilehtien tila",
         "scrollable": "Rullattavissa",
-        "fixed": "Kiinteä"
+        "fixed": "Kiinnitetty"
       },
       "gravity": {
         "title": "Välilehden painotus",
         "center": "Keskitys",
-        "fill": "Täytetty"
+        "fill": "Täytä"
       },
       "selectedIndicatorColor": "Valitun välilehden väri",
       "selectedIndicatorGravity": {
@@ -484,39 +489,40 @@
       "selectedIndicatorHeight": "Valitun välilehden korkeus",
       "textColorNormal": "Välilehden tekstin väri",
       "textColorSelected": "Valitun välilehden tekstin väri",
-      "unboundedRipple": "Rajoittamaton väre",
+      "unboundedRipple": "Rajoittamaton kosketusindikaatio",
       "tabIndicatorFullWidth": "Täysilevyinen välilehden alleviivaus",
       "data": "Data"
     },
 
     "addLayoutViewDialog": {
-      "title": "Lisää asettelun elementti",
+      "title": "Lisää elementti",
       "name": "Elementin nimi",
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",
-      "subLayout": "Aliasettelu"
+      "subLayout": "Valmis rakenne templaatista",
+      "or": "tai"
     }
   },
 
   "contentVersion": {
-    "add": "Lisää uusi sisältöversio",
-    "addDialogTitle": "Lisää sisältöversio",
+    "add": "Lisää uusi kieli",
+    "addDialogTitle": "Lisää kieli",
     "name": "Nimi",
     "language": "Kieli",
     "rooms": "Huoneet",
-    "deleteTitle": "Poista sisältöversio",
-    "deleteText": "Oletko varma, että haluat poistaa tämän sisältöversion ja kaikki sen sisällöt?"
+    "deleteTitle": "Poista kieli",
+    "deleteText": "Oletko varma, että haluat poistaa tämän kielen ja kaikki sen sisällöt?"
   },
 
   "groupContentVersion": {
-    "add": "Lisää uusi ryhmän sisältöversio",
-    "addDialogTitle": "Lisää ryhmän sisältöversio",
+    "add": "Lisää uusi sisältö",
+    "addDialogTitle": "Lisää sisältö",
     "name": "Nimi",
-    "deviceGroup": "Laiteryhmän ID",
+    "deviceGroup": "Laiteryhmä",
     "status": "Sisältöjen tila",
-    "deleteTitle": "Poista ryhmän sisältöversio",
-    "deleteText": "Oletko varma, että haluat poistaa tämän ryhmän sisältöversion ja kaikki sen sisällöt?"
+    "deleteTitle": "Poista sisältö",
+    "deleteText": "Oletko varma, että haluat poistaa tämän sisällön?"
   },
 
   "contentEditor": {
@@ -541,6 +547,7 @@
       },
       "eventTriggers": {
         "noTriggers": "Ei tapahtumia",
+        "noWebViews": "Ei web-näkymiä sivulla. Valitse sivulle asettelu, joka sisältää web-näkymän, jotta voit käyttää tätä toimintoa.",
         "add": "Lisää tapahtuma",
         "addEvent": "Lisää toiminto",
         "title": "Tapahtumat",
@@ -556,6 +563,17 @@
         "delayTitle": "Tapahtuu viiveen jälkeen",
         "delay": "Viive (millisekunneissa)",
         "actions": "Toiminnot",
+        "actionTypes": {
+          "hide": "Piilota",
+          "show": "Näytä",
+          "setuservalue": "Aseta käyttäjäarvo",
+          "navigate": "Siirry",
+          "setsrc": "Aseta lähde",
+          "settext": "Aseta teksti",
+          "triggerdevicegroupevent": "Laukaise laiteryhmän tapahtuma",
+          "executeWebScript": "Suorita verkkokomento",
+          "visitorSessionEnd": "Lopeta vierailijan sessio"
+        },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
         "selectPage": "Valitse sivu"
@@ -568,7 +586,9 @@
         "label": "Otsikko",
         "properties": "Ominaisuudet",
         "resources": "Resurssit",
-        "edit": "Editoi"
+        "edit": "Editoi sisältöä",
+        "contentType": "Valitse välilehden sisällön tyyppi",
+        "textContentHelp": "Lisää välilehden sisältämä tekstisisältö"
       },
 
       "dialog": {
@@ -595,12 +615,14 @@
     "add": "Lisää",
     "save": "Tallenna",
     "cancel": "Peruuta",
+    "delete": "Poista",
     "loadNew": "Lataa uusi",
     "name": "Nimi",
     "confirmDelete": "Haluatko varmasti poistaa valitun elementin?",
     "or": "tai",
     "undefined": "Ei määritelty",
-    "refresh": "Päivitä"
+    "refresh": "Päivitä",
+    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?"
   },
 
   "spaces": {

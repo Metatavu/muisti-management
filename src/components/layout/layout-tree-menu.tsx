@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText } from "@material-ui/core";
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography } from '@material-ui/core';
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -184,41 +184,41 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     return (
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={ 12 }>
-          <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.widget }
-          </InputLabel>
-          <Select
-            variant="filled"
-            labelId="widget"
-            fullWidth
-            name="widget"
-            value={ (!selectedSubLayoutId && newPageLayoutView) ? newPageLayoutView.widget : "" }
-            onChange={ this.onWidgetChange }>
-            { widgetItems }
-          </Select>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <FormControl variant="outlined">
+            <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+              { strings.layoutEditor.addLayoutViewDialog.widget }
+            </InputLabel>
+            <Select
+              labelId="widget"
+              label={ strings.layoutEditor.addLayoutViewDialog.widget }
+              name="widget"
+              value={ (!selectedSubLayoutId && newPageLayoutView) ? newPageLayoutView.widget : "" }
+              onChange={ this.onWidgetChange }>
+              { widgetItems }
+            </Select>
+          </FormControl>
         </Grid>
+        <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+          <Typography variant="h6">{ strings.layoutEditor.addLayoutViewDialog.or }</Typography>
+        </div>
         <Grid item xs={ 12 }>
-          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.subLayout }
-          </InputLabel>
-          <Select
-            variant="filled"
-            labelId="subLayout"
-            fullWidth
-            name="subLayout"
-            value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
-            onChange={ this.onSubLayoutChange }
-          >
-            { subLayoutItems }
-          </Select>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-          <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.name }
-          </InputLabel>
+          <FormControl variant="outlined">
+            <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+              { strings.layoutEditor.addLayoutViewDialog.subLayout }
+            </InputLabel>
+            <Select
+              labelId="subLayout"
+              label={ strings.layoutEditor.addLayoutViewDialog.subLayout }
+              name="subLayout"
+              value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
+              onChange={ this.onSubLayoutChange }
+            >
+              { subLayoutItems }
+            </Select>
+          </FormControl>
           <TextField
-            fullWidth
-            variant="filled"
+            style={{ marginTop: theme.spacing(2) }}
+            label={ strings.layoutEditor.addLayoutViewDialog.name }
             type="text"
             name="name"
             disabled={ newPageLayoutView ? false : true }

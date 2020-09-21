@@ -260,8 +260,8 @@
   },
 
   "subLayout": {
-    "title": "Sub layout",
-    "addNew": "Add new sub layout",
+    "title": "Templates",
+    "addNew": "Add new template",
     "preview": {
       "width": "Preview width (px)",
       "height": "Preview height (px)"
@@ -409,11 +409,12 @@
       "name": "Element name",
       "layoutWidth": "Layout width",
       "layoutHeight": "Layout height",
-      "elevation": "Layout elevation",
-      "backgroundColor": "Layout background color",
-      "hasBackgroundImage": "Layout has background image",
+      "elevation": "Element elevation (shadow)",
+      "elevationTooltip": "Larger value means larger shadow",
+      "backgroundColor": "Element background color",
+      "hasBackgroundImage": "Element has background image",
       "paddings": {
-        "title": "Layout paddings",
+        "title": "Element paddings",
         "left": "Padding left",
         "right": "Padding right",
         "top": "Padding top",
@@ -421,15 +422,16 @@
         "link": "Link paddings"
       },
       "margins": {
-        "title": "Layout margins",
+        "title": "Element margins",
         "left": "Margin left",
         "right": "Margin right",
         "top": "Margin top",
         "bottom": "Margin bottom",
         "link": "Link margins"
       },
-      "layoutGravity": "Layout gravity",
-      "layoutAlign": "Layout align"
+      "layoutGravity": "Element gravity",
+      "layoutGravityTooltip": "Element gravity determines where it's children elements align",
+      "layoutAlign": "Element alignment"
     },
 
     "textView": {
@@ -498,7 +500,8 @@
       "widget": "Select widget",
       "confirm": "Add",
       "cancel": "Cancel",
-      "subLayout": "Sub layout"
+      "subLayout": "From template",
+      "or": "or"
     }
   },
 
@@ -546,6 +549,7 @@
   
       "eventTriggers": {
         "noTriggers": "No events",
+        "noWebViews": "No web views in page. In order to use this action, choose a layout that has a web view for the page.",
         "add": "Add action",
         "addEvent": "Add event",
         "title": "Events",
@@ -561,6 +565,17 @@
         "delayTitle": "Triggers after delay",
         "delay": "Delay (in milliseconds)",
         "actions": "Actions",
+        "actionTypes": {
+          "hide": "Hide",
+          "show": "Show",
+          "setuservalue": "Set user value",
+          "navigate": "Navigate",
+          "setsrc": "Set source",
+          "settext": "Set text",
+          "triggerdevicegroupevent": "Trigger device group event",
+          "executeWebScript": "Execute web script",
+          "visitorSessionEnd": "End visitor session"
+        },
         "variableName": "User variable name",
         "variableValue": "User variable value",
         "selectPage": "Select page"
@@ -573,7 +588,9 @@
         "label": "Label",
         "properties": "Properties",
         "resources": "Resources",
-        "edit": "Edit"
+        "edit": "Edit content",
+        "contentType": "Select tab content type",
+        "textContentHelp":  "Add a single text content"
       },
   
       "dialog": {
@@ -600,12 +617,14 @@
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",
+    "delete": "Delete",
     "loadNew": "Load new",
     "name": "Name",
     "confirmDelete": "Are you sure you want to remove selected element?",
     "or": "or",
     "undefined": "Undefined",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "unsaved": "You have unsaved changes, are you sure you want to leave?"
   },
 
   "spaces": {
