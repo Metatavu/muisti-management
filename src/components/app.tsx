@@ -24,6 +24,7 @@ import GroupContentVersionsScreen from "./screens/group-content-versions-screen"
 import LayoutsScreen from "./screens/layouts-screen";
 import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
+import ReceiptionScreen from "./screens/receiption-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
@@ -210,6 +211,15 @@ class App extends React.Component<Props, State> {
                       exact={ true }
                       render={({ history }) => (
                         <DeviceModelsScreen
+                          history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/reception"
+                      exact={ true }
+                      render={({ history }) => (
+                        <ReceiptionScreen
                           history={ history }
                         />
                       )}
