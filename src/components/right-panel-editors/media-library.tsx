@@ -236,6 +236,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     return(
       <FileUploader
         controlled
+        filesLimit={ 1000 }
         open={ uploadOpen }
         onClose={ this.closeDialog }
         buttonText={ strings.mediaLibrary.addMedia }

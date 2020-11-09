@@ -197,7 +197,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         </div>
         <FileUploader
           controlled
-          filesLimit={ 1 }
           open={ addImageDialogOpen }
           onClose={ this.toggleUploadNewImageDialog }
           uploadKey="new"
