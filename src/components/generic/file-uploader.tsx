@@ -11,6 +11,9 @@ interface Props extends WithStyles<typeof styles> {
   open?: boolean;
   uploadKey?: string;
   buttonText?: string;
+  /**
+   * File size in megabytes
+   */
   maxFileSize?: number;
   controlled?: boolean;
   filesLimit?: number;
@@ -92,6 +95,7 @@ class FileUploader extends React.Component<Props, State> {
    */
   private renderUploadDialog = () => {
     const { allowedFileTypes, controlled, maxFileSize, filesLimit } = this.props;
+    const bytes = maxFileSize ? maxFileSize * 1000000 : 2000000;
 
     return (
       <DropzoneDialog
@@ -102,7 +106,7 @@ class FileUploader extends React.Component<Props, State> {
         cancelButtonText={ strings.fileUpload.cancel }
         submitButtonText={ strings.fileUpload.upload }
         showPreviewsInDropzone={ false }
-        maxFileSize={ maxFileSize }
+        maxFileSize={ bytes }
         filesLimit={ filesLimit || 1 }
       />
     );
