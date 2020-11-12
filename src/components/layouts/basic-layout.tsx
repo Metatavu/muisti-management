@@ -29,7 +29,6 @@ interface Props extends WithStyles<typeof styles> {
   openDataChangedPrompt?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
-  onDashboardButtonClick?: () => void;
 }
 
 /**
@@ -68,8 +67,6 @@ class BasicLayout extends React.Component<Props, State> {
       noBackButton,
       noTabs,
       keycloak,
-      devices,
-      setSelectedDevice,
       dataChanged,
       openDataChangedPrompt
     } = this.props;
@@ -82,10 +79,7 @@ class BasicLayout extends React.Component<Props, State> {
           actionBarButtons={ actionBarButtons }
           noBackButton={ noBackButton }
           noTabs={ noTabs }
-          onDashboardButtonClick={ this.props.onDashboardButtonClick }
           title={ title }
-          devices={ devices }
-          setSelectedDevice={ setSelectedDevice }
         />
         <div className={ classes.content }>
           { this.props.children }

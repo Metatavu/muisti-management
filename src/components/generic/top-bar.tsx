@@ -4,7 +4,6 @@ import { WithStyles, withStyles, IconButton, Typography, List, ListItem } from '
 import { Link as RouterLink } from 'react-router-dom';
 import { History } from "history";
 import styles from "../../styles/components/generic/top-bar";
-import HomeIcon from "@material-ui/icons/Home";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
@@ -12,7 +11,6 @@ import Breadcrumbs from "./breadcrumbs";
 import { BreadcrumbData, ActionButton } from "../../types";
 import ContentUtilityBar from "./content-utility-bar";
 import EditorUtilityBar from "./editor-utility-bar";
-import { ExhibitionDevice } from "../../generated/client";
 
 /**
  * Interface representing component properties
@@ -21,15 +19,12 @@ interface Props extends WithStyles<typeof styles> {
   history: History;
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
-  devices?: ExhibitionDevice[];
   noBackButton?: boolean;
   noTabs?: boolean;
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
   clearError?: () => void;
-  onDashboardButtonClick?: () => void;
-  setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
 }
 
 /**
@@ -74,9 +69,7 @@ class TopBar extends React.Component<Props, State> {
       noBackButton,
       title,
       noTabs,
-      setSelectedDevice,
-      actionBarButtons,
-      devices
+      actionBarButtons
     } = this.props;
 
     const firstName = (keycloak.profile && keycloak.profile.firstName) ?? "";
@@ -95,16 +88,6 @@ class TopBar extends React.Component<Props, State> {
           </div>
 
           <nav className={ classes.nav }>
-            { this.props.onDashboardButtonClick &&
-              <IconButton
-                size="small"
-                className={ classes.backBtn }
-                edge="start"
-                onClick={ this.props.onDashboardButtonClick }
-              >
-                <HomeIcon />
-              </IconButton>
-            }
             { this.renderNavigation() }
           </nav>
 
@@ -143,8 +126,6 @@ class TopBar extends React.Component<Props, State> {
             <EditorUtilityBar
               history={ history }
               actionBarButtons={ actionBarButtons }
-              devices={ devices }
-              setSelectedDevice={ setSelectedDevice }
             />
           }
         </div>

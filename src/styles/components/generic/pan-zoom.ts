@@ -14,5 +14,9 @@ export default createStyles({
     gridAutoFlow: "column",
     gridGap: theme.spacing(1),
     alignItems: "center"
+  },
+
+  contentContainer: {
+    display: "flex"
   }
 });

@@ -10,7 +10,7 @@ import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
 import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, PreviewDeviceData } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
@@ -70,6 +70,7 @@ interface State {
   contentVersions: ContentVersion[];
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
+  previewDevicesData: PreviewDeviceData[];
   layouts: PageLayout[];
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
@@ -104,6 +105,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       dataChanged: false,
       loading: false,
       devices: [],
+      previewDevicesData: [],
       pages: [],
       layouts: [],
       contentVersions: [],
@@ -159,7 +161,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { classes, history, keycloak } = this.props;
     const {
       groupContentVersion,
-      devices,
       selectedResource,
       selectedTriggerIndex,
       selectedTabIndex,
@@ -195,8 +196,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         keycloak={ keycloak }
         history={ history }
         title={ groupContentVersion?.name || "" }
-        devices={ devices }
-        setSelectedDevice={ this.setSelectedDevice }
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         noBackButton
@@ -269,29 +268,55 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
-    const { selectedPage, pageLayout, selectedLayoutView, tabMap } = this.state;
+    const {
+      previewDevicesData,
+      pages,
+      layouts,
+      selectedContentVersion,
+      selectedLayoutView,
+      tabMap
+    } = this.state;
 
-    if (!selectedPage || !pageLayout) {
-      return;
-    }
+    let totalContentWidth: number = 0;
+    let totalContentHeight: number = 0;
 
-    const view = pageLayout.data;
-    const resources = selectedPage.resources;
-    const deviceModel = deviceModels.find(model => model.id === pageLayout.modelId);
-    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
-    const scale = 1;
+    const previews = previewDevicesData.map((previewData, index, array) => {
+      const devicePages = pages.filter(page =>
+        page.deviceId === previewData.device.id &&
+        page.contentVersionId === selectedContentVersion?.id
+      );
 
-    return (
-      <div className={ classes.visualEditorContainer }>
-        <PanZoom
-          minScale={ 0.1 }
-          fitContent={ true }
-          contentWidth={ displayMetrics.widthPixels }
-          contentHeight={ displayMetrics.heightPixels }
-        >
+      const previewPage = devicePages.find(page => page.id === previewData.page?.id);
+      const previewLayout = layouts.find(layout => layout.id === previewPage?.layoutId);
+      if (!previewPage || !previewLayout) {
+        return null;
+      }
+
+      const view = previewLayout.data;
+      const resources = previewPage.resources;
+      const deviceModel = deviceModels.find(model => model.id === previewLayout.modelId);
+      const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
+      const scale = 1;
+
+      totalContentWidth += displayMetrics.widthPixels;
+      if (index < array.length - 1) {
+        totalContentWidth += 50;
+      }
+
+      if (totalContentHeight < displayMetrics.heightPixels) {
+        totalContentHeight = displayMetrics.heightPixels;
+      }
+
+      return (
+        <div key={ previewData.device.id } className={ classes.previewDeviceContainer }>
+          <Typography variant="h1" style={{ fontSize: 72 }}>
+            { `${previewData.device?.name} - ${previewPage.name}` }
+          </Typography>
           <PagePreview
-            screenOrientation={ pageLayout.screenOrientation }
+            screenOrientation={ previewLayout.screenOrientation }
             deviceOrientation={ deviceModel?.screenOrientation }
+            device={ previewData.device }
+            page={ previewPage }
             view={ view }
             selectedView={ selectedLayoutView }
             resources={ resources }
@@ -301,6 +326,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
             onTabClick={ this.onPreviewTabClick }
             tabMap={ tabMap }
           />
+        </div>
+      );
+    });
+
+    return (
+      <div className={ classes.visualEditorContainer }>
+        <PanZoom
+          minScale={ 0.1 }
+          fitContent={ true }
+          contentWidth={ totalContentWidth }
+          contentHeight={ totalContentHeight }
+        >
+          { previews }
         </PanZoom>
       </div>
     );
@@ -315,6 +353,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       contentVersions,
       selectedContentVersion,
       devices,
+      previewDevicesData,
       selectedDevice,
       pages,
       selectedPage
@@ -355,6 +394,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
                   <TimelineEditor
                     contentVersion={ contentVersion }
                     devices={ devices }
+                    previewDevicesData={ previewDevicesData }
                     pages={ pages }
                     selectedContentVersion={ selectedContentVersion }
                     selectedDevice={ selectedDevice }
@@ -1010,9 +1050,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
 
     const pages: ExhibitionPage[] = devicePages.flat();
-    const selectedDevice = devices[0];
     const selectedContentVersion = contentVersions[0];
-    const selectedPage = pages.find(page => page.deviceId === selectedDevice.id && page.contentVersionId === selectedContentVersion.id);
+    const selectedDevice = devices[0];
+    const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
+    const selectedPage = pages.find(
+      page => page.deviceId === selectedDevice.id &&
+      page.contentVersionId === selectedContentVersion.id &&
+      page.orderNumber === 0
+    );
 
     if (selectedPage) {
       this.updateResources(layouts, selectedPage);
@@ -1022,12 +1067,33 @@ class ContentEditorScreen extends React.Component<Props, State> {
       contentVersions,
       groupContentVersion,
       devices,
+      previewDevicesData,
       pages,
       layouts,
       selectedContentVersion,
       selectedDevice
     });
 
+  }
+
+  /**
+   * Get preview devices data for given content version
+   * 
+   * @param contentVersion content version
+   * @param devices devices
+   * @param pages pages
+   * @returns preview devices 
+   */
+  private getPreviewDevicesData = (contentVersion: ContentVersion, devices: ExhibitionDevice[], pages: ExhibitionPage[]): PreviewDeviceData[] => {
+    return devices.map((device): PreviewDeviceData => {
+      const page = pages.find(page =>
+        page.contentVersionId === contentVersion.id &&
+        page.deviceId === device.id &&
+        page.orderNumber === 0
+      );
+  
+      return { device, page };
+    });
   }
 
   /**
@@ -1374,10 +1440,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param selectedPage selected page
    */
   private onPageClick = (selectedContentVersion: ContentVersion, selectedPage: ExhibitionPage) => () => {
-    const { devices } = this.state;
+    const { devices, previewDevicesData } = this.state;
+    const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
+    const previewDeviceIndex = previewDevicesData.findIndex(previewData => previewData.device.id === selectedDevice?.id);
+    if (previewDeviceIndex > -1) {
+      this.setState(
+        produce((draft: State) => {
+          draft.previewDevicesData[previewDeviceIndex].page = selectedPage;
+        })
+      )
+    }
+
     this.setState({
       selectedContentVersion,
-      selectedDevice: devices.find(device => device.id === selectedPage.deviceId),
+      selectedDevice,
       selectedPage,
       selectedResource: undefined,
       selectedTriggerIndex: undefined,
@@ -1391,8 +1467,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param view page layout view
    */
-  private onLayoutViewClick = (view: PageLayoutView) => {
+  private onLayoutViewClick = (device: ExhibitionDevice, page: ExhibitionPage, view: PageLayoutView) => {
     this.setState({
+      selectedDevice: device,
+      selectedPage: page,
       selectedLayoutView: view,
       propertiesExpanded: true
     });
@@ -1456,7 +1534,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onExpandContentVersion = (contentVersion: ContentVersion) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
     this.setState({
       selectedContentVersion: expanded ? contentVersion : undefined,
-      selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined
+      selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined,
+      previewDevicesData: expanded ? this.getPreviewDevicesData(contentVersion, this.state.devices, this.state.pages) : []
     });
   }
 
@@ -1468,7 +1547,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * to find corresponding page from new selected content version.
    *
    * @param contentVersion new content version
-   * @returns corresponding selected page if one is found, otherwise false
+   * @returns corresponding selected page if one is found, otherwise undefined
    */
   private getCorrespondingSelectedPage = (contentVersion: ContentVersion): ExhibitionPage | undefined => {
     const { selectedDevice, selectedPage, pages } = this.state;
@@ -1499,61 +1578,70 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.updatePageOrderNumber(newIndex, movedPageId, contentVersionId, deviceId);
+    this.updateOrderNumbers(newIndex, movedPageId, contentVersionId, deviceId);
   }
 
   /**
-   * Update page order number
+   * Updates page order numbers
    *
    * @param newIndex new index
    * @param movedPageId moved pages uuid
    * @param contentVersionId id of content version where page belongs to
    * @param deviceId id of device where page belongs to
-   * @returns new order as string list
    */
-  private updatePageOrderNumber = (newIndex: number, movedPageId: string, contentVersionId: string, deviceId: string) => {
+  private updateOrderNumbers = (newIndex: number, movedPageId: string, contentVersionId: string, deviceId: string) => {
     const { pages } = this.state;
 
     const movedPage = pages.find(page => page.id === movedPageId);
-
     if (!movedPage) {
       return;
     }
 
-    const filteredPages = pages.filter(page => (
-      page.deviceId === deviceId &&
-      page.contentVersionId === contentVersionId &&
-      page.id !== movedPage.id
-    ));
-
-    const updatedPages = this.resolvesNewPageOrderNumber(filteredPages, movedPage.orderNumber, newIndex);
-    updatedPages.push( { ...movedPage, orderNumber: newIndex } );
+    const devicePages = this.getDevicePages(contentVersionId, deviceId, pages);
+    const updatedPages = this.getUpdatedDevicePagesOrder(devicePages, movedPageId, newIndex);
 
     this.doPageOrderUpdate(updatedPages);
   }
 
   /**
-   * Updates new order numbers to pages within given list
-   *
-   * @param filteredPages list of pages that have been filtered by device and content version
-   * @param oldIndex old index of moved page
-   * @param newIndex new index of moved page
+   * Filters device pages from all pages and sorts them by order number
+   * 
+   * @param contentVersionId content version ID
+   * @param deviceId device ID
+   * @param pages pages
+   * @returns filtered and sorted device pages
    */
-  private resolvesNewPageOrderNumber = (filteredPages: ExhibitionPage[], oldIndex: number, newIndex: number): ExhibitionPage[] => {
-    const updatedPages: ExhibitionPage[] = [];
+  private getDevicePages = (contentVersionId: string, deviceId: string, pages: ExhibitionPage[]) => {
+    return pages
+      .filter(page => page.deviceId === deviceId && page.contentVersionId === contentVersionId)
+      .sort((a, b) => a.orderNumber - b.orderNumber);
+  }
 
-    filteredPages.forEach(page => {
-      const pagesOrderNumber = page.orderNumber;
-      if (pagesOrderNumber > oldIndex && pagesOrderNumber <= newIndex) {
-        const newOrderNumber = page.orderNumber - 1;
-        updatedPages.push( { ...page, orderNumber: newOrderNumber } );
-      } else if (pagesOrderNumber < oldIndex && pagesOrderNumber >= newIndex) {
-        const newOrderNumber = page.orderNumber + 1;
-        updatedPages.push( { ...page, orderNumber: newOrderNumber } );
+  /**
+   * Get list of device pages in updated order
+   * 
+   * @param devicePages device pages
+   * @param movedPageId moved or removed page id
+   * @param newIndex possible new index for moved page
+   * @returns device pages in new order
+   */
+  private getUpdatedDevicePagesOrder = (
+    devicePages: ExhibitionPage[],
+    movedPageId: string,
+    newIndex?: number
+  ): ExhibitionPage[] => {
+    const pageIndex = devicePages.findIndex(page => page.id === movedPageId);
+    if (pageIndex > -1) {
+      const [page] = devicePages.splice(pageIndex, 1);
+      if (newIndex !== undefined) {
+        devicePages.splice(newIndex, 0, page);
       }
-    });
+    }
 
-    return updatedPages;
+    return devicePages.map((devicePage, index) => ({
+      ...devicePage,
+      orderNumber: index
+    }));;
   }
 
   /**
@@ -1564,16 +1652,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private doPageOrderUpdate = async (pagesToUpdate: ExhibitionPage[]) => {
     const { accessToken, exhibitionId } = this.props;
 
-    pagesToUpdate.forEach(pageToUpdate => {
-      this.setState(
-        produce((draft: State) => {
+    this.setState(
+      produce((draft: State) => {
+        pagesToUpdate.forEach(pageToUpdate => {
           const pageIndex = draft.pages.findIndex(page => page.id === pageToUpdate.id);
           if (pageIndex > -1) {
             draft.pages[pageIndex] = pageToUpdate;
           }
-        })
-      );
-    });
+
+          const previewDeviceIndex = draft.previewDevicesData.findIndex(data => data.page?.id === pageToUpdate.id);
+          if (previewDeviceIndex > -1) {
+            draft.previewDevicesData[previewDeviceIndex].page = pageToUpdate;
+          }
+        });
+      })
+    );
 
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     for (const pageToUpdate of pagesToUpdate) {
@@ -1802,8 +1895,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onDeletePageClick = async () => {
     try {
       const { accessToken, exhibitionId } = this.props;
-      const { selectedPage, selectedDevice } = this.state;
-      if (!selectedPage || !selectedPage.id || !selectedDevice) {
+      const { selectedPage, selectedContentVersion, selectedDevice, pages } = this.state;
+      if (!selectedContentVersion || !selectedPage || !selectedPage.id || !selectedDevice) {
         return;
       }
 
@@ -1818,14 +1911,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
       await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
 
+      const devicePages = this.getDevicePages(selectedContentVersion.id!, selectedDevice.id!, pages);
+      const updatedDevicePages = this.getUpdatedDevicePagesOrder(devicePages, selectedPage.id);
+      const updatedPages = pages
+        .filter(page => page.id !== selectedPage.id)
+        .map(page => updatedDevicePages.find(devicePage => devicePage.id === page.id) ?? page);
+
       this.setState(
         produce((draft: State) => {
-          const pageIndex = draft.pages.findIndex(page => page.id === selectedPage.id);
-
-          if (pageIndex > -1) {
-            draft.pages.splice(pageIndex, 1);
-          }
-
+          draft.pages = updatedPages;
           draft.selectedPage = undefined;
           draft.selectedTriggerIndex = undefined;
         })
