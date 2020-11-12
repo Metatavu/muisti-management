@@ -7,6 +7,7 @@ import classNames from "classnames";
 import theme from "../../styles/theme";
 import strings from "../../localization/strings";
 import { DragDropContext, Droppable, Draggable, DropResult, ResponderProvided, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
+import { PreviewDeviceData } from "../../types";
 
 /**
  * Interface representing component properties
@@ -14,6 +15,7 @@ import { DragDropContext, Droppable, Draggable, DropResult, ResponderProvided, D
 interface Props extends WithStyles<typeof styles> {
   contentVersion: ContentVersion;
   devices: ExhibitionDevice[];
+  previewDevicesData: PreviewDeviceData[];
   pages: ExhibitionPage[];
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
@@ -127,10 +129,12 @@ const renderPageContent = (
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot
 ) => {
-  const { classes, contentVersion, onClick } = props;
+  const { classes, previewDevicesData, contentVersion, onClick } = props;
   const { innerRef, draggableProps, dragHandleProps } = provided;
   const { isDragging } = snapshot;
   const { selectedPage } = props;
+  const deviceInPreview = previewDevicesData.find(previewData => previewData.device.id === page.deviceId);
+  const inPreview = page.id === deviceInPreview?.page?.id;
   const selected = selectedPage?.id === page.id;
   const isDeviceIndexPage = index === 0;
 
@@ -142,6 +146,7 @@ const renderPageContent = (
       className={
         classNames(
           classes.pageItemContent,
+          inPreview && classes.inPreview,
           selected && classes.selected,
           isDragging && classes.isDragged
         )

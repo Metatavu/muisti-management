@@ -125,7 +125,6 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         title={ exhibition.name }
         breadcrumbs={ breadCrumbs }
         actionBarButtons={ actionBarButtons }
-        onDashboardButtonClick={ () => this.onDashboardButtonClick() }
         error={ this.state.error }
         clearError={ () => this.setState({ error: undefined }) }
       >

@@ -32,6 +32,12 @@ export default createStyles({
     `,
   },
 
+  previewDeviceContainer: {
+    height: "fit-content",
+    width: "fit-content",
+    marginRight: 100
+  },
+
   timelineContent: {
     minHeight: 300,
     maxHeight: 300,
@@ -77,12 +83,14 @@ export default createStyles({
   },
 
   visualEditorContainer: {
-    height: "100%",
+    minHeight: "100%",
+    maxHeight: "100%",
+    minWidth: "100%",
+    maxWidth: "100%",
     display: "flex",
     justifyItems: "center",
     alignItems: "center",
-    position: "relative",
-    overflowY: "auto"
+    position: "relative"
   },
 
   textResourceEditor: {
