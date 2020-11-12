@@ -236,6 +236,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     return(
       <FileUploader
         controlled
+        filesLimit={ 1000 }
         open={ uploadOpen }
         onClose={ this.closeDialog }
         buttonText={ strings.mediaLibrary.addMedia }
@@ -314,14 +315,14 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       return;
     }
 
-    const file = files[0];
-    if (file) {
-      await FileUpload.uploadFile(file, `${selectedUploadFolder.fileName}`);
-      this.fetchFolderData(selectedUploadFolder.uri);
-      this.setState({
-        uploadOpen: false
-      });
-    }
+    await Promise.all(files.map(file => {
+      return FileUpload.uploadFile(file, `${selectedUploadFolder.fileName}`);
+    }));
+
+    this.fetchFolderData(selectedUploadFolder.uri);
+    this.setState({
+      uploadOpen: false
+    });
   }
 
   /**
