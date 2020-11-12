@@ -6,8 +6,6 @@ export default createStyles({
   root: {
     position: "relative",
     borderRadius: 15,
-    //left: "50%",
-    //top: "50%",
     border: "10px solid transparent",
     boxSizing: "content-box",
     boxShadow: "0px 2px 100px rgba(0, 0, 0, 0.2)",
