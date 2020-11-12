@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, IconButton, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton, PreviewDeviceData } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
@@ -37,7 +37,7 @@ import TransitionsEditor from "../content-editor/transitions-editor";
 import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
-import DeleteIcon from '@material-ui/icons/Delete';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
@@ -86,6 +86,7 @@ interface State {
   selectedTabIndex?: number;
   propertiesExpanded: boolean;
   tabMap: Map<string, TabHolder>;
+  dataChanged: boolean;
 }
 
 /**
@@ -101,6 +102,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      dataChanged: false,
       loading: false,
       devices: [],
       previewDevicesData: [],
@@ -149,6 +151,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (currentPage && (pageChanged || layoutChanged)) {
       this.updateResources(layouts, currentPage);
     }
+
   }
 
   /**
@@ -160,7 +163,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       groupContentVersion,
       selectedResource,
       selectedTriggerIndex,
-      selectedTabIndex
+      selectedTabIndex,
+      dataChanged
     } = this.state;
 
     if (this.state.loading) {
@@ -196,6 +200,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
         actionBarButtons={ this.getActionButtons() }
         noBackButton
         noTabs
+        dataChanged={ dataChanged }
+        openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
           <EditorView>
@@ -556,21 +562,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Button>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { strings.contentEditor.editor.resources }
-          </Typography>
           <LayoutViewResourcesList
             resources={ resources }
             selectedResource={ selectedResource }
             onClick={ this.onResourceClick }
           />
           { eventTriggerItems &&
-            <>
+            <div style={{ marginLeft: theme.spacing(4) }}>
               <Typography style={{ padding: theme.spacing(1) }} variant="h5">
                 { strings.contentEditor.editor.eventTriggers.title }
               </Typography>
               { eventTriggerItems }
-            </>
+            </div>
           }
         </AccordionDetails>
       </Accordion>
@@ -607,16 +610,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </Button>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            {
-              !tabStructure ||
-              !tabStructure.tabs ||
-              tabStructure.tabs.length === 0 ?
-                strings.contentEditor.editor.tabs.noTabs :
-                strings.contentEditor.editor.tabs.title
-            }
-          </Typography>
-          { tabItems }
+          <div style={{ marginLeft: theme.spacing(4) }}>
+            <Typography style={{ padding: theme.spacing(1) }} variant="h5">
+              {
+                !tabStructure ||
+                !tabStructure.tabs ||
+                tabStructure.tabs.length === 0 ?
+                  strings.contentEditor.editor.tabs.noTabs :
+                  strings.contentEditor.editor.tabs.title
+              }
+            </Typography>
+            { tabItems }
+          </div>
         </AccordionDetails>
       </Accordion>
     );
@@ -748,6 +753,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render tab list
    */
   private renderTabList = () => {
+    const { classes } = this.props;
     const { selectedTabIndex } = this.state;
     const tabStructure = this.getTabStructure();
     if (!tabStructure || !tabStructure.tabs) {
@@ -759,6 +765,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const tabItems = tabs.map((tab, tabIndex) => {
       return (
         <ListItem
+          className={ classes.borderedListItem }
           key={ tabIndex }
           button
           onClick={ this.onTabClick(tabIndex) }
@@ -768,15 +775,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { tab.label }
           </Typography>
           <ListItemSecondaryAction>
-            <IconButton
+            <Button
               size="small"
-              edge="end"
               aria-label="delete"
               onClick={ this.onDeleteTabClick(tabIndex) }
             >
-              <DeleteIcon />
-            </IconButton>
+              { strings.generic.delete }
+            </Button>
           </ListItemSecondaryAction>
+          <ChevronRightIcon htmlColor="#888" />
         </ListItem>
       );
     });
@@ -784,7 +791,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return (
       <List
         disablePadding
-        dense
         style={{ marginBottom: theme.spacing(1) }}
       >
         { tabItems }
@@ -799,6 +805,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    */
   private getEventTriggerItems = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView) => {
+      const { classes } = this.props;
 
       const triggerList = selectedPage.eventTriggers.filter(trigger => trigger.clickViewId === pageLayoutView.id);
 
@@ -813,10 +820,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <List
             key={ trigger.id }
             disablePadding
-            dense
             style={{ marginBottom: theme.spacing(1) }}
           >
             <ListItem
+              className={ classes.borderedListItem }
               key={ index }
               button
               onClick={ this.onTriggerClick(pageEventTriggerIndex) }
@@ -825,15 +832,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
                 { trigger.name }
               </Typography>
               <ListItemSecondaryAction>
-                <IconButton
+                <Button
+                  variant="text"
                   size="small"
-                  edge="end"
                   aria-label="delete"
                   onClick={ this.onDeleteTriggerClick(pageEventTriggerIndex) }
                 >
-                  <DeleteIcon />
-                </IconButton>
+                  { strings.generic.delete }
+                </Button>
               </ListItemSecondaryAction>
+              <ChevronRightIcon htmlColor="#888" />
             </ListItem>
           </List>
         );
@@ -857,6 +865,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
 
         draft.selectedPage.eventTriggers[selectedTriggerIndex] = eventTrigger;
+        draft.dataChanged = true;
       })
     );
   }
@@ -890,7 +899,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           }
           selectedPage.resources[tabResourceIndex].data = JSON.stringify(tabData);
         }
-
+        draft.dataChanged = true;
       })
     );
   }
@@ -910,6 +919,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
         draft.selectedPage = { ...draft.selectedPage!, [name]: value };
+        draft.dataChanged = true;
       })
     );
   }
@@ -938,6 +948,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage!.layoutId = layoutId;
         draft.selectedPage!.resources = resourceHolder.resources;
         draft.resourceWidgetIdList = resourceHolder.widgetIds;
+        draft.dataChanged = true;
       })
     );
   }
@@ -958,6 +969,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         if (resourceIndex > -1) {
           draft.selectedPage.resources[resourceIndex] = updatedResource;
           draft.selectedResource = updatedResource;
+          draft.dataChanged = true;
         }
       })
     );
@@ -979,12 +991,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
       this.setState(
         produce((draft: State) => {
           draft.selectedPage!.enterTransitions = transitions;
+          draft.dataChanged = true;
         })
       );
     } else if (transitionType === "exit") {
       this.setState(
         produce((draft: State) => {
           draft.selectedPage!.exitTransitions = transitions;
+          draft.dataChanged = true;
         })
       );
     }
@@ -1088,7 +1102,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedDevice, selectedPage, view } = this.state;
+    const { selectedDevice, selectedPage, view, dataChanged } = this.state;
 
     const actionButtons: ActionButton[] = [{
       name: view === "CODE" ?
@@ -1099,18 +1113,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (selectedDevice) {
       actionButtons.push({
-        name: strings.contentEditor.editor.saveDevice,
-        action: this.onSaveDeviceClick
-      }, {
         name: strings.exhibition.addPage,
         action: this.onAddPageClick
+      }, {
+        name: strings.contentEditor.editor.saveDevice,
+        action: this.onSaveDeviceClick,
+        disabled: !dataChanged
       });
     }
 
     if (selectedPage) {
       actionButtons.push({
         name: strings.contentEditor.editor.savePage,
-        action: this.onPageSave
+        action: this.onPageSave,
+        disabled: !dataChanged
       }, {
         name: strings.exhibition.deletePage,
         action: this.onDeletePageClick
@@ -1152,6 +1168,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           ...selectedDevice,
           [name]: value !== strings.generic.undefined ? value : undefined
         };
+        draft.dataChanged = true;
       })
     );
   }
@@ -1187,6 +1204,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         if (parsedCode.eventTriggers) {
           draft.selectedPage.eventTriggers = parsedCode.eventTriggers;
         }
+        draft.dataChanged = true;
       })
     );
   }
@@ -1350,8 +1368,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param tabIndex tab index to be deleted
    */
-  private onDeleteTabClick = (tabIndex: number) => () => {
+  private onDeleteTabClick = (tabIndex: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const { selectedPage, tabResourceIndex, selectedLayoutView, tabMap } = this.state;
+    event.stopPropagation();
 
     if (tabResourceIndex === undefined ||
       !selectedLayoutView ||
@@ -1748,6 +1767,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           if (deviceIndex > -1) {
             draft.devices[deviceIndex] = updatedDevice;
           }
+          draft.dataChanged = false;
         })
       );
     } catch (e) {
@@ -1856,7 +1876,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
       });
 
-        this.setState({ pages: newPages });
+        this.setState({
+          pages: newPages,
+          dataChanged: false
+        });
     } catch (e) {
       console.error(e);
 

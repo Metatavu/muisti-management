@@ -143,7 +143,7 @@ export default createMuiTheme({
       root: {
         flexDirection: "column",
         padding: spacing(2),
-        backgroundColor: "##fff"
+        backgroundColor: "#f7f7f7"
       }
     },
     MuiBackdrop: {

@@ -3,6 +3,7 @@ export * from './AnimationTimeInterpolation';
 export * from './Bounds';
 export * from './ContentVersion';
 export * from './Coordinates';
+export * from './DeviceGroupVisitorSessionStartStrategy';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';
 export * from './DeviceModelDimensions';

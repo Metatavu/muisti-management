@@ -40,6 +40,7 @@ export default createStyles({
   },
   content: {
     padding: theme.spacing(2),
-    overflowY: "auto"
+    overflowY: "auto",
+    maxWidth: "calc(100% -  16px)"
   },
 });

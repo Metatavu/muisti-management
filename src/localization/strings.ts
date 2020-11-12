@@ -410,6 +410,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutWidth: string;
       layoutHeight: string;
       elevation: string;
+      elevationTooltip: string;
       backgroundColor: string;
       hasBackgroundImage: string;
       paddings: {
@@ -429,6 +430,7 @@ export interface IStrings extends LocalizedStringsMethods {
         link: string;
       };
       layoutGravity: string;
+      layoutGravityTooltip: string;
       layoutAlign: string;
     };
 
@@ -499,6 +501,7 @@ export interface IStrings extends LocalizedStringsMethods {
       confirm: string;
       cancel: string;
       subLayout: string;
+      or: string;
     };
   };
 
@@ -583,6 +586,8 @@ export interface IStrings extends LocalizedStringsMethods {
         properties: string;
         resources: string;
         edit: string;
+        contentType: string;
+        textContentHelp: string;
       };
       dialog: {
         animation: string;
@@ -608,12 +613,14 @@ export interface IStrings extends LocalizedStringsMethods {
     add: string;
     save: string;
     cancel: string;
+    delete: string;
     loadNew: string;
     name: string;
     confirmDelete: string;
     or: string;
     undefined: string;
     refresh: string;
+    unsaved: string;
   };
 
   spaces: {

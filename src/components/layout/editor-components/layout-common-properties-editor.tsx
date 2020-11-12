@@ -118,23 +118,15 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const { pageLayoutView } = this.props;
 
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
-        <Typography
-          style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-          variant="h6"
-        >
-          { strings.layoutEditor.commonComponents.name }:
-        </Typography>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            name="name"
-            value={ (pageLayoutView && pageLayoutView.name) ? pageLayoutView.name : "" }
-            onChange={ this.onNameChange }
-          />
-        </div>
+      <div style={{ marginBottom: theme.spacing(2) }}>
+        <TextField
+          label={ strings.layoutEditor.commonComponents.name }
+          fullWidth
+          type="text"
+          name="name"
+          value={ (pageLayoutView && pageLayoutView.name) ? pageLayoutView.name : "" }
+          onChange={ this.onNameChange }
+        />
       </div>
     );
   }
@@ -235,6 +227,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           </Typography>
           <div style={{ display: "flex", alignItems: "center" }}>
             <GenericPropertyTextField
+              tooltip={ strings.layoutEditor.commonComponents.elevationTooltip  }
               textFieldId={ LayoutPropKeys.Elevation }
               textFieldType="number"
               textFieldUnit="px"
@@ -242,7 +235,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               property={ foundProp }
               onTextFieldChange={ this.onSingleValueChange }
             />
-            <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
+            <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>dp</Typography>
           </div>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />

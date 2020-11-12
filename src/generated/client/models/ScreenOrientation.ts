@@ -19,7 +19,8 @@
  */
 export enum ScreenOrientation {
     Landscape = 'landscape',
-    Portrait = 'portrait'
+    Portrait = 'portrait',
+    ForcedPortrait = 'forcedPortrait'
 }
 
 export function ScreenOrientationFromJSON(json: any): ScreenOrientation {

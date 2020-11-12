@@ -85,6 +85,7 @@ export enum ExhibitionElementType {
  */
 export interface ActionButton {
   name: string;
+  disabled?: boolean;
   action: () => void;
 }
 

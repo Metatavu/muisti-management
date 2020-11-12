@@ -11,7 +11,7 @@ import styles from "../../styles/floor-plan-editor-view";
 import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel, RfidAntenna } from "../../generated/client";
+import { Exhibition, ExhibitionFloor, Coordinates, Bounds, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel, RfidAntenna, DeviceGroupVisitorSessionStartStrategy } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
@@ -72,6 +72,7 @@ interface State {
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
   selectedItemHasNodes: boolean;
+  dataChanged: boolean;
 }
 
 /**
@@ -101,7 +102,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       antennas: [],
       treeData: [],
       addImageDialogOpen: false,
-      selectedItemHasNodes: false
+      selectedItemHasNodes: false,
+      dataChanged: false
     };
   }
 
@@ -131,7 +133,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, history } = this.props;
+    const { classes, history, keycloak } = this.props;
     const {
       exhibition,
       addImageDialogOpen,
@@ -139,7 +141,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom,
       selectedDeviceGroup,
       selectedDevice,
-      selectedAntenna } = this.state;
+      selectedAntenna,
+      dataChanged,
+      error
+    } = this.state;
 
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
@@ -171,9 +176,12 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         title={ exhibition.name }
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
-        keycloak={ this.props.keycloak }
-        error={ this.state.error }
-        clearError={ () => this.setState({ error: undefined }) }>
+        keycloak={ keycloak }
+        error={ error }
+        clearError={ () => this.setState({ error: undefined }) }
+        dataChanged={ dataChanged }
+        openDataChangedPrompt={ true }
+        >
 
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.floorPlan.structure }>
@@ -429,12 +437,24 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @returns array of action button objects
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedFloor, selectedRoom, selectedDeviceGroup, selectedDevice, selectedAntenna, selectedItemHasNodes } = this.state;
+    const {
+      selectedFloor,
+      selectedRoom,
+      selectedDeviceGroup,
+      selectedDevice,
+      selectedAntenna,
+      selectedItemHasNodes,
+      dataChanged
+    } = this.state;
 
     if (selectedAntenna) {
       return [
         { name: strings.floorPlan.antenna.move, action: () => this.mapRef.current!.editAntennaMarker() },
-        { name: strings.generic.save, action: () => this.mapRef.current!.saveAntennaMarker() },
+        {
+          name: strings.generic.save,
+          action: () => this.mapRef.current!.saveAntennaMarker(),
+          disabled: !dataChanged
+        },
         { name: strings.floorPlan.antenna.delete, action: this.onAntennaDeleteClick }
       ] as ActionButton[];
     }
@@ -442,7 +462,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     if (selectedDevice) {
       return [
         { name: strings.floorPlan.device.move, action: () => this.mapRef.current!.editDeviceMarker() },
-        { name: strings.generic.save, action: () => this.mapRef.current!.saveDeviceMarker() },
+        {
+          name: strings.generic.save,
+          action: () => this.mapRef.current!.saveDeviceMarker(),
+          disabled: !dataChanged
+        },
         { name: strings.floorPlan.device.delete, action: this.onDeviceDeleteClick },
       ] as ActionButton[];
     }
@@ -451,9 +475,16 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return [
         { name: strings.floorPlan.device.add, action: () => this.mapRef.current!.addDeviceMarker() },
         { name: strings.floorPlan.antenna.add, action: () => this.mapRef.current!.addAntennaMarker() },
-        { name: strings.generic.save, action: this.onDeviceGroupSaveClick },
-        { name: strings.floorPlan.deviceGroup.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onDeviceGroupDeleteClick
+        {
+          name: strings.generic.save,
+          action: this.onDeviceGroupSaveClick,
+          disabled: !dataChanged
+        },
+        {
+          name: strings.floorPlan.deviceGroup.delete,
+          action: selectedItemHasNodes ?
+          () => alert(strings.floorPlan.hasChildElements) :
+          this.onDeviceGroupDeleteClick
         }
       ] as ActionButton[];
     }
@@ -462,9 +493,16 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return [
         { name: strings.floorPlan.deviceGroup.add, action: this.onDeviceGroupAddClick },
         { name: strings.floorPlan.room.edit, action: () => this.mapRef.current!.editRoom() },
-        { name: strings.generic.save, action: () => this.mapRef.current!.saveRoom() },
-        { name: strings.floorPlan.room.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onRoomDeleteClick
+        {
+          name: strings.generic.save,
+          action: () => this.mapRef.current!.saveRoom(),
+          disabled: !dataChanged
+        },
+        {
+          name: strings.floorPlan.room.delete,
+          action: selectedItemHasNodes ?
+          () => alert(strings.floorPlan.hasChildElements) :
+          this.onRoomDeleteClick
         }
       ] as ActionButton[];
     }
@@ -473,8 +511,18 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       if (!this.mapRef.current) {
         return [
           { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
-          { name: strings.generic.save, action: this.onFloorSaveClick },
-          { name: strings.floorPlan.floor.delete, action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onFloorDeleteClick }
+          {
+            name: strings.generic.save,
+            action:
+            this.onFloorSaveClick,
+            disabled: !dataChanged
+          },
+          {
+            name: strings.floorPlan.floor.delete,
+            action: selectedItemHasNodes ?
+            () => alert(strings.floorPlan.hasChildElements) :
+            this.onFloorDeleteClick
+          }
         ];
       }
 
@@ -482,9 +530,16 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         { name: strings.floorPlan.toolbar.upload, action: this.toggleUploadNewImageDialog },
         { name: strings.floorPlan.floor.add, action: this.onFloorAddClick },
         { name: strings.floorPlan.room.add, action: () => this.mapRef.current!.addRoom() },
-        { name: strings.generic.save, action: this.onFloorSaveClick },
-        { name: strings.floorPlan.floor.delete,
-          action: selectedItemHasNodes ? () => alert(strings.floorPlan.hasChildElements) : this.onFloorDeleteClick
+        {
+          name: strings.generic.save,
+          action: this.onFloorSaveClick,
+          disabled: !dataChanged
+        },
+        {
+          name: strings.floorPlan.floor.delete,
+          action: selectedItemHasNodes ?
+          () => alert(strings.floorPlan.hasChildElements) :
+          this.onFloorDeleteClick
         }
       ] as ActionButton[];
     }
@@ -747,6 +802,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
             floors.splice(floorIndex, 1, updatedFloor);
             draft.selectedFloor = updatedFloor;
           }
+          draft.dataChanged = false;
         })
       );
     }
@@ -823,6 +879,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           rooms.splice(roomIndex, 1, updatedRoom);
           draft.selectedRoom = updatedRoom;
         }
+        draft.dataChanged = false;
       })
     );
   }
@@ -838,6 +895,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     }
 
     const groupToCreate: ExhibitionDeviceGroup = {
+      visitorSessionStartStrategy: DeviceGroupVisitorSessionStartStrategy.Endothers,
       name: strings.floorPlan.deviceGroup.new,
       allowVisitorSessionCreation: false,
       roomId: selectedRoom.id,
@@ -873,6 +931,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (groupIndex > -1) {
           deviceGroups.splice(groupIndex, 1, updatedDeviceGroup);
         }
+        draft.dataChanged = false;
       })
     );
   }
@@ -975,6 +1034,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           devices.splice(deviceIndex, 1, updatedDevice);
           draft.selectedDevice = updatedDevice;
         }
+        draft.dataChanged = false;
       })
     );
   }
@@ -1057,6 +1117,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
             draft.selectedAntenna = updatedAntenna;
           }
         }
+        draft.dataChanged = false;
       })
     );
   }
@@ -1221,7 +1282,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const updatedFloor: ExhibitionFloor = { ...selectedFloor, [name as keyof ExhibitionFloor]: value };
     this.setState({
-      selectedFloor: updatedFloor
+      selectedFloor: updatedFloor,
+      dataChanged: true
     });
   }
 
@@ -1239,7 +1301,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const updatedRoom: ExhibitionRoom = { ...selectedRoom, [name as keyof ExhibitionRoom]: value };
     this.setState({
-      selectedRoom: updatedRoom
+      selectedRoom: updatedRoom,
+      dataChanged: true
     });
   }
 
@@ -1257,7 +1320,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const updatedRoom: ExhibitionRoom = { ...selectedRoom, ["color" as keyof ExhibitionRoom]: color.hex };
     this.setState({
-      selectedRoom: updatedRoom
+      selectedRoom: updatedRoom,
+      dataChanged: true
     });
   }
 
@@ -1277,7 +1341,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       [name as keyof ExhibitionDeviceGroup]: name === "allowVisitorSessionCreation" ? checked : value
     };
     this.setState({
-      selectedDeviceGroup: updatedDeviceGroup
+      selectedDeviceGroup: updatedDeviceGroup,
+      dataChanged: true
     });
   }
 
@@ -1296,7 +1361,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const updatedDevice: ExhibitionDevice = { ...selectedDevice, [name as keyof ExhibitionDevice]: value };
 
     this.setState({
-      selectedDevice: updatedDevice
+      selectedDevice: updatedDevice,
+      dataChanged: true
     });
   }
 
@@ -1326,7 +1392,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const updatedAntenna: RfidAntenna = { ...selectedAntenna, [name as keyof RfidAntenna]: value };
 
     this.setState({
-      selectedAntenna: updatedAntenna
+      selectedAntenna: updatedAntenna,
+      dataChanged: true
     });
   }
 
