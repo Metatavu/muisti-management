@@ -627,6 +627,34 @@ export interface IStrings extends LocalizedStringsMethods {
     title: string;
   };
 
+  reception: {
+    title: string;
+    registerNewVisitor: string;
+    language: string;
+    selectLanguageTitle: string;
+    selectLanguage: string;
+    checkEmail: string;
+    registerTag: string;
+    visitor: {
+      tag: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      number: string;
+      birthYear: string;
+    };
+    saveEmail: string;
+    saveVisitor: string;
+    confirmation: string;
+    return: string;
+    errorMessages: {
+      required: string;
+      email: string;
+      number: string;
+      minLength: string;
+    };
+  };
+
 }
 
 const strings: IStrings = new LocalizedStrings({

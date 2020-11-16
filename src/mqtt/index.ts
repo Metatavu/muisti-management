@@ -1,5 +1,4 @@
 /* eslint-disable new-parens */
-import * as _ from "lodash";
 import * as mqtt from "mqtt";
 import { IClientOptions } from "mqtt";
 
@@ -13,9 +12,9 @@ export type OnMessageCallback = (message: any) => void;
  * Class that handles MQTT connection
  */
 export class Mqtt {
-  
+
   private client: mqtt.MqttClient | null;
-  private subscribers: Map<String, Array<OnMessageCallback>>;
+  private subscribers: Map<string, OnMessageCallback[]>;
   private connecting: boolean;
 
   /**
@@ -25,12 +24,11 @@ export class Mqtt {
     this.client = null;
     this.connecting = false;
     this.subscribers = new Map();
-    
   }
 
   /**
    * Publishes a message
-   * 
+   *
    * @param topic topic
    * @param message message
    * @returns promise for sent package
@@ -40,7 +38,7 @@ export class Mqtt {
       if (!this.client) {
         throw new Error("No client");
       }
-  
+
       this.client.publish(topic, JSON.stringify(message), (error?: Error, packet?: mqtt.Packet) => {
         if (error) {
           reject(error);
@@ -50,10 +48,10 @@ export class Mqtt {
       });
     });
   }
-  
+
   /**
    * Subscribes to given topic
-   * 
+   *
    * @param topic topic
    * @param onMessage message handler
    */
@@ -63,13 +61,13 @@ export class Mqtt {
       const topicSubscribers = this.subscribers.get(topic) || [];
       topicSubscribers.push(onMessage);
       this.subscribers.set(topic, topicSubscribers);
-      client.subscribe(topic);      
+      client.subscribe(topic);
     }
   }
-  
+
   /**
    * Unsubscribes from given topic
-   * 
+   *
    * @param topic topic
    * @param onMessage message handler
    */
@@ -78,7 +76,7 @@ export class Mqtt {
     if (client) {
       client.unsubscribe(topic);
       const topicSubscribers = this.subscribers.get(topic) || [];
-      this.subscribers.set(topic, topicSubscribers.filter((topicSubscriber) => {
+      this.subscribers.set(topic, topicSubscribers.filter(topicSubscriber => {
         return topicSubscriber !== onMessage;
       }));
     }
@@ -105,7 +103,7 @@ export class Mqtt {
 
   /**
    * Returns whether client is connected
-   * 
+   *
    * @returns whether client is connected
    */
   public isConnected() {
@@ -130,7 +128,7 @@ export class Mqtt {
    * Disconnects from the server
    */
   public async disconnect() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.client && this.client.connected) {
         this.client.end(false, resolve);
       } else {
@@ -141,11 +139,11 @@ export class Mqtt {
 
   /**
    * Waits for connection connecting
-   * 
+   *
    * @returns promise for connection not connecting
    */
   private waitConnectingDelayed(): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve(!this.connecting);
       }, 100);
@@ -154,15 +152,15 @@ export class Mqtt {
 
   /**
    * Connects the MQTT client
-   * 
+   *
    * @returns promise for connection
    */
   private doConnect() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.client && this.client.connected) {
         return resolve();
       }
-      
+
       const secure = process.env.REACT_APP_MQTT_SECURE !== "false";
       const host = process.env.REACT_APP_MQTT_HOST;
       const port = parseInt(process.env.REACT_APP_MQTT_PORT || "") || undefined;
@@ -171,8 +169,8 @@ export class Mqtt {
       const username = process.env.REACT_APP_MQTT_USERNAME;
       const password = process.env.REACT_APP_MQTT_PASSWORD;
 
-      const url = `${protocol}${host}:${port}${path}`; 
-      const options: IClientOptions = { 
+      const url = `${protocol}${host}:${port}${path}`;
+      const options: IClientOptions = {
         host: host,
         port: port,
         keepalive: 30,
@@ -181,13 +179,11 @@ export class Mqtt {
       };
 
       this.client = mqtt.connect(url, options);
-      
+
       this.client.on("close", this.onClientClose.bind(this));
       this.client.on("offline", this.onClientOffline.bind(this));
       this.client.on("error", this.onClientError.bind(this));
       this.client.on("message", this.onClientMessage.bind(this));
-
-      
 
       this.client.once("connect", () => {
         this.onClientConnect();

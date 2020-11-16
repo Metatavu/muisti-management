@@ -24,7 +24,7 @@ import GroupContentVersionsScreen from "./screens/group-content-versions-screen"
 import LayoutsScreen from "./screens/layouts-screen";
 import LayoutScreen from "./screens/layout-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
-import ReceiptionScreen from "./screens/receiption-screen";
+import ReceptionScreen from "./screens/reception-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
@@ -216,11 +216,12 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
-                      path="/reception"
+                      path="/exhibitions/:exhibitionId/reception"
                       exact={ true }
-                      render={({ history }) => (
-                        <ReceiptionScreen
+                      render={({ history, match }) => (
+                        <ReceptionScreen
                           history={ history }
+                          exhibitionId={ match.params.exhibitionId }
                         />
                       )}
                     />

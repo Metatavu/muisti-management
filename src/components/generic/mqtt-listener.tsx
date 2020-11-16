@@ -23,12 +23,12 @@ export default class MqttListener extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
     super(props);
-    this.state = { 
+    this.state = {
       connected: false
     };
   }
@@ -43,7 +43,7 @@ export default class MqttListener extends React.Component<Props, State> {
 
     try {
       await mqtt.connect();
-      
+
       this.setState({
         connected: true
       });
@@ -55,7 +55,7 @@ export default class MqttListener extends React.Component<Props, State> {
   /**
    * Component will unmount life cycle event
    */
-  public componentWillUnmount() {
+  public componentWillUnmount = () => {
     this.setState({
       connected: false
     });
@@ -63,10 +63,10 @@ export default class MqttListener extends React.Component<Props, State> {
     mqtt.disconnect();
   }
 
-  /** 
+  /**
    * Component render method
    */
-  public render() {
+  public render = () => {
     if (this.state.connected) {
       return this.props.children(mqtt);
     }

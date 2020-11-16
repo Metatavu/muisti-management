@@ -54,6 +54,7 @@
     "react-scripts": "3.4.3",
     "react-simple-tree-menu": "^1.1.15",
     "react-zoom-pan-pinch": "^1.6.1",
+    "simple-react-validator": "^1.6.0",
     "slugify": "^1.4.0",
     "tinycolor2": "^1.4.1",
     "typescript": "~3.7.2",
