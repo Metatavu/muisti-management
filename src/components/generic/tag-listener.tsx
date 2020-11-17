@@ -3,6 +3,7 @@ import * as React from "react";
 import strings from "../../localization/strings";
 import { Mqtt } from "../../mqtt";
 import styles from "../../styles/components/generic/tag-listener";
+import logo from "../../resources/gfx/muisti-logo.png";
 
 /**
  * Interface representing component properties
@@ -64,18 +65,21 @@ class TagListener extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div
-        className={ classes.container }
-      >
-        <Typography
-          className={ classes.text }
-          variant="h3"
-          onClick={ () => this.props.onTagRegister("123456789") }
-        >
-          { strings.reception.registerTag }
-        </Typography>
+      <div className={ classes.container }>
+        <div className={ classes.logoContainer }>
+          <img alt="Muisti logo" src={ logo } />
+        </div>
+        <div className={ classes.formContainer }>
+          <Typography
+            className={ classes.text }
+            variant="h3"
+            onClick={ () => this.props.onTagRegister("123456789") }
+            >
+            { strings.reception.registerTag }
+          </Typography>
+        </div>
       </div>
-    );
+  );
   }
 
   /**

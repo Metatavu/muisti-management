@@ -16,7 +16,8 @@ import { setDeviceModels } from "../../actions/devices";
 import TagListener from "../generic/tag-listener";
 import MqttListener from "../generic/mqtt-listener";
 import Api from "../../api/api";
-import SimpleReactValidator from 'simple-react-validator';
+import SimpleReactValidator from "simple-react-validator";
+import logo from "../../resources/gfx/muisti-logo.png";
 
 /**
  * Component props
@@ -173,17 +174,20 @@ export class ReceptionScreen extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div
-        className={ classes.container }
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={ this.onRegisterNewVisitorClick }
-          className={ classes.registerButton }
-        >
-          { strings.reception.registerNewVisitor }
-        </Button>
+      <div className={ classes.container }>
+        <div className={ classes.logoContainer }>
+          <img alt="Muisti logo" src={ logo } />
+        </div>
+        <div className={ classes.formContainer }>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={ this.onRegisterNewVisitorClick }
+            className={ classes.registerButton }
+            >
+            { strings.reception.registerNewVisitor }
+          </Button>
+        </div>
       </div>
     );
   }
@@ -208,36 +212,40 @@ export class ReceptionScreen extends React.Component<Props, State> {
     });
 
     return (
-      <div className={ classes.formContainer }>
-        <Typography
-          className={ classes.title }
-          variant="h3"
-        >
-          { strings.reception.selectLanguageTitle }
-        </Typography>
+      <div className={ classes.container }>
+        <div className={ classes.logoContainer }>
+          <img alt="Muisti logo" src={ logo } />
+        </div>
+        <div className={ classes.formContainer }>
+          <Typography
+            className={ classes.title }
+            variant="h3"
+          >
+            { strings.reception.selectLanguageTitle }
+          </Typography>
+          <InputLabel id="language">{ strings.reception.language }</InputLabel>
+            <Select
+              label={ strings.reception.language }
+              labelId="languageLabel"
+              variant="outlined"
+              className={ classes.select }
+              fullWidth
+              onChange={ this.onLanguageChange }
+              name={ "language" }
+              value={ visitor.language }
+              >
+              { selectOptions }
+            </Select>
 
-        <InputLabel id="language">{ strings.reception.language }</InputLabel>
-          <Select
-            label={ strings.reception.language }
-            labelId="languageLabel"
-            variant="outlined"
-            className={ classes.select }
-            fullWidth
-            onChange={ this.onLanguageChange }
-            name={ "language" }
-            value={ visitor.language }
-            >
-            { selectOptions }
-          </Select>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={ this.onLanguageSaveClick }
-          className={ classes.saveButton }
-        >
-          { strings.reception.selectLanguage }
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={ this.onLanguageSaveClick }
+            className={ classes.saveButton }
+          >
+            { strings.reception.selectLanguage }
+          </Button>
+        </div>
       </div>
     );
   }
@@ -317,7 +325,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
           className={ classes.title }
           variant="h3"
         >
-          { `${strings.reception.visitor.tag}: ${tag}` }
+          { `${ strings.reception.visitor.tag }: ${ tag }` }
         </Typography>
 
         { this.renderTextField(strings.reception.visitor.firstName, "firstName", "required|min:3", visitor.firstName) }

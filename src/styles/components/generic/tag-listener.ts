@@ -1,16 +1,36 @@
 import { createStyles } from "@material-ui/core";
+import theme from "../../theme";
 
 export default createStyles({
 
   container: {
-    display: "flex"
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "column",
+    backgroundColor: "#F5EFEA"
   },
 
-  text: {
-    marginTop: 25,
+  logoContainer: {
+    flex: 1,
+    marginTop: theme.spacing(5),
+    width: 200,
+    height: 200,
+    "& img": {
+      width: "100%"
+    }
+  },
+
+  formContainer: {
     display: "flex",
-    justifyContent: "center",
-    flexGrow: 1
-  }
+    flex: 3,
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    padding: theme.spacing(5),
+    backgroundColor: "#F5EFEA"
+  },
+
+  text: {}
 
 });
