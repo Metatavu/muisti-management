@@ -1697,16 +1697,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
         const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+
         draft.selectedPage = selectedPage;
         draft.selectedLayoutView = undefined;
 
-        /**
-         * TODO: Will need a update handler that can update page resources when layout is changed
-         * WITHOUT deleting already existing data
-         */
-        if (selectedPage.resources.length < 1) {
-          draft.selectedPage.resources = resourceHolder.resources;
-        }
+        resourceHolder.resources
+          .filter(layoutResource => !selectedPage.resources.find(pageResource => pageResource.id === layoutResource.id))
+          .forEach(missingLayoutResource => {
+            selectedPage.resources.push(missingLayoutResource);
+          });
 
         const tempTriggers = [ ...draft.selectedPage.eventTriggers ] as ExhibitionPageEventTrigger[];
         tempTriggers.forEach(trigger => {
