@@ -73,7 +73,6 @@ class TagListener extends React.Component<Props, State> {
           <Typography
             className={ classes.text }
             variant="h3"
-            onClick={ () => this.props.onTagRegister("123456789") }
             >
             { strings.reception.registerTag }
           </Typography>
