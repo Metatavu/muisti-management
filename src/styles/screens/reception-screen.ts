@@ -25,7 +25,8 @@ export default createStyles({
 
   logoContainer: {
     flex: 1,
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(10),
+    marginBottom: theme.spacing(5),
     width: 200,
     height: 200,
     "& img": {
@@ -36,10 +37,23 @@ export default createStyles({
   registerButton: {
     width: "80%",
     fontSize: 20,
+    maxWidth: 360,
+  },
+
+  saveButton: {
+    width: "80%",
+    fontSize: 20,
+    maxWidth: 360,
+    marginTop: theme.spacing(5),
   },
 
   select: {
+    width: "80%",
+    maxWidth: 360,
+  },
 
+  languageSelectControl: {
+    marginTop: theme.spacing(5),
   },
 
   formContainer: {
@@ -48,12 +62,14 @@ export default createStyles({
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
-    padding: theme.spacing(5),
+    paddingTop: theme.spacing(5),
+    paddingBottom: theme.spacing(5),
+    paddingLeft: theme.spacing(10),
+    paddingRight: theme.spacing(10),
     backgroundColor: "#F5EFEA"
   },
 
   title: {
-    marginTop: theme.spacing(5),
     display: "flex",
     justifyContent: "center"
   },
@@ -62,9 +78,8 @@ export default createStyles({
     marginTop: theme.spacing(5),
   },
 
-  saveButton: {
+  visitorTagContainer: {
     marginTop: theme.spacing(5),
-    fontSize: 20,
-  },
+  }
 
 });

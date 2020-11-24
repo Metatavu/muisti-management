@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/screens/reception-screen";
-import { WithStyles, withStyles, CircularProgress, Typography, Button, TextField, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Typography, Button, TextField, InputLabel, MenuItem, Select, FormControl } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { ContentVersion, DeviceModel, Visitor } from "../../generated/client";
 import { AccessToken } from '../../types';
@@ -223,19 +223,22 @@ export class ReceptionScreen extends React.Component<Props, State> {
           >
             { strings.reception.selectLanguageTitle }
           </Typography>
-          <InputLabel id="language">{ strings.reception.language }</InputLabel>
+          <FormControl
+            className={ classes.languageSelectControl }
+          >
+            <InputLabel id="languageLabel">
+              { strings.reception.language }
+            </InputLabel>
             <Select
               label={ strings.reception.language }
               labelId="languageLabel"
-              variant="outlined"
-              className={ classes.select }
-              fullWidth
               onChange={ this.onLanguageChange }
               name={ "language" }
               value={ visitor.language }
               >
               { selectOptions }
             </Select>
+          </FormControl>
 
           <Button
             variant="contained"
@@ -262,24 +265,29 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     return (
-      <div className={ classes.formContainer }>
-        <Typography
-          className={ classes.title }
-          variant="h3"
-        >
-          { strings.reception.checkEmail }
-        </Typography>
-        { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
+      <div className={ classes.container }>
+        <div className={ classes.logoContainer }>
+          <img alt="Muisti logo" src={ logo } />
+        </div>
+        <div className={ classes.formContainer }>
+          <Typography
+            className={ classes.title }
+            variant="h3"
+            >
+            { strings.reception.checkEmail }
+          </Typography>
+          { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
 
-        <Button
-          disabled={ !this.validator.allValid() }
-          variant="contained"
-          color="primary"
-          onClick={ this.onEmailSaveClick }
-          className={ classes.saveButton }
-        >
-          { strings.reception.saveEmail }
-        </Button>
+          <Button
+            disabled={ !this.validator.allValid() }
+            variant="contained"
+            color="primary"
+            onClick={ this.onEmailSaveClick }
+            className={ classes.saveButton }
+            >
+            { strings.reception.saveEmail }
+          </Button>
+        </div>
       </div>
     );
   }
@@ -325,7 +333,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
           className={ classes.title }
           variant="h3"
         >
-          { `${ strings.reception.visitor.tag }: ${ tag }` }
+          { strings.reception.visitor.visitorInfoFormTitle }
         </Typography>
 
         { this.renderTextField(strings.reception.visitor.firstName, "firstName", "required|min:3", visitor.firstName) }
@@ -343,6 +351,9 @@ export class ReceptionScreen extends React.Component<Props, State> {
         >
           { strings.reception.saveVisitor }
         </Button>
+        <div className={ classes.visitorTagContainer }>
+          { `${ strings.reception.visitor.tag }: ${ tag }` }
+        </div>
       </div>
     );
   }

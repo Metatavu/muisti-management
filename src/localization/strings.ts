@@ -636,6 +636,7 @@ export interface IStrings extends LocalizedStringsMethods {
     checkEmail: string;
     registerTag: string;
     visitor: {
+      visitorInfoFormTitle: string;
       tag: string;
       firstName: string;
       lastName: string;

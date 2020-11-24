@@ -13,7 +13,8 @@ export default createStyles({
 
   logoContainer: {
     flex: 1,
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(10),
+    marginBottom: theme.spacing(5),
     width: 200,
     height: 200,
     "& img": {

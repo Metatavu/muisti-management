@@ -640,6 +640,7 @@
     "checkEmail": "Give email address",
     "registerTag" : "Register RFID-tag",
     "visitor": {
+      "visitorInfoFormTitle": "Visitor information",
       "tag": "RFID-tag",
       "firstName": "First name",
       "lastName": "Last name",

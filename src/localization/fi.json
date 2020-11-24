@@ -638,6 +638,7 @@
     "checkEmail": "Syötä sähköpostiosoite",
     "registerTag" : "Rekisteröi RFID-tagi",
     "visitor": {
+      "visitorInfoFormTitle": "Vierailijan tiedot",
       "tag": "RFID-tagi",
       "firstName": "Etunimi",
       "lastName": "Sukunimi",
