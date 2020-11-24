@@ -36,7 +36,7 @@ export default class FileUpload {
    *
    * @param folder folder
    * @param file file
-   * @returns {Promise<any>}
+   * @returns presigned post response
    */
   public static getPresignedPostData = (folder: string, file: File): Promise<PresignedPostResponse> => {
     return new Promise(resolve => {
@@ -62,7 +62,6 @@ export default class FileUpload {
    *
    * @param presignedPostData
    * @param file
-   * @returns {Promise<any>}
    */
   public static uploadFileToS3 = (presignedPostData: PresignedPostData, file: File) => {
     return new Promise((resolve, reject) => {
