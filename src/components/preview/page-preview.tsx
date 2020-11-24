@@ -3,7 +3,7 @@ import * as React from "react";
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../styles/page-preview";
 import PagePreviewComponentEditor from "./components/page-preview-component";
-import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResource, ScreenOrientation, ExhibitionDevice, ExhibitionPage } from "../../generated/client";
 import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import AndroidUtils from "../../utils/android-utils";
@@ -14,6 +14,8 @@ import { TabHolder } from "../content-editor/constants";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  device?: ExhibitionDevice;
+  page?: ExhibitionPage;
   view?: PageLayoutView;
   selectedView?: PageLayoutView;
   layer?: number;
@@ -24,8 +26,8 @@ interface Props extends WithStyles<typeof styles> {
   deviceOrientation?: ScreenOrientation;
   tabMap?: Map<string, TabHolder>;
 
-  onViewClick?: (view: PageLayoutView) => void;
-  onTabClick?: (viewId: string, newIndex: number) => void;
+  onViewClick?: (device: ExhibitionDevice, page: ExhibitionPage, view: PageLayoutView) => void;
+  onTabClick?: (deviceViewId: string, newIndex: number) => void;
 }
 
 /**
@@ -65,7 +67,6 @@ class PagePreview extends React.Component<Props, State> {
       layer,
       deviceOrientation,
       tabMap,
-      onViewClick,
       onTabClick
     } = this.props;
 
@@ -77,7 +78,17 @@ class PagePreview extends React.Component<Props, State> {
     }
 
     return (
-      <div className={ classes.root } style={{ position: "absolute", width: width, height: height  }}>
+      <div
+        className={ classes.root }
+        style={{
+          width: width,
+          height: height,
+          minWidth: width,
+          minHeight: height,
+          maxWidth: width,
+          maxHeight: height
+        }}
+      >
         <PagePreviewComponentEditor
           view={ view }
           selectedView={ selectedView }
@@ -86,7 +97,7 @@ class PagePreview extends React.Component<Props, State> {
           scale={ scale }
           resourceMap={ this.getResourceMap() }
           handleLayoutProperties={ this.onHandleLayoutProperties }
-          onViewClick={ onViewClick }
+          onViewClick={ this.onViewClick }
           onTabClick={ onTabClick }
           tabMap={ tabMap }
         />
@@ -195,6 +206,18 @@ class PagePreview extends React.Component<Props, State> {
     });
 
     return result;
+  }
+
+  /**
+   * Event handler for on view click
+   * 
+   * @param view view
+   */
+  private onViewClick = (view: PageLayoutView) => {
+    const { device, page, onViewClick } = this.props;
+    if (device && page && onViewClick) {
+      onViewClick(device, page, view);
+    }
   }
 
 }

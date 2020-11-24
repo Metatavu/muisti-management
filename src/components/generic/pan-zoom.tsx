@@ -87,7 +87,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
         defaultPositionX={ defaultPositionX }
         defaultPositionY={ defaultPositionY }
       >
-        { (opts: any ) => this.renderContents(opts) }
+        { (opts: any) => this.renderContents(opts) }
       </TransformWrapper>
     );
   }
@@ -99,17 +99,21 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    */
   private renderContents = (opts: any) => {
     const { classes } = this.props;
+    const { containerWidth, containerHeight } = this.state;
 
     return (
-      <div style={{ position: "relative" }}>
+      <div className={ classes.root }>
         <div className={ classes.controlContainer }>
           <Button variant="contained" color="primary" onClick={ opts.zoomIn }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ opts.zoomOut }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ opts.resetTransform }>100%</Button>
-          <span> { this.getScalePercentage(opts.scale || 0) } </span>
+          <span>{ this.getScalePercentage(opts.scale || 0) }</span>
         </div>
         <TransformComponent>
-          <div style={{ width: this.state.containerWidth, height: this.state.containerHeight }}>
+          <div
+            className={ classes.contentContainer }
+            style={{ width: containerWidth, height: containerHeight }}
+          >
             { this.props.children }
           </div>
         </TransformComponent>

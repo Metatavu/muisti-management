@@ -236,6 +236,8 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     return(
       <FileUploader
         controlled
+        filesLimit={ 1000 }
+        maxFileSize={ 1073741824 }
         open={ uploadOpen }
         onClose={ this.closeDialog }
         buttonText={ strings.mediaLibrary.addMedia }
@@ -314,14 +316,21 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       return;
     }
 
-    const file = files[0];
-    if (file) {
-      await FileUpload.uploadFile(file, `${selectedUploadFolder.fileName}`);
-      this.fetchFolderData(selectedUploadFolder.uri);
-      this.setState({
-        uploadOpen: false
-      });
-    }
+    await Promise.all(files.map(async (file) => {
+      const presignedPostResponse = await FileUpload.getPresignedPostData(selectedUploadFolder.fileName, file);
+      if (presignedPostResponse.error) {
+        throw new Error(presignedPostResponse.message || "Error when creating presigned post request");
+      }
+      
+      await FileUpload.uploadFileToS3(presignedPostResponse.data, file);
+    }));
+
+    
+
+    this.fetchFolderData(selectedUploadFolder.uri);
+    this.setState({
+      uploadOpen: false
+    });
   }
 
   /**

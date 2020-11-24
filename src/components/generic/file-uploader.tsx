@@ -8,16 +8,21 @@ import strings from "../../localization/strings";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  uploadKey?: string;
-  allowedFileTypes: string[];
-  buttonText?: string;
-  controlled?: boolean;
   open?: boolean;
+  uploadKey?: string;
+  buttonText?: string;
+  /**
+   * File size in megabytes
+   */
+  maxFileSize?: number;
+  controlled?: boolean;
+  filesLimit?: number;
+  allowedFileTypes: string[];
   onClose?: () => void;
 
   /**
    * Event callback for upload save click
-   * 
+   *
    * @param files files
    * @param key  upload key
    */
@@ -63,7 +68,7 @@ class FileUploader extends React.Component<Props, State> {
    */
   public render() {
     const { classes, controlled, buttonText } = this.props;
-    
+
     if (this.state.uploading) {
       return (
         <div className={ classes.imageUploadLoaderContainer }>
@@ -89,7 +94,8 @@ class FileUploader extends React.Component<Props, State> {
    * Render upload dialog
    */
   private renderUploadDialog = () => {
-    const { allowedFileTypes, controlled } = this.props;
+    const { allowedFileTypes, controlled, maxFileSize, filesLimit } = this.props;
+    const bytes = maxFileSize ? maxFileSize * 1000000 : 2000000;
 
     return (
       <DropzoneDialog
@@ -99,9 +105,9 @@ class FileUploader extends React.Component<Props, State> {
         onSave={ this.onSave }
         cancelButtonText={ strings.fileUpload.cancel }
         submitButtonText={ strings.fileUpload.upload }
-        filesLimit={ 1 }
-        maxFileSize={ 200000000 }
         showPreviewsInDropzone={ false }
+        maxFileSize={ bytes }
+        filesLimit={ filesLimit || 1 }
       />
     );
   }
