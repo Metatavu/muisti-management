@@ -69,7 +69,6 @@ export class ReceptionScreen extends React.Component<Props, State> {
           phone: strings.reception.errorMessages.number,
           min: strings.reception.errorMessages.minLength
         },
-        // TODO: We should have own component for error messages
         element: (message: string) => <p style={{ color: "red", margin: 0 }}>{ message } </p>
       }
     );
