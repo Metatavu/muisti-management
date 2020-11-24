@@ -27,6 +27,7 @@ interface Props extends WithStyles<typeof styles> {
   devices?: ExhibitionDevice[];
   dataChanged?: boolean;
   openDataChangedPrompt?: boolean;
+  hideHeader?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
 }
@@ -68,7 +69,8 @@ class BasicLayout extends React.Component<Props, State> {
       noTabs,
       keycloak,
       dataChanged,
-      openDataChangedPrompt
+      openDataChangedPrompt,
+      hideHeader
     } = this.props;
     return (
       <div className={ classes.root }>
@@ -80,6 +82,7 @@ class BasicLayout extends React.Component<Props, State> {
           noBackButton={ noBackButton }
           noTabs={ noTabs }
           title={ title }
+          hideHeader={ hideHeader }
         />
         <div className={ classes.content }>
           { this.props.children }

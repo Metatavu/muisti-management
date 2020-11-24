@@ -25,6 +25,7 @@ interface Props extends WithStyles<typeof styles> {
   title: string;
   error?: string | Error;
   clearError?: () => void;
+  hideHeader?: boolean;
 }
 
 /**
@@ -69,7 +70,8 @@ class TopBar extends React.Component<Props, State> {
       noBackButton,
       title,
       noTabs,
-      actionBarButtons
+      actionBarButtons,
+      hideHeader
     } = this.props;
 
     const firstName = (keycloak.profile && keycloak.profile.firstName) ?? "";
@@ -77,7 +79,7 @@ class TopBar extends React.Component<Props, State> {
     const initials = `${ firstName.charAt(0).toUpperCase() }`;
 
     return (
-      <header className={ classes.root }>
+      <header className={ classes.root } style={ hideHeader ? { display: "none" } : {} }>
 
         <div className={ classes.topRow }>
           <div className={ classes.breadcrumbs }>

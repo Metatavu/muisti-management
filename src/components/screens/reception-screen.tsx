@@ -114,6 +114,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
         error={ error }
         noBackButton
         noTabs={ true }
+        hideHeader={ true }
       >
         { this.resolveComponentToRender() }
       </BasicLayout>
