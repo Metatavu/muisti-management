@@ -328,31 +328,36 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     return (
-      <div className={ classes.formContainer }>
-        <Typography
-          className={ classes.title }
-          variant="h3"
-        >
-          { strings.reception.visitor.visitorInfoFormTitle }
-        </Typography>
+      <div className={ classes.container }>
+        <div className={ classes.logoContainer }>
+          <img alt="Muisti logo" src={ logo } />
+        </div>
+        <div className={ classes.formContainer }>
+          <Typography
+            className={ classes.title }
+            variant="h3"
+          >
+            { strings.reception.visitor.visitorInfoFormTitle }
+          </Typography>
 
-        { this.renderTextField(strings.reception.visitor.firstName, "firstName", "required|min:3", visitor.firstName) }
-        { this.renderTextField(strings.reception.visitor.lastName, "lastName", "required|min:3", visitor.lastName) }
-        { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
-        { this.renderTextField(strings.reception.visitor.number, "phone", "required|phone", visitor.phone) }
-        { this.renderTextField(strings.reception.visitor.birthYear, "birthYear", "required|numeric", visitor.birthYear, "number") }
+          { this.renderTextField(strings.reception.visitor.firstName, "firstName", "required|min:3", visitor.firstName) }
+          { this.renderTextField(strings.reception.visitor.lastName, "lastName", "required|min:3", visitor.lastName) }
+          { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
+          { this.renderTextField(strings.reception.visitor.number, "phone", "required|phone", visitor.phone) }
+          { this.renderTextField(strings.reception.visitor.birthYear, "birthYear", "required|numeric", visitor.birthYear, "number") }
 
-        <Button
-          disabled={ !this.validator.allValid() }
-          variant="contained"
-          color="primary"
-          onClick={ this.onSaveNewVisitorClick }
-          className={ classes.saveButton }
-        >
-          { strings.reception.saveVisitor }
-        </Button>
-        <div className={ classes.visitorTagContainer }>
-          { `${ strings.reception.visitor.tag }: ${ tag }` }
+          <Button
+            disabled={ !this.validator.allValid() }
+            variant="contained"
+            color="primary"
+            onClick={ this.onSaveNewVisitorClick }
+            className={ classes.saveButton }
+          >
+            { strings.reception.saveVisitor }
+          </Button>
+          <div className={ classes.visitorTagContainer }>
+            { `${ strings.reception.visitor.tag }: ${ tag }` }
+          </div>
         </div>
       </div>
     );

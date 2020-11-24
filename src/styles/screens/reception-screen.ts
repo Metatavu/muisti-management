@@ -20,7 +20,8 @@ export default createStyles({
     alignItems: "center",
     justifyContent: "space-around",
     flexDirection: "column",
-    backgroundColor: "#F5EFEA"
+    backgroundColor: "#F5EFEA",
+    overflow: "auto"
   },
 
   logoContainer: {
