@@ -629,6 +629,35 @@
 
   "spaces": {
     "title": "Spaces"
+  },
+
+  "reception": {
+    "title": "Reception",
+    "registerNewVisitor": "Register new visitor",
+    "language": "Language",
+    "selectLanguageTitle": "Select exhibition language",
+    "selectLanguage": "Select language",
+    "checkEmail": "Give email address",
+    "registerTag" : "Register RFID-tag",
+    "visitor": {
+      "visitorInfoFormTitle": "Visitor information",
+      "tag": "RFID-tag",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "number": "Phone number",
+      "birthYear": "Year of birth"
+    },
+    "saveEmail": "Save email",
+    "saveVisitor": "Save visitor",
+    "confirmation": "Visitor created!",
+    "return": "Return to visitor registration",
+    "errorMessages": {
+      "required": "Required",
+      "email": "Email address is missing or invalid",
+      "number": "Phone number is missing or invalid",
+      "minLength": "Input value must be at least 3 characters long"
+    }
   }
 
 }

@@ -627,6 +627,35 @@
 
   "spaces": {
     "title": "Tilat"
+  },
+
+  "reception": {
+    "title": "Lippukassa",
+    "registerNewVisitor": "Rekisteröi uusi vierailija",
+    "language": "Kieliversio",
+    "selectLanguageTitle": "Valitse kieli",
+    "selectLanguage": "Valitse",
+    "checkEmail": "Syötä sähköpostiosoite",
+    "registerTag" : "Rekisteröi RFID-tagi",
+    "visitor": {
+      "visitorInfoFormTitle": "Vierailijan tiedot",
+      "tag": "RFID-tagi",
+      "firstName": "Etunimi",
+      "lastName": "Sukunimi",
+      "email": "Sähköpostiosoite",
+      "number": "Puhelinnumero",
+      "birthYear": "Syntymävuosi"
+    },
+    "saveEmail": "Tallenna sähköposti",
+    "saveVisitor": "Tallenna vierailija",
+    "confirmation": "Vierailija luotu!",
+    "return": "Palaa vierailija luontiin",
+    "errorMessages": {
+      "required": "Pakollinen tieto",
+      "email": "Sähköpostiosoite puuttuu tai on virheellinen",
+      "number": "Puhelinnumero puuttuu tai on virheellinen",
+      "minLength": "Kentän tulee olla vähintään 3 merkkiä pitkä"
+    }
   }
   
 }

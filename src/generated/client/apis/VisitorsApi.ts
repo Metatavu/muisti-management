@@ -46,6 +46,7 @@ export interface FindVisitorTagRequest {
 export interface ListVisitorsRequest {
     exhibitionId: string;
     tagId?: string;
+    email?: string;
 }
 
 export interface UpdateVisitorRequest {
@@ -250,6 +251,10 @@ export class VisitorsApi extends runtime.BaseAPI {
 
         if (requestParameters.tagId !== undefined) {
             queryParameters['tagId'] = requestParameters.tagId;
+        }
+
+        if (requestParameters.email !== undefined) {
+            queryParameters['email'] = requestParameters.email;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
