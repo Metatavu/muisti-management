@@ -48,6 +48,36 @@ export interface Visitor {
      * @type {string}
      * @memberof Visitor
      */
+    firstName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
+     */
+    lastName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
+     */
+    phone?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Visitor
+     */
+    birthYear?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
+     */
+    language: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Visitor
+     */
     readonly userId?: string;
     /**
      * 
@@ -89,6 +119,11 @@ export function VisitorFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'email': json['email'],
         'tagId': json['tagId'],
+        'firstName': !exists(json, 'firstName') ? undefined : json['firstName'],
+        'lastName': !exists(json, 'lastName') ? undefined : json['lastName'],
+        'phone': !exists(json, 'phone') ? undefined : json['phone'],
+        'birthYear': !exists(json, 'birthYear') ? undefined : json['birthYear'],
+        'language': json['language'],
         'userId': !exists(json, 'userId') ? undefined : json['userId'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -108,6 +143,11 @@ export function VisitorToJSON(value?: Visitor | null): any {
         
         'email': value.email,
         'tagId': value.tagId,
+        'firstName': value.firstName,
+        'lastName': value.lastName,
+        'phone': value.phone,
+        'birthYear': value.birthYear,
+        'language': value.language,
     };
 }
 
