@@ -578,6 +578,8 @@
         },
         "variableName": "User variable name",
         "variableValue": "User variable value",
+        "variableBooleanTrue": "Yes",
+        "variableBooleanFalse": "No",
         "selectPage": "Select page"
       },
 

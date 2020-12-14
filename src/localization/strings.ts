@@ -576,6 +576,8 @@ export interface IStrings extends LocalizedStringsMethods {
         };
         variableName: string;
         variableValue: string;
+        variableBooleanTrue: string;
+        variableBooleanFalse: string;
         selectPage: string;
       };
       tabs: {

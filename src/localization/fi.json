@@ -576,6 +576,8 @@
         },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
+        "variableBooleanTrue": "Kyllä",
+        "variableBooleanFalse": "Ei",
         "selectPage": "Valitse sivu"
       },
 
@@ -665,7 +667,7 @@
     "nameLabel": "Nimi",
     "typeLabel": "Tyyppi",
     "enumValuesLabel": "Sallitut arvot",
-    "typeBoolean": "Kyllä / ei",
+    "typeBoolean": "Kyllä / Ei",
     "typeNumber": "Numero",
     "typeText": "Teksti",
     "typeEnumerated": "Valinta",
