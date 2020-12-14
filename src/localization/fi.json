@@ -656,6 +656,23 @@
       "number": "Puhelinnumero puuttuu tai on virheellinen",
       "minLength": "Kentän tulee olla vähintään 3 merkkiä pitkä"
     }
+  },
+
+  "visitorVariables": {
+    "title": "Kävijämuuttujat",
+    "saveButton": "Tallenna",
+    "newButton": "Uusi",
+    "nameLabel": "Nimi",
+    "typeLabel": "Tyyppi",
+    "enumValuesLabel": "Sallitut arvot",
+    "typeBoolean": "Kyllä / ei",
+    "typeNumber": "Numero",
+    "typeText": "Teksti",
+    "typeEnumerated": "Valinta",
+    "newVariableName": "uusi",
+    "deleteConfirmTitle": "Oletko varma?",
+    "deleteConfirmText": "Oletko varma, että haluat poistaa kävijämuuttujan?",
+    "addEnumValue": "Lisää arvo"
   }
   
 }

@@ -658,6 +658,23 @@
       "number": "Phone number is missing or invalid",
       "minLength": "Input value must be at least 3 characters long"
     }
+  },
+
+  "visitorVariables": {
+    "title": "Visitor Variables",
+    "saveButton": "Save",
+    "newButton": "New",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "enumValuesLabel": "Allowed values",
+    "typeBoolean": "Yes / No",
+    "typeNumber": "Number",
+    "typeText": "Text",
+    "typeEnumerated": "Select",
+    "newVariableName": "new",
+    "deleteConfirmTitle": "Are you sure?",
+    "deleteConfirmText": "Are you sure that you wish to delete this visitor variable?",
+    "addEnumValue": "Add value"
   }
 
 }

@@ -656,6 +656,23 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  visitorVariables: {
+    title: string;
+    saveButton: string;
+    newButton: string;
+    nameLabel: string;
+    typeLabel: string;
+    enumValuesLabel: string;
+    typeBoolean: string;
+    typeNumber: string;
+    typeText: string;
+    typeEnumerated: string;
+    newVariableName: string;
+    deleteConfirmTitle: string;
+    deleteConfirmText: string;
+    addEnumValue: string;
+  };
+
 }
 
 const strings: IStrings = new LocalizedStrings({
