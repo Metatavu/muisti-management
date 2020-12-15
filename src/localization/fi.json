@@ -677,7 +677,8 @@
     "newVariableName": "uusi",
     "deleteConfirmTitle": "Oletko varma?",
     "deleteConfirmText": "Oletko varma, että haluat poistaa kävijämuuttujan?",
-    "addEnumValue": "Lisää arvo"
+    "addEnumValue": "Lisää arvo",
+    "valuesTitle": "Arvot"
   }
   
 }

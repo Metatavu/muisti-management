@@ -679,7 +679,8 @@
     "newVariableName": "new",
     "deleteConfirmTitle": "Are you sure?",
     "deleteConfirmText": "Are you sure that you wish to delete this visitor variable?",
-    "addEnumValue": "Add value"
+    "addEnumValue": "Add value",
+    "valuesTitle": "Values"
   }
 
 }

@@ -676,6 +676,7 @@ export interface IStrings extends LocalizedStringsMethods {
     deleteConfirmTitle: string;
     deleteConfirmText: string;
     addEnumValue: string;
+    valuesTitle: string;
   };
 
 }
