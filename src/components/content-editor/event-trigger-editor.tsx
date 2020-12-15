@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Checkbox } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";

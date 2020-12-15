@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, ListItem, List, ListItemSecondaryAction, ListItemText } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionRoom } from "../../generated/client";
@@ -16,6 +16,8 @@ import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import ArrowIcon from "@material-ui/icons/ChevronRight";
 
 /**
  * Component props
@@ -94,6 +96,22 @@ class RoomsScreen extends React.Component<Props, State> {
         breadcrumbs={ breadcrumbs }
       >
         { this.renderRoomCardsList() }
+        <ElementSettingsPane open={ true } title="Näyttelyn hallinta" width={ 320 }>
+          <List disablePadding>
+            <ListItem button onClick={ () => this.onReceptionNavigationClick() }>
+              <ListItemText primary={ "Vastaanotto" } />
+              <ListItemSecondaryAction>
+                <ArrowIcon />
+              </ListItemSecondaryAction>
+            </ListItem>
+            <ListItem button onClick={ () => this.onVisitorVariablesNavigationClick() }>
+              <ListItemText primary={ "Käyttäjän valintojen hallinta" } />
+              <ListItemSecondaryAction>
+                <ArrowIcon />
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+        </ElementSettingsPane>
       </BasicLayout>
     );
   }
@@ -187,6 +205,24 @@ class RoomsScreen extends React.Component<Props, State> {
   private onCardClick = (roomId: string, floorId: string) => {
     const { pathname } = this.props.history.location;
     this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
+  }
+
+  /**
+   * Event handler for reception navigation click
+   */
+  private onReceptionNavigationClick = () => {
+    const { pathname } = this.props.history.location;
+    const exhibitionPath = pathname.split("/content")[0];
+    this.props.history.replace(`${ exhibitionPath }/reception`);
+  }
+
+  /**
+   * Event handler for visirot variables navigation click
+   */
+  private onVisitorVariablesNavigationClick = () => {
+    const { pathname } = this.props.history.location;
+    const exhibitionPath = pathname.split("/content")[0];
+    this.props.history.replace(`${ exhibitionPath }/visitorVariables`);
   }
 }
 

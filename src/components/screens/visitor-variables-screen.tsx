@@ -1,25 +1,25 @@
 /* eslint-disable no-underscore-dangle */
+// eslint-disable-next-line max-len
+import { Button, CircularProgress, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Toolbar, Typography, WithStyles, withStyles } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
 import Api from "../../api/api";
-
-import { History } from "history";
+// eslint-disable-next-line max-len
+import { Exhibition, VisitorVariable, VisitorVariableType } from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/visitor-variables-screen/visitor-variables-editor-view";
-// eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem,List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Link } from "@material-ui/core";
-import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
-import { Exhibition, VisitorVariableType, VisitorVariable } from "../../generated/client";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton } from '../../types';
+import ConfirmDialog from "../generic/confirm-dialog";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton } from '../../types';
-import strings from "../../localization/strings";
-import DeleteIcon from '@material-ui/icons/Delete';
-import ConfirmDialog from "../generic/confirm-dialog";
+
+
 
 /**
  * Component props
@@ -109,10 +109,10 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.visitorVariables.title }>
             { this.renderVisitorVariablesList() }
           </ElementNavigationPane>
-          <EditorView>
+          <div style={{ padding: theme.spacing(4) }}>
             { this.renderEditor() }
-            { this.renderConfirmDeleteDialog() }
-           </EditorView>
+            { this.renderConfirmDeleteDialog() } 
+          </div>
         </div>
       </BasicLayout>
     );
@@ -125,7 +125,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     const { visitorVariables } = this.state;
     
     return (
-      <List>
+      <List disablePadding>
         {
           visitorVariables.map(visitorVariable => {
             const id = visitorVariable.id!;
@@ -134,10 +134,15 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
             const label = visitorVariable.type;
             
             return (
-              <ListItem key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
+              <ListItem button key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
                 <ListItemText primary={ name } secondary={ label } />
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete" onClick={ () => this.onDeleteVisitorVariableClick(visitorVariable) }>
+                  <IconButton 
+                    title={ strings.generic.delete }
+                    edge="end"
+                    aria-label="delete"
+                    onClick={ () => this.onDeleteVisitorVariableClick(visitorVariable) }
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -161,10 +166,8 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     return (
       <>
         <TextField
-          fullWidth
-          type="text"
+          style={{ marginBottom: theme.spacing(2) }}
           label={ strings.visitorVariables.nameLabel }
-          variant="filled"
           name="name"
           value={ selectedVisitorVariable.name }
           onChange={ this.onNameChange }
@@ -197,13 +200,16 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
     return (
       <>
-        <List>
+        <Toolbar disableGutters style={{ justifyContent: "space-between", marginTop: theme.spacing(1) }}>
+          <Typography variant="h3">Valinnat</Typography>
+          <Button variant="contained" color="primary" onClick={ this.onAddEnumItenClick }>
+            { strings.visitorVariables.addEnumValue }
+          </Button>
+        </Toolbar>
+        <List disablePadding dense>
           { selectedVisitorVariable._enum?.map(this.renderEnunEditorItem) }
         </List>
 
-        <Link onClick={ this.onAddEnumItenClick }>
-        { strings.visitorVariables.addEnumValue }
-        </Link>
       </>
     );
   }
@@ -216,12 +222,17 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private renderEnunEditorItem = (value: string, index: number) => {
     return (
-      <ListItem>
+      <ListItem disableGutters>
         <ListItemText>
           <TextField fullWidth={ true } value={ value } onChange={ event => this.onEnumItemChange(event.target.value, index) }/>
         </ListItemText>
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete" onClick={ () => this.onEnumItemDelete(index) }>
+          <IconButton 
+            size="small"
+            edge="end"
+            aria-label="delete"
+            onClick={ () => this.onEnumItemDelete(index) }
+          >
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -292,7 +303,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   private newVisitorVariable = async () => {
     const { accessToken, exhibitionId } = this.props;    
     const { visitorVariables } = this.state;
-   
+
     this.setState({
       loading: true
     });
