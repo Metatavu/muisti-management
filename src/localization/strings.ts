@@ -166,6 +166,9 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   exhibition: {
+    reception: string;
+    visitorVariablesManagement: string;
+    exhibitionManagement: string;
     content: string;
     tech: string;
     navigation: {

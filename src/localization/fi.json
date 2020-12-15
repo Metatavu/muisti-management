@@ -166,6 +166,9 @@
   },
 
   "exhibition": {
+    "reception": "Vastaanotto",
+    "visitorVariablesManagement": "Vierailijan valintojen hallinta",
+    "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
     "tech": "Tekniikka",
     "navigation": {

@@ -96,16 +96,16 @@ class RoomsScreen extends React.Component<Props, State> {
         breadcrumbs={ breadcrumbs }
       >
         { this.renderRoomCardsList() }
-        <ElementSettingsPane open={ true } title="Näyttelyn hallinta" width={ 320 }>
+        <ElementSettingsPane open={ true } title={ strings.exhibition.exhibitionManagement } width={ 320 }>
           <List disablePadding>
             <ListItem button onClick={ () => this.onReceptionNavigationClick() }>
-              <ListItemText primary={ "Vastaanotto" } />
+              <ListItemText primary={ strings.exhibition.reception } />
               <ListItemSecondaryAction>
                 <ArrowIcon />
               </ListItemSecondaryAction>
             </ListItem>
             <ListItem button onClick={ () => this.onVisitorVariablesNavigationClick() }>
-              <ListItemText primary={ "Käyttäjän valintojen hallinta" } />
+              <ListItemText primary={ strings.exhibition.visitorVariablesManagement } />
               <ListItemSecondaryAction>
                 <ArrowIcon />
               </ListItemSecondaryAction>

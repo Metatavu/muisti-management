@@ -166,6 +166,9 @@
   },
 
   "exhibition": {
+    "reception": "Reception",
+    "visitorVariablesManagement": "Visitor variables management",
+    "exhibitionManagement": "Exhibition management",
     "content": "Content",
     "tech": "Tech",
     "navigation": {
