@@ -429,6 +429,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private onTypeChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     const { selectedVisitorVariable } = this.state;
+
     if (!selectedVisitorVariable) {
       return;
     }
