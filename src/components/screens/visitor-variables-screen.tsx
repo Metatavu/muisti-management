@@ -228,7 +228,11 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     return (
       <ListItem disableGutters>
         <ListItemText>
-          <TextField fullWidth={ true } value={ value } onChange={ event => this.onEnumItemChange(event.target.value, index) }/>
+          <TextField
+            fullWidth={ true }
+            value={ value }
+            onChange={ event => this.onEnumItemChange(event.target.value, index) }
+          />
         </ListItemText>
         <ListItemSecondaryAction>
           <IconButton 
