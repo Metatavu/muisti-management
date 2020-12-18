@@ -203,7 +203,11 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
         <Typography variant="h3">
           { strings.visitorVariables.valuesTitle }
         </Typography>
-          <Button variant="contained" color="primary" onClick={ this.onAddEnumItenClick }>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={ this.onAddEnumItenClick }
+          >
             { strings.visitorVariables.addEnumValue }
           </Button>
         </Toolbar>
