@@ -8,7 +8,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import Api from "../../api/api";
-// eslint-disable-next-line max-len
 import { Exhibition, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
