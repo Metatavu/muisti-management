@@ -407,6 +407,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { selectedVisitorVariable } = this.state;
+
     if (!selectedVisitorVariable) {
       return;
     }
