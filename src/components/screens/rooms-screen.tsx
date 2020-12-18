@@ -96,7 +96,11 @@ class RoomsScreen extends React.Component<Props, State> {
         breadcrumbs={ breadcrumbs }
       >
         { this.renderRoomCardsList() }
-        <ElementSettingsPane open={ true } title={ strings.exhibition.exhibitionManagement } width={ 320 }>
+        <ElementSettingsPane
+          open={ true }
+          title={ strings.exhibition.exhibitionManagement }
+          width={ 320 }
+        >
           <List disablePadding>
             <ListItem button onClick={ () => this.onReceptionNavigationClick() }>
               <ListItemText primary={ strings.exhibition.reception } />
