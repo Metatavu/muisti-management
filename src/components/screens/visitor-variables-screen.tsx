@@ -570,5 +570,4 @@ function mapDispatchToProps(_dispatch: Dispatch<ReduxActions>) {
   };
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(VisitorVariablesScreen));
