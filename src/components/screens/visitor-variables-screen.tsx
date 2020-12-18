@@ -449,6 +449,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private onAddEnumItenClick = () => {
     const { selectedVisitorVariable } = this.state;
+
     if (!selectedVisitorVariable) {
       return;
     }
