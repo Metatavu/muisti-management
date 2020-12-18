@@ -200,7 +200,9 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     return (
       <>
         <Toolbar disableGutters style={{ justifyContent: "space-between", marginTop: theme.spacing(1) }}>
-        <Typography variant="h3">{ strings.visitorVariables.valuesTitle }</Typography>
+        <Typography variant="h3">
+          { strings.visitorVariables.valuesTitle }
+        </Typography>
           <Button variant="contained" color="primary" onClick={ this.onAddEnumItenClick }>
             { strings.visitorVariables.addEnumValue }
           </Button>
