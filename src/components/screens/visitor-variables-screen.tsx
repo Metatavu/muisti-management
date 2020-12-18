@@ -192,6 +192,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private renderEnumEditor = () => {
     const { selectedVisitorVariable } = this.state;
+
     if (!selectedVisitorVariable || selectedVisitorVariable.type !==  VisitorVariableType.Enumerated) {
       return null;
     }
