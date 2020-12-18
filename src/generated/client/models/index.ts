@@ -79,3 +79,5 @@ export * from './VisitorSessionState';
 export * from './VisitorSessionVariable';
 export * from './VisitorSessionVisitedDeviceGroup';
 export * from './VisitorTag';
+export * from './VisitorVariable';
+export * from './VisitorVariableType';

@@ -166,6 +166,9 @@
   },
 
   "exhibition": {
+    "reception": "Vastaanotto",
+    "visitorVariablesManagement": "Vierailijan valintojen hallinta",
+    "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
     "tech": "Tekniikka",
     "navigation": {
@@ -576,6 +579,8 @@
         },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
+        "variableBooleanTrue": "Kyllä",
+        "variableBooleanFalse": "Ei",
         "selectPage": "Valitse sivu"
       },
 
@@ -656,6 +661,24 @@
       "number": "Puhelinnumero puuttuu tai on virheellinen",
       "minLength": "Kentän tulee olla vähintään 3 merkkiä pitkä"
     }
+  },
+
+  "visitorVariables": {
+    "title": "Kävijämuuttujat",
+    "saveButton": "Tallenna",
+    "newButton": "Uusi",
+    "nameLabel": "Nimi",
+    "typeLabel": "Tyyppi",
+    "enumValuesLabel": "Sallitut arvot",
+    "typeBoolean": "Kyllä / Ei",
+    "typeNumber": "Numero",
+    "typeText": "Teksti",
+    "typeEnumerated": "Valinta",
+    "newVariableName": "uusi",
+    "deleteConfirmTitle": "Oletko varma?",
+    "deleteConfirmText": "Oletko varma, että haluat poistaa kävijämuuttujan?",
+    "addEnumValue": "Lisää arvo",
+    "valuesTitle": "Arvot"
   }
   
 }

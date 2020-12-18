@@ -29,6 +29,7 @@ import FloorPlansScreen from "./screens/floor-plans-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
 import ContentEditorScreen from "./screens/content-editor-screen";
+import VisitorVariablesScreen from "./screens/visitor-variables-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -220,6 +221,16 @@ class App extends React.Component<Props, State> {
                       exact={ true }
                       render={({ history, match }) => (
                         <ReceptionScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/visitorVariables"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <VisitorVariablesScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                         />

@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType } from "../../generated/client";
+import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
 import "codemirror/lib/codemirror.css";
@@ -27,20 +27,21 @@ import AddIcon from '@material-ui/icons/Add';
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-    selectedEventTrigger: ExhibitionPageEventTrigger;
-    view?: PageLayoutView;
-    pages: ExhibitionPage[];
-    onSave: (selectedEventTrigger: ExhibitionPageEventTrigger) => void;
-  }
+  selectedEventTrigger: ExhibitionPageEventTrigger;
+  view?: PageLayoutView;
+  pages: ExhibitionPage[];
+  visitorVariables: VisitorVariable[];
+  onSave: (selectedEventTrigger: ExhibitionPageEventTrigger) => void;
+}
 
-  /**
-   * Component state
-   */
-  interface State {
-    error?: Error;
-    loading: boolean;
-    selectedPageEventIndex?: number;
-  }
+/**
+ * Component state
+ */
+interface State {
+  error?: Error;
+  loading: boolean;
+  selectedPageEventIndex?: number;
+}
 
 /**
  * Component for event trigger editor
@@ -355,7 +356,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Render set user value settings
    */
   private renderSetUserValueSettings = () => {
-    const { classes } = this.props;
+    const { classes, visitorVariables } = this.props;
+
     const actionType = this.getSelectedEventActionType();
     if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
       return;
@@ -364,31 +366,91 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const event = this.getCurrentPageEvent();
     const userValuePropertyName = event ? event.properties.find(property => property.name === "name") : undefined;
     const userValuePropertyValue = event ? event.properties.find(property => property.name === "value") : undefined;
+    const variableName = userValuePropertyName?.value || "";
+    const variableValue = userValuePropertyValue?.value || "";
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
           { strings.contentEditor.editor.eventTriggers.variableName }
         </Typography>
-        <TextField
+
+        <Select 
           fullWidth={ false }
           name="name"
-          className={ classes.textResourceEditor } 
-          value={ userValuePropertyName?.value || "" }
+          value={ variableName }
           onChange={ this.onEventTriggerEventPropertyChange }
-        />
+          className={ classes.selectResourceEditor } >
+          { 
+            visitorVariables.map(visitorVariable => {
+              return <MenuItem value={ visitorVariable.name }>{ visitorVariable.name }</MenuItem>
+            }) 
+          }
+        </Select>
 
         <Typography variant="h6">
           { strings.contentEditor.editor.eventTriggers.variableValue }
         </Typography>
-        <TextField
+
+        { this.renderSetUserValueSettingValueInput(variableName, variableValue) }
+      </div>
+    );
+  }
+
+  /**
+   * Renders input for set user variable trigger
+   * 
+   * @param variableName variable name
+   * @param variableValue variable value
+   */
+  private renderSetUserValueSettingValueInput = (variableName: string, variableValue: string) => {
+    const { classes, visitorVariables } = this.props;
+
+    const visitorVariable = visitorVariables.find(item => item.name === variableName); 
+    const visitorVariableType = visitorVariable?.type || VisitorVariableType.Text;
+
+    if (visitorVariableType === VisitorVariableType.Enumerated) {
+      const values = visitorVariable?._enum || [];
+      return (
+        <Select 
           fullWidth={ false }
           name="value"
-          className={ classes.textResourceEditor }
-          value={ userValuePropertyValue?.value || "" }
+          value={ variableValue }
           onChange={ this.onEventTriggerEventPropertyChange }
-        />
-      </div>
+          className={ classes.selectResourceEditor } >
+          { 
+            values.map(value => {
+              return <MenuItem value={ value }>{ value }</MenuItem>
+            }) 
+          }
+        </Select>
+      );
+    }
+
+    if (visitorVariableType === VisitorVariableType.Boolean) {
+      return (
+        <Select 
+          fullWidth={ false }
+          name="value"
+          value={ variableValue }
+          onChange={ this.onEventTriggerEventPropertyChange }
+          className={ classes.selectResourceEditor } 
+        >
+          <MenuItem value={ "true" }>{ strings.contentEditor.editor.eventTriggers.variableBooleanTrue }</MenuItem>
+          <MenuItem value={ "false" }>{ strings.contentEditor.editor.eventTriggers.variableBooleanFalse }</MenuItem>
+        </Select>
+      );
+    }
+    
+    return (
+      <TextField
+        fullWidth={ false }
+        name="value"
+        type={ visitorVariableType === VisitorVariableType.Number ? "number" : "text" }
+        className={ classes.textResourceEditor }
+        value={ variableValue }
+        onChange={ this.onEventTriggerEventPropertyChange }
+      />
     );
   }
 
