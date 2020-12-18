@@ -208,7 +208,6 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
         <List disablePadding dense>
           { selectedVisitorVariable._enum?.map(this.renderEnunEditorItem) }
         </List>
-
       </>
     );
   }
