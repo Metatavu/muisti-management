@@ -156,6 +156,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private renderEditor = () => {
     const { selectedVisitorVariable } = this.state;
+
     if (!selectedVisitorVariable) {
       return null;
     }
