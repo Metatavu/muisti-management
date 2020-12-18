@@ -166,6 +166,9 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   exhibition: {
+    reception: string;
+    visitorVariablesManagement: string;
+    exhibitionManagement: string;
     content: string;
     tech: string;
     navigation: {
@@ -576,6 +579,8 @@ export interface IStrings extends LocalizedStringsMethods {
         };
         variableName: string;
         variableValue: string;
+        variableBooleanTrue: string;
+        variableBooleanFalse: string;
         selectPage: string;
       };
       tabs: {
@@ -654,6 +659,24 @@ export interface IStrings extends LocalizedStringsMethods {
       number: string;
       minLength: string;
     };
+  };
+
+  visitorVariables: {
+    title: string;
+    saveButton: string;
+    newButton: string;
+    nameLabel: string;
+    typeLabel: string;
+    enumValuesLabel: string;
+    typeBoolean: string;
+    typeNumber: string;
+    typeText: string;
+    typeEnumerated: string;
+    newVariableName: string;
+    deleteConfirmTitle: string;
+    deleteConfirmText: string;
+    addEnumValue: string;
+    valuesTitle: string;
   };
 
 }

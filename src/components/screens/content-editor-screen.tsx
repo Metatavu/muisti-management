@@ -14,7 +14,7 @@ import { AccessToken, ActionButton, PreviewDeviceData } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
-import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion } from "../../generated/client";
+import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion, VisitorVariable } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
@@ -75,6 +75,7 @@ interface State {
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
+  visitorVariables: VisitorVariable[];
   view: View;
   selectedPage?: ExhibitionPage;
   selectedLayoutView?: PageLayoutView;
@@ -107,6 +108,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices: [],
       previewDevicesData: [],
       pages: [],
+      visitorVariables: [],
       layouts: [],
       contentVersions: [],
       view: "VISUAL",
@@ -277,8 +279,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       tabMap
     } = this.state;
 
-    let totalContentWidth: number = 0;
-    let totalContentHeight: number = 0;
+    let totalContentWidth = 0;
+    let totalContentHeight = 0;
 
     const previews = previewDevicesData.map((previewData, index, array) => {
       const devicePages = pages.filter(page =>
@@ -665,6 +667,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedTriggerIndex,
       selectedTabIndex,
       pages,
+      visitorVariables,
       tabResourceIndex
     } = this.state;
 
@@ -689,6 +692,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           selectedEventTrigger={ foundTrigger }
           view={ pageLayout?.data }
           pages={ pages }
+          visitorVariables={ visitorVariables }
           onSave={ this.updateEventTrigger }
         />
       );
@@ -1015,10 +1019,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+    const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
 
-    const [ groupContentVersion, layouts ] = await Promise.all([
+    const [ groupContentVersion, layouts, visitorVariables ] = await Promise.all([
       groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId }),
-      layoutsApi.listPageLayouts({ })
+      layoutsApi.listPageLayouts({ }),
+      visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
 
     const deviceGroupId = groupContentVersion.deviceGroupId;
@@ -1069,6 +1075,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       devices,
       previewDevicesData,
       pages,
+      visitorVariables: visitorVariables,
       layouts,
       selectedContentVersion,
       selectedDevice

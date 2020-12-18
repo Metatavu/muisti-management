@@ -43,6 +43,11 @@ export default createStyles({
     margin: "10px 5px 5px 5px"
   },
 
+  selectResourceEditor: {
+    width: "calc(100% - 10px)",
+    margin: "10px 5px 5px 5px"
+  },
+
   toolBar: {
     backgroundColor: "#fbfbfb",
     borderBottom: "1px solid #ddd",

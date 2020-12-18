@@ -13,4 +13,5 @@ export * from './StoredFilesApi';
 export * from './SubLayoutsApi';
 export * from './SystemApi';
 export * from './VisitorSessionsApi';
+export * from './VisitorVariablesApi';
 export * from './VisitorsApi';

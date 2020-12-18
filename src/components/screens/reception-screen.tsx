@@ -383,19 +383,19 @@ export class ReceptionScreen extends React.Component<Props, State> {
 
     return (
       <>
-      <TextField
-        required
-        className={ classes.textField }
-        fullWidth
-        label={ label }
-        variant="outlined"
-        name={ name }
-        value={ value }
-        type={ inputType ? inputType : "string" }
-        onChange={ this.onTextFieldChange }
-        onBlur={ () => this.validator.showMessageFor(name) }
-      />
-      { this.validator.message(name, value, validationRules) }
+        <TextField
+          required
+          className={ classes.textField }
+          fullWidth
+          label={ label }
+          variant="outlined"
+          name={ name }
+          value={ value }
+          type={ inputType ? inputType : "string" }
+          onChange={ this.onTextFieldChange }
+          onBlur={ () => this.validator.showMessageFor(name) }
+        />
+        { this.validator.message(name, value, validationRules) }
       </>
     );
   }

@@ -75,11 +75,12 @@ export default createMuiTheme({
         },
         "::-webkit-scrollbar": {
           height: 10,
-          width: 10
+          width: 8
         },
         "::-webkit-scrollbar-thumb": {
-          backgroundColor: theme.palette.text.primary,
-          border: "none"
+          backgroundColor: theme.palette.text.secondary,
+          border: "none",
+          borderRadius: 30
         }
       }
     },
@@ -259,7 +260,13 @@ export default createMuiTheme({
     },
     MuiListItem: {
       root: {
+        cursor: "pointer",
         borderRadius: 4,
+        "&.selectable": {
+          "&:hover": {
+            backgroundColor: "rgba(0,0,0,0.1)",
+          }
+        },
         "&.Mui-selected": {
           backgroundColor: "rgba(0,0,0,0)",
           color: uiHighlightMain,
