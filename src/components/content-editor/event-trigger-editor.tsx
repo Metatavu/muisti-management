@@ -357,6 +357,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderSetUserValueSettings = () => {
     const { classes, visitorVariables } = this.props;
+
     const actionType = this.getSelectedEventActionType();
     if (actionType !== ExhibitionPageEventActionType.Setuservalue) {
       return;
