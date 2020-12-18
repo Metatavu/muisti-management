@@ -537,7 +537,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Confirm dialog camcel click handler
+   * Confirm dialog cancel click handler
    */
   private onConfirmDeleteCancelClick = () => {
     this.setState({
