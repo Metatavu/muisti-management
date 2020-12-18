@@ -354,6 +354,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   private saveVisitorVariable = async () => {
     const { accessToken, exhibitionId } = this.props;    
     const { selectedVisitorVariable, visitorVariables } = this.state;
+
     if (!selectedVisitorVariable) {
       return;
     }
