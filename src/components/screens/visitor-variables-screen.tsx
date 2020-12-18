@@ -124,30 +124,37 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     return (
       <List disablePadding>
         {
-          visitorVariables.map(visitorVariable => {
-            const id = visitorVariable.id!;
-            const selected = id === this.state.selectedVisitorVariable?.id;
-            const name = visitorVariable.name;
-            const label = visitorVariable.type;
-            
-            return (
-              <ListItem button key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
-                <ListItemText primary={ name } secondary={ label } />
-                <ListItemSecondaryAction>
-                  <IconButton 
-                    title={ strings.generic.delete }
-                    edge="end"
-                    aria-label="delete"
-                    onClick={ () => this.onDeleteVisitorVariableClick(visitorVariable) }
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            );
-          })
+          visitorVariables.map(this.renderVisitorVariable)
         }
       </List>
+    );
+  }
+
+  /**
+   * Renders visitor variable
+   * 
+   * @param visitorVariable visitor variable
+   */
+  private renderVisitorVariable = (visitorVariable: VisitorVariable) => {
+    const id = visitorVariable.id!;
+    const selected = id === this.state.selectedVisitorVariable?.id;
+    const name = visitorVariable.name;
+    const label = visitorVariable.type;
+    
+    return (
+      <ListItem button key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
+        <ListItemText primary={ name } secondary={ label } />
+        <ListItemSecondaryAction>
+          <IconButton 
+            title={ strings.generic.delete }
+            edge="end"
+            aria-label="delete"
+            onClick={ () => this.onDeleteVisitorVariableClick(visitorVariable) }
+          >
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
     );
   }
 
@@ -192,6 +199,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private renderEnumEditor = () => {
     const { selectedVisitorVariable } = this.state;
+    const { classes } = this.props;
 
     if (!selectedVisitorVariable || selectedVisitorVariable.type !==  VisitorVariableType.Enumerated) {
       return null;
@@ -199,10 +207,10 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
     return (
       <>
-        <Toolbar disableGutters style={{ justifyContent: "space-between", marginTop: theme.spacing(1) }}>
-        <Typography variant="h3">
-          { strings.visitorVariables.valuesTitle }
-        </Typography>
+        <Toolbar disableGutters className={ classes.enumEditorToolbar }>
+          <Typography variant="h3">
+            { strings.visitorVariables.valuesTitle }
+          </Typography>
           <Button
             variant="contained"
             color="primary"
@@ -231,7 +239,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           <TextField
             fullWidth={ true }
             value={ value }
-            onChange={ event => this.onEnumItemChange(event.target.value, index) }
+            onChange={ event => this.onEnumItemChange(event, index) }
           />
         </ListItemText>
         <ListItemSecondaryAction>
@@ -249,7 +257,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Render content version confirmation dialog
+   * Render variable delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
     return (
@@ -474,10 +482,12 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   /**
    * Event handler for enum item change
    * 
-   * @param value new value
+   * @param event event
    * @param index index of changed value
    */
-  private onEnumItemChange = (value: string, index: number) => {
+  private onEnumItemChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index: number) => {
+    const value = event.target.value;
+    
     const { selectedVisitorVariable } = this.state;
     if (!selectedVisitorVariable) {
       return;

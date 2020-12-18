@@ -36,4 +36,9 @@ export default createStyles({
     gridTemplateAreas: ' "navigation editor-view properties" ',
   },
 
+  enumEditorToolbar: {
+    justifyContent: "space-between", 
+    marginTop: theme.spacing(1)
+  }
+
 });
