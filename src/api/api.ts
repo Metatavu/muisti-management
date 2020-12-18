@@ -136,7 +136,7 @@ export default class Api {
   /**
    * Gets initialized visitor variables api
    *
-   * @param token access token
+   * @param accessToken access token
    */
   public static getVisitorVariablesApi(accessToken: AccessToken) {
     return new VisitorVariablesApi(Api.getConfiguration(accessToken));
