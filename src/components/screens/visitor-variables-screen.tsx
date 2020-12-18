@@ -18,8 +18,6 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 
-
-
 /**
  * Component props
  */
