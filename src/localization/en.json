@@ -531,6 +531,10 @@
   "contentEditor": {
     "open": "Open timeline",
     "editor": {
+      "editorTabs": {
+        "noVisitor": "Exhibition spot empty",
+        "visitorPresent": "Visitor arrives"
+      },
       "pageName": "Page name",
       "indexPageId": "Device front page",
       "device": "Device",

@@ -9,7 +9,7 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/lint/lint.css";
 import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
-import { Tab, TabResource } from "./constants";
+import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
 import { ExhibitionPageResourceType } from "../../generated/client";
 import CKEditor from 'ckeditor4-react';
 import GenericDialog from "../generic/generic-dialog";
@@ -25,9 +25,8 @@ import ResourceUtils from "../../utils/resource-utils";
  */
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
-  selectedTab: Tab;
-
-  onSave: (updatedTab: Tab) => void;
+  selectedTab: ExhibitionPageTab;
+  onSave: (updatedTab: ExhibitionPageTab) => void;
 }
 
   /**
@@ -292,7 +291,7 @@ class TabEditor extends React.Component<Props, State> {
   private onLabelChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
     const { onSave } = this.props;
 
-    const tab: Tab = { ...this.props.selectedTab };
+    const tab: ExhibitionPageTab = { ...this.props.selectedTab };
     const key = event.target.name;
     const value = event.target.value as string;
     if (!key) {
@@ -318,10 +317,10 @@ class TabEditor extends React.Component<Props, State> {
       return;
     }
 
-    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
 
     if (!tabToUpdate.resources[0]) {
-      const newResource: TabResource = {
+      const newResource: ExhibitionPageTabResource = {
         id: "src",
         data: "",
         type: value
@@ -367,7 +366,7 @@ class TabEditor extends React.Component<Props, State> {
     const { onSave } = this.props;
     const data = event.editor.getData() as string;
 
-    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
     tabToUpdate.resources[0].data = data;
     onSave(tabToUpdate);
   }
@@ -380,7 +379,7 @@ class TabEditor extends React.Component<Props, State> {
   private onMediaUrlChange = (newUrl: string) => {
     const { onSave } = this.props;
 
-    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
     tabToUpdate.resources[0].data = newUrl;
     onSave(tabToUpdate);
   }
@@ -393,7 +392,7 @@ class TabEditor extends React.Component<Props, State> {
   private onDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onSave } = this.props;
     const value = event.target.value;
-    const tabToUpdate = { ...this.props.selectedTab } as Tab;
+    const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
 
     tabToUpdate.resources[0].data = value;
     onSave(tabToUpdate);
