@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import ReactHtmlParser from 'react-html-parser';
-import { TabResource } from "../content-editor/constants";
+import { ExhibitionPageTabResource } from "../content-editor/constants";
 import styles from "../../styles/components/generic/tab-item";
 import { withStyles, WithStyles, Typography } from "@material-ui/core";
 import { ExhibitionPageResourceType } from "../../generated/client";
@@ -11,7 +11,7 @@ import { ExhibitionPageResourceType } from "../../generated/client";
  */
 interface Props extends WithStyles<typeof styles> {
   index: number;
-  resource: TabResource;
+  resource: ExhibitionPageTabResource;
   visible: boolean;
 }
 
@@ -41,7 +41,7 @@ const TabItem: React.FC<Props> = (props: Props) => {
  * @param props component props
  * @returns content as React element
  */
-const renderTabContent = (resource: TabResource, props: Props) => {
+const renderTabContent = (resource: ExhibitionPageTabResource, props: Props) => {
   const { type, data } = resource;
   switch (type) {
     case ExhibitionPageResourceType.Text:

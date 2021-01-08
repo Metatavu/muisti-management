@@ -6,9 +6,7 @@ export default createStyles({
     position: "relative",
     gridArea: "timeline",
     overflow: "hidden",
-    minHeight: 250,
-    borderTop: "1px solid #ddd",
-    backgroundColor: "#fbfbfb"
+    minHeight: 250
   },
 
 });

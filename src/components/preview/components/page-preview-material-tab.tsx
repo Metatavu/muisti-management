@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles, Tabs, Tab} from "@material-ui/core";
+import { WithStyles, withStyles, Tabs, Tab } from "@material-ui/core";
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
-import { TabHolder } from "../../content-editor/constants";
+import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import AndroidUtils from "../../../utils/android-utils";
 import { SelectedTabIndicatorGravityValues } from "../../layout/editor-constants/values";
 
@@ -22,7 +22,7 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
-  tabMap?: Map<string, TabHolder>;
+  tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -155,7 +155,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    *
    * @returns found tab structure or undefined
    */
-  private getTabResource = (): TabHolder | undefined => {
+  private getTabResource = (): ExhibitionPageTabHolder | undefined => {
     const { view, tabMap } = this.props;
     if (view.widget !== PageLayoutWidgetType.MaterialTabLayout || !tabMap) {
       return;

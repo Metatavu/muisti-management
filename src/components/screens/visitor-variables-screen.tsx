@@ -338,10 +338,11 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       visitorVariable: {
         name: newVariableName,
-        type: VisitorVariableType.Text
+        type: VisitorVariableType.Text,
+        editableFromUI: true
       }
     });
-  
+
     this.setState({
       loading: false,
       visitorVariables: [ ...visitorVariables.filter(visitorVariable => visitorVariable.id !== updatedVisitorVariable.id), updatedVisitorVariable ]

@@ -1,5 +1,5 @@
 import { PageLayoutView } from "../generated/client";
-import { TabHolder } from "../components/content-editor/constants";
+import { ExhibitionPageTabHolder } from "../components/content-editor/constants";
 
 /**
  * Utility class for previews
@@ -13,8 +13,8 @@ export default class PreviewUtils {
    * @param tabMap tab map
    * @returns list of tab holders
    */
-  public static getTabContent = (view: PageLayoutView, tabMap?: Map<string, TabHolder>): TabHolder[] => {
-    const tabData: TabHolder[] = [];
+  public static getTabContent = (view: PageLayoutView, tabMap?: Map<string, ExhibitionPageTabHolder>): ExhibitionPageTabHolder[] => {
+    const tabData: ExhibitionPageTabHolder[] = [];
 
     if (tabMap) {
       tabMap.forEach((value, key) => {

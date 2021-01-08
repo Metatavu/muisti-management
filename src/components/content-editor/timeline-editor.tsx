@@ -13,15 +13,16 @@ import { PreviewDeviceData } from "../../types";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  contentVersion: ContentVersion;
+  pageType?: "idle" | "active";
+  contentVersion?: ContentVersion;
   devices: ExhibitionDevice[];
-  previewDevicesData: PreviewDeviceData[];
+  previewDevicesData?: PreviewDeviceData[];
   pages: ExhibitionPage[];
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
   selectedPage?: ExhibitionPage;
-  onClick: (contentVersion: ContentVersion, page: ExhibitionPage) => () => void;
-  onDragEnd: (contentVersionId: string, deviceId: string) => (result: DropResult, provided: ResponderProvided) => void;
+  onClick: (page: ExhibitionPage, contentVersion?: ContentVersion) => () => void;
+  onDragEnd: (device: ExhibitionDevice, contentVersionId?: string) => (result: DropResult, provided: ResponderProvided) => void;
 }
 
 /**
@@ -45,15 +46,29 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
  * @param props component props
  */
 const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
-  const { classes, onDragEnd, contentVersion, pages } = props;
+  const { classes, onDragEnd, contentVersion, pages, pageType } = props;
   const devicePages: ExhibitionPage[] = pages
-    .filter(page => page.deviceId === device.id && page.contentVersionId === contentVersion.id)
+    .filter(page => {
+      if (page.deviceId !== device.id) {
+        return false;
+      }
+
+      if (pageType === "idle") {
+        return device.idlePageId === page.id;
+      }
+
+      return page.contentVersionId === contentVersion?.id;
+    })
     .sort((page1, page2) => page1.orderNumber - page2.orderNumber);
 
   return (
     <ListItem divider key={ device.id } className={ classes.timelineRow }>
-      <DragDropContext onDragEnd={ onDragEnd(contentVersion.id!, device.id!) }>
-        <Droppable droppableId="droppable" direction="horizontal">
+      <DragDropContext onDragEnd={ onDragEnd(device, contentVersion?.id) }>
+        <Droppable
+          droppableId="droppable"
+          direction="horizontal"
+          isDropDisabled={ pageType === "idle" }
+        >
           { (provided, snapshot) => renderDroppableContent(devicePages, props, provided, snapshot) }
         </Droppable>
       </DragDropContext>
@@ -129,11 +144,18 @@ const renderPageContent = (
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot
 ) => {
-  const { classes, previewDevicesData, contentVersion, onClick } = props;
+  const {
+    classes,
+    previewDevicesData,
+    contentVersion,
+    onClick,
+    pageType
+  } = props;
+
   const { innerRef, draggableProps, dragHandleProps } = provided;
   const { isDragging } = snapshot;
   const { selectedPage } = props;
-  const deviceInPreview = previewDevicesData.find(previewData => previewData.device.id === page.deviceId);
+  const deviceInPreview = previewDevicesData && previewDevicesData.find(previewData => previewData.device.id === page.deviceId);
   const inPreview = page.id === deviceInPreview?.page?.id;
   const selected = selectedPage?.id === page.id;
   const isDeviceIndexPage = index === 0;
@@ -142,7 +164,7 @@ const renderPageContent = (
     <Paper
       ref={ innerRef }
       variant="outlined"
-      onClick={ onClick(contentVersion, page) }
+      onClick={ onClick(page, contentVersion) }
       className={
         classNames(
           classes.pageItemContent,
@@ -155,7 +177,7 @@ const renderPageContent = (
       { ...dragHandleProps }
     >
       { page.name }
-      { isDeviceIndexPage &&
+      { isDeviceIndexPage && pageType !== "idle" &&
         <Typography
           variant="body1"
           style={{

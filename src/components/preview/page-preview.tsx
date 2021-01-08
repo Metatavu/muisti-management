@@ -8,7 +8,7 @@ import DisplayMetrics from "../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import AndroidUtils from "../../utils/android-utils";
 import { ResourceMap } from "../../types";
-import { TabHolder } from "../content-editor/constants";
+import { ExhibitionPageTabHolder } from "../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -24,7 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   screenOrientation?: ScreenOrientation;
   deviceOrientation?: ScreenOrientation;
-  tabMap?: Map<string, TabHolder>;
+  tabMap?: Map<string, ExhibitionPageTabHolder>;
 
   onViewClick?: (device: ExhibitionDevice, page: ExhibitionPage, view: PageLayoutView) => void;
   onTabClick?: (deviceViewId: string, newIndex: number) => void;

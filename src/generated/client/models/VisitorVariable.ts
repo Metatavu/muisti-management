@@ -51,6 +51,12 @@ export interface VisitorVariable {
      */
     type: VisitorVariableType;
     /**
+     * Whether the visitor variable should be editable from the customer service UI
+     * @type {boolean}
+     * @memberof VisitorVariable
+     */
+    editableFromUI: boolean;
+    /**
      * 
      * @type {Array<string>}
      * @memberof VisitorVariable
@@ -96,6 +102,7 @@ export function VisitorVariableFromJSONTyped(json: any, ignoreDiscriminator: boo
         'exhibitionId': !exists(json, 'exhibitionId') ? undefined : json['exhibitionId'],
         'name': json['name'],
         'type': VisitorVariableTypeFromJSON(json['type']),
+        'editableFromUI': json['editableFromUI'],
         '_enum': !exists(json, 'enum') ? undefined : json['enum'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -115,6 +122,7 @@ export function VisitorVariableToJSON(value?: VisitorVariable | null): any {
         
         'name': value.name,
         'type': VisitorVariableTypeToJSON(value.type),
+        'editableFromUI': value.editableFromUI,
         'enum': value._enum,
     };
 }

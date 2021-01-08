@@ -338,6 +338,12 @@ export default createMuiTheme({
         fontWeight: "normal",
         color: "#000"
       }
+    },
+    MuiTab: {
+      root: {
+        fontWeight: "bold",
+        textTransform: "initial"
+      }
     }
   },
   props: {

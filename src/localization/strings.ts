@@ -531,6 +531,10 @@ export interface IStrings extends LocalizedStringsMethods {
   contentEditor: {
     open: string;
     editor: {
+      editorTabs: {
+        noVisitor: string;
+        visitorPresent: string;
+      };
       pageName: string;
       indexPageId: string;
       device: string;

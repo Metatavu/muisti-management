@@ -8,11 +8,11 @@ import { ExhibitionDevice, ContentVersion } from "../../generated/client/models"
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
-  contentVersion: ContentVersion;
+  contentVersion?: ContentVersion;
   selectedContentVersion?: ContentVersion;
   devices: ExhibitionDevice[];
   selectedDevice?: ExhibitionDevice;
-  onClick: (contentVersion: ContentVersion, device: ExhibitionDevice) => () => void;
+  onClick?: (device: ExhibitionDevice, contentVersion?: ContentVersion) => () => void;
 }
 
 /**
@@ -28,7 +28,8 @@ const TimelineDevicesList: React.FC<Props> = ({
   onClick,
   classes
 }) => {
-  const contentVersionSelected = selectedContentVersion?.id === contentVersion.id;
+  const contentVersionSelected = selectedContentVersion?.id === contentVersion?.id;
+
   return (
     <List className={ classes.list }>
       {
@@ -39,8 +40,8 @@ const TimelineDevicesList: React.FC<Props> = ({
               button
               divider
               key={ device.id }
-              selected={ contentVersionSelected && deviceSelected }
-              onClick={ onClick(contentVersion, device) }
+              selected={ deviceSelected && (!selectedContentVersion || contentVersionSelected) }
+              onClick={ onClick && onClick(device, contentVersion) }
               className={ classes.listItem }
             >
               { device.name || "" }
