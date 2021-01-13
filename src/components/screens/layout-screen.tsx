@@ -614,7 +614,10 @@ export class LayoutScreen extends React.Component<Props, State> {
 
     const updatedLayout = pushNewPageLayoutViewToTree(layout, layoutView, path);
     this.props.setSelectedLayout(updatedLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2) });
+    this.setState({
+      jsonCode: JSON.stringify(updatedLayout.data, null, 2),
+      dataChanged: true
+    });
   }
 
   /**
