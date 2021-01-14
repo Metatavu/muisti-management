@@ -167,7 +167,8 @@
 
   "exhibition": {
     "reception": "Vastaanotto",
-    "visitorVariablesManagement": "Vierailijan valintojen hallinta",
+    "visitorVariables": "Vierailijan valinnat",
+    "resetVisitorVariables": "Nollaa vierailijan valintoja",
     "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
     "tech": "Tekniikka",
@@ -682,7 +683,23 @@
     "deleteConfirmTitle": "Oletko varma?",
     "deleteConfirmText": "Oletko varma, että haluat poistaa kävijämuuttujan?",
     "addEnumValue": "Lisää arvo",
-    "valuesTitle": "Arvot"
+    "valuesTitle": "Arvot",
+    "isEditableFromUi": "Asiakaspalvelijan muokattavissa"
+  },
+
+  "manageVisitorSessionVariables": {
+    "title": "Muuta kävijämuuttujien arvoja",
+    "value": "Muuttujan arvo",
+    "noActiveSessionsFound": "Ei voimassaolevia sessioita",
+    "noVariables": "Ei muuttujia",
+    "lastModifiedAt": "Viimeksi muokattu {0}",
+    "saveButton": "Tallenna",
+    "emptyButton": "Tyhjennä arvo",
+    "confirmEmptyTitle": "Tyhjennä muuttujan \"{0}\" arvo?",
+    "confirmEmptyText": "Muuttuja poistuu session muuttujalistasta.",
+    "errorMessages": {
+      "sessionNotFound": "Vierailijan sessiota ei löytynyt"
+    }
   }
   
 }

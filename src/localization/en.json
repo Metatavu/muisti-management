@@ -167,7 +167,8 @@
 
   "exhibition": {
     "reception": "Reception",
-    "visitorVariablesManagement": "Visitor variables management",
+    "visitorVariables": "Visitor variables",
+    "resetVisitorVariables": "Reset visitor variables",
     "exhibitionManagement": "Exhibition management",
     "content": "Content",
     "tech": "Tech",
@@ -684,7 +685,23 @@
     "deleteConfirmTitle": "Are you sure?",
     "deleteConfirmText": "Are you sure that you wish to delete this visitor variable?",
     "addEnumValue": "Add value",
-    "valuesTitle": "Values"
+    "valuesTitle": "Values",
+    "isEditableFromUi": "Can be modified by customer service"
+  },
+
+  "manageVisitorSessionVariables": {
+    "title": "Modify visitor variable values",
+    "value": "Variable value",
+    "noActiveSessionsFound": "No active sessions found",
+    "noVariables": "No variables",
+    "lastModifiedAt": "Last modified {0}",
+    "saveButton": "Save",
+    "emptyButton": "Empty value",
+    "confirmEmptyTitle": "Empty value of variable \"{0}\"?",
+    "confirmEmptyText": "Variable will be removed from session variables list.",
+    "errorMessages": {
+      "sessionNotFound": "Visitor session not found"
+    }
   }
 
 }
