@@ -95,8 +95,10 @@ class PagePreviewComponent extends React.Component<Props, State> {
       return null;
     }
 
+    // TODO: Add proper preview components for MapView, WebView and VisitorsView
     switch (view.widget) {
       case "FrameLayout":
+      case "VisitorsView":
         return <PagePreviewFrameLayout
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
