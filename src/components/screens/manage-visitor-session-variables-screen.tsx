@@ -18,7 +18,6 @@ import MqttListener from "../generic/mqtt-listener";
 import Api from "../../api/api";
 import moment from "moment";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
-import theme from "../../styles/theme";
 import produce from "immer";
 import WithDebounce from "../generic/with-debounce";
 import ConfirmDialog from "../generic/confirm-dialog";
