@@ -23,6 +23,11 @@ import WithDebounce from "../generic/with-debounce";
 import ConfirmDialog from "../generic/confirm-dialog";
 
 /**
+ * Tag antenna Mqtt channel path from environment variables
+ */
+const { REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA } = process.env;
+
+/**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
@@ -129,8 +134,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    * Renders tag listener
    */
   private renderTagListener = () => {
-    const antenna = process.env.REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA;
-    if (!antenna) {
+    if (!REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA) {
       return null;
     }
 
@@ -140,7 +144,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         <TagListener
           threshold={ 75 }
           mqtt={ mqtt }
-          antenna={ antenna }
+          antenna={ REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA }
           onTagRegister={ this.onTagRegister }
         />
       )}
@@ -492,7 +496,9 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         loading: false
       });
     } catch (error) {
-      this.setState({ error });
+      this.setState({
+        error: error
+      });
     }
   }
 
@@ -573,7 +579,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       produce((draft: State) => {
         draft.selectedVariableData!.sessionVariable.value = updatedValue;
         draft.dataChanged = true;
-        draft.variableDataList = variableDataList!.map(variableData =>
+        draft.variableDataList = variableDataList.map(variableData =>
           variableData.visitorVariable.id === selectedVariableData.visitorVariable.id ?
             draft.selectedVariableData! :
             variableData
@@ -604,7 +610,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     }
   }
 
-    /**
+  /**
    * Event handler for save session
    */
   private onSaveSession = async () => {

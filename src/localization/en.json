@@ -167,8 +167,8 @@
 
   "exhibition": {
     "reception": "Reception",
-    "visitorVariables": "Visitor variables",
-    "resetVisitorVariables": "Reset visitor variables",
+    "visitorVariables": "Visitor variable management",
+    "resetVisitorVariables": "Manage visitor session variables",
     "exhibitionManagement": "Exhibition management",
     "content": "Content",
     "tech": "Tech",

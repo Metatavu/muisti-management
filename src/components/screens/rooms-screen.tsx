@@ -208,16 +208,6 @@ class RoomsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for card click
-   * 
-   * @param roomId room id
-   */
-  private onCardClick = (roomId: string, floorId: string) => {
-    const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
-  }
-
-  /**
    * Navigates to given exhibition management path
    * 
    * @param path path as string
@@ -230,6 +220,16 @@ class RoomsScreen extends React.Component<Props, State> {
     } else {
       this.props.history.push(`${ exhibitionPath }/${path}`);
     }
+  }
+
+  /**
+   * Event handler for card click
+   * 
+   * @param roomId room id
+   */
+  private onCardClick = (roomId: string, floorId: string) => {
+    const { pathname } = this.props.history.location;
+    this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
   }
 }
 

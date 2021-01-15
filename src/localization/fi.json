@@ -167,8 +167,8 @@
 
   "exhibition": {
     "reception": "Vastaanotto",
-    "visitorVariables": "Vierailijan valinnat",
-    "resetVisitorVariables": "Nollaa vierailijan valintoja",
+    "visitorVariables": "Vierailijamuuttujien hallinta",
+    "resetVisitorVariables": "Hallinnoi vierailijasession valintoja",
     "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
     "tech": "Tekniikka",
