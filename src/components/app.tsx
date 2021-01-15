@@ -30,6 +30,7 @@ import FloorPlanScreen from "./screens/floor-plan-screen";
 import SubLayoutScreen from "./screens/sub-layout-screen";
 import ContentEditorScreen from "./screens/content-editor-screen";
 import VisitorVariablesScreen from "./screens/visitor-variables-screen";
+import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -231,6 +232,16 @@ class App extends React.Component<Props, State> {
                       exact={ true }
                       render={({ history, match }) => (
                         <VisitorVariablesScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/resetVisitorVariables"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <ManageVisitorSessionVariablesScreen
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                         />

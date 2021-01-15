@@ -167,7 +167,8 @@ export interface IStrings extends LocalizedStringsMethods {
 
   exhibition: {
     reception: string;
-    visitorVariablesManagement: string;
+    visitorVariables: string;
+    resetVisitorVariables: string;
     exhibitionManagement: string;
     content: string;
     tech: string;
@@ -681,6 +682,22 @@ export interface IStrings extends LocalizedStringsMethods {
     deleteConfirmText: string;
     addEnumValue: string;
     valuesTitle: string;
+    isEditableFromUi: string;
+  };
+
+  manageVisitorSessionVariables: {
+    title: string;
+    value: string;
+    noActiveSessionsFound: string;
+    noVariables: string;
+    lastModifiedAt: string;
+    saveButton: string;
+    emptyButton: string;
+    confirmEmptyTitle: string;
+    confirmEmptyText: string;
+    errorMessages: {
+      sessionNotFound: string;
+    };
   };
 
 }

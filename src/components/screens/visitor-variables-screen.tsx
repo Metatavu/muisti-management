@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line max-len
-import { Button, CircularProgress, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Toolbar, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { Button, Checkbox, CircularProgress, FormControlLabel, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Toolbar, Typography, WithStyles, withStyles } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
@@ -108,7 +108,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           </ElementNavigationPane>
           <div style={{ padding: theme.spacing(4) }}>
             { this.renderEditor() }
-            { this.renderConfirmDeleteDialog() } 
+            { this.renderConfirmDeleteDialog() }
           </div>
         </div>
       </BasicLayout>
@@ -124,7 +124,9 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     return (
       <List disablePadding>
         {
-          visitorVariables.map(this.renderVisitorVariable)
+          visitorVariables
+            .sort(this.sortVariablesByName)
+            .map(this.renderVisitorVariable)
         }
       </List>
     );
@@ -178,6 +180,18 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           onChange={ this.onNameChange }
         />
 
+        <FormControlLabel
+          style={{ marginBottom: theme.spacing(2) }}
+          control={
+            <Checkbox
+              checked={ selectedVisitorVariable.editableFromUI }
+              onChange={ this.onEditableFromUiChange }
+              color="primary"
+            />
+          }
+          label={ strings.visitorVariables.isEditableFromUi }
+        />
+
         <Select
           label={ strings.visitorVariables.typeLabel }
           value={ selectedVisitorVariable.type }
@@ -214,13 +228,13 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           <Button
             variant="contained"
             color="primary"
-            onClick={ this.onAddEnumItenClick }
+            onClick={ this.onAddEnumItemClick }
           >
             { strings.visitorVariables.addEnumValue }
           </Button>
         </Toolbar>
         <List disablePadding dense>
-          { selectedVisitorVariable._enum?.map(this.renderEnunEditorItem) }
+          { selectedVisitorVariable._enum?.map(this.renderEnumEditorItem) }
         </List>
       </>
     );
@@ -232,7 +246,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    * @param value value
    * @param index index of value
    */
-  private renderEnunEditorItem = (value: string, index: number) => {
+  private renderEnumEditorItem = (value: string, index: number) => {
     return (
       <ListItem disableGutters>
         <ListItemText>
@@ -374,6 +388,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   
     this.setState({
       loading: false,
+      dataChanged: false,
       visitorVariables: [ ...visitorVariables.filter(visitorVariable => visitorVariable.id !== updatedVisitorVariable.id), updatedVisitorVariable ]
     });
   }
@@ -445,6 +460,30 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for editable from UI change
+   * 
+   * @param event React change event
+   * @param checked checkbox checked state
+   */
+  private onEditableFromUiChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    const { selectedVisitorVariable } = this.state;
+
+    if (!selectedVisitorVariable) {
+      return;
+    }
+
+    const updatedVisitorVariable: VisitorVariable = {
+      ...selectedVisitorVariable,
+      editableFromUI: checked
+    };
+
+    this.setState({
+      selectedVisitorVariable: updatedVisitorVariable,
+      dataChanged: true
+    });
+  }
+
+  /**
    * Event handler for type change
    *
    * @param event event
@@ -469,7 +508,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   /**
    * Event handler for enum add item click
    */
-  private onAddEnumItenClick = () => {
+  private onAddEnumItemClick = () => {
     const { selectedVisitorVariable } = this.state;
 
     if (!selectedVisitorVariable) {
@@ -568,7 +607,22 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       deleteOpen: false
     });
   }
-  
+
+  /**
+   * Sorts variables by name
+   * 
+   * @param a visitor variable A
+   * @param b visitor variable B
+   */
+  private sortVariablesByName = (a: VisitorVariable, b: VisitorVariable) => {
+    const nameA = a.name.toUpperCase();
+    const nameB = b.name.toUpperCase();
+    if (nameA === nameB) {
+      return 0;
+    }
+
+    return nameA < nameB ? -1 : 1;
+  }
 }
 
 /**
