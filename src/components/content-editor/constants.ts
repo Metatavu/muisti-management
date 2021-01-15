@@ -33,40 +33,40 @@ export const resourceModes = [
  */
 export interface TabStructure {
   contentContainerId?: string;
-  tabs: Tab[];
+  tabs: ExhibitionPageTab[];
 }
 
 /**
- * Custom Tab interface
+ * Custom ExhibitionPageTab interface
  */
-export interface Tab {
+export interface ExhibitionPageTab {
   label: string;
-  properties: TabProperty[];
-  resources: TabResource[];
+  properties: ExhibitionPageTabProperty[];
+  resources: ExhibitionPageTabResource[];
 }
 
 /**
- * Custom TabProperty interface
+ * Custom ExhibitionPageTabProperty interface
  */
-export interface TabProperty {
+export interface ExhibitionPageTabProperty {
   name: string;
   type: string;
   value: string;
 }
 
 /**
- * Custom TabResource interface
+ * Custom ExhibitionPageTabResource interface
  */
-export interface TabResource {
+export interface ExhibitionPageTabResource {
   id: string;
   data: string;
   type: ExhibitionPageResourceType;
 }
 
 /**
- * Custom tab holder interface
+ * Custom exhibition page tab holder interface
  */
-export interface TabHolder {
+export interface ExhibitionPageTabHolder {
   tabComponent: TabStructure;
   activeTabIndex: number;
 }

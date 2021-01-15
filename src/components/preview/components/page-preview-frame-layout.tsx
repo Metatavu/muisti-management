@@ -9,7 +9,7 @@ import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
-import { TabHolder } from "../../content-editor/constants";
+import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import TabItem from "../../generic/tab-item";
 import PreviewUtils from "../../../utils/preview-utils";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
@@ -25,7 +25,7 @@ interface Props extends WithStyles<typeof styles> {
   resourceMap: ResourceMap;
   scale: number;
   displayMetrics: DisplayMetrics;
-  tabMap?: Map<string, TabHolder>;
+  tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -127,7 +127,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    *
    * @param tabData list of tab holders
    */
-  private renderTabContent = (tabData: TabHolder[]) => {
+  private renderTabContent = (tabData: ExhibitionPageTabHolder[]) => {
     const tabContentHolder = tabData[0];
     const activeIndex = tabContentHolder.activeTabIndex;
 

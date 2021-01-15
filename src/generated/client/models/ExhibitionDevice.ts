@@ -77,6 +77,12 @@ export interface ExhibitionDevice {
      * @type {string}
      * @memberof ExhibitionDevice
      */
+    idlePageId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExhibitionDevice
+     */
     readonly creatorId?: string;
     /**
      * 
@@ -115,6 +121,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         'name': json['name'],
         'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
         'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
+        'idlePageId': !exists(json, 'idlePageId') ? undefined : json['idlePageId'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -136,6 +143,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
         'name': value.name,
         'location': PointToJSON(value.location),
         'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
+        'idlePageId': value.idlePageId,
     };
 }
 

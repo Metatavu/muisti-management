@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi, SubLayoutsApi, VisitorsApi, VisitorVariablesApi } from "../generated/client";
+import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi, SubLayoutsApi, VisitorsApi, VisitorVariablesApi, VisitorSessionsApi } from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
@@ -140,6 +140,15 @@ export default class Api {
    */
   public static getVisitorVariablesApi(accessToken: AccessToken) {
     return new VisitorVariablesApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized visitor sessions api
+   * 
+   * @param accessToken access token
+   */
+  public static getVisitorSessionsApi(accessToken: AccessToken) {
+    return new VisitorSessionsApi(Api.getConfiguration(accessToken));
   }
 
   /**

@@ -102,14 +102,20 @@ class RoomsScreen extends React.Component<Props, State> {
           width={ 320 }
         >
           <List disablePadding>
-            <ListItem button onClick={ () => this.onReceptionNavigationClick() }>
+            <ListItem button onClick={ this.navigateTo("reception", true) }>
               <ListItemText primary={ strings.exhibition.reception } />
               <ListItemSecondaryAction>
                 <ArrowIcon />
               </ListItemSecondaryAction>
             </ListItem>
-            <ListItem button onClick={ () => this.onVisitorVariablesNavigationClick() }>
-              <ListItemText primary={ strings.exhibition.visitorVariablesManagement } />
+            <ListItem button onClick={ this.navigateTo("visitorVariables") }>
+              <ListItemText primary={ strings.exhibition.visitorVariables } />
+              <ListItemSecondaryAction>
+                <ArrowIcon />
+              </ListItemSecondaryAction>
+            </ListItem>
+            <ListItem button onClick={ this.navigateTo("resetVisitorVariables") }>
+              <ListItemText primary={ strings.exhibition.resetVisitorVariables } />
               <ListItemSecondaryAction>
                 <ArrowIcon />
               </ListItemSecondaryAction>
@@ -202,6 +208,21 @@ class RoomsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Navigates to given exhibition management path
+   * 
+   * @param path path as string
+   */
+  private navigateTo = (path: string, resetPath?: boolean) => () => {
+    const { pathname } = this.props.history.location;
+    const exhibitionPath = pathname.split("/content")[0];
+    if (resetPath) {
+      this.props.history.replace(`${ exhibitionPath }/${path}`);
+    } else {
+      this.props.history.push(`${ exhibitionPath }/${path}`);
+    }
+  }
+
+  /**
    * Event handler for card click
    * 
    * @param roomId room id
@@ -209,24 +230,6 @@ class RoomsScreen extends React.Component<Props, State> {
   private onCardClick = (roomId: string, floorId: string) => {
     const { pathname } = this.props.history.location;
     this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
-  }
-
-  /**
-   * Event handler for reception navigation click
-   */
-  private onReceptionNavigationClick = () => {
-    const { pathname } = this.props.history.location;
-    const exhibitionPath = pathname.split("/content")[0];
-    this.props.history.replace(`${ exhibitionPath }/reception`);
-  }
-
-  /**
-   * Event handler for visirot variables navigation click
-   */
-  private onVisitorVariablesNavigationClick = () => {
-    const { pathname } = this.props.history.location;
-    const exhibitionPath = pathname.split("/content")[0];
-    this.props.history.replace(`${ exhibitionPath }/visitorVariables`);
   }
 }
 

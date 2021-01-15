@@ -8,7 +8,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton, PreviewDeviceData } from '../../types';
 import BasicLayout from "../layouts/basic-layout";
@@ -38,7 +38,7 @@ import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { allowedWidgetTypes, TabStructure, Tab, TabProperty, TabHolder } from "../content-editor/constants";
+import { allowedWidgetTypes, TabStructure, ExhibitionPageTab, ExhibitionPageTabProperty, ExhibitionPageTabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 
@@ -86,8 +86,9 @@ interface State {
   tabResourceIndex?: number;
   selectedTabIndex?: number;
   propertiesExpanded: boolean;
-  tabMap: Map<string, TabHolder>;
+  tabMap: Map<string, ExhibitionPageTabHolder>;
   dataChanged: boolean;
+  timelineTabIndex: number;
 }
 
 /**
@@ -103,6 +104,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      timelineTabIndex: 1,
       dataChanged: false,
       loading: false,
       devices: [],
@@ -166,7 +168,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedResource,
       selectedTriggerIndex,
       selectedTabIndex,
-      dataChanged
+      dataChanged,
+      timelineTabIndex
     } = this.state;
 
     if (this.state.loading) {
@@ -211,7 +214,32 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </EditorView>
 
           <ElementTimelinePane>
-            { this.renderTimeline() }
+            <Tabs
+              classes={{
+                root: classes.contentTabs,
+                indicator: classes.tabIndicator
+              }}
+              onChange= { this.setTabIndex }
+              value={ timelineTabIndex }
+            >
+              <Tab
+                value={ 0 }
+                label={ strings.contentEditor.editor.editorTabs.noVisitor }
+              />
+              <Tab
+                value={ 1 }
+                label={ strings.contentEditor.editor.editorTabs.visitorPresent }
+              />
+            </Tabs>
+            <div className={ classes.timelineContent }>
+              { timelineTabIndex === 0 &&
+                this.renderIdlePageEditor()
+              }
+              { timelineTabIndex === 1 &&
+                this.renderTimeline() 
+              }
+            </div>
+
           </ElementTimelinePane>
 
           <ElementContentsPane>
@@ -232,6 +260,29 @@ class ContentEditorScreen extends React.Component<Props, State> {
         </div>
       </BasicLayout>
     );
+  }
+
+  /**
+   * Sets tab index
+   *
+   * @param event event object
+   * @param newIndex new tab index value
+   */
+  private setTabIndex = (event: React.ChangeEvent<{ }>, newIndex: number) => {
+    if (newIndex === 0) {
+      this.setState({
+        selectedContentVersion: this.state.contentVersions[0],
+        selectedPage: undefined,
+        selectedLayoutView: undefined,
+        selectedTriggerIndex: undefined,
+        selectedResource: undefined,
+        selectedTabIndex: undefined
+      });
+    }
+
+    this.setState({
+      timelineTabIndex: newIndex
+    });
   }
 
   /**
@@ -361,54 +412,84 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedPage
     } = this.state;
 
+    return contentVersions.map(contentVersion => {
+      const selected = contentVersion.id === selectedContentVersion?.id;
+      return (
+        <Accordion
+          key={ `ContentVersionAccordion-${contentVersion.id}` }
+          className={ classes.timelineContentVersion }
+          expanded={ selected }
+          onChange={ this.onExpandContentVersion(contentVersion) }
+        >
+          <AccordionSummary
+            expandIcon={ <ExpandMoreIcon/> }
+            className={ classes.timelineContentVersionTitle }
+          >
+            <Typography
+              variant="body2"
+              className={ selected ? classes.selected : undefined }
+            >
+              { contentVersion.language }
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={ classes.timelineContentVersionContent }>
+            <TimelineDevicesList
+              contentVersion={ contentVersion }
+              selectedContentVersion={ selectedContentVersion }
+              devices={ devices }
+              selectedDevice={ selectedDevice }
+              onClick={ this.onDeviceClick }
+            />
+            <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
+            <TimelineEditor
+              contentVersion={ contentVersion }
+              devices={ devices }
+              previewDevicesData={ previewDevicesData }
+              pages={ pages }
+              pageType="active"
+              selectedContentVersion={ selectedContentVersion }
+              selectedDevice={ selectedDevice }
+              selectedPage={ selectedPage }
+              onClick={ this.onPageClick }
+              onDragEnd={ this.onPageDragEnd }
+            />
+          </AccordionDetails>
+        </Accordion>
+      );
+    });
+  }
+
+  /**
+   * Renders idle page editor
+   */
+  private renderIdlePageEditor = () => {
+    const { classes } = this.props;
+    const {
+      devices,
+      pages,
+      previewDevicesData,
+      selectedDevice,
+      selectedPage
+    } = this.state;
+
     return (
-      <div className={ classes.timelineContent }>
-        {
-          contentVersions.map(contentVersion => {
-            const selected = contentVersion.id === selectedContentVersion?.id;
-            return (
-              <Accordion
-                key={ `ContentVersionAccordion-${contentVersion.id}` }
-                className={ classes.timelineContentVersion }
-                expanded={ selected }
-                onChange={ this.onExpandContentVersion(contentVersion) }
-              >
-                <AccordionSummary
-                  expandIcon={ <ExpandMoreIcon/> }
-                  className={ classes.timelineContentVersionTitle }
-                >
-                  <Typography
-                    variant="body2"
-                    className={ selected ? classes.selected : undefined }
-                  >
-                    { contentVersion.language }
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={ classes.timelineContentVersionContent }>
-                  <TimelineDevicesList
-                    contentVersion={ contentVersion }
-                    selectedContentVersion={ selectedContentVersion }
-                    devices={ devices }
-                    selectedDevice={ selectedDevice }
-                    onClick={ this.onDeviceClick }
-                  />
-                  <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
-                  <TimelineEditor
-                    contentVersion={ contentVersion }
-                    devices={ devices }
-                    previewDevicesData={ previewDevicesData }
-                    pages={ pages }
-                    selectedContentVersion={ selectedContentVersion }
-                    selectedDevice={ selectedDevice }
-                    selectedPage={ selectedPage }
-                    onClick={ this.onPageClick }
-                    onDragEnd={ this.onPageDragEnd }
-                  />
-                </AccordionDetails>
-              </Accordion>
-            );
-          })
-        }
+      <div className={ classes.idlePageEditor }>
+        <TimelineDevicesList
+          selectedDevice={ selectedDevice }
+          onClick={ this.onDeviceClick }
+          devices={ devices }
+        />
+        <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
+        <TimelineEditor
+          devices={ devices }
+          previewDevicesData={ previewDevicesData }
+          pages={ pages }
+          pageType="idle"
+          selectedDevice={ selectedDevice }
+          selectedPage={ selectedPage }
+          onClick={ this.onPageClick }
+          onDragEnd={ this.onPageDragEnd }
+        />
       </div>
     );
   }
@@ -879,7 +960,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param updatedTab updated tab
    */
-  private updateTab = (updatedTab: Tab) => {
+  private updateTab = (updatedTab: ExhibitionPageTab) => {
     this.setState(
       produce((draft: State) => {
         const { tabResourceIndex, selectedTabIndex, selectedPage, selectedLayoutView, tabMap } = draft;
@@ -1121,7 +1202,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedDevice) {
       actionButtons.push({
         name: strings.exhibition.addPage,
-        action: this.onAddPageClick
+        action: this.onAddPageClick,
+        disabled: !!selectedDevice.idlePageId
       }, {
         name: strings.contentEditor.editor.saveDevice,
         action: this.onSaveDeviceClick,
@@ -1284,13 +1366,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
      * TODO: This is needed for the first version of the tab editor.
      * Remove this once we have more complex support for tab resources
      */
-    const newProperty: TabProperty = {
+    const newProperty: ExhibitionPageTabProperty = {
       name: "src",
       type: "string",
       value: "@resources/src"
     };
 
-    const newTab: Tab = {
+    const newTab: ExhibitionPageTab = {
       label: "New tab",
       properties: [
         newProperty
@@ -1428,9 +1510,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param selectedContentVersion selected content version
    * @param selectedDevice selected device
    */
-  private onDeviceClick = (selectedContentVersion: ContentVersion, selectedDevice: ExhibitionDevice) => () => {
+  private onDeviceClick = (selectedDevice: ExhibitionDevice, selectedContentVersion?: ContentVersion) => () => {
+    if (selectedContentVersion) {
+      this.setState({ selectedContentVersion });
+    }
+
     this.setState({
-      selectedContentVersion,
       selectedDevice,
       selectedPage: undefined,
       selectedLayoutView: undefined,
@@ -1442,12 +1527,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for page click
-   *
-   * @param selectedContentVersion selected content version
    * @param selectedPage selected page
+   * @param selectedContentVersion possible selected content version
    */
-  private onPageClick = (selectedContentVersion: ContentVersion, selectedPage: ExhibitionPage) => () => {
-    const { devices, previewDevicesData } = this.state;
+  private onPageClick = (selectedPage: ExhibitionPage, selectedContentVersion?: ContentVersion) => () => {
+    const { devices, previewDevicesData, timelineTabIndex, contentVersions } = this.state;
+    const isIdlePage = timelineTabIndex === 0;
     const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
     const previewDeviceIndex = previewDevicesData.findIndex(previewData => previewData.device.id === selectedDevice?.id);
     if (previewDeviceIndex > -1) {
@@ -1459,7 +1544,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedContentVersion,
+      selectedContentVersion: isIdlePage ?
+        contentVersions[0] :
+        selectedContentVersion,
       selectedDevice,
       selectedPage,
       selectedResource: undefined,
@@ -1568,11 +1655,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Event handler for page drag end
    *
-   * @param contentVersionId content version id
-   * @param deviceId device id
+   * @param device device
+   * @param contentVersionId possible content version id
    * @param result drop result
    */
-  private onPageDragEnd = (contentVersionId: string, deviceId: string) => (result: DropResult) => {
+  private onPageDragEnd = (device: ExhibitionDevice, contentVersionId?: string) => (result: DropResult) => {
     if (!result.destination) {
       return;
     }
@@ -1585,7 +1672,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.updateOrderNumbers(newIndex, movedPageId, contentVersionId, deviceId);
+    this.updateOrderNumbers(newIndex, movedPageId, device, contentVersionId);
   }
 
   /**
@@ -1593,10 +1680,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param newIndex new index
    * @param movedPageId moved pages uuid
-   * @param contentVersionId id of content version where page belongs to
-   * @param deviceId id of device where page belongs to
+   * @param device device where page belongs to
+   * @param contentVersionId possible id of content version where page belongs to
    */
-  private updateOrderNumbers = (newIndex: number, movedPageId: string, contentVersionId: string, deviceId: string) => {
+  private updateOrderNumbers = (newIndex: number, movedPageId: string, device: ExhibitionDevice, contentVersionId?: string) => {
     const { pages } = this.state;
 
     const movedPage = pages.find(page => page.id === movedPageId);
@@ -1604,7 +1691,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    const devicePages = this.getDevicePages(contentVersionId, deviceId, pages);
+    const devicePages = this.getDevicePages(pages, device, contentVersionId);
     const updatedPages = this.getUpdatedDevicePagesOrder(devicePages, movedPageId, newIndex);
 
     this.doPageOrderUpdate(updatedPages);
@@ -1613,14 +1700,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
   /**
    * Filters device pages from all pages and sorts them by order number
    * 
-   * @param contentVersionId content version ID
-   * @param deviceId device ID
    * @param pages pages
+   * @param device device
+   * @param contentVersionId possible content version ID
    * @returns filtered and sorted device pages
    */
-  private getDevicePages = (contentVersionId: string, deviceId: string, pages: ExhibitionPage[]) => {
+  private getDevicePages = (pages: ExhibitionPage[], device: ExhibitionDevice, contentVersionId?: string) => {
     return pages
-      .filter(page => page.deviceId === deviceId && page.contentVersionId === contentVersionId)
+      .filter(page =>
+        page.deviceId === device.id &&
+        (page.contentVersionId === contentVersionId || page.id === device.idlePageId)
+      )
       .sort((a, b) => a.orderNumber - b.orderNumber);
   }
 
@@ -1795,19 +1885,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedContentVersion,
       selectedDevice,
       devices,
-      pages
+      pages,
+      timelineTabIndex
     } = this.state;
 
     if (!selectedDevice) {
       return;
     }
 
+    const isIdlePage = timelineTabIndex === 0;
     const layoutId = layouts && layouts.length ? layouts[0].id : null;
     const deviceId = selectedDevice.id;
     const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
     if (!layoutId || !deviceId || !selectedContentVersion) {
-      return null;
+      return;
     }
 
     const filteredPages = pages.filter(page =>
@@ -1822,7 +1914,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
       name: strings.exhibition.newPage,
       eventTriggers: [],
       resources: temp.resources,
-      orderNumber: filteredPages.length,
+      orderNumber: isIdlePage ?
+        0 :
+        filteredPages.length,
       enterTransitions: [],
       exitTransitions: []
     };
@@ -1839,6 +1933,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       deviceId: selectedDevice.id!,
       exhibitionDevice: {
         ...selectedDevice,
+        idlePageId: createdPage.id
       }
     });
 
@@ -1901,7 +1996,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onDeletePageClick = async () => {
     try {
       const { accessToken, exhibitionId } = this.props;
-      const { selectedPage, selectedContentVersion, selectedDevice, pages } = this.state;
+      const {
+        selectedPage,
+        selectedContentVersion,
+        selectedDevice,
+        pages,
+        timelineTabIndex
+      } = this.state;
+
       if (!selectedContentVersion || !selectedPage || !selectedPage.id || !selectedDevice) {
         return;
       }
@@ -1914,28 +2016,41 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return;
       }
 
+      const isIdlePage = !!selectedDevice.idlePageId && timelineTabIndex === 0;
+      if (isIdlePage) {
+        const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
+        await exhibitionDevicesApi.updateExhibitionDevice({
+          exhibitionId: exhibitionId,
+          deviceId: selectedDevice.id!,
+          exhibitionDevice: {
+            ...selectedDevice,
+            idlePageId: undefined
+          },
+        });
+      }
+
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
       await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
 
-      const devicePages = this.getDevicePages(selectedContentVersion.id!, selectedDevice.id!, pages);
-      const updatedDevicePages = this.getUpdatedDevicePagesOrder(devicePages, selectedPage.id);
-      const updatedPages = pages
-        .filter(page => page.id !== selectedPage.id)
-        .map(page => updatedDevicePages.find(devicePage => devicePage.id === page.id) ?? page);
-
-      this.setState(
-        produce((draft: State) => {
-          draft.pages = updatedPages;
-          draft.selectedPage = undefined;
-          draft.selectedTriggerIndex = undefined;
-        })
-      );
-    } catch (e) {
-      console.error(e);
+      if (isIdlePage) {
+        this.setState({ pages: pages.filter(page => page.id !== selectedPage.id) });
+      } else {
+        const devicePages = this.getDevicePages(pages, selectedDevice, selectedContentVersion.id);
+        const updatedDevicePages = this.getUpdatedDevicePagesOrder(devicePages, selectedPage.id);
+        const updatedPages = pages
+          .filter(page => page.id !== selectedPage.id)
+          .map(page => updatedDevicePages.find(devicePage => devicePage.id === page.id) ?? page);
+        
+        this.setState({ pages: updatedPages });
+      }
 
       this.setState({
-        error: e
+        selectedPage: undefined,
+        selectedTriggerIndex: undefined
       });
+    } catch (e) {
+      console.error(e);
+      this.setState({ error: e });
     }
   }
 

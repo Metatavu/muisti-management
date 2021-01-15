@@ -20,6 +20,14 @@ export default createStyles({
     marginBottom: 10
   },
 
+  contentTabs: {
+    marginLeft: theme.spacing(30)
+  },
+
+  tabIndicator: {
+    height: 6
+  },
+
   editorLayout: {
     height: "100%",
     overflow: "hidden",
@@ -42,11 +50,13 @@ export default createStyles({
     minHeight: 300,
     maxHeight: 300,
     overflowY: "auto",
+    borderTop: "3px solid #000",
+    backgroundColor: "#fbfbfb"
   },
 
   timelineContentVersion: {
     backgroundColor: "#fff",
-    borderTop: "3px solid #000"
+    borderBottom: "3px solid #000"
   },
 
   timelineContentVersionTitle: {
@@ -60,6 +70,11 @@ export default createStyles({
 
   timelineContentVersionContent: {
     padding: 0,
+    display: "flex",
+    flexDirection: "row"
+  },
+
+  idlePageEditor: {
     display: "flex",
     flexDirection: "row"
   },

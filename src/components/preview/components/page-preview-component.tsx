@@ -18,7 +18,7 @@ import PagePreviewMaterialTab from "./page-preview-material-tab";
 import DisplayMetrics from "../../../types/display-metrics";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { ResourceMap } from "../../../types";
-import { TabHolder } from "../../content-editor/constants";
+import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 
 /**
  * Interface representing component properties
@@ -32,7 +32,7 @@ interface Props extends WithStyles<typeof styles> {
   style?: CSSProperties;
   scale: number;
   displayMetrics: DisplayMetrics;
-  tabMap?: Map<string, TabHolder>;
+  tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
   handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
@@ -95,8 +95,10 @@ class PagePreviewComponent extends React.Component<Props, State> {
       return null;
     }
 
+    // TODO: Add proper preview components for MapView, WebView and VisitorsView
     switch (view.widget) {
       case "FrameLayout":
+      case "VisitorsView":
         return <PagePreviewFrameLayout
           onResize={ onResize }
           handleLayoutProperties={ handleLayoutProperties }
