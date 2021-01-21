@@ -49,7 +49,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * List of available menu options
    */
-  menuOptions: ActionButton[];
+  menuOptions?: ActionButton[];
 
   /**
    * Handler for card click
@@ -91,9 +91,10 @@ class CardItem extends React.Component<Props, State> {
           <CardHeader
             titleTypographyProps={{ variant: "h3" }}
             action={
-              <MenuButton
-                menuOptions={ menuOptions }
-              />
+              menuOptions &&
+                <MenuButton
+                  menuOptions={ menuOptions }
+                />
             }
             title={ title }
             subheader={ subtitle }

@@ -12,6 +12,13 @@ export default createStyles({
     paddingBottom: 40
   },
 
+  cardViewAutoHeight: {
+    paddingLeft: 85,
+    paddingRight: 85,
+    paddingTop: 40,
+    paddingBottom: 40
+  },
+
   cardList: {
     display: "grid",
     gridTemplateColumns: "repeat( auto-fill, minmax(250px, 250px) )",

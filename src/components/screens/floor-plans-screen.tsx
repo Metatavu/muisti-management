@@ -105,13 +105,12 @@ class FloorPlansScreen extends React.Component<Props, State> {
           title={ exhibition.name }
           onClick={ () => this.onCardClick(exhibitionId) }
           menuOptions={ cardMenuOptions }
-          status={ "" }
         />
       );
     });
 
     return (
-      <CardList title={ "" }>
+      <CardList>
         { cards }
       </CardList>
     );

@@ -246,6 +246,7 @@
   "layout": {
     "title": "Layout",
     "addNew": "Add new layout",
+    "makeAsSubLayout": "Create as template",
     "confirmDelete": "Are you sure you want to delete layout {0}?",
     "toolbar": {
       "visual": "Visual view",
@@ -265,6 +266,8 @@
 
   "subLayout": {
     "title": "Templates",
+    "name": "Template",
+    "description": "Templates are premade compositions of components that can be reused in layouts.",
     "addNew": "Add new template",
     "preview": {
       "width": "Preview width (px)",
@@ -530,7 +533,7 @@
   },
 
   "contentEditor": {
-    "open": "Open timeline",
+    "open": "Manage content",
     "editor": {
       "editorTabs": {
         "noVisitor": "Exhibition spot empty",
@@ -634,7 +637,8 @@
     "or": "or",
     "undefined": "Undefined",
     "refresh": "Refresh",
-    "unsaved": "You have unsaved changes, are you sure you want to leave?"
+    "unsaved": "You have unsaved changes, are you sure you want to leave?",
+    "properties": "Properties"
   },
 
   "spaces": {

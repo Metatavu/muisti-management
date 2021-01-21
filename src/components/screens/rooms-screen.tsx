@@ -145,14 +145,12 @@ class RoomsScreen extends React.Component<Props, State> {
           title={ room.name }
           subtitle={ exhibition.name }
           onClick={ () => this.onCardClick(roomId, floorId) }
-          menuOptions={ cardMenuOptions }
-          status={ strings.exhibitions.status.ready }
         />
       );
     });
 
     return (
-      <CardList title={ strings.exhibitions.inProduction }>
+      <CardList>
         { cards }
       </CardList>
     );
