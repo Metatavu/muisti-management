@@ -121,7 +121,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         { this.renderGroupContentVersionCardsList() }
         { this.renderAddDialog() }
         { this.renderConfirmDeleteDialog() }
-        <ElementSettingsPane open={ true } title="Properties" width={ selectedGroupContentVersion && contentVersion ? 320 : 0 }>
+        <ElementSettingsPane open={ true } title={ strings.generic.properties } width={ selectedGroupContentVersion && contentVersion ? 320 : 0 }>
           { selectedGroupContentVersion && contentVersion &&
             <GroupContentVersionsInfo
               contentVersion={ contentVersion }
@@ -160,7 +160,6 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
           }
           onClick={ () => this.onCardClick(groupContentVersion) }
           menuOptions={ this.getCardMenuOptions(groupContentVersion) }
-          status={ groupContentVersion.status }
           selected={ selectedGroupContentVersion?.id === groupContentVersion.id }
           onActionClick={ () => this.openTimeline(groupContentVersion) }
         />
@@ -168,7 +167,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
 
     return (
-      <CardList title={ strings.exhibitions.inProduction }>
+      <CardList>
         { cards }
       </CardList>
     );

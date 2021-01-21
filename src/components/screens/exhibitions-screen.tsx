@@ -110,13 +110,12 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
           title={ exhibition.name }
           onClick={ () => this.onCardClick(exhibitionId) }
           menuOptions={ cardMenuOptions }
-          status={ strings.exhibitions.status.ready }
         />
       );
     });
 
     return (
-      <CardList title={ strings.exhibitions.inProduction }>
+      <CardList>
         { cards }
       </CardList>
     );

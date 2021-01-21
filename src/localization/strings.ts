@@ -247,6 +247,7 @@ export interface IStrings extends LocalizedStringsMethods {
   layout: {
     title: string;
     addNew: string;
+    makeAsSubLayout: string;
     confirmDelete: string;
     toolbar: {
       visual: string;
@@ -266,6 +267,8 @@ export interface IStrings extends LocalizedStringsMethods {
 
   subLayout: {
     title: string;
+    name: string;
+    description: string;
     addNew: string;
     preview: {
       height: string;
@@ -631,6 +634,7 @@ export interface IStrings extends LocalizedStringsMethods {
     undefined: string;
     refresh: string;
     unsaved: string;
+    properties: string;
   };
 
   spaces: {

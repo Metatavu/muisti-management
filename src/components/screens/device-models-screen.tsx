@@ -123,7 +123,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     });
 
     return (
-      <CardList title={ "" }>
+      <CardList>
         { cards }
       </CardList>
     );

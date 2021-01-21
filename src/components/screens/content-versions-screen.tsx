@@ -137,13 +137,12 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           subtitle={ room?.name }
           onClick={ () => this.onCardClick(contentVersionId) }
           menuOptions={ this.getCardMenuOptions(contentVersion) }
-          status={ strings.exhibitions.status.ready }
         />
       );
     });
 
     return (
-      <CardList title={ strings.exhibitions.inProduction }>
+      <CardList>
         { cards }
       </CardList>
     );

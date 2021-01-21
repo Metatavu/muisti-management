@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
+import { WithStyles, withStyles, Grid, Typography, TextField, Divider, MenuItem, Select, FormControl, InputLabel } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { GroupContentVersion, GroupContentVersionStatus } from "../../generated/client";
@@ -84,22 +84,25 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
             value={ groupContentVersion.name }
             onChange={ this.onValueChange }
           />
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
-        <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.groupContentVersion.status }</Typography>
-          <Select
-            fullWidth
-            variant="filled"
-            labelId={ strings.groupContentVersion.status }
-            name="status"
-            value={ groupContentVersion.status }
-            onChange={ this.onValueChange }
-          >
-            { statusSelectItems }
-          </Select>
+        {/* TODO: add the status functionality below when feature is implemented */}
+        {/* <Grid item xs={ 12 }>
+          <FormControl>
+            <InputLabel id={ strings.groupContentVersion.status }>
+              { strings.groupContentVersion.status }
+            </InputLabel>
+            <Select
+              label={ strings.groupContentVersion.status }
+              labelId={ strings.groupContentVersion.status }
+              name="status"
+              value={ groupContentVersion.status }
+              onChange={ this.onValueChange }
+              >
+              { statusSelectItems }
+            </Select>
+          </FormControl>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   }

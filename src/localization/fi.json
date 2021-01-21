@@ -244,8 +244,9 @@
   },
 
   "layout": {
-    "title": "Asettelu",
+    "title": "Asettelut",
     "addNew": "Lisää uusi asettelu",
+    "makeAsSubLayout": "Luo asettelupohjaksi",
     "confirmDelete": "Haluatko varmasti poistaa asettelun {0}?",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
@@ -264,8 +265,10 @@
   },
 
   "subLayout": {
-    "title": "Templaatit",
-    "addNew": "Lisää uusi templaatti",
+    "title": "Asettelupohjat",
+    "name": "Asettelupohja",
+    "description": "Asettelupohjat ovat valmiita komponenttikokonaisuuksia, joita voit käyttää asetteluissasi.",
+    "addNew": "Lisää uusi asettelupohja",
     "preview": {
       "width": "Esikatselun leveys (px)",
       "height": "Esikatselun korkeus (px)"
@@ -530,7 +533,7 @@
   },
 
   "contentEditor": {
-    "open": "Avaa timeline",
+    "open": "Hallitse sisältöä",
     "editor": {
       "editorTabs": {
         "noVisitor": "Näyttelypiste tyhjä",
@@ -632,7 +635,8 @@
     "or": "tai",
     "undefined": "Ei määritelty",
     "refresh": "Päivitä",
-    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?"
+    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
+    "properties": "Ominaisuudet"
   },
 
   "spaces": {
