@@ -50,10 +50,20 @@ class CardList extends React.Component<Props, State> {
     return (
       <div className={ autoHeight ? classes.cardViewAutoHeight : classes.cardView }>
         { title &&
-          <Typography style={ subtitle ? { marginBottom: theme.spacing(1) } : { marginBottom: theme.spacing(2) }} variant="h2">{ title }</Typography>
+          <Typography
+            style={{ marginBottom: theme.spacing(subtitle ? 1 : 2) }}
+            variant="h2"
+          >
+            { title }
+          </Typography>
         }
         { subtitle &&
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="body1">{ subtitle }</Typography>
+          <Typography
+            style={{ marginBottom: theme.spacing(2) }}
+            variant="body1"
+          >
+            { subtitle }
+          </Typography>
         }
         <div className={ classes.cardList }>
           { this.props.children }
