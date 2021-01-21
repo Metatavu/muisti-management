@@ -121,7 +121,11 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         { this.renderGroupContentVersionCardsList() }
         { this.renderAddDialog() }
         { this.renderConfirmDeleteDialog() }
-        <ElementSettingsPane open={ true } title={ strings.generic.properties } width={ selectedGroupContentVersion && contentVersion ? 320 : 0 }>
+        <ElementSettingsPane
+          open={ true }
+          title={ strings.generic.properties }
+          width={ selectedGroupContentVersion && contentVersion ? 320 : 0 }
+        >
           { selectedGroupContentVersion && contentVersion &&
             <GroupContentVersionsInfo
               contentVersion={ contentVersion }
