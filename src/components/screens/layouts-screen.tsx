@@ -160,7 +160,11 @@ class LayoutsScreen extends React.Component<Props, State> {
           { layoutCards }
         </CardList>
 
-        <CardList autoHeight title={ strings.subLayout.title } subtitle={ strings.subLayout.description }>
+        <CardList
+          autoHeight
+          title={ strings.subLayout.title }
+          subtitle={ strings.subLayout.description }
+        >
           { subLayoutCards }
         </CardList>
       </div>
