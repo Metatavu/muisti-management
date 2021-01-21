@@ -226,9 +226,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     const { newLayout } = this.state;
 
     return (
-      <FormControl
-        variant="outlined"
-      >
+      <FormControl variant="outlined">
         <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
           { strings.layout.settings.deviceModelId }
         </InputLabel>
