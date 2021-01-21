@@ -147,7 +147,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       return (
         <CardItem
           key={ subLayout.id }
-          title={ `${ strings.subLayout.name } - ${ subLayout.name }` }
+          title={ `${strings.subLayout.name} - ${subLayout.name}` }
           onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
           menuOptions={ cardMenuOptions }
         />
