@@ -97,7 +97,6 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         clearError={ () => this.setState({ error: undefined }) }
         dataChanged={ dataChanged }
         openDataChangedPrompt
-        noTabs={ true }
       >
         { this.resolveComponentToRender() }
       </BasicLayout>

@@ -9,8 +9,7 @@ import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
 import Breadcrumbs from "./breadcrumbs";
 import { BreadcrumbData, ActionButton } from "../../types";
-import ContentUtilityBar from "./content-utility-bar";
-import EditorUtilityBar from "./editor-utility-bar";
+import ActionBar from "./action-bar";
 
 /**
  * Interface representing component properties
@@ -20,7 +19,6 @@ interface Props extends WithStyles<typeof styles> {
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
-  noTabs?: boolean;
   keycloak: KeycloakInstance;
   title: string;
   error?: string | Error;
@@ -69,7 +67,6 @@ class TopBar extends React.Component<Props, State> {
       breadcrumbs,
       noBackButton,
       title,
-      noTabs,
       actionBarButtons,
       hideHeader
     } = this.props;
@@ -117,19 +114,9 @@ class TopBar extends React.Component<Props, State> {
         </div>
 
         <div className={ classes.bottomRow }>
-          { !history.location.pathname.includes("timeline") &&
-            <ContentUtilityBar
-              history={ history }
-              actionBarButtons={ actionBarButtons }
-              noTabs={ noTabs }
-            />
-          }
-          { history.location.pathname.includes("timeline") &&
-            <EditorUtilityBar
-              history={ history }
-              actionBarButtons={ actionBarButtons }
-            />
-          }
+          <div className={ classes.toolbar }>
+            <ActionBar buttons={ actionBarButtons || [] } />
+          </div>
         </div>
       </header>
     );

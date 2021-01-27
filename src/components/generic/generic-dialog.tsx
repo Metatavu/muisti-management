@@ -56,17 +56,34 @@ export default class GenericDialog extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { open, positiveButtonText, cancelButtonText, onClose, onCancel, title, onConfirm, error, fullScreen, disableEnforceFocus } = this.props;
+    const {
+      open,
+      positiveButtonText,
+      cancelButtonText,
+      onClose,
+      onCancel,
+      title,
+      onConfirm,
+      error,
+      fullScreen,
+      disableEnforceFocus
+    } = this.props;
+
     return (
       <Dialog
         disableEnforceFocus={ disableEnforceFocus }
         open={ open }
-        onClose={ () => onClose() }
+        onClose={ onClose }
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullScreen={ fullScreen }
       >
-        <DialogTitle disableTypography id="alert-dialog-title">{ title }</DialogTitle>
+        <DialogTitle
+          disableTypography
+          id="alert-dialog-title"
+        >
+          { title }
+        </DialogTitle>
         <DialogContent>
           { this.props.children }
         </DialogContent>
@@ -74,7 +91,14 @@ export default class GenericDialog extends React.Component<Props, State> {
           <Button onClick={ onCancel } color="primary">
             { cancelButtonText }
           </Button>
-          <Button disableElevation variant="contained" disabled={ error } onClick={ onConfirm } color="secondary" autoFocus>
+          <Button
+            disableElevation
+            variant="contained"
+            disabled={ error }
+            onClick={ onConfirm }
+            color="secondary"
+            autoFocus
+          >
             { positiveButtonText }
           </Button>
         </DialogActions>

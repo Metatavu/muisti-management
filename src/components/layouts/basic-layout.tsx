@@ -22,7 +22,6 @@ interface Props extends WithStyles<typeof styles> {
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
-  noTabs?: boolean;
   error?: string | Error;
   devices?: ExhibitionDevice[];
   dataChanged?: boolean;
@@ -66,7 +65,6 @@ class BasicLayout extends React.Component<Props, State> {
       breadcrumbs,
       actionBarButtons,
       noBackButton,
-      noTabs,
       keycloak,
       dataChanged,
       openDataChangedPrompt,
@@ -80,7 +78,6 @@ class BasicLayout extends React.Component<Props, State> {
           breadcrumbs={ breadcrumbs }
           actionBarButtons={ actionBarButtons }
           noBackButton={ noBackButton }
-          noTabs={ noTabs }
           title={ title }
           hideHeader={ hideHeader }
         />

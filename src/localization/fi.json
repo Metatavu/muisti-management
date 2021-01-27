@@ -175,6 +175,7 @@
     "navigation": {
       "search": "Etsi.."
     },
+    "addLanguageVersion": "Uusi kieliversio",
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
     "deletePage": "Poista sivu",
@@ -513,13 +514,18 @@
   },
 
   "contentVersion": {
-    "add": "Lisää uusi kieli",
-    "addDialogTitle": "Lisää kieli",
+    "add": "Uusi sisältökokonaisuus",
+    "addDialogTitle": "Uusi sisältökokonaisuus",
+    "addDialogDescription": "Anna nimi uudelle sisältökokonaisuudelle",
     "name": "Nimi",
     "language": "Kieli",
     "rooms": "Huoneet",
-    "deleteTitle": "Poista kieli",
-    "deleteText": "Oletko varma, että haluat poistaa tämän kielen ja kaikki sen sisällöt?"
+    "room": "Huone",
+    "deleteTitle": "Poista sisältökokonaisuus",
+    "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
+    "contentMaterials": "Sisältökokonaisuudet",
+    "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
+    "nameIsMandatory": "Nimi on pakollinen tieto"
   },
 
   "groupContentVersion": {
@@ -539,6 +545,10 @@
         "noVisitor": "Näyttelypiste tyhjä",
         "visitorPresent": "Vieras saapuu"
       },
+      "addLanguageDialog": {
+        "title": "Lisää kieliversio",
+        "language": "Kieli"
+      },
       "indexPageId": "Laitteen etusivu",
       "pageName": "Sivun nimi",
       "device": "Laite",
@@ -548,6 +558,8 @@
       "content": "Sisältö",
       "properties": "Ominaisuudet",
       "resources": "Resurssit",
+      "resource": "Resurssi",
+      "resourceProperties": "Resurssin ominaisuudet",
       "transitions" : {
         "title": "Siirtymät",
         "enterTransitions": "Siirtymä saapuessa",

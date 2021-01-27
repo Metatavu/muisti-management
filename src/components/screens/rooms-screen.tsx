@@ -131,7 +131,6 @@ class RoomsScreen extends React.Component<Props, State> {
    */
   private renderRoomCardsList = () => {
     const { rooms, exhibition } = this.state;
-    const cardMenuOptions = this.getCardMenuOptions();
     const cards = rooms.map(room => {
       const roomId = room.id;
       const floorId = room.floorId;

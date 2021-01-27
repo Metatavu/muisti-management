@@ -100,7 +100,6 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
         clearError={ () => this.setState({ error: undefined }) }
         dataChanged={ dataChanged }
         openDataChangedPrompt={ true }
-        noTabs={ true }
       >
         <div className={ classes.editorLayout }>
           <ElementNavigationPane title={ strings.visitorVariables.title }>

@@ -5,10 +5,10 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, Grid, Typography, TextField, Divider, MenuItem, Select, FormControl, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, Grid, Typography, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { GroupContentVersion, GroupContentVersionStatus } from "../../generated/client";
+import { GroupContentVersion } from "../../generated/client";
 import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
 import { ContentVersion } from "../../generated/client/models/ContentVersion";
@@ -69,9 +69,10 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
   private renderFields = () => {
     const { groupContentVersion } = this.props;
 
-    const statusSelectItems = Object.keys(GroupContentVersionStatus).map(key =>
-      <MenuItem key={ key } value={ key}>{ key }</MenuItem>
-    );
+    /** TODO: Add status functionality when feature is implemented */
+    // const statusSelectItems = Object.keys(GroupContentVersionStatus).map(key =>
+    //   <MenuItem key={ key } value={ key}>{ key }</MenuItem>
+    // );
 
     return (
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
