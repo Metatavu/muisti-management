@@ -31,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
   view?: PageLayoutView;
   pages: ExhibitionPage[];
   visitorVariables: VisitorVariable[];
+  availableLanguages: string[];
   onSave: (selectedEventTrigger: ExhibitionPageEventTrigger) => void;
 }
 
@@ -302,7 +303,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
       if (
         actionType === ExhibitionPageEventActionType.Setuservalue ||
         actionType === ExhibitionPageEventActionType.Navigate ||
-        actionType === ExhibitionPageEventActionType.ExecuteWebScript
+        actionType === ExhibitionPageEventActionType.ExecuteWebScript ||
+        actionType === ExhibitionPageEventActionType.StartVisitorSession
       ) {
         return (
           <MenuItem key={ `eventActionType-${ index }` } value={ actionType }>
@@ -339,6 +341,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
         return this.renderDeviceGroupEventSettings();
       case ExhibitionPageEventActionType.ExecuteWebScript:
         return this.renderExecuteWebScriptSettings();
+      case ExhibitionPageEventActionType.StartVisitorSession:
+        return this.renderStartVisitorSessionSettings();
       /**
        * TODO: Needs implementation
        */
@@ -511,6 +515,53 @@ class EventTriggerEditor extends React.Component<Props, State> {
           onChange={ this.onEventTriggerEventPropertyChange }
         />
       </div>
+    );
+  }
+
+  /**
+   * Renders start visitor session action settings
+   */
+  private renderStartVisitorSessionSettings = () => {
+    if (this.getSelectedEventActionType() !== ExhibitionPageEventActionType.StartVisitorSession) {
+      return;
+    }
+
+    const selectedPageEvent = this.getCurrentPageEvent();
+    if (!selectedPageEvent) {
+      return;
+    }
+    
+    const language = selectedPageEvent.properties.find(prop => prop.name === "language")?.value;
+
+    return (
+      <>
+        <div style={{ marginTop: theme.spacing(2) }}>
+          <Typography variant="h6">
+            { strings.contentEditor.editor.eventTriggers.selectLanguage }
+          </Typography>
+          <Select
+            name={ "language" }
+            value={ language }
+            onChange={ this.onEventTriggerEventPropertyChange }
+          >
+            { this.renderLanguageOptions() }
+          </Select>
+        </div>
+      </>
+    );
+  }
+  /**
+   * Renders language options
+   * 
+   * @returns options as JSX Elements or undefined if no options found
+   */
+  private renderLanguageOptions = (): JSX.Element[] | undefined => {
+    const { availableLanguages } = this.props;
+
+    return availableLanguages.map(language =>
+      <MenuItem key={ language } value={ language }>
+        { language }
+      </MenuItem>
     );
   }
 

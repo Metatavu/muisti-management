@@ -584,12 +584,14 @@ export interface IStrings extends LocalizedStringsMethods {
           triggerdevicegroupevent: string;
           executeWebScript: string;
           visitorSessionEnd: string;
+          startVisitorSession: string;
         };
         variableName: string;
         variableValue: string;
         variableBooleanTrue: string;
         variableBooleanFalse: string;
         selectPage: string;
+        selectLanguage: string;
       };
       tabs: {
         title: string;
