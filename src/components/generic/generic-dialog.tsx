@@ -55,7 +55,7 @@ export default class GenericDialog extends React.Component<Props, State> {
   /**
    * Component render method
    */
-  public render() {
+  public render = () => {
     const {
       open,
       positiveButtonText,
