@@ -425,6 +425,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
   private onDialogSaveClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedMultiLingualContentVersion, addNewContentVersion } = this.state;
+
     if (!selectedMultiLingualContentVersion) {
       return;
     }
