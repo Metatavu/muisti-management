@@ -10,7 +10,7 @@ import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
 import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab, Box, MenuItem } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton, LanguageOptions, PreviewDeviceData } from '../../types';
+import { AccessToken, ActionButton, LanguageOptions, PreviewDeviceData } from "../../types";
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
