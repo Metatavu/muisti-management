@@ -175,6 +175,7 @@ export interface IStrings extends LocalizedStringsMethods {
     navigation: {
       search: string;
     };
+    addLanguageVersion: string;
     newPage: string;
     addPage: string;
     deletePage: string;
@@ -515,16 +516,22 @@ export interface IStrings extends LocalizedStringsMethods {
   contentVersion: {
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     language: string;
     rooms: string;
+    room: string;
     deleteTitle: string;
     deleteText: string;
+    contentMaterials: string;
+    nameAlreadyTaken: string;
+    nameIsMandatory: string;
   };
 
   groupContentVersion: {
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     deviceGroup: string;
     status: string;
@@ -539,6 +546,10 @@ export interface IStrings extends LocalizedStringsMethods {
         noVisitor: string;
         visitorPresent: string;
       };
+      addLanguageDialog: {
+        title: string;
+        language: string;
+      };
       pageName: string;
       indexPageId: string;
       device: string;
@@ -548,6 +559,8 @@ export interface IStrings extends LocalizedStringsMethods {
       content: string;
       properties: string;
       resources: string;
+      resource: string;
+      resourceProperties: string;
       transitions: {
         title: string;
         enterTransitions: string;
