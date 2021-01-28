@@ -206,6 +206,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    */
   private renderConfirmDeleteDialog = () => {
     const { selectedMultiLingualContentVersion } = this.state;
+
     if (selectedMultiLingualContentVersion) {
       return (
         <ConfirmDialog
