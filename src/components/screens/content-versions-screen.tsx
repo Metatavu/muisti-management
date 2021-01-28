@@ -535,7 +535,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
   private sortLanguageVersions = (languageVersions: ContentVersion[]) => {
     const sortedList: ContentVersion[] = [];
 
-    [ LanguageOptions.FI, LanguageOptions.EN, LanguageOptions.SV, LanguageOptions.RU]
+    [ LanguageOptions.FI, LanguageOptions.EN, LanguageOptions.SV, LanguageOptions.RU ]
       .forEach(languageOption => {
         const foundLanguage = languageVersions.find(version => version.language === languageOption);
         foundLanguage && sortedList.push(foundLanguage);
