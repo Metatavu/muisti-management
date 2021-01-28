@@ -1329,7 +1329,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private addContentVersion = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { newContentVersion, groupContentVersion, contentVersions, groupContentVersions } = this.state;
+    const {
+      newContentVersion,
+      groupContentVersion,
+      contentVersions,
+      groupContentVersions
+    } = this.state;
 
     if (!newContentVersion || !groupContentVersion) {
       return;
