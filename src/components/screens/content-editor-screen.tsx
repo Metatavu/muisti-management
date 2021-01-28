@@ -1187,7 +1187,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       });
 
       if (foundGroupContentVersions.length < 1) {
-        console.log(`No group content version found for content version "${contentVersion.name}", creating one now.`);
         const newGroupContentVersion = await groupContentVersionsApi.createGroupContentVersion({
           exhibitionId,
           groupContentVersion: {
