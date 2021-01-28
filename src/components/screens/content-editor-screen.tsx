@@ -2106,6 +2106,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (isIdlePage) {
       const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
+
       if (deviceIndex < 0) {
         return;
       }
