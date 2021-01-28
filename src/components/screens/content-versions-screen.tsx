@@ -383,6 +383,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    */
   private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { selectedMultiLingualContentVersion, multiLingualContentVersions } = this.state;
+
     if (!selectedMultiLingualContentVersion) {
       return;
     }
