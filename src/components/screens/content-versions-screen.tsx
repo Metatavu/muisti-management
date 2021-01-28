@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress, TextField, Box, Typography } 
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionRoom } from "../../generated/client";
-import { AccessToken, ActionButton, BreadcrumbData, LanguageOptions, MultiLingualContentVersion } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData, LanguageOptions, MultiLingualContentVersion } from "../../types";
 import Api from "../../api/api";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
