@@ -280,6 +280,8 @@ export interface IStrings extends LocalizedStringsMethods {
   floorPlan: {
     title: string;
     listTitle: string;
+    exhibitions: string;
+    exhibitionsDescription: string;
     floor: {
       add: string;
       new: string;

@@ -110,7 +110,10 @@ class FloorPlansScreen extends React.Component<Props, State> {
     });
 
     return (
-      <CardList>
+      <CardList
+        title={ strings.floorPlan.exhibitions }
+        subtitle={ strings.floorPlan.exhibitionsDescription }
+      >
         { cards }
       </CardList>
     );

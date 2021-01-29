@@ -279,6 +279,8 @@
   "floorPlan": {
     "title": "Pohjapiirrustus",
     "listTitle": "Tilat",
+    "exhibitions": "Näyttelyt",
+    "exhibitionsDescription": "Valitse näyttely, minkä alueita ja tiloja haluat muokata.",
     "floor": {
       "add": "Lisää uusi tila",
       "new": "Uusi tila",
