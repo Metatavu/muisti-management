@@ -43,7 +43,7 @@ class GenericPropertyCheckbox extends React.Component<Props, State> {
   /**
    * Component render method
    */
-  public render() {
+  public render = () => {
     const { property, label } = this.props;
     return (
       <FormControlLabel
