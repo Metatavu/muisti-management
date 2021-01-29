@@ -354,7 +354,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             onCheckboxChange={ this.onToggleProperty }
           />
           <HelpDialog title={ strings.layoutEditor.commonComponents.hasBackgroundImage }>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.backgroundImage }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.backgroundImage }
+            </Typography>
           </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
