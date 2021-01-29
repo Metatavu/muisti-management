@@ -41,6 +41,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { allowedWidgetTypes, TabStructure, ExhibitionPageTab, ExhibitionPageTabProperty, ExhibitionPageTabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
+import LanguageUtils from "../../utils/language-utils";
 import GenericDialog from "../generic/generic-dialog";
 
 type View = "CODE" | "VISUAL";
@@ -786,6 +787,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedTriggerIndex,
       selectedTabIndex,
       pages,
+      contentVersions,
       visitorVariables,
       tabResourceIndex
     } = this.state;
@@ -805,12 +807,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     if (selectedTriggerIndex !== undefined) {
       const foundTrigger = selectedPage.eventTriggers[selectedTriggerIndex];
+      const availableLanguages = LanguageUtils.getAvailableLanguages(contentVersions);
 
       return(
         <EventTriggerEditor
           selectedEventTrigger={ foundTrigger }
           view={ pageLayout?.data }
           pages={ pages }
+          availableLanguages={ availableLanguages }
           visitorVariables={ visitorVariables }
           onSave={ this.updateEventTrigger }
         />
