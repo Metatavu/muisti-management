@@ -177,16 +177,28 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
         </div>
         <HelpDialog title={ strings.layoutEditor.commonComponents.layoutWidth }>
-          <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }</Typography>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }
+          </Typography>
           <Box mt={ 2 } mb={ 2 }>
-            <Typography variant="h5">MatchParent</Typography>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }</Typography>
+            <Typography variant="h5">
+              MatchParent
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }
+            </Typography>
           </Box>
           <Box mt={ 2 } mb={ 2 }>
-            <Typography variant="h5">WrapContent</Typography>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }</Typography>
+            <Typography variant="h5">
+              WrapContent
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }
+            </Typography>
           </Box>
-          <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }</Typography>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }
+          </Typography>
         </HelpDialog>
       </div>
     );
