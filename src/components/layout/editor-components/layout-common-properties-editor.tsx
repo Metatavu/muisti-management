@@ -310,7 +310,11 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <Box mt={ 2 }>
               <Typography>
                 { strings.helpDialogs.layoutEditor.commonProperties.elevation.readMore }
-                <Link color="secondary" href="https://material.io/design/environment/elevation.html#elevation-in-material-design" target="_blank">
+                <Link
+                  color="secondary"
+                  href="https://material.io/design/environment/elevation.html#elevation-in-material-design"
+                  target="_blank"
+                >
                   { strings.helpDialogs.layoutEditor.commonProperties.elevation.link }
                 </Link>
               </Typography>
