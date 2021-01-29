@@ -119,7 +119,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const { pageLayoutView } = this.props;
 
     return (
-      <Box mt={ 2 } mb={ 2 } display="flex" alignItems="center">
+      <Box
+        mt={ 2 }
+        mb={ 2 }
+        display="flex"
+        alignItems="center"
+      >
         <TextField
           label={ strings.layoutEditor.commonComponents.name }
           fullWidth
