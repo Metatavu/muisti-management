@@ -43,7 +43,12 @@ class GenericPropertyEnabledCheckbox extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-    const { enabled, propertyName, label, onCheckboxChange } = this.props;
+    const {
+      enabled,
+      propertyName,
+      label,
+      onCheckboxChange
+    } = this.props;
 
     if (label) {
       return (
