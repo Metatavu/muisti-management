@@ -534,20 +534,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const language = selectedPageEvent.properties.find(prop => prop.name === "language")?.value;
 
     return (
-      <>
-        <div style={{ marginTop: theme.spacing(2) }}>
-          <Typography variant="h6">
-            { strings.contentEditor.editor.eventTriggers.selectLanguage }
-          </Typography>
-          <Select
-            name={ "language" }
-            value={ language }
-            onChange={ this.onEventTriggerEventPropertyChange }
-          >
-            { this.renderLanguageOptions() }
-          </Select>
-        </div>
-      </>
+      <div style={{ marginTop: theme.spacing(2) }}>
+        <Typography variant="h6">
+          { strings.contentEditor.editor.eventTriggers.selectLanguage }
+        </Typography>
+        <Select
+          name={ "language" }
+          value={ language }
+          onChange={ this.onEventTriggerEventPropertyChange }
+        >
+          { this.renderLanguageOptions() }
+        </Select>
+      </div>
     );
   }
   /**
