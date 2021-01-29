@@ -196,11 +196,15 @@ class LayoutTreeMenu extends React.Component<Props, State> {
               onChange={ this.onWidgetChange }>
               { widgetItems }
             </Select>
-            <FormHelperText>{ this.helpTextBySelectedWidget() }</FormHelperText>
+            <FormHelperText>
+              { this.helpTextBySelectedWidget() }
+            </FormHelperText>
           </FormControl>
         </Grid>
         <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
-          <Typography variant="h6">{ strings.layoutEditor.addLayoutViewDialog.or }</Typography>
+          <Typography variant="h6">
+            { strings.layoutEditor.addLayoutViewDialog.or }
+          </Typography>
         </div>
         <Grid item xs={ 12 }>
           <FormControl variant="outlined">
@@ -237,66 +241,42 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   /**
    * Render help text according to selected widget
    */
-  private helpTextBySelectedWidget = () => {
+  private helpTextBySelectedWidget = (): string => {
     const { newPageLayoutView } = this.state;
 
     if (!newPageLayoutView) {
-      return;
+      return "";
     }
 
     switch(newPageLayoutView.widget) {
       case PageLayoutWidgetType.Button:
         return strings.helpTexts.layoutEditor.buttonDescription;
       case PageLayoutWidgetType.TextView:
-        return (
-          strings.helpTexts.layoutEditor.textViewDescription
-        );
+        return strings.helpTexts.layoutEditor.textViewDescription;
       case PageLayoutWidgetType.FlowTextView:
-        return (
-          strings.helpTexts.layoutEditor.flowTextViewDescription
-        );
+        return strings.helpTexts.layoutEditor.flowTextViewDescription;
       case PageLayoutWidgetType.ImageView:
-        return (
-          strings.helpTexts.layoutEditor.imageViewDescription
-        );
+        return strings.helpTexts.layoutEditor.imageViewDescription;
       case PageLayoutWidgetType.MediaView:
-        return (
-          strings.helpTexts.layoutEditor.mediaViewDescription
-        );
+        return strings.helpTexts.layoutEditor.mediaViewDescription;
       case PageLayoutWidgetType.PlayerView:
-        return (
-          strings.helpTexts.layoutEditor.playerViewDescrption
-        );
+        return strings.helpTexts.layoutEditor.playerViewDescrption;
       case PageLayoutWidgetType.LinearLayout:
-        return (
-          strings.helpTexts.layoutEditor.linearLayoutDescription
-        );
+        return strings.helpTexts.layoutEditor.linearLayoutDescription;
       case PageLayoutWidgetType.RelativeLayout:
-        return (
-          strings.helpTexts.layoutEditor.relativeLayoutDescription
-        );
+        return strings.helpTexts.layoutEditor.relativeLayoutDescription;
       case PageLayoutWidgetType.FrameLayout:
-        return (
-          strings.helpTexts.layoutEditor.frameLayoutDescription
-        );
+        return strings.helpTexts.layoutEditor.frameLayoutDescription;
       case PageLayoutWidgetType.MapView:
-        return (
-          strings.helpTexts.layoutEditor.mapViewDescription
-        );
+        return strings.helpTexts.layoutEditor.mapViewDescription;
       case PageLayoutWidgetType.MaterialTabLayout:
-        return (
-          strings.helpTexts.layoutEditor.materialTabViewDescription
-        );
+        return strings.helpTexts.layoutEditor.materialTabViewDescription;
       case PageLayoutWidgetType.VisitorsView:
-        return (
-          strings.helpTexts.layoutEditor.visitorsViewDescription
-        );
+        return strings.helpTexts.layoutEditor.visitorsViewDescription;
       case PageLayoutWidgetType.WebView:
-        return (
-          strings.helpTexts.layoutEditor.webViewDescription
-        );
+        return strings.helpTexts.layoutEditor.webViewDescription;
       default:
-        break;
+        return "";
     }
   }
 

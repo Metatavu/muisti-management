@@ -75,14 +75,20 @@ class LinearLayoutEditor extends React.Component<Props, State> {
             selectItemType={ LinearLayoutOrientationValues }
           />
         <HelpDialog title={ strings.layoutEditor.linearLayout.orientation }>
-          <Typography>{ strings.helpDialogs.layoutEditor.linearLayout.introduction }</Typography>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.linearLayout.introduction }
+          </Typography>
           <Box mt={ 2 }>
             <Typography variant="h5">Vertical</Typography>
-            <Typography>{ strings.helpDialogs.layoutEditor.linearLayout.verticalDescription }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.linearLayout.verticalDescription }
+            </Typography>
           </Box>
           <Box mt={ 2 }>
             <Typography variant="h5">Horizontal</Typography>
-            <Typography>{ strings.helpDialogs.layoutEditor.linearLayout.horizontalDescription }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.linearLayout.horizontalDescription }
+            </Typography>
           </Box>
         </HelpDialog>
         </div>
