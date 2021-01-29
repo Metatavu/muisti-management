@@ -47,15 +47,19 @@ class TagListener extends React.Component<Props, State> {
   /**
    * Component did mount life cycle event
    */
-  public componentDidMount = async () => {
-    this.props.mqtt.subscribe(`${MQTT_PREFIX}${this.props.antenna}/`, this.onMqttProximityUpdate);
+  public componentDidMount = () => {
+    const basePath = `${MQTT_PREFIX}${this.props.antenna}`;
+    this.props.mqtt.subscribe(basePath, this.onMqttProximityUpdate);
+    this.props.mqtt.subscribe(`${basePath}/`, this.onMqttProximityUpdate);
   }
 
   /**
    * Component will unmount life cycle event
    */
   public componentWillUnmount() {
-    this.props.mqtt.unsubscribe(`${MQTT_PREFIX}${this.props.antenna}/`, this.onMqttProximityUpdate);
+    const basePath = `${MQTT_PREFIX}${this.props.antenna}`;
+    this.props.mqtt.unsubscribe(basePath, this.onMqttProximityUpdate);
+    this.props.mqtt.unsubscribe(`${basePath}/`, this.onMqttProximityUpdate);
   }
 
   /**
