@@ -9,7 +9,7 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel, FormControl } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel, FormControl, Box } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
@@ -183,7 +183,7 @@ export class LayoutScreen extends React.Component<Props, State> {
 
           <ElementSettingsPane
             open={ panelOpen }
-            width={ 420 }
+            width={ 520 }
             title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
             menuOptions={
               [
@@ -233,6 +233,7 @@ export class LayoutScreen extends React.Component<Props, State> {
         <FormControl variant="outlined">
           <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
           <Select
+            title={ strings.helpTexts.layoutEditor.selectDevice }
             label={ strings.layout.settings.deviceModelId }
             labelId="deviceModelId"
             value={ this.state.deviceModelId }
@@ -256,6 +257,7 @@ export class LayoutScreen extends React.Component<Props, State> {
         <FormControl variant="outlined">
           <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
           <Select
+            title={ strings.helpTexts.layoutEditor.selectOrientation }
             label={ strings.layout.settings.screenOrientation }
             labelId="screenOrientation"
             value={ this.state.screenOrientation }
@@ -280,13 +282,18 @@ export class LayoutScreen extends React.Component<Props, State> {
     }
 
     return (
-      <LayoutTreeMenu
-        editingSubLayout={ false }
-        subLayouts={ subLayouts }
-        onSelect={ this.onLayoutPageViewSelect }
-        onAdd={ this.onLayoutViewAdd }
-        treeData={ this.constructTreeData(layout) }
-      />
+      <Box mt={ 2 }>
+        <Typography variant="h4">
+          { strings.layout.layoutStructure }
+        </Typography>
+        <LayoutTreeMenu
+          editingSubLayout={ false }
+          subLayouts={ subLayouts }
+          onSelect={ this.onLayoutPageViewSelect }
+          onAdd={ this.onLayoutViewAdd }
+          treeData={ this.constructTreeData(layout) }
+        />
+      </Box>
     );
   }
 

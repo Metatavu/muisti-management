@@ -3,8 +3,7 @@
  */
 export enum LayoutWidthValues {
   MatchParent = "match_parent",
-  WrapContent = "wrap_content",
-  FillParent = "fill_parent"
+  WrapContent = "wrap_content"
 }
 
 /**
@@ -12,8 +11,7 @@ export enum LayoutWidthValues {
  */
 export enum LayoutHeightValues {
   MatchParent = "match_parent",
-  WrapContent = "wrap_content",
-  FillParent = "fill_parent"
+  WrapContent = "wrap_content"
 }
 
 /**

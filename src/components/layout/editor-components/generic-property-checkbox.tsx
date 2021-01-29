@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, Checkbox } from "@material-ui/core";
+import { WithStyles, withStyles, Checkbox, FormControlLabel } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
 
 /**
@@ -8,7 +8,10 @@ import styles from "../../../styles/add-device-editor";
  */
 interface Props extends WithStyles<typeof styles> {
   property: PageLayoutViewProperty;
-
+  /**
+   * Label for the checkbox
+   */
+  label: string;
   /**
    * On checkbox change handler
    */
@@ -41,12 +44,17 @@ class GenericPropertyCheckbox extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { property } = this.props;
+    const { property, label } = this.props;
     return (
-      <Checkbox
-        checked={ property.value === "true" }
-        onChange={ this.onCheckboxChange }
-        name={ property.name }
+      <FormControlLabel
+        label={ label }
+        control={
+          <Checkbox
+            checked={ property.value === "true" }
+            onChange={ this.onCheckboxChange }
+            name={ property.name }
+          />
+        }
       />
     );
   }

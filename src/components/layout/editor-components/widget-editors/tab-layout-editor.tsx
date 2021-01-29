@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider, MenuItem, Select } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, MenuItem, Select, Box } from '@material-ui/core';
 import styles from "../../../../styles/common-properties-editor";
 import { LayoutTabPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
@@ -340,21 +340,16 @@ class TabLayoutEditor extends React.Component<Props, State> {
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.UnboundedRipple, PageLayoutViewPropertyType.Boolean);
 
     return (
-      <>
+      <Box ml={ 1 }>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.tab.unboundedRipple }:
-          </Typography>
           <GenericPropertyCheckbox
+            label={ strings.layoutEditor.tab.unboundedRipple }
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </Box>
     );
   }
 
@@ -366,21 +361,16 @@ class TabLayoutEditor extends React.Component<Props, State> {
     const foundProp = getProperty(pageLayoutView, LayoutTabPropKeys.TabIndicatorFullWidth, PageLayoutViewPropertyType.Boolean);
 
     return (
-      <>
+      <Box ml={ 1 }>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.tab.tabIndicatorFullWidth }:
-          </Typography>
           <GenericPropertyCheckbox
+            label={ strings.layoutEditor.tab.tabIndicatorFullWidth }
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </Box>
     );
   }
 

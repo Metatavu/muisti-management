@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography } from '@material-ui/core';
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography, Box, FormHelperText } from '@material-ui/core';
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
@@ -196,6 +196,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
               onChange={ this.onWidgetChange }>
               { widgetItems }
             </Select>
+            <FormHelperText>{ this.helpTextBySelectedWidget() }</FormHelperText>
           </FormControl>
         </Grid>
         <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
@@ -216,18 +217,91 @@ class LayoutTreeMenu extends React.Component<Props, State> {
               { subLayoutItems }
             </Select>
           </FormControl>
-          <TextField
-            style={{ marginTop: theme.spacing(2) }}
-            label={ strings.layoutEditor.addLayoutViewDialog.name }
-            type="text"
-            name="name"
-            disabled={ newPageLayoutView ? false : true }
-            value={ newPageLayoutView ? newPageLayoutView.name : "" }
-            onChange={ this.onNameChange }
-          />
+          <Box mt={ 2 }>
+            <TextField
+              helperText={ strings.helpTexts.layoutEditor.giveElementName }
+              style={{ marginTop: theme.spacing(2) }}
+              label={ strings.layoutEditor.addLayoutViewDialog.name }
+              type="text"
+              name="name"
+              disabled={ newPageLayoutView ? false : true }
+              value={ newPageLayoutView ? newPageLayoutView.name : "" }
+              onChange={ this.onNameChange }
+            />
+          </Box>
         </Grid>
       </Grid>
     );
+  }
+
+  /**
+   * Render help text according to selected widget
+   */
+  private helpTextBySelectedWidget = () => {
+    const { newPageLayoutView } = this.state;
+
+    if (!newPageLayoutView) {
+      return (
+        strings.helpTexts.layoutEditor.pickElement
+      )
+    }
+
+    switch(newPageLayoutView.widget) {
+      case PageLayoutWidgetType.Button:
+        return (
+          strings.helpTexts.layoutEditor.buttonDescription
+        );
+      case PageLayoutWidgetType.TextView:
+        return (
+          strings.helpTexts.layoutEditor.textViewDescription
+        );
+      case PageLayoutWidgetType.FlowTextView:
+        return (
+          strings.helpTexts.layoutEditor.flowTextViewDescription
+        );
+      case PageLayoutWidgetType.ImageView:
+        return (
+          strings.helpTexts.layoutEditor.imageViewDescription
+        );
+      case PageLayoutWidgetType.MediaView:
+        return (
+          strings.helpTexts.layoutEditor.mediaViewDescription
+        );
+      case PageLayoutWidgetType.PlayerView:
+        return (
+          strings.helpTexts.layoutEditor.playerViewDescrption
+        );
+      case PageLayoutWidgetType.LinearLayout:
+        return (
+          strings.helpTexts.layoutEditor.linearLayoutDescription
+        );
+      case PageLayoutWidgetType.RelativeLayout:
+        return (
+          strings.helpTexts.layoutEditor.relativeLayoutDescription
+        );
+      case PageLayoutWidgetType.FrameLayout:
+        return (
+          strings.helpTexts.layoutEditor.frameLayoutDescription
+        );
+      case PageLayoutWidgetType.MapView:
+        return (
+          strings.helpTexts.layoutEditor.mapViewDescription
+        );
+      case PageLayoutWidgetType.MaterialTabLayout:
+        return (
+          strings.helpTexts.layoutEditor.materialTabViewDescription
+        );
+      case PageLayoutWidgetType.VisitorsView:
+        return (
+          strings.helpTexts.layoutEditor.visitorsViewDescription
+        );
+      case PageLayoutWidgetType.WebView:
+        return (
+          strings.helpTexts.layoutEditor.webViewDescription
+        );
+      default:
+        break;
+    }
   }
 
   /**
