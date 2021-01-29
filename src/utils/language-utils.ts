@@ -11,7 +11,7 @@ export default class LanguageUtils {
    * @param contentVersions exhibition content versions
    * @returns available language options
    */
-  public static getAvailableLanguages = (contentVersions: ContentVersion[]) => {
+  public static getAvailableLanguages = (contentVersions: ContentVersion[]): string[] => {
     const languages: string[] = [];
 
     contentVersions.forEach(version => {
