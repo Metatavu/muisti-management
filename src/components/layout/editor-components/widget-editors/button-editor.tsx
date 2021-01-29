@@ -211,7 +211,11 @@ class ButtonEditor extends React.Component<Props, State> {
    */
   private renderTextStyle = () => {
     return (
-      <Box pt={ 1 } display="flex" alignItems="center">
+      <Box
+        pt={ 1 }
+        display="flex"
+        alignItems="center"
+      >
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.button.fontStyle }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextStyle, PageLayoutViewPropertyType.String) }
