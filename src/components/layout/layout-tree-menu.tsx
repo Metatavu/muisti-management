@@ -2,7 +2,7 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography, Box, FormHelperText } from '@material-ui/core';
+import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography, Box, FormHelperText } from "@material-ui/core";
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
