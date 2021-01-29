@@ -597,7 +597,7 @@
           "triggerdevicegroupevent": "Laukaise laiteryhmän tapahtuma",
           "executeWebScript": "Suorita verkkokomento",
           "visitorSessionEnd": "Lopeta vierailijan sessio",
-          "startVisitorSession": "Aloita vierailija sessio"
+          "startVisitorSession": "Aloita vierailijan sessio"
         },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
