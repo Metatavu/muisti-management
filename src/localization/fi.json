@@ -596,13 +596,15 @@
           "settext": "Aseta teksti",
           "triggerdevicegroupevent": "Laukaise laiteryhmän tapahtuma",
           "executeWebScript": "Suorita verkkokomento",
-          "visitorSessionEnd": "Lopeta vierailijan sessio"
+          "visitorSessionEnd": "Lopeta vierailijan sessio",
+          "startVisitorSession": "Aloita vierailijan sessio"
         },
         "variableName": "Käyttäjän muuttujan nimi",
         "variableValue": "Käyttäjän muuttujan arvo",
         "variableBooleanTrue": "Kyllä",
         "variableBooleanFalse": "Ei",
-        "selectPage": "Valitse sivu"
+        "selectPage": "Valitse sivu",
+        "selectLanguage": "Valitse kieli"
       },
 
       "tabs" : {

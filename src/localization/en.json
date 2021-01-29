@@ -596,13 +596,15 @@
           "settext": "Set text",
           "triggerdevicegroupevent": "Trigger device group event",
           "executeWebScript": "Execute web script",
-          "visitorSessionEnd": "End visitor session"
+          "visitorSessionEnd": "End visitor session",
+          "startVisitorSession": "Start visitor session"
         },
         "variableName": "User variable name",
         "variableValue": "User variable value",
         "variableBooleanTrue": "Yes",
         "variableBooleanFalse": "No",
-        "selectPage": "Select page"
+        "selectPage": "Select page",
+        "selectLanguage": "Select language"
       },
 
       "tabs" : {
