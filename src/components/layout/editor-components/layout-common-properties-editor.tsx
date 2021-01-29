@@ -164,7 +164,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             selectItemType={ LayoutWidthValues }
             />
         </div>
-        <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+        <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>
+          { strings.generic.or }
+        </Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutWidth }
@@ -227,7 +229,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               selectItemType={ LayoutHeightValues }
             />
           </div>
-          <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+          <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>
+            { strings.generic.or }
+          </Typography>
           <div style={{ display: "flex", alignItems: "center" }}>
             <GenericPropertyTextField
               textFieldId={ LayoutPropKeys.LayoutHeight }
@@ -240,16 +244,28 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
           </div>
           <HelpDialog title={ strings.layoutEditor.commonComponents.layoutWidth }>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }
+            </Typography>
             <Box mt={ 2 } mb={ 2 }>
-              <Typography variant="h5">MatchParent</Typography>
-              <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }</Typography>
+              <Typography variant="h5">
+                MatchParent
+              </Typography>
+              <Typography>
+                { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }
+              </Typography>
             </Box>
             <Box mt={ 2 } mb={ 2 }>
-              <Typography variant="h5">WrapContent</Typography>
-              <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }</Typography>
+              <Typography variant="h5">
+                WrapContent
+              </Typography>
+              <Typography>
+                { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }
+              </Typography>
             </Box>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }
+            </Typography>
           </HelpDialog>
         </div>
       </>
@@ -285,8 +301,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>dp</Typography>
           </div>
           <HelpDialog title={ strings.layoutEditor.commonComponents.elevation }>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.elevation.introduction }</Typography>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.elevation.description }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.elevation.introduction }
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.elevation.description }
+            </Typography>
             <Box mt={ 2 }>
               <Typography>
                 { strings.helpDialogs.layoutEditor.commonProperties.elevation.readMore }
