@@ -81,7 +81,7 @@ export default class HelpDialog extends React.Component<Props, State> {
   private onHelpDialogOpenClick = () => {
     this.setState({
       open: true
-    })
+    });
   }
 
     /**
