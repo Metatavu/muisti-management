@@ -45,9 +45,7 @@ export default createStyles({
     width: "100%",
   },
 
-  breadcrumbs: {
-
-  },
+  breadcrumbs: { },
 
   nav: {
     justifySelf: "center",
@@ -109,8 +107,15 @@ export default createStyles({
     }
   },
 
-  logoutBtn: {
+  logoutBtn: { },
 
-  },
+  toolbar: {
+    display: "flex",
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    "& button": {
+      marginRight: theme.spacing(1)
+    }
+  }
 
 })

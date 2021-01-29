@@ -175,6 +175,7 @@ export interface IStrings extends LocalizedStringsMethods {
     navigation: {
       search: string;
     };
+    addLanguageVersion: string;
     newPage: string;
     addPage: string;
     deletePage: string;
@@ -245,6 +246,7 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   layout: {
+    layoutStructure: string;
     title: string;
     addNew: string;
     makeAsSubLayout: string;
@@ -515,16 +517,22 @@ export interface IStrings extends LocalizedStringsMethods {
   contentVersion: {
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     language: string;
     rooms: string;
+    room: string;
     deleteTitle: string;
     deleteText: string;
+    contentMaterials: string;
+    nameAlreadyTaken: string;
+    nameIsMandatory: string;
   };
 
   groupContentVersion: {
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     deviceGroup: string;
     status: string;
@@ -539,6 +547,10 @@ export interface IStrings extends LocalizedStringsMethods {
         noVisitor: string;
         visitorPresent: string;
       };
+      addLanguageDialog: {
+        title: string;
+        language: string;
+      };
       pageName: string;
       indexPageId: string;
       device: string;
@@ -548,6 +560,8 @@ export interface IStrings extends LocalizedStringsMethods {
       content: string;
       properties: string;
       resources: string;
+      resource: string;
+      resourceProperties: string;
       transitions: {
         title: string;
         enterTransitions: string;
@@ -622,6 +636,7 @@ export interface IStrings extends LocalizedStringsMethods {
     save: string;
     delete: string;
     add: string;
+    close: string;
   };
 
   generic: {
@@ -706,6 +721,90 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
+  /**
+   * UI help texts
+   */
+  helpTexts: {
+    layoutEditor: {
+      selectDevice: string;
+      selectOrientation: string;
+      giveElementName: string;
+      buttonDescription: string;
+      textViewDescription: string;
+      flowTextViewDescription: string;
+      imageViewDescription: string;
+      mediaViewDescription: string;
+      playerViewDescrption: string;
+      linearLayoutDescription: string;
+      relativeLayoutDescription: string;
+      frameLayoutDescription: string;
+      mapViewDescription: string;
+      materialTabViewDescription: string;
+      visitorsViewDescription: string;
+      webViewDescription: string;
+    };
+    contentManager: {
+      
+    };
+  };
+  
+  /**
+   * Help dialog contents
+   */
+  helpDialogs: {
+    layoutEditor: {
+      commonProperties: {
+        name: string;
+        layoutWidth: {
+          introduction: string;
+          matchParentDescription: string;
+          wrapContentDescription: string;
+          additionalNotes: string;
+        };
+        layoutHeight: {
+          introduction: string;
+          matchParentDescription: string;
+          wrapContentDescription: string;
+          additionalNotes: string;
+        };
+        elevation: {
+          introduction: string;
+          description: string;
+          readMore: string;
+          link: string;
+        };
+        backgroundColor: string;
+        backgroundImage: string;
+        padding: string;
+        margin: string;
+        gravity: {
+          description: string;
+          note: string;
+        };
+      };
+      linearLayout: {
+        introduction: string;
+        verticalDescription: string;
+        horizontalDescription: string;
+      };
+      button: {
+        width: string;
+        height: string;
+        text: string;
+        color: string;
+        style: string;
+        capitalize: string;
+        textSize: {
+          description: string;
+          note: string;
+        };
+        gravity: {
+          description: string;
+          note: string;
+        };
+      }
+    }
+  }
 }
 
 const strings: IStrings = new LocalizedStrings({

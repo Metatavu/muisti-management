@@ -114,7 +114,6 @@ export class ReceptionScreen extends React.Component<Props, State> {
         breadcrumbs={ [] }
         error={ error }
         noBackButton
-        noTabs={ true }
         hideHeader={ true }
       >
         { this.resolveComponentToRender() }

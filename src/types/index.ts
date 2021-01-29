@@ -131,3 +131,11 @@ export interface PreviewDeviceData {
   device: ExhibitionDevice;
   page?: ExhibitionPage;
 }
+
+/**
+ * Interface describing multi-lingual content version.
+ * What it really does is it just holds all content versions that have the same name but different language.
+ */
+export interface MultiLingualContentVersion {
+  languageVersions: ContentVersion[];
+}

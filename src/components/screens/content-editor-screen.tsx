@@ -8,13 +8,13 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab, Box, MenuItem } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton, PreviewDeviceData } from '../../types';
+import { AccessToken, ActionButton, LanguageOptions, PreviewDeviceData } from "../../types";
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
-import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion, VisitorVariable } from "../../generated/client";
+import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion, VisitorVariable, GroupContentVersionStatus } from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
@@ -42,6 +42,7 @@ import { allowedWidgetTypes, TabStructure, ExhibitionPageTab, ExhibitionPageTabP
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 import LanguageUtils from "../../utils/language-utils";
+import GenericDialog from "../generic/generic-dialog";
 
 type View = "CODE" | "VISUAL";
 
@@ -69,10 +70,12 @@ interface State {
   error?: Error;
   loading: boolean;
   contentVersions: ContentVersion[];
+  groupContentVersions: GroupContentVersion[];
   groupContentVersion?: GroupContentVersion;
   devices: ExhibitionDevice[];
   previewDevicesData: PreviewDeviceData[];
   layouts: PageLayout[];
+  newContentVersion?: ContentVersion;
   selectedContentVersion?: ContentVersion;
   selectedDevice?: ExhibitionDevice;
   pages: ExhibitionPage[];
@@ -90,6 +93,7 @@ interface State {
   tabMap: Map<string, ExhibitionPageTabHolder>;
   dataChanged: boolean;
   timelineTabIndex: number;
+  addLanguageDialogOpen: boolean;
 }
 
 /**
@@ -114,9 +118,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
       visitorVariables: [],
       layouts: [],
       contentVersions: [],
+      groupContentVersions: [],
       view: "VISUAL",
       propertiesExpanded: false,
-      tabMap: new Map()
+      tabMap: new Map(),
+      addLanguageDialogOpen: false
     };
   }
 
@@ -182,7 +188,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
           breadcrumbs={ [] }
           actionBarButtons={ [] }
           noBackButton
-          noTabs
         >
           <div className={ classes.loader }>
             <CircularProgress size={ 50 } color="secondary"></CircularProgress>
@@ -192,8 +197,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     const propertiesTitle = selectedResource ?
-      selectedResource.id :
-      selectedTriggerIndex ?
+      strings.contentEditor.editor.resourceProperties :
+      selectedTriggerIndex !== undefined ?
         strings.contentEditor.editor.eventTriggers.title :
         strings.contentEditor.editor.tabs.title;
 
@@ -205,7 +210,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         breadcrumbs={ [] }
         actionBarButtons={ this.getActionButtons() }
         noBackButton
-        noTabs
         dataChanged={ dataChanged }
         openDataChangedPrompt={ true }
       >
@@ -259,7 +263,45 @@ class ContentEditorScreen extends React.Component<Props, State> {
             { this.renderProperties() }
           </ElementPropertiesPane>
         </div>
+        { this.renderAddContentVersionDialog() }
       </BasicLayout>
+    );
+  }
+
+  /**
+   * Render add new content language version dialog
+   */
+  private renderAddContentVersionDialog = () => {
+    const { addLanguageDialogOpen, newContentVersion } = this.state;
+    const languageOptions = this.getAvailableLanguages();
+
+    return(
+      <GenericDialog
+        cancelButtonText={ strings.genericDialog.cancel }
+        positiveButtonText={ strings.genericDialog.add }
+        title={ strings.contentEditor.editor.addLanguageDialog.title }
+        onConfirm={ this.addContentVersion }
+        onCancel={ this.onCloseOrCancelClick }
+        open={ addLanguageDialogOpen }
+        error={ false }
+        onClose={ this.onCloseOrCancelClick }
+      >
+        <Box width={ 320 }>
+          <TextField
+            select
+            name="language"
+            label={ strings.contentVersion.language }
+            value={ newContentVersion?.language || "" }
+            onChange={ this.onNewContentVersionLanguageChange }
+          >
+            { languageOptions.map(option =>
+              <MenuItem key={ option } value={ option }>
+                { option }
+              </MenuItem>
+            )}
+          </TextField>
+        </Box>
+      </GenericDialog>
     );
   }
 
@@ -270,19 +312,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param newIndex new tab index value
    */
   private setTabIndex = (event: React.ChangeEvent<{ }>, newIndex: number) => {
-    if (newIndex === 0) {
-      this.setState({
-        selectedContentVersion: this.state.contentVersions[0],
-        selectedPage: undefined,
-        selectedLayoutView: undefined,
-        selectedTriggerIndex: undefined,
-        selectedResource: undefined,
-        selectedTabIndex: undefined
-      });
-    }
-
     this.setState({
-      timelineTabIndex: newIndex
+      timelineTabIndex: newIndex,
+      selectedContentVersion: this.state.contentVersions[0],
+      selectedDevice: undefined,
+      selectedPage: undefined,
+      selectedLayoutView: undefined,
+      selectedTriggerIndex: undefined,
+      selectedResource: undefined,
+      selectedTabIndex: undefined
     });
   }
 
@@ -1097,7 +1135,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const { accessToken, exhibitionId, groupContentVersionId } = this.props;
+    const {
+      accessToken,
+      exhibitionId,
+      roomId,
+      contentVersionId,
+      groupContentVersionId
+    } = this.props;
 
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
@@ -1106,24 +1150,65 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
 
-    const [ groupContentVersion, layouts, visitorVariables ] = await Promise.all([
+    const [ initialContentVersion, contentVersionsInRoom, groupContentVersion, layouts, visitorVariables ] = await Promise.all([
+      contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
+      contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
       groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId }),
       layoutsApi.listPageLayouts({ }),
       visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
 
+    /**
+     * Devices from device group
+     */
     const deviceGroupId = groupContentVersion.deviceGroupId;
-    const [ devices, groupContentVersions ] = await Promise.all([
-      exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId: deviceGroupId }),
-      groupContentVersionsApi.listGroupContentVersions({ exhibitionId, deviceGroupId })
-    ]);
+    const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId: deviceGroupId });
 
+    /**
+     * Content versions for different languages.
+     * Identified by having the same name but different language than
+     * initial content version selected before navigating to content editor.
+     */
     const contentVersions: ContentVersion[] = [];
-    for (const gContentVersion of groupContentVersions) {
-      const { contentVersionId } = gContentVersion;
-      if (!contentVersions.find(contentVersion => contentVersion.id === contentVersionId)) {
-        const contentVersion = await contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId });
-        contentVersions.push(contentVersion);
+    contentVersionsInRoom.forEach(contentVersionInRoom => {
+      const sameName = contentVersionInRoom.name === initialContentVersion.name;
+      const newLanguage = contentVersions.every(version => version.language !== contentVersionInRoom.language);
+      if (sameName && newLanguage) {
+        contentVersions.push(contentVersionInRoom);
+      }
+    });
+
+    /**
+     * Group content versions for different content versions
+     * Creates new group content version for a content version if one does not exist yet
+     */
+    const groupContentVersions: GroupContentVersion[] = [];
+    for (const contentVersion of contentVersions) {
+      const foundGroupContentVersions = await groupContentVersionsApi.listGroupContentVersions({
+        exhibitionId,
+        contentVersionId: contentVersion.id!,
+        deviceGroupId: deviceGroupId
+      });
+
+      if (foundGroupContentVersions.length < 1) {
+        const newGroupContentVersion = await groupContentVersionsApi.createGroupContentVersion({
+          exhibitionId,
+          groupContentVersion: {
+            contentVersionId: contentVersion.id!,
+            deviceGroupId: deviceGroupId,
+            name: groupContentVersion.name,
+            status: GroupContentVersionStatus.Inprogress,
+            exhibitionId: exhibitionId
+          }
+        });
+
+        groupContentVersions.push(newGroupContentVersion);
+      } else {
+        if (foundGroupContentVersions.length > 1) {
+          console.error("More than one group content version with same device group found under one content version. This should not be possible!");
+        }
+
+        groupContentVersions.push(foundGroupContentVersions[0]);
       }
     }
 
@@ -1156,6 +1241,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     this.setState({
       contentVersions,
+      groupContentVersions,
       groupContentVersion,
       devices,
       previewDevicesData,
@@ -1194,7 +1280,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
-    const { selectedDevice, selectedPage, view, dataChanged } = this.state;
+    const {
+      selectedContentVersion,
+      selectedDevice,
+      selectedPage,
+      view,
+      dataChanged
+    } = this.state;
 
     const actionButtons: ActionButton[] = [{
       name: view === "CODE" ?
@@ -1203,11 +1295,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
       action: this.onSwitchViewClick
     }];
 
+    if (!selectedContentVersion && !this.idlePageEditorActive()) {
+      actionButtons.push({
+        name: strings.exhibition.addLanguageVersion,
+        action: this.onAddContentVersionClick,
+        disabled: this.getAvailableLanguages().length < 1
+      })
+    }
+
     if (selectedDevice) {
       actionButtons.push({
         name: strings.exhibition.addPage,
         action: this.onAddPageClick,
-        disabled: !!selectedDevice.idlePageId
+        disabled: this.idlePageEditorActive() && !!selectedDevice.idlePageId
       }, {
         name: strings.contentEditor.editor.saveDevice,
         action: this.onSaveDeviceClick,
@@ -1229,18 +1329,50 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Sets selected device
-   *
-   * @param deviceId device id
-   * @returns selected device if found or undefined
+   * Adds new content version
    */
-  private setSelectedDevice = (deviceId: string) => {
-    const { devices } = this.state;
-    const selectedDevice = devices.find(device => device.id === deviceId);
+  private addContentVersion = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const {
+      newContentVersion,
+      groupContentVersion,
+      contentVersions,
+      groupContentVersions
+    } = this.state;
+
+    if (!newContentVersion || !groupContentVersion) {
+      return;
+    }
+
+    try {
+      const contentVersionsApi = Api.getContentVersionsApi(accessToken);
+      const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
+      const createdContentVersion = await contentVersionsApi.createContentVersion({
+        exhibitionId: exhibitionId,
+        contentVersion: newContentVersion
+      });
+
+      const createdGroupContentVersion = await groupContentVersionsApi.createGroupContentVersion({
+        exhibitionId: exhibitionId,
+        groupContentVersion: {
+          contentVersionId: createdContentVersion.id!,
+          deviceGroupId: groupContentVersion.deviceGroupId,
+          name: groupContentVersion.name,
+          status: GroupContentVersionStatus.Inprogress
+        }
+      });
+
+      this.setState({
+        contentVersions: [ ...contentVersions, createdContentVersion ],
+        groupContentVersions: [ ...groupContentVersions, createdGroupContentVersion ]
+      });
+    } catch (error) {
+      console.error(`Could not add new language.\nError: ${error}`)
+    }
+
     this.setState({
-      selectedDevice: selectedDevice
+      addLanguageDialogOpen: false
     });
-    return selectedDevice;
   }
 
   /**
@@ -1880,6 +2012,42 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for add content version click
+   */
+  private onAddContentVersionClick = () => {
+    const { contentVersions } = this.state;
+    const { name, rooms } = contentVersions[0];
+    const availableLanguages = this.getAvailableLanguages();
+    
+    if (availableLanguages.length < 1) {
+      return;
+    }
+
+    this.setState({
+      addLanguageDialogOpen: true,
+      newContentVersion: {
+        name: name,
+        rooms: rooms,
+        language: availableLanguages[0]
+      }
+    });
+  }
+
+  /**
+   * Event handler for new content version language change
+   * 
+   * @param event React change event
+   */
+  private onNewContentVersionLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      newContentVersion: {
+        ...this.state.newContentVersion,
+        language: event.target.value
+      } as ContentVersion
+    });
+  }
+
+  /**
    * Event handler for add page click
    */
   private onAddPageClick = async () => {
@@ -1932,28 +2100,36 @@ class ContentEditorScreen extends React.Component<Props, State> {
       exhibitionPage: newPage
     });
 
-    const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
-      exhibitionId: exhibitionId,
-      deviceId: selectedDevice.id!,
-      exhibitionDevice: {
-        ...selectedDevice,
-        idlePageId: createdPage.id
-      }
-    });
-
     this.setState(
       produce((draft: State) => {
-        const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
-        if (deviceIndex < 0) {
-          return;
-        }
-
-        draft.devices[deviceIndex] = updatedDevice;
         draft.pages.push(createdPage);
         draft.selectedPage = createdPage;
         draft.tabResourceIndex = undefined;
       })
     );
+
+    if (isIdlePage) {
+      const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
+
+      if (deviceIndex < 0) {
+        return;
+      }
+
+      const updatedDevice = await exhibitionDevicesApi.updateExhibitionDevice({
+        exhibitionId: exhibitionId,
+        deviceId: selectedDevice.id!,
+        exhibitionDevice: {
+          ...selectedDevice,
+          idlePageId: createdPage.id
+        }
+      });
+
+      this.setState(
+        produce((draft: State) => {
+          draft.devices[deviceIndex] = updatedDevice;
+        })
+      );
+    }
   }
 
   /**
@@ -2069,6 +2245,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for close or cancel click in dialog
+   */
+  private onCloseOrCancelClick = () => {
+    this.setState({
+      addLanguageDialogOpen: false
+    });
+  }
+
+  /**
    * Get tab structure from resources
    */
   private getTabStructure = (contentContainerId?: string) => {
@@ -2081,6 +2266,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
 
     }
+  }
+
+  /**
+   * Returns available languages based on languages used in content versions
+   */
+  private getAvailableLanguages = () => {
+    return Object.values(LanguageOptions).filter(option =>
+      this.state.contentVersions.every(contentVersion => contentVersion.language !== option)
+    );
   }
 
   /**
@@ -2103,6 +2297,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private isLayoutChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage) => {
     return previousPage?.layoutId !== currentPage?.layoutId;
+  }
+
+  /**
+   * Returns whether idle page editor is active or not
+   */
+  private idlePageEditorActive = (): boolean => {
+    return this.state.selectedTabIndex === 0;
   }
 }
 

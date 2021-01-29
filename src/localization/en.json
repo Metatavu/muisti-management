@@ -244,6 +244,7 @@
   },
 
   "layout": {
+    "layoutStructure": "Layout elements structure",
     "title": "Layout",
     "addNew": "Add new layout",
     "makeAsSubLayout": "Create as template",
@@ -513,13 +514,18 @@
   },
 
   "contentVersion": {
-    "add": "New content version",
-    "addDialogTitle": "Add content version",
+    "add": "Add new...",
+    "addDialogTitle": "New set of materials",
+    "addDialogDescription": "Give a name for the new set of exhibition content",
     "name": "Name",
     "language": "Language",
     "rooms": "Rooms",
-    "deleteTitle": "Delete content version",
-    "deleteText": "Are you sure you want to delete this content version and all its content?"
+    "room": "Room",
+    "deleteTitle": "Delete set of materials?",
+    "deleteText": "Are you sure you want to delete this set of content?",
+    "contentMaterials": "Content materials",
+    "nameAlreadyTaken": "Name is already in use in existing set of content",
+    "nameIsMandatory": "Name is mandatory"
   },
 
   "groupContentVersion": {
@@ -539,6 +545,10 @@
         "noVisitor": "Exhibition spot empty",
         "visitorPresent": "Visitor arrives"
       },
+      "addLanguageDialog": {
+        "title": "Add language version",
+        "language": "Language"
+      },
       "pageName": "Page name",
       "indexPageId": "Device front page",
       "device": "Device",
@@ -548,7 +558,8 @@
       "content": "Content",
       "properties": "Properties",
       "resources": "Resources",
-
+      "resource": "Resource",
+      "resourceProperties": "Resource properties",
       "transitions" :{
         "title": "Transitions",
         "enterTransitions": "Enter transitions",
@@ -625,7 +636,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
-    "add": "Add"
+    "add": "Add",
+    "close": "Close"
   },
 
   "generic": {

@@ -5,6 +5,7 @@ import styles from "../../styles/components/content-editor/layout-view-resources
 import { ExhibitionPageResource } from "../../generated/client/models";
 import ResourceUtils from "../../utils/resource-utils";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -38,7 +39,7 @@ const LayoutViewResourcesList: React.FC<Props> = ({
             onClick={ onClick && onClick(resource) }
           >
             <Typography variant="body2" className={ classes.listItemTitle }>
-              { resource.id }
+              { strings.contentEditor.editor.resource }
             </Typography>
             <Typography variant="body1" className={ classes.listItemSubtitle }>
               { ResourceUtils.getModeDisplayName(resource.mode) }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, Box } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import GenericPropertySelect from "../generic-property-select";
 import { TextViewTextStyleValues } from "../../editor-constants/values";
@@ -13,6 +13,7 @@ import GenericPropertyTextField from "../generic-property-textfield";
 import GenericPropertyCheckbox from "../generic-property-checkbox";
 import GravityEditor from "../gravity-editor";
 import DisplayMetrics from "../../../../types/display-metrics";
+import HelpDialog from "../../../generic/help-dialog";
 
 /**
  * Interface representing component properties
@@ -92,6 +93,11 @@ class ButtonEditor extends React.Component<Props, State> {
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Width, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.button.width }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.width }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -121,6 +127,11 @@ class ButtonEditor extends React.Component<Props, State> {
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Height, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.button.height }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.height }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -150,6 +161,11 @@ class ButtonEditor extends React.Component<Props, State> {
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextResources, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.button.textResource }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.text }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -179,6 +195,11 @@ class ButtonEditor extends React.Component<Props, State> {
             property={ foundProp }
             onTextFieldChange={ onValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.button.color }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.color }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -190,14 +211,26 @@ class ButtonEditor extends React.Component<Props, State> {
    */
   private renderTextStyle = () => {
     return (
-      <div style={{ padding: theme.spacing(1) }}>
+      <Box
+        pt={ 1 }
+        display="flex"
+        alignItems="center"
+      >
         <Typography style={{ marginBottom: theme.spacing(1) }} variant="h4">{ strings.layoutEditor.button.fontStyle }</Typography>
         <GenericPropertySelect
           property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextStyle, PageLayoutViewPropertyType.String) }
           onSelectChange={ this.props.onValueChange }
           selectItemType={ TextViewTextStyleValues }
         />
-      </div>
+        <HelpDialog title={ strings.layoutEditor.button.fontStyle }>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.button.style }
+          </Typography>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.button.capitalize }
+          </Typography>
+        </HelpDialog>
+      </Box>
     );
   }
 
@@ -224,6 +257,16 @@ class ButtonEditor extends React.Component<Props, State> {
             property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.TextSize, PageLayoutViewPropertyType.String) }
             onTextFieldChange={ this.props.onValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.button.textSize }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.textSize.description }
+            </Typography>
+            <Box mt={ 2 }>
+              <Typography variant="h6">
+                { strings.helpDialogs.layoutEditor.button.textSize.note }
+              </Typography>
+            </Box>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -238,16 +281,16 @@ class ButtonEditor extends React.Component<Props, State> {
     const foundProp = getProperty(pageLayoutView, LayoutButtonPropKeys.AllCaps, PageLayoutViewPropertyType.Boolean);
 
     return (
-      <>
-        <Typography variant="h4">{ strings.layoutEditor.button.allCaps }:</Typography>
+      <Box ml={ 2 }>
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <GenericPropertyCheckbox
+            label={ strings.layoutEditor.button.allCaps }
             property={ foundProp }
             onCheckboxChange={ onValueChange }
           />
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
-      </>
+      </Box>
     );
   }
 
@@ -259,7 +302,21 @@ class ButtonEditor extends React.Component<Props, State> {
 
     return (
       <div>
-        <Typography variant="h6">{ strings.layoutEditor.button.gravity }</Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6">
+            { strings.layoutEditor.button.gravity }
+          </Typography>
+          <HelpDialog title={ strings.layoutEditor.button.gravity }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.button.gravity.description }
+            </Typography>
+            <Box mt={ 2 }>
+              <Typography variant="h6">
+                { strings.helpDialogs.layoutEditor.button.gravity.note }
+              </Typography>
+            </Box>
+          </HelpDialog>
+        </Box>
         <GravityEditor
           property={ getProperty(pageLayoutView, LayoutButtonPropKeys.Gravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ onValueChange }
