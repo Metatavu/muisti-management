@@ -16,7 +16,6 @@ export default createStyles({
     gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     height: "100%",
-    width: 399,
     borderRight: "1px solid rgba(0,0,0,0.2)",
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {

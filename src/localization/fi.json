@@ -245,6 +245,7 @@
   },
 
   "layout": {
+    "layoutStructure": "Asettelun rakenne",
     "title": "Asettelut",
     "addNew": "Lisää uusi asettelu",
     "makeAsSubLayout": "Luo asettelupohjaksi",
@@ -508,7 +509,7 @@
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",
-      "subLayout": "Valmis rakenne templaatista",
+      "subLayout": "Valmis asettelupohja",
       "or": "tai"
     }
   },
@@ -633,7 +634,8 @@
     "cancel": "Peruuta",
     "save": "Tallenna",
     "delete": "Poista",
-    "add": "Lisää"
+    "add": "Lisää",
+    "close": "Sulje"
   },
 
   "generic": {
@@ -716,6 +718,86 @@
     "errorMessages": {
       "sessionNotFound": "Vierailijan sessiota ei löytynyt"
     }
+  },
+
+  "helpTexts": {
+    "layoutEditor": {
+      "selectDevice": "Valitse laite, millä asettelulla luotavaa sivua on tarkoitus näyttää.",
+      "selectOrientation": "Valitse suunta, missä asennossa laite on näyttelytilassa.",
+      "giveElementName": "Anna elementille kuvaava nimi",
+      "buttonDescription": "Painike-elementti esimerkiksi valintojen ja navigoinnin luomiseen sivujen välillä.",
+      "textViewDescription": "Tekstielementti tekstin esittämistä varten.",
+      "flowTextViewDescription": "Tekstielementti tekstin esittämistä varten. Tämän avulla voi luoda tekstiä, joka tulostetaan vierekkäisten elementtien ympärille esimerkiksi jos asettelun seassa on kuvia.",
+      "imageViewDescription": "Elementti kuvien esittämistä varten",
+      "mediaViewDescription": "Elementti eri medioiden esittämistä varten.",
+      "playerViewDescrption": "Elementti videoiden esittämistä varten.",
+      "linearLayoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
+      "relativeLayoutDescription": "Elementti sisällön jäsentämistä varten. Tämän elementin avulla voidaan luoda monimutkaisempia asetteluja ja se voi sisältää useita alielementtejä. Tätä voi käyttää esimerkiksi painikeryhmien luomiseen.",
+      "frameLayoutDescription": "Yksinkertaisin elementti sisällön jäsentämistä varten. Tämä elementin avulla voidaan luoda ns. kehys yhdelle alielementille. Voit käyttää tätä esimerkiksi tekstin kehystämiseen.",
+      "mapViewDescription": "Karttaelementti kartan esittämistä varten",
+      "materialTabViewDescription": "Välilehtiasettelu. HUOM! esikatselu ei täysin vastaa oikealle laitteelle tulostuvaa näkymää.",
+      "visitorsViewDescription": "Ryhmämuodostuspisteen kävijöitä esittävä lista.",
+      "webViewDescription": "Internetsisältö. Tällä voidaan esittää esim. haluttu internet-sivu tai jokin muu internet-sisältö, mikä ei ole Noheva Alustan sisällönhallinnan kautta hallittavissa."
+    },
+    "contentManager": {
+      
+    }
+  },
+
+  "helpDialogs": {
+    "layoutEditor": {
+      "commonProperties": {
+        "name": "Anna elementille jokin ytimekäs ja kuvaava nimi (esim. Sivun juuri, Kuva sotilaasta tms.). Nimi näkyy sisällönhallinan puolella niillä elementeillä, joille voidaan määritellä resursseja kuten kuvia, videoita, tekstiä tms. Myös asetteluelementeille (FrameLayout, LinearLayout ja RelativeLayout) kannattaa antaa nimet sillä ne helpottavat osioiden löytämisessä vasemmalla puolella olevasta elementtipuusta.",
+        "layoutWidth": {
+          "introduction": "Määritä elementin leveys. Voit määrittää joko suoraan pikselikokoina (px) tai suhteellisesti seuraavilla vaihtoehdoilla:",
+          "matchParentDescription": "Ulkopuolista elementtiä vastaava leveys",
+          "wrapContentDescription": "Sisältöä halaava leveys. Sisällön leveys määrittää tämän elementin leveyden.",
+          "additionalNotes": "Jos määrität leveyden pikseleinä, ohita yllä olevat valinnat."
+        },
+        "layoutHeight": {
+          "introduction": "Määritä elementin korkeus. Voit määrittää joko suoraan pikselikokoina (px) tai suhteellisesti seuraavilla vaihtoehdoilla:",
+          "matchParentDescription": "Ulkopuolista elementtiä vastaava korkeus.",
+          "wrapContentDescription": "Sisältöä halaava leveys. Sisällön kokeurs määrittää tämän elementin leveyden.",
+          "additionalNotes": "Jos määrität korkeuden pikseleinä, ohita yllä olevat valinnat."
+        },
+        "elevation": {
+          "introduction": "Määritä elementin varjo.",
+          "description": "Varjoilla voit nostaa elementtejä irti taustastaan. Varjot määritellään kokonaisluvuilla 1dp, 2dp jne. Mitä suurempi luku, sitä laajempi varjo.",
+          "readMore": "Lue lisää varjoista ",
+          "link": "täältä"
+        },
+        "backgroundColor": "Valitse elementin taustaväri klikkaamalla laatikkoa, tai syötä haluttu väri heksalukuna muodossa #000000.",
+        "backgroundImage": "Voit määrittää elementille halutessasi taustakuvan. Tässä tapauksessa elementille tulee kuvaresurssi ja se tulee näkyviin sisällönhallinan puolelle, missä kuva valitaan.",
+        "padding": "Voit määrittää elementille täytteen jokaiselle kulmalle erikseen tai keskeltä linkkiä painamalla voit määrittää saman täytteen joka suunnalle automaattisesti. Huomioi, että täyte lisää tilaa elementin rajojen sisäpuolelle, mikä kasvattaa elementin leveyttä ja korkeutta.",
+        "margin": "Voit määrittää elementille marginaalin jokaiselle kulmalle erikseen tai keskeltä linkkiä painamalla voit määrittää saman täytteen joka suunnalle automaattisesti. Huomioi, että marginaali lisää tilaa elementin rajojen ulkopuolelle, mikä työntää naapuroivia elementtejä loitommalle.",
+        "gravity": {
+          "description": "Jokaiselle elementille voidaan määrittää painoitus, jonka mukaan sisällä olevat elementit asettuvat. Esimerkiksi 'Top' asettaa kaikki sisällä olevat elementit ylälaitaan.",
+          "note": "HUOM! Elementin painoituksen simulointi esikatselussa saattaa olla paikoin puutteellinen. Halutun lopputuloksen varmistaminen kannattaa tarkistaa oikealta laitteelta."
+        }
+      },
+      "linearLayout": {
+        "introduction": "Valitse jäsentyvätkö tämän elementin sisältämät elementit allekkain vai rinnakkain.",
+        "verticalDescription": "Tämän elementin sisältämät elementit jäsentyvät pystysuunnassa allekkain.",
+        "horizontalDescription": "Tämän elementin sisältämät elementit jäsentyvät vaakasuunnassa rinnakkain."
+      },
+      "button": {
+        "width": "Määritä painikkeen leveys pikseleinä (px). Huomaa, että tämä vaikuttaa eri tavalla painikkeen kokoon, kuin aikaisemmin asetettu elementin leveys.",
+        "height": "Määritä painikkeen korkeus pikseleinä (px). Huomaa, että tämä vaikuttaa eri tavalla painikkeen kokoon, kuin aikaisemmin asetettu elementin korkeus.",
+        "text": "Nimi millä napin tekstiresurssi näkyy sisällönhallinnan puolella. Tätä arvoa ei voi muuttaa.",
+        "color": "Määritä painikkeen sisältämän teksin väri valitsemalla laatikosta värivalitsimesta, tai syöttämällä haluttu väri heksalukuna muodossa #000000.",
+        "style": "Valitse painikkeen tekstityyli. Normal on tavallinen teksti ja Bold lihavoitu teksti.",
+        "capitalize": "Voit myös valita, onko kaikki painikkeen kirjaimet isoilla kirjaimilla.",
+        "textSize": {
+          "description": "Painikkeen tekstikoko määritellään syöttämällä kokonaisluku kenttään. Sopiva pikselikoko on riippuvainen näytön pikselikoosta, joten käytä suurilla näytöillä suurta lukua.",
+          "note": "HUOM! Esikatselu on suuntaa antava, joten lopputulos kannattaa tarkistaa vielä oikealta laitteelta. Voit muuttaa tätä asetusta vielä senkin jälkeen, kun asettelulla on tehty sivuja. Asetus päivittyy näille sivuille automaattisesti tallennuksen jälkeen."
+        },
+        "gravity": {
+          "description": "Tekstin sisäinen painoitus",
+          "note": "Oletuksena sisältönä oleva teksti on keskellä. Lopputuloksen näkee parhaiten oikealta laitteelta."
+        }
+      }
+    }
   }
+
   
 }
