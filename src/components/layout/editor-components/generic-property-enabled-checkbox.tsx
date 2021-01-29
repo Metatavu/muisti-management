@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WithStyles, withStyles, Checkbox } from "@material-ui/core";
+import { WithStyles, withStyles, Checkbox, FormControlLabel } from "@material-ui/core";
 import styles from "../../../styles/add-device-editor";
 import { LayoutPropKeys } from "../editor-constants/keys";
 
@@ -7,6 +7,7 @@ import { LayoutPropKeys } from "../editor-constants/keys";
  * Interface representing component properties
  */
 interface Props extends WithStyles<typeof styles> {
+  label?: string;
   propertyName: LayoutPropKeys;
   enabled: boolean;
 
@@ -41,8 +42,29 @@ class GenericPropertyEnabledCheckbox extends React.Component<Props, State> {
   /**
    * Component render method
    */
-  public render() {
-    const { enabled, propertyName, onCheckboxChange } = this.props;
+  public render = () => {
+    const {
+      enabled,
+      propertyName,
+      label,
+      onCheckboxChange
+    } = this.props;
+
+    if (label) {
+      return (
+        <FormControlLabel
+          label={ label }
+          control={
+            <Checkbox
+              checked={ enabled }
+              onChange={ (_, checked) => onCheckboxChange(propertyName, checked) }
+              name={ propertyName }
+            />
+          }
+        />
+      )
+    }
+
     return (
       <Checkbox
         checked={ enabled }

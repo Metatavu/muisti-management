@@ -244,6 +244,7 @@
   },
 
   "layout": {
+    "layoutStructure": "Layout elements structure",
     "title": "Layout",
     "addNew": "Add new layout",
     "makeAsSubLayout": "Create as template",
@@ -633,7 +634,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
-    "add": "Add"
+    "add": "Add",
+    "close": "Close"
   },
 
   "generic": {
