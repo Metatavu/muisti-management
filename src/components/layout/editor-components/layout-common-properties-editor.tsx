@@ -326,7 +326,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             onTextFieldChange={ this.onSingleValueChange }
           />
           <HelpDialog title={ strings.layoutEditor.commonComponents.backgroundColor }>
-            <Typography>{ strings.helpDialogs.layoutEditor.commonProperties.backgroundColor }</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.backgroundColor }
+            </Typography>
           </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
