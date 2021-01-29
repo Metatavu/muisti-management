@@ -290,12 +290,12 @@
       "properties": "Tilan ominaisuudet"
     },
     "room": {
-      "add": "Lisää uusi alue",
-      "new": "Uusi alue",
-      "delete": "Poista alue",
-      "edit": "Muokaa aluetta",
-      "properties": "Alueen ominaisuudet",
-      "color": "Alueen täyttöväri"
+      "add": "Lisää uusi näyttelykohde",
+      "new": "Uusi näyttelykohde",
+      "delete": "Poista näyttelykohde",
+      "edit": "Muokkaa näyttelykohteen aluetta",
+      "properties": "Näyttelykohteen ominaisuudet",
+      "color": "Näyttelykohteen täyttöväri"
     },
     "deviceGroup": {
       "add": "Lisää uusi laiteryhmä",
