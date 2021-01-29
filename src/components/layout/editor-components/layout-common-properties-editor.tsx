@@ -134,7 +134,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           onChange={ this.onNameChange }
         />
         <HelpDialog title={ strings.layoutEditor.commonComponents.name }>
-          <Typography variant="body1">{ strings.helpDialogs.layoutEditor.commonProperties.name }</Typography>
+          <Typography variant="body1">
+            { strings.helpDialogs.layoutEditor.commonProperties.name }
+          </Typography>
         </HelpDialog>
       </Box>
     );
