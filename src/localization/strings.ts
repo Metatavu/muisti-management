@@ -727,7 +727,6 @@ export interface IStrings extends LocalizedStringsMethods {
       selectDevice: string;
       selectOrientation: string;
       giveElementName: string;
-      pickElement: string;
       buttonDescription: string;
       textViewDescription: string;
       flowTextViewDescription: string;

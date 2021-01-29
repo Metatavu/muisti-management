@@ -509,7 +509,7 @@
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",
-      "subLayout": "Valmis rakenne templaatista",
+      "subLayout": "Valmis asettelupohja",
       "or": "tai"
     }
   },
@@ -725,7 +725,6 @@
       "selectDevice": "Valitse laite, millä asettelulla luotavaa sivua on tarkoitus näyttää.",
       "selectOrientation": "Valitse suunta, missä asennossa laite on näyttelytilassa.",
       "giveElementName": "Anna elementille kuvaava nimi",
-      "pickElement": "Valitse elementti",
       "buttonDescription": "Painike-elementti esimerkiksi valintojen ja navigoinnin luomiseen sivujen välillä.",
       "textViewDescription": "Tekstielementti tekstin esittämistä varten.",
       "flowTextViewDescription": "Tekstielementti tekstin esittämistä varten. Tämän avulla voi luoda tekstiä, joka tulostetaan vierekkäisten elementtien ympärille esimerkiksi jos asettelun seassa on kuvia.",

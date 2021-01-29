@@ -241,9 +241,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     const { newPageLayoutView } = this.state;
 
     if (!newPageLayoutView) {
-      return (
-        strings.helpTexts.layoutEditor.pickElement
-      )
+      return;
     }
 
     switch(newPageLayoutView.widget) {
