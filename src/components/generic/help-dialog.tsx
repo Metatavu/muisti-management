@@ -19,9 +19,9 @@ interface State {
 }
 
 /**
- * React component displaying confirm dialogs
+ * React component displaying help dialogs
  */
-export default class GenericDialog extends React.Component<Props, State> {
+export default class HelpDialog extends React.Component<Props, State> {
 
   /**
    * Constructor
