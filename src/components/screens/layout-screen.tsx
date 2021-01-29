@@ -165,7 +165,7 @@ export class LayoutScreen extends React.Component<Props, State> {
         openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title={ strings.layout.title }>
+          <ElementNavigationPane width={ 320 } title={ strings.layout.title }>
             <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
                 label={ strings.layout.toolbar.name }
