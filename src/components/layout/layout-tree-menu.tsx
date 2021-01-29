@@ -246,9 +246,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
 
     switch(newPageLayoutView.widget) {
       case PageLayoutWidgetType.Button:
-        return (
-          strings.helpTexts.layoutEditor.buttonDescription
-        );
+        return strings.helpTexts.layoutEditor.buttonDescription;
       case PageLayoutWidgetType.TextView:
         return (
           strings.helpTexts.layoutEditor.textViewDescription
