@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, MenuItem, Select, OutlinedTextFieldProps, SelectProps, FormControlLabel, Switch, InputLabel } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem, Select, OutlinedTextFieldProps, SelectProps, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna } from "../../generated/client";
@@ -13,6 +13,7 @@ import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import { SketchPicker, ColorResult } from "react-color";
+import HelpDialog from "../generic/help-dialog";
 
 /**
  * Component props
@@ -52,9 +53,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
    * Generic text filed properties
    */
   private textFieldGenericProps = {
-    fullWidth: true,
     type: "text",
-    variant: "filled" as OutlinedTextFieldProps["variant"],
     style: { marginTop: theme.spacing(2) }
   };
 
@@ -62,8 +61,6 @@ class FloorPlanInfo extends React.Component<Props, State> {
    * Generic select properties
    */
   private selectFieldGenericProps = {
-    fullWidth: true,
-    variant: "filled" as SelectProps["variant"],
     style: { marginTop: theme.spacing(2) }
   };
 
@@ -137,22 +134,42 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={ selectedAntenna.name }
           onChange={ onChangeAntennaProperties }
         />
-
-        <TextField
-          { ...this.textFieldGenericProps }
-          label={ strings.floorPlan.properties.readerId }
-          name="readerId"
-          value={ selectedAntenna.readerId }
-          onChange={ onChangeAntennaProperties }
-        />
-
-        <TextField
-          { ...this.textFieldGenericProps }
-          label={ strings.floorPlan.properties.antennaNumber }
-          name="antennaNumber"
-          value={ selectedAntenna.antennaNumber }
-          onChange={ onChangeAntennaProperties }
-        />
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+        >
+          <TextField
+            type="text"
+            label={ strings.floorPlan.properties.readerId }
+            name="readerId"
+            value={ selectedAntenna.readerId }
+            onChange={ onChangeAntennaProperties }
+          />
+          <HelpDialog title={ strings.floorPlan.properties.readerId }>
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.antennaReaderIdDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+        >
+          <TextField
+            type="text"
+            label={ strings.floorPlan.properties.antennaNumber }
+            name="antennaNumber"
+            value={ selectedAntenna.antennaNumber }
+            onChange={ onChangeAntennaProperties }
+          />
+          <HelpDialog title={ strings.floorPlan.properties.antennaNumber }>
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.antennaPortNumberDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
 
         <InputLabel id="groupId-label" style={{ marginTop: theme.spacing(2) }}>
           { strings.floorPlan.properties.deviceGroup }
@@ -167,23 +184,43 @@ class FloorPlanInfo extends React.Component<Props, State> {
           { deviceGroupMenuItems }
         </Select>
 
-        <TextField
-          { ...this.textFieldGenericProps }
-          type="number"
-          label={ strings.floorPlan.properties.visitorSessionStartThreshold }
-          name="visitorSessionStartThreshold"
-          value={ selectedAntenna.visitorSessionStartThreshold }
-          onChange={ onChangeAntennaProperties }
-        />
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+        >
+          <TextField
+            type="number"
+            label={ strings.floorPlan.properties.visitorSessionStartThreshold }
+            name="visitorSessionStartThreshold"
+            value={ selectedAntenna.visitorSessionStartThreshold }
+            onChange={ onChangeAntennaProperties }
+          />
+          <HelpDialog title={ strings.floorPlan.properties.visitorSessionStartThreshold }>
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.visitorSessionStartThresholdDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
 
-        <TextField
-          { ...this.textFieldGenericProps }
-          type="number"
-          label={ strings.floorPlan.properties.visitorSessionEndThreshold }
-          name="visitorSessionEndThreshold"
-          value={ selectedAntenna.visitorSessionEndThreshold }
-          onChange={ onChangeAntennaProperties }
-        />
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+        >
+          <TextField
+            type="number"
+            label={ strings.floorPlan.properties.visitorSessionEndThreshold }
+            name="visitorSessionEndThreshold"
+            value={ selectedAntenna.visitorSessionEndThreshold }
+            onChange={ onChangeAntennaProperties }
+          />
+          <HelpDialog title={ strings.floorPlan.properties.visitorSessionEndThreshold }>
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.visitorSessionEndThresholdDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
       </>
     );
   }
@@ -255,26 +292,49 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={ selectedDeviceGroup.name }
           onChange={ onChangeDeviceGroupProperties }
         />
-        <FormControlLabel
-          label={ strings.floorPlan.properties.allowVisitorSessionCreation }
-          style={{ marginTop: theme.spacing(2) }}
-          control={
-            <Switch
-              checked={ selectedDeviceGroup.allowVisitorSessionCreation }
-              onChange={ onChangeDeviceGroupProperties }
-              color="primary"
-              name="allowVisitorSessionCreation"
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-          }
-        />
-        <TextField
-          { ...this.textFieldGenericProps }
-          label={ strings.floorPlan.properties.visitorSessionEndTimeout }
-          name="visitorSessionEndTimeout"
-          value={ selectedDeviceGroup.visitorSessionEndTimeout }
-          onChange={ onChangeDeviceGroupProperties }
-        />
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <FormControlLabel
+            label={ strings.floorPlan.properties.allowVisitorSessionCreation }
+            control={
+              <Switch
+                checked={ selectedDeviceGroup.allowVisitorSessionCreation }
+                onChange={ onChangeDeviceGroupProperties }
+                color="primary"
+                name="allowVisitorSessionCreation"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+          />
+          <HelpDialog title="">
+            <Typography></Typography>
+          </HelpDialog>
+        </Box>
+        <Box 
+          display="flex"
+          mt={ 2 } 
+          alignItems="center"
+        >
+          <TextField
+            type="text"
+            label={ strings.floorPlan.properties.visitorSessionEndTimeout }
+            name="visitorSessionEndTimeout"
+            value={ selectedDeviceGroup.visitorSessionEndTimeout }
+            onChange={ onChangeDeviceGroupProperties }
+          />
+          <HelpDialog title="">
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.visitorSessionTimeoutDescription }
+            </Typography>
+            <Typography variant="h6">
+              { strings.helpDialogs.floorPlanEditor.visitorSessionTimeoutAdditionalDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
       </>
     );
   }

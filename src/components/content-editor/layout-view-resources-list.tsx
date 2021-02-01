@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, List, ListItem, Typography, ListItemText } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/layout-view-resources-list";
 import { ExhibitionPageResource } from "../../generated/client/models";
 import ResourceUtils from "../../utils/resource-utils";
@@ -38,12 +38,10 @@ const LayoutViewResourcesList: React.FC<Props> = ({
             selected={ selectedResource?.id === resource.id }
             onClick={ onClick && onClick(resource) }
           >
-            <Typography variant="body2" className={ classes.listItemTitle }>
-              { strings.contentEditor.editor.resource }
-            </Typography>
-            <Typography variant="body1" className={ classes.listItemSubtitle }>
-              { ResourceUtils.getModeDisplayName(resource.mode) }
-            </Typography>
+            <ListItemText
+              primary={ strings.contentEditor.editor.resource }
+              secondary={ ResourceUtils.getModeDisplayName(resource.mode) }
+            />
             <ChevronRightIcon />
           </ListItem>
         )

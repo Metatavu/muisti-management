@@ -149,7 +149,7 @@ class RoomsScreen extends React.Component<Props, State> {
     });
 
     return (
-      <CardList>
+      <CardList title={ strings.contentVersion.rooms }>
         { cards }
       </CardList>
     );

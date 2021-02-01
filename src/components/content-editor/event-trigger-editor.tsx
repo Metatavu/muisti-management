@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Box, ListItemText } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
@@ -22,6 +22,7 @@ import theme from "../../styles/theme";
 import produce from "immer";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import HelpDialog from "../generic/help-dialog";
 
 /**
  * Component props
@@ -99,18 +100,25 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderTriggerName = () => {
     const { classes, selectedEventTrigger } = this.props;
     return (
-      <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.variableName }
-        </Typography>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <TextField
+          label={ strings.contentEditor.editor.eventTriggers.eventName }
           fullWidth={ false }
           name="name"
           className={ classes.textResourceEditor }
           value={ selectedEventTrigger.name }
           onChange={ this.onEventTriggerNameChange }
         />
-      </div>
+        <HelpDialog title={ strings.contentEditor.editor.eventTriggers.eventName }>
+          <Typography>
+            { strings.helpDialogs.contentEditor.events.nameDescription }
+          </Typography>
+        </HelpDialog>
+      </Box>
     );
   }
 
@@ -137,10 +145,22 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return (
-      <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }
-        </Typography>
+      <Box>
+        <Box
+          mt={ 2 }
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="h6">
+            { strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }
+          </Typography>
+          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }>
+            <Typography>
+              { strings.helpDialogs.contentEditor.events.physicalButtonDownDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <FormControl>
           <InputLabel>
             { strings.contentEditor.editor.eventTriggers.physicalButton }
@@ -157,9 +177,21 @@ class EventTriggerEditor extends React.Component<Props, State> {
             { menuItems }
           </Select>
         </FormControl>
-        <Typography variant="h6" style={{ marginTop: theme.spacing(2) }}>
-          { strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }
-        </Typography>
+        <Box
+          mt={ 2 }
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="h6">
+            { strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }
+          </Typography>
+          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }>
+            <Typography>
+              { strings.helpDialogs.contentEditor.events.physicalButtonUpDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <FormControl>
           <InputLabel>
             { strings.contentEditor.editor.eventTriggers.physicalButton }
@@ -176,7 +208,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
             { menuItems }
           </Select>
         </FormControl>
-      </div>
+      </Box>
     );
   }
 
@@ -186,13 +218,25 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderDeviceGroupEventNameField = () => {
     const { classes } = this.props;
     return (
-      <>
-        <Typography
-          variant="h6"
-          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+      <Box>
+        <Box
+          mt={ 2 }
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
         >
-          { strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }
-        </Typography>
+          <Typography
+            variant="h6"
+            style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+          >
+            { strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }
+          </Typography>
+          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }>
+            <Typography>
+              { strings.helpDialogs.contentEditor.events.deviceGroupEventDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <TextField
           type="text"
           className={ classes.textResourceEditor }
@@ -201,7 +245,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ this.props.selectedEventTrigger?.deviceGroupEvent || "" }
           onChange={ this.onEventTriggerChange }
         />
-      </>
+      </Box>
     );
   }
 
@@ -211,13 +255,22 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderDelayField = () => {
     const { classes } = this.props;
     return (
-      <>
-        <Typography
-          variant="h6"
-          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+      <Box>
+        <Box
+          mt={ 2 }
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
         >
-          { strings.contentEditor.editor.eventTriggers.delayTitle }
-        </Typography>
+          <Typography variant="h6">
+            { strings.contentEditor.editor.eventTriggers.delayTitle }
+          </Typography>
+          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.delayTitle }>
+            <Typography>
+              { strings.helpDialogs.contentEditor.events.delayEventDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <TextField
           className={ classes.textResourceEditor } 
           label={ strings.contentEditor.editor.eventTriggers.delay }
@@ -225,7 +278,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           value={ this.props.selectedEventTrigger?.delay || 0 }
           onChange={ this.onEventTriggerChange }
         />
-      </>
+      </Box>
     );
   }
 
@@ -243,9 +296,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           button
           onClick={ this.onPageEventClick(index) }
         >
-          <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
-            { event.action }
-          </Typography>
+          <ListItemText primary={ event.action } />
           <ListItemSecondaryAction>
             <IconButton
               size="small"

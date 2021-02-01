@@ -1303,15 +1303,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
       })
     }
 
+    if (selectedDevice && !selectedPage) {
+      actionButtons.push({
+        name: strings.contentEditor.editor.saveDevice,
+        action: this.onSaveDeviceClick,
+        disabled: !dataChanged
+      });
+    }
+
     if (selectedDevice) {
       actionButtons.push({
         name: strings.exhibition.addPage,
         action: this.onAddPageClick,
         disabled: this.idlePageEditorActive() && !!selectedDevice.idlePageId
-      }, {
-        name: strings.contentEditor.editor.saveDevice,
-        action: this.onSaveDeviceClick,
-        disabled: !dataChanged
       });
     }
 

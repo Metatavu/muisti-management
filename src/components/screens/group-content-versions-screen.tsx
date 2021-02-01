@@ -1,28 +1,28 @@
+import { CircularProgress, Divider, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, Grid, Typography, TextField, Divider, MenuItem, Select } from "@material-ui/core";
-import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
-import { Exhibition, ExhibitionRoom, GroupContentVersion, ExhibitionDeviceGroup, GroupContentVersionStatus } from "../../generated/client";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
+// eslint-disable-next-line max-len
+import { Exhibition, ExhibitionDeviceGroup, ExhibitionRoom, GroupContentVersion, GroupContentVersionStatus } from "../../generated/client";
+import { ContentVersion } from "../../generated/client/models/ContentVersion";
 import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
 import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
-import { ContentVersion } from "../../generated/client/models/ContentVersion";
-import GenericDialog from "../generic/generic-dialog";
-import theme from "../../styles/theme";
-import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
-import ConfirmDialog from "../generic/confirm-dialog";
-import produce from "immer";
+
+
 
 /**
  * Component props
@@ -171,7 +171,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     });
 
     return (
-      <CardList>
+      <CardList title={ strings.groupContentVersion.title }>
         { cards }
       </CardList>
     );
@@ -234,29 +234,35 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     return (
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.groupContentVersion.name }</Typography>
           <TextField
+            label={ strings.groupContentVersion.name }
             fullWidth
             type="text"
             name="name"
+            variant="outlined"
             value={ selectedGroupContentVersion ? selectedGroupContentVersion.name : "" }
             onChange={ this.onValueChange }
           />
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
         <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.groupContentVersion.deviceGroup }</Typography>
-          <Select
-            fullWidth
-            variant="filled"
-            labelId={ strings.groupContentVersion.deviceGroup }
-            name="deviceGroupId"
-            value={ selectedGroupContentVersion ? selectedGroupContentVersion.deviceGroupId : "" }
-            onChange={ this.onValueChange }
-          >
-            { deviceGroupSelectItems }
-          </Select>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <FormControl>
+            <InputLabel>
+              { strings.groupContentVersion.deviceGroup }
+            </InputLabel>
+            <Select
+              fullWidth
+              label={ strings.groupContentVersion.deviceGroup }
+              name="deviceGroupId"
+              value={ selectedGroupContentVersion ? selectedGroupContentVersion.deviceGroupId : "" }
+              onChange={ this.onValueChange }
+            >
+              { deviceGroupSelectItems }
+            </Select>
+            <FormHelperText>
+              { strings.helpTexts.groupContentVersions.selectDeviceGroupDescription }
+            </FormHelperText>
+          </FormControl>
         </Grid>
       </Grid>
     );
