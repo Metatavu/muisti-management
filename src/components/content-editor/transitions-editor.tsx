@@ -211,7 +211,6 @@ class TransitionsEditor extends React.Component<Props, State> {
    * Render localized name to selected time interpolation
    */
   private renderLocalizedAnimationType = (interpolation: string) => {
-
     if (!interpolation) {
       return "";
     }
