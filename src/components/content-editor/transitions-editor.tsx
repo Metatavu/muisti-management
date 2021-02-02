@@ -471,7 +471,6 @@ class TransitionsEditor extends React.Component<Props, State> {
    * @param option option
    */
   private filterAnimationTimeInterpolationOption = (option: string) => {
-    console.log(option)
     return [
       AnimationTimeInterpolation.Accelerate,
       AnimationTimeInterpolation.Acceleratedecelerate,
