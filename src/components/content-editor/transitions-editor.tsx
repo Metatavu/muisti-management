@@ -240,7 +240,8 @@ class TransitionsEditor extends React.Component<Props, State> {
     if (!selectedTransition) {
       return "";
     }
-    switch(selectedTransition.transition.timeInterpolation) {
+
+    switch (selectedTransition.transition.timeInterpolation) {
       case AnimationTimeInterpolation.Acceleratedecelerate:
         return strings.helpTexts.contentManager.animationInterpolations.accelerateDecelerate;
       case AnimationTimeInterpolation.Accelerate:
