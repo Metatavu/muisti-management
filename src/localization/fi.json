@@ -788,7 +788,7 @@
         "nameDescription": "Syötä tapahtumaa kuvaava nimi, esim. 'Sivunvaihto'",
         "physicalButtonDownDescription": "Valitse tämä tapahtuma, jos tilassa on fyysinen painike, jolla halutaan aloittaa esitys. Fyysinen painike kytketään johonkin näppäimistön näppäimeen, esimerkiksi F1 -näppäimeen.",
         "physicalButtonUpDescription": "Valitse tämä tapahtuma jos tilassa olevasta fyysisestä painikkeesta on tarkoitus tapahtua jotain, kun fyysinen painike vapautetaan. Esimerkiksi sivun vaihdon pysäyttäminen tms. toiminto.",
-        "deviceGroupEventDescription": "Syötä tähän kenttään laiteryhmässä tapahtuvan tapahtuman nimi",
+        "deviceGroupEventDescription": "Syötä tähän kenttään laiteryhmässä seurattavan tapahtuman nimi",
         "delayEventDescription": "Tapahtuma mikä tapahtuu viiveen jälkeen. Esimerkiksi automaattinen sivunvaihto voi tapahtua halutun viiveen jälkeen. Viive annetaan millisekunneissa. Esimerkiksi 10 sekunnin viive on 10000 millisekuntia."
       },
       "variables": {
