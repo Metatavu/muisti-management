@@ -26,7 +26,8 @@ export enum ExhibitionPageEventActionType {
     Settext = 'settext',
     Triggerdevicegroupevent = 'triggerdevicegroupevent',
     ExecuteWebScript = 'executeWebScript',
-    VisitorSessionEnd = 'visitorSessionEnd'
+    VisitorSessionEnd = 'visitorSessionEnd',
+    StartVisitorSession = 'startVisitorSession'
 }
 
 export function ExhibitionPageEventActionTypeFromJSON(json: any): ExhibitionPageEventActionType {

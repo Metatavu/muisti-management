@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch, FormControl } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout } from "../../generated/client";
@@ -132,7 +132,6 @@ class LayoutsScreen extends React.Component<Props, State> {
           title={ layout.name }
           onClick={ () => this.onLayoutCardClick(layoutId) }
           menuOptions={ cardMenuOptions }
-          status={ "" }
         />
       );
     });
@@ -148,21 +147,24 @@ class LayoutsScreen extends React.Component<Props, State> {
       return (
         <CardItem
           key={ subLayout.id }
-          title={ `${strings.subLayout.title} - ${subLayout.name}` }
+          title={ `${strings.subLayout.name} - ${subLayout.name}` }
           onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
           menuOptions={ cardMenuOptions }
-          status={ "" }
         />
       );
     });
 
     return (
       <div style={{ width: "100%", overflowY: "auto" }}>
-        <CardList title={ strings.layout.title }>
+        <CardList autoHeight>
           { layoutCards }
         </CardList>
 
-        <CardList title={ strings.subLayout.title }>
+        <CardList
+          autoHeight
+          title={ strings.subLayout.title }
+          subtitle={ strings.subLayout.description }
+        >
           { subLayoutCards }
         </CardList>
       </div>
@@ -186,6 +188,14 @@ class LayoutsScreen extends React.Component<Props, State> {
         onClose={ this.toggleAddNewDialog }
         onConfirm={ createSubLayout ? this.createNewSubLayout : this.createNewLayout }
       >
+        <TextField
+          fullWidth
+          variant="outlined"
+          label={ strings.generic.name }
+          name="name"
+          value={ createSubLayout ? newSubLayout.name : newLayout.name }
+          onChange={ this.onNewLayoutChange }
+        />
         <FormControlLabel
           style={{ marginTop: theme.spacing(2) }}
           control={
@@ -197,15 +207,7 @@ class LayoutsScreen extends React.Component<Props, State> {
               inputProps={{ 'aria-label': 'primary checkbox' }}
               />
             }
-          label={ strings.subLayout.title }
-        />
-        <TextField
-          fullWidth
-          variant="outlined"
-          label={ strings.generic.name }
-          name="name"
-          value={ createSubLayout ? newSubLayout.name : newLayout.name }
-          onChange={ this.onNewLayoutChange }
+          label={ strings.layout.makeAsSubLayout }
         />
 
         { !createSubLayout &&
@@ -224,15 +226,15 @@ class LayoutsScreen extends React.Component<Props, State> {
     const { newLayout } = this.state;
 
     return (
-      <>
+      <FormControl variant="outlined">
         <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
-        { strings.layout.settings.deviceModelId }
+          { strings.layout.settings.deviceModelId }
         </InputLabel>
         <Select
           fullWidth
-          variant="filled"
           style={{ marginTop: theme.spacing(2) }}
           label={ strings.device.dialog.model }
+          labelId="screenOrientation-label"
           name="modelId"
           value={ newLayout.modelId || "" }
           onChange={ this.onNewLayoutChange }
@@ -243,7 +245,7 @@ class LayoutsScreen extends React.Component<Props, State> {
             </MenuItem>
           )}
         </Select>
-    </>
+    </FormControl>
     );
   }
 
@@ -255,9 +257,6 @@ class LayoutsScreen extends React.Component<Props, State> {
    */
   private getLayoutCardMenuOptions = (pageLayout: PageLayout): ActionButton[] => {
     return [{
-      name: strings.exhibitions.cardMenu.setStatus,
-      action: this.setStatus
-    }, {
       name: strings.exhibitions.cardMenu.delete,
       action: () => this.deleteLayout(pageLayout)
     }];
@@ -271,9 +270,6 @@ class LayoutsScreen extends React.Component<Props, State> {
    */
   private getSubLayoutCardMenuOptions = (subLayout: SubLayout): ActionButton[] => {
     return [{
-      name: strings.exhibitions.cardMenu.setStatus,
-      action: this.setStatus
-    }, {
       name: strings.exhibitions.cardMenu.delete,
       action: () => this.deleteSubLayout(subLayout)
     }];

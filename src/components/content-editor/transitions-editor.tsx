@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionDevice, Animation, AnimationTimeInterpolation, ExhibitionPageTransition } from "../../generated/client";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton, InputLabel, FormControl, FormHelperText, ListItemText, Box } from "@material-ui/core";
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -67,11 +67,9 @@ class TransitionsEditor extends React.Component<Props, State> {
       <>
         <Typography variant="h3">{ strings.contentEditor.editor.transitions.enterTransitions }</Typography>
         { this.renderPageTransitions("enter", selectedPage.enterTransitions) }
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
 
         <Typography variant="h3">{ strings.contentEditor.editor.transitions.exitTransitions }</Typography>
         { this.renderPageTransitions("exit", selectedPage.exitTransitions) }
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19 }} />
 
         { this.renderTransitionDialog() }
       </>
@@ -89,7 +87,10 @@ class TransitionsEditor extends React.Component<Props, State> {
     const transitionItems = transitions.map((transition, transitionIndex) => {
       return (
         <ListItem button onClick={ () => this.onTransitionClick(transitionType, transition, transitionIndex) }>
-          <Typography variant="h6">{ transition.transition.animation }</Typography>
+          <ListItemText
+            primary={ `${ this.renderLocalizedAnimationType(transition.transition.timeInterpolation)} - ${transition.transition.duration}ms ` }
+            secondary={ transition.transition.animation }
+          />
           <ListItemSecondaryAction>
             <IconButton
               color="primary"
@@ -103,17 +104,19 @@ class TransitionsEditor extends React.Component<Props, State> {
     });
 
     return (
-      <>
+      <Box mb={ 2 }>
         <List component="nav" aria-labelledby="nested-list-subheader">
           { transitionItems }
         </List>
-        <GenericButton
-          text={ strings.contentEditor.editor.transitions.addTransition }
-          color="secondary"
-          icon={ <AddIcon /> }
-          onClick={ () => this.onAddTransitionClick(transitionType) }
-        />
-      </>
+        { transitionItems.length < 1 &&
+          <GenericButton
+            text={ strings.contentEditor.editor.transitions.addTransition }
+            color="secondary"
+            icon={ <AddIcon /> }
+            onClick={ () => this.onAddTransitionClick(transitionType) }
+          />
+        }
+      </Box>
     );
   }
 
@@ -147,29 +150,42 @@ class TransitionsEditor extends React.Component<Props, State> {
     return (
       <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.animation }</Typography>
-          <Select
-            labelId={ strings.contentEditor.editor.dialog.animation }
-            id="transitionDialogAnimation"
-            onChange={ this.handleSelectChange }
-            name="animation"
-            value={ selectedTransition?.transition.animation }
-          >
-            { this.getSelectItems(Object.keys(Animation)) }
-          </Select>
+          <FormControl variant="outlined">
+            <InputLabel id={ strings.contentEditor.editor.dialog.animation }>
+              { strings.contentEditor.editor.dialog.animation }
+            </InputLabel>
+            <Select
+              label={ strings.contentEditor.editor.dialog.animation }
+              id="transitionDialogAnimation"
+              onChange={ this.handleSelectChange }
+              name="animation"
+              value={ selectedTransition?.transition.animation }
+            >
+              { this.getSelectItems([ Animation.Fade ]) }
+            </Select>
+            <FormHelperText>{ strings.contentEditor.editor.dialog.animationHelperText }</FormHelperText>
+          </FormControl>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
         <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.contentEditor.editor.dialog.timeInterpolation }</Typography>
-          <Select
-            labelId={ strings.contentEditor.editor.dialog.timeInterpolation }
-            id="transitionDialogTimeInterpolation"
-            onChange={ this.handleSelectChange }
-            name="timeInterpolation"
-            value={ selectedTransition?.transition.timeInterpolation }
-          >
-            { this.getSelectItems(Object.keys(AnimationTimeInterpolation)) }
-          </Select>
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6"></Typography>
+          <FormControl variant="outlined">
+            <InputLabel id={ strings.contentEditor.editor.dialog.timeInterpolation }>
+              { strings.contentEditor.editor.dialog.timeInterpolation }
+            </InputLabel>
+            <Select
+              label={ strings.contentEditor.editor.dialog.timeInterpolation }
+              id="transitionDialogTimeInterpolation"
+              onChange={ this.handleSelectChange }
+              name="timeInterpolation"
+              value={ selectedTransition?.transition.timeInterpolation }
+            >
+              { this.getSelectItems(Object.values(AnimationTimeInterpolation).filter(this.filterAnimationTimeInterpolationOption)) }
+            </Select>
+            <FormHelperText>
+              { this.helpTextBySelectedTransitionType() }
+            </FormHelperText>
+          </FormControl>
           <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
         </Grid>
         <Grid item xs={ 12 }>
@@ -189,6 +205,56 @@ class TransitionsEditor extends React.Component<Props, State> {
         </Grid>
       </Grid>
     );
+  }
+
+  /**
+   * Render localized name to selected time interpolation
+   */
+  private renderLocalizedAnimationType = (interpolation: string) => {
+    if (!interpolation) {
+      return "";
+    }
+
+    switch (interpolation) {
+      case AnimationTimeInterpolation.Acceleratedecelerate:
+        return strings.contentEditor.editor.dialog.interpolations.accelerateDecelerate;
+      case AnimationTimeInterpolation.Accelerate:
+        return strings.contentEditor.editor.dialog.interpolations.accelerate;
+      case AnimationTimeInterpolation.Anticipate:
+        return strings.contentEditor.editor.dialog.interpolations.anticipate;
+      case AnimationTimeInterpolation.Decelerate:
+        return strings.contentEditor.editor.dialog.interpolations.decelerate;
+      case AnimationTimeInterpolation.Linear:
+        return strings.contentEditor.editor.dialog.interpolations.linear;
+      default:
+        return "";
+    }
+  }
+
+  /**
+   * Render help text according to selected widget
+   */
+  private helpTextBySelectedTransitionType = (): string => {
+    const { selectedTransition } = this.state;
+
+    if (!selectedTransition) {
+      return "";
+    }
+
+    switch (selectedTransition.transition.timeInterpolation) {
+      case AnimationTimeInterpolation.Acceleratedecelerate:
+        return strings.helpTexts.contentManager.animationInterpolations.accelerateDecelerate;
+      case AnimationTimeInterpolation.Accelerate:
+        return strings.helpTexts.contentManager.animationInterpolations.accelerate;
+      case AnimationTimeInterpolation.Anticipate:
+        return strings.helpTexts.contentManager.animationInterpolations.anticipate;
+      case AnimationTimeInterpolation.Decelerate:
+        return strings.helpTexts.contentManager.animationInterpolations.decelerate;
+      case AnimationTimeInterpolation.Linear:
+        return strings.helpTexts.contentManager.animationInterpolations.linear;
+      default:
+        return strings.helpTexts.contentManager.animationInterpolations.notSupported;
+    }
   }
 
   /**
@@ -397,6 +463,20 @@ class TransitionsEditor extends React.Component<Props, State> {
       selectedTransition: undefined,
       selectedTransitionType: undefined,
     });
+  }
+
+  /**
+   * Returns whether animation time interpolation option is included to select options
+   * 
+   * @param option option
+   */
+  private filterAnimationTimeInterpolationOption = (option: string) => {
+    return [
+      AnimationTimeInterpolation.Accelerate,
+      AnimationTimeInterpolation.Acceleratedecelerate,
+      AnimationTimeInterpolation.Linear,
+      AnimationTimeInterpolation.Anticipate
+    ].includes(option as AnimationTimeInterpolation);
   }
 }
 

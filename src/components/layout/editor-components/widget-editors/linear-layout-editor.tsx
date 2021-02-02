@@ -1,13 +1,14 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, Box } from "@material-ui/core";
 import styles from "../../../../styles/common-properties-editor";
 import GenericPropertySelect from "../generic-property-select";
 import { LinearLayoutOrientationValues } from "../../editor-constants/values";
 import { LayoutLinearLayoutPropKeys } from "../../editor-constants/keys";
 import theme from "../../../../styles/theme";
 import { getProperty } from "../../utils/tree-data-utils";
+import HelpDialog from "../../../generic/help-dialog";
 
 /**
  * Interface representing component properties
@@ -73,6 +74,23 @@ class LinearLayoutEditor extends React.Component<Props, State> {
             onSelectChange={ this.props.onValueChange }
             selectItemType={ LinearLayoutOrientationValues }
           />
+        <HelpDialog title={ strings.layoutEditor.linearLayout.orientation }>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.linearLayout.introduction }
+          </Typography>
+          <Box mt={ 2 }>
+            <Typography variant="h5">Vertical</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.linearLayout.verticalDescription }
+            </Typography>
+          </Box>
+          <Box mt={ 2 }>
+            <Typography variant="h5">Horizontal</Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.linearLayout.horizontalDescription }
+            </Typography>
+          </Box>
+        </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>

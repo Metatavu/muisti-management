@@ -18,6 +18,7 @@ import MqttListener from "../generic/mqtt-listener";
 import Api from "../../api/api";
 import SimpleReactValidator from "simple-react-validator";
 import logo from "../../resources/gfx/muisti-logo.png";
+import LanguageUtils from "../../utils/language-utils";
 
 /**
  * Component props
@@ -113,7 +114,6 @@ export class ReceptionScreen extends React.Component<Props, State> {
         breadcrumbs={ [] }
         error={ error }
         noBackButton
-        noTabs={ true }
         hideHeader={ true }
       >
         { this.resolveComponentToRender() }
@@ -432,16 +432,11 @@ export class ReceptionScreen extends React.Component<Props, State> {
    * @param contentVersions exhibition content versions
    */
   private constructAvailableLanguages = (contentVersions: ContentVersion[]) => {
-    const languages: string[] = [];
+    const languages = LanguageUtils.getAvailableLanguages(contentVersions);
 
-    contentVersions.forEach(version => {
-      const language = version.language;
-      if (!languages.includes(language)) {
-        languages.push(language);
-      }
+    this.setState({ 
+      languages: languages
     });
-
-    this.setState({ languages });
   }
 
   /**

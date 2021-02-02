@@ -8,6 +8,7 @@ export default createStyles({
   },
 
   field: {
+    backgroundColor: "#fff",
     marginBottom: theme.spacing(2),
     marginRight: theme.spacing(2),
     "&:last-child": {

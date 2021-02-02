@@ -175,6 +175,7 @@ export interface IStrings extends LocalizedStringsMethods {
     navigation: {
       search: string;
     };
+    addLanguageVersion: string;
     newPage: string;
     addPage: string;
     deletePage: string;
@@ -245,8 +246,10 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   layout: {
+    layoutStructure: string;
     title: string;
     addNew: string;
+    makeAsSubLayout: string;
     confirmDelete: string;
     toolbar: {
       visual: string;
@@ -266,6 +269,8 @@ export interface IStrings extends LocalizedStringsMethods {
 
   subLayout: {
     title: string;
+    name: string;
+    description: string;
     addNew: string;
     preview: {
       height: string;
@@ -276,6 +281,8 @@ export interface IStrings extends LocalizedStringsMethods {
   floorPlan: {
     title: string;
     listTitle: string;
+    exhibitions: string;
+    exhibitionsDescription: string;
     floor: {
       add: string;
       new: string;
@@ -512,16 +519,23 @@ export interface IStrings extends LocalizedStringsMethods {
   contentVersion: {
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     language: string;
     rooms: string;
+    room: string;
     deleteTitle: string;
     deleteText: string;
+    contentMaterials: string;
+    nameAlreadyTaken: string;
+    nameIsMandatory: string;
   };
 
   groupContentVersion: {
+    title: string;
     add: string;
     addDialogTitle: string;
+    addDialogDescription: string;
     name: string;
     deviceGroup: string;
     status: string;
@@ -536,6 +550,10 @@ export interface IStrings extends LocalizedStringsMethods {
         noVisitor: string;
         visitorPresent: string;
       };
+      addLanguageDialog: {
+        title: string;
+        language: string;
+      };
       pageName: string;
       indexPageId: string;
       device: string;
@@ -545,15 +563,20 @@ export interface IStrings extends LocalizedStringsMethods {
       content: string;
       properties: string;
       resources: string;
+      resource: string;
+      resourceProperties: string;
       transitions: {
         title: string;
         enterTransitions: string;
+        enterTransitionsDescription: string;
         exitTransitions: string;
+        exitTransitionsDescription: string;
         addTransition: string;
         editTransition: string;
         removeTransition: string;
       };
       eventTriggers: {
+        eventName: string;
         noTriggers: string;
         noWebViews: string;
         add: string;
@@ -581,12 +604,14 @@ export interface IStrings extends LocalizedStringsMethods {
           triggerdevicegroupevent: string;
           executeWebScript: string;
           visitorSessionEnd: string;
+          startVisitorSession: string;
         };
         variableName: string;
         variableValue: string;
         variableBooleanTrue: string;
         variableBooleanFalse: string;
         selectPage: string;
+        selectLanguage: string;
       };
       tabs: {
         title: string;
@@ -601,12 +626,21 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       dialog: {
         animation: string;
+        animationHelperText: string;
         timeInterpolation: string;
+        timeInterpolationHelpertext: string;
         duration: string;
         viewPairs: string;
         addViewPair: string;
         startOfTransition: string;
         endOfTransition: string;
+        interpolations: {
+          accelerateDecelerate: string;
+          accelerate: string;
+          anticipate: string;
+          decelerate: string;
+          linear: string;
+        }
       };
     };
   };
@@ -617,6 +651,7 @@ export interface IStrings extends LocalizedStringsMethods {
     save: string;
     delete: string;
     add: string;
+    close: string;
   };
 
   generic: {
@@ -631,6 +666,7 @@ export interface IStrings extends LocalizedStringsMethods {
     undefined: string;
     refresh: string;
     unsaved: string;
+    properties: string;
   };
 
   spaces: {
@@ -700,7 +736,136 @@ export interface IStrings extends LocalizedStringsMethods {
     };
   };
 
-}
+  /**
+   * UI help texts
+   */
+  helpTexts: {
+    visitorVariables: {
+      visitorVariablesDescription: string;
+    };
+    groupContentVersions: {
+      selectDeviceGroupDescription: string;
+    };
+    layoutEditor: {
+      selectDevice: string;
+      selectOrientation: string;
+      giveElementName: string;
+      buttonDescription: string;
+      textViewDescription: string;
+      flowTextViewDescription: string;
+      imageViewDescription: string;
+      mediaViewDescription: string;
+      playerViewDescrption: string;
+      linearLayoutDescription: string;
+      relativeLayoutDescription: string;
+      frameLayoutDescription: string;
+      mapViewDescription: string;
+      materialTabViewDescription: string;
+      visitorsViewDescription: string;
+      webViewDescription: string;
+    };
+    contentManager: {
+      animationInterpolations: {
+        accelerateDecelerate: string;
+        accelerate: string;
+        anticipate: string;
+        anticipateOvershoot: string;
+        bounce: string;
+        decelerate: string;
+        linear: string;
+        overshoot: string;
+        notSupported: string;
+      };
+    };
+  };
+  
+  /**
+   * Help dialog contents
+   */
+  helpDialogs: {
+    contentEditor: {
+      resources: {
+        staticDescription: string;
+        dynamicDescription: string;
+        programmedDescrption: string;
+      };
+      events: {
+        nameDescription: string;
+        physicalButtonUpDescription: string;
+        physicalButtonDownDescription: string;
+        deviceGroupEventDescription: string;
+        delayEventDescription: string;
+      };
+      variables: {
+        variableNameDescription: string;
+        variableValueDescription: string;
+        setUserValueDescription: string;
+        navigateDescription: string;
+        executeWebScriptDescription: string;
+      }
+    };
+    floorPlanEditor: {
+      visitorSessionTimeoutDescription: string;
+      visitorSessionTimeoutAdditionalDescription: string;
+      visitorSessionStartThresholdDescription: string;
+      visitorSessionEndThresholdDescription: string;
+      antennaReaderIdDescription: string;
+      antennaPortNumberDescription: string;
+    };
+    layoutEditor: {
+      commonProperties: {
+        name: string;
+        layoutWidth: {
+          introduction: string;
+          matchParentDescription: string;
+          wrapContentDescription: string;
+          additionalNotes: string;
+        };
+        layoutHeight: {
+          introduction: string;
+          matchParentDescription: string;
+          wrapContentDescription: string;
+          additionalNotes: string;
+        };
+        elevation: {
+          introduction: string;
+          description: string;
+          readMore: string;
+          link: string;
+        };
+        backgroundColor: string;
+        backgroundImage: string;
+        padding: string;
+        margin: string;
+        gravity: {
+          description: string;
+          note: string;
+        };
+      };
+      linearLayout: {
+        introduction: string;
+        verticalDescription: string;
+        horizontalDescription: string;
+      };
+      button: {
+        width: string;
+        height: string;
+        text: string;
+        color: string;
+        style: string;
+        capitalize: string;
+        textSize: {
+          description: string;
+          note: string;
+        };
+        gravity: {
+          description: string;
+          note: string;
+        };
+      };
+    };
+  };
+};
 
 const strings: IStrings = new LocalizedStrings({
   en: require("./en.json"),

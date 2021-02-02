@@ -167,7 +167,7 @@
 
   "exhibition": {
     "reception": "Vastaanotto",
-    "visitorVariables": "Vierailijamuuttujien hallinta",
+    "visitorVariables": "Kävijämuuttujat",
     "resetVisitorVariables": "Hallinnoi vierailijasession valintoja",
     "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
@@ -175,6 +175,7 @@
     "navigation": {
       "search": "Etsi.."
     },
+    "addLanguageVersion": "Uusi kieliversio",
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
     "deletePage": "Poista sivu",
@@ -189,14 +190,14 @@
     },
     "resources": {
       "title": "Resurssit",
-      "mode": "Tila",
+      "mode": "Tyyppi",
       "scripted": {
         "title": "Ohjelmoitu"
       },
       "dynamic": {
         "title": "Dynaaminen",
         "dataSource": "Tietolähde",
-        "key": "Käyttäjäarvon nimi",
+        "key": "Kävijäarvon nimi",
         "when": "Kun arvo on: ",
         "addNewWhen": "Lisää uusi arvo",
         "equals": "Arvo",
@@ -244,8 +245,10 @@
   },
 
   "layout": {
-    "title": "Asettelu",
+    "layoutStructure": "Asettelun rakenne",
+    "title": "Asettelut",
     "addNew": "Lisää uusi asettelu",
+    "makeAsSubLayout": "Luo asettelupohjaksi",
     "confirmDelete": "Haluatko varmasti poistaa asettelun {0}?",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
@@ -264,8 +267,10 @@
   },
 
   "subLayout": {
-    "title": "Templaatit",
-    "addNew": "Lisää uusi templaatti",
+    "title": "Asettelupohjat",
+    "name": "Asettelupohja",
+    "description": "Asettelupohjat ovat valmiita komponenttikokonaisuuksia, joita voit käyttää asetteluissasi.",
+    "addNew": "Lisää uusi asettelupohja",
     "preview": {
       "width": "Esikatselun leveys (px)",
       "height": "Esikatselun korkeus (px)"
@@ -275,6 +280,8 @@
   "floorPlan": {
     "title": "Pohjapiirrustus",
     "listTitle": "Tilat",
+    "exhibitions": "Näyttelyt",
+    "exhibitionsDescription": "Valitse näyttely, minkä alueita ja tiloja haluat muokata.",
     "floor": {
       "add": "Lisää uusi tila",
       "new": "Uusi tila",
@@ -283,12 +290,12 @@
       "properties": "Tilan ominaisuudet"
     },
     "room": {
-      "add": "Lisää uusi alue",
-      "new": "Uusi alue",
-      "delete": "Poista alue",
-      "edit": "Muokaa aluetta",
-      "properties": "Alueen ominaisuudet",
-      "color": "Alueen täyttöväri"
+      "add": "Lisää uusi näyttelykohde",
+      "new": "Uusi näyttelykohde",
+      "delete": "Poista näyttelykohde",
+      "edit": "Muokkaa näyttelykohteen aluetta",
+      "properties": "Näyttelykohteen ominaisuudet",
+      "color": "Näyttelykohteen täyttöväri"
     },
     "deviceGroup": {
       "add": "Lisää uusi laiteryhmä",
@@ -330,7 +337,7 @@
       "landscape": "Vaaka",
       "portrait": "Pysty",
       "allowVisitorSessionCreation": "Ryhmänmuodostuspiste",
-      "visitorSessionEndTimeout": "Käyttäjän session lopetuksen viive millisekunneissa",
+      "visitorSessionEndTimeout": "Vierailijan poistumisviive",
       "visitorSessionStartThreshold": "Käyttäjän session aloituksen raja (%)",
       "visitorSessionEndThreshold": "Käyttäjän session lopetuksen raja (%)",
       "readerId": "Antennin lukijan Id",
@@ -504,22 +511,28 @@
       "widget": "Valitse elementti",
       "confirm": "Lisää",
       "cancel": "Peruuta",
-      "subLayout": "Valmis rakenne templaatista",
+      "subLayout": "Valmis asettelupohja",
       "or": "tai"
     }
   },
 
   "contentVersion": {
-    "add": "Lisää uusi kieli",
-    "addDialogTitle": "Lisää kieli",
+    "add": "Uusi sisältökokonaisuus",
+    "addDialogTitle": "Uusi sisältökokonaisuus",
+    "addDialogDescription": "Anna nimi uudelle sisältökokonaisuudelle",
     "name": "Nimi",
     "language": "Kieli",
-    "rooms": "Huoneet",
-    "deleteTitle": "Poista kieli",
-    "deleteText": "Oletko varma, että haluat poistaa tämän kielen ja kaikki sen sisällöt?"
+    "rooms": "Näyttelykohteet",
+    "room": "Näyttelykohde",
+    "deleteTitle": "Poista sisältökokonaisuus",
+    "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
+    "contentMaterials": "Sisältökokonaisuudet",
+    "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
+    "nameIsMandatory": "Nimi on pakollinen tieto"
   },
 
   "groupContentVersion": {
+    "title": "Sisällöt",
     "add": "Lisää uusi sisältö",
     "addDialogTitle": "Lisää sisältö",
     "name": "Nimi",
@@ -530,11 +543,15 @@
   },
 
   "contentEditor": {
-    "open": "Avaa timeline",
+    "open": "Hallitse sisältöä",
     "editor": {
       "editorTabs": {
         "noVisitor": "Näyttelypiste tyhjä",
         "visitorPresent": "Vieras saapuu"
+      },
+      "addLanguageDialog": {
+        "title": "Lisää kieliversio",
+        "language": "Kieli"
       },
       "indexPageId": "Laitteen etusivu",
       "pageName": "Sivun nimi",
@@ -545,15 +562,20 @@
       "content": "Sisältö",
       "properties": "Ominaisuudet",
       "resources": "Resurssit",
+      "resource": "Resurssi",
+      "resourceProperties": "Resurssin ominaisuudet",
       "transitions" : {
-        "title": "Siirtymät",
-        "enterTransitions": "Siirtymä saapuessa",
-        "exitTransitions": "Siirtymä lähtiessä",
-        "addTransition": "Lisää siirtymä",
-        "editTransition": "Muokkaa siirtymää",
-        "removeTransition": "Poista siirtymä"
+        "title": "Sivunvaihtoefektit",
+        "enterTransitions": "Efekti saapuessa",
+        "enterTransitionsDescription": "Sivunvaihdon efekti kun tälle sivulle saavutaan.",
+        "exitTransitions": "Efekti lähtiessä",
+        "exitTransitionsDescription": "Sivunvaihdon efekti kun tältä sivulta poistutaan.",
+        "addTransition": "Lisää efekti",
+        "editTransition": "Muokkaa efektiä",
+        "removeTransition": "Poista efekti"
       },
       "eventTriggers": {
+        "eventName": "Tapahtuman nimi",
         "noTriggers": "Ei tapahtumia",
         "noWebViews": "Ei web-näkymiä sivulla. Valitse sivulle asettelu, joka sisältää web-näkymän, jotta voit käyttää tätä toimintoa.",
         "add": "Lisää tapahtuma",
@@ -563,11 +585,11 @@
         "options": "Toiminnon asetukset",
         "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
         "clickViewId": "Elementti",
-        "physicalButtonDownTitle": "Tapahtuu, kun nappia painetaan",
-        "physicalButtonUpTitle": "Tapahtuu, kun nappi päästetään ylös",
-        "physicalButton": "Nappi",
+        "physicalButtonDownTitle": "Tapahtuu, kun fyysistä painiketta painetaan",
+        "physicalButtonUpTitle": "Tapahtuu, kun fyysinen painike vapautetaan",
+        "physicalButton": "Fyysinen painike",
         "deviceGroupEventTitle": "Tapahtuu, kun laiteryhmätapahtuma havaitaan",
-        "deviceGroupEvent": "Laiteryhmätapahtuman nimi",
+        "deviceGroupEvent": "Laiteryhmässä tapahtuvan tapahtuman nimi",
         "delayTitle": "Tapahtuu viiveen jälkeen",
         "delay": "Viive (millisekunneissa)",
         "actions": "Toiminnot",
@@ -575,18 +597,20 @@
           "hide": "Piilota",
           "show": "Näytä",
           "setuservalue": "Aseta käyttäjäarvo",
-          "navigate": "Siirry",
+          "navigate": "Navigoi sivulle",
           "setsrc": "Aseta lähde",
           "settext": "Aseta teksti",
           "triggerdevicegroupevent": "Laukaise laiteryhmän tapahtuma",
           "executeWebScript": "Suorita verkkokomento",
-          "visitorSessionEnd": "Lopeta vierailijan sessio"
+          "visitorSessionEnd": "Lopeta vierailijan sessio",
+          "startVisitorSession": "Aloita vierailijan sessio"
         },
-        "variableName": "Käyttäjän muuttujan nimi",
-        "variableValue": "Käyttäjän muuttujan arvo",
+        "variableName": "Muuttujan nimi",
+        "variableValue": "Kävijän muuttujan arvo",
         "variableBooleanTrue": "Kyllä",
         "variableBooleanFalse": "Ei",
-        "selectPage": "Valitse sivu"
+        "selectPage": "Valitse sivu",
+        "selectLanguage": "Valitse kieli"
       },
 
       "tabs" : {
@@ -603,12 +627,21 @@
 
       "dialog": {
         "animation": "Animaatio",
-        "timeInterpolation": "Interpolointi",
-        "duration": "Kesto (millisekunttia)",
+        "animationHelperText": "Fade, eli häivytys on tällä hetkellä ainoa tuettu siirtymäanimaatio.",
+        "timeInterpolation": "Animaation tyyppi",
+        "timeInterpolationHelpertext": "Animaation interpolaatio, eli miten animaatio etenee.",
+        "duration": "Kesto (millisekunneissa)",
         "viewPairs": "Elementtiparit",
         "addViewPair": "Lisää elementtipari",
         "startOfTransition": "Elementistä",
-        "endOfTransition" : "Elementille"
+        "endOfTransition" : "Elementille",
+        "interpolations": {
+          "accelerateDecelerate": "Kiihtyvä ja hidastuva",
+          "accelerate": "Kiihtyvä",
+          "anticipate": "Hitaasti kiihtyvä",
+          "decelerate": "Hidastuva",
+          "linear": "Lineaarinen"
+        }
       }
     }
   },
@@ -618,7 +651,8 @@
     "cancel": "Peruuta",
     "save": "Tallenna",
     "delete": "Poista",
-    "add": "Lisää"
+    "add": "Lisää",
+    "close": "Sulje"
   },
 
   "generic": {
@@ -632,7 +666,8 @@
     "or": "tai",
     "undefined": "Ei määritelty",
     "refresh": "Päivitä",
-    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?"
+    "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
+    "properties": "Ominaisuudet"
   },
 
   "spaces": {
@@ -700,6 +735,129 @@
     "errorMessages": {
       "sessionNotFound": "Vierailijan sessiota ei löytynyt"
     }
+  },
+
+  "helpTexts": {
+    "visitorVariables": {
+      "visitorVariablesDescription": "Hallitse muuttujia"
+    },
+    "groupContentVersions": {
+      "selectDeviceGroupDescription": "Valitse näyttelykohteen laiteryhmä, missä sisältöä tullaan esittämään."
+    },
+    "layoutEditor": {
+      "selectDevice": "Valitse laite, millä asettelulla luotavaa sivua on tarkoitus näyttää.",
+      "selectOrientation": "Valitse suunta, missä asennossa laite on näyttelytilassa.",
+      "giveElementName": "Anna elementille kuvaava nimi",
+      "buttonDescription": "Painike-elementti esimerkiksi valintojen ja navigoinnin luomiseen sivujen välillä.",
+      "textViewDescription": "Tekstielementti tekstin esittämistä varten.",
+      "flowTextViewDescription": "Tekstielementti tekstin esittämistä varten. Tämän avulla voi luoda tekstiä, joka tulostetaan vierekkäisten elementtien ympärille esimerkiksi jos asettelun seassa on kuvia.",
+      "imageViewDescription": "Elementti kuvien esittämistä varten",
+      "mediaViewDescription": "Elementti eri medioiden esittämistä varten.",
+      "playerViewDescrption": "Elementti videoiden esittämistä varten.",
+      "linearLayoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
+      "relativeLayoutDescription": "Elementti sisällön jäsentämistä varten. Tämän elementin avulla voidaan luoda monimutkaisempia asetteluja ja se voi sisältää useita alielementtejä. Tätä voi käyttää esimerkiksi painikeryhmien luomiseen.",
+      "frameLayoutDescription": "Yksinkertaisin elementti sisällön jäsentämistä varten. Tämä elementin avulla voidaan luoda ns. kehys yhdelle alielementille. Voit käyttää tätä esimerkiksi tekstin kehystämiseen.",
+      "mapViewDescription": "Karttaelementti kartan esittämistä varten",
+      "materialTabViewDescription": "Välilehtiasettelu. HUOM! esikatselu ei täysin vastaa oikealle laitteelle tulostuvaa näkymää.",
+      "visitorsViewDescription": "Ryhmämuodostuspisteen kävijöitä esittävä lista.",
+      "webViewDescription": "Internetsisältö. Tällä voidaan esittää esim. haluttu internet-sivu tai jokin muu internet-sisältö, mikä ei ole Noheva Alustan sisällönhallinnan kautta hallittavissa."
+    },
+    "contentManager": {
+      "animationInterpolations": {
+        "accelerateDecelerate": "Alkuun kiihtyvä ja loppuun hidastuva siirtymä",
+        "accelerate": "Kiihtyvä siirtymä",
+        "anticipate": "Hitaasti kiihtyvä siirtymä",
+        "anticipateOvershoot": "Hitaasti kiihtyvä ja yli hyppäävä siirtymä (bounce)",
+        "bounce": "Hyppivä siirtymä",
+        "decelerate": "Hidastuva siirtymä",
+        "linear": "Lineaarinen siirtymä",
+        "overshoot": "Yliampuva siirtymä",
+        "notSupported": "Valitettavasti kyseinen siirtymä ei ole vielä täysin testattu / tuettu."
+      }
+    }
+  },
+
+  "helpDialogs": {
+    "contentEditor": {
+      "resources": {
+        "staticDescription": "Kiinteä kuva, video, teksti riippuen elementin tyypistä.",
+        "dynamicDescription": "Dynaamisessa resurssissa voidaan esittää kuvaa, tekstiä ja videota perustuen museokävijän aikaisempiin valintoihin. Nimen kohdalle asetetaan avain ja arvojen kohdalle vaihtoehdot. Esimerkiksi avain on 'kotielain' ja vaihtoehtoina 'kissa' tai 'koira'. Jos käyttäjä on valinnut aikaisemmin 'kissa' näytetään tässä kissan kuvaa, mikä on valittu avaimen kohdalle resurssin arvoksi.",
+        "programmedDescrption": "Huom! Edistynyt toiminto."
+      },
+      "events": {
+        "nameDescription": "Syötä tapahtumaa kuvaava nimi, esim. 'Sivunvaihto'",
+        "physicalButtonDownDescription": "Valitse tämä tapahtuma, jos tilassa on fyysinen painike, jolla halutaan aloittaa esitys. Fyysinen painike kytketään johonkin näppäimistön näppäimeen, esimerkiksi F1 -näppäimeen.",
+        "physicalButtonUpDescription": "Valitse tämä tapahtuma jos tilassa olevasta fyysisestä painikkeesta on tarkoitus tapahtua jotain, kun fyysinen painike vapautetaan. Esimerkiksi sivun vaihdon pysäyttäminen tms. toiminto.",
+        "deviceGroupEventDescription": "Syötä tähän kenttään laiteryhmässä seurattavan tapahtuman nimi",
+        "delayEventDescription": "Tapahtuma mikä tapahtuu viiveen jälkeen. Esimerkiksi automaattinen sivunvaihto voi tapahtua halutun viiveen jälkeen. Viive annetaan millisekunneissa. Esimerkiksi 10 sekunnin viive on 10000 millisekuntia."
+      },
+      "variables": {
+        "variableNameDescription": "Museovieraan muuttujan nimi.",
+        "variableValueDescription": "Museovieraan muuttujan arvo.",
+        "setUserValueDescription": "Valinnoissa käytetty ominaisuus. Voit määrittää kävijän muuttujan ja sille arvon, mitä tämän komponentin valitseminen muuttaa. Esimerkiksi avain: 'kotielain', arvona 'kissa' tallentaisi käyttäjän valinnaksi kissan. Tätä tietoa voidaan käyttää myöhemmin näyttelyn kävijän valintojen perusteella näytettävien sisältöjen näyttämiseen.",
+        "navigateDescription": "Navigoi haluttuun sivuun. Siirtyminen voi tapahtua käyttäjän valinnan, tilassa olevan fyysisen painikkeen tai viiveen jälkeen. Viivettä voi käyttää esimerkiksi jos tilassa halutaan esittää automaattisesti vaihtuvaa kuvaesitystä, missä jokainen sivu sisältää yhden kuvan.",
+        "executeWebScriptDescription": "Huom! Edistynyt toiminto."
+      }
+    },
+    "floorPlanEditor": {
+      "visitorSessionTimeoutDescription": "Viive millisekunneissa, jonka jälkeen laiteryhmästä poistunut käyttäjä kirjataan ulos laiteryhmästä.",
+      "visitorSessionTimeoutAdditionalDescription": "Viive auttaa etenkin sellaisissa laiteryhmissä, missä antennien signaali häiriintyy usein ja aiheuttaa aiheettomia uloskirjautumisia. Sopiva viive löytyy testaamalla. Vertailukohtana yksi silmänräpäys kestää 100 - 150 millisekuntia.",
+      "visitorSessionStartThresholdDescription": "Signaalin voimakkuus prosentteina, milloin vierailija kirjataan saapuneeksi laiteryhmään ja sisällön näyttäminen käynnistyy.",
+      "visitorSessionEndThresholdDescription": "Signaalin voimakkuus prosentteina, milloin vierailija kirjataan ulos laiteryhmästä. Parhaan asetuksen löytää testaamalla. Huomaa, että vierailijan alittaessa tämän signaalivahvuuden, käynnistyy vierailijan poistumisviive, joka määritetään laiteryhmän asetuksissa.",
+      "antennaReaderIdDescription": "Antenniyksikön tunnus (ID), mihin tämä antenni on kytketty.",
+      "antennaPortNumberDescription": "Antenniyksikön portti, mihin antenni on kytketty. Antenniin kannattaa kirjata tämä portin numero helpottamaan vianetsintää."
+    },
+    "layoutEditor": {
+      "commonProperties": {
+        "name": "Anna elementille jokin ytimekäs ja kuvaava nimi (esim. Sivun juuri, Kuva sotilaasta tms.). Nimi näkyy sisällönhallinan puolella niillä elementeillä, joille voidaan määritellä resursseja kuten kuvia, videoita, tekstiä tms. Myös asetteluelementeille (FrameLayout, LinearLayout ja RelativeLayout) kannattaa antaa nimet sillä ne helpottavat osioiden löytämisessä vasemmalla puolella olevasta elementtipuusta.",
+        "layoutWidth": {
+          "introduction": "Määritä elementin leveys. Voit määrittää joko suoraan pikselikokoina (px) tai suhteellisesti seuraavilla vaihtoehdoilla:",
+          "matchParentDescription": "Ulkopuolista elementtiä vastaava leveys",
+          "wrapContentDescription": "Sisältöä halaava leveys. Sisällön leveys määrittää tämän elementin leveyden.",
+          "additionalNotes": "Jos määrität leveyden pikseleinä, ohita yllä olevat valinnat."
+        },
+        "layoutHeight": {
+          "introduction": "Määritä elementin korkeus. Voit määrittää joko suoraan pikselikokoina (px) tai suhteellisesti seuraavilla vaihtoehdoilla:",
+          "matchParentDescription": "Ulkopuolista elementtiä vastaava korkeus.",
+          "wrapContentDescription": "Sisältöä halaava leveys. Sisällön kokeurs määrittää tämän elementin leveyden.",
+          "additionalNotes": "Jos määrität korkeuden pikseleinä, ohita yllä olevat valinnat."
+        },
+        "elevation": {
+          "introduction": "Määritä elementin varjo.",
+          "description": "Varjoilla voit nostaa elementtejä irti taustastaan. Varjot määritellään kokonaisluvuilla 1dp, 2dp jne. Mitä suurempi luku, sitä laajempi varjo.",
+          "readMore": "Lue lisää varjoista ",
+          "link": "täältä"
+        },
+        "backgroundColor": "Valitse elementin taustaväri klikkaamalla laatikkoa, tai syötä haluttu väri heksalukuna muodossa #000000.",
+        "backgroundImage": "Voit määrittää elementille halutessasi taustakuvan. Tässä tapauksessa elementille tulee kuvaresurssi ja se tulee näkyviin sisällönhallinan puolelle, missä kuva valitaan.",
+        "padding": "Voit määrittää elementille täytteen jokaiselle kulmalle erikseen tai keskeltä linkkiä painamalla voit määrittää saman täytteen joka suunnalle automaattisesti. Huomioi, että täyte lisää tilaa elementin rajojen sisäpuolelle, mikä kasvattaa elementin leveyttä ja korkeutta.",
+        "margin": "Voit määrittää elementille marginaalin jokaiselle kulmalle erikseen tai keskeltä linkkiä painamalla voit määrittää saman täytteen joka suunnalle automaattisesti. Huomioi, että marginaali lisää tilaa elementin rajojen ulkopuolelle, mikä työntää naapuroivia elementtejä loitommalle.",
+        "gravity": {
+          "description": "Jokaiselle elementille voidaan määrittää painoitus, jonka mukaan sisällä olevat elementit asettuvat. Esimerkiksi 'Top' asettaa kaikki sisällä olevat elementit ylälaitaan.",
+          "note": "HUOM! Elementin painoituksen simulointi esikatselussa saattaa olla paikoin puutteellinen. Halutun lopputuloksen varmistaminen kannattaa tarkistaa oikealta laitteelta."
+        }
+      },
+      "linearLayout": {
+        "introduction": "Valitse jäsentyvätkö tämän elementin sisältämät elementit allekkain vai rinnakkain.",
+        "verticalDescription": "Tämän elementin sisältämät elementit jäsentyvät pystysuunnassa allekkain.",
+        "horizontalDescription": "Tämän elementin sisältämät elementit jäsentyvät vaakasuunnassa rinnakkain."
+      },
+      "button": {
+        "width": "Määritä painikkeen leveys pikseleinä (px). Huomaa, että tämä vaikuttaa eri tavalla painikkeen kokoon, kuin aikaisemmin asetettu elementin leveys.",
+        "height": "Määritä painikkeen korkeus pikseleinä (px). Huomaa, että tämä vaikuttaa eri tavalla painikkeen kokoon, kuin aikaisemmin asetettu elementin korkeus.",
+        "text": "Nimi millä napin tekstiresurssi näkyy sisällönhallinnan puolella. Tätä arvoa ei voi muuttaa.",
+        "color": "Määritä painikkeen sisältämän teksin väri valitsemalla laatikosta värivalitsimesta, tai syöttämällä haluttu väri heksalukuna muodossa #000000.",
+        "style": "Valitse painikkeen tekstityyli. Normal on tavallinen teksti ja Bold lihavoitu teksti.",
+        "capitalize": "Voit myös valita, onko kaikki painikkeen kirjaimet isoilla kirjaimilla.",
+        "textSize": {
+          "description": "Painikkeen tekstikoko määritellään syöttämällä kokonaisluku kenttään. Sopiva pikselikoko on riippuvainen näytön pikselikoosta, joten käytä suurilla näytöillä suurta lukua.",
+          "note": "HUOM! Esikatselu on suuntaa antava, joten lopputulos kannattaa tarkistaa vielä oikealta laitteelta. Voit muuttaa tätä asetusta vielä senkin jälkeen, kun asettelulla on tehty sivuja. Asetus päivittyy näille sivuille automaattisesti tallennuksen jälkeen."
+        },
+        "gravity": {
+          "description": "Tekstin sisäinen painoitus",
+          "note": "Oletuksena sisältönä oleva teksti on keskellä. Lopputuloksen näkee parhaiten oikealta laitteelta."
+        }
+      }
+    }
   }
-  
 }

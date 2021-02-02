@@ -1,10 +1,11 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, List, ListItem, ListItemText } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/layout-view-resources-list";
 import { ExhibitionPageResource } from "../../generated/client/models";
 import ResourceUtils from "../../utils/resource-utils";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -37,12 +38,10 @@ const LayoutViewResourcesList: React.FC<Props> = ({
             selected={ selectedResource?.id === resource.id }
             onClick={ onClick && onClick(resource) }
           >
-            <Typography variant="body2" className={ classes.listItemTitle }>
-              { resource.id }
-            </Typography>
-            <Typography variant="body1" className={ classes.listItemSubtitle }>
-              { ResourceUtils.getModeDisplayName(resource.mode) }
-            </Typography>
+            <ListItemText
+              primary={ strings.contentEditor.editor.resource }
+              secondary={ ResourceUtils.getModeDisplayName(resource.mode) }
+            />
             <ChevronRightIcon />
           </ListItem>
         )

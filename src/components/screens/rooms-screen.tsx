@@ -131,7 +131,6 @@ class RoomsScreen extends React.Component<Props, State> {
    */
   private renderRoomCardsList = () => {
     const { rooms, exhibition } = this.state;
-    const cardMenuOptions = this.getCardMenuOptions();
     const cards = rooms.map(room => {
       const roomId = room.id;
       const floorId = room.floorId;
@@ -145,14 +144,12 @@ class RoomsScreen extends React.Component<Props, State> {
           title={ room.name }
           subtitle={ exhibition.name }
           onClick={ () => this.onCardClick(roomId, floorId) }
-          menuOptions={ cardMenuOptions }
-          status={ strings.exhibitions.status.ready }
         />
       );
     });
 
     return (
-      <CardList title={ strings.exhibitions.inProduction }>
+      <CardList title={ strings.contentVersion.rooms }>
         { cards }
       </CardList>
     );

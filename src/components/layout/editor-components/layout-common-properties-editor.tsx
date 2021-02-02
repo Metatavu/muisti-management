@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout, SubLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider, TextField } from "@material-ui/core";
+import { WithStyles, withStyles, Typography, Divider, TextField, Box, Link } from "@material-ui/core";
 import styles from "../../../styles/common-properties-editor";
 import GenericPropertySelect from "./generic-property-select";
 import MarginPaddingEditor from "./margin-padding-editor";
@@ -21,6 +21,7 @@ import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox"
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import { v4 as uuid } from "uuid";
 import DisplayMetrics from "../../../types/display-metrics";
+import HelpDialog from "../../generic/help-dialog";
 
 /**
  * Interface representing component properties
@@ -118,7 +119,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     const { pageLayoutView } = this.props;
 
     return (
-      <div style={{ marginBottom: theme.spacing(2) }}>
+      <Box
+        mt={ 2 }
+        mb={ 2 }
+        display="flex"
+        alignItems="center"
+      >
         <TextField
           label={ strings.layoutEditor.commonComponents.name }
           fullWidth
@@ -127,7 +133,12 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
           value={ (pageLayoutView && pageLayoutView.name) ? pageLayoutView.name : "" }
           onChange={ this.onNameChange }
         />
-      </div>
+        <HelpDialog title={ strings.layoutEditor.commonComponents.name }>
+          <Typography variant="body1">
+            { strings.helpDialogs.layoutEditor.commonProperties.name }
+          </Typography>
+        </HelpDialog>
+      </Box>
     );
   }
 
@@ -153,7 +164,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             selectItemType={ LayoutWidthValues }
             />
         </div>
-        <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+        <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>
+          { strings.generic.or }
+        </Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <GenericPropertyTextField
             textFieldId={ LayoutPropKeys.LayoutWidth }
@@ -165,6 +178,30 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             />
           <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
         </div>
+        <HelpDialog title={ strings.layoutEditor.commonComponents.layoutWidth }>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }
+          </Typography>
+          <Box mt={ 2 } mb={ 2 }>
+            <Typography variant="h5">
+              MatchParent
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }
+            </Typography>
+          </Box>
+          <Box mt={ 2 } mb={ 2 }>
+            <Typography variant="h5">
+              WrapContent
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }
+            </Typography>
+          </Box>
+          <Typography>
+            { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }
+          </Typography>
+        </HelpDialog>
       </div>
     );
   }
@@ -192,7 +229,9 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               selectItemType={ LayoutHeightValues }
             />
           </div>
-          <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>{ strings.generic.or }</Typography>
+          <Typography variant="h6" style={{ marginRight: theme.spacing(1) }}>
+            { strings.generic.or }
+          </Typography>
           <div style={{ display: "flex", alignItems: "center" }}>
             <GenericPropertyTextField
               textFieldId={ LayoutPropKeys.LayoutHeight }
@@ -204,6 +243,30 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
               />
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>px</Typography>
           </div>
+          <HelpDialog title={ strings.layoutEditor.commonComponents.layoutWidth }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.introduction }
+            </Typography>
+            <Box mt={ 2 } mb={ 2 }>
+              <Typography variant="h5">
+                MatchParent
+              </Typography>
+              <Typography>
+                { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.matchParentDescription }
+              </Typography>
+            </Box>
+            <Box mt={ 2 } mb={ 2 }>
+              <Typography variant="h5">
+                WrapContent
+              </Typography>
+              <Typography>
+                { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.wrapContentDescription }
+              </Typography>
+            </Box>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.layoutWidth.additionalNotes }
+            </Typography>
+          </HelpDialog>
         </div>
       </>
     );
@@ -237,6 +300,26 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             />
             <Typography variant="h6" style={{ marginLeft: theme.spacing(1) }}>dp</Typography>
           </div>
+          <HelpDialog title={ strings.layoutEditor.commonComponents.elevation }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.elevation.introduction }
+            </Typography>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.elevation.description }
+            </Typography>
+            <Box mt={ 2 }>
+              <Typography>
+                { strings.helpDialogs.layoutEditor.commonProperties.elevation.readMore }
+                <Link
+                  color="secondary"
+                  href="https://material.io/design/environment/elevation.html#elevation-in-material-design"
+                  target="_blank"
+                >
+                  { strings.helpDialogs.layoutEditor.commonProperties.elevation.link }
+                </Link>
+              </Typography>
+            </Box>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -266,6 +349,11 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
             property={ foundProp }
             onTextFieldChange={ this.onSingleValueChange }
           />
+          <HelpDialog title={ strings.layoutEditor.commonComponents.backgroundColor }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.backgroundColor }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -283,17 +371,17 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h6"
-          >
-            { strings.layoutEditor.commonComponents.hasBackgroundImage }:
-          </Typography>
           <GenericPropertyEnabledCheckbox
+            label={ strings.layoutEditor.commonComponents.hasBackgroundImage }
             propertyName={ LayoutPropKeys.BackgroundImage }
             enabled={ hasBackgroundImage }
             onCheckboxChange={ this.onToggleProperty }
           />
+          <HelpDialog title={ strings.layoutEditor.commonComponents.hasBackgroundImage }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.backgroundImage }
+            </Typography>
+          </HelpDialog>
         </div>
         <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
       </>
@@ -306,12 +394,16 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutPadding = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography
-          style={{ marginBottom: theme.spacing(1) }}
-          variant="h6"
-        >
-          { strings.layoutEditor.commonComponents.paddings.title }:
-        </Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6">
+            { strings.layoutEditor.commonComponents.paddings.title }:
+          </Typography>
+          <HelpDialog title={ strings.layoutEditor.commonComponents.margins.title }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.padding }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <MarginPaddingEditor
           itemKey="layout_padding"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutPaddingPropKeys) }
@@ -328,12 +420,16 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutMargin = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography
-          style={{ marginBottom: theme.spacing(1) }}
-          variant="h6"
-        >
-          { strings.layoutEditor.commonComponents.margins.title }:
-        </Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6">
+            { strings.layoutEditor.commonComponents.margins.title }:
+          </Typography>
+          <HelpDialog title={ strings.layoutEditor.commonComponents.margins.title }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.padding }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <MarginPaddingEditor
           itemKey="layout_margin"
           properties={ getPaddingOrMarginProperties(this.props.pageLayoutView, LayoutMarginPropKeys) }
@@ -350,9 +446,19 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
   private renderLayoutGravity = () => {
     return (
       <div style={{ padding: theme.spacing(1) }}>
-        <Typography variant="h6">
-          { strings.layoutEditor.commonComponents.layoutGravity }:
-        </Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h6">
+            { strings.layoutEditor.commonComponents.layoutGravity }:
+          </Typography>
+          <HelpDialog title={ strings.layoutEditor.commonComponents.layoutGravity }>
+            <Typography>
+              { strings.helpDialogs.layoutEditor.commonProperties.gravity.description }
+            </Typography>
+            <Typography variant="h6">
+              { strings.helpDialogs.layoutEditor.commonProperties.gravity.note }
+            </Typography>
+          </HelpDialog>
+        </Box>
         <GravityEditor
           property={ getProperty(this.props.pageLayoutView, LayoutPropKeys.LayoutGravity, PageLayoutViewPropertyType.String) }
           onSingleValueChange={ this.onSingleValueChange }
