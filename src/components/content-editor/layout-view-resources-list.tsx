@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, Typography, ListItemText } from "@material-ui/core";
+import { WithStyles, withStyles, List, ListItem, ListItemText } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/layout-view-resources-list";
 import { ExhibitionPageResource } from "../../generated/client/models";
 import ResourceUtils from "../../utils/resource-utils";

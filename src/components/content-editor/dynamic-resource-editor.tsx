@@ -39,7 +39,6 @@ const DynamicResourceEditor: React.FC<Props> = (props: Props) => {
 const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props) => {
   const {
     accessToken,
-    classes,
     data,
     resourceType,
     onUpdate

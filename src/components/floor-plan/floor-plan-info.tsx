@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, MenuItem, Select, OutlinedTextFieldProps, SelectProps, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, MenuItem, Select, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna } from "../../generated/client";

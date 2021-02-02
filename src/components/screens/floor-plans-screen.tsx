@@ -92,7 +92,6 @@ class FloorPlansScreen extends React.Component<Props, State> {
    */
   private renderExhibitionCardsList = () => {
     const { exhibitions } = this.props;
-    const cardMenuOptions = this.getCardMenuOptions();
     const cards = exhibitions.map(exhibition => {
       const exhibitionId = exhibition.id;
       if (!exhibitionId) {
