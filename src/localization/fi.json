@@ -782,7 +782,7 @@
       "resources": {
         "staticDescription": "Kiinteä kuva, video, teksti riippuen elementin tyypistä.",
         "dynamicDescription": "Dynaamisessa resurssissa voidaan esittää kuvaa, tekstiä ja videota perustuen museokävijän aikaisempiin valintoihin. Nimen kohdalle asetetaan avain ja arvojen kohdalle vaihtoehdot. Esimerkiksi avain on 'kotielain' ja vaihtoehtoina 'kissa' tai 'koira'. Jos käyttäjä on valinnut aikaisemmin 'kissa' näytetään tässä kissan kuvaa, mikä on valittu avaimen kohdalle resurssin arvoksi.",
-        "programmedDescrption": "Huom! Edistynyt toiminto."
+        "programmedDescrption": "Huom! Edistynyt toiminto. Tarvitaan vain erityistilanteissa."
       },
       "events": {
         "nameDescription": "Syötä tapahtumaa kuvaava nimi, esim. 'Sivunvaihto'",
@@ -796,10 +796,11 @@
         "variableValueDescription": "Museovieraan muuttujan arvo.",
         "setUserValueDescription": "Valinnoissa käytetty ominaisuus. Voit määrittää kävijän muuttujan ja sille arvon, mitä tämän komponentin valitseminen muuttaa. Esimerkiksi avain: 'kotielain', arvona 'kissa' tallentaisi käyttäjän valinnaksi kissan. Tätä tietoa voidaan käyttää myöhemmin näyttelyn kävijän valintojen perusteella näytettävien sisältöjen näyttämiseen.",
         "navigateDescription": "Navigoi haluttuun sivuun. Siirtyminen voi tapahtua käyttäjän valinnan, tilassa olevan fyysisen painikkeen tai viiveen jälkeen. Viivettä voi käyttää esimerkiksi jos tilassa halutaan esittää automaattisesti vaihtuvaa kuvaesitystä, missä jokainen sivu sisältää yhden kuvan.",
-        "executeWebScriptDescription": "Huom! Edistynyt toiminto."
+        "executeWebScriptDescription": "Huom! Edistynyt toiminto. Tarvitaan vain erityistilanteissa."
       }
     },
     "floorPlanEditor": {
+      "groupAssemblyPointDescription": "Voit määrittää, onko tässä laiteryhmässä ryhmänmuodostuspiste. Erona ryhmänmuodostuspisteellä ja normaalipisteellä on, että ryhmänmuodostuspiste ei kirjaa vierailijoita sisälle, vaan odottaa vierailijoiden muodostavan ryhmänsä valmiiksi. Normaalisti piste kirjaa kävijän ja aloittaa esityksen.",
       "visitorSessionTimeoutDescription": "Viive millisekunneissa, jonka jälkeen laiteryhmästä poistunut käyttäjä kirjataan ulos laiteryhmästä.",
       "visitorSessionTimeoutAdditionalDescription": "Viive auttaa etenkin sellaisissa laiteryhmissä, missä antennien signaali häiriintyy usein ja aiheuttaa aiheettomia uloskirjautumisia. Sopiva viive löytyy testaamalla. Vertailukohtana yksi silmänräpäys kestää 100 - 150 millisekuntia.",
       "visitorSessionStartThresholdDescription": "Signaalin voimakkuus prosentteina, milloin vierailija kirjataan saapuneeksi laiteryhmään ja sisällön näyttäminen käynnistyy.",

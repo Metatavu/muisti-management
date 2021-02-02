@@ -310,8 +310,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
               />
             }
           />
-          <HelpDialog title="">
-            <Typography></Typography>
+          <HelpDialog title={ strings.floorPlan.properties.allowVisitorSessionCreation }>
+            <Typography>{ strings.helpDialogs.floorPlanEditor.groupAssemblyPointDescription }</Typography>
           </HelpDialog>
         </Box>
         <Box 

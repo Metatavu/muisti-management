@@ -805,6 +805,7 @@ export interface IStrings extends LocalizedStringsMethods {
       }
     };
     floorPlanEditor: {
+      groupAssemblyPointDescription: string;
       visitorSessionTimeoutDescription: string;
       visitorSessionTimeoutAdditionalDescription: string;
       visitorSessionStartThresholdDescription: string;
