@@ -214,7 +214,8 @@ class TransitionsEditor extends React.Component<Props, State> {
     if (!interpolation) {
       return "";
     }
-    switch(interpolation) {
+
+    switch (interpolation) {
       case AnimationTimeInterpolation.Acceleratedecelerate:
         return strings.contentEditor.editor.dialog.interpolations.accelerateDecelerate;
       case AnimationTimeInterpolation.Accelerate:
