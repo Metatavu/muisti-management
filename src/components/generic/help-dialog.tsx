@@ -48,7 +48,7 @@ export default class HelpDialog extends React.Component<Props, State> {
           <HelpIcon htmlColor="#222"/>
         </IconButton>
         <Dialog
-          maxWidth="lg"
+          maxWidth="md"
           open={ open }
         >
           <DialogTitle

@@ -92,7 +92,6 @@ class FloorPlansScreen extends React.Component<Props, State> {
    */
   private renderExhibitionCardsList = () => {
     const { exhibitions } = this.props;
-    const cardMenuOptions = this.getCardMenuOptions();
     const cards = exhibitions.map(exhibition => {
       const exhibitionId = exhibition.id;
       if (!exhibitionId) {
@@ -104,13 +103,15 @@ class FloorPlansScreen extends React.Component<Props, State> {
           key={ exhibition.id }
           title={ exhibition.name }
           onClick={ () => this.onCardClick(exhibitionId) }
-          menuOptions={ cardMenuOptions }
         />
       );
     });
 
     return (
-      <CardList>
+      <CardList
+        title={ strings.floorPlan.exhibitions }
+        subtitle={ strings.floorPlan.exhibitionsDescription }
+      >
         { cards }
       </CardList>
     );

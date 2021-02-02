@@ -1,11 +1,12 @@
 import * as React from "react";
 import { DynamicPageResource, DynamicPageResourceType, DynamicPageResourceSwitch, DynamicPageResourceSwitchWhen, DynamicPageResourceSubstitute, ExhibitionPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, Typography, Box } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
 import produce from "immer";
 import { AccessToken } from "../../types";
 import DynamicResourceSwitchWhenList from "./dynamic-resource-switch-when-list";
+import HelpDialog from "../generic/help-dialog";
 
 /**
  * Interface representing component properties
@@ -38,7 +39,6 @@ const DynamicResourceEditor: React.FC<Props> = (props: Props) => {
 const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props) => {
   const {
     accessToken,
-    classes,
     data,
     resourceType,
     onUpdate
@@ -46,16 +46,26 @@ const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props)
 
   return (
     <>
-      <TextField
-        className={ classes.field }
-        fullWidth
-        label={ strings.exhibition.resources.dynamic.key }
-        name="key"
-        value={ dataParams.key }
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>
-          onUpdate(getUpdatedData(data, getUpdatedSwitchParams(dataParams, "key", event.target.value)))
-        }
-      />
+      <Box
+        display="flex"
+        alignItems="center"
+        mb={ 2 }
+      >
+        <TextField
+          fullWidth
+          label={ strings.exhibition.resources.dynamic.key }
+          name="key"
+          value={ dataParams.key }
+          onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>
+            onUpdate(getUpdatedData(data, getUpdatedSwitchParams(dataParams, "key", event.target.value)))
+          }
+        />
+        <HelpDialog title={ strings.exhibition.resources.dynamic.key }>
+          <Typography>
+            { strings.helpDialogs.contentEditor.resources.dynamicDescription }
+          </Typography>
+        </HelpDialog>
+      </Box>
       <DynamicResourceSwitchWhenList
         accessToken={ accessToken }
         resourceType={ resourceType }

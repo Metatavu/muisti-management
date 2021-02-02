@@ -102,7 +102,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
         openDataChangedPrompt={ true }
       >
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title={ strings.visitorVariables.title }>
+          <ElementNavigationPane title={ strings.helpTexts.visitorVariables.visitorVariablesDescription }>
             { this.renderVisitorVariablesList() }
           </ElementNavigationPane>
           <div style={{ padding: theme.spacing(4) }}>
