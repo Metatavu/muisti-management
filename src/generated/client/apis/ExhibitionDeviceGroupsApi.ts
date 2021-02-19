@@ -21,8 +21,9 @@ import {
 } from '../models';
 
 export interface CreateExhibitionDeviceGroupRequest {
-    exhibitionDeviceGroup: ExhibitionDeviceGroup;
     exhibitionId: string;
+    exhibitionDeviceGroup?: ExhibitionDeviceGroup;
+    sourceDeviceGroupId?: string;
 }
 
 export interface DeleteExhibitionDeviceGroupRequest {
@@ -56,15 +57,15 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
      * Create a device group
      */
     async createExhibitionDeviceGroupRaw(requestParameters: CreateExhibitionDeviceGroupRequest): Promise<runtime.ApiResponse<ExhibitionDeviceGroup>> {
-        if (requestParameters.exhibitionDeviceGroup === null || requestParameters.exhibitionDeviceGroup === undefined) {
-            throw new runtime.RequiredError('exhibitionDeviceGroup','Required parameter requestParameters.exhibitionDeviceGroup was null or undefined when calling createExhibitionDeviceGroup.');
-        }
-
         if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
             throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createExhibitionDeviceGroup.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.sourceDeviceGroupId !== undefined) {
+            queryParameters['sourceDeviceGroupId'] = requestParameters.sourceDeviceGroupId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

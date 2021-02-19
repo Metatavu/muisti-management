@@ -299,7 +299,8 @@
       "new": "New device group",
       "delete": "Delete device group",
       "edit": "Edit device group",
-      "properties": "Device group properties"
+      "properties": "Device group properties",
+      "copy": "Copy device group"
     },
     "device" : {
       "add": "Add new device",
