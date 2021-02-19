@@ -270,6 +270,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
         >
           <MenuItem key={ "landscape" } value={ ScreenOrientation.Landscape }>{ strings.floorPlan.properties.landscape }</MenuItem>
           <MenuItem key={ "portrait" } value={ ScreenOrientation.Portrait }>{ strings.floorPlan.properties.portrait }</MenuItem>
+          <MenuItem key={ "forcedPortrait" } value={ ScreenOrientation.ForcedPortrait }>{ strings.floorPlan.properties.forcedPortrait }</MenuItem>
         </Select>
       </>
     );

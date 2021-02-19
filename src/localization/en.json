@@ -335,6 +335,7 @@
       "screenOrientation": "Screen Orientation",
       "landscape": "Landscape",
       "portrait": "Portrait",
+      "forcedPortrait": "Portrait (forced)",
       "allowVisitorSessionCreation": "Allow creation of new session to visitor",
       "visitorSessionEndTimeout": "Visitor session end timeout in milliseconds",
       "visitorSessionStartThreshold": "Visitor session start threshold (%)",
