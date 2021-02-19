@@ -546,6 +546,12 @@ export interface IStrings extends LocalizedStringsMethods {
 
   contentEditor: {
     open: string;
+    preview: {
+      resourceModePreview: {
+        dynamic: string;
+        scripted: string;
+      };
+    };
     editor: {
       editorTabs: {
         noVisitor: string;
@@ -566,6 +572,7 @@ export interface IStrings extends LocalizedStringsMethods {
       resources: string;
       resource: string;
       resourceProperties: string;
+      
       transitions: {
         title: string;
         enterTransitions: string;
@@ -720,6 +727,10 @@ export interface IStrings extends LocalizedStringsMethods {
     addEnumValue: string;
     valuesTitle: string;
     isEditableFromUi: string;
+    booleanValues: {
+      true: string;
+      false: string;
+    };
   };
 
   manageVisitorSessionVariables: {

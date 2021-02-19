@@ -545,6 +545,12 @@
 
   "contentEditor": {
     "open": "Hallitse sisältöä",
+    "preview": {
+      "resourceModePreview": {
+        "dynamic": "Dynaaminen resurssi",
+        "scripted": "Ohjelmoitu resurssi"
+      }
+    },
     "editor": {
       "editorTabs": {
         "noVisitor": "Näyttelypiste tyhjä",
@@ -720,7 +726,11 @@
     "deleteConfirmText": "Oletko varma, että haluat poistaa kävijämuuttujan?",
     "addEnumValue": "Lisää arvo",
     "valuesTitle": "Arvot",
-    "isEditableFromUi": "Asiakaspalvelijan muokattavissa"
+    "isEditableFromUi": "Asiakaspalvelijan muokattavissa",
+    "booleanValues": {
+      "true": "Kyllä",
+      "false": "Ei"
+    }
   },
 
   "manageVisitorSessionVariables": {

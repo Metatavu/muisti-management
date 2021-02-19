@@ -801,6 +801,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         <ResourceEditor
           resource={ selectedResource }
           onUpdate={ this.onUpdateResource }
+          visitorVariables={ visitorVariables }
         />
       );
     }

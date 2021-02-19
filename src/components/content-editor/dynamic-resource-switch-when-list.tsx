@@ -1,7 +1,7 @@
 import * as React from "react";
-import { DynamicPageResourceSwitchWhen, ExhibitionPageResourceType } from "../../generated/client";
+import { DynamicPageResourceSwitchWhen, ExhibitionPageResourceType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, IconButton, Button, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, IconButton, Button, Typography, TextFieldProps, MenuItem } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
 import MediaLibraryButton from "./media-library-button";
 import AddIcon from '@material-ui/icons/Add';
@@ -17,6 +17,7 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   resourceType: ExhibitionPageResourceType;
   whenList: DynamicPageResourceSwitchWhen[];
+  visitorVariable?: VisitorVariable;
   onUpdate: (whenList: DynamicPageResourceSwitchWhen[]) => void;
 }
 
@@ -61,17 +62,7 @@ const renderWhenRow = (
       key={ index }
       className={ classes.resourceSwitchWhenList }
     >
-      <TextField
-        className={ classes.field }
-        fullWidth
-        label={ strings.exhibition.resources.dynamic.equals }
-        name="equals"
-        value={ when.equals }
-        onChange={ (event: React.ChangeEvent<HTMLInputElement>) => {
-          const row = updateWhenRow(when, "equals", event.target.value);
-          onUpdate(getUpdatedWhenList(whenList, { updatedRow: { index, row } }));
-        }}
-      />
+      { renderVisitorVariableValueInput(index, when, props) }
       <TextField
         className={ classes.field }
         label={ strings.exhibition.resources.dynamic.value }
@@ -104,6 +95,62 @@ const renderWhenRow = (
       </IconButton>
     </div>
   );
+}
+
+/**
+ * Renders visitor variable value input
+ *
+ * @param index index of when row
+ * @param when dynamic page resource switch when object
+ * @param props component properties
+ */
+const renderVisitorVariableValueInput = (
+  index: number,
+  when: DynamicPageResourceSwitchWhen,
+  props: Props
+) => {
+  const { classes, visitorVariable, whenList, onUpdate } = props;
+
+  if (!visitorVariable) {
+    return null;
+  }
+
+  const textFieldProps: TextFieldProps = {
+    className: classes.field,
+    fullWidth: true,
+    label: strings.exhibition.resources.dynamic.equals,
+    name: "equals",
+    value: when.equals,
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      const row = updateWhenRow(when, "equals", event.target.value);
+      onUpdate(getUpdatedWhenList(whenList, { updatedRow: { index, row } }));
+    }
+  };
+
+  switch (visitorVariable.type) {
+    case VisitorVariableType.Enumerated:
+      return (
+        <TextField { ...textFieldProps } select>
+          { visitorVariable._enum?.map((value, index) => 
+            <MenuItem key={ index } value={ value }>
+              { value }
+            </MenuItem>
+          )}
+        </TextField>
+      );
+    case VisitorVariableType.Boolean:
+      return (
+        <TextField { ...textFieldProps } select>
+          <MenuItem key="true" value="true">{ strings.visitorVariables.booleanValues.true }</MenuItem>
+          <MenuItem key="false" value="false">{ strings.visitorVariables.booleanValues.false }</MenuItem>
+        </TextField>
+      );
+    case VisitorVariableType.Number:
+      return <TextField { ...textFieldProps } type="number" />;
+    case VisitorVariableType.Text:
+    default:
+      return <TextField { ...textFieldProps }/>;
+  }
 }
 
 /**

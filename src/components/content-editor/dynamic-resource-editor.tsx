@@ -1,7 +1,7 @@
 import * as React from "react";
-import { DynamicPageResource, DynamicPageResourceType, DynamicPageResourceSwitch, DynamicPageResourceSwitchWhen, DynamicPageResourceSubstitute, ExhibitionPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
+import { DynamicPageResource, DynamicPageResourceType, DynamicPageResourceSwitch, DynamicPageResourceSwitchWhen, DynamicPageResourceSubstitute, ExhibitionPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Typography, Box } from "@material-ui/core";
+import { WithStyles, withStyles, TextField, Typography, Box, MenuItem } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
 import produce from "immer";
 import { AccessToken } from "../../types";
@@ -14,6 +14,7 @@ import HelpDialog from "../generic/help-dialog";
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   data: DynamicPageResource;
+  visitorVariables: VisitorVariable[];
   resourceType: ExhibitionPageResourceType;
   onUpdate: (dynamicResourceData: DynamicPageResource) => void;
 }
@@ -40,6 +41,7 @@ const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props)
   const {
     accessToken,
     data,
+    visitorVariables,
     resourceType,
     onUpdate
   } = props;
@@ -55,11 +57,20 @@ const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props)
           fullWidth
           label={ strings.exhibition.resources.dynamic.key }
           name="key"
+          select
           value={ dataParams.key }
           onChange={ (event: React.ChangeEvent<HTMLInputElement>) =>
             onUpdate(getUpdatedData(data, getUpdatedSwitchParams(dataParams, "key", event.target.value)))
           }
-        />
+        >
+          {
+            visitorVariables.map(variable =>
+              <MenuItem key={ variable.id } value={ variable.name }>
+                { variable.name }
+              </MenuItem>
+            )
+          }
+        </TextField>
         <HelpDialog title={ strings.exhibition.resources.dynamic.key }>
           <Typography>
             { strings.helpDialogs.contentEditor.resources.dynamicDescription }
@@ -70,6 +81,7 @@ const renderSwitchEditor = (dataParams: DynamicPageResourceSwitch, props: Props)
         accessToken={ accessToken }
         resourceType={ resourceType }
         whenList={ dataParams.when ?? [] }
+        visitorVariable={ visitorVariables.find(variable => variable.name === dataParams.key) }
         onUpdate={ (whenList: DynamicPageResourceSwitchWhen[]) => {
           onUpdate(getUpdatedData(data, getUpdatedSwitchParams(dataParams, "when", whenList)))
         }}

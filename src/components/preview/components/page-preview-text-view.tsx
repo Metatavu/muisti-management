@@ -3,12 +3,13 @@ import * as React from "react";
 import Measure, { ContentRect } from 'react-measure'
 import { WithStyles, withStyles } from '@material-ui/core';
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
+import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType, PageResourceMode } from "../../../generated/client";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
+import strings from "../../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -100,8 +101,14 @@ class PagePreviewTextView extends React.Component<Props, State> {
     const id = textProperty?.value;
     if (id && id.startsWith("@resources/")) {
       const resource = this.props.resourceMap[id.substring(11)];
-      if (resource) {
-        return resource.data;
+      switch (resource.mode) {
+        case PageResourceMode.Scripted:
+          return strings.contentEditor.preview.resourceModePreview.scripted;
+        case PageResourceMode.Dynamic:
+          return strings.contentEditor.preview.resourceModePreview.dynamic;
+        case PageResourceMode.Static:
+        default:
+          return resource.data;
       }
     }
 
