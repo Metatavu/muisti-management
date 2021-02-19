@@ -542,6 +542,12 @@
 
   "contentEditor": {
     "open": "Manage content",
+    "preview": {
+      "resourceModePreview": {
+        "dynamic": "Dynamic resource",
+        "scripted": "Scripted resource"
+      }
+    },
     "editor": {
       "editorTabs": {
         "noVisitor": "Exhibition spot empty",
@@ -710,7 +716,11 @@
     "deleteConfirmText": "Are you sure that you wish to delete this visitor variable?",
     "addEnumValue": "Add value",
     "valuesTitle": "Values",
-    "isEditableFromUi": "Can be modified by customer service"
+    "isEditableFromUi": "Can be modified by customer service",
+    "booleanValues": {
+      "true": "True",
+      "false": "False"
+    }
   },
 
   "manageVisitorSessionVariables": {
