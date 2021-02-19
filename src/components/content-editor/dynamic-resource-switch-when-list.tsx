@@ -109,7 +109,12 @@ const renderVisitorVariableValueInput = (
   when: DynamicPageResourceSwitchWhen,
   props: Props
 ) => {
-  const { classes, visitorVariable, whenList, onUpdate } = props;
+  const {
+    classes,
+    visitorVariable,
+    whenList,
+    onUpdate
+  } = props;
 
   if (!visitorVariable) {
     return null;
