@@ -337,6 +337,7 @@
       "screenOrientation": "Näytön suunta",
       "landscape": "Vaaka",
       "portrait": "Pysty",
+      "forcedPortrait": "Pysty (pakotettu)",
       "allowVisitorSessionCreation": "Ryhmänmuodostuspiste",
       "visitorSessionEndTimeout": "Vierailijan poistumisviive",
       "visitorSessionStartThreshold": "Käyttäjän session aloituksen raja (%)",

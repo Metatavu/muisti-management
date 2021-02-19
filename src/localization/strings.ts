@@ -338,6 +338,7 @@ export interface IStrings extends LocalizedStringsMethods {
       screenOrientation: string;
       landscape: string;
       portrait: string;
+      forcedPortrait: string;
       allowVisitorSessionCreation: string;
       visitorSessionEndTimeout: string;
       visitorSessionStartThreshold: string;
