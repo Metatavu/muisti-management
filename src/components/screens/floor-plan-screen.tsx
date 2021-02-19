@@ -476,6 +476,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         { name: strings.floorPlan.device.add, action: () => this.mapRef.current!.addDeviceMarker() },
         { name: strings.floorPlan.antenna.add, action: () => this.mapRef.current!.addAntennaMarker() },
         {
+          name: strings.floorPlan.deviceGroup.copy,
+          action: this.onDeviceGroupCopyClick
+        },
+        {
           name: strings.generic.save,
           action: this.onDeviceGroupSaveClick,
           disabled: !dataChanged
@@ -937,9 +941,39 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for device copy click
+   */
+  private onDeviceGroupCopyClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDeviceGroup } = this.state;
+
+    if (!selectedDeviceGroup || !exhibitionId) {
+      return;
+    }
+
+    this.setState({ 
+      loading: true 
+    });
+
+    const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+
+    const copiedDeviceGroup = await exhibitionDeviceGroupsApi.createExhibitionDeviceGroup({
+      exhibitionId: exhibitionId,
+      sourceDeviceGroupId: selectedDeviceGroup.id
+    });
+
+    await this.fetchData();
+
+    this.setState({
+      selectedDeviceGroup: copiedDeviceGroup,
+      loading: false
+    });
+  }
+
+  /**
    * Event handler for device group delete click
    */
-  private onDeviceGroupDeleteClick = async () => {
+  private onDeviceGroupDeleteClick = () => {
 
     const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;

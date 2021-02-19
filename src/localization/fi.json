@@ -302,7 +302,8 @@
       "new": "Uusi laiteryhmä",
       "delete": "Poista laiteryhmä",
       "edit": "Muokaa laiteryhmää",
-      "properties": "Laiteryhmän ominaisuudet"
+      "properties": "Laiteryhmän ominaisuudet",
+      "copy": "Kopioi laiteryhmä"
     },
     "device" : {
       "add": "Lisää uusi laite",
