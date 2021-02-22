@@ -196,9 +196,7 @@ const updateWhenRow = (
   key: keyof DynamicPageResourceSwitchWhen,
   value: string
 ): DynamicPageResourceSwitchWhen => {
-  return produce(when, draft => {
-    draft[key] = value;
-  });
+  return { ...when, [key]: value };
 }
 
 /**
