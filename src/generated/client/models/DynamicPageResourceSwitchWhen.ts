@@ -33,10 +33,10 @@ export interface DynamicPageResourceSwitchWhen {
     value: string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof DynamicPageResourceSwitchWhen
      */
-    _default?: string;
+    _default?: boolean;
 }
 
 export function DynamicPageResourceSwitchWhenFromJSON(json: any): DynamicPageResourceSwitchWhen {

@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ContentVersionActiveCondition,
+    ContentVersionActiveConditionFromJSON,
+    ContentVersionActiveConditionFromJSONTyped,
+    ContentVersionActiveConditionToJSON,
+} from './';
+
 /**
  * Content version (e.g. language) of an exhibition.
  * @export
@@ -49,6 +56,12 @@ export interface ContentVersion {
      * @memberof ContentVersion
      */
     rooms: Array<string>;
+    /**
+     * 
+     * @type {ContentVersionActiveCondition}
+     * @memberof ContentVersion
+     */
+    activeCondition?: ContentVersionActiveCondition;
     /**
      * 
      * @type {string}
@@ -90,6 +103,7 @@ export function ContentVersionFromJSONTyped(json: any, ignoreDiscriminator: bool
         'name': json['name'],
         'language': json['language'],
         'rooms': json['rooms'],
+        'activeCondition': !exists(json, 'activeCondition') ? undefined : ContentVersionActiveConditionFromJSON(json['activeCondition']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
@@ -109,6 +123,7 @@ export function ContentVersionToJSON(value?: ContentVersion | null): any {
         'name': value.name,
         'language': value.language,
         'rooms': value.rooms,
+        'activeCondition': ContentVersionActiveConditionToJSON(value.activeCondition),
     };
 }
 

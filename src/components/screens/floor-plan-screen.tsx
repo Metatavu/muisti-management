@@ -80,6 +80,7 @@ interface State {
  */
 export class FloorPlanScreen extends React.Component<Props, State> {
 
+  private prevMapRef: SpacesMap | null = null;
   private mapRef = createRef<SpacesMap>();
   private treeRef = createRef<TreeMenu>();
 
@@ -127,6 +128,12 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       await this.fetchData();
       this.setState({ loading: false });
     }
+
+    if (this.mapRef.current !== this.prevMapRef) {
+      this.forceUpdate();
+    }
+
+    this.prevMapRef = this.mapRef.current;
   }
 
   /**
@@ -542,14 +549,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         {
           name: strings.floorPlan.floor.delete,
           action: selectedItemHasNodes ?
-          () => alert(strings.floorPlan.hasChildElements) :
-          this.onFloorDeleteClick
+            () => alert(strings.floorPlan.hasChildElements) :
+            this.onFloorDeleteClick
         }
       ] as ActionButton[];
-    }
-
-    if (!this.mapRef.current) {
-      return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
     }
 
     return [{ name: strings.floorPlan.floor.add, action: this.onFloorAddClick }];
@@ -664,7 +667,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    */
   private onCropDetailsUpdate = (details: cropperjs.default.ImageData) => {
     this.setState({
-      cropImageDetails: details
+      cropImageDetails: details,
+      dataChanged: details.naturalHeight !== undefined && details.naturalWidth !== undefined
     });
   }
 
@@ -688,7 +692,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onCropPropertyChange = (key: string, value: number) => {
     const updatedDetails = { ...this.state.cropImageDetails!, [key] : value };
     this.setState({
-      cropImageDetails : updatedDetails
+      cropImageDetails: updatedDetails,
+      dataChanged: updatedDetails.naturalHeight !== undefined && updatedDetails.naturalWidth !== undefined
     });
   }
 
@@ -744,6 +749,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.floors.push(newFloor);
         draft.selectedFloor = newFloor;
+        draft.selectedAntenna = undefined;
+        draft.selectedDevice = undefined;
+        draft.selectedDeviceGroup = undefined;
+        draft.selectedRoom = undefined;
       })
     );
   }
@@ -772,6 +781,10 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (floorIndex > -1) {
           floors.splice(floorIndex, 1);
           draft.selectedFloor = undefined;
+          draft.selectedAntenna = undefined;
+          draft.selectedDevice = undefined;
+          draft.selectedDeviceGroup = undefined;
+          draft.selectedRoom = undefined;
         }
       })
     );
@@ -828,6 +841,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.rooms.push(newRoom);
         draft.selectedRoom = newRoom;
+        draft.selectedAntenna = undefined;
+        draft.selectedDevice = undefined;
+        draft.selectedDeviceGroup = undefined;
       })
     );
   }
@@ -856,6 +872,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (roomIndex > -1) {
           rooms.splice(roomIndex, 1);
           draft.selectedRoom = undefined;
+          draft.selectedAntenna = undefined;
+          draft.selectedDevice = undefined;
+          draft.selectedDeviceGroup = undefined;
         }
       })
     );
@@ -912,6 +931,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.deviceGroups.push(newDeviceGroup);
         draft.selectedDeviceGroup = newDeviceGroup;
+        draft.selectedAntenna = undefined;
+        draft.selectedDevice = undefined;
       })
     );
   }
@@ -966,6 +987,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState({
       selectedDeviceGroup: copiedDeviceGroup,
+      selectedAntenna: undefined,
+      selectedDevice: undefined,
       loading: false
     });
   }
@@ -995,6 +1018,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (deviceGroupIndex > -1) {
           deviceGroups.splice(deviceGroupIndex, 1);
           draft.selectedDeviceGroup = undefined;
+          draft.selectedAntenna = undefined;
+          draft.selectedDevice = undefined;
         }
       })
     );
@@ -1015,6 +1040,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.devices.push(newDevice);
         draft.selectedDevice = newDevice;
+        draft.selectedAntenna = undefined;
       })
     );
   }
@@ -1043,6 +1069,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (deviceIndex > -1) {
           devices.splice(deviceIndex, 1);
           draft.selectedDevice = undefined;
+          draft.selectedAntenna = undefined;
         }
       })
     );
@@ -1089,6 +1116,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       produce((draft: Draft<State>) => {
         draft.antennas.push(newAntenna);
         draft.selectedAntenna = newAntenna;
+        draft.selectedDevice = undefined;
       })
     );
   }
@@ -1117,6 +1145,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         if (antennaIndex > -1) {
           antennas.splice(antennaIndex, 1);
           draft.selectedAntenna = undefined;
+          draft.selectedDevice = undefined;
         }
       })
     );

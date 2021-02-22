@@ -255,7 +255,7 @@ export default class SpacesMap extends React.Component<Props, State> {
 
     const { floorPlanInfo } = this.props;
 
-    return (<>
+    return (
       <LeafletMap
         ref={ this.setMapRef }
         key="leafletMap"
@@ -270,7 +270,7 @@ export default class SpacesMap extends React.Component<Props, State> {
       >
         { this.renderMapChildren() }
       </LeafletMap>
-    </>);
+    );
   }
 
   /**
