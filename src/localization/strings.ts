@@ -546,6 +546,7 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   contentEditor: {
+    advanced: string;
     open: string;
     preview: {
       resourceModePreview: {
@@ -593,6 +594,7 @@ export interface IStrings extends LocalizedStringsMethods {
         title: string;
         name: string;
         options: string;
+        optionsInstructions: string;
         clickViewIdTitle: string;
         clickViewId: string;
         physicalButtonDownTitle: string;

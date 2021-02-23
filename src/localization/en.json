@@ -541,6 +541,7 @@
   },
 
   "contentEditor": {
+    "advanced": "Advanced features",
     "open": "Manage content",
     "preview": {
       "resourceModePreview": {
@@ -587,6 +588,7 @@
         "title": "Events",
         "name": "Name",
         "options": "Event options",
+        "optionsInstructions": "Select event type:",
         "clickViewIdTitle": "Triggers when element is clicked",
         "clickViewId": "Element",
         "physicalButtonDownTitle": "Triggers when button is pressed",

@@ -545,6 +545,7 @@
   },
 
   "contentEditor": {
+    "advanced": "Edistyneet tapahtumat",
     "open": "Hallitse sisältöä",
     "preview": {
       "resourceModePreview": {
@@ -591,6 +592,7 @@
         "title": "Tapahtumat",
         "name": "Nimi",
         "options": "Toiminnon asetukset",
+        "optionsInstructions": "Valitse, minkä toiminnon haluat suorittaa:",
         "clickViewIdTitle": "Tapahtuu, kun klikataan elementtiä",
         "clickViewId": "Elementti",
         "physicalButtonDownTitle": "Tapahtuu, kun fyysistä painiketta painetaan",

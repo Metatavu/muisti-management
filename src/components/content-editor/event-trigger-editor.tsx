@@ -6,7 +6,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Box, ListItemText } from "@material-ui/core";
+import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Box, ListItemText, Accordion, AccordionSummary, AccordionDetails, Dialog, DialogContent, DialogTitle, DialogActions, Button } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
@@ -20,9 +20,11 @@ import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddIcon from "@material-ui/icons/Add";
 import HelpDialog from "../generic/help-dialog";
+import ExpandMoreIcon from "@material-ui/icons/ChevronRight";
+import GenericDialog from "../generic/generic-dialog";
 
 /**
  * Component props
@@ -43,6 +45,7 @@ interface State {
   error?: Error;
   loading: boolean;
   selectedPageEventIndex?: number;
+  showPageEventDialog: boolean;
 }
 
 /**
@@ -59,6 +62,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
+      showPageEventDialog: false
     };
   }
 
@@ -66,31 +70,58 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
+
     return(
       <div style={{ marginTop: theme.spacing(2) }}>
         { this.renderTriggerName() }
-        { this.renderPhysicalButtonSelects() }
-        { this.renderDeviceGroupEventNameField() }
-        { this.renderDelayField() }
         <Paper variant="outlined" square style={{ marginTop: theme.spacing(2) }} >
-          <div style={{ display: "flex", justifyContent: "space-between", padding: theme.spacing(1), paddingLeft: theme.spacing(2), alignItems: "center" }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            p={ 1 }
+            pl={ 2 }
+            alignItems="center"
+          >
             <Typography variant="h5">
               { strings.contentEditor.editor.eventTriggers.actions }
             </Typography>
             <IconButton
               title={ strings.contentEditor.editor.eventTriggers.addEvent }
               color="primary"
-              onClick={ this.onAddPageEventClick }
-              >
+              onClick={ () => this.setState({ showPageEventDialog: true }) }
+            >
               <AddIcon />
             </IconButton>
-          </div>
+          </Box>
           <Divider />
           { this.renderActionList() }
           <Divider />
           { this.renderEventOptions() }
         </Paper>
+        <Box mt={ 2 }>
+          { this.renderAdvancedSettings() }
+        </Box>
       </div>
+    );
+  }
+
+  /**
+   * Render advanced settings
+   */
+  private renderAdvancedSettings = () => {
+    return (
+      <Accordion>
+        <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
+          <Typography variant="body2">
+            { strings.contentEditor.advanced }
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          { this.renderPhysicalButtonSelects() }
+          { this.renderDeviceGroupEventNameField() }
+          { this.renderDelayField() }
+        </AccordionDetails>
+      </Accordion>
     );
   }
 
@@ -296,7 +327,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
           button
           onClick={ this.onPageEventClick(index) }
         >
-          <ListItemText primary={ event.action } />
+          <ListItemText
+            primary={ strings.contentEditor.editor.eventTriggers.actionTypes[event.action] }
+            secondary={ event.action } />
           <ListItemSecondaryAction>
             <IconButton
               size="small"
@@ -323,20 +356,34 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderEventOptions = () => {
     const { selectedEventTrigger } = this.props;
-    const { selectedPageEventIndex } = this.state;
+    const { selectedPageEventIndex, showPageEventDialog } = this.state;
 
-    if (selectedPageEventIndex === undefined || !selectedEventTrigger.events || !selectedEventTrigger.events.length) {
+    console.log(showPageEventDialog);
+    console.log(selectedEventTrigger);
+    console.log(selectedPageEventIndex);
+
+    if (!selectedEventTrigger.events || !selectedEventTrigger.events.length) {
       return null;
     }
 
     return (
-      <div style={{ padding: theme.spacing(1), paddingTop: theme.spacing(2) }}>
-        <Typography style={{ marginLeft: theme.spacing(1) }} variant="h5">
-          { strings.contentEditor.editor.eventTriggers.options }
+      <GenericDialog
+        fullWidth
+        title={ strings.contentEditor.editor.eventTriggers.options }
+        open={ showPageEventDialog }
+        cancelButtonText={ strings.generic.cancel }
+        positiveButtonText={ strings.generic.save }
+        onCancel={ () => this.setState({ showPageEventDialog: false }) }
+        onConfirm={ this.onAddPageEventClick }
+        onClose={ () => this.setState({ showPageEventDialog: false }) }
+        error={ false }
+      >
+        <Typography>
+          { strings.contentEditor.editor.eventTriggers.optionsInstructions }
         </Typography>
         { this.renderEventActionTypeSelect() }
         { this.renderEventActionSettings() }
-      </div>
+      </GenericDialog>
     );
 
   }
@@ -368,14 +415,14 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return (
-      <div style={{ marginTop: theme.spacing(2) }}>
+      <Box mt={ 2 }>
         <Select
           value={ selectedActionType || "" }
           onChange={ this.onSelectEventActionType }
         >
           { eventActionTypeList }
         </Select>
-      </div>
+      </Box>
     );
   }
 
@@ -857,7 +904,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private onPageEventClick = (pageEventIndex: number) => () => {
     this.setState({
-      selectedPageEventIndex: pageEventIndex
+      selectedPageEventIndex: pageEventIndex,
+      showPageEventDialog: true
     });
   }
 
@@ -936,13 +984,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { onSave } = this.props;
     const { selectedPageEventIndex } = this.state;
     const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
-    if (selectedPageEventIndex === undefined) {
-      return;
-    }
 
     const newAction = this.createEvent(actionType);
 
-    if (!trigger.events) {
+    if (!trigger.events || !selectedPageEventIndex) {
       trigger.events = [];
       trigger.events.push(newAction);
     } else {
