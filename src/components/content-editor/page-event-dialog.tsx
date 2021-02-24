@@ -160,8 +160,8 @@ class PageEventDialog extends React.Component<Props, State> {
         return this.renderSetUserValueSettings();
       case ExhibitionPageEventActionType.Navigate:
         return this.renderNavigateSettings();
-      // case ExhibitionPageEventActionType.Triggerdevicegroupevent:
-      //   return this.renderDeviceGroupEventSettings();
+      case ExhibitionPageEventActionType.Triggerdevicegroupevent:
+        return this.renderDeviceGroupEventSettings();
       case ExhibitionPageEventActionType.ExecuteWebScript:
         return this.renderExecuteWebScriptSettings();
       case ExhibitionPageEventActionType.StartVisitorSession:
