@@ -299,7 +299,8 @@
       "new": "New device group",
       "delete": "Delete device group",
       "edit": "Edit device group",
-      "properties": "Device group properties"
+      "properties": "Device group properties",
+      "copy": "Copy device group"
     },
     "device" : {
       "add": "Add new device",
@@ -334,6 +335,7 @@
       "screenOrientation": "Screen Orientation",
       "landscape": "Landscape",
       "portrait": "Portrait",
+      "forcedPortrait": "Portrait (forced)",
       "allowVisitorSessionCreation": "Allow creation of new session to visitor",
       "visitorSessionEndTimeout": "Visitor session end timeout in milliseconds",
       "visitorSessionStartThreshold": "Visitor session start threshold (%)",
@@ -539,7 +541,14 @@
   },
 
   "contentEditor": {
+    "advanced": "Advanced features",
     "open": "Manage content",
+    "preview": {
+      "resourceModePreview": {
+        "dynamic": "Dynamic resource",
+        "scripted": "Scripted resource"
+      }
+    },
     "editor": {
       "editorTabs": {
         "noVisitor": "Exhibition spot empty",
@@ -579,6 +588,7 @@
         "title": "Events",
         "name": "Name",
         "options": "Event options",
+        "optionsInstructions": "Select event type:",
         "clickViewIdTitle": "Triggers when element is clicked",
         "clickViewId": "Element",
         "physicalButtonDownTitle": "Triggers when button is pressed",
@@ -708,7 +718,11 @@
     "deleteConfirmText": "Are you sure that you wish to delete this visitor variable?",
     "addEnumValue": "Add value",
     "valuesTitle": "Values",
-    "isEditableFromUi": "Can be modified by customer service"
+    "isEditableFromUi": "Can be modified by customer service",
+    "booleanValues": {
+      "true": "True",
+      "false": "False"
+    }
   },
 
   "manageVisitorSessionVariables": {

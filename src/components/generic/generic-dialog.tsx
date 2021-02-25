@@ -28,6 +28,7 @@ interface Props {
   error: boolean;
 
   fullScreen?: boolean;
+  fullWidth?: boolean;
   disableEnforceFocus?: boolean;
 }
 
@@ -66,6 +67,7 @@ export default class GenericDialog extends React.Component<Props, State> {
       onConfirm,
       error,
       fullScreen,
+      fullWidth,
       disableEnforceFocus
     } = this.props;
 
@@ -77,6 +79,7 @@ export default class GenericDialog extends React.Component<Props, State> {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullScreen={ fullScreen }
+        fullWidth={ fullWidth }
       >
         <DialogTitle
           disableTypography

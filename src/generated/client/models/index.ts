@@ -2,6 +2,7 @@ export * from './Animation';
 export * from './AnimationTimeInterpolation';
 export * from './Bounds';
 export * from './ContentVersion';
+export * from './ContentVersionActiveCondition';
 export * from './Coordinates';
 export * from './DeviceGroupVisitorSessionStartStrategy';
 export * from './DeviceModel';

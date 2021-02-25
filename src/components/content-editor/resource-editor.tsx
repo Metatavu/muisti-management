@@ -1,6 +1,6 @@
 import * as React from "react";
 // tslint:disable-next-line: max-line-length
-import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource } from "../../generated/client";
+import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
 import { WithStyles, withStyles, TextField, Select, MenuItem, FormControl, InputLabel } from "@material-ui/core";
 import styles from "../../styles/components/content-editor/resource-editor";
@@ -20,6 +20,7 @@ import { resourceModes } from "./constants";
 interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   resource: ExhibitionPageResource;
+  visitorVariables: VisitorVariable[];
   onUpdate: (resource: ExhibitionPageResource) => void;
 }
 
@@ -110,12 +111,13 @@ class ResourceEditor extends React.Component<Props, State> {
    * Renders dynamic editor
    */
   private renderDynamicEditor = () => {
-    const { accessToken, resource } = this.props;
+    const { accessToken, resource, visitorVariables } = this.props;
 
     return (
       <DynamicResourceEditor
         accessToken={ accessToken }
         data={ JSON.parse(resource.data) as DynamicPageResource }
+        visitorVariables={ visitorVariables }
         resourceType={ resource.type }
         onUpdate={ this.onUpdateDynamicResource }
       />

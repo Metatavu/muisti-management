@@ -2,6 +2,7 @@ import * as React from "react";
 
 import strings from "../../localization/strings";
 import { TextField } from "@material-ui/core";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 
 /**
  * Component props
@@ -79,12 +80,41 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
    * Component render method
    */
   public render() {
+    const textFieldStyle: CSSProperties = { marginBottom: 20 };
+
     return (
       <div>
-        <TextField fullWidth disabled type="number" label={ strings.floorPlan.properties.imageWidth } value={ Math.round(this.props.imageWidth || 0) } />        
-        <TextField fullWidth disabled type="number" label={ strings.floorPlan.properties.imageHeight } value={ Math.round(this.props.imageHeight || 0) } />
-        <TextField fullWidth type="number" label={ strings.floorPlan.properties.physicalWidth } value={ this.state.physicalWidth } onChange={ this.onPhysicalWidthChange } />
-        <TextField fullWidth type="number" label={ strings.floorPlan.properties.physicalHeight } value={ this.state.physicalHeight } onChange={ this.onPhysicalHeightChange } />
+        <TextField
+          fullWidth
+          disabled
+          type="number"
+          style={ textFieldStyle }
+          label={ strings.floorPlan.properties.imageWidth }
+          value={ Math.round(this.props.imageWidth || 0) }
+        />        
+        <TextField
+          fullWidth
+          disabled
+          type="number"
+          style={ textFieldStyle }
+          label={ strings.floorPlan.properties.imageHeight }
+          value={ Math.round(this.props.imageHeight || 0) }
+        />
+        <TextField
+          fullWidth
+          type="number"
+          style={ textFieldStyle }
+          label={ strings.floorPlan.properties.physicalWidth }
+          value={ this.state.physicalWidth }
+          onChange={ this.onPhysicalWidthChange }
+        />
+        <TextField
+          fullWidth
+          type="number"
+          label={ strings.floorPlan.properties.physicalHeight }
+          value={ this.state.physicalHeight }
+          onChange={ this.onPhysicalHeightChange }
+        />
       </div>
     );
   }
