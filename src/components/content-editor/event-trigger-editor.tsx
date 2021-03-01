@@ -514,6 +514,8 @@ class EventTriggerEditor extends React.Component<Props, State> {
       draft.splice(pageEventIndex, 1);
     });
 
+    this.setState({ selectedPageEventIndex: undefined });
+
     onSave(trigger);
   }
 

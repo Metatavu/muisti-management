@@ -101,6 +101,10 @@ class PagePreviewTextView extends React.Component<Props, State> {
     const id = textProperty?.value;
     if (id && id.startsWith("@resources/")) {
       const resource = this.props.resourceMap[id.substring(11)];
+      if (!resource) {
+        return;
+      }
+
       switch (resource.mode) {
         case PageResourceMode.Scripted:
           return strings.contentEditor.preview.resourceModePreview.scripted;

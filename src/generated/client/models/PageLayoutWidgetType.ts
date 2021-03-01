@@ -21,6 +21,7 @@ export enum PageLayoutWidgetType {
     TextView = 'TextView',
     FlowTextView = 'FlowTextView',
     Button = 'Button',
+    TouchableOpacity = 'TouchableOpacity',
     ImageView = 'ImageView',
     PlayerView = 'PlayerView',
     MediaView = 'MediaView',

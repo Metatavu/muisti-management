@@ -104,31 +104,23 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       handleLayoutProperties
     } = this.props;
 
-    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
-      return (
-        <PagePreviewComponentEditor
-          key={ `child-${index}` }
-          view={ child }
-          parentView={ view }
-          selectedView={ selectedView }
-          layer={ layer }
-          resourceMap={ resourceMap }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-          style={ this.resolveChildStyles(child) }
-          handleLayoutProperties={ handleLayoutProperties }
-          onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
-          onViewClick={ onViewClick }
-          onTabClick={ onTabClick }
-          tabMap={ tabMap }
-        />
-      );
-    });
-
-    return (
-      <div>
-        { result }
-      </div>
+    return (view.children || []).map((child: PageLayoutView, index: number) =>
+      <PagePreviewComponentEditor
+        key={ `child-${index}` }
+        view={ child }
+        parentView={ view }
+        selectedView={ selectedView }
+        layer={ layer }
+        resourceMap={ resourceMap }
+        displayMetrics={ displayMetrics }
+        scale={ scale }
+        style={ this.resolveChildStyles(child) }
+        handleLayoutProperties={ handleLayoutProperties }
+        onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
+        onViewClick={ onViewClick }
+        onTabClick={ onTabClick }
+        tabMap={ tabMap }
+      />
     );
   }
 

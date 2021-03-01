@@ -197,13 +197,9 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
   private getFileItems = (filteredFiles: StoredFile[], folder: StoredFile) => {
     const { currentUrl, resource } = this.props;
 
-    if (!(currentUrl ?? resource)) {
-      return null;
-    }
-
     return filteredFiles.map(file => {
       const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
-      const selected = decodeURI(currentUrl ?? resource!.data) === file.uri;
+      const selected = decodeURI(currentUrl ?? resource!.data ?? "") === file.uri;
 
       return(
         <TableRow
