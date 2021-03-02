@@ -60,7 +60,7 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render button width editor
+   * Render touchable opacity width editor
    */
   private renderWidth = () => {
     const { displayMetrics } = this.props;
