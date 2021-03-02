@@ -197,7 +197,7 @@
       "dynamic": {
         "title": "Dynaaminen",
         "dataSource": "Tietolähde",
-        "key": "Kävijäarvon nimi",
+        "key": "Kävijämuuttujan nimi",
         "when": "Kun arvo on: ",
         "addNewWhen": "Lisää uusi arvo",
         "equals": "Arvo",
@@ -531,8 +531,8 @@
     "contentMaterials": "Sisältökokonaisuudet",
     "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
     "nameIsMandatory": "Nimi on pakollinen tieto",
-    "contentIsActiveWhen": "Sisältö on aktiivinen, kun käyttäjä arvo:",
-    "equals": "on yhtä kuin"
+    "contentIsActiveWhen": "Aseta sisältö aktiiviseksi kun:",
+    "equals": "Arvo on:"
   },
 
   "groupContentVersion": {
