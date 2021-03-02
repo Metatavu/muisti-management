@@ -573,13 +573,12 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     const updatedLanguageVersions: ContentVersion[] = languageVersions.map(languageVersion => {
       if (languageVersion.activeCondition) {
         const updatedActiveCondition: ContentVersionActiveCondition = { ...languageVersion.activeCondition, [name]: value }
-        return (
-          {
-            ...languageVersion,
-            activeCondition: updatedActiveCondition
-          }
-        );
+        return {
+          ...languageVersion,
+          activeCondition: updatedActiveCondition
+        };
       }
+
       return languageVersion;
 
     });
