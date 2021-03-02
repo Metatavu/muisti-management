@@ -88,7 +88,8 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
       zIndex: layer,
       position: parentIsFrameLayout ? "absolute" : "initial",
       overflow: "hidden",
-      border: "2px dashed #000"
+      border: "2px dashed #fff",
+      outline: "2px dashed #000"
     });
 
     properties.forEach(property => {
