@@ -6,10 +6,10 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField, Box, Typography, MenuItem } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Box, Typography, MenuItem, TextFieldProps } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { ContentVersionActiveCondition, Exhibition, ExhibitionRoom, VisitorVariable } from "../../generated/client";
+import { ContentVersionActiveCondition, Exhibition, ExhibitionRoom, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import { AccessToken, ActionButton, BreadcrumbData, LanguageOptions, MultiLingualContentVersion } from "../../types";
 import Api from "../../api/api";
 import strings from "../../localization/strings";
@@ -208,6 +208,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    */
   private renderActivityCondition = () => {
     const { selectedMultiLingualContentVersion, visitorVariables } = this.state;
+    const activeCondition = selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition;
 
     return (
       <>
@@ -221,7 +222,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           name="userVariable"
           label={ strings.exhibition.resources.dynamic.key }
           select
-          value={ selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition?.userVariable }
+          value={ activeCondition?.userVariable || "" }
           onChange={ this.onActiveConditionSelectChange }
 
         >
@@ -238,16 +239,59 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             { strings.contentVersion.equals }
           </Typography>
         </Box>
-        <WithDebounce
-          name="equals"
-          disabled={ !selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition }
-          value={ selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition?.equals || "" }
-          onChange={ this.onActiveConditionValueChange }
-          debounceTimeout={ 250 }
-          component={ props => <TextField { ...props } /> }
-        />
+          { visitorVariables &&
+            visitorVariables
+            .filter(variable => variable.name === activeCondition?.userVariable)
+            .map(variable => {
+              return this.renderVariables(variable, activeCondition?.equals);
+            })
+          }
       </>
     );
+  }
+
+  /**
+   * Renders variables
+   *
+   * @param visitorVariable visitor variables
+   * @param value current value
+   */
+  private renderVariables = (visitorVariable: VisitorVariable, value?: string) => {
+    const { classes } = this.props;
+
+    const textFieldProps: TextFieldProps = {
+      className: classes.field,
+      fullWidth: true,
+      label: strings.exhibition.resources.dynamic.equals,
+      name: "equals",
+      value: value,
+      onChange: this.onActiveConditionValueChange
+    };
+
+    switch (visitorVariable.type) {
+      case VisitorVariableType.Enumerated:
+        return (
+          <TextField { ...textFieldProps } select>
+            { visitorVariable._enum?.map((value, index) => 
+              <MenuItem key={ index } value={ value }>
+                { value }
+              </MenuItem>
+            )}
+          </TextField>
+        );
+      case VisitorVariableType.Boolean:
+        return (
+          <TextField { ...textFieldProps } select>
+            <MenuItem key="true" value="true">{ strings.visitorVariables.booleanValues.true }</MenuItem>
+            <MenuItem key="false" value="false">{ strings.visitorVariables.booleanValues.false }</MenuItem>
+          </TextField>
+        );
+      case VisitorVariableType.Number:
+        return <TextField { ...textFieldProps } type="number" />;
+      case VisitorVariableType.Text:
+      default:
+        return <TextField { ...textFieldProps }/>;
+    }
   }
 
   /**
