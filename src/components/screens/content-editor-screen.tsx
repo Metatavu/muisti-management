@@ -630,6 +630,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     pageLayoutViews.forEach(pageLayoutView => {
       if (allowedWidgetTypes.includes(pageLayoutView.widget)) {
+        if (pageLayoutView.widget === PageLayoutWidgetType.TouchableOpacity) {
+          elementList.push(this.renderResources(selectedPage, pageLayoutView, []));
+        }
+
         const idList = resourceWidgetIdList.get(pageLayoutView.id);
         if (!idList) {
           return;
@@ -959,7 +963,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
               <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
                 { trigger.name }
               </Typography>
-              <ListItemSecondaryAction>
+              <ListItemSecondaryAction className={ classes.borderedListItemSecondaryAction }>
                 <Button
                   variant="text"
                   size="small"
@@ -968,8 +972,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
                 >
                   { strings.generic.delete }
                 </Button>
+                <ChevronRightIcon htmlColor="#888" />
               </ListItemSecondaryAction>
-              <ChevronRightIcon htmlColor="#888" />
             </ListItem>
           </List>
         );

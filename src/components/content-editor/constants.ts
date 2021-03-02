@@ -9,6 +9,7 @@ import { PageLayoutWidgetType, ExhibitionPageResourceType, PageResourceMode } fr
  */
 export const allowedWidgetTypes = [
   PageLayoutWidgetType.Button,
+  PageLayoutWidgetType.TouchableOpacity,
   PageLayoutWidgetType.FlowTextView,
   PageLayoutWidgetType.ImageView,
   PageLayoutWidgetType.MediaView,
