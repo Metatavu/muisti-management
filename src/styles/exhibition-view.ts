@@ -83,4 +83,17 @@ export default createStyles({
   title: {
     color: theme.palette.text.primary
   },
+
+  fieldLabel: {
+    marginLeft: theme.spacing(1)
+  },
+
+  field: {
+    backgroundColor: "#fff",
+    marginBottom: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    "&:last-child": {
+      marginRight: 0
+    }
+  },
 });
