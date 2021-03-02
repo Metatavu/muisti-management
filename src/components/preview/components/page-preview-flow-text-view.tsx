@@ -94,25 +94,18 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
       handleLayoutProperties
     } = this.props;
 
-    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
-      return (
-        <PagePreviewComponentEditor key={ `child-${index}` }
-          view={ child }
-          parentView={ view }
-          layer={ layer }
-          resourceMap={ resourceMap }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-          handleLayoutProperties={ handleLayoutProperties }
-          onViewClick={ onViewClick }
-        />
-      );
-    });
-
-    return (
-      <>
-        { result }
-      </>
+    return (view.children || []).map((childView, index) =>
+      <PagePreviewComponentEditor
+        key={ index }
+        view={ childView }
+        parentView={ view }
+        layer={ layer }
+        resourceMap={ resourceMap }
+        displayMetrics={ displayMetrics }
+        scale={ scale }
+        handleLayoutProperties={ handleLayoutProperties }
+        onViewClick={ onViewClick }
+      />
     );
   }
 

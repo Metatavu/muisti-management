@@ -17,6 +17,7 @@ import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
 import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import DisplayMetrics from "../../../types/display-metrics";
+import TouchableOpacityEditor from "./widget-editors/touchable-opacity-editor";
 
 /**
  * Interface representing component properties
@@ -89,19 +90,6 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * Component render method
    */
   public render() {
-    const editorToRender = this.getCorrectEditorForSelectedType();
-    return (
-      <>
-        { editorToRender }
-      </>
-    );
-  }
-
-  /**
-   * TODO: Widget type should be changed to enum in spec.
-   * Get correct editor for selected page layout element type
-   */
-  private getCorrectEditorForSelectedType = () => {
     const { selectedWidgetType } = this.props;
 
     switch (selectedWidgetType) {
@@ -177,6 +165,21 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <ButtonEditor
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render touchable opacity editor
+   */
+  private renderTouchableOpacityEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
+    return (
+      <TouchableOpacityEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
         onValueChange={ this.onSinglePropertyValueChange }
