@@ -540,12 +540,10 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         equals: ""
       }
 
-      return (
-        {
-          ...languageVersion,
-          activeCondition: newActiveCondition
-        }
-      );
+      return {
+        ...languageVersion,
+        activeCondition: newActiveCondition
+      };
     });
 
     const updatedMultiLingualContentVersion: MultiLingualContentVersion = {
