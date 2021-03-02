@@ -539,6 +539,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         userVariable: value,
         equals: ""
       }
+
       return (
         {
           ...languageVersion,
