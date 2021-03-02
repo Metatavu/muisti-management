@@ -158,5 +158,10 @@ export default createStyles({
       position: "absolute",
       right: 14
     }
+  },
+
+  borderedListItemSecondaryAction: {
+    display: "flex",
+    alignItems: "center"
   }
 });
