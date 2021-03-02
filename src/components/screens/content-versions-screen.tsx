@@ -224,7 +224,6 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           select
           value={ activeCondition?.userVariable || "" }
           onChange={ this.onActiveConditionSelectChange }
-
         >
           { visitorVariables &&
             visitorVariables.map(variable =>
