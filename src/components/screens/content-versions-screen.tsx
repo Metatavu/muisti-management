@@ -233,7 +233,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             )
           }
         </TextField>
-        <Box style={{ marginTop: 10 }} mb={ 2 }>
+        <Box mt={ 10 } mb={ 2 }>
           <Typography variant="body1">
             { strings.contentVersion.equals }
           </Typography>
