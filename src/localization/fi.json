@@ -530,7 +530,9 @@
     "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
     "contentMaterials": "Sisältökokonaisuudet",
     "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
-    "nameIsMandatory": "Nimi on pakollinen tieto"
+    "nameIsMandatory": "Nimi on pakollinen tieto",
+    "contentIsActiveWhen": "Sisältö on aktiivinen, kun käyttäjä arvo:",
+    "equals": "on yhtä kuin"
   },
 
   "groupContentVersion": {

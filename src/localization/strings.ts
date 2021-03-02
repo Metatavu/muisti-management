@@ -531,6 +531,9 @@ export interface IStrings extends LocalizedStringsMethods {
     contentMaterials: string;
     nameAlreadyTaken: string;
     nameIsMandatory: string;
+    contentIsActiveWhen: string;
+    userVariable: string;
+    equals: string;
   };
 
   groupContentVersion: {

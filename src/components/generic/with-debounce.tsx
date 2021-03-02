@@ -14,6 +14,8 @@ interface Props {
   component: (props: DebounceProps) => React.ReactNode;
   /** Key for rendered component */
   key?: string | number;
+  /** Is component disabled or not */
+  disabled?: boolean;
   /** Name for rendered component */
   name?: string;
   /** Label for rendered component */
@@ -38,6 +40,7 @@ interface State {
  */
 interface DebounceProps {
   key?: string | number;
+  disabled?: boolean;
   name?: string;
   label?: string;
   value: string | number;
@@ -91,6 +94,7 @@ class WithDebounce extends React.Component<Props, State> {
   public render = () => {
     const {
       key,
+      disabled,
       name,
       label,
       component,
@@ -102,6 +106,7 @@ class WithDebounce extends React.Component<Props, State> {
 
     return component({
       name: name,
+      disabled: disabled,
       onChange: this.onChange,
       value: inputValue,
       className: className,

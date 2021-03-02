@@ -6,10 +6,10 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField, Box, Typography } from "@material-ui/core";
+import { WithStyles, withStyles, CircularProgress, TextField, Box, Typography, MenuItem } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition, ExhibitionRoom } from "../../generated/client";
+import { ContentVersionActiveCondition, Exhibition, ExhibitionRoom, VisitorVariable } from "../../generated/client";
 import { AccessToken, ActionButton, BreadcrumbData, LanguageOptions, MultiLingualContentVersion } from "../../types";
 import Api from "../../api/api";
 import strings from "../../localization/strings";
@@ -47,6 +47,7 @@ interface State {
   deleteDialogOpen: boolean;
   addNewContentVersion: boolean;
   formError?: string;
+  visitorVariables?: VisitorVariable[];
 }
 
 /**
@@ -143,7 +144,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
 
       return (
         <CardItem
-          key={ primaryVersion.id! }
+          key={ primaryVersion.id }
           title={ primaryVersion.name }
           subtitle={ room?.name }
           context={ languages }
@@ -191,6 +192,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             debounceTimeout={ 250 }
             component={ props => <TextField { ...props } /> }
           />
+          { this.renderActivityCondition() }
           { formError &&
             <Typography variant="body1" color="error">
               { formError }
@@ -198,6 +200,53 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           }
         </Box>
       </GenericDialog>
+    );
+  }
+
+  /**
+   * Renders activity condition options
+   */
+  private renderActivityCondition = () => {
+    const { selectedMultiLingualContentVersion, visitorVariables } = this.state;
+
+    return (
+      <>
+        <Box style={{ marginTop: 10 }} mb={ 2 }>
+          <Typography variant="body1">
+            { strings.contentVersion.contentIsActiveWhen }
+          </Typography>
+        </Box>
+        <TextField
+          fullWidth
+          name="userVariable"
+          label={ strings.exhibition.resources.dynamic.key }
+          select
+          value={ selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition?.userVariable }
+          onChange={ this.onActiveConditionSelectChange }
+
+        >
+          { visitorVariables &&
+            visitorVariables.map(variable =>
+              <MenuItem key={ variable.id } value={ variable.name }>
+                { variable.name }
+              </MenuItem>
+            )
+          }
+        </TextField>
+        <Box style={{ marginTop: 10 }} mb={ 2 }>
+          <Typography variant="body1">
+            { strings.contentVersion.equals }
+          </Typography>
+        </Box>
+        <WithDebounce
+          name="equals"
+          disabled={ !selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition }
+          value={ selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition?.equals || "" }
+          onChange={ this.onActiveConditionValueChange }
+          debounceTimeout={ 250 }
+          component={ props => <TextField { ...props } /> }
+        />
+      </>
     );
   }
 
@@ -243,10 +292,17 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
-    const [ exhibition, room, contentVersions ] = await Promise.all<Exhibition, ExhibitionRoom, ContentVersion[]>([
+    const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
+    const [
+      exhibition,
+      room,
+      contentVersions,
+      visitorVariables
+    ] = await Promise.all<Exhibition, ExhibitionRoom, ContentVersion[], VisitorVariable[]>([
       exhibitionsApi.findExhibition({ exhibitionId }),
       exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
-      contentVersionsApi.listContentVersions({ exhibitionId, roomId })
+      contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
+      visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
 
     /**
@@ -275,7 +331,8 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     this.setState({
       exhibition,
       room,
-      multiLingualContentVersions
+      multiLingualContentVersions,
+      visitorVariables
     });
   }
 
@@ -417,6 +474,81 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     }
 
     this.setState({ formError: undefined });
+  }
+
+  /**
+   * Event handler for active condition select change
+   *
+   * @param event react change event 
+   */
+  private onActiveConditionSelectChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { selectedMultiLingualContentVersion } = this.state;
+    const { name, value } = event.target;
+
+    if (!selectedMultiLingualContentVersion || !name) {
+      return;
+    }
+
+    const { languageVersions } = selectedMultiLingualContentVersion;
+    
+    const updatedLanguageVersions: ContentVersion[] = languageVersions.map(languageVersion => {
+      const newActiveCondition: ContentVersionActiveCondition = {
+        userVariable: value,
+        equals: ""
+      }
+      return (
+        {
+          ...languageVersion,
+          activeCondition: newActiveCondition
+        }
+      );
+    });
+
+    const updatedMultiLingualContentVersion: MultiLingualContentVersion = {
+      languageVersions: updatedLanguageVersions
+    };
+
+    this.setState({
+      selectedMultiLingualContentVersion: updatedMultiLingualContentVersion
+    });
+  }
+
+  /**
+   * Event handler for active condition select change
+   *
+   * @param event react change event 
+   */
+  private onActiveConditionValueChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { selectedMultiLingualContentVersion } = this.state;
+    const { name, value } = event.target;
+
+    if (!selectedMultiLingualContentVersion || !name) {
+      return;
+    }
+
+    const { languageVersions } = selectedMultiLingualContentVersion;
+    
+    const updatedLanguageVersions: ContentVersion[] = languageVersions.map(languageVersion => {
+      if (languageVersion.activeCondition) {
+        const updatedActiveCondition: ContentVersionActiveCondition = { ...languageVersion.activeCondition, [name]: value }
+        return (
+          {
+            ...languageVersion,
+            activeCondition: updatedActiveCondition
+          }
+        );
+      }
+      return languageVersion;
+
+    });
+
+    const updatedMultiLingualContentVersion: MultiLingualContentVersion = {
+      languageVersions: updatedLanguageVersions
+    };
+
+    this.setState({
+      selectedMultiLingualContentVersion: updatedMultiLingualContentVersion
+    });
   }
 
   /**
