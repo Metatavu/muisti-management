@@ -212,7 +212,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
 
     return (
       <>
-        <Box style={{ marginTop: 10 }} mb={ 2 }>
+        <Box mt={ 10 } mb={ 2 }>
           <Typography variant="body1">
             { strings.contentVersion.contentIsActiveWhen }
           </Typography>
