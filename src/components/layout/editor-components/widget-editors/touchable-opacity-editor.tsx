@@ -94,7 +94,7 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render button height editor
+   * Render touchable opacity height editor
    */
   private renderHeight = () => {
     const { displayMetrics } = this.props;
