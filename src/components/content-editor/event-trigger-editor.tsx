@@ -29,7 +29,7 @@ import PageEventDialog from "./page-event-dialog";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-  selectedEventTrigger: ExhibitionPageEventTrigger;
+  selectedEventTrigger?: ExhibitionPageEventTrigger;
   view?: PageLayoutView;
   pages: ExhibitionPage[];
   visitorVariables: VisitorVariable[];
@@ -131,6 +131,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private renderTriggerName = () => {
     const { classes, selectedEventTrigger } = this.props;
+
+    if (!selectedEventTrigger) {
+      return null;
+    }
+
     return (
       <Box
         display="flex"
@@ -200,7 +205,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           <Select
             label={ strings.contentEditor.editor.eventTriggers.physicalButton }
             name="keyDown"
-            value={ trigger.keyDown || "" }
+            value={ trigger?.keyDown || "" }
             onChange={ this.onEventTriggerChange }
             >
             <MenuItem key={ `clickViewId-empty` } value="">
@@ -231,7 +236,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
           <Select
             label={ strings.contentEditor.editor.eventTriggers.physicalButton }
             name="keyUp"
-            value={ trigger.keyUp || "" }
+            value={ trigger?.keyUp || "" }
             onChange={ this.onEventTriggerChange }
             >
             <MenuItem key={ `clickViewId-empty` } value="">
@@ -320,7 +325,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderActionList = () => {
     const { selectedEventTrigger } = this.props;
 
-    const events = selectedEventTrigger.events || [];
+    const events = selectedEventTrigger?.events || [];
     const eventItems = events.map((event, index) => {
       return (
         <ListItem
@@ -356,10 +361,21 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Render event options
    */
   private renderEventOptions = () => {
-    const { selectedEventTrigger, visitorVariables, pages, view, availableLanguages } = this.props;
-    const { showPageEventDialog, addingNewPageEvent, selectedPageEventIndex } = this.state;
+    const {
+      selectedEventTrigger,
+      visitorVariables,
+      pages,
+      view,
+      availableLanguages
+    } = this.props;
 
-    const selectedEvent = selectedPageEventIndex === undefined ? undefined : selectedEventTrigger.events![selectedPageEventIndex];
+    const {
+      showPageEventDialog,
+      addingNewPageEvent,
+      selectedPageEventIndex
+    } = this.state;
+
+    const selectedEvent = selectedEventTrigger?.events?.find((event, index) => index === selectedPageEventIndex);
 
     return (
       <PageEventDialog
@@ -406,15 +422,14 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param event react change event
    */
   private onEventTriggerNameChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
-    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
+    const { selectedEventTrigger } = this.props;
     const key = event.target.name;
-    const value = event.target.value as string;
-    if (!key) {
+
+    if (!selectedEventTrigger || !key) {
       return;
     }
 
-    trigger.name = value;
-    this.props.onSave(trigger);
+    this.props.onSave({ ...selectedEventTrigger, name: event.target.value as string });
   }
 
   /**
@@ -424,6 +439,11 @@ class EventTriggerEditor extends React.Component<Props, State> {
    */
   private onEventTriggerChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { selectedEventTrigger, onSave } = this.props;
+
+    if (!selectedEventTrigger) {
+      return;
+    }
+
     const propertyName = event.target.name as keyof ExhibitionPageEventTrigger;
     const value = event.target.value as string === "" ? undefined : event.target.value;
 
@@ -466,22 +486,24 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param newPageEvent new page event to be saved
    */
   private onAddNewPageEventClick = (newPageEvent: ExhibitionPageEvent) => {
-    const { onSave } = this.props;
+    const { selectedEventTrigger, onSave } = this.props;
 
-    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
-    if (!trigger.events) {
-      trigger.events = [];
+    if (!selectedEventTrigger) {
+      return;
     }
 
-    trigger.events = [ ...trigger.events, newPageEvent ];
+    const updatedTrigger: ExhibitionPageEventTrigger = {
+      ...selectedEventTrigger,
+      events: [ ...(selectedEventTrigger.events || []), newPageEvent ]
+    };
 
     this.setState({
-      selectedPageEventIndex: trigger.events ? trigger.events.length - 1 : undefined,
+      selectedPageEventIndex: updatedTrigger.events ? updatedTrigger.events.length - 1 : undefined,
       showPageEventDialog: false,
       addingNewPageEvent: false,
     });
 
-    onSave(trigger);
+    onSave(updatedTrigger);
   }
 
   /**
@@ -503,18 +525,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param pageEventIndex page event index 
    */
   private onPageEventDeleteClick = (pageEventIndex: number) => () => {
-    const { onSave } = this.props;
+    const { selectedEventTrigger, onSave } = this.props;
 
-    const trigger: ExhibitionPageEventTrigger = { ...this.props.selectedEventTrigger };
-    if (!trigger.events) {
+    if (!selectedEventTrigger || !selectedEventTrigger.events) {
       return;
     }
 
-    trigger.events = produce(trigger.events, draft => {
-      draft.splice(pageEventIndex, 1);
+    onSave({
+      ...selectedEventTrigger,
+      events: selectedEventTrigger.events.filter((event, index) => index !== pageEventIndex)
     });
 
-    onSave(trigger);
+    this.setState({ selectedPageEventIndex: undefined });
   }
 
   /**

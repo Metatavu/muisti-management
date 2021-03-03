@@ -97,28 +97,21 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       handleLayoutProperties
     } = this.props;
 
-    const result = (view.children || []).map((child: PageLayoutView, index: number) => {
-      return (
-        <PagePreviewComponentEditor key={ `child-${index}` }
-          view={ child }
-          parentView={ view }
-          selectedView={ selectedView }
-          layer={ layer }
-          resourceMap={ resourceMap }
-          displayMetrics={ displayMetrics }
-          scale={ scale }
-          handleLayoutProperties={ handleLayoutProperties }
-          onViewClick={ onViewClick }
-          onTabClick={ onTabClick }
-          tabMap={ tabMap }
-        />
-      );
-    });
-
-    return (
-      <>
-        { result }
-      </>
+    return (view.children || []).map((child, index) =>
+      <PagePreviewComponentEditor
+        key={ index }
+        view={ child }
+        parentView={ view }
+        selectedView={ selectedView }
+        layer={ layer }
+        resourceMap={ resourceMap }
+        displayMetrics={ displayMetrics }
+        scale={ scale }
+        handleLayoutProperties={ handleLayoutProperties }
+        onViewClick={ onViewClick }
+        onTabClick={ onTabClick }
+        tabMap={ tabMap }
+      />
     );
   }
 

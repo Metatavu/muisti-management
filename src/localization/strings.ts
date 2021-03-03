@@ -531,6 +531,9 @@ export interface IStrings extends LocalizedStringsMethods {
     contentMaterials: string;
     nameAlreadyTaken: string;
     nameIsMandatory: string;
+    contentIsActiveWhen: string;
+    userVariable: string;
+    equals: string;
   };
 
   groupContentVersion: {
@@ -678,6 +681,7 @@ export interface IStrings extends LocalizedStringsMethods {
     refresh: string;
     unsaved: string;
     properties: string;
+    noSelection: string;
   };
 
   spaces: {

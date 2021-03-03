@@ -197,7 +197,7 @@
       "dynamic": {
         "title": "Dynaaminen",
         "dataSource": "Tietolähde",
-        "key": "Kävijäarvon nimi",
+        "key": "Kävijämuuttujan nimi",
         "when": "Kun arvo on: ",
         "addNewWhen": "Lisää uusi arvo",
         "equals": "Arvo",
@@ -530,7 +530,9 @@
     "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
     "contentMaterials": "Sisältökokonaisuudet",
     "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
-    "nameIsMandatory": "Nimi on pakollinen tieto"
+    "nameIsMandatory": "Nimi on pakollinen tieto",
+    "contentIsActiveWhen": "Aseta sisältö aktiiviseksi kun:",
+    "equals": "Arvo on:"
   },
 
   "groupContentVersion": {
@@ -677,7 +679,8 @@
     "undefined": "Ei määritelty",
     "refresh": "Päivitä",
     "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
-    "properties": "Ominaisuudet"
+    "properties": "Ominaisuudet",
+    "noSelection": "Ei valintaa"
   },
 
   "spaces": {
