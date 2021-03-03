@@ -679,7 +679,8 @@
     "undefined": "Ei määritelty",
     "refresh": "Päivitä",
     "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
-    "properties": "Ominaisuudet"
+    "properties": "Ominaisuudet",
+    "noSelection": "Ei valintaa"
   },
 
   "spaces": {

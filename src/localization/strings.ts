@@ -681,6 +681,7 @@ export interface IStrings extends LocalizedStringsMethods {
     refresh: string;
     unsaved: string;
     properties: string;
+    noSelection: string;
   };
 
   spaces: {

@@ -210,9 +210,12 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     const { selectedMultiLingualContentVersion, visitorVariables } = this.state;
     const activeCondition = selectedMultiLingualContentVersion?.languageVersions[0]?.activeCondition;
 
+    const label = activeCondition?.userVariable ?
+      strings.exhibition.resources.dynamic.key :
+      strings.generic.noSelection;
     return (
       <>
-        <Box mt={ 10 } mb={ 2 }>
+        <Box mt={ 2 } mb={ 2 }>
           <Typography variant="body1">
             { strings.contentVersion.contentIsActiveWhen }
           </Typography>
@@ -220,7 +223,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         <TextField
           fullWidth
           name="userVariable"
-          label={ strings.exhibition.resources.dynamic.key }
+          label={ label }
           select
           value={ activeCondition?.userVariable || "" }
           onChange={ this.onActiveConditionSelectChange }
@@ -232,19 +235,28 @@ class ContentVersionsScreen extends React.Component<Props, State> {
               </MenuItem>
             )
           }
-        </TextField>
-        <Box mt={ 10 } mb={ 2 }>
-          <Typography variant="body1">
-            { strings.contentVersion.equals }
-          </Typography>
-        </Box>
-          { visitorVariables &&
-            visitorVariables
-            .filter(variable => variable.name === activeCondition?.userVariable)
-            .map(variable => {
-              return this.renderVariables(variable, activeCondition?.equals);
-            })
+          {
+            <MenuItem key={ "no-value" } value={ "" }>
+              { strings.generic.noSelection }
+            </MenuItem>
           }
+        </TextField>
+        { activeCondition?.userVariable &&
+          <>
+            <Box mt={ 2 } mb={ 2 }>
+              <Typography variant="body1">
+                { strings.contentVersion.equals }
+              </Typography>
+            </Box>
+            { visitorVariables &&
+              visitorVariables
+              .filter(variable => variable.name === activeCondition?.userVariable)
+              .map(variable => {
+                return this.renderVariables(variable, activeCondition?.equals);
+              })
+            }
+          </>
+        }
       </>
     );
   }

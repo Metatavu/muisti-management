@@ -668,7 +668,8 @@
     "undefined": "Undefined",
     "refresh": "Refresh",
     "unsaved": "You have unsaved changes, are you sure you want to leave?",
-    "properties": "Properties"
+    "properties": "Properties",
+    "noSelection": "No selection"
   },
 
   "spaces": {
