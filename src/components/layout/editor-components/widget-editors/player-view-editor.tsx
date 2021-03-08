@@ -82,7 +82,11 @@ class PlayerViewEditor extends React.Component<Props, State> {
             onTextFieldChange={ this.props.onValueChange }
           />
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+        />
       </>
     );
   }
