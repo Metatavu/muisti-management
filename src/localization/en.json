@@ -460,6 +460,12 @@
       "src": "Image path"
     },
 
+    "playerView": {
+      "src": "Video path",
+      "autoPlay": "Play automatically",
+      "showPlaybackControls": "Show playback controls"
+    },
+
     "button": {
       "width": "Button width",
       "height": "Button height",
