@@ -462,6 +462,12 @@
       "src": "Kuvan polku"
     },
 
+    "playerView": {
+      "src": "Videon polku",
+      "autoPlay": "Aloita video automaattisesti",
+      "showPlaybackControls": "Näytä toiston säätimet"
+    },
+
     "button": {
       "width": "Napin leveys",
       "height": "Napin korkeus",

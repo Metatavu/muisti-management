@@ -53,6 +53,15 @@ export enum LayoutImageViewPropKeys {
 }
 
 /**
+ * Player view property keys
+ */
+export enum LayoutPlayerViewPropKeys {
+  Src = "src",
+  ShowPlaybackControls = "showPlaybackControls",
+  AutoPlay = "autoPlay"
+}
+
+/**
  * Button property keys
  */
 export enum LayoutButtonPropKeys {

@@ -12,6 +12,7 @@ import { constructTreeUpdateData, updateLayoutViewProperty } from "../utils/tree
 import TextViewEditor from "./widget-editors/text-view-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
 import ImageViewEditor from "./widget-editors/image-view-editor";
+import PlayerViewEditor from "./widget-editors/player-view-editor";
 import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
@@ -93,19 +94,20 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     const { selectedWidgetType } = this.props;
 
     switch (selectedWidgetType) {
-      case (PageLayoutWidgetType.TextView):
+      case PageLayoutWidgetType.TextView:
         return this.renderTextViewEditor();
-      case (PageLayoutWidgetType.FlowTextView):
+      case PageLayoutWidgetType.FlowTextView:
         return this.renderFlowTextViewEditor();
-      case (PageLayoutWidgetType.ImageView):
-      case (PageLayoutWidgetType.MediaView):
-      case (PageLayoutWidgetType.PlayerView):
+      case PageLayoutWidgetType.ImageView:
         return this.renderImageViewEditor();
-      case (PageLayoutWidgetType.Button):
+      case PageLayoutWidgetType.MediaView:
+      case PageLayoutWidgetType.PlayerView:
+        return this.renderPlayerViewEditor();
+      case PageLayoutWidgetType.Button:
         return this.renderButtonEditor();
-      case (PageLayoutWidgetType.LinearLayout):
+      case PageLayoutWidgetType.LinearLayout:
         return this.renderLinearLayoutEditor();
-      case (PageLayoutWidgetType.MaterialTabLayout):
+      case PageLayoutWidgetType.MaterialTabLayout:
         return this.renderTabLayoutEditor();
       default:
         return (<div/>);
@@ -150,6 +152,21 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <ImageViewEditor
+        pageLayoutView={ pageLayoutView }
+        displayMetrics={ displayMetrics }
+        onValueChange={ this.onSinglePropertyValueChange }
+      />
+    );
+  }
+
+  /**
+   * Render player view editor
+   */
+  private renderPlayerViewEditor = () => {
+    const { pageLayoutView, displayMetrics } = this.props;
+
+    return (
+      <PlayerViewEditor
         pageLayoutView={ pageLayoutView }
         displayMetrics={ displayMetrics }
         onValueChange={ this.onSinglePropertyValueChange }
