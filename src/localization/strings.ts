@@ -466,6 +466,7 @@ export interface IStrings extends LocalizedStringsMethods {
     playerView: {
       src: string;
       autoPlay: string;
+      autoPlayDelay: string;
       showPlaybackControls: string;
     };
 
