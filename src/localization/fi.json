@@ -465,6 +465,7 @@
     "playerView": {
       "src": "Videon polku",
       "autoPlay": "Aloita video automaattisesti",
+      "autoPlayDelay": "Automaattisen toiston viive (ms)",
       "showPlaybackControls": "Näytä toiston säätimet"
     },
 

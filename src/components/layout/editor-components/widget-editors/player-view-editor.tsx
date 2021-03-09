@@ -53,6 +53,7 @@ class PlayerViewEditor extends React.Component<Props, State> {
     return (
       <>
         { this.renderAutoPlay() }
+        { this.renderAutoPlayDelay() }
         { this.renderPlaybackControls() }
         { this.renderSrcEditor() }
       </>
@@ -107,11 +108,6 @@ class PlayerViewEditor extends React.Component<Props, State> {
             onCheckboxChange={ onValueChange }
           />
         </div>
-        <Divider
-          variant="fullWidth"
-          color="rgba(0,0,0,0.1)"
-          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
-        />
       </Box>
     );
   }
@@ -125,6 +121,11 @@ class PlayerViewEditor extends React.Component<Props, State> {
 
     return (
       <Box ml={ 2 }>
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+        />
         <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
           <GenericPropertyCheckbox
             label={ strings.layoutEditor.playerView.showPlaybackControls }
@@ -137,6 +138,34 @@ class PlayerViewEditor extends React.Component<Props, State> {
           color="rgba(0,0,0,0.1)"
           style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
         />
+      </Box>
+    );
+  }
+
+  /**
+   * Render autoplay delay editor
+   */
+  private renderAutoPlayDelay = () => {
+    const { pageLayoutView, displayMetrics, onValueChange } = this.props;
+    const autoPlayDelayProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.AutoPlayDelay, PageLayoutViewPropertyType.Number);
+    const autoPlayProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.AutoPlay, PageLayoutViewPropertyType.Boolean);
+
+    if (autoPlayProp?.value !== "true") {
+      return null;
+    }
+
+    return (
+      <Box ml={ 2 }>
+        <div style={{ display: "flex", alignItems: "center", marginTop: theme.spacing(2) }}>
+          <GenericPropertyTextField
+            label={ strings.layoutEditor.playerView.autoPlayDelay }
+            textFieldId={ LayoutPlayerViewPropKeys.AutoPlayDelay }
+            displayMetrics={ displayMetrics }
+            textFieldType="number"
+            property={ autoPlayDelayProp }
+            onTextFieldChange={ onValueChange }
+          />
+        </div>
       </Box>
     );
   }

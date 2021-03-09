@@ -58,7 +58,8 @@ export enum LayoutImageViewPropKeys {
 export enum LayoutPlayerViewPropKeys {
   Src = "src",
   ShowPlaybackControls = "showPlaybackControls",
-  AutoPlay = "autoPlay"
+  AutoPlay = "autoPlay",
+  AutoPlayDelay = "autoPlayDelay"
 }
 
 /**
