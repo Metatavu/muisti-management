@@ -17,6 +17,7 @@ export default createStyles({
 
   editorLayout: {
     height: "100%",
+    overflow: "hidden",
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto 1fr auto",
