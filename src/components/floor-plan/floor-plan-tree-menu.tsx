@@ -139,11 +139,11 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
         style={{ paddingLeft: level * 20 }}
       >
         { hasNodes ?
-          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
+          <div style={{ display: "inline-block" }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
             { toggleIcon(isOpen) }
           </div>
           :
-          <div style={{ display: 'inline-block', marginLeft: 25 }} />
+          <div style={{ display: "inline-block", marginLeft: 25 }} />
         }
         { label }
       </ListItem>
