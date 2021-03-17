@@ -241,7 +241,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    * @param updatedPageLayoutView page layout view property object to update
    */
   private onSinglePropertyValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
-    const { selectedElementPath, editingSubLayout } = this.props;
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
       return;
@@ -254,6 +254,8 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     this.setState({
       layout : layoutToUpdate
     });
+
+    onPageLayoutViewUpdate(updatedLayoutView);
   }
 
   /**

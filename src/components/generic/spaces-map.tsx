@@ -36,6 +36,8 @@ interface Props {
   onAntennaAdd?: (antennaToCreate: RfidAntenna) => void;
   onAntennaSave?: (antennaToUpdate: RfidAntenna) => void;
   onAntennaClick?: (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => void;
+
+  onDataChange: () => void;
 }
 
 /**
@@ -546,6 +548,8 @@ export default class SpacesMap extends React.Component<Props, State> {
      */
     const leafletEvent = event as any;
     const leafletFeatureGroup = leafletEvent as FeatureGroup;
+
+    console.log(selectedItems);
 
     if (selectedItems.antenna) {
       this.handleAntennaUpdate(leafletFeatureGroup);
@@ -1077,6 +1081,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     if (!deviceToUpdate.id) {
       return;
     }
+
     L.geoJSON(leafletFeatureGroup.toGeoJSON(), {
       onEachFeature(_feature, layer) {
         if (!deviceToUpdate || !deviceToUpdate.location) {
@@ -1244,6 +1249,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     if (layers && layers.length > 0) {
       const layer = layers[0] as any;
       layer.editing.enable();
+      this.props.onDataChange();
     }
   }
 
@@ -1255,6 +1261,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     if (layers && layers.length > 0) {
       const layer = layers[0] as any;
       layer.editing.enable();
+      this.props.onDataChange();
     }
   }
 
@@ -1262,11 +1269,14 @@ export default class SpacesMap extends React.Component<Props, State> {
    * Save current device marker
    */
   public saveDeviceMarker = () => {
+
+    console.log(this.mapInstance)
     if (!this.mapInstance) {
       return;
     }
 
     const layers = this.selectedMarker.getLayers();
+    console.log(layers);
     if (layers && layers.length > 0) {
       this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
       const layer = layers[0] as any;

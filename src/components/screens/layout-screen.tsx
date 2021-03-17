@@ -554,6 +554,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view to update
    */
   private onPageLayoutViewUpdate = (pageLayoutView: PageLayoutView) => {
+    console.log(pageLayoutView);
     this.setState({
       pageLayoutView,
       dataChanged: true
