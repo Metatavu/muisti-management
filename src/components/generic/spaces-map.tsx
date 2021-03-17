@@ -549,8 +549,6 @@ export default class SpacesMap extends React.Component<Props, State> {
     const leafletEvent = event as any;
     const leafletFeatureGroup = leafletEvent as FeatureGroup;
 
-    console.log(selectedItems);
-
     if (selectedItems.antenna) {
       this.handleAntennaUpdate(leafletFeatureGroup);
       return;
