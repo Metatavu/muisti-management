@@ -501,7 +501,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * @param updatedPageLayoutView page layout view property object to update
    */
   private onSingleValueChange = (pageLayoutViewProperty: PageLayoutViewProperty) => {
-    const { selectedElementPath, editingSubLayout } = this.props;
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
       return;
@@ -514,6 +514,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     this.setState({
       layout : layoutToUpdate
     });
+
+    onPageLayoutViewUpdate(layoutView);
   }
 
   /**
@@ -522,7 +524,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * @param layoutPropertyKey layout property key
    */
   private onSingleValueRemove = (layoutPropertyKey: LayoutPropKeys) => {
-    const { selectedElementPath, editingSubLayout } = this.props;
+    const { selectedElementPath, editingSubLayout, onPageLayoutViewUpdate } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
       return;
@@ -535,6 +537,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     this.setState({
       layout : layoutToUpdate
     });
+
+    onPageLayoutViewUpdate(layoutView);
   }
 
   /**
@@ -543,7 +547,7 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
    * @param updatedPageLayoutViews list of page layout view property objects to update
    */
   private onMultipleValueChange = (pageLayoutViewProperties: PageLayoutViewProperty[]) => {
-    const { selectedElementPath } = this.props;
+    const { selectedElementPath, onPageLayoutViewUpdate } = this.props;
     const currentLayout = { ...this.state.layout } as PageLayout | SubLayout;
     if (!currentLayout) {
       return;
@@ -560,6 +564,8 @@ class CommonLayoutPropertiesEditor extends React.Component<Props, State> {
     this.setState({
       layout : layoutToUpdate
     });
+
+    onPageLayoutViewUpdate(layoutViewToUpdate);
   }
 
   /**
