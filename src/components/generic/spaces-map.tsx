@@ -36,7 +36,6 @@ interface Props {
   onAntennaAdd?: (antennaToCreate: RfidAntenna) => void;
   onAntennaSave?: (antennaToUpdate: RfidAntenna) => void;
   onAntennaClick?: (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => void;
-
   onDataChange: () => void;
 }
 
