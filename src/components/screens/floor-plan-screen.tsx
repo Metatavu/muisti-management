@@ -298,6 +298,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         onAntennaAdd={ this.onAntennaAddClick }
         onAntennaSave={ this.onAntennaSaveClick }
         onAntennaClick={ this.onAntennaClick }
+        onDataChange={ () => this.setState({ dataChanged: true }) }
       />;
     }
     return null;
