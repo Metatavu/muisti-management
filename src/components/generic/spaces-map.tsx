@@ -1271,7 +1271,6 @@ export default class SpacesMap extends React.Component<Props, State> {
     }
 
     const layers = this.selectedMarker.getLayers();
-    console.log(layers);
     if (layers && layers.length > 0) {
       this.mapInstance.fire(L.Draw.Event.EDITED, this.selectedMarker);
       const layer = layers[0] as any;
