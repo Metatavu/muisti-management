@@ -1266,8 +1266,6 @@ export default class SpacesMap extends React.Component<Props, State> {
    * Save current device marker
    */
   public saveDeviceMarker = () => {
-
-    console.log(this.mapInstance)
     if (!this.mapInstance) {
       return;
     }
