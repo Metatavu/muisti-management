@@ -51,7 +51,7 @@
     "delete": {
       "deleteTitle": "Poista näyttely",
       "deleteText": "Haluatko varmasti poistaa näyttelyn {0}?",
-      "contentTitle": "Näyttelyä ei voida poistaa. Näyttely on käytössä."
+      "contentTitle": "Näyttelyä ei voida poistaa. Näyttely sisältää"
     },
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
@@ -823,7 +823,12 @@
     "exhibitions": "Näyttelyissä: ",
     "pages": "Sivuissa: ",
     "groupContentVersions": "Sisällöissä: ",
-    "layouts": "Asetteluissa"
+    "layouts": "Asetteluissa: ",
+    "contentVersions": "Sisältöversioissa: ",
+    "floors": "Kerroksissa: ",
+    "visitors": "Vierailijoissa: ",
+    "visitorSessions": "Vierailijoiden sessioissa: ",
+    "visitorVariables": "Vierailijamuuttujissa: "
   },
 
   "helpTexts": {

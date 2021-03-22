@@ -45,7 +45,7 @@
     "delete": {
       "deleteTitle": "Delete exhibition",
       "deleteText": "Are you sure you want to delete exhibition {0}?",
-      "contentTitle": "Exhibition cannot be delete. Exhibition in use."
+      "contentTitle": "Exhibition cannot be delete. Exhibition includes"
     },
     "createExhibitionDialog": {
       "title": "Create new exhibition",
@@ -811,7 +811,12 @@
     "exhibitions": "Exhibitions: ",
     "pages": "Pages: ",
     "groupContentVersions": "Group content versions: ",
-    "layouts": "Page layouts: "
+    "layouts": "Page layouts: ",
+    "contentVersions": "Content versions: ",
+    "floors": "Floors: ",
+    "visitors": "Visitors: ",
+    "visitorSessions": "Visitor sessions: ",
+    "visitorVariables": "Visitor variables: "
   },
 
   "helpTexts": {

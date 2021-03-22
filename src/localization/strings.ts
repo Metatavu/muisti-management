@@ -828,6 +828,11 @@ export interface IStrings extends LocalizedStringsMethods {
     groupContentVersions: string;
     exhibitions: string;
     layouts: string;
+    contentVersions: string;
+    floors: string;
+    visitors: string;
+    visitorSessions: string;
+    visitorVariables: string;
   };
 
   /**

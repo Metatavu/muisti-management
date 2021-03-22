@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, RfidAntenna, GroupContentVersion, PageLayout } from "../generated/client";
+import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, RfidAntenna, GroupContentVersion, PageLayout, VisitorVariable, Visitor, VisitorSession } from "../generated/client";
 import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./device-model-string-data";
 
 /**
@@ -170,6 +170,6 @@ export interface ContentSpecificDeleteMessage {
  * Note: Types described in objects all have name as a parameter
  */
 export interface DeleteDataHolder {
-  objects: (Exhibition | GroupContentVersion | ExhibitionRoom | ExhibitionDeviceGroup | ExhibitionDevice | RfidAntenna | ExhibitionPage | PageLayout)[];
+  objects: (Exhibition | ContentVersion | ExhibitionFloor | GroupContentVersion | ExhibitionRoom | ExhibitionDeviceGroup | ExhibitionDevice | RfidAntenna | ExhibitionPage | PageLayout | Visitor | VisitorSession | VisitorVariable)[];
   localizedMessage: string;
 }
