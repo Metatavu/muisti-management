@@ -9,7 +9,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { ContentVersion, ContentVersionsApi, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession, VisitorVariable } from "../../generated/client";
+import { ContentVersion, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession } from "../../generated/client";
 import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
