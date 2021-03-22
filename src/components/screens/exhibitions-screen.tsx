@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress, TextField } from "@material-u
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition } from "../../generated/client";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -19,7 +19,6 @@ import GenericDialog from "../generic/generic-dialog";
 import Api from "../../api/api";
 import { setExhibitions } from "../../actions/exhibitions";
 import produce from "immer";
-import ConfirmDialog from "../generic/confirm-dialog";
 
 /**
  * Component props
@@ -40,6 +39,7 @@ interface State {
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
   selectedExhibition?: Exhibition;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -57,7 +57,16 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       addDialogOpen: false,
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
+      confirmDialogData: {
+        title: strings.exhibitions.delete.deleteTitle,
+        text: strings.device.delete.deleteText,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.confirmDialog.delete,
+        deletePossible: true,
+        onCancel: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick,
+      }
     };
   }
 
@@ -158,19 +167,19 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     const { selectedExhibition } = this.state;
     if (selectedExhibition) {
       const description = strings.formatString(
-        strings.exhibitions.deleteExhibitionDialog.description,
+        strings.exhibitions.delete.deleteText,
         selectedExhibition.name) as string;
-      return (
-        <ConfirmDialog
-          open={ this.state.deleteDialogOpen }
-          title={ strings.exhibitions.deleteExhibitionDialog.title }
-          text={ description }
-          onClose={ this.onCloseOrCancelClick }
-          onCancel={ this.onCloseOrCancelClick }
-          onConfirm={ () => this.deleteExhibition(selectedExhibition) }
-          positiveButtonText={ strings.confirmDialog.delete }
-          cancelButtonText={ strings.confirmDialog.cancel }
-        />
+      return (null
+        // <ConfirmDialog
+        //   open={ this.state.deleteDialogOpen }
+        //   title={ strings.exhibitions.deleteExhibitionDialog.title }
+        //   text={ description }
+        //   onClose={ this.onCloseOrCancelClick }
+        //   onCancel={ this.onCloseOrCancelClick }
+        //   onConfirm={ () => this.deleteExhibition(selectedExhibition) }
+        //   positiveButtonText={ strings.confirmDialog.delete }
+        //   cancelButtonText={ strings.confirmDialog.cancel }
+        // />
       );
     }
   }
@@ -221,7 +230,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for exhibition data change
-   * 
+   *
    * @param event event
    */
   private onExhibitionDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,13 +249,17 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for exhibition delete click
-   * 
+   *
    * @param selectedExhibition exhibition
    */
   private onDeleteExhibitionClick = (selectedExhibition: Exhibition) => {
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    tempDeleteData.onConfirm = () => this.deleteExhibition(selectedExhibition);
+
     this.setState({
       selectedExhibition,
-      deleteDialogOpen: true
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
     });
   }
 
@@ -256,6 +269,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   private onDialogSaveClick = async () => {
     const { accessToken, exhibitions } = this.props;
     const { selectedExhibition } = this.state;
+
     if (!accessToken || !selectedExhibition) {
       return;
     }
@@ -267,7 +281,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     this.props.setExhibitions(
       produce(exhibitions, draft => {
-        draft.push(newExhibition)
+        draft.push(newExhibition);
       })
     );
 
@@ -290,12 +304,13 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Deletes exhibition
-   * 
+   *
    * @param selectedExhibition exhibition
    */
   private deleteExhibition = async (selectedExhibition: Exhibition) => {
     const { accessToken, exhibitions } = this.props;
     const exhibitionId = selectedExhibition.id;
+
     if (!accessToken || !exhibitionId) {
       return;
     }

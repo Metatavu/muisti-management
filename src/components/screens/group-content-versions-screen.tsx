@@ -13,7 +13,7 @@ import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
 import theme from "../../styles/theme";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, ActionButton, BreadcrumbData, ConfirmDialogData } from '../../types';
 import CardItem from "../generic/card/card-item";
 import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
@@ -51,6 +51,7 @@ interface State {
   deleteDialogOpen: boolean;
   addNewGroupContentVersion: boolean;
   dataChanged: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -72,7 +73,16 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       addDialogOpen: false,
       deleteDialogOpen: false,
       addNewGroupContentVersion: false,
-      dataChanged: false
+      dataChanged: false,
+      confirmDialogData: {
+        title: strings.groupContentVersion.delete.deleteTitle,
+        text: strings.groupContentVersion.delete.deleteText,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.confirmDialog.delete,
+        deletePossible: true,
+        onCancel: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick,
+      }
     };
   }
 
@@ -201,21 +211,14 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * Renders delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
-    const { selectedGroupContentVersion } = this.state;
-    if (selectedGroupContentVersion) {
-      return (
-        <ConfirmDialog
-          open={ this.state.deleteDialogOpen }
-          title={ strings.groupContentVersion.deleteTitle }
-          text={ strings.groupContentVersion.deleteText }
-          onClose={ this.onCloseOrCancelClick }
-          onCancel={ this.onCloseOrCancelClick }
-          onConfirm={ () => this.deleteGroupContentVersion(selectedGroupContentVersion) }
-          positiveButtonText={ strings.confirmDialog.delete }
-          cancelButtonText={ strings.confirmDialog.cancel }
-        />
-      );
-    }
+    const { deleteDialogOpen, confirmDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
+    );
   }
 
   /**
@@ -279,6 +282,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
     const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+
     const [ exhibition, room, contentVersion, groupContentVersions, deviceGroups ] = 
       await Promise.all<Exhibition, ExhibitionRoom, ContentVersion, GroupContentVersion[], ExhibitionDeviceGroup[]>([
         exhibitionsApi.findExhibition({ exhibitionId }),
@@ -300,7 +304,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   private getCardMenuOptions = (groupContentVersion: GroupContentVersion): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.delete,
-      action: () => this.setState({ deleteDialogOpen: true, selectedGroupContentVersion: groupContentVersion })
+      action: () => this.onDeleteGroupContentVersionClick(groupContentVersion)
     }];
   }
 
@@ -341,6 +345,21 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for delete group content version click
+   *
+   * @param groupContentVersion group content version to delete
+   */
+  private onDeleteGroupContentVersionClick = (groupContentVersion: GroupContentVersion) => {
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    tempDeleteData.onConfirm = () => this.deleteGroupContentVersion(groupContentVersion);
+    this.setState({
+      deleteDialogOpen: true,
+      selectedGroupContentVersion: groupContentVersion,
+      confirmDialogData: tempDeleteData
+    })
+  }
+
+  /**
    * Deletes group content version
    *
    * @param groupContentVersion selected group content version
@@ -360,7 +379,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
     this.setState({
       deleteDialogOpen: false,
-      selectedGroupContentVersion: undefined
+      selectedGroupContentVersion: undefined,
+      groupContentVersions: this.state.groupContentVersions.filter(version => version.id !== groupContentVersion.id)
     });
   }
 
@@ -380,7 +400,6 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     this.setState({
       selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value },
     });
-
   }
 
   /**

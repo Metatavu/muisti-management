@@ -13,7 +13,7 @@ import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/visitor-variables-screen/visitor-variables-editor-view";
 import theme from "../../styles/theme";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import ConfirmDialog from "../generic/confirm-dialog";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -41,6 +41,7 @@ interface State {
   dataChanged: boolean;
   visitorVariables: VisitorVariable[];
   selectedVisitorVariable?: VisitorVariable;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -61,7 +62,17 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       toolbarOpen: true,
       deleteOpen: false,
       dataChanged: false,
-      visitorVariables: []
+      visitorVariables: [],
+      confirmDialogData: {
+        deletePossible: true,
+        title: strings.visitorVariables.deleteConfirmTitle,
+        text: strings.visitorVariables.deleteConfirmText,
+        onClose: this.onConfirmDeleteCloseClick,
+        onCancel: this.onConfirmDeleteCancelClick,
+        onConfirm: this.deleteVisitorVariable,
+        cancelButtonText: strings.genericDialog.cancel,
+        positiveButtonText: strings.genericDialog.confirm
+      }
     };
   }
 
@@ -77,7 +88,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
   /**
    * Component render method
    */
-  public render() {
+  public render = () => {
     const { classes, history } = this.props;
     const { loading, dataChanged } = this.state;
 
@@ -119,7 +130,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    */
   private renderVisitorVariablesList = () => {
     const { visitorVariables } = this.state;
-    
+
     return (
       <List disablePadding>
         {
@@ -133,7 +144,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Renders visitor variable
-   * 
+   *
    * @param visitorVariable visitor variable
    */
   private renderVisitorVariable = (visitorVariable: VisitorVariable) => {
@@ -141,7 +152,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     const selected = id === this.state.selectedVisitorVariable?.id;
     const name = visitorVariable.name;
     const label = visitorVariable.type;
-    
+
     return (
       <ListItem button key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
         <ListItemText primary={ name } secondary={ label } />
@@ -241,7 +252,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Renders enumerated value editor
-   * 
+   *
    * @param value value
    * @param index index of value
    */
@@ -273,16 +284,12 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    * Render variable delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
+    const { deleteOpen, confirmDialogData } = this.state;
+
     return (
       <ConfirmDialog
-        open={ this.state.deleteOpen }
-        title={ strings.visitorVariables.deleteConfirmTitle }
-        text={ strings.visitorVariables.deleteConfirmText }
-        onClose={ this.onConfirmDeleteCloseClick }
-        onCancel={ this.onConfirmDeleteCancelClick }
-        onConfirm={ () => this.deleteVisitorVariable() }
-        cancelButtonText={ strings.genericDialog.cancel }
-        positiveButtonText={ strings.genericDialog.confirm }
+        open={ deleteOpen }
+        confirmDialogData={ confirmDialogData }
       />
     );
   }
@@ -315,7 +322,6 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     const { accessToken, exhibitionId } = this.props;
 
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
-    
     const visitorVariables = await visitorVariablesApi.listVisitorVariables({
       exhibitionId: exhibitionId
     });
@@ -325,12 +331,12 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     });
 
   }
-  
+
   /**
    * Creates new visitor variable
    */
   private newVisitorVariable = async () => {
-    const { accessToken, exhibitionId } = this.props;    
+    const { accessToken, exhibitionId } = this.props;
     const { visitorVariables } = this.state;
 
     this.setState({
@@ -366,7 +372,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    * Saves the visitor variable
    */
   private saveVisitorVariable = async () => {
-    const { accessToken, exhibitionId } = this.props;    
+    const { accessToken, exhibitionId } = this.props;
     const { selectedVisitorVariable, visitorVariables } = this.state;
 
     if (!selectedVisitorVariable) {
@@ -384,7 +390,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       visitorVariable: selectedVisitorVariable,
       visitorVariableId: selectedVisitorVariable.id!
     });
-  
+
     this.setState({
       loading: false,
       dataChanged: false,
@@ -396,7 +402,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    * Deletes visitor variable
    */
   private deleteVisitorVariable = async () => {
-    const { accessToken, exhibitionId } = this.props;    
+    const { accessToken, exhibitionId } = this.props;
     const { selectedVisitorVariable, visitorVariables } = this.state;
 
     if (!selectedVisitorVariable) {
@@ -415,7 +421,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       visitorVariableId: visitorVariableId
     });
-  
+
     this.setState({
       loading: false,
       deleteOpen: false,

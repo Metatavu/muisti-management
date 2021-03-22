@@ -17,7 +17,7 @@ import FileUploader from "../generic/file-uploader";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton } from "../../types";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
 import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
 import FloorPlanCrop from "../floor-plan/floor-plan-crop";
@@ -31,6 +31,8 @@ import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
 import FloorPlanInfo from "../floor-plan/floor-plan-info";
 import { createRef } from "react";
 import { ColorResult } from "react-color";
+import ConfirmDialog from "../generic/confirm-dialog";
+import DeleteUtils from "../../utils/delete-utils";
 
 /**
  * Component props
@@ -71,8 +73,9 @@ interface State {
   cropImageData?: Blob;
   cropImageDetails?: cropperjs.default.ImageData;
   addImageDialogOpen: boolean;
-  selectedItemHasNodes: boolean;
   dataChanged: boolean;
+  deleteDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -103,8 +106,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       antennas: [],
       treeData: [],
       addImageDialogOpen: false,
-      selectedItemHasNodes: false,
-      dataChanged: false
+      dataChanged: false,
+      deleteDialogOpen: false,
+      confirmDialogData: this.defaultDeleteData
     };
   }
 
@@ -137,9 +141,32 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for clear dialog
+   */
+  private clearDialog = () => {
+    this.setState({
+      deleteDialogOpen: false,
+      confirmDialogData: this.defaultDeleteData
+    });
+  }
+
+  /**
+   * Default values for delete dialog
+   */
+  private defaultDeleteData: ConfirmDialogData = {
+    title: strings.generic.delete,
+    text: strings.generic.delete,
+    cancelButtonText: strings.confirmDialog.cancel,
+    positiveButtonText: strings.confirmDialog.delete,
+    deletePossible: true,
+    onCancel: this.clearDialog,
+    onClose: this.clearDialog,
+  };
+
+  /**
    * Component render method
    */
-  public render() {
+  public render = () => {
     const { classes, history, keycloak } = this.props;
     const {
       exhibition,
@@ -219,6 +246,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           allowedFileTypes={ [ "image/png" ] }
           onSave={ this.onUploadSave }
         />
+        { this.renderConfirmDialog() }
       </BasicLayout>
     );
   }
@@ -235,7 +263,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup,
       selectedDevice,
       selectedAntenna,
-      selectedItemHasNodes,
       imageHeight,
       imageWidth
     } = this.state;
@@ -277,7 +304,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         deviceGroup: selectedDeviceGroup,
         device: selectedDevice,
         antenna: selectedAntenna,
-        selectedItemHasNodes: selectedItemHasNodes
       };
 
       return <SpacesMap
@@ -340,6 +366,20 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders confirm dialog
+   */
+  private renderConfirmDialog = () => {
+    const { confirmDialogData, deleteDialogOpen } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
+    );
+  }
+
+  /**
    * Fetches component data
    */
   private fetchData = async () => {
@@ -369,7 +409,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         ]
       );
     const selectedFloor = floors[0];
-    const selectedItemHasNodes = !!rooms.find(room => room.floorId === selectedFloor.id);
 
     this.setState({
       exhibition,
@@ -379,7 +418,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       devices,
       antennas,
       selectedFloor,
-      selectedItemHasNodes
     });
   }
 
@@ -396,19 +434,19 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         key: floor.id!,
         label: floor.name,
         pathInTree: `${floor.id}`,
-        onClick: (hasNodes: boolean) => this.onFloorClick(floor.id!, hasNodes),
+        onClick: () => this.onFloorClick(floor.id!),
         nodes: rooms.filter(room => room.floorId === floor.id).map(room => {
           return {
             key: room.id!,
             label: room.name,
             pathInTree: `${floor.id}/${room.id}`,
-            onClick: (hasNodes: boolean) => this.onRoomClick(floor.id!, room.id!, hasNodes),
+            onClick: () => this.onRoomClick(floor.id!, room.id!),
             nodes: deviceGroups.filter(group => group.roomId === room.id).map(group => {
               return {
                 key: group.id!,
                 label: group.name,
                 pathInTree: `${floor.id}/${room.id}/${group.id}`,
-                onClick: (hasNodes: boolean) => this.onDeviceGroupClick(floor.id!, room.id!, group.id!, hasNodes),
+                onClick: () => this.onDeviceGroupClick(floor.id!, room.id!, group.id!),
                 nodes:
                   [
                     ...devices.filter(device => device.groupId === group.id).map(device => {
@@ -416,7 +454,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                         key: device.id!,
                         label: device.name,
                         pathInTree: `${floor.id}/${room.id}/${group.id}/${device.id}`,
-                        onClick: (hasNodes: boolean) => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!, hasNodes),
+                        onClick: () => this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!),
                         nodes: [],
                       };
                     }),
@@ -425,7 +463,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                         key: antenna.id!,
                         label: antenna.name,
                         pathInTree: `${floor.id}/${room.id}/${group.id}/${antenna.id}`,
-                        onClick: (hasNodes: boolean) => this.onAntennaClick(floor.id!, room.id!, group.id!, antenna.id!, hasNodes),
+                        onClick: () => this.onAntennaClick(floor.id!, room.id!, group.id!, antenna.id!),
                         nodes: [],
                       };
                     }),
@@ -450,7 +488,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup,
       selectedDevice,
       selectedAntenna,
-      selectedItemHasNodes,
       dataChanged
     } = this.state;
 
@@ -462,7 +499,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           action: () => this.mapRef.current!.saveAntennaMarker(),
           disabled: !dataChanged
         },
-        { name: strings.floorPlan.antenna.delete, action: this.onAntennaDeleteClick }
+        { name: strings.floorPlan.delete.antenna.deleteTitle, action: this.onAntennaDeleteClick }
       ] as ActionButton[];
     }
 
@@ -474,7 +511,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           action: () => this.mapRef.current!.saveDeviceMarker(),
           disabled: !dataChanged
         },
-        { name: strings.floorPlan.device.delete, action: this.onDeviceDeleteClick },
+        { name: strings.floorPlan.delete.device.deleteTitle, action: this.onDeviceDeleteClick },
       ] as ActionButton[];
     }
 
@@ -492,10 +529,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           disabled: !dataChanged
         },
         {
-          name: strings.floorPlan.deviceGroup.delete,
-          action: selectedItemHasNodes ?
-          () => alert(strings.floorPlan.hasChildElements) :
-          this.onDeviceGroupDeleteClick
+          name: strings.floorPlan.delete.deviceGroup.deleteTitle,
+          action: this.onDeviceGroupDeleteClick
         }
       ] as ActionButton[];
     }
@@ -510,10 +545,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           disabled: !dataChanged
         },
         {
-          name: strings.floorPlan.room.delete,
-          action: selectedItemHasNodes ?
-          () => alert(strings.floorPlan.hasChildElements) :
-          this.onRoomDeleteClick
+          name: strings.floorPlan.delete.room.deleteTitle,
+          action: this.onRoomDeleteClick
         }
       ] as ActionButton[];
     }
@@ -529,10 +562,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
             disabled: !dataChanged
           },
           {
-            name: strings.floorPlan.floor.delete,
-            action: selectedItemHasNodes ?
-            () => alert(strings.floorPlan.hasChildElements) :
-            this.onFloorDeleteClick
+            name: strings.floorPlan.delete.floor.deleteTitle,
+            action: this.onFloorDeleteClick
           }
         ];
       }
@@ -547,10 +578,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           disabled: !dataChanged
         },
         {
-          name: strings.floorPlan.floor.delete,
-          action: selectedItemHasNodes ?
-            () => alert(strings.floorPlan.hasChildElements) :
-            this.onFloorDeleteClick
+          name: strings.floorPlan.delete.floor.deleteTitle,
+          action: this.onFloorDeleteClick
         }
       ] as ActionButton[];
     }
@@ -574,8 +603,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
 
       foundDeviceGroups.forEach(group => {
-        foundDevices.push.apply(foundDevices, devices.filter(device => device.groupId === group.id));
-        foundAntennas.push.apply(foundAntennas, antennas.filter(antenna => antenna.groupId === group.id));
+        foundDevices.push(...devices.filter(device => device.groupId === group.id));
+        foundAntennas.push(...antennas.filter(antenna => antenna.groupId === group.id));
       });
 
       data.rooms = rooms.filter(room => room.floorId === floorId);
@@ -763,16 +792,49 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onFloorDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedFloor } = this.state;
+
     if (!exhibitionId || !selectedFloor || !selectedFloor.id) {
       return;
     }
 
-    // TODO: Add nicer dialog
-    if (!window.confirm(strings.generic.confirmDelete)) {
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const rooms = await roomsApi.listExhibitionRooms({
+      exhibitionId: exhibitionId,
+      floorId: selectedFloor.id
+    });
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+
+    tempDeleteData.title = strings.floorPlan.delete.floor.deleteTitle;
+    tempDeleteData.text = strings.floorPlan.delete.floor.deleteText;
+    tempDeleteData.onConfirm = this.onConfirmFloorDeleteClick;
+
+    if (rooms.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.floorPlan.delete.floor.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+      holder.push({ objects: rooms, localizedMessage: strings.deleteContent.rooms });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for confirm floor delete click
+   */
+  private onConfirmFloorDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedFloor } = this.state;
+    if (!exhibitionId || !selectedFloor || !selectedFloor.id) {
       return;
     }
 
-    this.deleteFloor(accessToken, exhibitionId, selectedFloor.id);
+    await this.deleteFloor(accessToken, exhibitionId, selectedFloor.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -827,6 +889,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for add room click
+   *
    * @param roomToCreate exhibition room to create
    */
   private onRoomAddClick = async (roomToCreate: ExhibitionRoom) => {
@@ -849,7 +912,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for delete room click
+   * Event handler for room delete click
    */
   private onRoomDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
@@ -858,12 +921,44 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       return;
     }
 
-    // TODO: Add nicer dialog
-    if (!window.confirm(strings.generic.confirmDelete)) {
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const deviceGroups = await deviceGroupsApi.listExhibitionDeviceGroups({
+      exhibitionId: exhibitionId,
+      roomId: selectedRoom.id
+    });
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+
+    tempDeleteData.title = strings.floorPlan.delete.room.deleteTitle;
+    tempDeleteData.text = strings.floorPlan.delete.room.deleteText;
+    tempDeleteData.onConfirm = this.onConfirmRoomDeleteClick;
+
+    if (deviceGroups.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.floorPlan.delete.room.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+      holder.push({ objects: deviceGroups, localizedMessage: strings.deleteContent.deviceGroups });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for confirm delete room click
+   */
+  private onConfirmRoomDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedRoom } = this.state;
+    if (!exhibitionId || !selectedRoom || !selectedRoom.id) {
       return;
     }
 
-    this.deleteRoom(accessToken, exhibitionId, selectedRoom.id);
+    await this.deleteRoom(accessToken, exhibitionId, selectedRoom.id);
 
     this.setState(
       produce((draft: Draft<State>) => {
@@ -943,6 +1038,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onDeviceGroupSaveClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;
+
     if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
       return;
     }
@@ -996,16 +1092,57 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   /**
    * Event handler for device group delete click
    */
-  private onDeviceGroupDeleteClick = () => {
-
+  private onDeviceGroupDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedDeviceGroup } = this.state;
+
     if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
       return;
     }
 
-    // TODO: Add nicer dialog
-    if (!window.confirm(strings.generic.confirmDelete)) {
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const antennasApi = Api.getRfidAntennasApi(accessToken);
+    const [ devices, antennas ] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+      devicesApi.listExhibitionDevices({
+        exhibitionId: exhibitionId,
+        exhibitionGroupId: selectedDeviceGroup.id
+      }),
+      antennasApi.listRfidAntennas({
+        exhibitionId: exhibitionId,
+        deviceGroupId: selectedDeviceGroup.id
+      })
+    ]);
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+
+    tempDeleteData.title = strings.floorPlan.delete.deviceGroup.deleteTitle;
+    tempDeleteData.text = strings.floorPlan.delete.deviceGroup.deleteText;
+    tempDeleteData.onConfirm = this.onConfirmDeviceGroupDeleteClick;
+
+    if (devices.length > 0 || antennas.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.floorPlan.delete.deviceGroup.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+      holder.push({ objects: devices, localizedMessage: strings.deleteContent.devices });
+      holder.push({ objects: antennas, localizedMessage: strings.deleteContent.antennas });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for confirm device group delete click
+   */
+  private onConfirmDeviceGroupDeleteClick = () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDeviceGroup } = this.state;
+
+    if (!exhibitionId || !selectedDeviceGroup || !selectedDeviceGroup.id) {
       return;
     }
 
@@ -1046,17 +1183,50 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for delete device click
+   * Event handler for room delete click
    */
   private onDeviceDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
     const { selectedDevice } = this.state;
+
     if (!exhibitionId || !selectedDevice || !selectedDevice.id) {
       return;
     }
 
-    // TODO: Add nicer dialog
-    if (!window.confirm(strings.generic.confirmDelete)) {
+    const pagesApi = Api.getExhibitionPagesApi(accessToken);
+    const pages = await pagesApi.listExhibitionPages({
+      exhibitionId: exhibitionId,
+      exhibitionDeviceId: selectedDevice.id
+    });
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+
+    tempDeleteData.title = strings.floorPlan.delete.device.deleteTitle;
+    tempDeleteData.text = strings.floorPlan.delete.device.deleteText;
+    tempDeleteData.onConfirm = this.onConfirmDeviceDeleteClick;
+
+    if (pages.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.floorPlan.delete.device.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+      holder.push({ objects: pages, localizedMessage: strings.deleteContent.pages });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for confirm delete device click
+   */
+  private onConfirmDeviceDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedDevice } = this.state;
+    if (!exhibitionId || !selectedDevice || !selectedDevice.id) {
       return;
     }
 
@@ -1122,17 +1292,33 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for delete antenna click
+   * Event handler for antenna delete click
    */
   private onAntennaDeleteClick = async () => {
-    const { accessToken, exhibitionId } = this.props;
     const { selectedAntenna } = this.state;
-    if (!exhibitionId || !selectedAntenna || !selectedAntenna.id) {
+
+    if (!selectedAntenna || !selectedAntenna.id) {
       return;
     }
 
-    // TODO: Add nicer dialog
-    if (!window.confirm(strings.generic.confirmDelete)) {
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    tempDeleteData.title = strings.floorPlan.delete.antenna.deleteTitle;
+    tempDeleteData.onConfirm = this.onConfirmAntennaDeleteClick;
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for confirm delete antenna click
+   */
+  private onConfirmAntennaDeleteClick = async () => {
+    const { accessToken, exhibitionId } = this.props;
+    const { selectedAntenna } = this.state;
+
+    if (!exhibitionId || !selectedAntenna || !selectedAntenna.id) {
       return;
     }
 
@@ -1189,9 +1375,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * Event handler for floor click
    *
    * @param floorId selected floor id
-   * @param hasNodes has child nodes
    */
-  private onFloorClick = (floorId: string, hasNodes: boolean) => {
+  private onFloorClick = (floorId: string) => {
     const { floors } = this.state;
 
     const itemPathInTree = `${floorId}`;
@@ -1202,7 +1387,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1211,9 +1395,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    *
    * @param floorId selected floor id
    * @param roomId selected room id
-   * @param hasNodes has child nodes
    */
-  private onRoomClick = (floorId: string, roomId: string, hasNodes: boolean) => {
+  private onRoomClick = (floorId: string, roomId: string) => {
     const { floors, rooms } = this.state;
 
     const itemPathInTree = `${floorId}/${roomId}`;
@@ -1224,7 +1407,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: undefined,
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1234,9 +1416,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param floorId selected floor id
    * @param roomId selected room id
    * @param deviceGroupId selected device group id
-   * @param hasNodes has child nodes
    */
-  private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string, hasNodes: boolean) => {
+  private onDeviceGroupClick = (floorId: string, roomId: string, deviceGroupId: string) => {
     const { floors, rooms, deviceGroups } = this.state;
 
     const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}`;
@@ -1247,7 +1428,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1258,9 +1438,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param roomId selected room id
    * @param deviceGroupId selected device group id
    * @param deviceId selected device id
-   * @param hasNodes has child nodes
    */
-  private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string, hasNodes: boolean) => {
+  private onDeviceClick = (floorId: string, roomId: string, deviceGroupId: string, deviceId: string) => {
     const { floors, rooms, deviceGroups, devices } = this.state;
 
     const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`;
@@ -1271,7 +1450,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: devices.find(device => device.id === deviceId),
       selectedAntenna: undefined,
-      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1282,9 +1460,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @param roomId selected room id
    * @param deviceGroupId selected device group id
    * @param antennaId selected antenna id
-   * @param hasNodes has child nodes
    */
-  private onAntennaClick = (floorId: string, roomId: string, deviceGroupId: string, antennaId: string, hasNodes: boolean) => {
+  private onAntennaClick = (floorId: string, roomId: string, deviceGroupId: string, antennaId: string) => {
     const { floors, rooms, deviceGroups, antennas } = this.state;
 
     const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}/${antennaId}`;
@@ -1295,7 +1472,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup: deviceGroups.find(group => group.id === deviceGroupId),
       selectedDevice: undefined,
       selectedAntenna: antennas.find(antenna => antenna.id === antennaId),
-      selectedItemHasNodes: hasNodes
     });
   }
 
@@ -1490,6 +1666,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       floorId: floorId
     });
+
+    this.clearDialog();
   };
 
   /**
@@ -1542,6 +1720,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       roomId: roomId
     });
+
+    this.clearDialog();
   };
 
   /**
@@ -1613,6 +1793,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       deviceGroupId: deviceGroupId
     });
+
+    this.clearDialog();
   };
 
   /**
@@ -1666,6 +1848,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       deviceId: deviceId
     });
+
+    this.clearDialog();
   };
 
   /**
@@ -1698,6 +1882,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       rfidAntennaId: antennaId
     });
+
+    this.clearDialog();
   };
 
   /**

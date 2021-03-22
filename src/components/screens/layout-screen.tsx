@@ -18,7 +18,7 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
@@ -35,6 +35,7 @@ import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
 import theme from "../../styles/theme";
+import ConfirmDialog from "../generic/confirm-dialog";
 
 type View = "CODE" | "VISUAL";
 
@@ -74,6 +75,8 @@ interface State {
   selectedWidgetType?: PageLayoutWidgetType;
   panelOpen: boolean;
   dataChanged: boolean;
+  confirmDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -99,7 +102,17 @@ export class LayoutScreen extends React.Component<Props, State> {
       deleteOpen: false,
       view: "VISUAL",
       panelOpen: false,
-      dataChanged: false
+      dataChanged: false,
+      confirmDialogOpen: false,
+      confirmDialogData: {
+        deletePossible: true,
+        title: strings.subLayout.editor.delete.deleteTitle,
+        text: strings.subLayout.editor.delete.deleteText,
+        onClose: this.onConfirmDialogClose,
+        onCancel: this.onConfirmDialogClose,
+        cancelButtonText: strings.genericDialog.cancel,
+        positiveButtonText: strings.genericDialog.confirm
+      }
     };
   }
 
@@ -131,15 +144,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    */
   public render() {
     const { classes, history, layout, deviceModels } = this.props;
-    const {
-      loading,
-      pageLayoutView,
-      selectedPropertyPath,
-      selectedWidgetType,
-      panelOpen,
-      deviceModelId,
-      dataChanged
-    } = this.state;
+    const { loading, dataChanged } = this.state;
 
     if (!layout || !layout.id || loading || deviceModels.length === 0) {
       return (
@@ -148,9 +153,6 @@ export class LayoutScreen extends React.Component<Props, State> {
         </div>
       );
     }
-
-    const deviceModel = deviceModels.find(model => model.id === deviceModelId);
-    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
 
     return (
       <BasicLayout
@@ -180,40 +182,8 @@ export class LayoutScreen extends React.Component<Props, State> {
           <EditorView>
             { this.renderEditor() }
           </EditorView>
-
-          <ElementSettingsPane
-            open={ panelOpen }
-            width={ 520 }
-            title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
-            menuOptions={
-              [
-                {
-                  name: strings.genericDialog.delete,
-                  action: () => this.onLayoutViewDelete(selectedPropertyPath || "")
-                }
-              ]
-            }
-          >
-            { pageLayoutView && selectedPropertyPath &&
-              <CommonLayoutPropertiesEditor
-                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-                editingSubLayout={ false }
-                pageLayoutView={ pageLayoutView }
-                displayMetrics={ displayMetrics }
-                selectedElementPath={ selectedPropertyPath }
-              />
-            }
-            { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
-              <LayoutWidgetSpecificPropertiesEditor
-                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-                editingSubLayout={ false }
-                pageLayoutView={ pageLayoutView }
-                selectedElementPath={ selectedPropertyPath }
-                displayMetrics={ displayMetrics }
-                selectedWidgetType={ selectedWidgetType }
-              />
-            }
-          </ElementSettingsPane>
+          { this.renderElementSettingsPane() }
+          { this.renderConfirmationDialog() }
         </div>
       </BasicLayout>
     );
@@ -312,6 +282,59 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders element settings pane
+   */
+  private renderElementSettingsPane = () => {
+    const { deviceModels } = this.props;
+    const {
+      pageLayoutView,
+      selectedPropertyPath,
+      selectedWidgetType,
+      panelOpen,
+      deviceModelId,
+    } = this.state;
+
+    const deviceModel = deviceModels.find(model => model.id === deviceModelId);
+    const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
+
+    return (
+      <ElementSettingsPane
+        open={ panelOpen }
+        width={ 520 }
+        title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
+        menuOptions={
+          [
+            {
+              name: strings.genericDialog.delete,
+              action: () => this.onLayoutViewDeleteClick(selectedPropertyPath || "")
+            }
+          ]
+        }
+      >
+        { pageLayoutView && selectedPropertyPath &&
+          <CommonLayoutPropertiesEditor
+            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
+            editingSubLayout={ false }
+            pageLayoutView={ pageLayoutView }
+            displayMetrics={ displayMetrics }
+            selectedElementPath={ selectedPropertyPath }
+          />
+        }
+        { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
+          <LayoutWidgetSpecificPropertiesEditor
+            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
+            editingSubLayout={ false }
+            pageLayoutView={ pageLayoutView }
+            selectedElementPath={ selectedPropertyPath }
+            displayMetrics={ displayMetrics }
+            selectedWidgetType={ selectedWidgetType }
+          />
+        }
+      </ElementSettingsPane>
+    );
+  }
+
+  /**
    * Renders code editor view
    */
   private renderCodeEditor = () => {
@@ -367,6 +390,20 @@ export class LayoutScreen extends React.Component<Props, State> {
           />
         </PanZoom>
       </div>
+    );
+  }
+
+  /**
+   * Renders confirmation dialog
+   */
+  private renderConfirmationDialog = () => {
+    const { confirmDialogOpen, confirmDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ confirmDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
     );
   }
 
@@ -628,21 +665,32 @@ export class LayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for layout view delete
+   * Event handler for layout view delete click
+   *
+   * @param path path in three structure
+   */
+  private onLayoutViewDeleteClick = (path: string) => {
+    this.setState({
+      confirmDialogOpen: true,
+      confirmDialogData: { ...this.state.confirmDialogData, onConfirm: () => this.deleteLayoutView(path) }
+    });
+  }
+
+  /**
+   * Deletes layout view
    *
    * @param path path in tree structure
    */
-  private onLayoutViewDelete = async (path: string) => {
+  private deleteLayoutView = async (path: string) => {
     const { layout } = this.props;
 
-    // TODO: Add better confirmation dialog
-    if (!layout || !window.confirm(strings.generic.confirmDelete)) {
+    if (!layout) {
       return;
     }
 
     const updatedLayout = constructTreeDeleteData(layout, path);
     this.props.setSelectedLayout(updatedLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2) });
+    this.setState({ jsonCode: JSON.stringify(updatedLayout.data, null, 2), confirmDialogOpen: false });
   }
 
   /**
@@ -652,6 +700,13 @@ export class LayoutScreen extends React.Component<Props, State> {
     this.setState({
       view: this.state.view === "CODE" ? "VISUAL" : "CODE"
     });
+  }
+
+  /**
+   * Event handler for confirm dialog close
+   */
+  private onConfirmDialogClose = () => {
+    this.setState({ confirmDialogOpen: false });
   }
 }
 

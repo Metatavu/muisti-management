@@ -31,17 +31,17 @@ export interface IStrings extends LocalizedStringsMethods {
   exhibitions: {
     listTitle: string;
     newExhibitionLabel: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+      contentTitle: string;
+    };
     createExhibitionDialog: {
       title: string;
       helpText: string;
       nameLabel: string;
       cancelButton: string;
       createButton: string;
-    };
-    deleteExhibitionDialog: {
-      title: string;
-      description: string;
-      deleteButton: string;
     };
     inProduction: string;
     inDraft: string;
@@ -178,8 +178,6 @@ export interface IStrings extends LocalizedStringsMethods {
     addLanguageVersion: string;
     newPage: string;
     addPage: string;
-    deletePage: string;
-    confirmDeletePage: string;
     addDevice: string;
     addResource: string;
     addEventTrigger: string;
@@ -250,7 +248,6 @@ export interface IStrings extends LocalizedStringsMethods {
     title: string;
     addNew: string;
     makeAsSubLayout: string;
-    confirmDelete: string;
     toolbar: {
       visual: string;
       code: string;
@@ -265,6 +262,17 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+      contentTitle: string;
+    };
+    editor: {
+      delete: {
+        deleteTitle: string;
+        deleteText: string;
+      };
+    };
   };
 
   subLayout: {
@@ -276,6 +284,16 @@ export interface IStrings extends LocalizedStringsMethods {
       height: string;
       width: string;
     };
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+    };
+    editor: {
+      delete: {
+        deleteTitle: string;
+        deleteText: string;
+      };
+    };
   };
 
   floorPlan: {
@@ -283,17 +301,41 @@ export interface IStrings extends LocalizedStringsMethods {
     listTitle: string;
     exhibitions: string;
     exhibitionsDescription: string;
+    delete: {
+      floor: {
+        deleteTitle: string;
+        deleteText: string;
+        contentTitle: string;
+      };
+      room: {
+        deleteTitle: string;
+        deleteText: string;
+        contentTitle: string;
+      };
+      deviceGroup: {
+        deleteTitle: string;
+        deleteText: string;
+        contentTitle: string;
+      };
+      device: {
+        deleteTitle: string;
+        deleteText: string;
+        contentTitle: string;
+      };
+      antenna: {
+        deleteTitle: string;
+        deleteText: string;
+      };
+    };
     floor: {
       add: string;
       new: string;
-      delete: string;
       edit: string;
       properties: string;
     };
     room: {
       add: string;
       new: string;
-      delete: string;
       edit: string;
       properties: string;
       color: string;
@@ -301,7 +343,6 @@ export interface IStrings extends LocalizedStringsMethods {
     deviceGroup: {
       add: string;
       new: string;
-      delete: string;
       edit: string;
       properties: string;
       copy: string;
@@ -309,7 +350,6 @@ export interface IStrings extends LocalizedStringsMethods {
     device: {
       add: string;
       new: string;
-      delete: string;
       edit: string;
       move: string;
       properties: string;
@@ -318,7 +358,6 @@ export interface IStrings extends LocalizedStringsMethods {
       add: string;
       new: string;
       newReaderId: string;
-      delete: string;
       edit: string;
       move: string;
       properties: string;
@@ -357,9 +396,12 @@ export interface IStrings extends LocalizedStringsMethods {
     title: string;
     capabilities: string;
     newDevice: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+      contentTitle: string;
+    };
     dialog: {
-      deleteDeviceTitle: string;
-      deleteDeviceText: string;
       brand: string;
       model: string;
       displayMetrics: {
@@ -533,8 +575,11 @@ export interface IStrings extends LocalizedStringsMethods {
     language: string;
     rooms: string;
     room: string;
-    deleteTitle: string;
-    deleteText: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+      contentTitle: string;
+    };
     contentMaterials: string;
     nameAlreadyTaken: string;
     nameIsMandatory: string;
@@ -551,8 +596,10 @@ export interface IStrings extends LocalizedStringsMethods {
     name: string;
     deviceGroup: string;
     status: string;
-    deleteTitle: string;
-    deleteText: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+    };
   };
 
   contentEditor: {
@@ -584,7 +631,6 @@ export interface IStrings extends LocalizedStringsMethods {
       resources: string;
       resource: string;
       resourceProperties: string;
-      
       transitions: {
         title: string;
         enterTransitions: string;
@@ -661,8 +707,12 @@ export interface IStrings extends LocalizedStringsMethods {
           anticipate: string;
           decelerate: string;
           linear: string;
-        }
+        };
       };
+    };
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
     };
   };
 
@@ -760,6 +810,24 @@ export interface IStrings extends LocalizedStringsMethods {
     errorMessages: {
       sessionNotFound: string;
     };
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+    }
+  };
+
+  /**
+   * Content specific delete messages
+   */
+  deleteContent: {
+    rooms: string;
+    deviceGroups: string;
+    devices: string;
+    antennas: string;
+    pages: string;
+    groupContentVersions: string;
+    exhibitions: string;
+    layouts: string;
   };
 
   /**
@@ -804,7 +872,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
   };
-  
+
   /**
    * Help dialog contents
    */

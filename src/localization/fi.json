@@ -48,17 +48,17 @@
   "exhibitions": {
     "listTitle": "Näyttelyt",
     "newExhibitionLabel": "Uusi näyttely",
+    "delete": {
+      "deleteTitle": "Poista näyttely",
+      "deleteText": "Haluatko varmasti poistaa näyttelyn {0}?",
+      "contentTitle": "Näyttelyä ei voida poistaa. Näyttely on käytössä."
+    },
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
       "helpText": "Voit luoda uuden näyttelyn täyttämällä Nimi -kentän ja painamalla Luo -paniketta",
       "nameLabel": "Nimi",
       "cancelButton": "Peruuta",
       "createButton": "Luo"
-    },
-    "deleteExhibitionDialog": {
-      "title": "Poista näyttely",
-      "description": "Haluatko varmasti poistaa näyttelyn {0}?",
-      "deleteButton": "Poista"
     },
     "cardMenu": {
       "addExhibition": "Lisää näyttely",
@@ -178,8 +178,6 @@
     "addLanguageVersion": "Uusi kieliversio",
     "newPage": "Uusi sivu",
     "addPage": "Lisää sivu",
-    "deletePage": "Poista sivu",
-    "confirmDeletePage": "Haluatko varmasti poistaa sivun?",
     "addDevice": "Lisää laite",
     "addResource": "Lisää resurssi",
     "addEventTrigger": "Lisää tapahtuma",
@@ -249,7 +247,6 @@
     "title": "Asettelut",
     "addNew": "Lisää uusi asettelu",
     "makeAsSubLayout": "Luo asettelupohjaksi",
-    "confirmDelete": "Haluatko varmasti poistaa asettelun {0}?",
     "toolbar": {
       "visual": "Visuaalinen näkymä",
       "code": "Tekninen näkymä",
@@ -263,6 +260,18 @@
     },
     "properties": {
       "title": "Ominaisuudet"
+    },
+
+    "delete": {
+      "deleteTitle": "Poista asettelu",
+      "deleteText": "Haluatko varmasti poistaa asettelun?",
+      "contentTitle": "Poistaminen ei ole mahdollista! Asettelu on käytössä."
+    },
+    "editor": {
+      "delete": {
+        "deleteTitle": "Poista valittu asettelun elementti",
+        "deleteText": "Poistetaanko valittu asettelun elementti?"
+      }
     }
   },
 
@@ -274,6 +283,16 @@
     "preview": {
       "width": "Esikatselun leveys (px)",
       "height": "Esikatselun korkeus (px)"
+    },
+    "delete": {
+      "deleteTitle": "Poista asettelupohja",
+      "deleteText": "Haluatko varmasti poistaa Asettelupohjan?"
+    },
+    "editor": {
+      "delete": {
+        "deleteTitle": "Poista valittu asettelupohjan elementti",
+        "deleteText": "Poistetaanko valittu asettelupohjan elementti?"
+      }
     }
   },
 
@@ -282,17 +301,41 @@
     "listTitle": "Tilat",
     "exhibitions": "Näyttelyt",
     "exhibitionsDescription": "Valitse näyttely, minkä alueita ja tiloja haluat muokata.",
+    "delete": {
+      "floor": {
+        "deleteTitle": "Poista tila",
+        "deleteText": "Haluatko poistaa valitun tilan?",
+        "contentTitle": "Tilaa ei voida poistaa! Tila on käytössä."
+      },
+      "room": {
+        "deleteTitle": "Poista näyttelykohde",
+        "deleteText": "Haluatko poistaa valitun näyttelykohteen?",
+        "contentTitle": "Näyttelykohdetta ei voida poistaa! Näyttelykohde on käytössä."
+      },
+      "deviceGroup": {
+        "deleteTitle": "Poista laiteryhmä",
+        "deleteText": "Haluatko poistaa valitun laiteryhmän?",
+        "contentTitle": "Laiteryhmää ei voida poistaa! Laiteryhmä on käytössä."
+      },
+      "device": {
+        "deleteTitle": "Poista Laite",
+        "deleteText": "Haluatko poistaa valitun laitteen?",
+        "contentTitle": "Laitemallia ei voida poistaa! Laitemalli on käytössä."
+      },
+      "antenna": {
+        "deleteTitle": "Poista antenni",
+        "deleteText": "Haluatko poistaa valitun antennin?"
+      }
+    },
     "floor": {
       "add": "Lisää uusi tila",
       "new": "Uusi tila",
-      "delete": "Poista tila",
       "edit": "Muokkaa tilaa",
       "properties": "Tilan ominaisuudet"
     },
     "room": {
       "add": "Lisää uusi näyttelykohde",
       "new": "Uusi näyttelykohde",
-      "delete": "Poista näyttelykohde",
       "edit": "Muokkaa näyttelykohteen aluetta",
       "properties": "Näyttelykohteen ominaisuudet",
       "color": "Näyttelykohteen täyttöväri"
@@ -300,7 +343,6 @@
     "deviceGroup": {
       "add": "Lisää uusi laiteryhmä",
       "new": "Uusi laiteryhmä",
-      "delete": "Poista laiteryhmä",
       "edit": "Muokaa laiteryhmää",
       "properties": "Laiteryhmän ominaisuudet",
       "copy": "Kopioi laiteryhmä"
@@ -308,7 +350,6 @@
     "device" : {
       "add": "Lisää uusi laite",
       "new": "Uusi laite",
-      "delete": "Poista laite",
       "edit": "Muokkaa laitetta",
       "move": "Siirrä laitetta",
       "properties": "Laitteen ominaisuudet"
@@ -317,7 +358,6 @@
       "add": "Lisää uusi antenni",
       "new": "Uusi antenni",
       "newReaderId": "123456",
-      "delete": "Poista antenni",
       "edit": "Muokkaa antennia",
       "move": "Siirrä antennia",
       "properties": "Antennin ominaisuudet"
@@ -353,11 +393,15 @@
   },
 
   "device": {
-    "deleteDeviceTitle": "Poista laite",
-    "deleteDeviceText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
+
     "title": "Laitteet",
     "capabilities": "Ominaisuudet",
     "newDevice": "Uusi laite",
+    "delete": {
+      "deleteTitle": "Poista laite",
+      "deleteText": "Haluatko varmasti poistaa laitteen? Tätä toimintoa ei voi peruuttaa.",
+      "contentTitle": "Laitetta ei voida poistaa. Laite on käytössä"
+    },
     "dialog": {
       "brand": "Merkki",
       "model": "Malli",
@@ -533,8 +577,12 @@
     "language": "Kieli",
     "rooms": "Näyttelykohteet",
     "room": "Näyttelykohde",
-    "deleteTitle": "Poista sisältökokonaisuus",
-    "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
+
+    "delete": {
+      "deleteTitle": "Poista sisältökokonaisuus",
+      "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
+      "contentTitle": "Poistaminen ei ole mahdollista! Sisältökokonaisuus on käytössä."
+    },
     "contentMaterials": "Sisältökokonaisuudet",
     "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
     "nameIsMandatory": "Nimi on pakollinen tieto",
@@ -549,8 +597,10 @@
     "name": "Nimi",
     "deviceGroup": "Laiteryhmä",
     "status": "Sisältöjen tila",
-    "deleteTitle": "Poista sisältö",
-    "deleteText": "Oletko varma, että haluat poistaa tämän sisällön?"
+    "delete": {
+      "deleteTitle": "Poista sisältö",
+      "deleteText": "Oletko varma, että haluat poistaa tämän sisällön?"
+    }
   },
 
   "contentEditor": {
@@ -662,6 +712,10 @@
           "linear": "Lineaarinen"
         }
       }
+    },
+    "delete": {
+      "deleteTitle": "Poista sivu",
+      "deleteText": "Halutako varmasti poistaa valitun sivun?"
     }
   },
 
@@ -759,6 +813,17 @@
     "errorMessages": {
       "sessionNotFound": "Vierailijan sessiota ei löytynyt"
     }
+  },
+
+  "deleteContent": {
+    "rooms": "Huoneissa: ",
+    "deviceGroups": "Laiteryhmissä: ",
+    "devices": "Laitteissa: ",
+    "antennas": "Antenneissa: ",
+    "exhibitions": "Näyttelyissä: ",
+    "pages": "Sivuissa: ",
+    "groupContentVersions": "Sisällöissä: ",
+    "layouts": "Asetteluissa"
   },
 
   "helpTexts": {
