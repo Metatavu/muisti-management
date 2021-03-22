@@ -14,7 +14,9 @@ export default class DeleteUtils {
   public static constructContentDeleteMessages = (dataHolder: DeleteDataHolder[]) => {
     const deleteMessages: ContentSpecificDeleteMessage[] = [];
     dataHolder.forEach(data => {
-      deleteMessages.push(DeleteUtils.constructDeleteMessage(data.objects, data.localizedMessage));
+      if (data.objects.length > 0) {
+        deleteMessages.push(DeleteUtils.constructDeleteMessage(data.objects, data.localizedMessage));
+      }
     });
 
     return deleteMessages;

@@ -166,10 +166,22 @@ export interface ContentSpecificDeleteMessage {
 
 /**
  * Interface describing delete data holder.
- *
- * Note: Types described in objects all have name as a parameter
  */
 export interface DeleteDataHolder {
-  objects: (Exhibition | ContentVersion | ExhibitionFloor | GroupContentVersion | ExhibitionRoom | ExhibitionDeviceGroup | ExhibitionDevice | RfidAntenna | ExhibitionPage | PageLayout | Visitor | VisitorSession | VisitorVariable)[];
+  objects: (
+    Exhibition |
+    ContentVersion |
+    ExhibitionFloor |
+    GroupContentVersion |
+    ExhibitionRoom |
+    ExhibitionDeviceGroup |
+    ExhibitionDevice |
+    RfidAntenna |
+    ExhibitionPage |
+    PageLayout |
+    Visitor |
+    VisitorSession |
+    VisitorVariable
+  )[];
   localizedMessage: string;
 }
