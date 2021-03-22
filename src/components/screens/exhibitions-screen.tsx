@@ -280,16 +280,16 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       visitors,
       visitorSessions,
     ] = await Promise.all<
-    ExhibitionPage[],
-    ContentVersion[],
-    ExhibitionDevice[],
-    ExhibitionDeviceGroup[],
-    ExhibitionFloor[],
-    ExhibitionRoom[],
-    GroupContentVersion[],
-    RfidAntenna[],
-    Visitor[],
-    VisitorSession[]
+      ExhibitionPage[],
+      ContentVersion[],
+      ExhibitionDevice[],
+      ExhibitionDeviceGroup[],
+      ExhibitionFloor[],
+      ExhibitionRoom[],
+      GroupContentVersion[],
+      RfidAntenna[],
+      Visitor[],
+      VisitorSession[]
     >([
       pagesApi.listExhibitionPages({ exhibitionId: selectedExhibition.id }),
       contentVersionsApi.listContentVersions({ exhibitionId: selectedExhibition.id }),
