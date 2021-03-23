@@ -10,7 +10,7 @@ import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
 import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab, Box, MenuItem } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton, LanguageOptions, PreviewDeviceData } from "../../types";
+import { AccessToken, ActionButton, ConfirmDialogData, LanguageOptions, PreviewDeviceData } from "../../types";
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 // tslint:disable-next-line: max-line-length
@@ -43,6 +43,7 @@ import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 import LanguageUtils from "../../utils/language-utils";
 import GenericDialog from "../generic/generic-dialog";
+import ConfirmDialog from "../generic/confirm-dialog";
 
 type View = "CODE" | "VISUAL";
 
@@ -94,6 +95,8 @@ interface State {
   dataChanged: boolean;
   timelineTabIndex: number;
   addLanguageDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
+  deleteDialogOpen: boolean;
 }
 
 /**
@@ -122,7 +125,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
       view: "VISUAL",
       propertiesExpanded: false,
       tabMap: new Map(),
-      addLanguageDialogOpen: false
+      addLanguageDialogOpen: false,
+      confirmDialogData: {
+        deletePossible: true,
+        title: strings.contentEditor.delete.deleteTitle,
+        text: strings.contentEditor.delete.deleteText,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.confirmDialog.delete,
+        onCancel: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick,
+        onConfirm: this.onDeletePageClick
+      },
+      deleteDialogOpen: false
     };
   }
 
@@ -264,6 +278,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </ElementPropertiesPane>
         </div>
         { this.renderAddContentVersionDialog() }
+        { this.renderConfirmDeleteDialog() }
       </BasicLayout>
     );
   }
@@ -302,6 +317,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
           </TextField>
         </Box>
       </GenericDialog>
+    );
+  }
+
+  /**
+   * Render confirmation dialog
+   */
+  private renderConfirmDeleteDialog = () => {
+    const { confirmDialogData, deleteDialogOpen } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
     );
   }
 
@@ -1261,11 +1290,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Get preview devices data for given content version
-   * 
+   *
    * @param contentVersion content version
    * @param devices devices
    * @param pages pages
-   * @returns preview devices 
+   * @returns preview devices
    */
   private getPreviewDevicesData = (contentVersion: ContentVersion, devices: ExhibitionDevice[], pages: ExhibitionPage[]): PreviewDeviceData[] => {
     return devices.map((device): PreviewDeviceData => {
@@ -1274,7 +1303,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         page.deviceId === device.id &&
         page.orderNumber === 0
       );
-  
+
       return { device, page };
     });
   }
@@ -1330,7 +1359,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         action: this.onPageSave,
         disabled: !dataChanged
       }, {
-        name: strings.exhibition.deletePage,
+        name: strings.contentEditor.delete.deleteTitle,
         action: this.onDeletePageClick
       });
     }
@@ -2027,7 +2056,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { contentVersions } = this.state;
     const { name, rooms } = contentVersions[0];
     const availableLanguages = this.getAvailableLanguages();
-    
+
     if (availableLanguages.length < 1) {
       return;
     }
@@ -2044,7 +2073,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for new content version language change
-   * 
+   *
    * @param event React change event
    */
   private onNewContentVersionLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -2197,14 +2226,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return;
       }
 
-      /**
-       * TODO:
-       * Add cleaner confirm dialog
-       */
-      if (!window.confirm(strings.exhibition.confirmDeletePage)) {
-        return;
-      }
-
       const isIdlePage = !!selectedDevice.idlePageId && timelineTabIndex === 0;
       if (isIdlePage) {
         const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
@@ -2229,7 +2250,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         const updatedPages = pages
           .filter(page => page.id !== selectedPage.id)
           .map(page => updatedDevicePages.find(devicePage => devicePage.id === page.id) ?? page);
-        
+
         this.setState({ pages: updatedPages });
       }
 
@@ -2258,7 +2279,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onCloseOrCancelClick = () => {
     this.setState({
-      addLanguageDialogOpen: false
+      addLanguageDialogOpen: false,
+      deleteDialogOpen: false
     });
   }
 

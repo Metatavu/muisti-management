@@ -9,9 +9,10 @@ import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
 import { WithStyles, withStyles, CircularProgress, Typography, Grid, TextField, InputAdornment, Select, MenuItem, FormControlLabel, Switch } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions, ScreenOrientation } from "../../generated/client";
+// tslint:disable-next-line: max-line-length
+import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions, ScreenOrientation, ExhibitionDevice, PageLayout, Exhibition } from "../../generated/client";
 import Api from "../../api/api";
-import { AccessToken, ActionButton, DeviceModelDataProperty, DeviceModelDataSubPropertyKey } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData, DeviceModelDataProperty, DeviceModelDataSubPropertyKey, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -24,6 +25,7 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import { DeviceModelData, DeviceModelDisplayMetricsData, DeviceModelDimensionsData } from "../../types/device-model-string-data";
 import { isTypeOfDeviceModelDimensionsData, isTypeOfDeviceModelDisplayMetricsData, isTypeOfDeviceModelCapabilitiesData } from "../../types/type-guards";
 import produce, { Draft } from "immer";
+import DeleteUtils from "../../utils/delete-utils";
 
 /**
  * Component props
@@ -49,6 +51,7 @@ interface State {
   deviceScreenOrientation: ScreenOrientation;
   deviceDialogOpen: boolean;
   deleteDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -70,7 +73,16 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
       deviceSettingsPanelOpen: false,
       deviceDialogOpen: false,
       deleteDialogOpen: false,
-      deviceScreenOrientation: ScreenOrientation.Landscape
+      deviceScreenOrientation: ScreenOrientation.Landscape,
+      confirmDialogData: {
+        title: strings.device.delete.deleteTitle,
+        text: strings.device.delete.deleteText,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.confirmDialog.delete,
+        deletePossible: true,
+        onCancel: this.onDeleteDialogClose,
+        onClose: this.onDeleteDialogClose,
+      }
     };
   }
 
@@ -133,21 +145,14 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    * Renders device model delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
-    const { selectedDeviceModel } = this.state;
-    if (selectedDeviceModel) {
-      return (
-        <ConfirmDialog
-          open={ this.state.deleteDialogOpen }
-          title={ strings.device.dialog.deleteDeviceTitle }
-          text={ strings.device.dialog.deleteDeviceText }
-          onClose={ this.onDeleteDialogClose }
-          onCancel={ this.onDeleteDialogClose }
-          onConfirm={ () => this.onDeleteDeviceClick(selectedDeviceModel) }
-          positiveButtonText={ strings.confirmDialog.delete }
-          cancelButtonText={ strings.confirmDialog.cancel }
-        />
-      );
-    }
+    const { confirmDialogData, deleteDialogOpen } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
+    );
   }
 
   /**
@@ -488,7 +493,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    */
   private getCardMenuOptions = (deviceModel: DeviceModel): ActionButton[] => {
     return [
-      { name: strings.device.dialog.deleteDeviceTitle, action: () => this.onDeleteDialogOpen(deviceModel) }
+      { name: strings.device.delete.deleteTitle, action: () => this.onDeleteDialogOpen(deviceModel) }
     ];
   }
 
@@ -689,10 +694,50 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    *
    * @param selectedDevice selected device
    */
-  private onDeleteDialogOpen = (selectedDeviceModel: DeviceModel) => {
+  private onDeleteDialogOpen = async (selectedDeviceModel: DeviceModel) => {
+    const { accessToken } = this.props;
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+
+    const [ allExhibitions, layouts ] = await Promise.all<Exhibition[], PageLayout[]>([
+      exhibitionsApi.listExhibitions(),
+      pageLayoutsApi.listPageLayouts({ deviceModelId: selectedDeviceModel.id }),
+    ]);
+
+    const devices: ExhibitionDevice[] = [];
+    const exhibitions: Exhibition[] = [];
+    for (const exhibition of allExhibitions) {
+      const exhibitionDevices = await devicesApi.listExhibitionDevices({
+        exhibitionId: exhibition.id!,
+        deviceModelId: selectedDeviceModel.id
+      });
+
+      if (exhibitionDevices.length > 0) {
+        devices.push(...exhibitionDevices);
+        exhibitions.push(exhibition);
+      }
+    }
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    if (devices.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.device.delete.contentTitle;
+      const holder: DeleteDataHolder[] = [];
+
+      holder.push({ objects: devices, localizedMessage: strings.deleteContent.devices });
+      holder.push({ objects: exhibitions, localizedMessage: strings.deleteContent.exhibitions });
+      holder.push({ objects: layouts, localizedMessage: strings.deleteContent.layouts });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    tempDeleteData.onConfirm = () => this.onDeleteDeviceClick(selectedDeviceModel);
+
     this.setState({
       selectedDeviceModel,
-      deleteDialogOpen: true
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
     });
   }
 
