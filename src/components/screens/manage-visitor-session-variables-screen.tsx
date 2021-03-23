@@ -9,7 +9,7 @@ import styles from "../../styles/screens/manage-visitor-session-variables-screen
 import { WithStyles, withStyles, CircularProgress, Typography, List, ListItem, ListItemText, TextField, Checkbox, FormControlLabel, MenuItem } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 import { DeviceModel, Visitor, VisitorSession, VisitorSessionVariable, VisitorVariable, VisitorVariableType } from "../../generated/client";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
 import { setDeviceModels } from "../../actions/devices";
@@ -51,6 +51,7 @@ interface State {
   languages: string[];
   dataChanged: boolean;
   confirmEmptyOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 interface SessionVariableData {
@@ -75,7 +76,17 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       loading: false,
       languages: [],
       dataChanged: false,
-      confirmEmptyOpen: false
+      confirmEmptyOpen: false,
+      confirmDialogData: {
+        deletePossible: true,
+        title: strings.manageVisitorSessionVariables.confirmEmptyTitle,
+        text: strings.manageVisitorSessionVariables.confirmEmptyText,
+        onClose: this.onConfirmEmptyClose,
+        onCancel: this.onConfirmEmptyClose,
+        onConfirm: this.emptyVariableValue,
+        cancelButtonText: strings.genericDialog.cancel,
+        positiveButtonText: strings.genericDialog.confirm
+      }
     };
   }
 
@@ -234,7 +245,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Renders session variable
-   * 
+   *
    * @param variableData session variable data
    */
   private renderSessionVariableListItem = (variableData: SessionVariableData) => {
@@ -242,7 +253,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     const { sessionVariable, visitorVariable } = variableData;
     const { name, value } = sessionVariable;
     const selected = name === selectedVariableData?.sessionVariable.name;
-    
+
     return (
       <ListItem
         button
@@ -365,7 +376,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    * Render empty variable confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
-    const { selectedVariableData } = this.state;
+    const { selectedVariableData, confirmDialogData, confirmEmptyOpen } = this.state;
 
     if (!selectedVariableData) {
       return null;
@@ -373,26 +384,15 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
     return (
       <ConfirmDialog
-        open={ this.state.confirmEmptyOpen }
-        title={
-          strings.formatString(
-            strings.manageVisitorSessionVariables.confirmEmptyTitle,
-            selectedVariableData.visitorVariable.name
-          ) as string
-        }
-        text={ strings.manageVisitorSessionVariables.confirmEmptyText }
-        onClose={ this.onConfirmEmptyClose }
-        onCancel={ this.onConfirmEmptyClose }
-        onConfirm={ this.emptyVariableValue }
-        cancelButtonText={ strings.genericDialog.cancel }
-        positiveButtonText={ strings.genericDialog.confirm }
+        open={ confirmEmptyOpen }
+        confirmDialogData={ confirmDialogData }
       />
     );
   }
 
   /**
    * Display session visitors
-   * 
+   *
    * @param session visitor session
    */
   private displaySessionVisitors = (session: VisitorSession) => {
@@ -418,7 +418,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Displays session last modified
-   * 
+   *
    * @param session visitor session
    */
   private displaySessionLastModifiedAt = (session: VisitorSession) => {
@@ -488,7 +488,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       const foundVisitors = await Promise.all(
         visitorIds.map(visitorId => visitorsApi.findVisitor({ exhibitionId, visitorId }))
       );
-  
+
       this.setState({
         foundSessions,
         foundVisitors,
@@ -514,7 +514,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Sets selected session
-   * 
+   *
    * @param selectedSession selected session
    */
   private setSelectedSession = (selectedSession: VisitorSession) => async () => {
@@ -553,7 +553,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Sets selected session variable
-   * 
+   *
    * @param selectedVariableData selected variable data
    */
   private setSelectedSessionVariable = (selectedVariableData: SessionVariableData) => () => {
@@ -562,7 +562,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Event handler for variable value change
-   * 
+   *
    * @param type visitor variable type
    * @param event React change event
    */
@@ -591,7 +591,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Returns updated variable value based on given type and event data
-   * 
+   *
    * @param type visitor variable type
    * @param event React change event
    */

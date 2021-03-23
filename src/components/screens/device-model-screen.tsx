@@ -127,7 +127,7 @@ export class DeviceModelScreen extends React.Component<Props, State> {
    */
   private getActionButtons = () => {
     return [
-      { name: strings.device.dialog.deleteDeviceTitle, action: () => null }
+      { name: strings.device.delete.deleteTitle, action: () => null }
     ] as ActionButton[];
   }
 }

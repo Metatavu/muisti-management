@@ -16,7 +16,7 @@ import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import codemirror from "codemirror";
@@ -37,6 +37,7 @@ import "react-resizable/css/styles.css";
 import PagePreview from "../preview/page-preview";
 import DisplayMetrics from "../../types/display-metrics";
 import theme from "../../styles/theme";
+import ConfirmDialog from "../generic/confirm-dialog";
 
 type View = "CODE" | "VISUAL";
 
@@ -74,6 +75,8 @@ interface State {
   height: number;
   width: number;
   dataChanged: boolean;
+  confirmDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -100,7 +103,17 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       resizing: false,
       height: 500,
       width: 500,
-      dataChanged: false
+      dataChanged: false,
+      confirmDialogOpen: false,
+      confirmDialogData: {
+        deletePossible: true,
+        title: strings.subLayout.editor.delete.deleteTitle,
+        text: strings.subLayout.editor.delete.deleteText,
+        onClose: this.onConfirmDialogClose,
+        onCancel: this.onConfirmDialogClose,
+        cancelButtonText: strings.genericDialog.cancel,
+        positiveButtonText: strings.genericDialog.confirm
+      }
     };
   }
 
@@ -132,29 +145,12 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const { classes, history, subLayout, keycloak } = this.props;
     const {
       loading,
-      pageLayoutView,
-      selectedPropertyPath,
-      selectedWidgetType,
-      panelOpen,
       error,
       name,
       width,
       height,
       dataChanged
     } = this.state;
-
-    /**
-     * Easiest way for now is to fake display metrics for preview.
-     * TODO: Must add logic for calculating pixel density based on the size of the preview
-     */
-    const displayMetrics: DisplayMetrics = {
-      density: 3,
-      heightPixels: height,
-      widthPixels: width,
-      xdpi: 515,
-      ydpi: 515,
-      densityDpi: 480
-    };
 
     if (!subLayout || !subLayout.id || loading) {
       return (
@@ -212,40 +208,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
           <EditorView>
             { this.renderEditor() }
           </EditorView>
-
-          <ElementSettingsPane
-            open={ panelOpen }
-            width={ 420 }
-            title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
-            menuOptions={
-              [
-                {
-                  name: strings.genericDialog.delete,
-                  action: () => this.onLayoutViewDelete(selectedPropertyPath || "")
-                }
-              ]
-            }
-          >
-            { pageLayoutView && selectedPropertyPath &&
-              <CommonLayoutPropertiesEditor
-                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-                editingSubLayout={ true }
-                displayMetrics={ displayMetrics }
-                pageLayoutView={ pageLayoutView }
-                selectedElementPath={ selectedPropertyPath }
-              />
-            }
-            { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
-              <LayoutWidgetSpecificPropertiesEditor
-                onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-                editingSubLayout={ true }
-                displayMetrics={ displayMetrics }
-                pageLayoutView={ pageLayoutView }
-                selectedElementPath={ selectedPropertyPath }
-                selectedWidgetType={ selectedWidgetType }
-              />
-            }
-          </ElementSettingsPane>
+          { this.renderElementSettingsPane() }
+          { this.renderConfirmationDialog() }
         </div>
       </BasicLayout>
     );
@@ -284,6 +248,69 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       default:
         return null;
     }
+  }
+
+  /**
+   * Renders element settings pane
+   */
+  private renderElementSettingsPane = () => {
+    const {
+      pageLayoutView,
+      selectedPropertyPath,
+      selectedWidgetType,
+      panelOpen,
+      width,
+      height,
+    } = this.state;
+
+    /**
+     * Easiest way for now is to fake display metrics for preview.
+     * TODO: Must add logic for calculating pixel density based on the size of the preview
+     */
+    const displayMetrics: DisplayMetrics = {
+      density: 3,
+      heightPixels: height,
+      widthPixels: width,
+      xdpi: 515,
+      ydpi: 515,
+      densityDpi: 480
+    };
+
+    return (
+      <ElementSettingsPane
+        open={ panelOpen }
+        width={ 420 }
+        title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
+        menuOptions={
+          [
+            {
+              name: strings.genericDialog.delete,
+              action: () => this.onLayoutViewDeleteClick(selectedPropertyPath || "")
+            }
+          ]
+        }
+      >
+        { pageLayoutView && selectedPropertyPath &&
+          <CommonLayoutPropertiesEditor
+            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
+            editingSubLayout={ true }
+            displayMetrics={ displayMetrics }
+            pageLayoutView={ pageLayoutView }
+            selectedElementPath={ selectedPropertyPath }
+          />
+        }
+        { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
+          <LayoutWidgetSpecificPropertiesEditor
+            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
+            editingSubLayout={ true }
+            displayMetrics={ displayMetrics }
+            pageLayoutView={ pageLayoutView }
+            selectedElementPath={ selectedPropertyPath }
+            selectedWidgetType={ selectedWidgetType }
+          />
+        }
+      </ElementSettingsPane>
+    );
   }
 
   /**
@@ -361,6 +388,20 @@ export class SubLayoutScreen extends React.Component<Props, State> {
           </ResizableBox>
         </PanZoom>
       </div>
+    );
+  }
+
+  /**
+   * Renders confirmation dialog
+   */
+  private renderConfirmationDialog = () => {
+    const { confirmDialogOpen, confirmDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ confirmDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
     );
   }
 
@@ -634,21 +675,32 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for layout view delete
+   * Event handler for layout view delete click
+   *
+   * @param path path in three structure
+   */
+  private onLayoutViewDeleteClick = (path: string) => {
+    this.setState({
+      confirmDialogOpen: true,
+      confirmDialogData: { ...this.state.confirmDialogData, onConfirm: () => this.deleteLayoutView(path) }
+    });
+  }
+
+  /**
+   * Deletes layout view
    *
    * @param path path in tree structure
    */
-  private onLayoutViewDelete = async (path: string) => {
+  private deleteLayoutView = async (path: string) => {
     const { subLayout } = this.props;
 
-    // TODO: Add better confirmation dialog
-    if (!subLayout || !window.confirm(strings.generic.confirmDelete)) {
+    if (!subLayout) {
       return;
     }
 
     const updatedSubLayout = constructTreeDeleteData(subLayout, path);
     this.props.setSelectedSubLayout(updatedSubLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2) });
+    this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2), confirmDialogOpen: false });
   }
 
   /**
@@ -658,6 +710,13 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     this.setState({
       view: this.state.view === "CODE" ? "VISUAL" : "CODE"
     });
+  }
+
+  /**
+   * Event handler for confirm dialog close
+   */
+  private onConfirmDialogClose = () => {
+    this.setState({ confirmDialogOpen: false });
   }
 }
 

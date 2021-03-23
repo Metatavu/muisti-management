@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice } from "../generated/client";
+import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, RfidAntenna, GroupContentVersion, PageLayout, VisitorVariable, Visitor, VisitorSession } from "../generated/client";
 import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./device-model-string-data";
 
 /**
@@ -138,4 +138,50 @@ export interface PreviewDeviceData {
  */
 export interface MultiLingualContentVersion {
   languageVersions: ContentVersion[];
+}
+
+/**
+ * Interface describing confirm dialog data
+ */
+export interface ConfirmDialogData {
+  deletePossible: boolean;
+  title: string;
+  text: string;
+  positiveButtonText: string;
+  cancelButtonText: string;
+  onClose: () => void;
+  onCancel: () => void;
+  onConfirm?: () => void;
+  contentTitle?: string;
+  contentSpecificMessages?: ContentSpecificDeleteMessage[];
+}
+
+/**
+ * Interface describing content specific delete message with list of names
+ */
+export interface ContentSpecificDeleteMessage {
+  localizedMessage: string;
+  names: string[];
+}
+
+/**
+ * Interface describing delete data holder.
+ */
+export interface DeleteDataHolder {
+  objects: (
+    Exhibition |
+    ContentVersion |
+    ExhibitionFloor |
+    GroupContentVersion |
+    ExhibitionRoom |
+    ExhibitionDeviceGroup |
+    ExhibitionDevice |
+    RfidAntenna |
+    ExhibitionPage |
+    PageLayout |
+    Visitor |
+    VisitorSession |
+    VisitorVariable
+  )[];
+  localizedMessage: string;
 }

@@ -38,6 +38,7 @@ export interface FindExhibitionDeviceRequest {
 export interface ListExhibitionDevicesRequest {
     exhibitionId: string;
     exhibitionGroupId?: string;
+    deviceModelId?: string;
 }
 
 export interface UpdateExhibitionDeviceRequest {
@@ -198,6 +199,10 @@ export class ExhibitionDevicesApi extends runtime.BaseAPI {
 
         if (requestParameters.exhibitionGroupId !== undefined) {
             queryParameters['exhibitionGroupId'] = requestParameters.exhibitionGroupId;
+        }
+
+        if (requestParameters.deviceModelId !== undefined) {
+            queryParameters['deviceModelId'] = requestParameters.deviceModelId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

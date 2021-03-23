@@ -9,8 +9,8 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch, FormControl } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout } from "../../generated/client";
-import { AccessToken, ActionButton } from '../../types';
+import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout, ExhibitionPage, Exhibition } from "../../generated/client";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -22,6 +22,8 @@ import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
+import ConfirmDialog from "../generic/confirm-dialog";
+import DeleteUtils from "../../utils/delete-utils";
 
 /**
  * Component props
@@ -48,6 +50,8 @@ interface State {
   newLayout: Partial<PageLayout>;
   newSubLayout: Partial<SubLayout>;
   createSubLayout: boolean;
+  deleteDialogOpen: boolean;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -67,9 +71,34 @@ class LayoutsScreen extends React.Component<Props, State> {
       addNewDialogOpen: false,
       newLayout: {},
       newSubLayout: {},
-      createSubLayout: false
+      createSubLayout: false,
+      deleteDialogOpen: false,
+      confirmDialogData: this.defaultDeleteData
     };
   }
+
+  /**
+   * Event handler for clear dialog
+   */
+  private clearDialog = () => {
+    this.setState({
+      deleteDialogOpen: false,
+      confirmDialogData: this.defaultDeleteData
+    });
+  }
+
+  /**
+   * Default values for delete dialog
+   */
+  private defaultDeleteData: ConfirmDialogData = {
+    title: strings.layout.delete.deleteTitle,
+    text: strings.layout.delete.deleteText,
+    cancelButtonText: strings.confirmDialog.cancel,
+    positiveButtonText: strings.confirmDialog.delete,
+    deletePossible: true,
+    onCancel: this.clearDialog,
+    onClose: this.clearDialog,
+  };
 
   /**
    * Component render method
@@ -105,6 +134,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       >
         { this.renderLayoutCardsList() }
         { this.renderAddNewDialog() }
+        { this.renderConfirmDialog() }
       </BasicLayout>
     );
   }
@@ -219,6 +249,20 @@ class LayoutsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders confirmation dialog
+   */
+  private renderConfirmDialog = () => {
+    const { deleteDialogOpen, confirmDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
+    );
+  }
+
+  /**
    * Render device modal select
    */
   private renderDeviceModelSelect = () => {
@@ -258,7 +302,7 @@ class LayoutsScreen extends React.Component<Props, State> {
   private getLayoutCardMenuOptions = (pageLayout: PageLayout): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.delete,
-      action: () => this.deleteLayout(pageLayout)
+      action: () => this.onDeletePageLayoutClick(pageLayout)
     }];
   }
 
@@ -271,7 +315,7 @@ class LayoutsScreen extends React.Component<Props, State> {
   private getSubLayoutCardMenuOptions = (subLayout: SubLayout): ActionButton[] => {
     return [{
       name: strings.exhibitions.cardMenu.delete,
-      action: () => this.deleteSubLayout(subLayout)
+      action: () => this.onDeleteSubLayoutClick(subLayout)
     }];
   }
 
@@ -284,6 +328,82 @@ class LayoutsScreen extends React.Component<Props, State> {
     return [
       { name: strings.layout.addNew, action: this.toggleAddNewDialog }
     ] as ActionButton[];
+  }
+
+  /**
+   * Event handler for page layout delete click
+   *
+   * @param pageLayout page layout to delete
+   */
+  private onDeletePageLayoutClick = async (pageLayout: PageLayout) => {
+    const { accessToken } = this.props;
+
+    if (!pageLayout.id) {
+      return;
+    }
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const pagesApi = Api.getExhibitionPagesApi(accessToken);
+
+    const allExhibitions = await exhibitionsApi.listExhibitions();
+
+    const pages: ExhibitionPage[] = [];
+    const exhibitions: Exhibition[] = [];
+
+    for (const exhibition of allExhibitions) {
+      const exhibitionPages = await pagesApi.listExhibitionPages({
+        exhibitionId: exhibition.id!,
+        pageLayoutId: pageLayout.id
+      });
+
+      if (exhibitionPages.length > 0) {
+        pages.push(...exhibitionPages);
+        exhibitions.push(exhibition);
+      }
+    }
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    tempDeleteData.title = strings.layout.delete.deleteTitle;
+    tempDeleteData.text = strings.layout.delete.deleteText;
+    tempDeleteData.onConfirm = () => this.deleteLayout(pageLayout);
+
+    if (pages.length > 0) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.layout.delete.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+
+      holder.push({ objects: pages, localizedMessage: strings.deleteContent.pages });
+      holder.push({ objects: exhibitions, localizedMessage: strings.deleteContent.exhibitions });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
+  }
+
+  /**
+   * Event handler for sub layout delete click
+   *
+   * @param pageLayout sub layout to delete
+   */
+  private onDeleteSubLayoutClick = async (subLayout: SubLayout) => {
+    if (!subLayout.id) {
+      return;
+    }
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+
+    tempDeleteData.title = strings.subLayout.delete.deleteTitle;
+    tempDeleteData.text = strings.subLayout.delete.deleteText;
+    tempDeleteData.onConfirm = () => this.deleteSubLayout(subLayout);
+
+    this.setState({
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData
+    });
   }
 
   /**
@@ -363,10 +483,12 @@ class LayoutsScreen extends React.Component<Props, State> {
         children: []
       }
     };
+
     const subLayoutsApi = Api.getSubLayoutsApi(accessToken);
     const createdSubLayout = await subLayoutsApi.createSubLayout({ subLayout });
     subLayouts.push(createdSubLayout);
     setSubLayouts(subLayouts);
+
     this.setState({
       addNewDialogOpen: false
     });
@@ -381,6 +503,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     const { layouts } = this.props;
     const { pathname } = this.props.history.location;
     const foundLayout = layouts.find(layout => layout.id === layoutId);
+
     if (!foundLayout) {
       return;
     }
@@ -398,6 +521,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     const { subLayouts } = this.props;
     const { pathname } = this.props.history.location;
     const foundSubLayout = subLayouts.find(subLayout => subLayout.id === subLayoutId);
+
     if (!foundSubLayout) {
       return;
     }
@@ -450,14 +574,6 @@ class LayoutsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Event handler for set status
-   */
-  private setStatus = () => {
-    alert(strings.comingSoon);
-    return;
-  }
-
-  /**
    * Deletes layout
    *
    * @param layout layout
@@ -465,12 +581,8 @@ class LayoutsScreen extends React.Component<Props, State> {
   private deleteLayout = async (pageLayout: PageLayout) => {
     const { accessToken, layouts } = this.props;
     const pageLayoutId = pageLayout.id;
-    if (!pageLayoutId) {
-      return;
-    }
 
-    const confirmMessage = strings.formatString(strings.layout.confirmDelete, pageLayout.name);
-    if (!window.confirm(confirmMessage as string)) {
+    if (!pageLayoutId) {
       return;
     }
 
@@ -484,6 +596,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       }
     });
 
+    this.clearDialog();
     this.props.setLayouts(updatedLayouts);
   }
 
@@ -499,11 +612,6 @@ class LayoutsScreen extends React.Component<Props, State> {
       return;
     }
 
-    const confirmMessage = strings.formatString(strings.layout.confirmDelete, subLayout.name);
-    if (!window.confirm(confirmMessage as string)) {
-      return;
-    }
-
     const layoutsApi = Api.getSubLayoutsApi(accessToken);
     await layoutsApi.deleteSubLayout({ subLayoutId });
 
@@ -514,6 +622,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       }
     });
 
+    this.clearDialog();
     this.props.setSubLayouts(updatedSubLayouts);
   }
 

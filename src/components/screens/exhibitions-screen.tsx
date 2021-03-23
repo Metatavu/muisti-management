@@ -9,8 +9,8 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, TextField } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { Exhibition } from "../../generated/client";
-import { AccessToken, ActionButton } from '../../types';
+import { ContentVersion, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession } from "../../generated/client";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -19,6 +19,7 @@ import GenericDialog from "../generic/generic-dialog";
 import Api from "../../api/api";
 import { setExhibitions } from "../../actions/exhibitions";
 import produce from "immer";
+import DeleteUtils from "../../utils/delete-utils";
 import ConfirmDialog from "../generic/confirm-dialog";
 
 /**
@@ -40,6 +41,7 @@ interface State {
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
   selectedExhibition?: Exhibition;
+  confirmDialogData: ConfirmDialogData;
 }
 
 /**
@@ -57,7 +59,16 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       addDialogOpen: false,
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
+      confirmDialogData: {
+        title: strings.exhibitions.delete.deleteTitle,
+        text: strings.exhibitions.delete.deleteText,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.confirmDialog.delete,
+        deletePossible: true,
+        onCancel: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick,
+      }
     };
   }
 
@@ -155,24 +166,14 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * Renders delete confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
-    const { selectedExhibition } = this.state;
-    if (selectedExhibition) {
-      const description = strings.formatString(
-        strings.exhibitions.deleteExhibitionDialog.description,
-        selectedExhibition.name) as string;
-      return (
-        <ConfirmDialog
-          open={ this.state.deleteDialogOpen }
-          title={ strings.exhibitions.deleteExhibitionDialog.title }
-          text={ description }
-          onClose={ this.onCloseOrCancelClick }
-          onCancel={ this.onCloseOrCancelClick }
-          onConfirm={ () => this.deleteExhibition(selectedExhibition) }
-          positiveButtonText={ strings.confirmDialog.delete }
-          cancelButtonText={ strings.confirmDialog.cancel }
-        />
-      );
-    }
+    const { deleteDialogOpen, confirmDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ deleteDialogOpen }
+        confirmDialogData={ confirmDialogData }
+      />
+    );
   }
 
   /**
@@ -221,7 +222,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for exhibition data change
-   * 
+   *
    * @param event event
    */
   private onExhibitionDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,13 +241,107 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for exhibition delete click
-   * 
+   *
    * @param selectedExhibition exhibition
    */
-  private onDeleteExhibitionClick = (selectedExhibition: Exhibition) => {
+  private onDeleteExhibitionClick = async (selectedExhibition: Exhibition) => {
+    const { accessToken } = this.props;
+
+    if (!selectedExhibition.id) {
+      return;
+    }
+
+    this.setState({ loading: true });
+
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
+    tempDeleteData.onConfirm = () => this.deleteExhibition(selectedExhibition);
+
+    const pagesApi = Api.getExhibitionPagesApi(accessToken);
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
+    const devicesApi = Api.getExhibitionDevicesApi(accessToken);
+    const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
+    const floorsApi = Api.getExhibitionFloorsApi(accessToken);
+    const roomsApi = Api.getExhibitionRoomsApi(accessToken);
+    const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
+    const antennasApi = Api.getRfidAntennasApi(accessToken);
+    const visitorsApi = Api.getVisitorsApi(accessToken);
+    const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
+    const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
+
+    const [
+      pages,
+      contentVersions,
+      devices,
+      deviceGroups,
+      floors,
+      rooms,
+      groupContentVersions,
+      antennas,
+      visitors,
+      visitorSessions,
+    ] = await Promise.all<
+      ExhibitionPage[],
+      ContentVersion[],
+      ExhibitionDevice[],
+      ExhibitionDeviceGroup[],
+      ExhibitionFloor[],
+      ExhibitionRoom[],
+      GroupContentVersion[],
+      RfidAntenna[],
+      Visitor[],
+      VisitorSession[]
+    >([
+      pagesApi.listExhibitionPages({ exhibitionId: selectedExhibition.id }),
+      contentVersionsApi.listContentVersions({ exhibitionId: selectedExhibition.id }),
+      devicesApi.listExhibitionDevices({ exhibitionId: selectedExhibition.id }),
+      deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId: selectedExhibition.id }),
+      floorsApi.listExhibitionFloors({ exhibitionId: selectedExhibition.id }),
+      roomsApi.listExhibitionRooms({ exhibitionId: selectedExhibition.id }),
+      groupContentVersionsApi.listGroupContentVersions({ exhibitionId: selectedExhibition.id }),
+      antennasApi.listRfidAntennas({ exhibitionId: selectedExhibition.id }),
+      visitorsApi.listVisitors({ exhibitionId: selectedExhibition.id }),
+      visitorSessionsApi.listVisitorSessions({ exhibitionId: selectedExhibition.id }),
+    ]);
+
+    /** Promise.all allows only 10 variables at once */
+    const visitorVariables = await visitorVariablesApi.listVisitorVariables({ exhibitionId: selectedExhibition.id });
+
+    if (
+      pages.length > 0 ||
+      contentVersions.length > 0 ||
+      devices.length > 0 ||
+      deviceGroups.length > 0 ||
+      floors.length > 0 ||
+      rooms.length > 0 ||
+      groupContentVersions.length > 0 ||
+      antennas.length > 0 ||
+      visitors.length > 0 ||
+      visitorSessions.length > 0 ||
+      visitorVariables.length > 0
+    ) {
+      tempDeleteData.deletePossible = false;
+      tempDeleteData.contentTitle = strings.exhibitions.delete.contentTitle;
+
+      const holder: DeleteDataHolder[] = [];
+      holder.push({ objects: pages, localizedMessage: strings.deleteContent.pages });
+      holder.push({ objects: contentVersions, localizedMessage: strings.deleteContent.contentVersions });
+      holder.push({ objects: devices, localizedMessage: strings.deleteContent.devices });
+      holder.push({ objects: deviceGroups, localizedMessage: strings.deleteContent.deviceGroups });
+      holder.push({ objects: floors, localizedMessage: strings.deleteContent.floors });
+      holder.push({ objects: rooms, localizedMessage: strings.deleteContent.rooms });
+      holder.push({ objects: groupContentVersions, localizedMessage: strings.deleteContent.groupContentVersions });
+      holder.push({ objects: antennas, localizedMessage: strings.deleteContent.antennas });
+      holder.push({ objects: visitors, localizedMessage: strings.deleteContent.visitors });
+      holder.push({ objects: visitorSessions, localizedMessage: strings.deleteContent.visitorSessions });
+      holder.push({ objects: visitorVariables, localizedMessage: strings.deleteContent.visitorVariables });
+      tempDeleteData.contentSpecificMessages = DeleteUtils.constructContentDeleteMessages(holder);
+    }
+
     this.setState({
       selectedExhibition,
-      deleteDialogOpen: true
+      deleteDialogOpen: true,
+      confirmDialogData: tempDeleteData,
+      loading: false
     });
   }
 
@@ -256,6 +351,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   private onDialogSaveClick = async () => {
     const { accessToken, exhibitions } = this.props;
     const { selectedExhibition } = this.state;
+
     if (!accessToken || !selectedExhibition) {
       return;
     }
@@ -267,7 +363,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     this.props.setExhibitions(
       produce(exhibitions, draft => {
-        draft.push(newExhibition)
+        draft.push(newExhibition);
       })
     );
 
@@ -290,12 +386,13 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Deletes exhibition
-   * 
+   *
    * @param selectedExhibition exhibition
    */
   private deleteExhibition = async (selectedExhibition: Exhibition) => {
     const { accessToken, exhibitions } = this.props;
     const exhibitionId = selectedExhibition.id;
+
     if (!accessToken || !exhibitionId) {
       return;
     }
