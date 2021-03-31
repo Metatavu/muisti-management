@@ -133,12 +133,62 @@ class PlayerViewEditor extends React.Component<Props, State> {
             onCheckboxChange={ onValueChange }
           />
         </div>
+        { this.renderPlaybackButtons() }
         <Divider
           variant="fullWidth"
           color="rgba(0,0,0,0.1)"
           style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
         />
       </Box>
+    );
+  }
+
+  /**
+   * Render playback buttons editor
+   */
+  private renderPlaybackButtons = () => {
+    const { pageLayoutView, onValueChange } = this.props;
+    const showPlaybackControlsProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.ShowPlaybackControls, PageLayoutViewPropertyType.Boolean);
+    const showRewindButtonProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.ShowRewindButton, PageLayoutViewPropertyType.Boolean);
+    const showFastForwardButtonProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.ShowFastForwardButton, PageLayoutViewPropertyType.Boolean);
+    const showPreviousButtonProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.ShowPreviousButton, PageLayoutViewPropertyType.Boolean);
+    const showNextButtonProp = getProperty(pageLayoutView, LayoutPlayerViewPropKeys.ShowNextButton, PageLayoutViewPropertyType.Boolean);
+
+    if (showPlaybackControlsProp?.value !== "true") {
+      return null;
+    }
+
+    return (
+      <div style={{ marginLeft: theme.spacing(2) }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <GenericPropertyCheckbox
+            label={ strings.layoutEditor.playerView.showRewindButton }
+            property={ showRewindButtonProp }
+            onCheckboxChange={ onValueChange }
+          />
+        </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyCheckbox
+              label={ strings.layoutEditor.playerView.showFastForwardButton }
+              property={ showFastForwardButtonProp }
+              onCheckboxChange={ onValueChange }
+            />
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyCheckbox
+              label={ strings.layoutEditor.playerView.showPreviousButton }
+              property={ showPreviousButtonProp }
+              onCheckboxChange={ onValueChange }
+            />
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <GenericPropertyCheckbox
+              label={ strings.layoutEditor.playerView.showNextButton }
+              property={ showNextButtonProp }
+              onCheckboxChange={ onValueChange }
+            />
+          </div>
+      </div>
     );
   }
 
