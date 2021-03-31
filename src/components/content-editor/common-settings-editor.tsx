@@ -68,13 +68,13 @@ class CommonSettingsEditor extends React.Component<Props, State> {
    */
   private renderLayoutSelect = (page: ExhibitionPage) => {
     const { layouts, onLayoutChange } = this.props;
-    const layoutSelectItems = layouts.map(layout => {
-      return (
+    const layoutSelectItems = layouts
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(layout =>
         <MenuItem key={ layout.id } value={ layout.id }>
           { layout.name }
         </MenuItem>
       );
-    });
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
