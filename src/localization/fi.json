@@ -510,7 +510,11 @@
       "src": "Videon polku",
       "autoPlay": "Aloita video automaattisesti",
       "autoPlayDelay": "Automaattisen toiston viive (ms)",
-      "showPlaybackControls": "Näytä toiston säätimet"
+      "showPlaybackControls": "Näytä toiston säätimet",
+      "showRewindButton": "Näytä pikakelaus taaksepäin -painike",
+      "showFastForwardButton": "Näytä pikakelaus eteenpäin -painike",
+      "showPreviousButton": "Näytä edellinen -painike",
+      "showNextButton": "Näytä seuraava -painike"
     },
 
     "button": {

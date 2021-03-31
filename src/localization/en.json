@@ -508,7 +508,11 @@
       "src": "Video path",
       "autoPlay": "Play automatically",
       "autoPlayDelay": "Auto-play delay (ms)",
-      "showPlaybackControls": "Show playback controls"
+      "showPlaybackControls": "Show playback controls",
+      "showRewindButton": "Show rewind button",
+      "showFastForwardButton": "Show fast-forward button",
+      "showPreviousButton": "Show previous button",
+      "showNextButton": "Show next button"
     },
 
     "button": {
