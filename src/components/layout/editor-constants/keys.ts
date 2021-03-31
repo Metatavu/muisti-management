@@ -59,7 +59,11 @@ export enum LayoutPlayerViewPropKeys {
   Src = "src",
   ShowPlaybackControls = "showPlaybackControls",
   AutoPlay = "autoPlay",
-  AutoPlayDelay = "autoPlayDelay"
+  AutoPlayDelay = "autoPlayDelay",
+  ShowRewindButton = "showRewindButton",
+  ShowFastForwardButton = "showFastForwardButton",
+  ShowPreviousButton = "showPreviousButton",
+  ShowNextButton = "showNextButton"
 }
 
 /**

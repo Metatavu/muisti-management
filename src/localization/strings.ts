@@ -510,6 +510,10 @@ export interface IStrings extends LocalizedStringsMethods {
       autoPlay: string;
       autoPlayDelay: string;
       showPlaybackControls: string;
+      showRewindButton: string;
+      showFastForwardButton: string;
+      showPreviousButton: string;
+      showNextButton: string;
     };
 
     button: {

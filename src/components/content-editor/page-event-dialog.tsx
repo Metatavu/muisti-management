@@ -307,15 +307,13 @@ class PageEventDialog extends React.Component<Props, State> {
    * Render pages in exhibition
    */
   private renderPagesInExhibition = () => {
-    const pageSelectionItems = this.props.pages.map(page => {
-      return (
+    return this.props.pages
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(page =>
         <MenuItem key={ `event-trigger-navigation-${page.id}` } value={ page.id }>
           { page.name }
         </MenuItem>
       );
-    });
-
-    return pageSelectionItems;
   }
 
   /**
