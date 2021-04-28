@@ -31,6 +31,7 @@ import SubLayoutScreen from "./screens/sub-layout-screen";
 import ContentEditorScreen from "./screens/content-editor-screen";
 import VisitorVariablesScreen from "./screens/visitor-variables-screen";
 import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
+import VisitorsManagementScreen from "./screens/visitors-management-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -214,6 +215,16 @@ class App extends React.Component<Props, State> {
                       render={({ history }) => (
                         <DeviceModelsScreen
                           history={ history }
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/exhibitions/:exhibitionId/visitors"
+                      exact={ true }
+                      render={({ history, match }) => (
+                        <VisitorsManagementScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
                         />
                       )}
                     />

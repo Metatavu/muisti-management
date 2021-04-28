@@ -166,9 +166,10 @@
   },
 
   "exhibition": {
-    "reception": "Vastaanotto",
+    "visitors": "Vierailijat",
+    "reception": "Vierailijan vastaanotto",
     "visitorVariables": "Kävijämuuttujat",
-    "resetVisitorVariables": "Hallinnoi vierailijasession valintoja",
+    "resetVisitorVariables": "Hallinnoi vierailijan valintoja",
     "exhibitionManagement": "Näyttelyn hallinta",
     "content": "Sisältö",
     "tech": "Tekniikka",
@@ -745,7 +746,8 @@
     "refresh": "Päivitä",
     "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
     "properties": "Ominaisuudet",
-    "noSelection": "Ei valintaa"
+    "noSelection": "Ei valintaa",
+    "clear": "Tyhjennä"
   },
 
   "spaces": {
@@ -817,6 +819,27 @@
     "errorMessages": {
       "sessionNotFound": "Vierailijan sessiota ei löytynyt"
     }
+  },
+
+  "visitorsManagement": {
+    "title": "Vierailijat",
+    "startSession": "Aloita sessio",
+    "startNewSession": "Aloita uusi vierailu",
+    "editSession": "Muokkaa vierailua",
+    "fillWithAnonymousData": "Täytä anonyymeillä tiedoilla",
+    "tickets": "Liput",
+    "tag": "Tagi:",
+    "ticketContactInformation": "Lipun yhteystiedot",
+    "activeVisitorSessions": "Aktiiviset vierailijat",
+    "visitor": "vierailija",
+    "visitors": "vierailijaa",
+    "search": "Haku...",
+    "placeTagToReader": "Aseta lippu skannerin päälle luodaksesi uuden session",
+    "scanRFID": "Skannaa RFID lippu",
+    "scanTicketsHelp": "Skannaa lippuja lisätäksesi ne uuteen sessioon.",
+    "sessionDuration": "Vierailun kesto on 6h.",
+    "selection": "Valinta",
+    "value": "Arvo"
   },
 
   "deleteContent": {

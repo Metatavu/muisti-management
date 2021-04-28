@@ -166,6 +166,7 @@
   },
 
   "exhibition": {
+    "visitors": "Visitors management",
     "reception": "Reception",
     "visitorVariables": "Visitor variable management",
     "resetVisitorVariables": "Manage visitor session variables",
@@ -733,7 +734,8 @@
     "refresh": "Refresh",
     "unsaved": "You have unsaved changes, are you sure you want to leave?",
     "properties": "Properties",
-    "noSelection": "No selection"
+    "noSelection": "No selection",
+    "clear": "Clear"
   },
 
   "spaces": {
@@ -805,6 +807,27 @@
     "errorMessages": {
       "sessionNotFound": "Visitor session not found"
     }
+  },
+
+  "visitorsManagement": {
+    "title": "Visitors management",
+    "startSession": "Start session",
+    "startNewSession": "Start new session",
+    "editSession": "Edit session",
+    "fillWithAnonymousData": "Fill with anonymous data",
+    "tickets": "Tickets",
+    "tag": "Tag ID:",
+    "ticketContactInformation": "Contact information",
+    "activeVisitorSessions": "Active sessions",
+    "visitor": "visitor",
+    "visitors": "visitors",
+    "search": "Search...",
+    "placeTagToReader": "Place RFID ticket to a reader to start a new session",
+    "scanRFID": "Scan RFID ticket",
+    "scanTicketsHelp": "Scan tickets to add them to a new session",
+    "sessionDuration": "Session duration is 6 hours.",
+    "selection": "Selection",
+    "value": "Value"
   },
 
   "deleteContent": {

@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line max-len
 import { Button, Checkbox, CircularProgress, FormControlLabel, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Toolbar, Typography, WithStyles, withStyles } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
@@ -13,7 +13,7 @@ import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/visitor-variables-screen/visitor-variables-editor-view";
 import theme from "../../styles/theme";
-import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import ConfirmDialog from "../generic/confirm-dialog";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";

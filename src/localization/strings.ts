@@ -166,6 +166,7 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   exhibition: {
+    visitors: string;
     reception: string;
     visitorVariables: string;
     resetVisitorVariables: string;
@@ -733,6 +734,7 @@ export interface IStrings extends LocalizedStringsMethods {
     add: string;
     save: string;
     cancel: string;
+    clear: string;
     delete: string;
     loadNew: string;
     name: string;
@@ -819,6 +821,30 @@ export interface IStrings extends LocalizedStringsMethods {
       deleteText: string;
     }
   };
+
+  /**
+   * Visitor management screen related translations
+   */
+  visitorsManagement: {
+    title: string;
+    startSession: string;
+    startNewSession: string;
+    editSession: string;
+    fillWithAnonymousData: string;
+    tickets: string;
+    tag: string;
+    ticketContactInformation: string;
+    activeVisitorSessions: string;
+    visitor: string;
+    visitors: string;
+    search: string;
+    placeTagToReader: string;
+    scanRFID: string;
+    scanTicketsHelp: string;
+    sessionDuration: string;
+    selection: string;
+    value: string;
+  }
 
   /**
    * Content specific delete messages

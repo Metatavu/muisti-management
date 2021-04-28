@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Typography } from '@material-ui/core';
+import { WithStyles, withStyles, Typography, Box, IconButton } from "@material-ui/core";
 import styles from "../../styles/element-navigation-pane";
 
 /**
@@ -17,6 +17,9 @@ interface Props extends WithStyles<typeof styles> {
    * default: 400px
    */
   width?: number;
+  actionButtonIcon?: JSX.Element;
+  actionButtonTitle?: string;
+  actionButtonClick?: () => void;
 }
 
 /**
@@ -45,21 +48,40 @@ class ElementNavigationPane extends React.Component<Props, State> {
    * Render basic layout
    */
   public render() {
-    const { classes, title, width, children } = this.props;
+    const {
+      classes,
+      title,
+      width,
+      children,
+      actionButtonIcon,
+      actionButtonTitle,
+      actionButtonClick
+    } = this.props;
 
     return (
-      <div className={ classes.root } style={{ width: width ? width : 400 }}>
-        <div className={ classes.container }>
-          { title &&
-            <div className={ classes.header }>
-              <Typography variant="h3">{ title }</Typography>
-            </div>
+      <Box className={ classes.root } style={{ width: width ? width : 400 }}>
+        <Box className={ classes.container }>
+          { title && 
+            <Box className={ classes.header }>
+              <Typography variant="h3">
+                { title }
+              </Typography>
+              { actionButtonClick &&
+                <IconButton
+                  color="primary"
+                  title={ actionButtonTitle }
+                  onClick={ actionButtonClick }
+                >
+                  { actionButtonIcon }
+                </IconButton>
+              }
+            </Box>
           }
-          <div className={ classes.content }>
+          <Box className={ classes.content }>
             { children }
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }
