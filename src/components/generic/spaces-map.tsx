@@ -6,7 +6,7 @@ import L from "leaflet";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
-import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna } from "../../generated/client";
+import { ExhibitionRoom, Polygon as ApiPolygon, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, ScreenOrientation, Point, RfidAntenna, DeviceImageLoadStrategy } from "../../generated/client";
 import { FeatureCollection, Polygon } from "geojson";
 import strings from "../../localization/strings";
 import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
@@ -387,6 +387,7 @@ export default class SpacesMap extends React.Component<Props, State> {
         groupId: selectedItems.deviceGroup.id,
         modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,
+        imageLoadStrategy: DeviceImageLoadStrategy.MEMORY,
         location: {
           x: marker._latlng.lat,
           y: marker._latlng.lng
