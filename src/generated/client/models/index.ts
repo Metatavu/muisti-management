@@ -5,6 +5,7 @@ export * from './ContentVersion';
 export * from './ContentVersionActiveCondition';
 export * from './Coordinates';
 export * from './DeviceGroupVisitorSessionStartStrategy';
+export * from './DeviceImageLoadStrategy';
 export * from './DeviceModel';
 export * from './DeviceModelCapabilities';
 export * from './DeviceModelDimensions';

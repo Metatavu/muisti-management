@@ -8,7 +8,7 @@ import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, TextField, MenuItem, Select, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna } from "../../generated/client";
+import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, DeviceImageLoadStrategy } from "../../generated/client";
 import { AccessToken } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
@@ -271,6 +271,20 @@ class FloorPlanInfo extends React.Component<Props, State> {
           <MenuItem key={ "landscape" } value={ ScreenOrientation.Landscape }>{ strings.floorPlan.properties.landscape }</MenuItem>
           <MenuItem key={ "portrait" } value={ ScreenOrientation.Portrait }>{ strings.floorPlan.properties.portrait }</MenuItem>
           <MenuItem key={ "forcedPortrait" } value={ ScreenOrientation.ForcedPortrait }>{ strings.floorPlan.properties.forcedPortrait }</MenuItem>
+        </Select>
+
+        <InputLabel id="imageLoadStrategy-label" style={{ marginTop: theme.spacing(2) }}>
+          { strings.floorPlan.properties.imageLoadStrategy }
+        </InputLabel>
+        <Select
+          { ...this.selectFieldGenericProps }
+          labelId="imageLoadStrategy-label"
+          name="imageLoadStrategy"
+          value={ selectedDevice.imageLoadStrategy || "" }
+          onChange={ onChangeDeviceProperties }
+        >
+          <MenuItem key={ "memory" } value={ DeviceImageLoadStrategy.MEMORY }>{ strings.floorPlan.properties.imageLoadStrategyMemory }</MenuItem>
+          <MenuItem key={ "disk" } value={ DeviceImageLoadStrategy.DISK }>{ strings.floorPlan.properties.imageLoadStrategyDisk }</MenuItem>
         </Select>
       </>
     );
