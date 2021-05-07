@@ -14,6 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    DeviceImageLoadStrategy,
+    DeviceImageLoadStrategyFromJSON,
+    DeviceImageLoadStrategyFromJSONTyped,
+    DeviceImageLoadStrategyToJSON,
     Point,
     PointFromJSON,
     PointFromJSONTyped,
@@ -74,6 +78,12 @@ export interface ExhibitionDevice {
     screenOrientation: ScreenOrientation;
     /**
      * 
+     * @type {DeviceImageLoadStrategy}
+     * @memberof ExhibitionDevice
+     */
+    imageLoadStrategy: DeviceImageLoadStrategy;
+    /**
+     * 
      * @type {string}
      * @memberof ExhibitionDevice
      */
@@ -121,6 +131,7 @@ export function ExhibitionDeviceFromJSONTyped(json: any, ignoreDiscriminator: bo
         'name': json['name'],
         'location': !exists(json, 'location') ? undefined : PointFromJSON(json['location']),
         'screenOrientation': ScreenOrientationFromJSON(json['screenOrientation']),
+        'imageLoadStrategy': DeviceImageLoadStrategyFromJSON(json['imageLoadStrategy']),
         'idlePageId': !exists(json, 'idlePageId') ? undefined : json['idlePageId'],
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -143,6 +154,7 @@ export function ExhibitionDeviceToJSON(value?: ExhibitionDevice | null): any {
         'name': value.name,
         'location': PointToJSON(value.location),
         'screenOrientation': ScreenOrientationToJSON(value.screenOrientation),
+        'imageLoadStrategy': DeviceImageLoadStrategyToJSON(value.imageLoadStrategy),
         'idlePageId': value.idlePageId,
     };
 }
