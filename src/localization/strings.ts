@@ -376,6 +376,9 @@ export interface IStrings extends LocalizedStringsMethods {
       physicalHeight: string;
       model: string;
       screenOrientation: string;
+      imageLoadStrategy: string;
+      imageLoadStrategyMemory: string;
+      imageLoadStrategyDisk: string;
       landscape: string;
       portrait: string;
       forcedPortrait: string;
