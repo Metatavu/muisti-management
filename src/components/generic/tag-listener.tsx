@@ -4,6 +4,7 @@ import strings from "../../localization/strings";
 import { Mqtt } from "../../mqtt";
 import styles from "../../styles/components/generic/tag-listener";
 import logo from "../../resources/gfx/muisti-logo.png";
+import { Config } from "../../constants/configuration";
 
 /**
  * Interface representing component properties
@@ -12,13 +13,8 @@ interface Props extends WithStyles<typeof styles> {
   mqtt: Mqtt;
   antenna: string;
   threshold: number;
+  hide: boolean;
   onTagRegister: (tag: string) => void;
-}
-
-/**
- * Interface representing component state
- */
-interface State {
 }
 
 interface MqttProximityUpdate {
@@ -26,47 +22,44 @@ interface MqttProximityUpdate {
   strength: number;
 }
 
-const MQTT_PREFIX = process.env.REACT_APP_MQTT_PREFIX || "";
+const config = Config.getConfig();
 
 /**
  * React component for listening RFID tags
  */
-class TagListener extends React.Component<Props, State> {
-
-  /**
-   * Constructor
-   *
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-    };
-  }
+class TagListener extends React.Component<Props> {
 
   /**
    * Component did mount life cycle event
    */
   public componentDidMount = () => {
-    const basePath = `${MQTT_PREFIX}${this.props.antenna}`;
-    this.props.mqtt.subscribe(basePath, this.onMqttProximityUpdate);
-    this.props.mqtt.subscribe(`${basePath}/`, this.onMqttProximityUpdate);
+    const { mqtt, antenna } = this.props;
+
+    const basePath = `${config.mqttConfig.prefix}${antenna}`;
+    mqtt.subscribe(basePath, this.onMqttProximityUpdate);
+    mqtt.subscribe(`${basePath}/`, this.onMqttProximityUpdate);
   }
 
   /**
    * Component will unmount life cycle event
    */
-  public componentWillUnmount() {
-    const basePath = `${MQTT_PREFIX}${this.props.antenna}`;
-    this.props.mqtt.unsubscribe(basePath, this.onMqttProximityUpdate);
-    this.props.mqtt.unsubscribe(`${basePath}/`, this.onMqttProximityUpdate);
+  public componentWillUnmount = () => {
+    const { mqtt, antenna } = this.props;
+
+    const basePath = `${config.mqttConfig.prefix}${antenna}`;
+    mqtt.unsubscribe(basePath, this.onMqttProximityUpdate);
+    mqtt.unsubscribe(`${basePath}/`, this.onMqttProximityUpdate);
   }
 
   /**
    * Component render method
    */
   public render = () => {
-    const { classes } = this.props;
+    const { classes, hide } = this.props;
+
+    if (hide) {
+      return null;
+    }
 
     return (
       <div className={ classes.container }>
@@ -77,7 +70,7 @@ class TagListener extends React.Component<Props, State> {
           <Typography
             className={ classes.text }
             variant="h3"
-            >
+          >
             { strings.reception.registerTag }
           </Typography>
         </div>

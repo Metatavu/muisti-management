@@ -827,6 +827,7 @@
   "visitorsManagement": {
     "title": "Vierailijat",
     "startSession": "Aloita sessio",
+    "updateSession": "Päivitä sessio",
     "startNewSession": "Aloita uusi vierailu",
     "editSession": "Muokkaa vierailua",
     "fillWithAnonymousData": "Täytä anonyymeillä tiedoilla",
@@ -842,7 +843,16 @@
     "scanTicketsHelp": "Skannaa lippuja lisätäksesi ne uuteen sessioon.",
     "sessionDuration": "Vierailun kesto on 6h.",
     "selection": "Valinta",
-    "value": "Arvo"
+    "value": "Arvo",
+    "sessionExpires": "Vanhenee",
+    "delete": {
+      "deleteTitle": "Poista vierailusessio",
+      "deleteText": "Haluatko varmasti poistaa session?"
+    },
+    "error": {
+      "moreThenOneUser": "Luetulle RFID-tagille löytyi useampi kuin yksi käyttäjä",
+      "noUserFound": "RFID tagillä ei löytynyt yhtään aktiivista sessiota. Ole hyvä ja yritä uudestaan"
+    }
   },
 
   "deleteContent": {

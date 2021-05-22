@@ -1,3 +1,5 @@
+import { Config } from "../constants/configuration";
+
 /**
  * Interface describing an uploaded file
  */
@@ -6,24 +8,24 @@ export interface OutputFile {
   meta: {
     contentType: string;
     fileName: string;
-  }
+  };
 }
 
 /**
  * Interface describing a presigned post response
  */
 export interface PresignedPostResponse {
-  error: boolean,
-  data: PresignedPostData,
-  message: string | null
+  error: boolean;
+  data: PresignedPostData;
+  message: string | null;
 }
 
 /**
  * Interface describing a presigned post data
  */
 export interface PresignedPostData {
-  url: string,
-  fields: any
+  url: string;
+  fields: any;
 }
 
 /**
@@ -41,7 +43,7 @@ export default class FileUpload {
   public static getPresignedPostData = (folder: string, file: File): Promise<PresignedPostResponse> => {
     return new Promise(resolve => {
       const xhr = new XMLHttpRequest();
-      const url = process.env.REACT_APP_USER_CONTENT_UPLOAD_URL as string;
+      const url = Config.getConfig().userContentUploadUrl;
 
       xhr.open("POST", url, true);
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -82,7 +84,7 @@ export default class FileUpload {
 
   /**
    * Uploads a file into the server
-   * 
+   *
    * @param file file as file or blob object
    * @param folder folder
    * @returns promise of created file
@@ -91,7 +93,7 @@ export default class FileUpload {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
-    
+
     const response = await fetch(FileUpload.getUploadUrl().toString(), {
       method: "POST",
       body: formData
@@ -102,11 +104,11 @@ export default class FileUpload {
 
   /**
    * Returns upload URL
-   * 
+   *
    * @returns upload URL
    */
   private static getUploadUrl = () => {
-    const apiUrl = new URL(process.env.REACT_APP_API_BASE_PATH || "");
+    const apiUrl = new URL(Config.getConfig().apiBasePath);
     apiUrl.pathname = "/files";
     return apiUrl;
   }

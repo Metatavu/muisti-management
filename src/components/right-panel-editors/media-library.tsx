@@ -15,6 +15,7 @@ import Api from "../../api/api";
 import { StoredFile, ExhibitionPageResource } from "../../generated/client";
 import FileUploader from "../generic/file-uploader";
 import FileUpload from "../../utils/file-upload";
+import { Config } from "../../constants/configuration";
 
 /**
  * Interface representing component properties
@@ -312,16 +313,14 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       return;
     }
 
-    await Promise.all(files.map(async (file) => {
+    await Promise.all(files.map(async file => {
       const presignedPostResponse = await FileUpload.getPresignedPostData(selectedUploadFolder.fileName, file);
       if (presignedPostResponse.error) {
         throw new Error(presignedPostResponse.message || "Error when creating presigned post request");
       }
-      
+
       await FileUpload.uploadFileToS3(presignedPostResponse.data, file);
     }));
-
-    
 
     this.fetchFolderData(selectedUploadFolder.uri);
     this.setState({
@@ -341,7 +340,7 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
     const mediaApi = Api.getStoredFilesApi(accessToken);
 
     const files = await mediaApi.listStoredFiles({
-      folder: folderUri.split(process.env.REACT_APP_CDN_BASE_PATH || "")[1]
+      folder: folderUri.split(Config.getConfig().cdnBasePath)[1]
     });
 
     const tempMap = new Map(openFolders);

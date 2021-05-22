@@ -111,7 +111,6 @@
   },
 
   "dashboard": {
-
     "newExhibitionButton": "New exhibition",
     "newContentVersionButton": "New content version",
     "navigation": {
@@ -815,6 +814,7 @@
   "visitorsManagement": {
     "title": "Visitors management",
     "startSession": "Start session",
+    "updateSession": "Update session",
     "startNewSession": "Start new session",
     "editSession": "Edit session",
     "fillWithAnonymousData": "Fill with anonymous data",
@@ -830,7 +830,16 @@
     "scanTicketsHelp": "Scan tickets to add them to a new session",
     "sessionDuration": "Session duration is 6 hours.",
     "selection": "Selection",
-    "value": "Value"
+    "value": "Value",
+    "sessionExpires": "Expires",
+    "delete": {
+      "deleteTitle": "Delete visitor session",
+      "deleteText": "Are you sure that you want to delete this visitor session?"
+    },
+    "error": {
+      "moreThenOneUser": "More then one user could be found with given tag",
+      "noUserFound": "No active session could be found with read RFID-tag. Please try again"
+    }
   },
 
   "deleteContent": {

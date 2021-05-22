@@ -154,10 +154,18 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     const label = visitorVariable.type;
 
     return (
-      <ListItem button key={ id } selected={ selected } onClick={ () => this.onListItemClick(visitorVariable) }>
-        <ListItemText primary={ name } secondary={ label } />
+      <ListItem
+        button
+        key={ id }
+        selected={ selected }
+        onClick={ () => this.onListItemClick(visitorVariable) }
+      >
+        <ListItemText
+          primary={ name }
+          secondary={ label }
+        />
         <ListItemSecondaryAction>
-          <IconButton 
+          <IconButton
             title={ strings.generic.delete }
             edge="end"
             aria-label="delete"
@@ -432,7 +440,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for visitor variable item click
-   * 
+   *
    * @param visitorVariable visitor variable
    */
   private onListItemClick = (visitorVariable: VisitorVariable) => {
@@ -466,7 +474,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for editable from UI change
-   * 
+   *
    * @param event React change event
    * @param checked checkbox checked state
    */
@@ -521,20 +529,20 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedVisitorVariable: { ...selectedVisitorVariable, _enum: [ ...(selectedVisitorVariable._enum || []), "" ] },
+      selectedVisitorVariable: { ...selectedVisitorVariable, _enum: [ ...(selectedVisitorVariable._enum || []), "" ] },
       dataChanged: true
     });
   }
 
   /**
    * Event handler for enum item change
-   * 
+   *
    * @param event event
    * @param index index of changed value
    */
   private onEnumItemChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index: number) => {
     const value = event.target.value;
-    
+
     const { selectedVisitorVariable } = this.state;
     if (!selectedVisitorVariable) {
       return;
@@ -551,7 +559,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for enum item delete click
-   * 
+   *
    * @param index index of value to be deleted
    */
   private onEnumItemDelete = (index: number) => {
@@ -571,7 +579,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for visitor variable delete click
-   * 
+   *
    * @param visitorVariable visitor variable to be deleted
    */
   private onDeleteVisitorVariableClick = (visitorVariable: VisitorVariable) => {
@@ -615,7 +623,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
 
   /**
    * Sorts variables by name
-   * 
+   *
    * @param a visitor variable A
    * @param b visitor variable B
    */

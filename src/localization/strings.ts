@@ -562,7 +562,7 @@ export interface IStrings extends LocalizedStringsMethods {
       unboundedRipple: string;
       tabIndicatorFullWidth: string;
       data: string;
-    }
+    };
 
     addLayoutViewDialog: {
       name: string;
@@ -822,7 +822,7 @@ export interface IStrings extends LocalizedStringsMethods {
     delete: {
       deleteTitle: string;
       deleteText: string;
-    }
+    };
   };
 
   /**
@@ -831,6 +831,7 @@ export interface IStrings extends LocalizedStringsMethods {
   visitorsManagement: {
     title: string;
     startSession: string;
+    updateSession: string;
     startNewSession: string;
     editSession: string;
     fillWithAnonymousData: string;
@@ -847,7 +848,16 @@ export interface IStrings extends LocalizedStringsMethods {
     sessionDuration: string;
     selection: string;
     value: string;
-  }
+    sessionExpires: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+    };
+    error: {
+      noUserFound: string;
+      moreThenOneUser: string;
+    };
+  };
 
   /**
    * Content specific delete messages
@@ -934,7 +944,7 @@ export interface IStrings extends LocalizedStringsMethods {
         setUserValueDescription: string;
         navigateDescription: string;
         executeWebScriptDescription: string;
-      }
+      };
     };
     floorPlanEditor: {
       groupAssemblyPointDescription: string;
@@ -998,7 +1008,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
   };
-};
+}
 
 const strings: IStrings = new LocalizedStrings({
   en: require("./en.json"),

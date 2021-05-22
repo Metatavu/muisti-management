@@ -185,3 +185,40 @@ export interface DeleteDataHolder {
   )[];
   localizedMessage: string;
 }
+
+/**
+ * Interface describing static application configuration
+ */
+export interface StaticConfig {
+  keycloakConfig: KeycloakConfig;
+  apiBasePath: string;
+  cdnBasePath: string;
+  userContentUploadUrl: string;
+  mqttConfig: MQTTConfig;
+}
+
+/**
+ * Interface describing keycloak configuration
+ */
+export interface KeycloakConfig {
+  url: string;
+  realm: string;
+  clientId: string;
+}
+
+/**
+ * Interface describing mqtt configuration
+ */
+export interface MQTTConfig {
+  secure: boolean;
+  host: string;
+  port: number;
+  path: string;
+  prefix: string;
+  userName: string;
+  password: string;
+  newVisitorAntenna: string;
+  resetVisitorVariableAntenna: string;
+  visitorManagementAntenna: string;
+  sessionTime: number;
+}

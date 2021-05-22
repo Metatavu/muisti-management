@@ -14,18 +14,16 @@ import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
 import { setDeviceModels } from "../../actions/devices";
 import TagListener from "../generic/tag-listener";
-import MqttListener from "../generic/mqtt-listener";
+import { MqttListener } from "../generic/mqtt-listener";
 import Api from "../../api/api";
 import moment from "moment";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import produce from "immer";
 import WithDebounce from "../generic/with-debounce";
 import ConfirmDialog from "../generic/confirm-dialog";
+import { Config } from "../../constants/configuration";
 
-/**
- * Tag antenna Mqtt channel path from environment variables
- */
-const { REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA } = process.env;
+const config = Config.getConfig();
 
 /**
  * Component props
@@ -144,9 +142,6 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    * Renders tag listener
    */
   private renderTagListener = () => {
-    if (!REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA) {
-      return null;
-    }
 
     return (
       <MqttListener onError={ this.onMqttError }>
@@ -154,7 +149,8 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         <TagListener
           threshold={ 75 }
           mqtt={ mqtt }
-          antenna={ REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA }
+          antenna={ config.mqttConfig.resetVisitorVariableAntenna }
+          hide={ false }
           onTagRegister={ this.onTagRegister }
         />
       )}
@@ -168,6 +164,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
   private renderSessionList = () => {
     const { classes } = this.props;
     const { foundSessions } = this.state;
+
     if (!foundSessions) {
       return null;
     }
@@ -188,7 +185,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Renders session list item
-   * 
+   *
    * @param session visitor session
    */
   private renderSessionListItem = (session: VisitorSession) => {
@@ -668,7 +665,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Updates visitor session to API
-   * 
+   *
    * @param visitorSession updated visitor session
    * @returns updated visitor session from API
    */
@@ -700,7 +697,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
   /**
    * Sorts variables by name
-   * 
+   *
    * @param a visitor variable A
    * @param b visitor variable B
    */
