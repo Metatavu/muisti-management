@@ -498,7 +498,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    */
   private updateSession = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { selectedSession, selectedLanguage } = this.state;
+    const { visitorSessions, selectedSession, selectedLanguage } = this.state;
 
     if (!accessToken || !selectedSession || !selectedSession.id || !selectedLanguage) {
       return;
@@ -515,10 +515,18 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSessionId: selectedSession.id
     });
 
+    const updatedSessionList = produce(visitorSessions, draft => {
+      const index = visitorSessions.findIndex(session => session.id === selectedSession.id);
+      if (index > -1) {
+        draft.splice(index, 1, updatedSession);
+      }
+    });
+
     this.setState({
       dataChanged: false,
       selectedSession: updatedSession,
-      contentLoading: false
+      contentLoading: false,
+      visitorSessions: updatedSessionList
     });
   }
 
@@ -652,7 +660,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    */
   private fetchTagInfo = async (tag: string) => {
     const { accessToken, exhibitionId } = this.props;
-    const { anonymousData, visitors } = this.state;
+    const { anonymousData, visitors, selectedSession } = this.state;
 
     if (!accessToken) {
       return;
@@ -695,6 +703,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       this.setState({
         selectedVisitor: visitor,
         visitors: updatedVisitorList,
+        selectedSession: selectedSession && { ...selectedSession, visitorIds: updatedVisitorList.map(_visitor => _visitor.id!) },
         dataChanged: true
       });
 
@@ -709,10 +718,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @param clickedTag clicked tag
    */
   private onRemoveTag = (clickedTag: string) => {
-    const { visitors } = this.state;
+    const { visitors, selectedSession } = this.state;
+
+    if (!selectedSession) {
+      return;
+    }
+
+    const visitorToDelete = visitors.find(visitor => visitor.tagId === clickedTag);
 
     this.setState({
       visitors: visitors.filter(visitor => visitor.tagId !== clickedTag),
+      selectedSession: { ...selectedSession, visitorIds: selectedSession.visitorIds.filter(visitorId => visitorId !== visitorToDelete?.id) },
       selectedVisitor: undefined
     });
   }
@@ -775,9 +791,9 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @param tag mqtt tag
    */
   private onTagRegister = (tag: string) => {
-    const { selectedSession, visitors } = this.state;
+    const { visitors } = this.state;
 
-    if (selectedSession || visitors.filter(visitor => visitor.tagId === tag).length > 0) {
+    if (visitors.filter(visitor => visitor.tagId === tag).length > 0) {
       return;
     }
 
