@@ -87,14 +87,9 @@ const VisitorVariables: React.FC<Props> = ({ visitorVariables, visitorSession, o
         justifyContent="center"
         alignItems="center"
       >
-        <Box mr={ 2 }>
-          <Typography>
-            { variable.name }
-          </Typography>
-        </Box>
         <TextField
           select={ select }
-          label={ strings.visitorsManagement.selection }
+          label={ variable.name}
           name={ variable.name }
           onChange={ onVariableChange }
           value={ value?.value }

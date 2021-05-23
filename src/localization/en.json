@@ -812,6 +812,7 @@
   },
 
   "visitorsManagement": {
+    "searchGroup": "Search group",
     "title": "Visitors management",
     "startSession": "Start session",
     "updateSession": "Update session",
@@ -828,6 +829,7 @@
     "placeTagToReader": "Place RFID ticket to a reader to start a new session",
     "scanRFID": "Scan RFID ticket",
     "scanTicketsHelp": "Scan tickets to add them to a new session",
+    "scanMoreTicketsHelp": "Scan more tickets to add them to the session",
     "sessionDuration": "Session duration is 6 hours.",
     "selection": "Selection",
     "value": "Value",

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import Api from "../../api/api";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-import { Box, Button, Checkbox, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography, WithStyles, withStyles, Dialog, DialogTitle, DialogActions } from "@material-ui/core";
+import { Box, Button, Checkbox, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography, WithStyles, withStyles, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
 import { ContentVersion, Exhibition, Visitor, VisitorSession, VisitorSessionState, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
@@ -141,6 +141,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
             title={ strings.visitorsManagement.activeVisitorSessions }
             actionButtonClick={ this.clearValues }
             actionButtonIcon={ <AddIcon /> }
+            actionButtonTitle={ strings.visitorsManagement.startNewSession }
           >
             { this.renderActiveSessions() }
           </ElementNavigationPane>
@@ -170,11 +171,13 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     return (
       <Box>
-        <Box p={ 2 } display="flex" alignItems="center">
-          <TextField
-            placeholder={ strings.visitorsManagement.search }
-            disabled={ true }
-          />
+        <Box
+          pb={ 2 }
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography>{ strings.visitorsManagement.searchGroup }</Typography>
           <Box ml={ 2 }>
             <IconButton
               title={ strings.visitorsManagement.scanRFID }
@@ -227,7 +230,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const {
       anonymousData,
       selectedVisitor,
-      contentLoading
+      contentLoading,
+      selectedSession
     } = this.state;
 
     if (contentLoading) {
@@ -241,31 +245,41 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     return (
       <Box p={ 4 }>
         <Typography variant="h2">
-          { strings.visitorsManagement.startNewSession }
+          { selectedSession ? strings.visitorsManagement.editSession : strings.visitorsManagement.startNewSession }
         </Typography>
         <Box mt={ 2 } mb={ 2 }>
           <Typography>
-            { strings.visitorsManagement.scanTicketsHelp }
+            { selectedSession ? strings.visitorsManagement.scanMoreTicketsHelp : strings.visitorsManagement.scanTicketsHelp}
           </Typography>
           <Typography>
             { strings.visitorsManagement.sessionDuration }
           </Typography>
         </Box>
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={ anonymousData }
-              name="anonymous"
-              onChange={ () => this.setState({ anonymousData: !anonymousData }) }
-            />
-          }
-          label={ strings.visitorsManagement.fillWithAnonymousData }
-        />
-        { this.renderLanguageSelect() }
-        <Box display="flex">
-          { this.renderTagList() }
-          { selectedVisitor && this.renderTagInformation() }
+        <Box display="flex" flex={ 1 }>
+          <Box flex={ 1 } mr={ 2 }>
+            <Box display="flex" mb={ 4 } alignItems="center">
+              <Box flex={ 6 }>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                    color="primary"
+                    checked={ anonymousData }
+                    name="anonymous"
+                    onChange={ () => this.setState({ anonymousData: !anonymousData })}
+                  />
+                  }
+                  label={ strings.visitorsManagement.fillWithAnonymousData }
+                />
+              </Box>
+              <Box flex={ 2 }>
+                { this.renderLanguageSelect() }
+              </Box>
+            </Box>
+            { this.renderTagList() }
+          </Box>
+          <Box  flex={ 1 } ml={ 2 }>
+            { selectedVisitor && this.renderTagInformation() }
+          </Box>
           { this.renderTagListener() }
         </Box>
       </Box>
@@ -291,26 +305,21 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     });
 
     return (
-      <>
-        <Typography
-          variant="h3"
-        >
-          { strings.reception.selectLanguageTitle }
-        </Typography>
+      <Box flex={ 2 }>
         <FormControl>
           <InputLabel id="languageLabel">
-            { strings.reception.language }
+            { strings.reception.selectLanguageTitle }
           </InputLabel>
           <Select
             label={ strings.reception.language }
             labelId="languageLabel"
             onChange={ this.onLanguageChange }
             value={ selectedLanguage }
-            >
+          >
             { selectOptions }
           </Select>
         </FormControl>
-      </>
+      </Box>
     );
   }
 
@@ -340,7 +349,6 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       <Box
         flex={ 1 }
         p={ 2 }
-        mr={ 4 }
         bgcolor={ theme.palette.background.default }
       >
         { visitors.length !== 0 ?
@@ -429,12 +437,22 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
           disableTypography
           id="RFID-dialog-title"
         >
-          { strings.visitorsManagement.scanRFID }
+          { strings.visitorsManagement.searchGroup }
         </DialogTitle>
+        <DialogContent>
+          <Box
+            flex={ 1 }
+            display="flex"
+            justifyContent="center"  
+          >
+            <Typography>{ strings.visitorsManagement.scanRFID }</Typography>
+          </Box>
+        </DialogContent>
         <DialogActions>
           <Button
             onClick={ () => this.setState({ mqttScannerOpen: false }) }
             color="primary"
+            variant="contained"
           >
             { strings.generic.cancel }
           </Button>

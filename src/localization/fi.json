@@ -825,6 +825,7 @@
   },
 
   "visitorsManagement": {
+    "searchGroup": "Hae ryhmää",
     "title": "Vierailijat",
     "startSession": "Aloita sessio",
     "updateSession": "Päivitä sessio",
@@ -841,6 +842,7 @@
     "placeTagToReader": "Aseta lippu skannerin päälle luodaksesi uuden session",
     "scanRFID": "Skannaa RFID lippu",
     "scanTicketsHelp": "Skannaa lippuja lisätäksesi ne uuteen sessioon.",
+    "scanMoreTicketsHelp": "Voit lisätä lisää lippuja sessioon skannaamalla.",
     "sessionDuration": "Vierailun kesto on 6h.",
     "selection": "Valinta",
     "value": "Arvo",

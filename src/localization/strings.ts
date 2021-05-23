@@ -829,6 +829,7 @@ export interface IStrings extends LocalizedStringsMethods {
    * Visitor management screen related translations
    */
   visitorsManagement: {
+    searchGroup: string;
     title: string;
     startSession: string;
     updateSession: string;
@@ -845,6 +846,7 @@ export interface IStrings extends LocalizedStringsMethods {
     placeTagToReader: string;
     scanRFID: string;
     scanTicketsHelp: string;
+    scanMoreTicketsHelp: string;
     sessionDuration: string;
     selection: string;
     value: string;
