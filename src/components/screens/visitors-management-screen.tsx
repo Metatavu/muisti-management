@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import Api from "../../api/api";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-import { Box, Button, Checkbox, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography, WithStyles, withStyles, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
+import { Box, Button, Checkbox, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, Typography, WithStyles, withStyles, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
 import { ContentVersion, Exhibition, Visitor, VisitorSession, VisitorSessionState, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
