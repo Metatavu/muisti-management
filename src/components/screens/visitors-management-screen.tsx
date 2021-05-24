@@ -337,7 +337,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         key={ visitor.id }
         button
         selected={ visitor.tagId === selectedVisitor?.tagId }
-        onClick={ () => this.fetchTagInfo(visitor.tagId) }
+        onClick={ () => this.fetchTagUser(visitor.tagId) }
       >
         <ListItemText primary={ `${strings.visitorsManagement.tag} ${visitor.tagId}` } />
         <ListItemSecondaryAction>
@@ -514,13 +514,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    */
   private updateSession = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { visitorSessions, selectedSession, selectedLanguage } = this.state;
+    const { visitorSessions, selectedSession, selectedLanguage, visitors } = this.state;
 
     if (!accessToken || !selectedSession || !selectedSession.id || !selectedLanguage) {
       return;
     }
 
     this.setState({ contentLoading: true });
+
+    for await (const visitor of visitors) {
+      this.updateVisitor(visitor);
+    }
 
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
     const updatedSession = await sessionsApi.updateVisitorSession({
@@ -666,11 +670,24 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for fetch tag user
+   *
+   * @param tag selected tag
+   */
+  private fetchTagUser = (tag: string) => {
+    const { visitors } = this.state;
+
+    this.setState({
+      selectedVisitor: visitors.find(visitor => visitor.tagId === tag)
+    });
+  }
+
+  /**
    * Event handler for tag click
    *
    * @param tag clicked tag
    */
-  private fetchTagInfo = async (tag: string) => {
+  private fetchTagInfo = async (tag: string, registerNew?: boolean) => {
     const { accessToken, exhibitionId } = this.props;
     const { anonymousData, visitors, selectedSession } = this.state;
 
@@ -679,14 +696,21 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     }
 
     const visitorsApi = Api.getVisitorsApi(accessToken);
+    const sessionsApi = Api.getVisitorSessionsApi(accessToken);
     try {
-      const visitorList = await visitorsApi.listVisitors({
-        exhibitionId: exhibitionId,
-        tagId: tag
-      });
+
+      const [ visitorList, sessions ] = await Promise.all([
+        visitorsApi.listVisitors({ exhibitionId, tagId: tag }),
+        sessionsApi.listVisitorSessions({ exhibitionId, tagId: tag })
+      ]);
 
       if (visitorList.length > 1) {
         this.setState({ error: new Error(strings.visitorsManagement.error.moreThenOneUser) });
+        return;
+      }
+
+      if (registerNew && sessions.length > 0) {
+        this.setState({ error: new Error(strings.visitorsManagement.error.tagAlreadyInSession) });
         return;
       }
 
@@ -812,7 +836,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.fetchTagInfo(tag);
+    this.fetchTagInfo(tag, true);
   }
 
   /**
@@ -848,7 +872,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     this.setState({
       selectedVisitor: updatedVisitor,
-      visitors: updatedVisitorList
+      visitors: updatedVisitorList,
+      dataChanged: true
     });
   }
 
@@ -865,11 +890,13 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
     const visitorsApi = Api.getVisitorsApi(accessToken);
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
 
-    const [ visitorVariables, visitorSessions, adminVisitors ] = await Promise.all([
+    const [ visitorVariables, visitorSessions, adminVisitors, contentVersions ] = await Promise.all([
       visitorVariablesApi.listVisitorVariables({ exhibitionId }),
       visitorSessionsApi.listVisitorSessions({ exhibitionId }),
-      visitorsApi.listVisitors({ exhibitionId, tagId: "adminoverride" })
+      visitorsApi.listVisitors({ exhibitionId, tagId: "adminoverride" }),
+      contentVersionsApi.listContentVersions({ exhibitionId })
     ]);
 
     this.constructAvailableLanguages(contentVersions);

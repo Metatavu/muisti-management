@@ -840,7 +840,8 @@
     },
     "error": {
       "moreThenOneUser": "More then one user could be found with given tag",
-      "noUserFound": "No active session could be found with read RFID-tag. Please try again"
+      "noUserFound": "No active session could be found with read RFID-tag. Please try again",
+      "tagAlreadyInSession": "Read RFID tag is already in use in another session"
     }
   },
 

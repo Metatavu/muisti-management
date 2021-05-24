@@ -853,7 +853,8 @@
     },
     "error": {
       "moreThenOneUser": "Luetulle RFID-tagille löytyi useampi kuin yksi käyttäjä",
-      "noUserFound": "RFID tagillä ei löytynyt yhtään aktiivista sessiota. Ole hyvä ja yritä uudestaan"
+      "noUserFound": "RFID tagillä ei löytynyt yhtään aktiivista sessiota. Ole hyvä ja yritä uudestaan",
+      "tagAlreadyInSession": "Luettu RFID tag on jo käytössä toisessa sessiossa."
     }
   },
 

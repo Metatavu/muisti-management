@@ -858,6 +858,7 @@ export interface IStrings extends LocalizedStringsMethods {
     error: {
       noUserFound: string;
       moreThenOneUser: string;
+      tagAlreadyInSession: string;
     };
   };
 

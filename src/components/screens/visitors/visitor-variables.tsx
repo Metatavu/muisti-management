@@ -92,7 +92,7 @@ const VisitorVariables: React.FC<Props> = ({ visitorVariables, visitorSession, o
           label={ variable.name}
           name={ variable.name }
           onChange={ onVariableChange }
-          value={ value?.value }
+          value={ value?.value || "" }
         >
           { renderItemsBasedOnVariableType(variable) }
         </TextField>
@@ -108,7 +108,9 @@ const VisitorVariables: React.FC<Props> = ({ visitorVariables, visitorSession, o
   const renderItemsBasedOnVariableType = (variable: VisitorVariable) => {
     return {
       [VisitorVariableType.Enumerated]: renderEnumValues(variable),
-      [VisitorVariableType.Boolean]: renderBooleanValues()
+      [VisitorVariableType.Boolean]: renderBooleanValues(),
+      [VisitorVariableType.Number]: null,
+      [VisitorVariableType.Text]: null
     }[variable.type] ?? null;
   };
 
