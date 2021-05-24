@@ -13,34 +13,22 @@ interface Props {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-
-}
-
-/**
  * React component displaying error dialogs
  */
-export default class ErrorDialog extends React.Component<Props, State> {
+export default class ErrorDialog extends React.Component<Props> {
 
   /**
-   * Constructor
-   * 
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = { };
-  }
-
-  /** 
    * Component render method
    */
-  public render() {
+  public render = () => {
     return (
-      <Dialog open={ true } onClose={ this.props.onClose }>
-        <DialogTitle id="error-dialog-title">{ strings.errorDialog.title }</DialogTitle>
+      <Dialog
+        open={ true }
+        onClose={ this.props.onClose }
+      >
+        <DialogTitle id="error-dialog-title">
+          { strings.errorDialog.title }
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="error-dialog-description">
             <p> { strings.errorDialog.reloadPage } </p>
@@ -66,12 +54,12 @@ export default class ErrorDialog extends React.Component<Props, State> {
           </Button>
         </DialogActions>
       </Dialog>
-    )
+    );
   }
 
   /**
    * Returns current time
-   * 
+   *
    * @returns current time
    */
   private getTime = () => {
@@ -80,7 +68,7 @@ export default class ErrorDialog extends React.Component<Props, State> {
 
   /**
    * Returns current window URL
-   * 
+   *
    * @returns current window URL
    */
   private getURL = () => {
@@ -89,14 +77,16 @@ export default class ErrorDialog extends React.Component<Props, State> {
 
   /**
    * Returns an error message
-   * 
+   *
    * @returns an error message
    */
   private getErrorMessage = () => {
-    if (this.props.error instanceof Error) {
-      return this.props.error.message || "";
+    const { error } = this.props;
+
+    if (error instanceof Error) {
+      return error.message || "";
     } else {
-      return this.props.error || "";
+      return error || "";
     }
   }
 

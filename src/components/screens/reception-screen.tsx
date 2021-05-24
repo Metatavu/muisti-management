@@ -14,19 +14,20 @@ import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
 import { setDeviceModels } from "../../actions/devices";
 import TagListener from "../generic/tag-listener";
-import MqttListener from "../generic/mqtt-listener";
+import { MqttListener } from "../generic/mqtt-listener";
 import Api from "../../api/api";
 import SimpleReactValidator from "simple-react-validator";
 import logo from "../../resources/gfx/muisti-logo.png";
 import LanguageUtils from "../../utils/language-utils";
+import { Config } from "../../constants/configuration";
 
 /**
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
   history: History;
-  keycloak: KeycloakInstance;
-  accessToken: AccessToken;
+  keycloak?: KeycloakInstance;
+  accessToken?: AccessToken;
   exhibitionId: string;
 }
 
@@ -46,6 +47,8 @@ interface State {
   visitorCreated: boolean;
   languages: string[];
 }
+
+const config = Config.getConfig();
 
 /**
  * Component for reception screen
@@ -90,13 +93,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
    * Component did mount life cycle handler
    */
   public componentDidMount = async () => {
-    const { accessToken, exhibitionId } = this.props;
-
-    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
-    const contentVersions = await contentVersionsApi.listContentVersions({ exhibitionId: exhibitionId });
-
-    this.constructAvailableLanguages(contentVersions);
-
+    await this.fetchData();
   }
 
   /**
@@ -105,6 +102,10 @@ export class ReceptionScreen extends React.Component<Props, State> {
   public render = () => {
     const { history, keycloak } = this.props;
     const { error } = this.state;
+
+    if (!keycloak) {
+      return null;
+    }
 
     return (
       <BasicLayout
@@ -297,18 +298,14 @@ export class ReceptionScreen extends React.Component<Props, State> {
    */
   private renderTagListener = () => {
 
-    const antenna = process.env.REACT_APP_NEW_VISITOR_ANTENNA;
-    if (!antenna) {
-      return null;
-    }
-
     return (
       <MqttListener onError={ this.onMqttError }>
       { mqtt => (
         <TagListener
           threshold={ 75 }
           mqtt={ mqtt }
-          antenna={ antenna }
+          antenna={ config.mqttConfig.newVisitorAntenna }
+          hide={ false }
           onTagRegister={ this.onTagRegister }
         />
       )}
@@ -434,7 +431,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
   private constructAvailableLanguages = (contentVersions: ContentVersion[]) => {
     const languages = LanguageUtils.getAvailableLanguages(contentVersions);
 
-    this.setState({ 
+    this.setState({
       languages: languages
     });
   }
@@ -537,7 +534,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     const { accessToken, exhibitionId } = this.props;
     const { visitor } = this.state;
 
-    if (!visitor) {
+    if (!visitor || !accessToken) {
       return;
     }
 
@@ -574,9 +571,9 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     if (existingVisitor) {
-      this.handleVisitorUpdate(visitor);
+      this.handleVisitorUpdate({ ...visitor, tagId: tag });
     } else {
-      this.handleVisitorCreation(visitor);
+      this.handleVisitorCreation({ ...visitor, tagId: tag });
     }
 
     strings.setLanguage("fi");
@@ -593,7 +590,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
   private handleVisitorUpdate = async (visitor: Visitor) => {
     const { accessToken, exhibitionId } = this.props;
 
-    if (!visitor.id) {
+    if (!accessToken || !visitor.id) {
       return;
     }
 
@@ -612,6 +609,10 @@ export class ReceptionScreen extends React.Component<Props, State> {
    */
   private handleVisitorCreation = async (visitor: Visitor) => {
     const { accessToken, exhibitionId } = this.props;
+
+    if (!accessToken) {
+      return;
+    }
 
     const visitorsApi = Api.getVisitorsApi(accessToken);
     await visitorsApi.createVisitor({
@@ -634,6 +635,22 @@ export class ReceptionScreen extends React.Component<Props, State> {
       visitorCreated: false
     });
   }
+
+  /**
+   * Fetches initial data from API
+   */
+  private fetchData = async () => {
+    const { accessToken, exhibitionId } = this.props;
+
+    if (!accessToken) {
+      return;
+    }
+
+    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
+    const contentVersions = await contentVersionsApi.listContentVersions({ exhibitionId });
+
+    this.constructAvailableLanguages(contentVersions);
+  }
 }
 
 /**
@@ -643,8 +660,8 @@ export class ReceptionScreen extends React.Component<Props, State> {
  */
 function mapStateToProps(state: ReduxState) {
   return {
-    keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
+    keycloak: state.auth.keycloak,
+    accessToken: state.auth.accessToken
   };
 }
 

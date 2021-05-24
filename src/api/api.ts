@@ -1,3 +1,4 @@
+import { Config } from "../constants/configuration";
 // eslint-disable-next-line max-len
 import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi, SubLayoutsApi, VisitorsApi, VisitorVariablesApi, VisitorSessionsApi } from "../generated/client";
 import { AccessToken } from "../types";
@@ -158,7 +159,7 @@ export default class Api {
    */
   private static getConfiguration(accessToken: AccessToken) {
     return new Configuration({
-      basePath: process.env.REACT_APP_API_BASE_PATH,
+      basePath: Config.getConfig().apiBasePath,
       accessToken: accessToken.token
     });
   }
