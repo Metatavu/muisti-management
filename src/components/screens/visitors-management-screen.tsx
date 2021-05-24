@@ -479,7 +479,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
-    const { dataChanged, selectedSession } = this.state;
+    const { dataChanged, selectedSession, visitors } = this.state;
 
     return [
       {
@@ -489,7 +489,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       {
         name: selectedSession ? strings.visitorsManagement.updateSession : strings.visitorsManagement.startSession,
         action: selectedSession ? this.updateSession : this.onStartClick,
-        disabled : !dataChanged
+        disabled : !dataChanged || !visitors.length
       }
     ];
   }
@@ -756,19 +756,16 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private onRemoveTag = (clickedTag: string) => {
     const { visitors, selectedSession } = this.state;
 
-    if (!selectedSession) {
-      return;
-    }
-
     const visitorToDelete = visitors.find(visitor => visitor.tagId === clickedTag);
 
     this.setState({
       visitors: visitors.filter(visitor => visitor.tagId !== clickedTag),
-      selectedSession: {
+      selectedSession: selectedSession && {
         ...selectedSession,
         visitorIds: selectedSession.visitorIds.filter(visitorId => visitorId !== visitorToDelete?.id)
       },
-      selectedVisitor: undefined
+      selectedVisitor: undefined,
+      dataChanged: true
     });
   }
 
