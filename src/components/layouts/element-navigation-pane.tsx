@@ -59,7 +59,7 @@ class ElementNavigationPane extends React.Component<Props, State> {
     } = this.props;
 
     return (
-      <Box className={ classes.root } style={{ width: width ? width : 400 }}>
+      <Box className={ classes.root } style={{ width: width ?? 400 }}>
         <Box className={ classes.container }>
           { title && 
             <Box className={ classes.header }>

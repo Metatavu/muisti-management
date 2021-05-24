@@ -118,7 +118,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     if (loading || !keycloak) {
       return (
         <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <CircularProgress size={ 50 } color="secondary"/>
         </div>
       );
     }
@@ -168,7 +168,6 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * Renders active sessions
    */
   private renderActiveSessions = () => {
-
     return (
       <Box>
         <Box
@@ -237,7 +236,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     if (contentLoading) {
       return (
         <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <CircularProgress size={ 50 } color="secondary"/>
         </div>
       );
     }
@@ -245,11 +244,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     return (
       <Box p={ 4 }>
         <Typography variant="h2">
-          { selectedSession ? strings.visitorsManagement.editSession : strings.visitorsManagement.startNewSession }
+          { selectedSession ?
+            strings.visitorsManagement.editSession :
+            strings.visitorsManagement.startNewSession
+          }
         </Typography>
         <Box mt={ 2 } mb={ 2 }>
           <Typography>
-            { selectedSession ? strings.visitorsManagement.scanMoreTicketsHelp : strings.visitorsManagement.scanTicketsHelp}
+            { selectedSession ?
+              strings.visitorsManagement.scanMoreTicketsHelp :
+              strings.visitorsManagement.scanTicketsHelp
+            }
           </Typography>
           <Typography>
             { strings.visitorsManagement.sessionDuration }
@@ -262,11 +267,11 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
                 <FormControlLabel
                   control={
                     <Checkbox
-                    color="primary"
-                    checked={ anonymousData }
-                    name="anonymous"
-                    onChange={ () => this.setState({ anonymousData: !anonymousData })}
-                  />
+                      color="primary"
+                      checked={ anonymousData }
+                      name="anonymous"
+                      onChange={ () => this.setState({ anonymousData: !anonymousData })}
+                    />
                   }
                   label={ strings.visitorsManagement.fillWithAnonymousData }
                 />
@@ -277,7 +282,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
             </Box>
             { this.renderTagList() }
           </Box>
-          <Box  flex={ 1 } ml={ 2 }>
+          <Box flex={ 1 } ml={ 2 }>
             { selectedVisitor && this.renderTagInformation() }
           </Box>
           { this.renderTagListener() }
@@ -296,13 +301,11 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return null;
     }
 
-    const selectOptions = languages.map(language => {
-      return (
-        <MenuItem key={ language } value={ language }>
-          { language }
-        </MenuItem>
-      );
-    });
+    const selectOptions = languages.map(language =>
+      <MenuItem key={ language } value={ language }>
+        { language }
+      </MenuItem>
+    );
 
     return (
       <Box flex={ 2 }>
@@ -351,14 +354,9 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         p={ 2 }
         bgcolor={ theme.palette.background.default }
       >
-        { visitors.length !== 0 ?
-          <List>
-            { tags }
-          </List>
-          :
-          <Typography>
-            { strings.visitorsManagement.scanTicketsHelp }
-          </Typography>
+        { visitors.length ?
+          <List>{ tags }</List> :
+          <Typography>{ strings.visitorsManagement.scanTicketsHelp }</Typography>
         }
       </Box>
     );
@@ -431,7 +429,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         onClose={ () => this.setState({ mqttScannerOpen: false }) }
         aria-labelledby="RFID-dialog-title"
         aria-describedby="RFID-dialog-description"
-        fullWidth={ true }
+        fullWidth
       >
         <DialogTitle
           disableTypography
@@ -522,9 +520,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return;
     }
 
-    this.setState({
-      contentLoading: true
-    });
+    this.setState({ contentLoading: true });
 
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
     const updatedSession = await sessionsApi.updateVisitorSession({
@@ -563,16 +559,14 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       this.updateVisitor(visitor);
     }
 
-    const visitorSessionToCreate: VisitorSession = {
-      language: selectedLanguage,
-      state: VisitorSessionState.ACTIVE,
-      visitorIds: visitors.map(visitor => visitor.id || ""),
-    };
-
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
     const createdSession = await visitorSessionsApi.createVisitorSession({
       exhibitionId: exhibitionId,
-      visitorSession: visitorSessionToCreate
+      visitorSession: {
+        language: selectedLanguage,
+        state: VisitorSessionState.ACTIVE,
+        visitorIds: visitors.map(visitor => visitor.id || ""),
+      }
     });
 
     this.setState({
@@ -746,7 +740,10 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     this.setState({
       visitors: visitors.filter(visitor => visitor.tagId !== clickedTag),
-      selectedSession: { ...selectedSession, visitorIds: selectedSession.visitorIds.filter(visitorId => visitorId !== visitorToDelete?.id) },
+      selectedSession: {
+        ...selectedSession,
+        visitorIds: selectedSession.visitorIds.filter(visitorId => visitorId !== visitorToDelete?.id)
+      },
       selectedVisitor: undefined
     });
   }
@@ -789,8 +786,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const visitors: Visitor[] = [];
     const visitorsApi = Api.getVisitorsApi(accessToken);
 
-    for (const visitor of session.visitorIds) {
-      const foundVisitor = await visitorsApi.findVisitor({ exhibitionId: exhibitionId, visitorId: visitor });
+    for (const visitorId of session.visitorIds) {
+      const foundVisitor = await visitorsApi.findVisitor({ exhibitionId, visitorId });
       visitors.push(foundVisitor);
     }
 
@@ -868,13 +865,11 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
     const visitorsApi = Api.getVisitorsApi(accessToken);
-    const contentVersionsApi = Api.getContentVersionsApi(accessToken);
 
-    const [ visitorVariables, visitorSessions, adminVisitors, contentVersions ] = await Promise.all([
-      visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId }),
-      visitorSessionsApi.listVisitorSessions({ exhibitionId: exhibitionId }),
-      visitorsApi.listVisitors({ exhibitionId: exhibitionId, tagId: "adminoverride" }),
-      contentVersionsApi.listContentVersions({ exhibitionId: exhibitionId })
+    const [ visitorVariables, visitorSessions, adminVisitors ] = await Promise.all([
+      visitorVariablesApi.listVisitorVariables({ exhibitionId }),
+      visitorSessionsApi.listVisitorSessions({ exhibitionId }),
+      visitorsApi.listVisitors({ exhibitionId, tagId: "adminoverride" })
     ]);
 
     this.constructAvailableLanguages(contentVersions);
@@ -885,13 +880,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const adminVisitorIds = adminVisitors.map(admin => admin.id);
     const filteredSessions = visitorSessions.filter(session => {
       const visitorIds = session.visitorIds;
-      for (const id of visitorIds) {
-        if (adminVisitorIds.includes(id)) {
-          return false;
-        }
-      }
-
-      return true;
+      return visitorIds.every(id => !adminVisitorIds.includes(id));
     });
 
     this.setState({
@@ -918,19 +907,15 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * Event handler fo close or cancel click
    */
   private onCloseOrCancelClick = () => {
-    this.setState({
-      deleteDialogOpen: false,
-    });
+    this.setState({ deleteDialogOpen: false });
   }
 
   /**
    * Event handler for session delete click
-   *
-   * @param sessionToDelete visitor session to delete
    */
   private onSessionConfirmDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { selectedSession } = this.state;
+    const { selectedSession,visitorSessions } = this.state;
 
     if (!accessToken || !selectedSession || !selectedSession.id) {
       return;
@@ -943,7 +928,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     });
 
     this.setState({
-      visitorSessions: this.state.visitorSessions.filter(session => session.id !== selectedSession.id),
+      visitorSessions: visitorSessions.filter(session => session.id !== selectedSession.id),
     });
 
     this.clearValues();

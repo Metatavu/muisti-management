@@ -26,12 +26,7 @@ const VisitorInformation: React.FC<Props> = ({ visitor, updateVisitor }) => {
    */
   const onContactInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-
-    if (!name) {
-      return;
-    }
-
-    updateVisitor({ ...visitor, [name]: value });
+    name && updateVisitor({ ...visitor, [name]: value });
   };
 
   /**

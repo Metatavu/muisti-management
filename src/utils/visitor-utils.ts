@@ -37,7 +37,9 @@ export default class VisitorUtils {
    */
   public static getVisitorSessionInfoText = (session: VisitorSession): string => {
     const sessionVisitors = session.visitorIds.length;
-    const visitorString = sessionVisitors > 1 ? strings.visitorsManagement.visitors : strings.visitorsManagement.visitor;
+    const visitorString = sessionVisitors > 1 ?
+      strings.visitorsManagement.visitors :
+      strings.visitorsManagement.visitor;
     const dateString = moment(session.createdAt).format("HH:mm");
 
     return `${sessionVisitors} ${visitorString} - ${dateString}`;

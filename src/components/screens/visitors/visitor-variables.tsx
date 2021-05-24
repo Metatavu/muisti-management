@@ -106,14 +106,10 @@ const VisitorVariables: React.FC<Props> = ({ visitorVariables, visitorSession, o
    * @param variable variable
    */
   const renderItemsBasedOnVariableType = (variable: VisitorVariable) => {
-    switch (variable.type) {
-      case VisitorVariableType.Enumerated:
-        return renderEnumValues(variable);
-      case VisitorVariableType.Boolean:
-        return renderBooleanValues();
-      default:
-        return null;
-    }
+    return {
+      [VisitorVariableType.Enumerated]: renderEnumValues(variable),
+      [VisitorVariableType.Boolean]: renderBooleanValues()
+    }[variable.type] ?? null;
   };
 
   /**
@@ -136,27 +132,21 @@ const VisitorVariables: React.FC<Props> = ({ visitorVariables, visitorSession, o
    * Renders boolean menu items for select
    */
   const renderBooleanValues = () => {
-    return [
-      <MenuItem
-        key="true"
-        value="true"
-      >
+    return [(
+      <MenuItem key="true" value="true">
         { strings.visitorVariables.booleanValues.true }
-      </MenuItem>,
-      <MenuItem
-        key="false"
-        value="false"
-      >
+      </MenuItem>
+    ), (
+      <MenuItem key="false" value="false">
         { strings.visitorVariables.booleanValues.false }
       </MenuItem>
-    ];
+    )];
   };
 
   /**
    * Component render
    */
   return renderSessionVariables();
-
 };
 
 export default VisitorVariables;

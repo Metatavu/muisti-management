@@ -647,7 +647,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
-    const contentVersions = await contentVersionsApi.listContentVersions({ exhibitionId: exhibitionId });
+    const contentVersions = await contentVersionsApi.listContentVersions({ exhibitionId });
 
     this.constructAvailableLanguages(contentVersions);
   }
