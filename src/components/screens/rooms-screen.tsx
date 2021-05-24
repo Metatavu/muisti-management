@@ -102,6 +102,12 @@ class RoomsScreen extends React.Component<Props, State> {
           width={ 320 }
         >
           <List disablePadding>
+            <ListItem button onClick={ this.navigateTo("visitors", true) }>
+              <ListItemText primary={ strings.exhibition.visitors } />
+              <ListItemSecondaryAction>
+                <ArrowIcon />
+              </ListItemSecondaryAction>
+            </ListItem>
             <ListItem button onClick={ this.navigateTo("reception", true) }>
               <ListItemText primary={ strings.exhibition.reception } />
               <ListItemSecondaryAction>

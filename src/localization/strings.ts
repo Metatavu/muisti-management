@@ -166,6 +166,7 @@ export interface IStrings extends LocalizedStringsMethods {
   };
 
   exhibition: {
+    visitors: string;
     reception: string;
     visitorVariables: string;
     resetVisitorVariables: string;
@@ -561,7 +562,7 @@ export interface IStrings extends LocalizedStringsMethods {
       unboundedRipple: string;
       tabIndicatorFullWidth: string;
       data: string;
-    }
+    };
 
     addLayoutViewDialog: {
       name: string;
@@ -736,6 +737,7 @@ export interface IStrings extends LocalizedStringsMethods {
     add: string;
     save: string;
     cancel: string;
+    clear: string;
     delete: string;
     loadNew: string;
     name: string;
@@ -820,7 +822,44 @@ export interface IStrings extends LocalizedStringsMethods {
     delete: {
       deleteTitle: string;
       deleteText: string;
-    }
+    };
+  };
+
+  /**
+   * Visitor management screen related translations
+   */
+  visitorsManagement: {
+    searchGroup: string;
+    title: string;
+    startSession: string;
+    updateSession: string;
+    startNewSession: string;
+    editSession: string;
+    fillWithAnonymousData: string;
+    tickets: string;
+    tag: string;
+    ticketContactInformation: string;
+    activeVisitorSessions: string;
+    visitor: string;
+    visitors: string;
+    search: string;
+    placeTagToReader: string;
+    scanRFID: string;
+    scanTicketsHelp: string;
+    scanMoreTicketsHelp: string;
+    sessionDuration: string;
+    selection: string;
+    value: string;
+    sessionExpires: string;
+    delete: {
+      deleteTitle: string;
+      deleteText: string;
+    };
+    error: {
+      noUserFound: string;
+      moreThenOneUser: string;
+      tagAlreadyInSession: string;
+    };
   };
 
   /**
@@ -908,7 +947,7 @@ export interface IStrings extends LocalizedStringsMethods {
         setUserValueDescription: string;
         navigateDescription: string;
         executeWebScriptDescription: string;
-      }
+      };
     };
     floorPlanEditor: {
       groupAssemblyPointDescription: string;
@@ -972,7 +1011,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
   };
-};
+}
 
 const strings: IStrings = new LocalizedStrings({
   en: require("./en.json"),

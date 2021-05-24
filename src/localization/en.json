@@ -111,7 +111,6 @@
   },
 
   "dashboard": {
-
     "newExhibitionButton": "New exhibition",
     "newContentVersionButton": "New content version",
     "navigation": {
@@ -166,6 +165,7 @@
   },
 
   "exhibition": {
+    "visitors": "Visitors management",
     "reception": "Reception",
     "visitorVariables": "Visitor variable management",
     "resetVisitorVariables": "Manage visitor session variables",
@@ -736,7 +736,8 @@
     "refresh": "Refresh",
     "unsaved": "You have unsaved changes, are you sure you want to leave?",
     "properties": "Properties",
-    "noSelection": "No selection"
+    "noSelection": "No selection",
+    "clear": "Clear"
   },
 
   "spaces": {
@@ -807,6 +808,40 @@
     "confirmEmptyText": "Variable will be removed from session variables list.",
     "errorMessages": {
       "sessionNotFound": "Visitor session not found"
+    }
+  },
+
+  "visitorsManagement": {
+    "searchGroup": "Search group",
+    "title": "Visitors management",
+    "startSession": "Start session",
+    "updateSession": "Update session",
+    "startNewSession": "Start new session",
+    "editSession": "Edit session",
+    "fillWithAnonymousData": "Fill with anonymous data",
+    "tickets": "Tickets",
+    "tag": "Tag ID:",
+    "ticketContactInformation": "Contact information",
+    "activeVisitorSessions": "Active sessions",
+    "visitor": "visitor",
+    "visitors": "visitors",
+    "search": "Search...",
+    "placeTagToReader": "Place RFID ticket to a reader to start a new session",
+    "scanRFID": "Scan RFID ticket",
+    "scanTicketsHelp": "Scan tickets to add them to a new session",
+    "scanMoreTicketsHelp": "Scan more tickets to add them to the session",
+    "sessionDuration": "Session duration is 6 hours.",
+    "selection": "Selection",
+    "value": "Value",
+    "sessionExpires": "Expires",
+    "delete": {
+      "deleteTitle": "Delete visitor session",
+      "deleteText": "Are you sure that you want to delete this visitor session?"
+    },
+    "error": {
+      "moreThenOneUser": "More then one user could be found with given tag",
+      "noUserFound": "No active session could be found with read RFID-tag. Please try again",
+      "tagAlreadyInSession": "Read RFID tag is already in use in another session"
     }
   },
 

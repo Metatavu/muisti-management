@@ -8,6 +8,7 @@ import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
+import { Config } from "../../constants/configuration";
 
 /**
  * Component props
@@ -23,6 +24,8 @@ interface Props {
 interface State {
   error?: Error;
 }
+
+const config = Config.getConfig();
 
 /**
  * Component for keeping authentication token fresh
@@ -41,9 +44,9 @@ class AccessTokenRefresh extends React.Component<Props, State> {
     super(props);
 
     this.keycloak = Keycloak({
-      url: process.env.REACT_APP_KEYCLOAK_URL,
-      realm: process.env.REACT_APP_KEYCLOAK_REALM || "",
-      clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || ""
+      url: config.keycloakConfig.url,
+      realm: config.keycloakConfig.realm,
+      clientId: config.keycloakConfig.clientId
     });
 
     this.state = {
