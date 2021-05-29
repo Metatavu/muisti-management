@@ -860,6 +860,7 @@ export interface IStrings extends LocalizedStringsMethods {
       moreThenOneUser: string;
       tagAlreadyInSession: string;
     };
+    confirmVisitorDelete: string;
   };
 
   /**
