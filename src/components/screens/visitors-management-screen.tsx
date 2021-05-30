@@ -60,6 +60,7 @@ interface State {
   filterString: string;
   deleteDialogOpen: boolean;
   confirmDialogData: ConfirmDialogData;
+  tagRead: boolean;
 }
 
 /**
@@ -86,6 +87,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSessions: [],
       filterString: "",
       deleteDialogOpen: false,
+      tagRead: false,
       confirmDialogData: {
         title: strings.visitorsManagement.delete.deleteTitle,
         text: strings.visitorsManagement.delete.deleteText,
@@ -340,11 +342,15 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         onClick={ () => this.fetchTagUser(visitor.tagId) }
       >
         <ListItemText primary={ `${strings.visitorsManagement.tag} ${visitor.tagId}` } />
-        <ListItemSecondaryAction>
-          <IconButton onClick={ () => this.onRemoveTag(visitor.tagId) }>
+        {/* This feature is not needed at the moment */}
+        {/* <ListItemSecondaryAction>
+          <IconButton
+            onClick={ () => this.onRemoveTag(visitor.tagId) }
+            disabled={ !!selectedSession }
+          >
             <DeleteIcon/>
           </IconButton>
-        </ListItemSecondaryAction>
+        </ListItemSecondaryAction> */}
       </ListItem>
     );
 
@@ -505,7 +511,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedVisitorVariable: undefined,
       dataChanged: false,
       deleteDialogOpen: false,
-      selectedLanguage: "FI"
+      selectedLanguage: "FI",
+      contentLoading: false
     });
   }
 
@@ -522,14 +529,31 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     this.setState({ contentLoading: true });
 
-    for await (const visitor of visitors) {
-      this.updateVisitor(visitor);
+    const visitorsApi = Api.getVisitorsApi(accessToken);
+    const createdVisitors: Visitor[] = [];
+    for (const visitorToCreate of visitors.filter(_visitor => !_visitor.id)) {
+      createdVisitors.push(
+        await visitorsApi.createVisitor({
+          exhibitionId: exhibitionId,
+          visitor: visitorToCreate
+        })
+      );
+    }
+
+    for (const visitor of visitors) {
+      await this.updateVisitor(visitor);
     }
 
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
+    const combinedVisitorList = [ ...createdVisitors, ...visitors ].filter(visitor => visitor.id !== undefined);
+    const visitorIdList = combinedVisitorList.map(visitor => visitor.id!);
     const updatedSession = await sessionsApi.updateVisitorSession({
       exhibitionId: exhibitionId,
-      visitorSession: { ...selectedSession, language: selectedLanguage },
+      visitorSession: {
+        ...selectedSession,
+        language: selectedLanguage,
+        visitorIds: visitorIdList
+      },
       visitorSessionId: selectedSession.id
     });
 
@@ -559,8 +583,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return;
     }
 
-    for await (const visitor of visitors) {
-      this.updateVisitor(visitor);
+    this.setState({ contentLoading: true });
+
+    const visitorsApi = Api.getVisitorsApi(accessToken);
+    const createdVisitors: Visitor[] = [];
+    for (const visitorToCreate of visitors) {
+      createdVisitors.push(
+        await visitorsApi.createVisitor({
+          exhibitionId: exhibitionId,
+          visitor: visitorToCreate
+        })
+      );
     }
 
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
@@ -569,12 +602,12 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSession: {
         language: selectedLanguage,
         state: VisitorSessionState.ACTIVE,
-        visitorIds: visitors.map(visitor => visitor.id || ""),
+        visitorIds: createdVisitors.map(visitor => visitor.id || ""),
       }
     });
 
     this.setState({
-      visitorSessions: [ ...visitorSessions, createdSession ],
+      visitorSessions: [ ...visitorSessions, createdSession ]
     });
 
     this.clearValues();
@@ -687,64 +720,99 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    *
    * @param tag clicked tag
    */
-  private fetchTagInfo = async (tag: string, registerNew?: boolean) => {
-    const { accessToken, exhibitionId } = this.props;
-    const { anonymousData, visitors, selectedSession } = this.state;
+  private fetchTagInfo = async (tag: string) => {
+    const { accessToken } = this.props;
+    const { visitors } = this.state;
 
     if (!accessToken) {
       return;
     }
 
-    const visitorsApi = Api.getVisitorsApi(accessToken);
-    const sessionsApi = Api.getVisitorSessionsApi(accessToken);
+    this.setState({ tagRead: true, contentLoading: true });
+
+
     try {
+      await this.clearSessionsAndVisitors(tag);
 
-      const [ visitorList, sessions ] = await Promise.all([
-        visitorsApi.listVisitors({ exhibitionId, tagId: tag }),
-        sessionsApi.listVisitorSessions({ exhibitionId, tagId: tag })
-      ]);
-
-      if (visitorList.length > 1) {
-        this.setState({ error: new Error(strings.visitorsManagement.error.moreThenOneUser) });
-        return;
-      }
-
-      if (registerNew && sessions.length > 0) {
-        this.setState({ error: new Error(strings.visitorsManagement.error.tagAlreadyInSession) });
-        return;
-      }
-
-      let visitor: Visitor;
-
-      if (visitorList.length === 0) {
-        visitor = await visitorsApi.createVisitor({
-          exhibitionId: exhibitionId,
-          visitor: VisitorUtils.fillWithAnonymousData(tag)
-        });
-      } else if (anonymousData) {
-        visitor = VisitorUtils.fillWithAnonymousData(tag, visitorList[0]);
-      } else {
-        visitor = visitorList[0];
-      }
-
-      const updatedVisitorList = produce(visitors, draft => {
-        const index = draft.findIndex(_visitor => _visitor.id === visitor.id);
-        if (index > -1) {
-          draft.splice(index, 1, visitor);
-        } else {
-          draft.push(visitor);
-        }
-      });
+      const visitor = VisitorUtils.fillWithAnonymousData(tag);
 
       this.setState({
         selectedVisitor: visitor,
-        visitors: updatedVisitorList,
-        selectedSession: selectedSession && { ...selectedSession, visitorIds: updatedVisitorList.map(_visitor => _visitor.id!) },
-        dataChanged: true
+        visitors: [ ...visitors, visitor ],
+        dataChanged: true,
+        contentLoading: false,
+        tagRead: false
       });
 
     } catch (error) {
       console.error(error);
+      this.setState({ tagRead: false, contentLoading: false });
+    }
+  }
+
+  /**
+   * Clears all sessions and visitors from all exhibitions for read tag
+   *
+   * TODO: Add support for reusing visitor data
+   *
+   * @param tag read tag
+   */
+  private clearSessionsAndVisitors = async (tag: string) => {
+    const { accessToken } = this.props;
+
+    if (!accessToken) {
+      return;
+    }
+
+    const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+    const visitorsApi = Api.getVisitorsApi(accessToken);
+    const sessionsApi = Api.getVisitorSessionsApi(accessToken);
+
+    const exhibitions = await exhibitionsApi.listExhibitions();
+    for (const exhibition of exhibitions) {
+      const [ exhibitionVisitors, exhibitionSessions ] = await Promise.all([
+        visitorsApi.listVisitors({ exhibitionId: exhibition.id!, tagId: tag }),
+        sessionsApi.listVisitorSessions({ exhibitionId: exhibition.id!, tagId: tag })
+      ]);
+
+      if (!exhibitionVisitors.length && !exhibitionSessions.length) {
+        return Promise.reject();
+      }
+      
+      if (!window.confirm(strings.visitorsManagement.confirmVisitorDelete)) {
+        this.setState({ tagRead: false });
+        return Promise.reject();
+      }
+      
+      try {
+        for (const session of exhibitionSessions) {
+          await sessionsApi.deleteVisitorSession({
+            exhibitionId: exhibition.id!,
+            visitorSessionId: session.id!
+          });
+
+          for (const visitorId of session.visitorIds) {
+            await visitorsApi.deleteVisitor({ exhibitionId: exhibition.id!, visitorId });
+          }
+
+          this.setState({
+            visitorSessions: this.state.visitorSessions.filter(_session => _session.id !== session.id)
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      for (const visitor of exhibitionVisitors) {
+        try {
+          await visitorsApi.deleteVisitor({
+            exhibitionId: exhibition.id!,
+            visitorId: visitor.id!
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
   }
 
@@ -827,13 +895,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @param tag mqtt tag
    */
   private onTagRegister = (tag: string) => {
-    const { visitors } = this.state;
+    const { visitors, tagRead, selectedSession } = this.state;
 
-    if (visitors.filter(visitor => visitor.tagId === tag).length > 0) {
+    if (
+      !!visitors.filter(visitor => visitor.tagId === tag).length ||
+      tagRead ||
+      selectedSession
+    ) {
       return;
     }
 
-    this.fetchTagInfo(tag, true);
+    this.fetchTagInfo(tag);
   }
 
   /**
@@ -946,10 +1018,15 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     }
 
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
+    const visitorsApi = Api.getVisitorsApi(accessToken);
     await visitorSessionsApi.deleteVisitorSession({
       exhibitionId: exhibitionId,
       visitorSessionId: selectedSession.id
     });
+
+    for (const visitorId of selectedSession.visitorIds) {
+      await visitorsApi.deleteVisitor({ exhibitionId, visitorId });
+    }
 
     this.setState({
       visitorSessions: visitorSessions.filter(session => session.id !== selectedSession.id),
