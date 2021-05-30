@@ -531,16 +531,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     const visitorsApi = Api.getVisitorsApi(accessToken);
     const createdVisitors: Visitor[] = [];
-    for await (const visitorToCreate of visitors.filter(_visitor => !_visitor.id)) {
-      const createdVisitor = await visitorsApi.createVisitor({
-        exhibitionId: exhibitionId,
-        visitor: visitorToCreate
-      });
-      createdVisitors.push(createdVisitor);
+    for (const visitorToCreate of visitors.filter(_visitor => !_visitor.id)) {
+      createdVisitors.push(
+        await visitorsApi.createVisitor({
+          exhibitionId: exhibitionId,
+          visitor: visitorToCreate
+        })
+      );
     }
 
-    for await (const visitor of visitors) {
-      this.updateVisitor(visitor);
+    for (const visitor of visitors) {
+      await this.updateVisitor(visitor);
     }
 
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
@@ -548,7 +549,11 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const visitorIdList = combinedVisitorList.map(visitor => visitor.id!);
     const updatedSession = await sessionsApi.updateVisitorSession({
       exhibitionId: exhibitionId,
-      visitorSession: { ...selectedSession, language: selectedLanguage, visitorIds: visitorIdList },
+      visitorSession: {
+        ...selectedSession,
+        language: selectedLanguage,
+        visitorIds: visitorIdList
+      },
       visitorSessionId: selectedSession.id
     });
 
@@ -582,12 +587,13 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     const visitorsApi = Api.getVisitorsApi(accessToken);
     const createdVisitors: Visitor[] = [];
-    for await (const visitorToCreate of visitors) {
-      const createdVisitor = await visitorsApi.createVisitor({
-        exhibitionId: exhibitionId,
-        visitor: visitorToCreate
-      });
-      createdVisitors.push(createdVisitor);
+    for (const visitorToCreate of visitors) {
+      createdVisitors.push(
+        await visitorsApi.createVisitor({
+          exhibitionId: exhibitionId,
+          visitor: visitorToCreate
+        })
+      );
     }
 
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
@@ -729,11 +735,10 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       await this.clearSessionsAndVisitors(tag);
 
       const visitor = VisitorUtils.fillWithAnonymousData(tag);
-      const updatedVisitorList = [ ...visitors, visitor ];
 
       this.setState({
         selectedVisitor: visitor,
-        visitors: updatedVisitorList,
+        visitors: [ ...visitors, visitor ],
         dataChanged: true,
         contentLoading: false,
         tagRead: false
@@ -764,36 +769,48 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
 
     const exhibitions = await exhibitionsApi.listExhibitions();
-    for await (const exhibition of exhibitions) {
+    for (const exhibition of exhibitions) {
       const [ exhibitionVisitors, exhibitionSessions ] = await Promise.all([
         visitorsApi.listVisitors({ exhibitionId: exhibition.id!, tagId: tag }),
         sessionsApi.listVisitorSessions({ exhibitionId: exhibition.id!, tagId: tag })
       ]);
 
-      if (exhibitionVisitors.length > 0 || exhibitionSessions.length > 0) {
-        if (!window.confirm(strings.visitorsManagement.confirmVisitorDelete)) {
-          this.setState({ tagRead: false });
-          return Promise.reject();
-        }
+      if (!exhibitionVisitors.length && !exhibitionSessions.length) {
+        return Promise.reject();
+      }
+      
+      if (!window.confirm(strings.visitorsManagement.confirmVisitorDelete)) {
+        this.setState({ tagRead: false });
+        return Promise.reject();
+      }
+      
+      try {
+        for (const session of exhibitionSessions) {
+          await sessionsApi.deleteVisitorSession({
+            exhibitionId: exhibition.id!,
+            visitorSessionId: session.id!
+          });
 
-        try {
-          for (const session of exhibitionSessions) {
-            await sessionsApi.deleteVisitorSession({ exhibitionId: exhibition.id!, visitorSessionId: session.id!});
-            for (const visitorId of session.visitorIds) {
-              await visitorsApi.deleteVisitor({ exhibitionId: exhibition.id!, visitorId });
-            }
-            this.setState({ visitorSessions: this.state.visitorSessions.filter(_session => _session.id !== session.id) });
+          for (const visitorId of session.visitorIds) {
+            await visitorsApi.deleteVisitor({ exhibitionId: exhibition.id!, visitorId });
           }
+
+          this.setState({
+            visitorSessions: this.state.visitorSessions.filter(_session => _session.id !== session.id)
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      for (const visitor of exhibitionVisitors) {
+        try {
+          await visitorsApi.deleteVisitor({
+            exhibitionId: exhibition.id!,
+            visitorId: visitor.id!
+          });
         } catch (error) {
           console.error(error);
-        }
-
-        for (const visitor of exhibitionVisitors) {
-          try {
-            await visitorsApi.deleteVisitor({ exhibitionId: exhibition.id!, visitorId: visitor.id! });
-          } catch (error) {
-            console.error(error);
-          }
         }
       }
     }
@@ -881,7 +898,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const { visitors, tagRead, selectedSession } = this.state;
 
     if (
-      visitors.filter(visitor => visitor.tagId === tag).length > 0 ||
+      !!visitors.filter(visitor => visitor.tagId === tag).length ||
       tagRead ||
       selectedSession
     ) {
@@ -1007,7 +1024,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSessionId: selectedSession.id
     });
 
-    for await (const visitorId of selectedSession.visitorIds) {
+    for (const visitorId of selectedSession.visitorIds) {
       await visitorsApi.deleteVisitor({ exhibitionId, visitorId });
     }
 
