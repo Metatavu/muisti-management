@@ -11,3 +11,4 @@ If CKEditor needs upgrading use CKEditor's builder tool to build new package: ht
 Builder tool has option to upload existing build-config.js to create bundle with all previously selected plugins and features. Use build-config.js from public/ckditor/build-config.js to ensure that new build contains same features as the previous one.
 
 After building new zip bundle, replace ckeditor folder from public -folder with one from the zip and you are done.
+
