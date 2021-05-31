@@ -403,21 +403,24 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderTagListener = () => {
     const { mqttScannerOpen } = this.state;
 
-    const antenna = Config.getConfig().mqttConfig.visitorManagementAntenna;
-    if (!antenna) {
-      return null;
-    }
+    const antennas = Config.getConfig().mqttConfig.visitorManagementAntenna;
 
     return (
       <MqttListener onError={ error => this.setState({ error: error }) }>
         { mqtt => (
-          <TagListener
-            threshold={ 75 }
-            mqtt={ mqtt }
-            antenna={ antenna }
-            hide={ true }
-            onTagRegister={ mqttScannerOpen ? this.onTagSearch : this.onTagRegister }
-          />
+          <>
+            {
+              antennas.map(antenna =>
+                <TagListener
+                  threshold={ 75 }
+                  mqtt={ mqtt }
+                  antenna={ antenna }
+                  hide={ true }
+                  onTagRegister={ mqttScannerOpen ? this.onTagSearch : this.onTagRegister }
+                />
+              )
+            }
+          </>
         )}
       </MqttListener>
     );
