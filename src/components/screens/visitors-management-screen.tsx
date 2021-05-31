@@ -743,7 +743,6 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         contentLoading: false,
         tagRead: false
       });
-
     } catch (error) {
       console.error(error);
       this.setState({ tagRead: false, contentLoading: false });
@@ -776,14 +775,14 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       ]);
 
       if (!exhibitionVisitors.length && !exhibitionSessions.length) {
-        return Promise.reject();
+        continue;
       }
-      
+
       if (!window.confirm(strings.visitorsManagement.confirmVisitorDelete)) {
         this.setState({ tagRead: false });
         return Promise.reject();
       }
-      
+
       try {
         for (const session of exhibitionSessions) {
           await sessionsApi.deleteVisitorSession({
