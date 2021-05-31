@@ -1,4 +1,4 @@
-import { cleanEnv, bool, str, url, num, json } from "envalid";
+import { cleanEnv, bool, str, url, num } from "envalid";
 import { StaticConfig } from "../types";
 
 /**
@@ -20,7 +20,7 @@ const env = cleanEnv(process.env, {
   REACT_APP_MQTT_PASSWORD: str(),
   REACT_APP_NEW_VISITOR_ANTENNA: str(),
   REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA: str(),
-  REACT_APP_VISITOR_MANAGEMENT_ANTENNA: json(),
+  REACT_APP_VISITOR_MANAGEMENT_ANTENNAS: str(),
   REACT_APP_VISITOR_SESSION_TIME: num(),
 });
 
@@ -54,7 +54,7 @@ export class Config {
         password: env.REACT_APP_MQTT_PASSWORD,
         newVisitorAntenna: env.REACT_APP_NEW_VISITOR_ANTENNA,
         resetVisitorVariableAntenna: env.REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA,
-        visitorManagementAntenna: env.REACT_APP_VISITOR_MANAGEMENT_ANTENNA,
+        visitorManagementAntennas: env.REACT_APP_VISITOR_MANAGEMENT_ANTENNAS.split("||"),
         sessionTime: env.REACT_APP_VISITOR_SESSION_TIME
       }
     };

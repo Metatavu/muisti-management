@@ -219,6 +219,6 @@ export interface MQTTConfig {
   password: string;
   newVisitorAntenna: string;
   resetVisitorVariableAntenna: string;
-  visitorManagementAntenna: string[];
+  visitorManagementAntennas: string[];
   sessionTime: number;
 }

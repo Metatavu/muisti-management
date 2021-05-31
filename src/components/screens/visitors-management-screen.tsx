@@ -403,7 +403,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderTagListener = () => {
     const { mqttScannerOpen } = this.state;
 
-    const antennas = Config.getConfig().mqttConfig.visitorManagementAntenna;
+    const antennas = Config.getConfig().mqttConfig.visitorManagementAntennas;
 
     return (
       <MqttListener onError={ error => this.setState({ error: error }) }>
