@@ -170,6 +170,7 @@
     "visitorVariables": "Visitor variable management",
     "resetVisitorVariables": "Manage visitor session variables",
     "exhibitionManagement": "Exhibition management",
+    "diagnostics": "Diagnostics",
     "content": "Content",
     "tech": "Tech",
     "navigation": {
@@ -220,7 +221,7 @@
         }
       }
     },
-    
+
     "pageSettingsEditor": {
       "pageLayoutLabel": "Page layout",
       "pageDeviceLabel": "Page device"
@@ -644,7 +645,7 @@
         "editTransition": "Edit effect",
         "removeTransition": "Remove effect"
       },
-  
+
       "eventTriggers": {
         "noTriggers": "No events",
         "noWebViews": "No web views in page. In order to use this action, choose a layout that has a web view for the page.",
@@ -695,7 +696,7 @@
         "contentType": "Select tab content type",
         "textContentHelp":  "Add a single text content"
       },
-  
+
       "dialog": {
         "animation": "Animation",
         "animationHelperText": "Currently only Fade-animation option is available",
@@ -844,6 +845,10 @@
       "tagAlreadyInSession": "Read RFID tag is already in use in another session"
     },
     "confirmVisitorDelete": "Read RFID tag is already registered to other user(s) in other exhibitions. This action will delete the registered user. Are you sure you want to continue? This action cannot be reversed!"
+  },
+
+  "diagnostics": {
+    "noSession": "No session"
   },
 
   "deleteContent": {

@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
+import { ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, TextField, MenuItem, Select, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
@@ -114,6 +113,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
     if (selectedFloor) {
       return this.renderFloor(selectedFloor);
     }
+
+    return null;
   }
 
   /**
@@ -123,8 +124,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
    */
   private renderAntenna = (selectedAntenna: RfidAntenna) => {
     const { onChangeAntennaProperties } = this.props;
-
     const deviceGroupMenuItems = this.getDeviceGroupItems();
+
     return (
       <>
         <TextField
@@ -134,9 +135,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={ selectedAntenna.name }
           onChange={ onChangeAntennaProperties }
         />
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
         >
           <TextField
@@ -152,9 +153,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
             </Typography>
           </HelpDialog>
         </Box>
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
         >
           <TextField
@@ -184,9 +185,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
           { deviceGroupMenuItems }
         </Select>
 
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
         >
           <TextField
@@ -203,9 +204,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
           </HelpDialog>
         </Box>
 
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
         >
           <TextField
@@ -252,7 +253,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={ selectedDevice.modelId || "" }
           onChange={ onChangeDeviceProperties }
         >
-          { deviceModels.map(model => 
+          { deviceModels.map(model =>
             <MenuItem key={ model.id } value={ model.id }>
               { `${model.manufacturer} ${model.model}` }
             </MenuItem>
@@ -307,9 +308,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={ selectedDeviceGroup.name }
           onChange={ onChangeDeviceGroupProperties }
         />
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
           justifyContent="space-between"
         >
@@ -329,9 +330,9 @@ class FloorPlanInfo extends React.Component<Props, State> {
             <Typography>{ strings.helpDialogs.floorPlanEditor.groupAssemblyPointDescription }</Typography>
           </HelpDialog>
         </Box>
-        <Box 
+        <Box
           display="flex"
-          mt={ 2 } 
+          mt={ 2 }
           alignItems="center"
         >
           <TextField
@@ -438,24 +439,11 @@ class FloorPlanInfo extends React.Component<Props, State> {
 /**
  * Redux mapper for mapping store state to component props
  *
- * @param state store state
+ * @param state Redux store state
  */
-function mapStateToProps(state: ReduxState) {
-  return {
-    keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
-  };
-}
+const mapStateToProps = (state: ReduxState) => ({
+  keycloak: state.auth.keycloak as KeycloakInstance,
+  accessToken: state.auth.accessToken as AccessToken
+});
 
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FloorPlanInfo));
+export default connect(mapStateToProps)(withStyles(styles)(FloorPlanInfo));

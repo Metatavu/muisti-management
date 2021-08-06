@@ -195,6 +195,7 @@ export interface StaticConfig {
   cdnBasePath: string;
   userContentUploadUrl: string;
   mqttConfig: MQTTConfig;
+  diagnostics: DiagnosticsConfig;
 }
 
 /**
@@ -221,4 +222,12 @@ export interface MQTTConfig {
   resetVisitorVariableAntenna: string;
   visitorManagementAntennas: string[];
   sessionTime: number;
+}
+
+/**
+ * Interface describing diagnostics configuration
+ */
+export interface DiagnosticsConfig {
+  tagZeroDelay: number;
+  tagRemoveDelay: number;
 }
