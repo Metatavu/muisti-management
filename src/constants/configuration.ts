@@ -22,6 +22,8 @@ const env = cleanEnv(process.env, {
   REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA: str(),
   REACT_APP_VISITOR_MANAGEMENT_ANTENNAS: str(),
   REACT_APP_VISITOR_SESSION_TIME: num(),
+  REACT_APP_DIAGNOSTICS_TAG_ZERO_DELAY: num(),
+  REACT_APP_DIAGNOSTICS_TAG_REMOVE_DELAY: num()
 });
 
 /**
@@ -56,6 +58,10 @@ export class Config {
         resetVisitorVariableAntenna: env.REACT_APP_RESET_VISITOR_VARIABLES_ANTENNA,
         visitorManagementAntennas: env.REACT_APP_VISITOR_MANAGEMENT_ANTENNAS.split("||"),
         sessionTime: env.REACT_APP_VISITOR_SESSION_TIME
+      },
+      diagnostics: {
+        tagZeroDelay: env.REACT_APP_DIAGNOSTICS_TAG_ZERO_DELAY,
+        tagRemoveDelay: env.REACT_APP_DIAGNOSTICS_TAG_REMOVE_DELAY
       }
     };
   }

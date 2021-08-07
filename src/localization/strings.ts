@@ -170,6 +170,7 @@ export interface IStrings extends LocalizedStringsMethods {
     reception: string;
     visitorVariables: string;
     resetVisitorVariables: string;
+    diagnostics: string;
     exhibitionManagement: string;
     content: string;
     tech: string;
@@ -861,6 +862,13 @@ export interface IStrings extends LocalizedStringsMethods {
       tagAlreadyInSession: string;
     };
     confirmVisitorDelete: string;
+  };
+
+  /**
+   * Translations related to diagnostics view
+   */
+  diagnostics: {
+    noSession: string;
   };
 
   /**

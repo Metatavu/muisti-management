@@ -32,6 +32,7 @@ import ContentEditorScreen from "./screens/content-editor-screen";
 import VisitorVariablesScreen from "./screens/visitor-variables-screen";
 import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
 import VisitorsManagementScreen from "./screens/visitors-management-screen";
+import DiagnosticsScreen from "./screens/diagnostics-screen";
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -70,18 +71,22 @@ class App extends React.Component<Props, State> {
    */
   public render() {
     return (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={ theme }>
         <CssBaseline />
-        <Provider store={store}>
+        <Provider store={ store }>
           <AccessTokenRefresh>
             <StoreInitializer>
               <BrowserRouter>
                 <div className="App">
                   <Switch>
-                    <Redirect exact from="/" to="/exhibitions" />
+                    <Redirect
+                      exact
+                      from="/"
+                      to="/exhibitions"
+                    />
                     <Route
                       path="/exhibitions"
-                      exact={ true }
+                      exact
                       render={({ history }) => (
                         <ExhibitionsScreen
                           history={ history }
@@ -90,13 +95,13 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <FloorPlanEditorView
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.exhibitionFloorId }
-                          readOnly={ true }
+                          readOnly
                         />
                       )}
                     />
@@ -105,7 +110,7 @@ class App extends React.Component<Props, State> {
                         "/exhibitions/:exhibitionId/content",
                         "/exhibitions/:exhibitionId/content/floors/:floorId"
                       ]}
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <RoomsScreen
                           history={ history }
@@ -115,7 +120,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <ContentVersionsScreen
                           history={ history }
@@ -126,20 +131,20 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <FloorPlanEditorView
                           history={ history }
                           exhibitionId={ match.params.exhibitionId }
                           exhibitionFloorId={ match.params.floorId }
                           roomId={ match.params.roomId }
-                          readOnly={ true }
+                          readOnly
                         />
                       )}
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <GroupContentVersionsScreen
                           history={ history }
@@ -151,7 +156,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <FloorPlanEditorView
                           history={ history }
@@ -159,7 +164,7 @@ class App extends React.Component<Props, State> {
                           exhibitionFloorId={ match.params.floorId }
                           roomId={ match.params.roomId }
                           contentVersionId={ match.params.contentVersionId }
-                          readOnly={ true }
+                          readOnly
                         />
                       )}
                     />
@@ -168,7 +173,7 @@ class App extends React.Component<Props, State> {
                         "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
                         "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline"
                       ]}
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <ContentEditorScreen
                           history={ history }
@@ -182,7 +187,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/layouts"
-                      exact={ true }
+                      exact
                       render={({ history }) => (
                         <LayoutsScreen
                           history={ history }
@@ -191,7 +196,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/layouts/:layoutId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <LayoutScreen
                           history={ history }
@@ -201,7 +206,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/layouts/sub/:subLayoutId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <SubLayoutScreen
                           history={ history }
@@ -211,7 +216,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/deviceModels"
-                      exact={ true }
+                      exact
                       render={({ history }) => (
                         <DeviceModelsScreen
                           history={ history }
@@ -220,7 +225,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/visitors"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <VisitorsManagementScreen
                           history={ history }
@@ -230,7 +235,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/reception"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <ReceptionScreen
                           history={ history }
@@ -240,7 +245,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/visitorVariables"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <VisitorVariablesScreen
                           history={ history }
@@ -250,7 +255,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/exhibitions/:exhibitionId/resetVisitorVariables"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <ManageVisitorSessionVariablesScreen
                           history={ history }
@@ -259,8 +264,18 @@ class App extends React.Component<Props, State> {
                       )}
                     />
                     <Route
+                      path="/exhibitions/:exhibitionId/diagnostics"
+                      exact
+                      render={({ history, match }) => (
+                        <DiagnosticsScreen
+                          history={ history }
+                          exhibitionId={ match.params.exhibitionId }
+                        />
+                      )}
+                    />
+                    <Route
                       path="/floorPlans"
-                      exact={ true }
+                      exact
                       render={({ history }) => (
                         <FloorPlansScreen
                           history={ history }
@@ -269,7 +284,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/floorPlans/:exhibitionId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <FloorPlanScreen
                           history={ history }
@@ -285,7 +300,7 @@ class App extends React.Component<Props, State> {
                     }
                     {/* <Route
                       path="/users"
-                      exact={ true }
+                      exact
                       render={({ history }) => (
                         <UsersScreen
                           history={ history }
@@ -294,7 +309,7 @@ class App extends React.Component<Props, State> {
                     />
                     <Route
                       path="/users/:userId"
-                      exact={ true }
+                      exact
                       render={({ history, match }) => (
                         <UserScreen
                           history={ history }

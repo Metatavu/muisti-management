@@ -171,6 +171,7 @@
     "visitorVariables": "Kävijämuuttujat",
     "resetVisitorVariables": "Hallinnoi vierailijan valintoja",
     "exhibitionManagement": "Näyttelyn hallinta",
+    "diagnostics": "Diagnostiikka",
     "content": "Sisältö",
     "tech": "Tekniikka",
     "navigation": {
@@ -857,6 +858,10 @@
       "tagAlreadyInSession": "Luettu RFID tag on jo käytössä toisessa sessiossa."
     },
     "confirmVisitorDelete": "Luettu RFID-tägi on käytössä toisella vierailijalla muissa näyttelyissä. Poistetaanko käyttäjä jolle RFID-tägi on rekisteröity? Tätä toimintoa ei voi peruuttaa!"
+  },
+
+  "diagnostics": {
+    "noSession": "Ei sessiota"
   },
 
   "deleteContent": {
