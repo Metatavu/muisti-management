@@ -33,7 +33,7 @@ export class Mqtt {
    * @param message message
    * @returns promise for sent package
    */
-  public publish(topic: string, message: any): Promise<mqtt.Packet> {
+  public publish(topic: string, message: any): Promise<mqtt.Packet | undefined> {
     return new Promise((resolve, reject) => {
       if (!this.client) {
         throw new Error("No client");
@@ -127,7 +127,7 @@ export class Mqtt {
   /**
    * Disconnects from the server
    */
-  public async disconnect() {
+  public async disconnect(): Promise<void> {
     return new Promise(resolve => {
       if (this.client && this.client.connected) {
         this.client.end(false, resolve);
@@ -155,7 +155,7 @@ export class Mqtt {
    *
    * @returns promise for connection
    */
-  private doConnect() {
+  private doConnect(): Promise<void> {
     return new Promise(resolve => {
       if (this.client && this.client.connected) {
         return resolve();

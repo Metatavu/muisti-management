@@ -1,16 +1,14 @@
 import * as React from "react";
 
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
+import { ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import { WithStyles, withStyles, CircularProgress, ListItem, List, ListItemSecondaryAction, ListItemText } from "@material-ui/core";
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
 import { Exhibition, ExhibitionRoom } from "../../generated/client";
-import { AccessToken, ActionButton, BreadcrumbData } from '../../types';
+import { AccessToken, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
@@ -20,12 +18,12 @@ import ElementSettingsPane from "../layouts/element-settings-pane";
 import ArrowIcon from "@material-ui/icons/ChevronRight";
 
 /**
- * Component props
+ * Component properties
  */
 interface Props extends WithStyles<typeof styles> {
   history: History;
-  keycloak: KeycloakInstance;
-  accessToken: AccessToken;
+  keycloak?: KeycloakInstance;
+  accessToken?: AccessToken;
   exhibitionId: string;
 }
 
@@ -73,6 +71,10 @@ class RoomsScreen extends React.Component<Props, State> {
     const { exhibition } = this.state;
     const breadcrumbs = this.getBreadcrumbsData();
 
+    if (!keycloak) {
+      return null;
+    }
+
     if (this.state.loading) {
       return (
         <BasicLayout
@@ -82,7 +84,7 @@ class RoomsScreen extends React.Component<Props, State> {
           breadcrumbs={ breadcrumbs }
         >
           <div className={ classes.loader }>
-            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+            <CircularProgress size={ 50 } color="secondary"/>
           </div>
         </BasicLayout>
       );
@@ -102,33 +104,36 @@ class RoomsScreen extends React.Component<Props, State> {
           width={ 320 }
         >
           <List disablePadding>
-            <ListItem button onClick={ this.navigateTo("visitors", true) }>
-              <ListItemText primary={ strings.exhibition.visitors } />
-              <ListItemSecondaryAction>
-                <ArrowIcon />
-              </ListItemSecondaryAction>
-            </ListItem>
-            <ListItem button onClick={ this.navigateTo("reception", true) }>
-              <ListItemText primary={ strings.exhibition.reception } />
-              <ListItemSecondaryAction>
-                <ArrowIcon />
-              </ListItemSecondaryAction>
-            </ListItem>
-            <ListItem button onClick={ this.navigateTo("visitorVariables") }>
-              <ListItemText primary={ strings.exhibition.visitorVariables } />
-              <ListItemSecondaryAction>
-                <ArrowIcon />
-              </ListItemSecondaryAction>
-            </ListItem>
-            <ListItem button onClick={ this.navigateTo("resetVisitorVariables") }>
-              <ListItemText primary={ strings.exhibition.resetVisitorVariables } />
-              <ListItemSecondaryAction>
-                <ArrowIcon />
-              </ListItemSecondaryAction>
-            </ListItem>
+            { this.renderExhibitionManagementLink(strings.exhibition.visitors, "visitors", true) }
+            { this.renderExhibitionManagementLink(strings.exhibition.reception, "reception", true) }
+            { this.renderExhibitionManagementLink(strings.exhibition.visitorVariables, "visitorVariables") }
+            { this.renderExhibitionManagementLink(strings.exhibition.resetVisitorVariables, "resetVisitorVariables") }
+            { this.renderExhibitionManagementLink(strings.exhibition.diagnostics, "diagnostics") }
           </List>
         </ElementSettingsPane>
       </BasicLayout>
+    );
+  }
+
+  /**
+   * Renders exhibition management link
+   *
+   * @param title link
+   * @param path path
+   * @param resetPath should path reset
+   */
+  private renderExhibitionManagementLink = (
+    title: string,
+    path: string,
+    resetPath?: boolean
+  ) => {
+    return (
+      <ListItem button onClick={ this.navigateTo(path, resetPath) }>
+        <ListItemText primary={ title }/>
+        <ListItemSecondaryAction>
+          <ArrowIcon/>
+        </ListItemSecondaryAction>
+      </ListItem>
     );
   }
 
@@ -167,6 +172,10 @@ class RoomsScreen extends React.Component<Props, State> {
   private fetchData = async () => {
     const { accessToken, exhibitionId } = this.props;
 
+    if (!accessToken) {
+      return;
+    }
+
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const [ exhibition, rooms ] = await Promise.all<Exhibition, ExhibitionRoom[]>([
@@ -178,28 +187,8 @@ class RoomsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Get card menu options
-   *
-   * @returns card menu options as action button array
-   */
-  private getCardMenuOptions = (): ActionButton[] => {
-    return [{
-      name: strings.exhibitions.cardMenu.setStatus,
-      action: this.setStatus
-    }];
-  }
-
-  /**
-   * Set status handler
-   */
-  private setStatus = () => {
-    alert(strings.comingSoon);
-    return;
-  }
-
-  /**
    * Get breadcrumbs data
-   * 
+   *
    * @returns breadcrumbs data as array
    */
   private getBreadcrumbsData = () => {
@@ -212,7 +201,7 @@ class RoomsScreen extends React.Component<Props, State> {
 
   /**
    * Navigates to given exhibition management path
-   * 
+   *
    * @param path path as string
    */
   private navigateTo = (path: string, resetPath?: boolean) => () => {
@@ -227,7 +216,7 @@ class RoomsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for card click
-   * 
+   *
    * @param roomId room id
    */
   private onCardClick = (roomId: string, floorId: string) => {
@@ -241,22 +230,10 @@ class RoomsScreen extends React.Component<Props, State> {
  *
  * @param state store state
  */
-function mapStateToProps(state: ReduxState) {
-  return {
-    keycloak: state.auth.keycloak as KeycloakInstance,
-    accessToken: state.auth.accessToken as AccessToken
-  };
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
-}
+const mapStateToProps = (state: ReduxState) => ({
+    keycloak: state.auth.keycloak,
+    accessToken: state.auth.accessToken
+});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(RoomsScreen));
+export default connect(mapStateToProps)(withStyles(styles)(RoomsScreen));
