@@ -161,7 +161,7 @@ const TagMonitoringView: React.FC<Props> = ({
    * @returns color value
    */
   const getColor = (strength: number) => {
-    return `rgb(${0}, ${ strength  * 2.5 }, ${ 0 })`;
+    return `rgb(${0}, ${ strength * 2.5 }, ${ 0 })`;
   }
 
   /**
