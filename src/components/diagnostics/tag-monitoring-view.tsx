@@ -15,7 +15,7 @@ import strings from "../../localization/strings";
 /**
  * Visible tag data
  */
- export interface VisibleTag {
+export interface VisibleTag {
   id: string;
   strength: number;
   zeroedAt: number;
@@ -227,6 +227,7 @@ const TagMonitoringView: React.FC<Props> = ({
             width={ 30 }
           />
           <XAxis
+            domain={ !visibleTags.length ? [] : undefined }
             dataKey="id"
             interval={ 0 }
             height={ 20 }

@@ -193,7 +193,10 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
 
     if (selectedAntenna && exhibitionId) {
       return (
-        <MqttListener onError={ error => this.setState({ error }) }>
+        <MqttListener
+          key={ selectedAntenna.id }
+          onError={ error => this.setState({ error }) }
+        >
           { mqtt =>
             <TagMonitoringView
               mqtt={ mqtt }
