@@ -28,74 +28,55 @@ interface Props extends WithStyles<typeof styles> {
    */
   actionIcon?: JSX.Element;
   /**
-   * Handler for action button click
-   */
-  onActionClick?: () => void;
-  /**
    * List of available menu options
    */
   menuOptions?: ActionButton[];
 }
 
-/**
- * Interface representing component state
- */
-interface State {}
-
 const minimizedWidth = 0;
 
 /**
  * Component for element settings pane
+ *
+ * @param props component properties
  */
-class ElementSettingsPane extends React.Component<Props, State> {
-
-  /**
-   * Constructor
-   *
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      open: true
-    };
-  }
-
-  /**
-   * Component did mount life cycle handler
-   */
-  public componentDidMount = () => {
-    this.setState({
-      open: true
-    });
-  }
-
-  /**
-   * Render panel
-   */
-  public render() {
-    const { classes, width, open, actionIcon, menuOptions } = this.props;
-    return (
-      <div className={ classes.root } style={{ width: open ? width : minimizedWidth }}>
-        <div className={ classes.btnContainer }>
-          { menuOptions &&
-            <MenuButton
-              icon={ actionIcon ? actionIcon : <MenuIcon /> }
-              menuOptions={ menuOptions }
-            />
-          }
+const ElementSettingsPane: React.FC<Props> = ({
+  children,
+  classes,
+  title,
+  width,
+  open,
+  actionIcon,
+  menuOptions
+}) => {
+  return (
+    <div
+      className={ classes.root }
+      style={{ width: open ? width : minimizedWidth }}
+    >
+      <div className={ classes.btnContainer }>
+        { menuOptions &&
+          <MenuButton
+            icon={ actionIcon ?? <MenuIcon /> }
+            menuOptions={ menuOptions }
+          />
+        }
+      </div>
+      <div
+        style={{ minWidth: width }}
+        className={ classNames(classes.container, { "closed": !open }) }
+      >
+        <div className={ classes.header }>
+          <Typography variant="h3">
+            { title }
+          </Typography>
         </div>
-        <div style={{ minWidth: width }} className={ classNames( classes.container, open ? "" : "closed" ) }>
-          <div className={ classes.header }>
-            <Typography variant="h3">{ this.props.title }</Typography>
-          </div>
-          <div className={ classes.content }>
-            { this.props.children }
-          </div>
+        <div className={ classes.content }>
+          { children }
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default withStyles(styles)(ElementSettingsPane);

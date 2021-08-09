@@ -848,6 +848,8 @@
   },
 
   "diagnostics": {
+    "openSettings": "Open settings",
+    "closeSettings": "Close settings",
     "noSession": "No session"
   },
 
