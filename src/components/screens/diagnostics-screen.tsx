@@ -14,7 +14,7 @@ import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken } from "../../types";
+import { AccessToken, ActionButton } from "../../types";
 import strings from "../../localization/strings";
 import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
 import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
@@ -43,6 +43,7 @@ interface State {
   loading: boolean;
   name: string;
   toolbarOpen: boolean;
+  settingsOpen: boolean;
   exhibition?: Exhibition;
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
@@ -75,6 +76,7 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
       loading: false,
       name: "",
       toolbarOpen: true,
+      settingsOpen: false,
       floors: [],
       rooms: [],
       deviceGroups: [],
@@ -112,6 +114,7 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
   public render = () => {
     const { classes, history, keycloak } = this.props;
     const {
+      settingsOpen,
       exhibition,
       selectedFloor,
       selectedRoom,
@@ -124,7 +127,7 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
     if (!exhibition || !exhibition.id || this.state.loading ) {
       return (
         <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <CircularProgress size={ 50 } color="secondary"/>
         </div>
       );
     }
@@ -150,13 +153,16 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
         history={ history }
         title={ exhibition.name }
         breadcrumbs={ [] }
-        actionBarButtons={ [] }
+        actionBarButtons={ this.getActionButtons() }
         keycloak={ keycloak }
         error={ error }
         clearError={ () => this.setState({ error: undefined }) }
       >
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane title={ strings.floorPlan.structure }>
+          <ElementNavigationPane
+            title={ strings.floorPlan.structure }
+            width={ 300 }
+          >
             <FloorPlanTreeMenu
               treeRef={ this.treeRef }
               treeNodes={ treeNodes }
@@ -167,7 +173,7 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
             { this.renderMonitoring() }
           </EditorView>
           <ElementSettingsPane
-            open
+            open={ settingsOpen }
             width={ 420 }
             title={ devicePropertiesTitle }
           >
@@ -223,6 +229,20 @@ export class DiagnosticsScreen extends React.Component<Props, State> {
         }
       />
     );
+  }
+
+  /**
+   * Get action buttons
+   *
+   * @returns action buttons as array
+   */
+  private getActionButtons = (): ActionButton[] => {
+    return [{
+      name: this.state.settingsOpen ?
+        strings.diagnostics.closeSettings :
+        strings.diagnostics.openSettings,
+      action: () => this.setState({ settingsOpen: !this.state.settingsOpen })
+    }];
   }
 
   /**

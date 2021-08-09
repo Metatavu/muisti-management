@@ -23,67 +23,47 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for element navigation pane
+ *
+ * @param props component properties
  */
-class ElementNavigationPane extends React.Component<Props, State> {
-
-  /**
-   * Constructor
-   *
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-    };
-  }
-
-  /**
-   * Render basic layout
-   */
-  public render() {
-    const {
-      classes,
-      title,
-      width,
-      children,
-      actionButtonIcon,
-      actionButtonTitle,
-      actionButtonClick
-    } = this.props;
-
-    return (
-      <Box className={ classes.root } style={{ width: width ?? 400 }}>
-        <Box className={ classes.container }>
-          { title && 
-            <Box className={ classes.header }>
-              <Typography variant="h3">
-                { title }
-              </Typography>
-              { actionButtonClick &&
-                <IconButton
-                  color="primary"
-                  title={ actionButtonTitle }
-                  onClick={ actionButtonClick }
-                >
-                  { actionButtonIcon }
-                </IconButton>
-              }
-            </Box>
-          }
-          <Box className={ classes.content }>
-            { children }
+const ElementNavigationPane: React.FC<Props> = ({
+  children,
+  classes,
+  title,
+  width,
+  actionButtonIcon,
+  actionButtonTitle,
+  actionButtonClick
+}) => {
+  return (
+    <Box
+      className={ classes.root }
+      style={{ width: width ?? 400 }}
+    >
+      <Box className={ classes.container }>
+        { title &&
+          <Box className={ classes.header }>
+            <Typography variant="h3">
+              { title }
+            </Typography>
+            { actionButtonClick &&
+              <IconButton
+                color="primary"
+                title={ actionButtonTitle }
+                onClick={ actionButtonClick }
+              >
+                { actionButtonIcon }
+              </IconButton>
+            }
           </Box>
+        }
+        <Box className={ classes.content }>
+          { children }
         </Box>
       </Box>
-    );
-  }
+    </Box>
+  );
 }
 
 export default withStyles(styles)(ElementNavigationPane);

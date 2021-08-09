@@ -211,12 +211,16 @@ const TagMonitoringView: React.FC<Props> = ({
    */
   return (
     <div className={ classes.chartContainer }>
-      <ResponsiveContainer width="90%" height="90%">
+      <ResponsiveContainer width="97%" height="95%">
         <BarChart data={ visibleTags }>
-          <YAxis domain={[ 0, 100 ]}/>
+          <YAxis
+            domain={[ 0, 100 ]}
+            width={ 30 }
+          />
           <XAxis
             dataKey="id"
             interval={ 0 }
+            height={ 20 }
             tickFormatter={ formatLabel }
           />
           <Bar dataKey="strength">
