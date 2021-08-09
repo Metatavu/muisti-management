@@ -2,9 +2,8 @@ import React from "react";
 import { BarChart, Bar, YAxis, XAxis, Cell, ResponsiveContainer } from "recharts";
 import { WithStyles, withStyles } from "@material-ui/core";
 import styles from "../../styles/components/diagnostics/tag-monitoring-view";
-import { ProximityUpdate, VisibleTag } from "../../types/mqtt-messages";
 import { Mqtt } from "../../mqtt";
-import { RfidAntenna, VisitorSession, VisitorSessionState } from "../../generated/client";
+import { MqttProximityUpdate, RfidAntenna, VisitorSession, VisitorSessionState } from "../../generated/client";
 import { Config } from "../../constants/configuration";
 import { useInterval } from "../../app/hooks";
 import Api from "../../api/api";
@@ -12,6 +11,16 @@ import { ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { AccessToken } from "../../types";
 import strings from "../../localization/strings";
+
+/**
+ * Visible tag data
+ */
+ export interface VisibleTag {
+  id: string;
+  strength: number;
+  zeroedAt: number;
+  removedAt: number;
+}
 
 /**
  * Component properties
@@ -35,7 +44,7 @@ const TagMonitoringView: React.FC<Props> = ({
   accessToken,
   exhibitionId
 }) => {
-  const pendingMessages = React.useRef<ProximityUpdate[]>([]);
+  const pendingMessages = React.useRef<MqttProximityUpdate[]>([]);
   const [ visibleTags, setVisibleTags ] = React.useState<VisibleTag[]>([]);
   const [ tagSessions, setTagSessions ] = React.useState<{ [tag: string]: VisitorSession }>({});
   const [ loadingTagIds, setLoadingTagIds ] = React.useState<string[]>([]);
@@ -65,7 +74,7 @@ const TagMonitoringView: React.FC<Props> = ({
    *
    * @param message proximity update message
    */
-  const onMqttProximityUpdate = (message: ProximityUpdate) => {
+  const onMqttProximityUpdate = (message: MqttProximityUpdate) => {
     message && pendingMessages.current.push(message);
   }
 
@@ -89,7 +98,7 @@ const TagMonitoringView: React.FC<Props> = ({
    * @param message message to add or update to list as tag
    * @returns updated list
    */
-  const addOrUpdateTagFromMessage = (list: VisibleTag[], message: ProximityUpdate) => {
+  const addOrUpdateTagFromMessage = (list: VisibleTag[], message: MqttProximityUpdate) => {
     const currentTime = new Date().getTime();
 
     const tagFromMessage: VisibleTag = {
@@ -152,7 +161,7 @@ const TagMonitoringView: React.FC<Props> = ({
    * @returns color value
    */
   const getColor = (strength: number) => {
-    return `rgb(${0}, ${ strength  * 2.5 }, ${ 0 })`;
+    return `rgb(${0}, ${ strength * 2.5 }, ${ 0 })`;
   }
 
   /**
