@@ -868,6 +868,8 @@ export interface IStrings extends LocalizedStringsMethods {
    * Translations related to diagnostics view
    */
   diagnostics: {
+    openSettings: string;
+    closeSettings: string;
     noSession: string;
   };
 

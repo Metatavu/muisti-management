@@ -861,6 +861,8 @@
   },
 
   "diagnostics": {
+    "openSettings": "Avaa asetukset",
+    "closeSettings": "Sulje asetukset",
     "noSession": "Ei sessiota"
   },
 
