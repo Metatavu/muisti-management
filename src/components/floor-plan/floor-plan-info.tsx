@@ -286,6 +286,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
         >
           <MenuItem key={ "memory" } value={ DeviceImageLoadStrategy.MEMORY }>{ strings.floorPlan.properties.imageLoadStrategyMemory }</MenuItem>
           <MenuItem key={ "disk" } value={ DeviceImageLoadStrategy.DISK }>{ strings.floorPlan.properties.imageLoadStrategyDisk }</MenuItem>
+          <MenuItem key={ "diskraw" } value={ DeviceImageLoadStrategy.DISKRAW }>{ strings.floorPlan.properties.imageLoadStrategyDiskRaw }</MenuItem>
         </Select>
       </>
     );

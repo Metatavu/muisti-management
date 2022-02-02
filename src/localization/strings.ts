@@ -380,6 +380,7 @@ export interface IStrings extends LocalizedStringsMethods {
       imageLoadStrategy: string;
       imageLoadStrategyMemory: string;
       imageLoadStrategyDisk: string;
+      imageLoadStrategyDiskRaw: string;
       landscape: string;
       portrait: string;
       forcedPortrait: string;
