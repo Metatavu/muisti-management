@@ -13,13 +13,14 @@
  */
 
 /**
- * Defines how device handles image loading.  * MEMORY - Devices loads all images to memory. This is faster but requires more memory * DISK - Device prescales images and serves then from disk. This is not as fast as serving images from memory but it does not require that much memory. 
+ * Defines how device handles image loading.  * MEMORY - Devices loads all images to memory. This is faster but requires more memory * DISK - Device prescales images and serves then from disk. This is not as fast as serving images from memory but it does not require that much memory. * DISK_RAW - Images are served from the disk without any preprocessing. 
  * @export
  * @enum {string}
  */
 export enum DeviceImageLoadStrategy {
     MEMORY = 'MEMORY',
-    DISK = 'DISK'
+    DISK = 'DISK',
+    DISKRAW = 'DISK_RAW'
 }
 
 export function DeviceImageLoadStrategyFromJSON(json: any): DeviceImageLoadStrategy {

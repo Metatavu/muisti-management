@@ -66,7 +66,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions`,
+            path: `/v1/exhibitions`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -107,7 +107,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -146,7 +146,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -182,7 +182,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions`,
+            path: `/v1/exhibitions`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -228,7 +228,7 @@ export class ExhibitionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
