@@ -66,7 +66,7 @@ export class SubLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/subLayouts`,
+            path: `/v1/subLayouts`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -107,7 +107,7 @@ export class SubLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
+            path: `/v1/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -146,7 +146,7 @@ export class SubLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
+            path: `/v1/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -182,7 +182,7 @@ export class SubLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/subLayouts`,
+            path: `/v1/subLayouts`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -228,7 +228,7 @@ export class SubLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
+            path: `/v1/subLayouts/{subLayoutId}`.replace(`{${"subLayoutId"}}`, encodeURIComponent(String(requestParameters.subLayoutId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

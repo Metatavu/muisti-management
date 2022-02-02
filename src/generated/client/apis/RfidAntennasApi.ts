@@ -80,7 +80,7 @@ export class RfidAntennasApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rfidAntennas`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/rfidAntennas`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -125,7 +125,7 @@ export class RfidAntennasApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
+            path: `/v1/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -168,7 +168,7 @@ export class RfidAntennasApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
+            path: `/v1/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -216,7 +216,7 @@ export class RfidAntennasApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rfidAntennas`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/rfidAntennas`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -266,7 +266,7 @@ export class RfidAntennasApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
+            path: `/v1/exhibitions/{exhibitionId}/rfidAntennas/{rfidAntennaId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"rfidAntennaId"}}`, encodeURIComponent(String(requestParameters.rfidAntennaId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

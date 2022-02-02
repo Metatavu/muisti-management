@@ -18,6 +18,9 @@ import {
     VisitorSession,
     VisitorSessionFromJSON,
     VisitorSessionToJSON,
+    VisitorSessionV2,
+    VisitorSessionV2FromJSON,
+    VisitorSessionV2ToJSON,
 } from '../models';
 
 export interface CreateVisitorSessionRequest {
@@ -25,7 +28,17 @@ export interface CreateVisitorSessionRequest {
     exhibitionId: string;
 }
 
+export interface CreateVisitorSessionV2Request {
+    visitorSessionV2: VisitorSessionV2;
+    exhibitionId: string;
+}
+
 export interface DeleteVisitorSessionRequest {
+    exhibitionId: string;
+    visitorSessionId: string;
+}
+
+export interface DeleteVisitorSessionV2Request {
     exhibitionId: string;
     visitorSessionId: string;
 }
@@ -35,13 +48,30 @@ export interface FindVisitorSessionRequest {
     visitorSessionId: string;
 }
 
+export interface FindVisitorSessionV2Request {
+    exhibitionId: string;
+    visitorSessionId: string;
+}
+
 export interface ListVisitorSessionsRequest {
     exhibitionId: string;
     tagId?: string;
 }
 
+export interface ListVisitorSessionsV2Request {
+    exhibitionId: string;
+    tagId?: string;
+    modifiedAfter?: string;
+}
+
 export interface UpdateVisitorSessionRequest {
     visitorSession: VisitorSession;
+    exhibitionId: string;
+    visitorSessionId: string;
+}
+
+export interface UpdateVisitorSessionV2Request {
+    visitorSessionV2: VisitorSessionV2;
     exhibitionId: string;
     visitorSessionId: string;
 }
@@ -79,7 +109,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -95,6 +125,53 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      */
     async createVisitorSession(requestParameters: CreateVisitorSessionRequest): Promise<VisitorSession> {
         const response = await this.createVisitorSessionRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Creates new exhibition visitor session
+     * Create a visitor session
+     */
+    async createVisitorSessionV2Raw(requestParameters: CreateVisitorSessionV2Request): Promise<runtime.ApiResponse<VisitorSessionV2>> {
+        if (requestParameters.visitorSessionV2 === null || requestParameters.visitorSessionV2 === undefined) {
+            throw new runtime.RequiredError('visitorSessionV2','Required parameter requestParameters.visitorSessionV2 was null or undefined when calling createVisitorSessionV2.');
+        }
+
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling createVisitorSessionV2.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v2/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: VisitorSessionV2ToJSON(requestParameters.visitorSessionV2),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VisitorSessionV2FromJSON(jsonValue));
+    }
+
+    /**
+     * Creates new exhibition visitor session
+     * Create a visitor session
+     */
+    async createVisitorSessionV2(requestParameters: CreateVisitorSessionV2Request): Promise<VisitorSessionV2> {
+        const response = await this.createVisitorSessionV2Raw(requestParameters);
         return await response.value();
     }
 
@@ -124,7 +201,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -139,6 +216,49 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      */
     async deleteVisitorSession(requestParameters: DeleteVisitorSessionRequest): Promise<void> {
         await this.deleteVisitorSessionRaw(requestParameters);
+    }
+
+    /**
+     * Delets exhibition visitor session.
+     * Deletes visitor session.
+     */
+    async deleteVisitorSessionV2Raw(requestParameters: DeleteVisitorSessionV2Request): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling deleteVisitorSessionV2.');
+        }
+
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling deleteVisitorSessionV2.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v2/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Delets exhibition visitor session.
+     * Deletes visitor session.
+     */
+    async deleteVisitorSessionV2(requestParameters: DeleteVisitorSessionV2Request): Promise<void> {
+        await this.deleteVisitorSessionV2Raw(requestParameters);
     }
 
     /**
@@ -167,7 +287,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -182,6 +302,50 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      */
     async findVisitorSession(requestParameters: FindVisitorSessionRequest): Promise<VisitorSession> {
         const response = await this.findVisitorSessionRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Finds a visitor session by id
+     * Find a visitor session
+     */
+    async findVisitorSessionV2Raw(requestParameters: FindVisitorSessionV2Request): Promise<runtime.ApiResponse<VisitorSessionV2>> {
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling findVisitorSessionV2.');
+        }
+
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling findVisitorSessionV2.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v2/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VisitorSessionV2FromJSON(jsonValue));
+    }
+
+    /**
+     * Finds a visitor session by id
+     * Find a visitor session
+     */
+    async findVisitorSessionV2(requestParameters: FindVisitorSessionV2Request): Promise<VisitorSessionV2> {
+        const response = await this.findVisitorSessionV2Raw(requestParameters);
         return await response.value();
     }
 
@@ -211,7 +375,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -226,6 +390,54 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      */
     async listVisitorSessions(requestParameters: ListVisitorSessionsRequest): Promise<Array<VisitorSession>> {
         const response = await this.listVisitorSessionsRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * List exhibition visitor sessions
+     * List visitor sessions
+     */
+    async listVisitorSessionsV2Raw(requestParameters: ListVisitorSessionsV2Request): Promise<runtime.ApiResponse<Array<VisitorSessionV2>>> {
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling listVisitorSessionsV2.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.tagId !== undefined) {
+            queryParameters['tagId'] = requestParameters.tagId;
+        }
+
+        if (requestParameters.modifiedAfter !== undefined) {
+            queryParameters['modifiedAfter'] = requestParameters.modifiedAfter;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v2/exhibitions/{exhibitionId}/visitorSessions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VisitorSessionV2FromJSON));
+    }
+
+    /**
+     * List exhibition visitor sessions
+     * List visitor sessions
+     */
+    async listVisitorSessionsV2(requestParameters: ListVisitorSessionsV2Request): Promise<Array<VisitorSessionV2>> {
+        const response = await this.listVisitorSessionsV2Raw(requestParameters);
         return await response.value();
     }
 
@@ -261,7 +473,7 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -277,6 +489,57 @@ export class VisitorSessionsApi extends runtime.BaseAPI {
      */
     async updateVisitorSession(requestParameters: UpdateVisitorSessionRequest): Promise<VisitorSession> {
         const response = await this.updateVisitorSessionRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Updates visitor session.
+     * Updates visitor session.
+     */
+    async updateVisitorSessionV2Raw(requestParameters: UpdateVisitorSessionV2Request): Promise<runtime.ApiResponse<VisitorSessionV2>> {
+        if (requestParameters.visitorSessionV2 === null || requestParameters.visitorSessionV2 === undefined) {
+            throw new runtime.RequiredError('visitorSessionV2','Required parameter requestParameters.visitorSessionV2 was null or undefined when calling updateVisitorSessionV2.');
+        }
+
+        if (requestParameters.exhibitionId === null || requestParameters.exhibitionId === undefined) {
+            throw new runtime.RequiredError('exhibitionId','Required parameter requestParameters.exhibitionId was null or undefined when calling updateVisitorSessionV2.');
+        }
+
+        if (requestParameters.visitorSessionId === null || requestParameters.visitorSessionId === undefined) {
+            throw new runtime.RequiredError('visitorSessionId','Required parameter requestParameters.visitorSessionId was null or undefined when calling updateVisitorSessionV2.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v2/exhibitions/{exhibitionId}/visitorSessions/{visitorSessionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorSessionId"}}`, encodeURIComponent(String(requestParameters.visitorSessionId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: VisitorSessionV2ToJSON(requestParameters.visitorSessionV2),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VisitorSessionV2FromJSON(jsonValue));
+    }
+
+    /**
+     * Updates visitor session.
+     * Updates visitor session.
+     */
+    async updateVisitorSessionV2(requestParameters: UpdateVisitorSessionV2Request): Promise<VisitorSessionV2> {
+        const response = await this.updateVisitorSessionV2Raw(requestParameters);
         return await response.value();
     }
 

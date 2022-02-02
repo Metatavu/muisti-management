@@ -14,11 +14,50 @@
 
 
 import * as runtime from '../runtime';
+import {
+    SystemMemory,
+    SystemMemoryFromJSON,
+    SystemMemoryToJSON,
+} from '../models';
 
 /**
  * no description
  */
 export class SystemApi extends runtime.BaseAPI {
+
+    /**
+     * System memory
+     */
+    async memoryRaw(): Promise<runtime.ApiResponse<SystemMemory>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/system/memory`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SystemMemoryFromJSON(jsonValue));
+    }
+
+    /**
+     * System memory
+     */
+    async memory(): Promise<SystemMemory> {
+        const response = await this.memoryRaw();
+        return await response.value();
+    }
 
     /**
      * System ping endpoint
@@ -37,7 +76,7 @@ export class SystemApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/system/ping`,
+            path: `/v1/system/ping`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

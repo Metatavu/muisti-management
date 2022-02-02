@@ -81,7 +81,7 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/pages`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/pages`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -126,7 +126,7 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
+            path: `/v1/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -169,7 +169,7 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
+            path: `/v1/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -221,7 +221,7 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/pages`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/pages`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -271,7 +271,7 @@ export class ExhibitionPagesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
+            path: `/v1/exhibitions/{exhibitionId}/pages/{pageId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"pageId"}}`, encodeURIComponent(String(requestParameters.pageId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

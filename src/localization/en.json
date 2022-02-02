@@ -378,6 +378,7 @@
       "imageLoadStrategy": "Image load strategy",
       "imageLoadStrategyMemory": "From memory",
       "imageLoadStrategyDisk": "From disk",
+      "imageLoadStrategyDiskRaw": "Raw from the disk (without any preprocessing)",
       "landscape": "Landscape",
       "portrait": "Portrait",
       "forcedPortrait": "Portrait (forced)",

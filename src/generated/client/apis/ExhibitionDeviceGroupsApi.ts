@@ -80,7 +80,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -125,7 +125,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
+            path: `/v1/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -168,7 +168,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
+            path: `/v1/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -212,7 +212,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/deviceGroups`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -262,7 +262,7 @@ export class ExhibitionDeviceGroupsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
+            path: `/v1/exhibitions/{exhibitionId}/deviceGroups/{deviceGroupId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"deviceGroupId"}}`, encodeURIComponent(String(requestParameters.deviceGroupId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
