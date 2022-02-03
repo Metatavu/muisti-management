@@ -71,7 +71,7 @@ export class PageLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/pageLayouts`,
+            path: `/v1/pageLayouts`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -112,7 +112,7 @@ export class PageLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
+            path: `/v1/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -151,7 +151,7 @@ export class PageLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
+            path: `/v1/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -195,7 +195,7 @@ export class PageLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/pageLayouts`,
+            path: `/v1/pageLayouts`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -241,7 +241,7 @@ export class PageLayoutsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
+            path: `/v1/pageLayouts/{pageLayoutId}`.replace(`{${"pageLayoutId"}}`, encodeURIComponent(String(requestParameters.pageLayoutId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

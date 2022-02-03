@@ -64,7 +64,7 @@ export class StoredFilesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
+            path: `/v1/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -103,7 +103,7 @@ export class StoredFilesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
+            path: `/v1/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -147,7 +147,7 @@ export class StoredFilesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/storedFiles`,
+            path: `/v1/storedFiles`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -193,7 +193,7 @@ export class StoredFilesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
+            path: `/v1/storedFiles/{storedFileId}`.replace(`{${"storedFileId"}}`, encodeURIComponent(String(requestParameters.storedFileId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

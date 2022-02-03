@@ -66,7 +66,7 @@ export class DeviceModelsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/deviceModels`,
+            path: `/v1/deviceModels`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -107,7 +107,7 @@ export class DeviceModelsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
+            path: `/v1/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -146,7 +146,7 @@ export class DeviceModelsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
+            path: `/v1/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -182,7 +182,7 @@ export class DeviceModelsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/deviceModels`,
+            path: `/v1/deviceModels`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -228,7 +228,7 @@ export class DeviceModelsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
+            path: `/v1/deviceModels/{deviceModelId}`.replace(`{${"deviceModelId"}}`, encodeURIComponent(String(requestParameters.deviceModelId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

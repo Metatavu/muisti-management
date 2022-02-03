@@ -80,7 +80,7 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/groupContentVersions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/groupContentVersions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -125,7 +125,7 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
+            path: `/v1/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -168,7 +168,7 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
+            path: `/v1/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -216,7 +216,7 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/groupContentVersions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/groupContentVersions`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -266,7 +266,7 @@ export class GroupContentVersionsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
+            path: `/v1/exhibitions/{exhibitionId}/groupContentVersions/{groupContentVersionId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"groupContentVersionId"}}`, encodeURIComponent(String(requestParameters.groupContentVersionId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

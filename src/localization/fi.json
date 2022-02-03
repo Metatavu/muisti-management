@@ -380,6 +380,7 @@
       "imageLoadStrategy": "Kuvien latausstrategia",
       "imageLoadStrategyMemory": "Muistista",
       "imageLoadStrategyDisk": "Levyltä",
+      "imageLoadStrategyDiskRaw": "Raakana levyltä (ilman esikäsittelyä)",
       "landscape": "Vaaka",
       "portrait": "Pysty",
       "forcedPortrait": "Pysty (pakotettu)",

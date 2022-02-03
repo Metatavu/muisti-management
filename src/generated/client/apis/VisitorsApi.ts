@@ -88,7 +88,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitor`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitor`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -133,7 +133,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -176,7 +176,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -220,7 +220,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorTags/{tagId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"tagId"}}`, encodeURIComponent(String(requestParameters.tagId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorTags/{tagId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"tagId"}}`, encodeURIComponent(String(requestParameters.tagId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -268,7 +268,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitor`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitor`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -318,7 +318,7 @@ export class VisitorsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitors/{visitorId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorId"}}`, encodeURIComponent(String(requestParameters.visitorId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

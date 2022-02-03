@@ -79,7 +79,7 @@ export class VisitorVariablesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorVariables`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorVariables`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -124,7 +124,7 @@ export class VisitorVariablesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -167,7 +167,7 @@ export class VisitorVariablesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -211,7 +211,7 @@ export class VisitorVariablesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorVariables`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorVariables`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -261,7 +261,7 @@ export class VisitorVariablesApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
+            path: `/v1/exhibitions/{exhibitionId}/visitorVariables/{visitorVariableId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"visitorVariableId"}}`, encodeURIComponent(String(requestParameters.visitorVariableId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

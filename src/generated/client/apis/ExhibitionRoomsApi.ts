@@ -79,7 +79,7 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rooms`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/rooms`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -124,7 +124,7 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
+            path: `/v1/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -167,7 +167,7 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
+            path: `/v1/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -211,7 +211,7 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rooms`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
+            path: `/v1/exhibitions/{exhibitionId}/rooms`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -261,7 +261,7 @@ export class ExhibitionRoomsApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
+            path: `/v1/exhibitions/{exhibitionId}/rooms/{roomId}`.replace(`{${"exhibitionId"}}`, encodeURIComponent(String(requestParameters.exhibitionId))).replace(`{${"roomId"}}`, encodeURIComponent(String(requestParameters.roomId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
