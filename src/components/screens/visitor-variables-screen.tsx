@@ -116,7 +116,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           <ElementNavigationPane title={ strings.helpTexts.visitorVariables.visitorVariablesDescription }>
             { this.renderVisitorVariablesList() }
           </ElementNavigationPane>
-          <div style={{ padding: theme.spacing(4) }}>
+          <div style={{ padding: theme.spacing(4), overflow: "auto" }}>
             { this.renderEditor() }
             { this.renderConfirmDeleteDialog() }
           </div>
