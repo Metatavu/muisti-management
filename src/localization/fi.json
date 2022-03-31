@@ -388,6 +388,7 @@
       "visitorSessionEndTimeout": "Vierailijan poistumisviive",
       "visitorSessionStartThreshold": "Käyttäjän session aloituksen raja (%)",
       "visitorSessionEndThreshold": "Käyttäjän session lopetuksen raja (%)",
+      "indexPageTimeout": "Vierailijan palautus etusivulle (ms)",
       "readerId": "Antennin lukijan Id",
       "deviceGroup": "Laiteryhmä johon antenni kuuluu",
       "room": "Huone johon antenni kuuluu",
@@ -952,7 +953,9 @@
       "visitorSessionStartThresholdDescription": "Signaalin voimakkuus prosentteina, milloin vierailija kirjataan saapuneeksi laiteryhmään ja sisällön näyttäminen käynnistyy.",
       "visitorSessionEndThresholdDescription": "Signaalin voimakkuus prosentteina, milloin vierailija kirjataan ulos laiteryhmästä. Parhaan asetuksen löytää testaamalla. Huomaa, että vierailijan alittaessa tämän signaalivahvuuden, käynnistyy vierailijan poistumisviive, joka määritetään laiteryhmän asetuksissa.",
       "antennaReaderIdDescription": "Antenniyksikön tunnus (ID), mihin tämä antenni on kytketty.",
-      "antennaPortNumberDescription": "Antenniyksikön portti, mihin antenni on kytketty. Antenniin kannattaa kirjata tämä portin numero helpottamaan vianetsintää."
+      "antennaPortNumberDescription": "Antenniyksikön portti, mihin antenni on kytketty. Antenniin kannattaa kirjata tämä portin numero helpottamaan vianetsintää.",
+      "indexPageTimeoutDescription": "Passiivisen vierailijan etuvisulle palautuksen viive.",
+      "indexPageTimeoutAdditionalDescription": "Vierailija palautetaan takaisin etusivulle kun tähän kenttään määritelty millisekuntimäärä on kulunut. Mikäli kenttään ei ole syötety arvoa, toiminto ei ole päällä." 
     },
     "layoutEditor": {
       "commonProperties": {
