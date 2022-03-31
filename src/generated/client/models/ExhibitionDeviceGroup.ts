@@ -63,6 +63,12 @@ export interface ExhibitionDeviceGroup {
      */
     visitorSessionEndTimeout: number;
     /**
+     * Time after inactive visitor will returned to the index page. Ignored if not specified
+     * @type {number}
+     * @memberof ExhibitionDeviceGroup
+     */
+    indexPageTimeout?: number;
+    /**
      * 
      * @type {DeviceGroupVisitorSessionStartStrategy}
      * @memberof ExhibitionDeviceGroup
@@ -110,6 +116,7 @@ export function ExhibitionDeviceGroupFromJSONTyped(json: any, ignoreDiscriminato
         'name': json['name'],
         'allowVisitorSessionCreation': json['allowVisitorSessionCreation'],
         'visitorSessionEndTimeout': json['visitorSessionEndTimeout'],
+        'indexPageTimeout': !exists(json, 'indexPageTimeout') ? undefined : json['indexPageTimeout'],
         'visitorSessionStartStrategy': DeviceGroupVisitorSessionStartStrategyFromJSON(json['visitorSessionStartStrategy']),
         'creatorId': !exists(json, 'creatorId') ? undefined : json['creatorId'],
         'lastModifierId': !exists(json, 'lastModifierId') ? undefined : json['lastModifierId'],
@@ -131,6 +138,7 @@ export function ExhibitionDeviceGroupToJSON(value?: ExhibitionDeviceGroup | null
         'name': value.name,
         'allowVisitorSessionCreation': value.allowVisitorSessionCreation,
         'visitorSessionEndTimeout': value.visitorSessionEndTimeout,
+        'indexPageTimeout': value.indexPageTimeout,
         'visitorSessionStartStrategy': DeviceGroupVisitorSessionStartStrategyToJSON(value.visitorSessionStartStrategy),
     };
 }
