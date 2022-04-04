@@ -352,6 +352,27 @@ class FloorPlanInfo extends React.Component<Props, State> {
             </Typography>
           </HelpDialog>
         </Box>
+        <Box
+          display="flex"
+          mt={ 2 }
+          alignItems="center"
+        >
+          <TextField
+            type="text"
+            label={ strings.floorPlan.properties.indexPageTimeout }
+            name="indexPageTimeout"
+            value={ selectedDeviceGroup.indexPageTimeout }
+            onChange={ onChangeDeviceGroupProperties }
+          />
+          <HelpDialog title="">
+            <Typography>
+              { strings.helpDialogs.floorPlanEditor.indexPageTimeoutDescription }
+            </Typography>
+            <Typography variant="h6">
+              { strings.helpDialogs.floorPlanEditor.indexPageTimeoutAdditionalDescription }
+            </Typography>
+          </HelpDialog>
+        </Box>
       </>
     );
   }

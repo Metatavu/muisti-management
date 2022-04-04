@@ -388,6 +388,7 @@ export interface IStrings extends LocalizedStringsMethods {
       visitorSessionEndTimeout: string;
       visitorSessionStartThreshold: string;
       visitorSessionEndThreshold: string;
+      indexPageTimeout: string;
       name: string;
       readerId: string;
       deviceGroup: string;
@@ -969,6 +970,8 @@ export interface IStrings extends LocalizedStringsMethods {
       visitorSessionEndThresholdDescription: string;
       antennaReaderIdDescription: string;
       antennaPortNumberDescription: string;
+      indexPageTimeoutDescription: string;
+      indexPageTimeoutAdditionalDescription: string; 
     };
     layoutEditor: {
       commonProperties: {
