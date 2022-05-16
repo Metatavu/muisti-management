@@ -10,7 +10,7 @@ import { WithStyles, withStyles, CircularProgress, TextField } from "@material-u
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { ContentVersion, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -40,8 +40,10 @@ interface State {
   loading: boolean;
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
+  copyDialogOpen: boolean;
   selectedExhibition?: Exhibition;
   confirmDialogData: ConfirmDialogData;
+  confirmCopyDialogData: ConfirmDialogData;
 }
 
 /**
@@ -60,12 +62,22 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       loading: false,
       addDialogOpen: false,
       deleteDialogOpen: false,
+      copyDialogOpen: false,
       confirmDialogData: {
         title: strings.exhibitions.delete.deleteTitle,
         text: strings.exhibitions.delete.deleteText,
         cancelButtonText: strings.confirmDialog.cancel,
         positiveButtonText: strings.confirmDialog.delete,
         deletePossible: true,
+        onCancel: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick,
+      },
+      confirmCopyDialogData: {
+        title: strings.exhibitions.copy.title,
+        text: strings.exhibitions.copy.text,
+        cancelButtonText: strings.confirmDialog.cancel,
+        positiveButtonText: strings.exhibitions.cardMenu.copyExhibition,
+        deletePossible: false,
         onCancel: this.onCloseOrCancelClick,
         onClose: this.onCloseOrCancelClick,
       }
@@ -98,6 +110,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         { this.renderProductionCardsList() }
         { this.renderAddDialog() }
         { this.renderConfirmDeleteDialog() }
+        { this.renderConfirmCopyDialog() }
       </BasicLayout>
     );
   }
@@ -177,16 +190,36 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders copy exhibition confirmation dialog
+   */
+    private renderConfirmCopyDialog = () => {
+    const { copyDialogOpen, confirmCopyDialogData } = this.state;
+
+    return (
+      <ConfirmDialog
+        open={ copyDialogOpen }
+        confirmDialogData={ confirmCopyDialogData }
+      />
+    );
+  }
+
+  /**
    * Gets card menu options for exhibition card
    *
    * @param exhibition exhibition
    * @returns card menu options as action button array
    */
   private getCardMenuOptions = (exhibition: Exhibition): ActionButton[] => {
-    return [{
-      name: strings.exhibitions.cardMenu.delete,
-      action: () => this.onDeleteExhibitionClick(exhibition)
-    }];
+    return [
+      {
+        name: strings.exhibitions.cardMenu.copyExhibition,
+        action: () => this.onCopyExhibitionClick(exhibition)
+      },
+      {
+        name: strings.exhibitions.cardMenu.delete,
+        action: () => this.onDeleteExhibitionClick(exhibition)
+      }
+    ];
   }
 
   /**
@@ -237,6 +270,22 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         draft.selectedExhibition = { ...draft.selectedExhibition!, [name]: value }
       })
     );
+  }
+
+  /**
+   * Event handler for copy exhibition click
+   * 
+   * @param selectedExhibition exhibition to be copied
+   */
+  private onCopyExhibitionClick = (selectedExhibition: Exhibition) => {
+    if (!selectedExhibition.id) {
+      return;
+    }
+
+    this.setState({
+      selectedExhibition,
+      copyDialogOpen: true,
+    });
   }
 
   /**
@@ -380,8 +429,26 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     this.setState({
       addDialogOpen: false,
       deleteDialogOpen: false,
+      copyDialogOpen: false,
       selectedExhibition: undefined
     });
+  }
+
+  /**
+   * Copy exhibition
+   * 
+   * TODO: add functionality
+   * 
+   * @param selectedExhibition exhibition
+   * @returns 
+   */
+  private copyExhibition = (selectedExhibition: Exhibition) => {
+    const { accessToken } = this.props;
+    const exhibitionId = selectedExhibition.id;
+
+    if (!accessToken || !exhibitionId) {
+      return;
+    }
   }
 
   /**

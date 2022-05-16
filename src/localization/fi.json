@@ -53,6 +53,10 @@
       "deleteText": "Haluatko varmasti poistaa näyttelyn {0}?",
       "contentTitle": "Näyttelyä ei voida poistaa. Näyttely sisältää"
     },
+    "copy": {
+      "title": "Kopioi näyttely?",
+      "text": "Haluatko kopioida näyttelyn {0}? Kopioinnissa voi kestää hetki."
+    },
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
       "helpText": "Voit luoda uuden näyttelyn täyttämällä Nimi -kentän ja painamalla Luo -paniketta",
@@ -66,7 +70,8 @@
       "moveToDraft": "Siirrä luonnoksiin",
       "setStatus": "Aseta tila",
       "delete": "Poista",
-      "edit": "Muokkaa"
+      "edit": "Muokkaa",
+      "copyExhibition": "Kopioi näyttely"
     }
   },
 

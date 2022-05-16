@@ -45,7 +45,11 @@
     "delete": {
       "deleteTitle": "Delete exhibition",
       "deleteText": "Are you sure you want to delete exhibition {0}?",
-      "contentTitle": "Exhibition cannot be delete. Exhibition includes"
+      "contentTitle": "Exhibition cannot be deleted. Exhibition includes"
+    },
+    "copy": {
+      "title": "Copy exhibition",
+      "text": "Do you want to copy exhibition {0}? This process might take a while."
     },
     "createExhibitionDialog": {
       "title": "Create new exhibition",
@@ -65,7 +69,8 @@
       "moveToDraft": "Move to draft",
       "setStatus": "Set status",
       "delete": "Delete",
-      "edit": "Edit"
+      "edit": "Edit",
+      "copyExhibition": "Copy exhibition"
     }
   },
 
