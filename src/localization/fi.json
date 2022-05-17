@@ -55,7 +55,8 @@
     },
     "copy": {
       "title": "Kopioi näyttely?",
-      "text": "Haluatko kopioida näyttelyn {0}? Kopioinnissa voi kestää hetki."
+      "text": "Haluatko kopioida näyttelyn {0}? Kopioinnissa voi kestää hetki.",
+      "copyingText": "Kopioidaan sisältöjä..."
     },
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",

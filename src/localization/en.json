@@ -49,7 +49,8 @@
     },
     "copy": {
       "title": "Copy exhibition",
-      "text": "Do you want to copy exhibition {0}? This process might take a while."
+      "text": "Do you want to copy exhibition {0}? This process might take a while.",
+      "copyingText": "Copying content..."
     },
     "createExhibitionDialog": {
       "title": "Create new exhibition",

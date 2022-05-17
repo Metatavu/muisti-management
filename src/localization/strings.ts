@@ -39,6 +39,7 @@ export interface IStrings extends LocalizedStringsMethods {
     copy: {
       title: string;
       text: string;
+      copyingText: string;
     };
     createExhibitionDialog: {
       title: string;

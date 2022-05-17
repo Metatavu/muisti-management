@@ -1,26 +1,27 @@
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField } from "@material-ui/core";
-import { KeycloakInstance } from "keycloak-js";
+import { setExhibitions } from "../../actions/exhibitions";
+import Api from "../../api/api";
 // eslint-disable-next-line max-len
 import { ContentVersion, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
 import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
-import GenericDialog from "../generic/generic-dialog";
-import Api from "../../api/api";
-import { setExhibitions } from "../../actions/exhibitions";
-import produce from "immer";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
 import DeleteUtils from "../../utils/delete-utils";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import BasicLayout from "../layouts/basic-layout";
+
+
 
 /**
  * Component props
@@ -41,9 +42,9 @@ interface State {
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
   copyDialogOpen: boolean;
+  copying: boolean;
   selectedExhibition?: Exhibition;
   confirmDialogData: ConfirmDialogData;
-  confirmCopyDialogData: ConfirmDialogData;
 }
 
 /**
@@ -63,6 +64,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       addDialogOpen: false,
       deleteDialogOpen: false,
       copyDialogOpen: false,
+      copying: false,
       confirmDialogData: {
         title: strings.exhibitions.delete.deleteTitle,
         text: strings.exhibitions.delete.deleteText,
@@ -70,16 +72,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         positiveButtonText: strings.confirmDialog.delete,
         deletePossible: true,
         onCancel: this.onCloseOrCancelClick,
-        onClose: this.onCloseOrCancelClick,
-      },
-      confirmCopyDialogData: {
-        title: strings.exhibitions.copy.title,
-        text: strings.exhibitions.copy.text,
-        cancelButtonText: strings.confirmDialog.cancel,
-        positiveButtonText: strings.exhibitions.cardMenu.copyExhibition,
-        deletePossible: false,
-        onCancel: this.onCloseOrCancelClick,
-        onClose: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick
       }
     };
   }
@@ -193,13 +186,66 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * Renders copy exhibition confirmation dialog
    */
     private renderConfirmCopyDialog = () => {
-    const { copyDialogOpen, confirmCopyDialogData } = this.state;
+    const {
+      copyDialogOpen,
+      copying,
+      selectedExhibition
+    } = this.state;
+
+    if (!selectedExhibition) {
+      return;
+    }
 
     return (
-      <ConfirmDialog
+      <Dialog
+        fullWidth
+        maxWidth="sm"
         open={ copyDialogOpen }
-        confirmDialogData={ confirmCopyDialogData }
-      />
+        onClose={ this.onCloseOrCancelClick }
+      >
+        <DialogTitle>
+          { strings.exhibitions.copy.title }
+        </DialogTitle>
+        <DialogContent>
+          { copying ?
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: theme.spacing(2)
+            }}
+          >
+            <Typography>{ strings.exhibitions.copy.copyingText }</Typography>
+            <LinearProgress
+              style={{
+                marginTop: theme.spacing(2),
+                width: "90%"
+              }}
+              variant="indeterminate"
+            />
+          </Box>
+          :  
+          <Typography>{ strings.formatString(strings.exhibitions.copy.text,selectedExhibition.name) }</Typography>
+          }
+        </DialogContent>
+        { !copying &&
+          <DialogActions>
+            <Button onClick={ this.onCloseOrCancelClick } color="primary">
+              { strings.genericDialog.cancel }
+            </Button>
+            <Button
+              disableElevation
+              variant="contained"
+              onClick={ () => this.copyExhibition(selectedExhibition) }
+              color="secondary"
+              autoFocus
+            >
+              { strings.exhibitions.cardMenu.copyExhibition }
+            </Button>
+          </DialogActions> 
+        }
+      </Dialog>
     );
   }
 
@@ -284,7 +330,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     this.setState({
       selectedExhibition,
-      copyDialogOpen: true,
+      copyDialogOpen: true
     });
   }
 
@@ -449,6 +495,10 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     if (!accessToken || !exhibitionId) {
       return;
     }
+
+    this.setState({
+      copying: true
+    });
   }
 
   /**
