@@ -38,6 +38,7 @@ interface Props extends WithStyles<typeof styles> {
  * Component state
  */
 interface State {
+  error?: Error;
   loading: boolean;
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
@@ -60,6 +61,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      error: undefined,
       loading: false,
       addDialogOpen: false,
       deleteDialogOpen: false,
@@ -81,6 +83,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
+    const { error } = this.state;
     const { classes, history, keycloak } = this.props;
     if (this.state.loading) {
       return (
@@ -99,6 +102,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         breadcrumbs={ [] }
         actionBarButtons={ actionBarButtons }
         noBackButton
+        error={ error }
+        clearError={ () => this.setState({ error: undefined }) }
       >
         { this.renderProductionCardsList() }
         { this.renderAddDialog() }
@@ -483,13 +488,11 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   /**
    * Copy exhibition
    * 
-   * TODO: add functionality
-   * 
    * @param selectedExhibition exhibition
    * @returns 
    */
-  private copyExhibition = (selectedExhibition: Exhibition) => {
-    const { accessToken } = this.props;
+  private copyExhibition = async (selectedExhibition: Exhibition) => {
+    const { accessToken, exhibitions } = this.props;
     const exhibitionId = selectedExhibition.id;
 
     if (!accessToken || !exhibitionId) {
@@ -498,6 +501,21 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     this.setState({
       copying: true
+    });
+
+    try {
+      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
+      const copiedExhibition = await exhibitionsApi.createExhibition({ sourceExhibitionId: exhibitionId });
+      
+      this.props.setExhibitions([ ...exhibitions, copiedExhibition ]);
+    } catch (error) {
+      this.setState({
+        copying: false,
+        error: new Error((error as any).message || "Unknown error")
+      });
+    }
+    this.setState({
+      copying: false
     });
   }
 
