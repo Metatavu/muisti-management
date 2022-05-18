@@ -21,8 +21,6 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import GenericDialog from "../generic/generic-dialog";
 import BasicLayout from "../layouts/basic-layout";
 
-
-
 /**
  * Component props
  */
@@ -574,6 +572,5 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
     setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions))
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionsScreen));
