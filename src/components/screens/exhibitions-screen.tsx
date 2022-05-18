@@ -353,6 +353,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
     tempDeleteData.onConfirm = () => this.deleteExhibition(selectedExhibition);
+    tempDeleteData.text = strings.formatString(strings.exhibitions.delete.deleteText,selectedExhibition.name);
 
     const pagesApi = Api.getExhibitionPagesApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
