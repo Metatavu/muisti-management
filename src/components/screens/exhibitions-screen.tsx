@@ -506,8 +506,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     });
 
     try {
-      const exhibitionsApi = Api.getExhibitionsApi(accessToken);
-      const copiedExhibition = await exhibitionsApi.createExhibition({ sourceExhibitionId: exhibitionId });
+      const copiedExhibition = await Api.getExhibitionsApi(accessToken).createExhibition({ sourceExhibitionId: exhibitionId });
       
       this.props.setExhibitions([ ...exhibitions, copiedExhibition ]);
     } catch (error) {
