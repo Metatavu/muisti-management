@@ -21,7 +21,7 @@ export default createMuiTheme({
     },
     text: {
       primary: "#000",
-      secondary: "#888"
+      secondary: "#222"
     },
     error: red,
   },

@@ -1,26 +1,25 @@
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField } from "@material-ui/core";
-import { KeycloakInstance } from "keycloak-js";
+import { setExhibitions } from "../../actions/exhibitions";
+import Api from "../../api/api";
 // eslint-disable-next-line max-len
 import { ContentVersion, Exhibition, ExhibitionDevice, ExhibitionDeviceGroup, ExhibitionFloor, ExhibitionPage, ExhibitionRoom, GroupContentVersion, RfidAntenna, Visitor, VisitorSession } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
-import GenericDialog from "../generic/generic-dialog";
-import Api from "../../api/api";
-import { setExhibitions } from "../../actions/exhibitions";
-import produce from "immer";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
 import DeleteUtils from "../../utils/delete-utils";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import BasicLayout from "../layouts/basic-layout";
 
 /**
  * Component props
@@ -37,9 +36,12 @@ interface Props extends WithStyles<typeof styles> {
  * Component state
  */
 interface State {
+  error?: Error;
   loading: boolean;
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
+  copyDialogOpen: boolean;
+  copying: boolean;
   selectedExhibition?: Exhibition;
   confirmDialogData: ConfirmDialogData;
 }
@@ -57,9 +59,12 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      error: undefined,
       loading: false,
       addDialogOpen: false,
       deleteDialogOpen: false,
+      copyDialogOpen: false,
+      copying: false,
       confirmDialogData: {
         title: strings.exhibitions.delete.deleteTitle,
         text: strings.exhibitions.delete.deleteText,
@@ -67,7 +72,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         positiveButtonText: strings.confirmDialog.delete,
         deletePossible: true,
         onCancel: this.onCloseOrCancelClick,
-        onClose: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick
       }
     };
   }
@@ -77,6 +82,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    */
   public render = () => {
     const { classes, history, keycloak } = this.props;
+    const { error } = this.state;
     if (this.state.loading) {
       return (
         <div className={ classes.loader }>
@@ -94,10 +100,13 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         breadcrumbs={ [] }
         actionBarButtons={ actionBarButtons }
         noBackButton
+        error={ error }
+        clearError={ () => this.setState({ error: undefined }) }
       >
         { this.renderProductionCardsList() }
         { this.renderAddDialog() }
         { this.renderConfirmDeleteDialog() }
+        { this.renderConfirmCopyDialog() }
       </BasicLayout>
     );
   }
@@ -177,16 +186,93 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders copy exhibition confirmation dialog
+   */
+  private renderConfirmCopyDialog = () => {
+    const {
+      copyDialogOpen,
+      copying,
+      selectedExhibition
+    } = this.state;
+
+    if (!selectedExhibition) {
+      return;
+    }
+
+    return (
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={ copyDialogOpen }
+        onClose={ this.onCloseOrCancelClick }
+      >
+        <DialogTitle>
+          { strings.exhibitions.copy.title }
+        </DialogTitle>
+        <DialogContent>
+          { copying ?
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: theme.spacing(2)
+              }}
+            >
+              <Typography>
+                { strings.exhibitions.copy.copyingText }
+              </Typography>
+              <LinearProgress
+                style={{
+                  marginTop: theme.spacing(2),
+                  width: "90%"
+                }}
+                variant="indeterminate"
+              />
+            </Box>
+            :  
+            <Typography>
+              { strings.formatString(strings.exhibitions.copy.text,selectedExhibition.name) }
+            </Typography>
+          }
+        </DialogContent>
+        { !copying &&
+          <DialogActions>
+            <Button onClick={ this.onCloseOrCancelClick } color="primary">
+              { strings.genericDialog.cancel }
+            </Button>
+            <Button
+              disableElevation
+              variant="contained"
+              onClick={ () => this.copyExhibition(selectedExhibition) }
+              color="secondary"
+              autoFocus
+            >
+              { strings.exhibitions.cardMenu.copyExhibition }
+            </Button>
+          </DialogActions> 
+        }
+      </Dialog>
+    );
+  }
+
+  /**
    * Gets card menu options for exhibition card
    *
    * @param exhibition exhibition
    * @returns card menu options as action button array
    */
   private getCardMenuOptions = (exhibition: Exhibition): ActionButton[] => {
-    return [{
-      name: strings.exhibitions.cardMenu.delete,
-      action: () => this.onDeleteExhibitionClick(exhibition)
-    }];
+    return [
+      {
+        name: strings.exhibitions.cardMenu.copyExhibition,
+        action: () => this.onCopyExhibitionClick(exhibition)
+      },
+      {
+        name: strings.exhibitions.cardMenu.delete,
+        action: () => this.onDeleteExhibitionClick(exhibition)
+      }
+    ];
   }
 
   /**
@@ -240,6 +326,22 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Event handler for copy exhibition click
+   * 
+   * @param selectedExhibition exhibition to be copied
+   */
+  private onCopyExhibitionClick = (selectedExhibition: Exhibition) => {
+    if (!selectedExhibition.id) {
+      return;
+    }
+
+    this.setState({
+      selectedExhibition,
+      copyDialogOpen: true
+    });
+  }
+
+  /**
    * Event handler for exhibition delete click
    *
    * @param selectedExhibition exhibition
@@ -255,6 +357,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
     tempDeleteData.onConfirm = () => this.deleteExhibition(selectedExhibition);
+    tempDeleteData.text = strings.formatString(strings.exhibitions.delete.deleteText,selectedExhibition.name);
 
     const pagesApi = Api.getExhibitionPagesApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
@@ -380,6 +483,41 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     this.setState({
       addDialogOpen: false,
       deleteDialogOpen: false,
+      copyDialogOpen: false,
+      selectedExhibition: undefined
+    });
+  }
+
+  /**
+   * Copy exhibition
+   * 
+   * @param selectedExhibition exhibition
+   */
+  private copyExhibition = async (selectedExhibition: Exhibition) => {
+    const { accessToken, exhibitions } = this.props;
+    const exhibitionId = selectedExhibition.id;
+
+    if (!accessToken || !exhibitionId) {
+      return;
+    }
+
+    this.setState({
+      copying: true
+    });
+
+    try {
+      const copiedExhibition = await Api.getExhibitionsApi(accessToken).createExhibition({ sourceExhibitionId: exhibitionId });
+      
+      this.props.setExhibitions([ ...exhibitions, copiedExhibition ]);
+    } catch (error) {
+      this.setState({
+        copying: false,
+        error: new Error((error as any).message || "Unknown error")
+      });
+    }
+    this.setState({
+      copying: false,
+      copyDialogOpen: false,
       selectedExhibition: undefined
     });
   }
@@ -439,6 +577,5 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
     setExhibitions: (exhibitions: Exhibition[]) => dispatch(setExhibitions(exhibitions))
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionsScreen));

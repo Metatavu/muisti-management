@@ -146,7 +146,7 @@ export interface MultiLingualContentVersion {
 export interface ConfirmDialogData {
   deletePossible: boolean;
   title: string;
-  text: string;
+  text: string | string[];
   positiveButtonText: string;
   cancelButtonText: string;
   onClose: () => void;
