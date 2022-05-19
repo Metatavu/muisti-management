@@ -81,8 +81,8 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-    const { error } = this.state;
     const { classes, history, keycloak } = this.props;
+    const { error } = this.state;
     if (this.state.loading) {
       return (
         <div className={ classes.loader }>
@@ -188,7 +188,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   /**
    * Renders copy exhibition confirmation dialog
    */
-    private renderConfirmCopyDialog = () => {
+  private renderConfirmCopyDialog = () => {
     const {
       copyDialogOpen,
       copying,
@@ -211,25 +211,29 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         </DialogTitle>
         <DialogContent>
           { copying ?
-          <Box
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: theme.spacing(2)
-            }}
-          >
-            <Typography>{ strings.exhibitions.copy.copyingText }</Typography>
-            <LinearProgress
+            <Box
               style={{
-                marginTop: theme.spacing(2),
-                width: "90%"
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: theme.spacing(2)
               }}
-              variant="indeterminate"
-            />
-          </Box>
-          :  
-          <Typography>{ strings.formatString(strings.exhibitions.copy.text,selectedExhibition.name) }</Typography>
+            >
+              <Typography>
+                { strings.exhibitions.copy.copyingText }
+              </Typography>
+              <LinearProgress
+                style={{
+                  marginTop: theme.spacing(2),
+                  width: "90%"
+                }}
+                variant="indeterminate"
+              />
+            </Box>
+            :  
+            <Typography>
+              { strings.formatString(strings.exhibitions.copy.text,selectedExhibition.name) }
+            </Typography>
           }
         </DialogContent>
         { !copying &&
@@ -488,7 +492,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    * Copy exhibition
    * 
    * @param selectedExhibition exhibition
-   * @returns 
    */
   private copyExhibition = async (selectedExhibition: Exhibition) => {
     const { accessToken, exhibitions } = this.props;
