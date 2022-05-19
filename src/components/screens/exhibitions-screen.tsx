@@ -514,7 +514,9 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       });
     }
     this.setState({
-      copying: false
+      copying: false,
+      copyDialogOpen: false,
+      selectedExhibition: undefined
     });
   }
 
