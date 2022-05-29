@@ -1922,6 +1922,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private doPageOrderUpdate = async (pagesToUpdate: ExhibitionPage[]) => {
     const { accessToken, exhibitionId } = this.props;
+    const originalPages = [ ...this.state.pages ];
+
+    this.setState({
+      loading: true
+    });
 
     this.setState(
       produce((draft: State) => {
@@ -1945,12 +1950,21 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return;
       }
 
-      await exhibitionPagesApi.updateExhibitionPage({
-        exhibitionId: exhibitionId,
-        exhibitionPage: pageToUpdate,
-        pageId: pageToUpdate.id
-      });
+      const originalPage = originalPages.find(page => page.id === pageToUpdate.id);
+      const originalPageOrder = originalPage?.orderNumber;
+
+      if (originalPageOrder !== pageToUpdate.orderNumber) {
+        await exhibitionPagesApi.updateExhibitionPage({
+          exhibitionId: exhibitionId,
+          exhibitionPage: pageToUpdate,
+          pageId: pageToUpdate.id
+        });
+      }
     }
+
+    this.setState({
+      loading: false
+    });
   }
 
   /**
