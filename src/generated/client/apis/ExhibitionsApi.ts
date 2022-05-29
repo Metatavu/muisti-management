@@ -21,7 +21,8 @@ import {
 } from '../models';
 
 export interface CreateExhibitionRequest {
-    exhibition: Exhibition;
+    exhibition?: Exhibition;
+    sourceExhibitionId?: string;
 }
 
 export interface DeleteExhibitionRequest {
@@ -47,11 +48,11 @@ export class ExhibitionsApi extends runtime.BaseAPI {
      * Create a exhibition.
      */
     async createExhibitionRaw(requestParameters: CreateExhibitionRequest): Promise<runtime.ApiResponse<Exhibition>> {
-        if (requestParameters.exhibition === null || requestParameters.exhibition === undefined) {
-            throw new runtime.RequiredError('exhibition','Required parameter requestParameters.exhibition was null or undefined when calling createExhibition.');
-        }
-
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.sourceExhibitionId !== undefined) {
+            queryParameters['sourceExhibitionId'] = requestParameters.sourceExhibitionId;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
