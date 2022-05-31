@@ -52,6 +52,9 @@
       "text": "Do you want to copy exhibition {0}? This process might take a while.",
       "copyingText": "Copying content..."
     },
+    "rename": {
+      "title": "Rename exhibition"
+    },
     "createExhibitionDialog": {
       "title": "Create new exhibition",
       "helpText": "You can create new exhibition by adding a name and pressing create button",
@@ -70,6 +73,7 @@
       "moveToDraft": "Move to draft",
       "setStatus": "Set status",
       "delete": "Delete",
+      "rename": "Rename",
       "edit": "Edit",
       "copyExhibition": "Copy exhibition"
     }
