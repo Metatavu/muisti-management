@@ -58,6 +58,9 @@
       "text": "Haluatko kopioida näyttelyn {0}? Kopioinnissa voi kestää hetki.",
       "copyingText": "Kopioidaan sisältöjä..."
     },
+    "rename": {
+      "title": "Anna näyttelylle uusi nimi"
+    },
     "createExhibitionDialog": {
       "title": "Luo uusi näyttely",
       "helpText": "Voit luoda uuden näyttelyn täyttämällä Nimi -kentän ja painamalla Luo -paniketta",
@@ -71,6 +74,7 @@
       "moveToDraft": "Siirrä luonnoksiin",
       "setStatus": "Aseta tila",
       "delete": "Poista",
+      "rename": "Nimeä uudelleen",
       "edit": "Muokkaa",
       "copyExhibition": "Kopioi näyttely"
     }
