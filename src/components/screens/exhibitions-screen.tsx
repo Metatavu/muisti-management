@@ -599,12 +599,10 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   /**
    * Rename exhibition
    * 
-   * TODO: do the trick
-   * 
    * @param selectedExhibition exhibition
    */
   private renameExhibition = async (selectedExhibition: Exhibition) => {
-    const { accessToken } = this.props;
+    const { accessToken, exhibitions } = this.props;
     const exhibitionId = selectedExhibition.id;
 
     if (!accessToken || !exhibitionId) {
@@ -612,8 +610,22 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     }
 
     this.setState({
+      loading: true
+    });
+
+    const updatedExhibition = await Api.getExhibitionsApi(accessToken).updateExhibition({ 
+      exhibition: selectedExhibition,
+      exhibitionId: exhibitionId
+    });
+
+    const otherExihibitions = exhibitions.filter(exhibition => exhibition.id !== updatedExhibition.id );
+
+    this.props.setExhibitions([ ...otherExihibitions, updatedExhibition ]);
+    
+    this.setState({
       renameDialogOpen: false,
-      selectedExhibition: undefined
+      selectedExhibition: undefined,
+      loading: false
     });
   }
 
