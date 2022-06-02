@@ -41,6 +41,7 @@ interface State {
   addDialogOpen: boolean;
   deleteDialogOpen: boolean;
   copyDialogOpen: boolean;
+  renameDialogOpen: boolean;
   copying: boolean;
   selectedExhibition?: Exhibition;
   confirmDialogData: ConfirmDialogData;
@@ -64,6 +65,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       addDialogOpen: false,
       deleteDialogOpen: false,
       copyDialogOpen: false,
+      renameDialogOpen: false,
       copying: false,
       confirmDialogData: {
         title: strings.exhibitions.delete.deleteTitle,
@@ -107,6 +109,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
         { this.renderAddDialog() }
         { this.renderConfirmDeleteDialog() }
         { this.renderConfirmCopyDialog() }
+        { this.renderRenameDialog() }
       </BasicLayout>
     );
   }
@@ -230,7 +233,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
                 variant="indeterminate"
               />
             </Box>
-            :  
+            :
             <Typography>
               { strings.formatString(strings.exhibitions.copy.text,selectedExhibition.name) }
             </Typography>
@@ -257,6 +260,57 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
   }
 
   /**
+   * Renders copy exhibition confirmation dialog
+   */
+  private renderRenameDialog = () => {
+    const {
+      renameDialogOpen,
+      selectedExhibition
+    } = this.state;
+
+    if (!selectedExhibition) {
+      return;
+    }
+
+    return (
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={ renameDialogOpen }
+        onClose={ this.onCloseOrCancelClick }
+      >
+        <DialogTitle>
+          { strings.exhibitions.rename.title }
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label={ strings.generic.name }
+            name="name"
+            value={ selectedExhibition.name }
+            onChange={ this.onExhibitionDataChange }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={ this.onCloseOrCancelClick } color="primary">
+            { strings.genericDialog.cancel }
+          </Button>
+          <Button
+            disableElevation
+            variant="contained"
+            onClick={ () => this.renameExhibition(selectedExhibition) }
+            color="secondary"
+            autoFocus
+          >
+            { strings.generic.save }
+          </Button>
+        </DialogActions> 
+      </Dialog>
+    );
+  }
+
+  /**
    * Gets card menu options for exhibition card
    *
    * @param exhibition exhibition
@@ -264,6 +318,10 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
    */
   private getCardMenuOptions = (exhibition: Exhibition): ActionButton[] => {
     return [
+      {
+        name: strings.exhibitions.cardMenu.rename,
+        action: () => this.onRenameExhibitionClick(exhibition)
+      },
       {
         name: strings.exhibitions.cardMenu.copyExhibition,
         action: () => this.onCopyExhibitionClick(exhibition)
@@ -338,6 +396,22 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     this.setState({
       selectedExhibition,
       copyDialogOpen: true
+    });
+  }
+
+  /**
+   * Event handler for rename exhibition click
+   * 
+   * @param selectedExhibition exhibition to be copied
+   */
+  private onRenameExhibitionClick = (selectedExhibition: Exhibition) => {
+    if (!selectedExhibition.id) {
+      return;
+    }
+
+    this.setState({
+      selectedExhibition,
+      renameDialogOpen: true
     });
   }
 
@@ -519,6 +593,39 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       copying: false,
       copyDialogOpen: false,
       selectedExhibition: undefined
+    });
+  }
+
+  /**
+   * Rename exhibition
+   * 
+   * @param selectedExhibition exhibition
+   */
+  private renameExhibition = async (selectedExhibition: Exhibition) => {
+    const { accessToken, exhibitions } = this.props;
+    const exhibitionId = selectedExhibition.id;
+
+    if (!accessToken || !exhibitionId) {
+      return;
+    }
+
+    this.setState({
+      loading: true
+    });
+
+    const updatedExhibition = await Api.getExhibitionsApi(accessToken).updateExhibition({ 
+      exhibition: selectedExhibition,
+      exhibitionId: exhibitionId
+    });
+
+    const otherExihibitions = exhibitions.filter(exhibition => exhibition.id !== updatedExhibition.id );
+
+    this.props.setExhibitions([ ...otherExihibitions, updatedExhibition ]);
+    
+    this.setState({
+      renameDialogOpen: false,
+      selectedExhibition: undefined,
+      loading: false
     });
   }
 

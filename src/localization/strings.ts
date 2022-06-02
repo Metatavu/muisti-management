@@ -41,6 +41,9 @@ export interface IStrings extends LocalizedStringsMethods {
       text: string;
       copyingText: string;
     };
+    rename: {
+      title: string;
+    };
     createExhibitionDialog: {
       title: string;
       helpText: string;
@@ -59,6 +62,7 @@ export interface IStrings extends LocalizedStringsMethods {
       moveToDraft: string;
       setStatus: string;
       delete: string;
+      rename: string;
       edit: string;
       copyExhibition: string;
     };
