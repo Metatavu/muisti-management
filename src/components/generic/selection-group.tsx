@@ -1,6 +1,8 @@
 import * as React from "react";
 
-import { Button, Grid, WithStyles, withStyles } from '@material-ui/core';
+import { Button, Grid } from '@mui/material';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import classNames from "classnames";
 import styles from "../../styles/selection-group";
 /**
@@ -47,7 +49,7 @@ const SelectionGroup: React.FC<Props> = (props: Props) => {
       container
       className={ props.classes.root }
       spacing={ 1 }
-      justify="space-between"
+      justifyContent="space-between"
     >
       {
         props.options.data.map((dataItem, index) => {

@@ -1,10 +1,12 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from "react-measure";
-import { WithStyles, withStyles, Tabs, Tab } from "@material-ui/core";
+import { Tabs, Tab } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";

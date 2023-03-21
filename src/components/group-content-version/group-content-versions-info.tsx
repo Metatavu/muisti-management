@@ -5,7 +5,9 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, Grid, Typography, TextField } from "@material-ui/core";
+import { Grid, Typography, TextField } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { GroupContentVersion } from "../../generated/client";

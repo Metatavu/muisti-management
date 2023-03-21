@@ -6,7 +6,18 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, InputLabel, FormControlLabel, Switch, FormControl } from "@material-ui/core";
+import {
+  CircularProgress,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControlLabel,
+  Switch,
+  FormControl,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout, ExhibitionPage, Exhibition } from "../../generated/client";

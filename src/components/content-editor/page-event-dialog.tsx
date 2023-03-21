@@ -1,7 +1,9 @@
 import * as React from "react";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Box } from "@material-ui/core";
+import { MenuItem, Select, TextField, Typography, Box } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 // eslint-disable-next-line max-len
 import { ExhibitionPage, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";

@@ -1,8 +1,10 @@
 import * as React from "react";
 
-import { withStyles, WithStyles, MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@material-ui/core";
+import { MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/menu-button";
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import { ActionButton } from "../../types";
 import theme from "../../styles/theme";
 
@@ -66,36 +68,34 @@ const MenuButton: React.FC<Props> = props => {
     );
   });
 
-  return (
-    <>
-      <IconButton onClick={ handleToggle } ref={ anchorRef }>
-        { icon || <MenuIcon/> }
-      </IconButton>
-      <Popper
-        open={ open }
-        role={ undefined }
-        anchorEl={ anchorRef.current }
-        placement="bottom-end"
-        transition
-        disablePortal
-      >
-        {({ TransitionProps }) => (
-          <Grow
-            { ...TransitionProps }
-            style={{ transformOrigin: "right top" }}
-          >
-            <Paper elevation={ 5 } style={{ borderRadius: theme.shape.borderRadius }}>
-              <ClickAwayListener onClickAway={ handleClose }>
-                <MenuList autoFocusItem={ open }>
-                  { optionMenuItems }
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </>
-  );
+  return <>
+    <IconButton onClick={ handleToggle } ref={ anchorRef } size="large">
+      { icon || <MenuIcon/> }
+    </IconButton>
+    <Popper
+      open={ open }
+      role={ undefined }
+      anchorEl={ anchorRef.current }
+      placement="bottom-end"
+      transition
+      disablePortal
+    >
+      {({ TransitionProps }) => (
+        <Grow
+          { ...TransitionProps }
+          style={{ transformOrigin: "right top" }}
+        >
+          <Paper elevation={ 5 } style={{ borderRadius: theme.shape.borderRadius }}>
+            <ClickAwayListener onClickAway={ handleClose }>
+              <MenuList autoFocusItem={ open }>
+                { optionMenuItems }
+              </MenuList>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
+  </>;
 }
 
 export default withStyles(styles)(MenuButton);

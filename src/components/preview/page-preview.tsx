@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from '@material-ui/core';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-preview";
 import PagePreviewComponentEditor from "./components/page-preview-component";
 import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResource, ScreenOrientation, ExhibitionDevice, ExhibitionPage } from "../../generated/client";
 import DisplayMetrics from "../../types/display-metrics";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 import AndroidUtils from "../../utils/android-utils";
 import { ResourceMap } from "../../types";
 import { ExhibitionPageTabHolder } from "../content-editor/constants";

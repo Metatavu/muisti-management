@@ -1,9 +1,11 @@
 import * as React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Measure, { ContentRect } from "react-measure";
-import { Button, WithStyles, withStyles } from '@material-ui/core';
-import ZoomInIcon from "@material-ui/icons/Add";
-import ZoomOutIcon from "@material-ui/icons/Remove";
+import { Button } from '@mui/material';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
+import ZoomInIcon from "@mui/icons-material/Add";
+import ZoomOutIcon from "@mui/icons-material/Remove";
 import styles from "../../styles/components/generic/pan-zoom";
 
 /**

@@ -1,6 +1,8 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Typography, Box, IconButton } from "@material-ui/core";
+import { Typography, Box, IconButton } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/element-navigation-pane";
 
 /**
@@ -53,7 +55,7 @@ const ElementNavigationPane: React.FC<Props> = ({
                 color="primary"
                 title={ actionButtonTitle }
                 onClick={ actionButtonClick }
-              >
+                size="large">
                 { actionButtonIcon }
               </IconButton>
             }

@@ -1,6 +1,8 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
 import AndroidUtils from "../../../utils/android-utils";
 import DisplayMetrics from "../../../types/display-metrics";

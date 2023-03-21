@@ -1,6 +1,8 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, Paper, Typography } from "@material-ui/core";
+import { List, ListItem, Paper, Typography } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/timeline-editor";
 import { ExhibitionDevice, ExhibitionPage, ContentVersion } from "../../generated/client/models";
 import classNames from "classnames";

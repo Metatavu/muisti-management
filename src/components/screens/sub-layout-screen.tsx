@@ -8,7 +8,9 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Typography, Divider } from "@material-ui/core";
+import { CircularProgress, TextField, Typography, Divider } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayoutView, SubLayout } from "../../generated/client";

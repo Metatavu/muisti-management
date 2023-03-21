@@ -1,6 +1,7 @@
 import React from "react";
 import { BarChart, Bar, YAxis, XAxis, Cell, ResponsiveContainer } from "recharts";
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/diagnostics/tag-monitoring-view";
 import { Mqtt } from "../../mqtt";
 import { MqttProximityUpdate, RfidAntenna, VisitorSession, VisitorSessionState } from "../../generated/client";

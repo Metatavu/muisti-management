@@ -1,6 +1,8 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, Checkbox, FormControlLabel } from "@material-ui/core";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
 
 /**

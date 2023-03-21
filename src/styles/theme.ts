@@ -1,5 +1,5 @@
-import { createTheme } from '@material-ui/core';
-import { red, grey } from "@material-ui/core/colors";
+import { createTheme, adaptV4Theme } from '@mui/material';
+import { red, grey } from "@mui/material/colors";
 
 const theme = createTheme();
 const { spacing } = theme;
@@ -7,7 +7,7 @@ const { spacing } = theme;
 const uiHighlightMain = "#0079E9";
 const uiHighlightLight = "rgba(0, 121, 233, 0.25)";
 
-export default createTheme({
+export default createTheme(adaptV4Theme({
 
   palette: {
     primary: { main: grey[900] },
@@ -368,4 +368,4 @@ export default createTheme({
       variant: "outlined"
     }
   }
-});
+}));

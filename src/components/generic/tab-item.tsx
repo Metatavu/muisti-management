@@ -3,7 +3,9 @@ import * as React from "react";
 import ReactHtmlParser from 'react-html-parser';
 import { ExhibitionPageTabResource } from "../content-editor/constants";
 import styles from "../../styles/components/generic/tab-item";
-import { withStyles, WithStyles, Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { ExhibitionPageResourceType } from "../../generated/client";
 
 /**

@@ -1,6 +1,8 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
 // tslint:disable-next-line: max-line-length
 import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";

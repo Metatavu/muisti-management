@@ -1,4 +1,4 @@
-import { Box, MenuItem, TextField, Typography } from "@material-ui/core";
+import { Box, MenuItem, TextField, Typography } from "@mui/material";
 import produce from "immer";
 import * as React from "react";
 import { VisitorSession, VisitorVariable, VisitorVariableType } from "../../../generated/client";

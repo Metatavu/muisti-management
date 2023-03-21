@@ -1,7 +1,9 @@
 import * as React from "react";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, Typography, MenuItem, Select, Button } from "@material-ui/core";
+import { TextField, Typography, MenuItem, Select, Button } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import strings from "../../localization/strings";
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -29,15 +31,15 @@ interface Props extends WithStyles<typeof styles> {
   onSave: (updatedTab: ExhibitionPageTab) => void;
 }
 
-  /**
-   * Component state
-   */
-  interface State {
-    error?: Error;
-    loading: boolean;
-    selectedResourceType?: ExhibitionPageResourceType;
-    showCKEditorModal: boolean;
-  }
+/**
+ * Component state
+ */
+interface State {
+  error?: Error;
+  loading: boolean;
+  selectedResourceType?: ExhibitionPageResourceType;
+  showCKEditorModal: boolean;
+}
 
 /**
  * Component for tab editor

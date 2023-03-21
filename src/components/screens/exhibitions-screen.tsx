@@ -1,4 +1,17 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { History } from "history";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";

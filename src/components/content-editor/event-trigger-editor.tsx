@@ -6,7 +6,27 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Box, ListItemText, Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
+import {
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Divider,
+  Paper,
+  Box,
+  ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEvent, PageLayoutView, VisitorVariable } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
@@ -19,10 +39,10 @@ import strings from "../../localization/strings";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import HelpDialog from "../generic/help-dialog";
-import ExpandMoreIcon from "@material-ui/icons/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
 import PageEventDialog from "./page-event-dialog";
 
 /**
@@ -90,7 +110,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
               title={ strings.contentEditor.editor.eventTriggers.addEvent }
               color="primary"
               onClick={ this.onAddPageEventClick }
-            >
+              size="large">
               <AddIcon />
             </IconButton>
           </Box>

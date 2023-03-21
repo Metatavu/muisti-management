@@ -1,7 +1,9 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../../styles/common-properties-editor";
 import GenericPropertySelect from "./../generic-property-select";
 import GravityEditor from "./../gravity-editor";

@@ -2,14 +2,34 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography, Box, FormHelperText } from "@material-ui/core";
+import {
+  FilledInput,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
+  Grid,
+  Divider,
+  Select,
+  MenuItem,
+  InputLabel,
+  TextField,
+  ListItemText,
+  FormControl,
+  Typography,
+  Box,
+  FormHelperText,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import AddIcon from '@material-ui/icons/AddCircle';
+import AddIcon from '@mui/icons-material/AddCircle';
 import classNames from "classnames";
-import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
-import ChevronRightIcon from '@material-ui/icons/ArrowRight';
+import ExpandMoreIcon from '@mui/icons-material/ArrowDropDown';
+import ChevronRightIcon from '@mui/icons-material/ArrowRight';
 import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 import { v4 as uuid } from "uuid";

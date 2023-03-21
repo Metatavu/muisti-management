@@ -1,10 +1,11 @@
 import * as React from "react";
 
 import { ContentRect } from 'react-measure';
-import { WithStyles, withStyles } from '@material-ui/core';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType } from "../../../generated/client";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 import DisplayMetrics from "../../../types/display-metrics";
 import PagePreviewImageView from "./page-preview-image-view";
 import PagePreviewPlayerView from "./page-preview-player-view";

@@ -1,4 +1,4 @@
-import { Box, TextField } from "@material-ui/core";
+import { Box, TextField } from "@mui/material";
 import * as React from "react";
 import { Visitor } from "../../../generated/client";
 import strings from "../../../localization/strings";

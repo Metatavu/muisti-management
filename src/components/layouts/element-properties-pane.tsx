@@ -1,9 +1,11 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, Typography, IconButton } from "@material-ui/core";
+import { Typography, IconButton } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 /**
  * Interface representing component properties
@@ -64,7 +66,7 @@ class ElementPropertiesPane extends React.Component<Props, State> {
             <div className={ classes.header }>
               <Typography variant="h3">{ title }</Typography>
               { onCloseClick &&
-                <IconButton onClick={ () => onCloseClick() }>
+                <IconButton onClick={ () => onCloseClick() } size="large">
                   <ChevronRightIcon />
                 </IconButton>
               }

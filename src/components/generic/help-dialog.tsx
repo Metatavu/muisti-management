@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@material-ui/core";
-import HelpIcon from "@material-ui/icons/Help";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@mui/material";
+import HelpIcon from "@mui/icons-material/Help";
 import strings from "../../localization/strings";
 
 /**
@@ -42,37 +42,33 @@ export default class HelpDialog extends React.Component<Props, State> {
     const { title } = this.props;
     const { open } = this.state;
 
-    return (
-      <>
-        <IconButton onClick={ this.onHelpDialogOpenClick } color="inherit">
-          <HelpIcon htmlColor="#222"/>
-        </IconButton>
-        <Dialog
-          maxWidth="md"
-          open={ open }
-        >
-          <DialogTitle
-            disableTypography
+    return <>
+      <IconButton onClick={ this.onHelpDialogOpenClick } color="inherit" size="large">
+        <HelpIcon htmlColor="#222"/>
+      </IconButton>
+      <Dialog
+        maxWidth="md"
+        open={ open }
+      >
+        <DialogTitle>
+          { title }
+        </DialogTitle>
+        <DialogContent>
+          { this.props.children }
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={ this.onHelpDialogCloseClick }
+            disableElevation
+            variant="contained"
+            color="secondary"
+            autoFocus
           >
-            { title }
-          </DialogTitle>
-          <DialogContent>
-            { this.props.children }
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={ this.onHelpDialogCloseClick }
-              disableElevation
-              variant="contained"
-              color="secondary"
-              autoFocus
-            >
-              { strings.genericDialog.close }
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
+            { strings.genericDialog.close }
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>;
   }
 
   /**

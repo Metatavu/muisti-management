@@ -1,14 +1,16 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionPageTransition, ExhibitionPageTransitionOptionsMorphView } from "../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@material-ui/core";
+import { MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
-import AddIcon from "@material-ui/icons/AddSharp";
-import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from "@mui/icons-material/AddSharp";
+import DeleteIcon from '@mui/icons-material/Delete';
 import theme from "../../styles/theme";
 
 /**
@@ -108,21 +110,22 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
     }
 
     return selectedTransition.options.morph.views.map((view, index) => {
-      return (
-        <>
-          <Grid item xs={ 5 }>
-            { this.renderSourceSelect(view, index, sourcePageLayout) }
-          </Grid>
-          <Grid item xs={ 5 }>
-            { this.renderTargetSelect(view, index, targetLayouts) }
-          </Grid>
-          <Grid item xs={ 2 }>
-            <IconButton color="primary" onClick={ () => this.onDeleteViewPair(index) }>
-              <DeleteIcon />
-            </IconButton>
-          </Grid>
-        </>
-      );
+      return <>
+        <Grid item xs={ 5 }>
+          { this.renderSourceSelect(view, index, sourcePageLayout) }
+        </Grid>
+        <Grid item xs={ 5 }>
+          { this.renderTargetSelect(view, index, targetLayouts) }
+        </Grid>
+        <Grid item xs={ 2 }>
+          <IconButton
+            color="primary"
+            onClick={ () => this.onDeleteViewPair(index) }
+            size="large">
+            <DeleteIcon />
+          </IconButton>
+        </Grid>
+      </>;
     });
   }
 

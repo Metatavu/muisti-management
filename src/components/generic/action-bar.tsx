@@ -1,7 +1,9 @@
 import * as React from "react";
 
 import { ActionButton } from "../../types";
-import { WithStyles, withStyles, Button } from "@material-ui/core";
+import { Button } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/toolbar";
 
 /**

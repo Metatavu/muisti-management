@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 
 /**
  * Interface representing component properties
@@ -54,28 +54,26 @@ export default class PolygonDialog extends React.Component<Props, State> {
       title,
       onConfirm,
       roomName} = this.props;
-    return (
-      <>
-        <Dialog
-          open={ open }
-          onClose={ onClose }
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle disableTypography id="polygon-dialog-title">{ title }</DialogTitle>
-          <DialogContent>
-            <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={ onCancel } color="primary">
-              { cancelButtonText }
-            </Button>
-            <Button disableElevation variant="contained" onClick={ onConfirm } color="secondary" autoFocus>
-              { positiveButtonText }
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
+    return <>
+      <Dialog
+        open={ open }
+        onClose={ onClose }
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="polygon-dialog-title">{ title }</DialogTitle>
+        <DialogContent>
+          <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={ onCancel } color="primary">
+            { cancelButtonText }
+          </Button>
+          <Button disableElevation variant="contained" onClick={ onConfirm } color="secondary" autoFocus>
+            { positiveButtonText }
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>;
   }
 }

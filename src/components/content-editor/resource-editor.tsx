@@ -2,7 +2,9 @@ import * as React from "react";
 // tslint:disable-next-line: max-line-length
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Select, MenuItem, FormControl, InputLabel } from "@material-ui/core";
+import { TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/resource-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";

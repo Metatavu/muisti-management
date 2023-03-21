@@ -6,7 +6,18 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/screens/reception-screen";
-import { WithStyles, withStyles, CircularProgress, Typography, Button, TextField, InputLabel, MenuItem, Select, FormControl } from "@material-ui/core";
+import {
+  CircularProgress,
+  Typography,
+  Button,
+  TextField,
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { ContentVersion, DeviceModel, Visitor } from "../../generated/client";
 import { AccessToken } from '../../types';
