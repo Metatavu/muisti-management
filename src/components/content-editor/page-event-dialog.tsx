@@ -5,11 +5,11 @@ import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, Box } 
 // eslint-disable-next-line max-len
 import { ExhibitionPage, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/lint/lint.css";
-import "codemirror/addon/lint/lint";
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/addon/lint/lint.css";
+// import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
 import produce from "immer";
 import GenericDialog from "../generic/generic-dialog";
@@ -197,16 +197,16 @@ class PageEventDialog extends React.Component<Props, State> {
           { strings.contentEditor.editor.eventTriggers.variableName }
         </Typography>
 
-        <Select 
+        <Select
           fullWidth={ false }
           name="name"
           value={ variableName }
           onChange={ this.onEventTriggerEventPropertyChange }
           className={ classes.selectResourceEditor } >
-          { 
+          {
             visitorVariables.map(visitorVariable => {
               return <MenuItem value={ visitorVariable.name }>{ visitorVariable.name }</MenuItem>
-            }) 
+            })
           }
         </Select>
 
@@ -221,29 +221,29 @@ class PageEventDialog extends React.Component<Props, State> {
 
   /**
    * Renders input for set user variable trigger
-   * 
+   *
    * @param variableName variable name
    * @param variableValue variable value
    */
   private renderSetUserValueSettingValueInput = (variableName: string, variableValue: string) => {
     const { classes, visitorVariables } = this.props;
 
-    const visitorVariable = visitorVariables.find(item => item.name === variableName); 
+    const visitorVariable = visitorVariables.find(item => item.name === variableName);
     const visitorVariableType = visitorVariable?.type || VisitorVariableType.Text;
 
     if (visitorVariableType === VisitorVariableType.Enumerated) {
       const values = visitorVariable?._enum || [];
       return (
-        <Select 
+        <Select
           fullWidth={ false }
           name="value"
           value={ variableValue }
           onChange={ this.onEventTriggerEventPropertyChange }
           className={ classes.selectResourceEditor } >
-          { 
+          {
             values.map(value => {
               return <MenuItem value={ value }>{ value }</MenuItem>
-            }) 
+            })
           }
         </Select>
       );
@@ -251,7 +251,7 @@ class PageEventDialog extends React.Component<Props, State> {
 
     if (visitorVariableType === VisitorVariableType.Boolean) {
       return (
-        <Select 
+        <Select
           fullWidth={ false }
           name="value"
           value={ variableValue }
@@ -263,7 +263,7 @@ class PageEventDialog extends React.Component<Props, State> {
         </Select>
       );
     }
-    
+
     return (
       <TextField
         fullWidth={ false }
@@ -400,7 +400,7 @@ class PageEventDialog extends React.Component<Props, State> {
 
   /**
    * Renders web view options
-   * 
+   *
    * @param webViewOptions list of page layout views
    * @returns options as JSX Elements or undefined if no options found
    */
@@ -442,7 +442,7 @@ class PageEventDialog extends React.Component<Props, State> {
 
   /**
    * Renders language options
-   * 
+   *
    * @returns options as JSX Elements or undefined if no options found
    */
   private renderLanguageOptions = (): JSX.Element[] | undefined => {
@@ -561,7 +561,7 @@ class PageEventDialog extends React.Component<Props, State> {
 
   /**
    * Get web views in page layout
-   * 
+   *
    * @param view page layout view
    * @returns web views as page layout views
    */
@@ -571,7 +571,7 @@ class PageEventDialog extends React.Component<Props, State> {
       if (view.widget === PageLayoutWidgetType.WebView) {
         webViews.push(view);
       }
-  
+
       if (view.children) {
         view.children.forEach(childView => {
           webViews.push(...this.getWebViewsInLayout(childView));

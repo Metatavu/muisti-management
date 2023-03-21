@@ -20,6 +20,7 @@ interface Props extends WithStyles<typeof styles> {
   actionButtonIcon?: JSX.Element;
   actionButtonTitle?: string;
   actionButtonClick?: () => void;
+  children: React.ReactNode;
 }
 
 /**

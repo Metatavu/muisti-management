@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
 import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, MarkerOptions, LatLngExpression, LatLngTuple } from "leaflet";
-import 'leaflet/dist/leaflet.css';
+// import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";
-import "leaflet-draw/dist/leaflet.draw.css";
+// import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
 import { ExhibitionRoom, ExhibitionFloor, ExhibitionDeviceGroup, ExhibitionDevice, DeviceModel, RfidAntenna } from "../../generated/client";
 import { Polygon } from "geojson";

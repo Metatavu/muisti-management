@@ -29,6 +29,7 @@ interface Props extends WithStyles<typeof styles> {
   hideHeader?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
+  children: React.ReactNode;
 }
 
 /**
@@ -68,7 +69,8 @@ class BasicLayout extends React.Component<Props, State> {
       keycloak,
       dataChanged,
       openDataChangedPrompt,
-      hideHeader
+      hideHeader,
+      children
     } = this.props;
     return (
       <div className={ classes.root }>

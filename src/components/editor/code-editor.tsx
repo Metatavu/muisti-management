@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { WithStyles, withStyles, Typography } from "@material-ui/core";
 import styles from "../../styles/code-editor";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 import * as codemirror from "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/lint/lint.css";
-import 'codemirror/addon/lint/lint';
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/addon/lint/lint.css";
+// import 'codemirror/addon/lint/lint';
 import strings from "../../localization/strings";
 import { JsonLintParseErrorHash } from "../../types";
 import * as jsonlint from "jsonlint-mod";
@@ -37,7 +37,7 @@ class CodeEditor extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {

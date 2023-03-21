@@ -11,11 +11,11 @@ import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEvent, PageLayoutView, VisitorVariable } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/lint/lint.css";
-import "codemirror/addon/lint/lint";
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/addon/lint/lint.css";
+// import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
@@ -450,9 +450,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
     switch (propertyName) {
       case "delay":
         const valueString = value as string;
-        onSave({ 
+        onSave({
           ...selectedEventTrigger,
-          [propertyName]: isNumber(valueString) ? Number(valueString) : 0 
+          [propertyName]: isNumber(valueString) ? Number(valueString) : 0
         });
       break;
       case "clickViewId":
@@ -522,7 +522,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   /**
    * Event handler for page event delete click
    *
-   * @param pageEventIndex page event index 
+   * @param pageEventIndex page event index
    */
   private onPageEventDeleteClick = (pageEventIndex: number) => () => {
     const { selectedEventTrigger, onSave } = this.props;
@@ -548,7 +548,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { onSave } = this.props;
     const { selectedPageEventIndex } = this.state;
     const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
-  
+
     if (selectedPageEventIndex === undefined) {
       return;
     }

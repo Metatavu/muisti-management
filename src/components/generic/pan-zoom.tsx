@@ -140,7 +140,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
 
   /**
    * Returns scale as percentage
-   * 
+   *
    * @param scale scale
    * @returns scale as percentage string
    */

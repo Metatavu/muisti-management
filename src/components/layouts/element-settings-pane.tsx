@@ -31,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
    * List of available menu options
    */
   menuOptions?: ActionButton[];
+  children: React.ReactNode;
 }
 
 const minimizedWidth = 0;

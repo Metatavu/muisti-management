@@ -30,6 +30,7 @@ interface Props {
   fullScreen?: boolean;
   fullWidth?: boolean;
   disableEnforceFocus?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -68,7 +69,8 @@ export default class GenericDialog extends React.Component<Props, State> {
       error,
       fullScreen,
       fullWidth,
-      disableEnforceFocus
+      disableEnforceFocus,
+      children
     } = this.props;
 
     return (

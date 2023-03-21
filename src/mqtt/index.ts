@@ -1,6 +1,5 @@
 /* eslint-disable new-parens */
-import * as mqtt from "mqtt";
-import { IClientOptions } from "mqtt";
+import * as Paho from "paho-mqtt";
 
 /**
  * Message subscribe callback handler
@@ -13,9 +12,11 @@ export type OnMessageCallback = (message: any) => void;
  */
 export class Mqtt {
 
-  private client: mqtt.MqttClient | null;
+  // private client: mqtt.MqttClient | null;
+  private client: Paho.Client | null;
   private subscribers: Map<string, OnMessageCallback[]>;
   private connecting: boolean;
+  private connected: boolean;
 
   /**
    * Constructor
@@ -23,6 +24,7 @@ export class Mqtt {
   constructor () {
     this.client = null;
     this.connecting = false;
+    this.connected = false;
     this.subscribers = new Map();
   }
 
@@ -30,23 +32,17 @@ export class Mqtt {
    * Publishes a message
    *
    * @param topic topic
-   * @param message message
-   * @returns promise for sent package
+   * @param payload message payload
    */
-  public publish(topic: string, message: any): Promise<mqtt.Packet | undefined> {
-    return new Promise((resolve, reject) => {
-      if (!this.client) {
-        throw new Error("No client");
-      }
+  public publish(topic: string, payload: any) {
+    if (!this.client) {
+      throw new Error("No client");
+    }
 
-      this.client.publish(topic, JSON.stringify(message), (error?: Error, packet?: mqtt.Packet) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(packet);
-        }
-      });
-    });
+    const message = new Paho.Message(JSON.stringify(payload));
+    message.destinationName = topic;
+
+    this.client.send(message);
   }
 
   /**
@@ -84,31 +80,32 @@ export class Mqtt {
 
   /**
    * Reconnects to MQTT server
-   */
+   *//**
   public async reconnect() {
     if (this.client && this.client.connected) {
       await this.disconnect();
     }
 
     return this.connect();
-  }
+  }**/
 
   /**
    * Connects to the MQTT server
    */
   public async connect() {
     await this.waitConnecting();
-    return await this.doConnect();
+    await this.doConnect();
+    this.connected = true;
   }
 
   /**
    * Returns whether client is connected
    *
    * @returns whether client is connected
-   */
+   */ /**
   public isConnected() {
     return this.client?.connected || false;
-  }
+  } */
 
   /**
    * Waits for connecting status
@@ -127,14 +124,9 @@ export class Mqtt {
   /**
    * Disconnects from the server
    */
-  public async disconnect(): Promise<void> {
-    return new Promise(resolve => {
-      if (this.client && this.client.connected) {
-        this.client.end(false, resolve);
-      } else {
-        resolve();
-      }
-    });
+  public disconnect() {
+    this.client?.disconnect();
+    this.connected = false;
   }
 
   /**
@@ -157,19 +149,33 @@ export class Mqtt {
    */
   private doConnect(): Promise<void> {
     return new Promise(resolve => {
-      if (this.client && this.client.connected) {
+      if (this.client && this.connected) {
         return resolve();
       }
 
-      const secure = process.env.REACT_APP_MQTT_SECURE !== "false";
-      const host = process.env.REACT_APP_MQTT_HOST;
-      const port = parseInt(process.env.REACT_APP_MQTT_PORT || "") || undefined;
-      const path = process.env.REACT_APP_MQTT_PATH || "";
+      const secure = process.env.VITE_MQTT_SECURE !== "false";
+      const host = process.env.VITE_MQTT_HOST;
+      const port = parseInt(process.env.VITE_MQTT_PORT || "") || undefined;
+      const path = process.env.VITE_MQTT_PATH || "";
       const protocol = secure ? "wss://" : "ws://";
-      const username = process.env.REACT_APP_MQTT_USERNAME;
-      const password = process.env.REACT_APP_MQTT_PASSWORD;
+      const username = process.env.VITE_MQTT_USERNAME;
+      const password = process.env.VITE_MQTT_PASSWORD;
 
-      const url = `${protocol}${host}:${port}${path}`;
+//       const url = `${protocol}${host}:${port}${path}`;
+
+      this.client?.connect({
+        hosts: [ host! ],
+        ports: [ port! ],
+        keepAliveInterval: 30,
+        userName: username,
+        password: password,
+        onSuccess: () => {
+
+        }
+      });
+
+      /**
+
       const options: IClientOptions = {
         host: host,
         port: port,
@@ -189,7 +195,7 @@ export class Mqtt {
         this.onClientConnect();
         resolve();
       });
-
+ */
     });
   }
 

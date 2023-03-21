@@ -1,13 +1,13 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { red, grey } from "@material-ui/core/colors";
 
-const theme = createMuiTheme();
+const theme = createTheme();
 const { spacing } = theme;
 
 const uiHighlightMain = "#0079E9";
 const uiHighlightLight = "rgba(0, 121, 233, 0.25)";
 
-export default createMuiTheme({
+export default createTheme({
 
   palette: {
     primary: { main: grey[900] },
