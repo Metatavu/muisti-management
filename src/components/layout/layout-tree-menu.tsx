@@ -20,6 +20,7 @@ import {
   Typography,
   Box,
   FormHelperText,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
@@ -144,7 +145,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     ...otherProps
   }: TreeMenuItem) => {
     const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ? 
+    const toggleIcon = (on: boolean) => on ?
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
     return (
@@ -394,7 +395,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    *
    * @param event React change event
    */
-  private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  private onWidgetChange = (event: SelectChangeEvent<string>) => {
     const widget = event.target.value as PageLayoutWidgetType;
 
     const pageLayoutView = getInitializedPageLayoutViewByWidgetType(widget);
@@ -429,7 +430,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    *
    * @param event React change event
    */
-  private onSubLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onSubLayoutChange = (event: SelectChangeEvent<string>) => {
     const { subLayouts } = this.props;
     const subLayoutId = event.target.value;
 

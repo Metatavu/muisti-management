@@ -12,6 +12,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
   Toolbar,
   Typography,
@@ -292,7 +293,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           />
         </ListItemText>
         <ListItemSecondaryAction>
-          <IconButton 
+          <IconButton
             size="small"
             edge="end"
             aria-label="delete"
@@ -518,7 +519,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onTypeChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  private onTypeChange = (event: SelectChangeEvent<string>) => {
     const { selectedVisitorVariable } = this.state;
 
     if (!selectedVisitorVariable) {

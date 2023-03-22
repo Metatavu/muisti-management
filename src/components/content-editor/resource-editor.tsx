@@ -2,7 +2,7 @@ import * as React from "react";
 // tslint:disable-next-line: max-line-length
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { TextField, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/resource-editor";
@@ -176,11 +176,11 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for mode change
-   * 
+   *
    * @param event React change event
    * @param child selected child
    */
-  private onModeChange = (event: React.ChangeEvent<{ name?: string, value: any }>, child: React.ReactNode) => {
+  private onModeChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     const { resource, onUpdate } = this.props;
     const mode = event.target.value as PageResourceMode;
 
@@ -207,7 +207,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Creates data structure for dynamic resource
-   * 
+   *
    * @returns empty dynamic page resource structure
    */
   private createDynamicResourceDataStructure = (): DynamicPageResource => {
@@ -235,7 +235,7 @@ class ResourceEditor extends React.Component<Props, State> {
 
   /**
    * Event handler for updating dynamic resource
-   * 
+   *
    * @param resourceData dynamic resource data
    */
   private onUpdateDynamicResource = (resourceData: DynamicPageResource) => {

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionPageTransition, ExhibitionPageTransitionOptionsMorphView } from "../../generated/client";
-import { MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@mui/material";
+import { MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-settings-editor";
@@ -193,7 +193,7 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
    * @param index view index
    * @param event react change event
    */
-  private handleViewSelectChange = (index: number) => (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private handleViewSelectChange = (index: number) => (event: SelectChangeEvent<string>) => {
     const { selectedTransition } = this.props;
 
     const key = event.target.name as string;
@@ -213,7 +213,7 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
       this.props.onTransitionUpdate(transitionToUpdate);
     } else {
       transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : value};
-      this.props.onTransitionUpdate(transitionToUpdate); 
+      this.props.onTransitionUpdate(transitionToUpdate);
     }
   }
 

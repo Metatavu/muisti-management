@@ -17,6 +17,7 @@ import {
   MenuItem,
   FormControlLabel,
   Switch,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
@@ -578,7 +579,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    *
    * @param event react change event
    */
-  private onDeviceInfoSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any; }>) => {
+  private onDeviceInfoSelectChange = (event: SelectChangeEvent<string>) => {
     const { selectedDeviceModel } = this.state;
     if (!selectedDeviceModel) {
       return;

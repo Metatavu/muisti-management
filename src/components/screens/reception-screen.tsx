@@ -15,6 +15,7 @@ import {
   MenuItem,
   Select,
   FormControl,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
@@ -484,7 +485,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
    * @param event react change event
    * @param child react child node
    */
-  private onLanguageChange = (event: React.ChangeEvent<{ name?: string, value: any }>, child: React.ReactNode) => {
+  private onLanguageChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     const { visitor } = this.state;
     const name = event.target.name;
 

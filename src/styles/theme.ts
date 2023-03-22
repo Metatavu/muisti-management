@@ -67,6 +67,7 @@ export default createTheme(adaptV4Theme({
       fontFamily: "TTNorms-Bold",
     }
   },
+  // TODO: May need updating see upgrading to mui5 notes
   overrides: {
     MuiCssBaseline: {
       "@global": {
@@ -346,7 +347,8 @@ export default createTheme(adaptV4Theme({
       }
     }
   },
-  props: {
+  // TODO: May need updating see upgrading to mui5 notes
+  components: {
     MuiAccordionSummary: {
       IconButtonProps: {
         edge: "start"

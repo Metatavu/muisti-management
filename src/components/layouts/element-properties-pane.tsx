@@ -23,6 +23,7 @@ interface Props extends WithStyles<typeof styles> {
    * Handler for on close click
    */
   onCloseClick?: () => void;
+  children: React.ReactNode;
 }
 
 /**

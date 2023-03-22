@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import styles from "../../styles/exhibition-view";
-import { MenuItem, Select, TextField, Typography, Box } from "@mui/material";
+import { MenuItem, Select, TextField, Typography, Box, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 // eslint-disable-next-line max-len
@@ -490,7 +490,7 @@ class PageEventDialog extends React.Component<Props, State> {
    *
    * @param event react change event
    */
-  private onSelectEventActionType = (event: React.ChangeEvent<{ value: unknown }>) => {
+  private onSelectEventActionType = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as ExhibitionPageEventActionType;
     this.setState({ pageEvent: this.createPageEvent(value) });
   }

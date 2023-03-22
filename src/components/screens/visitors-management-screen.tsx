@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
@@ -470,7 +471,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
           <Box
             flex={ 1 }
             display="flex"
-            justifyContent="center"  
+            justifyContent="center"
           >
             <Typography>{ strings.visitorsManagement.scanRFID }</Typography>
           </Box>
@@ -718,7 +719,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @param event react change event
    * @param child react child node
    */
-  private onLanguageChange = (event: React.ChangeEvent<{ name?: string, value: any }>, child: React.ReactNode) => {
+  private onLanguageChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     this.setState({
       selectedLanguage: event.target.value,
       dataChanged: true

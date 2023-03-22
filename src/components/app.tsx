@@ -108,7 +108,7 @@ class App extends React.Component<Props, State> {
                           <FloorPlanEditorView
                             history={ history }
                             exhibitionId={ match.params.exhibitionId }
-                            exhibitionFloorId={ match.params.exhibitionFloorId }
+                            exhibitionFloorId={ match.params.floorId }
                             readOnly
                           />
                         )}

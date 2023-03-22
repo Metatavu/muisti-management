@@ -20,6 +20,7 @@ interface Props extends WithStyles<typeof styles> {
   contentWidth?: number;
   contentHeight?: number;
   disabled?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -100,7 +101,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    * @param opts transform wrapper options
    */
   private renderContents = (opts: any) => {
-    const { classes } = this.props;
+    const { classes, children } = this.props;
     const { containerWidth, containerHeight } = this.state;
 
     return (

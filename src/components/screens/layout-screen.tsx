@@ -18,6 +18,7 @@ import {
   InputLabel,
   FormControl,
   Box,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
@@ -563,7 +564,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onScreenOrientationChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  private onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
     this.setState({
       screenOrientation: event.target.value as ScreenOrientation,
       dataChanged: true
@@ -575,7 +576,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  private onDeviceModelChange = (event: SelectChangeEvent<string>) => {
     this.setState({
       deviceModelId: event.target.value as string,
       dataChanged: true

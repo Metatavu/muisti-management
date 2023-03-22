@@ -18,6 +18,7 @@ interface Props extends WithStyles<typeof styles> {
    * NOTE: Remember to wrap both in overflowing component!
    */
   autoHeight?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -47,7 +48,7 @@ class CardList extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, title, subtitle, autoHeight } = this.props;
+    const { classes, title, subtitle, autoHeight, children } = this.props;
 
     return (
       <div className={ autoHeight ? classes.cardViewAutoHeight : classes.cardView }>
