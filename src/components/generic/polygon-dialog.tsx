@@ -54,7 +54,8 @@ export default class PolygonDialog extends React.Component<Props, State> {
       title,
       onConfirm,
       roomName} = this.props;
-    return <>
+    return
+      <>
       <Dialog
         open={ open }
         onClose={ onClose }
