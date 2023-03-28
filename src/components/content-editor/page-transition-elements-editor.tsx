@@ -110,7 +110,8 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
     }
 
     return selectedTransition.options.morph.views.map((view, index) => {
-      return <>
+      return
+        <>
         <Grid item xs={ 5 }>
           { this.renderSourceSelect(view, index, sourcePageLayout) }
         </Grid>
