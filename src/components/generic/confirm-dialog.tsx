@@ -42,7 +42,8 @@ export default class ConfirmDialog extends React.Component<Props, State> {
 
     const dialogText = confirmDialogData.deletePossible ? confirmDialogData.text : confirmDialogData.contentTitle;
 
-    return <>
+    return
+      <>
       <Dialog
         open={ open }
         onClose={ confirmDialogData.onClose }
