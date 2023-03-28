@@ -68,7 +68,8 @@ const MenuButton: React.FC<Props> = props => {
     );
   });
 
-  return <>
+  return
+    <>
     <IconButton onClick={ handleToggle } ref={ anchorRef } size="large">
       { icon || <MenuIcon/> }
     </IconButton>
