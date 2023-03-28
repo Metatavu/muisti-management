@@ -110,23 +110,24 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
     }
 
     return selectedTransition.options.morph.views.map((view, index) => {
-      return
+      return (
         <>
-        <Grid item xs={ 5 }>
-          { this.renderSourceSelect(view, index, sourcePageLayout) }
-        </Grid>
-        <Grid item xs={ 5 }>
-          { this.renderTargetSelect(view, index, targetLayouts) }
-        </Grid>
-        <Grid item xs={ 2 }>
-          <IconButton
-            color="primary"
-            onClick={ () => this.onDeleteViewPair(index) }
-            size="large">
-            <DeleteIcon />
-          </IconButton>
-        </Grid>
-      </>;
+          <Grid item xs={ 5 }>
+            { this.renderSourceSelect(view, index, sourcePageLayout) }
+          </Grid>
+          <Grid item xs={ 5 }>
+            { this.renderTargetSelect(view, index, targetLayouts) }
+          </Grid>
+          <Grid item xs={ 2 }>
+            <IconButton
+              color="primary"
+              onClick={ () => this.onDeleteViewPair(index) }
+              size="large">
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        </>
+      )
     });
   }
 

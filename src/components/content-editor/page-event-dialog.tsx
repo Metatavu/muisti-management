@@ -7,6 +7,7 @@ import withStyles from '@mui/styles/withStyles';
 // eslint-disable-next-line max-len
 import { ExhibitionPage, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";
+// TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
 // import "codemirror/mode/javascript/javascript";

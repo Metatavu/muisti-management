@@ -21,7 +21,7 @@ interface Props extends WithStyles<typeof styles> {
 
 /**
  * Component for dynamic resource editor
- * 
+ *
  * @param props component props
  */
 const MediaLibraryButton: React.FC<Props> = (props: Props) => {
@@ -30,37 +30,42 @@ const MediaLibraryButton: React.FC<Props> = (props: Props) => {
   const openDialog = () => setOpen(true);
   const closeDialog = () => setOpen(false);
 
-  return
+  return (
     <>
-    <IconButton className={ classes.iconButton } onClick={ openDialog } size="large">
-      <FolderOpenIcon/>
-    </IconButton>
-    <Dialog
-      open={ open }
-      onBackdropClick={ closeDialog }
-    >
-      <Paper className={ classes.mediaLibraryDialog }>
-        <div className={ classes.mediaLibraryDialogTitle }>
-          <Typography variant="h3">
-            { strings.mediaLibrary.selectMedia }
-          </Typography>
-          <IconButton onClick={ closeDialog } size="large">
-            <CloseIcon/>
-          </IconButton>
-        </div>
-        <MediaLibrary
-          startsOpen
-          accessToken={ accessToken }
-          mediaType={ mediaType }
-          currentUrl={ currentUrl }
-          onUrlChange={ (newUrl: string) => {
-            onUpdate(newUrl);
-            closeDialog();
-          }}
-        />
-      </Paper>
-    </Dialog>
-  </>;
+      <IconButton
+        className={ classes.iconButton }
+        onClick={ openDialog }
+        size="large"
+      >
+        <FolderOpenIcon/>
+      </IconButton>
+      <Dialog
+        open={ open }
+        onBackdropClick={ closeDialog }
+      >
+        <Paper className={ classes.mediaLibraryDialog }>
+          <div className={ classes.mediaLibraryDialogTitle }>
+            <Typography variant="h3">
+              { strings.mediaLibrary.selectMedia }
+            </Typography>
+            <IconButton onClick={ closeDialog } size="large">
+              <CloseIcon/>
+            </IconButton>
+          </div>
+          <MediaLibrary
+            startsOpen
+            accessToken={ accessToken }
+            mediaType={ mediaType }
+            currentUrl={ currentUrl }
+            onUrlChange={ (newUrl: string) => {
+              onUpdate(newUrl);
+              closeDialog();
+            }}
+          />
+        </Paper>
+      </Dialog>
+    </>
+  )
 }
 
 export default withStyles(styles)(MediaLibraryButton);

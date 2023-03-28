@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
 import { Map as MapInstance, LatLngBounds, CRS, LatLng, LeafletMouseEvent, Layer, MarkerOptions, LatLngExpression, LatLngTuple } from "leaflet";
+// TODO: Code mirror related imports.
 // import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import "leaflet-draw";

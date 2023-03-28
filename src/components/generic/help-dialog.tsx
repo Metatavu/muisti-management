@@ -43,34 +43,39 @@ export default class HelpDialog extends React.Component<Props, State> {
     const { title } = this.props;
     const { open } = this.state;
 
-    return
+    return (
       <>
-      <IconButton onClick={ this.onHelpDialogOpenClick } color="inherit" size="large">
-        <HelpIcon htmlColor="#222"/>
-      </IconButton>
-      <Dialog
-        maxWidth="md"
-        open={ open }
-      >
-        <DialogTitle>
-          { title }
-        </DialogTitle>
-        <DialogContent>
-          { this.props.children }
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={ this.onHelpDialogCloseClick }
-            disableElevation
-            variant="contained"
-            color="secondary"
-            autoFocus
-          >
-            { strings.genericDialog.close }
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>;
+        <IconButton
+          onClick={ this.onHelpDialogOpenClick }
+          color="inherit"
+          size="large"
+        >
+          <HelpIcon htmlColor="#222"/>
+        </IconButton>
+        <Dialog
+          maxWidth="md"
+          open={ open }
+        >
+          <DialogTitle>
+            { title }
+          </DialogTitle>
+          <DialogContent>
+            { this.props.children }
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={ this.onHelpDialogCloseClick }
+              disableElevation
+              variant="contained"
+              color="secondary"
+              autoFocus
+            >
+              { strings.genericDialog.close }
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    )
   }
 
   /**

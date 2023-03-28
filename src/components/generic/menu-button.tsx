@@ -43,7 +43,7 @@ const MenuButton: React.FC<Props> = props => {
 
   /**
    * Handler for close menu
-   * @param event 
+   * @param event
    */
   const handleClose = (event: React.MouseEvent<EventTarget>) => {
     if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
@@ -68,35 +68,40 @@ const MenuButton: React.FC<Props> = props => {
     );
   });
 
-  return
+  return (
     <>
-    <IconButton onClick={ handleToggle } ref={ anchorRef } size="large">
-      { icon || <MenuIcon/> }
-    </IconButton>
-    <Popper
-      open={ open }
-      role={ undefined }
-      anchorEl={ anchorRef.current }
-      placement="bottom-end"
-      transition
-      disablePortal
-    >
-      {({ TransitionProps }) => (
-        <Grow
-          { ...TransitionProps }
-          style={{ transformOrigin: "right top" }}
-        >
-          <Paper elevation={ 5 } style={{ borderRadius: theme.shape.borderRadius }}>
-            <ClickAwayListener onClickAway={ handleClose }>
-              <MenuList autoFocusItem={ open }>
-                { optionMenuItems }
-              </MenuList>
-            </ClickAwayListener>
-          </Paper>
-        </Grow>
-      )}
-    </Popper>
-  </>;
+      <IconButton
+        onClick={ handleToggle }
+        ref={ anchorRef }
+        size="large"
+      >
+        { icon || <MenuIcon/> }
+      </IconButton>
+      <Popper
+        open={ open }
+        role={ undefined }
+        anchorEl={ anchorRef.current }
+        placement="bottom-end"
+        transition
+        disablePortal
+      >
+        {({ TransitionProps }) => (
+          <Grow
+            { ...TransitionProps }
+            style={{ transformOrigin: "right top" }}
+          >
+            <Paper elevation={ 5 } style={{ borderRadius: theme.shape.borderRadius }}>
+              <ClickAwayListener onClickAway={ handleClose }>
+                <MenuList autoFocusItem={ open }>
+                  { optionMenuItems }
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </>
+  )
 }
 
 export default withStyles(styles)(MenuButton);

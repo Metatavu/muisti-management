@@ -1,18 +1,19 @@
 /* eslint-disable new-parens */
 import * as Paho from "paho-mqtt";
+import { Config } from "../constants/configuration";
 
 /**
  * Message subscribe callback handler
  */
 export type OnMessageCallback = (message: any) => void;
 
+const config = Config.getConfig();
 
 /**
  * Class that handles MQTT connection
  */
 export class Mqtt {
 
-  // private client: mqtt.MqttClient | null;
   private client: Paho.Client | null;
   private subscribers: Map<string, OnMessageCallback[]>;
   private connecting: boolean;
@@ -79,17 +80,6 @@ export class Mqtt {
   }
 
   /**
-   * Reconnects to MQTT server
-   *//**
-  public async reconnect() {
-    if (this.client && this.client.connected) {
-      await this.disconnect();
-    }
-
-    return this.connect();
-  }**/
-
-  /**
    * Connects to the MQTT server
    */
   public async connect() {
@@ -97,15 +87,6 @@ export class Mqtt {
     await this.doConnect();
     this.connected = true;
   }
-
-  /**
-   * Returns whether client is connected
-   *
-   * @returns whether client is connected
-   */ /**
-  public isConnected() {
-    return this.client?.connected || false;
-  } */
 
   /**
    * Waits for connecting status
@@ -153,15 +134,13 @@ export class Mqtt {
         return resolve();
       }
 
-      const secure = process.env.VITE_MQTT_SECURE !== "false";
-      const host = process.env.VITE_MQTT_HOST;
-      const port = parseInt(process.env.VITE_MQTT_PORT || "") || undefined;
-      const path = process.env.VITE_MQTT_PATH || "";
+      const secure = config.mqttConfig.secure !== false;
+      const host = config.mqttConfig.host;
+      const port = config.mqttConfig.port || undefined;
+      const path = config.mqttConfig.path || "";
       const protocol = secure ? "wss://" : "ws://";
-      const username = process.env.VITE_MQTT_USERNAME;
-      const password = process.env.VITE_MQTT_PASSWORD;
-
-//       const url = `${protocol}${host}:${port}${path}`;
+      const username = config.mqttConfig.userName;
+      const password = config.mqttConfig.password;
 
       this.client?.connect({
         hosts: [ host! ],
@@ -173,29 +152,6 @@ export class Mqtt {
 
         }
       });
-
-      /**
-
-      const options: IClientOptions = {
-        host: host,
-        port: port,
-        keepalive: 30,
-        username: username,
-        password: password
-      };
-
-      this.client = mqtt.connect(url, options);
-
-      this.client.on("close", this.onClientClose.bind(this));
-      this.client.on("offline", this.onClientOffline.bind(this));
-      this.client.on("error", this.onClientError.bind(this));
-      this.client.on("message", this.onClientMessage.bind(this));
-
-      this.client.once("connect", () => {
-        this.onClientConnect();
-        resolve();
-      });
- */
     });
   }
 

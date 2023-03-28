@@ -31,6 +31,7 @@ import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEvent, PageLayoutView, VisitorVariable } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
+// TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
 // import "codemirror/mode/javascript/javascript";

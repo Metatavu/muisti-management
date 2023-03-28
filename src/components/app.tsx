@@ -300,31 +300,6 @@ class App extends React.Component<Props, State> {
                           />
                         )}
                       />
-                      {
-                        /**
-                         * TODO:
-                         * Remove commenting below when all views are done
-                         */
-                      }
-                      {/* <Route
-                        path="/users"
-                        exact
-                        render={({ history }) => (
-                          <UsersScreen
-                            history={ history }
-                          />
-                        )}
-                      />
-                      <Route
-                        path="/users/:userId"
-                        exact
-                        render={({ history, match }) => (
-                          <UserScreen
-                            history={ history }
-                            userId={ match.params.userId }
-                          />
-                        )}
-                      /> */}
                     </Switch>
                   </div>
                 </BrowserRouter>

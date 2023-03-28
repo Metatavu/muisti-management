@@ -34,6 +34,7 @@ import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 import codemirror from "codemirror";
+// TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
 // import "codemirror/mode/javascript/javascript";
