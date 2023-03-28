@@ -30,7 +30,8 @@ const MediaLibraryButton: React.FC<Props> = (props: Props) => {
   const openDialog = () => setOpen(true);
   const closeDialog = () => setOpen(false);
 
-  return <>
+  return
+    <>
     <IconButton className={ classes.iconButton } onClick={ openDialog } size="large">
       <FolderOpenIcon/>
     </IconButton>
