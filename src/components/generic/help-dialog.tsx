@@ -43,7 +43,8 @@ export default class HelpDialog extends React.Component<Props, State> {
     const { title } = this.props;
     const { open } = this.state;
 
-    return <>
+    return
+      <>
       <IconButton onClick={ this.onHelpDialogOpenClick } color="inherit" size="large">
         <HelpIcon htmlColor="#222"/>
       </IconButton>
