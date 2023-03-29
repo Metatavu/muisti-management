@@ -203,7 +203,7 @@ class App extends React.Component<Props, State> {
                         )}
                       />
                       <Route
-                        path="/layouts/:layoutId"
+                        path="/layouts/:type/:layoutId"
                         exact
                         render={({ history, match }) => (
                           <LayoutScreen

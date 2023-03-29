@@ -20,7 +20,7 @@ import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, ScreenOrientation, PageLayoutViewPropertyType, DeviceModel, PageLayoutWidgetType, SubLayout, ExhibitionPage, Exhibition } from "../../generated/client";
+import { PageLayout, ScreenOrientation, DeviceModel, SubLayout, ExhibitionPage, Exhibition, LayoutType } from "../../generated/client";
 import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
@@ -35,6 +35,7 @@ import produce from "immer";
 import { v4 as uuid } from "uuid";
 import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
+import { HTML_LAYOUT_ROOT } from "../../constants/html-layout-root";
 
 /**
  * Component props
@@ -161,7 +162,9 @@ class LayoutsScreen extends React.Component<Props, State> {
 
     const layoutCards = layouts.map(layout => {
       const layoutId = layout.id;
-      if (!layoutId) {
+      const layoutType = layout.layoutType;
+
+      if (!layoutId || !layoutType) {
         return null;
       }
 
@@ -171,7 +174,7 @@ class LayoutsScreen extends React.Component<Props, State> {
         <CardItem
           key={ layout.id }
           title={ layout.name }
-          onClick={ () => this.onLayoutCardClick(layoutId) }
+          onClick={ () => this.onLayoutCardClick(layoutId, layoutType) }
           menuOptions={ cardMenuOptions }
         />
       );
@@ -250,7 +253,6 @@ class LayoutsScreen extends React.Component<Props, State> {
             }
           label={ strings.layout.makeAsSubLayout }
         />
-
         { !createSubLayout &&
           this.renderDeviceModelSelect()
         }
@@ -287,7 +289,7 @@ class LayoutsScreen extends React.Component<Props, State> {
         </InputLabel>
         <Select
           fullWidth
-          style={{ marginTop: theme.spacing(2) }}
+          style={{ marginTop: theme.spacing(2), width: 200 }}
           label={ strings.device.dialog.model }
           labelId="screenOrientation-label"
           name="modelId"
@@ -425,6 +427,7 @@ class LayoutsScreen extends React.Component<Props, State> {
   private createNewLayout = async () => {
     const { accessToken, setLayouts, layouts } = this.props;
     const { newLayout } = this.state;
+
     if (!newLayout.name || !newLayout.modelId) {
       return;
     }
@@ -433,24 +436,9 @@ class LayoutsScreen extends React.Component<Props, State> {
       name: newLayout.name,
       screenOrientation: ScreenOrientation.Landscape,
       modelId: newLayout.modelId,
+      layoutType: LayoutType.Html,
       data: {
-        id: uuid(),
-        name: "",
-        widget: PageLayoutWidgetType.FrameLayout,
-        properties: [{
-          name: "layout_width",
-          value: "match_parent",
-          type: PageLayoutViewPropertyType.String
-        }, {
-          name: "layout_height",
-          value: "match_parent",
-          type: PageLayoutViewPropertyType.String
-        }, {
-          name: "background",
-          value: "#000000",
-          type: PageLayoutViewPropertyType.String
-        }],
-        children: []
+        html: HTML_LAYOUT_ROOT
       }
     };
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
@@ -474,24 +462,9 @@ class LayoutsScreen extends React.Component<Props, State> {
 
     const subLayout: SubLayout = {
       name: newSubLayout.name,
+      layoutType: LayoutType.Html,
       data: {
-        id: uuid(),
-        name: "",
-        widget: PageLayoutWidgetType.FrameLayout,
-        properties: [{
-          name: "layout_width",
-          value: "match_parent",
-          type: PageLayoutViewPropertyType.String,
-        }, {
-          name: "layout_height",
-          value: "match_parent",
-          type: PageLayoutViewPropertyType.String
-        }, {
-          name: "background",
-          value: "#000000",
-          type: PageLayoutViewPropertyType.String
-        }],
-        children: []
+        html: HTML_LAYOUT_ROOT
       }
     };
 
@@ -510,7 +483,7 @@ class LayoutsScreen extends React.Component<Props, State> {
    *
    * @param layoutId layout id
    */
-  private onLayoutCardClick = (layoutId: string) => {
+  private onLayoutCardClick = (layoutId: string, layoutType: LayoutType) => {
     const { layouts } = this.props;
     const { pathname } = this.props.history.location;
     const foundLayout = layouts.find(layout => layout.id === layoutId);
@@ -520,7 +493,7 @@ class LayoutsScreen extends React.Component<Props, State> {
     }
 
     this.props.setSelectedLayout(foundLayout);
-    this.props.history.push(`${pathname}/${layoutId}`);
+    this.props.history.push(`${pathname}/${layoutType}/${layoutId}`);
   }
 
   /**
@@ -570,6 +543,7 @@ class LayoutsScreen extends React.Component<Props, State> {
   private onNewLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
     const { newLayout, newSubLayout, createSubLayout } = this.state;
     const { name, value } = event.target;
+
     if (!name) {
       return;
     }
