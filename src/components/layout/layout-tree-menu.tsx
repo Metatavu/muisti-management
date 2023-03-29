@@ -2,14 +2,35 @@ import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, FilledInput, InputAdornment, List, ListItem, ListItemSecondaryAction, IconButton, Grid, Divider, Select, MenuItem, InputLabel, TextField, ListItemText, FormControl, Typography, Box, FormHelperText } from "@material-ui/core";
+import {
+  FilledInput,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
+  Grid,
+  Divider,
+  Select,
+  MenuItem,
+  InputLabel,
+  TextField,
+  ListItemText,
+  FormControl,
+  Typography,
+  Box,
+  FormHelperText,
+  SelectChangeEvent,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/exhibition-tree-menu";
 import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import AddIcon from '@material-ui/icons/AddCircle';
+import AddIcon from '@mui/icons-material/AddCircle';
 import classNames from "classnames";
-import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
-import ChevronRightIcon from '@material-ui/icons/ArrowRight';
+import ExpandMoreIcon from '@mui/icons-material/ArrowDropDown';
+import ChevronRightIcon from '@mui/icons-material/ArrowRight';
 import GenericDialog from '../generic/generic-dialog';
 import theme from "../../styles/theme";
 import { v4 as uuid } from "uuid";
@@ -124,7 +145,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     ...otherProps
   }: TreeMenuItem) => {
     const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ? 
+    const toggleIcon = (on: boolean) => on ?
       <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
       <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
     return (
@@ -374,7 +395,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    *
    * @param event React change event
    */
-  private onWidgetChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  private onWidgetChange = (event: SelectChangeEvent<string>) => {
     const widget = event.target.value as PageLayoutWidgetType;
 
     const pageLayoutView = getInitializedPageLayoutViewByWidgetType(widget);
@@ -409,7 +430,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    *
    * @param event React change event
    */
-  private onSubLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onSubLayoutChange = (event: SelectChangeEvent<string>) => {
     const { subLayouts } = this.props;
     const subLayoutId = event.target.value;
 

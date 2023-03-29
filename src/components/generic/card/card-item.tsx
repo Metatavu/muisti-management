@@ -1,6 +1,8 @@
 import * as React from "react";
 
-import { Typography, Card, withStyles, WithStyles, CardHeader, CardContent, Button } from "@material-ui/core";
+import { Typography, Card, CardHeader, CardContent, Button } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/components/generic/card/card-item";
 import MenuButton from "../menu-button";
 import { ActionButton } from "../../../types";

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 
 /**
  * Interface representing component properties
@@ -30,6 +30,7 @@ interface Props {
   fullScreen?: boolean;
   fullWidth?: boolean;
   disableEnforceFocus?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -68,7 +69,8 @@ export default class GenericDialog extends React.Component<Props, State> {
       error,
       fullScreen,
       fullWidth,
-      disableEnforceFocus
+      disableEnforceFocus,
+      children
     } = this.props;
 
     return (
@@ -81,10 +83,7 @@ export default class GenericDialog extends React.Component<Props, State> {
         fullScreen={ fullScreen }
         fullWidth={ fullWidth }
       >
-        <DialogTitle
-          disableTypography
-          id="alert-dialog-title"
-        >
+        <DialogTitle id="alert-dialog-title">
           { title }
         </DialogTitle>
         <DialogContent>

@@ -1,4 +1,6 @@
 import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
+import * as en from "./en.json";
+import * as fi from "./fi.json";
 
 /**
  * Interface describing localized strings
@@ -981,7 +983,7 @@ export interface IStrings extends LocalizedStringsMethods {
       antennaReaderIdDescription: string;
       antennaPortNumberDescription: string;
       indexPageTimeoutDescription: string;
-      indexPageTimeoutAdditionalDescription: string; 
+      indexPageTimeoutAdditionalDescription: string;
     };
     layoutEditor: {
       commonProperties: {
@@ -1039,8 +1041,8 @@ export interface IStrings extends LocalizedStringsMethods {
 }
 
 const strings: IStrings = new LocalizedStrings({
-  en: require("./en.json"),
-  fi: require("./fi.json")
+  en: en,
+  fi: fi
 });
 
 export default strings;

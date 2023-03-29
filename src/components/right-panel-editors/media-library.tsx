@@ -1,15 +1,30 @@
 import * as React from "react";
 import strings from "../../localization/strings";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Table, TableContainer, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Button } from "@material-ui/core";
+import {
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableSortLabel,
+  TableBody,
+  Button,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/right-panel-editors/media-library";
 import theme from "../../styles/theme";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FolderClosedIcon from "@material-ui/icons/FolderOutlined";
-import FolderOpenIcon from "@material-ui/icons/FolderOpenOutlined";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import PostAddIcon from '@material-ui/icons/PostAdd';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FolderClosedIcon from "@mui/icons-material/FolderOutlined";
+import FolderOpenIcon from "@mui/icons-material/FolderOpenOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import { AccessToken, MediaType } from "../../types";
 import Api from "../../api/api";
 import { StoredFile, ExhibitionPageResource } from "../../generated/client";
@@ -160,12 +175,12 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="left" padding="default">
+                <TableCell align="left" padding="normal">
                   <TableSortLabel direction="asc">
                     { strings.mediaLibrary.files.name }
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align="left" padding="default">
+                <TableCell align="left" padding="normal">
                   <TableSortLabel direction="asc">
                     { strings.mediaLibrary.files.type }
                   </TableSortLabel>
@@ -202,17 +217,17 @@ const MediaLibrary = withStyles(styles)(class MediaLibrary extends React.Compone
       const displayName = file.fileName.includes(folder.fileName) ? file.fileName.split(`${folder.fileName}/`)[1] : file.fileName;
       const selected = decodeURI(currentUrl ?? resource!.data ?? "") === file.uri;
 
-      return(
+      return (
         <TableRow
           key={ file.uri }
           onClick={ this.onFileClick(file) }
           hover={ true }
           selected={ selected }
         >
-          <TableCell component="th" scope="row" padding="default">
+          <TableCell component="th" scope="row" padding="normal">
             { displayName }
           </TableCell>
-          <TableCell align="left" padding="default">
+          <TableCell align="left" padding="normal">
             { file.contentType }
           </TableCell>
           {/* TODO: Add support for image carousel */}

@@ -1,4 +1,17 @@
-import { CircularProgress, Divider, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import {
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { History } from "history";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";

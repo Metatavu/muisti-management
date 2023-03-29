@@ -1,4 +1,4 @@
-import { createStyles } from "@material-ui/core";
+import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
 
 export default createStyles({
@@ -33,7 +33,7 @@ export default createStyles({
   mediaLibraryDialog: {
     width: 500,
     height: 800,
-    padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`
+    padding: `${theme.spacing(1)} ${theme.spacing(3)}`
   },
 
   mediaLibraryDialogTitle: {

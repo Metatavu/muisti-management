@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SvgIcon, SvgIconProps } from "@material-ui/core";
+import { SvgIcon, SvgIconProps } from "@mui/material";
 
 /**
  * Interface representing component properties

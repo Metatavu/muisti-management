@@ -6,7 +6,19 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/screens/reception-screen";
-import { WithStyles, withStyles, CircularProgress, Typography, Button, TextField, InputLabel, MenuItem, Select, FormControl } from "@material-ui/core";
+import {
+  CircularProgress,
+  Typography,
+  Button,
+  TextField,
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl,
+  SelectChangeEvent,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { ContentVersion, DeviceModel, Visitor } from "../../generated/client";
 import { AccessToken } from '../../types';
@@ -473,7 +485,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
    * @param event react change event
    * @param child react child node
    */
-  private onLanguageChange = (event: React.ChangeEvent<{ name?: string, value: any }>, child: React.ReactNode) => {
+  private onLanguageChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     const { visitor } = this.state;
     const name = event.target.name;
 

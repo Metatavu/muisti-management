@@ -2,7 +2,9 @@ import * as React from "react";
 // eslint-disable-next-line max-len
 import { ExhibitionPage, PageLayout, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, FormControl } from "@material-ui/core";
+import { TextField, MenuItem, InputLabel, Select, FormControl, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-settings-editor";
 import theme from "../../styles/theme";
 
@@ -14,7 +16,7 @@ interface Props extends WithStyles<typeof styles> {
   devices: ExhibitionDevice[];
   pageData: ExhibitionPage;
   onChange: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
-  onLayoutChange: (event: React.ChangeEvent<{ name?: string; value: any }>) => void;
+  onLayoutChange: (event: SelectChangeEvent<string>) => void;
 }
 
 /**

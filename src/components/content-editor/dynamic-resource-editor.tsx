@@ -1,7 +1,9 @@
 import * as React from "react";
 import { DynamicPageResource, DynamicPageResourceType, DynamicPageResourceSwitch, DynamicPageResourceSwitchWhen, DynamicPageResourceSubstitute, ExhibitionPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, Typography, Box, MenuItem } from "@material-ui/core";
+import { TextField, Typography, Box, MenuItem } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/resource-editor";
 import produce from "immer";
 import { AccessToken } from "../../types";

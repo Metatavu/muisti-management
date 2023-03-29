@@ -1,6 +1,8 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
 // tslint:disable-next-line: max-line-length
 import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";
@@ -99,7 +101,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
    *
    * @param event react change event
    */
-  private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+  private handleSelectChange = (event: SelectChangeEvent<string>) => {
     const { onSelectChange, property } = this.props;
     const value = event.target.value as string;
     const propertyToUpdate = property;

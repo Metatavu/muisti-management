@@ -7,7 +7,9 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/floor-plan-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { Exhibition, ExhibitionFloor, ExhibitionRoom, ContentVersion, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, GroupContentVersion } from "../../generated/client";

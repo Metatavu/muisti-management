@@ -1,7 +1,9 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView, PageLayout } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { WithStyles, withStyles, Typography, Divider, MenuItem, Select, Box } from "@material-ui/core";
+import { Typography, Divider, MenuItem, Select, Box, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../../styles/common-properties-editor";
 import { LayoutTabPropKeys } from "../../editor-constants/keys";
 import ColorPicker from "../color-picker";
@@ -411,7 +413,7 @@ class TabLayoutEditor extends React.Component<Props, State> {
    *
    * @param event react change event
    */
-  private handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+  private handleSelectChange = (event: SelectChangeEvent<string>) => {
     const { pageLayoutView, onPageLayoutViewMetadataChange } = this.props;
 
     const key = event.target.name;

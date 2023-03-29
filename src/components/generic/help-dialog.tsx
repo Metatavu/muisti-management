@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@material-ui/core";
-import HelpIcon from "@material-ui/icons/Help";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@mui/material";
+import HelpIcon from "@mui/icons-material/Help";
 import strings from "../../localization/strings";
 
 /**
@@ -9,6 +9,7 @@ import strings from "../../localization/strings";
  */
 interface Props {
   title: string;
+  children: React.ReactNode;
 }
 
 /**
@@ -44,16 +45,18 @@ export default class HelpDialog extends React.Component<Props, State> {
 
     return (
       <>
-        <IconButton onClick={ this.onHelpDialogOpenClick } color="inherit">
+        <IconButton
+          onClick={ this.onHelpDialogOpenClick }
+          color="inherit"
+          size="large"
+        >
           <HelpIcon htmlColor="#222"/>
         </IconButton>
         <Dialog
           maxWidth="md"
           open={ open }
         >
-          <DialogTitle
-            disableTypography
-          >
+          <DialogTitle>
             { title }
           </DialogTitle>
           <DialogContent>
@@ -72,7 +75,7 @@ export default class HelpDialog extends React.Component<Props, State> {
           </DialogActions>
         </Dialog>
       </>
-    );
+    )
   }
 
   /**

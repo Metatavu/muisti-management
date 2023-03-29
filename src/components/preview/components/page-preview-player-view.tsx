@@ -1,12 +1,13 @@
 import * as React from "react";
 
 import Measure, { ContentRect } from 'react-measure';
-import { WithStyles, withStyles } from '@material-ui/core';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/page-preview";
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 import DisplayMetrics from "../../../types/display-metrics";
-import VideoIcon from '@material-ui/icons/OndemandVideo';
+import VideoIcon from '@mui/icons-material/OndemandVideo';
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";

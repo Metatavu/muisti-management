@@ -16,6 +16,7 @@ import { Config } from "../../constants/configuration";
 interface Props {
   accessToken?: AccessToken;
   onLogin: (keycloak: KeycloakInstance) => void;
+  children: React.ReactNode;
 }
 
 /**

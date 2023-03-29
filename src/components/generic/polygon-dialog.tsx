@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 
 /**
  * Interface representing component properties
@@ -32,7 +32,7 @@ export default class PolygonDialog extends React.Component<Props, State> {
 
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -40,11 +40,11 @@ export default class PolygonDialog extends React.Component<Props, State> {
     this.state = { };
   }
 
-  /** 
+  /**
    * Component render method
    */
   public render() {
-    const { 
+    const {
       open,
       text,
       positiveButtonText,
@@ -54,6 +54,7 @@ export default class PolygonDialog extends React.Component<Props, State> {
       title,
       onConfirm,
       roomName} = this.props;
+
     return (
       <>
         <Dialog
@@ -62,20 +63,31 @@ export default class PolygonDialog extends React.Component<Props, State> {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle disableTypography id="polygon-dialog-title">{ title }</DialogTitle>
+          <DialogTitle id="polygon-dialog-title">{ title }</DialogTitle>
           <DialogContent>
-            <TextField fullWidth type="text" label={ text } value={ roomName || "" } onChange={ this.props.onNameChange }/>
+            <TextField
+              fullWidth type="text"
+              label={ text }
+              value={ roomName || "" }
+              onChange={ this.props.onNameChange }
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={ onCancel } color="primary">
               { cancelButtonText }
             </Button>
-            <Button disableElevation variant="contained" onClick={ onConfirm } color="secondary" autoFocus>
+            <Button
+              disableElevation
+              variant="contained"
+              onClick={ onConfirm }
+              color="secondary"
+              autoFocus
+            >
               { positiveButtonText }
             </Button>
           </DialogActions>
         </Dialog>
       </>
-    );
+    )
   }
 }

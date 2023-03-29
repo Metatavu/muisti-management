@@ -4,7 +4,18 @@ import { connect } from "react-redux";
 import { ReduxState } from "../../store";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, MenuItem, Select, FormControlLabel, Switch, InputLabel, Box, Typography } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  Select,
+  FormControlLabel,
+  Switch,
+  InputLabel,
+  Box,
+  Typography,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { ScreenOrientation, DeviceModel, ExhibitionFloor, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, DeviceImageLoadStrategy } from "../../generated/client";

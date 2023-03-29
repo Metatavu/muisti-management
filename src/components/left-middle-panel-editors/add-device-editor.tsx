@@ -1,7 +1,9 @@
 import * as React from "react";
 import { ExhibitionDevice, ScreenOrientation, DeviceModel } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, MenuItem, InputLabel, Select, Typography, Grid } from "@material-ui/core";
+import { TextField, MenuItem, InputLabel, Select, Typography, Grid, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/add-device-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
@@ -14,8 +16,8 @@ interface Props extends WithStyles<typeof styles> {
   deviceModels: DeviceModel[];
   newDevice: Partial<ExhibitionDevice>;
   onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onModelChange: (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => void;
-  onScreenOrientationChange: (e: React.ChangeEvent<{ name?: string | undefined; value: unknown }>, _child: React.ReactNode) => void;
+  onModelChange: (e: SelectChangeEvent<string>, _child: React.ReactNode) => void;
+  onScreenOrientationChange: (e: SelectChangeEvent<string>, _child: React.ReactNode) => void;
 }
 
 /**
@@ -48,7 +50,7 @@ class AddDeviceEditor extends React.Component<Props, State> {
         </MenuItem>
       );
     });
-    
+
     return (
       <>
         <Typography className={ classes.title } variant="h6">
@@ -56,14 +58,14 @@ class AddDeviceEditor extends React.Component<Props, State> {
         </Typography>
         <Grid container spacing={ 2 } className={ classes.inputGrid }>
           <Grid item xs={ 4 }>
-            <TextField 
+            <TextField
               fullWidth
               type="text"
               label={ strings.exhibition.addDeviceEditor.nameLabel }
               name="name" value={ newDevice.name || "" }
               onChange={ onNameChange }
             />
-            
+
             <InputLabel id="model">
               { strings.exhibition.addDeviceEditor.deviceModelLabel }
             </InputLabel>

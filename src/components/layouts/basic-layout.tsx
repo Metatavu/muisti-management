@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/basic-layout";
 import TopBar from "../generic/top-bar";
 import { KeycloakInstance } from "keycloak-js";
@@ -29,6 +30,7 @@ interface Props extends WithStyles<typeof styles> {
   hideHeader?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
+  children: React.ReactNode;
 }
 
 /**
@@ -68,7 +70,8 @@ class BasicLayout extends React.Component<Props, State> {
       keycloak,
       dataChanged,
       openDataChangedPrompt,
-      hideHeader
+      hideHeader,
+      children
     } = this.props;
     return (
       <div className={ classes.root }>

@@ -1,12 +1,14 @@
 import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles, withStyles, Button } from "@material-ui/core";
+import { Button } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/components/layout-screen/gravity-editor";
 import classNames from "classnames";
 import strings from "../../../localization/strings";
-import ArrowIcon from '@material-ui/icons/ArrowBack';
-import CenterIcon from '@material-ui/icons/VerticalAlignCenter';
-import GravityIcon from '@material-ui/icons/OpenWith';
+import ArrowIcon from '@mui/icons-material/ArrowBack';
+import CenterIcon from '@mui/icons-material/VerticalAlignCenter';
+import GravityIcon from '@mui/icons-material/OpenWith';
 
 import theme from "../../../styles/theme";
 import { LayoutGravityValuePairs, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";

@@ -8,7 +8,9 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Typography, Divider } from "@material-ui/core";
+import { CircularProgress, TextField, Typography, Divider } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayoutView, SubLayout } from "../../generated/client";
@@ -18,12 +20,13 @@ import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 import codemirror from "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/mode/xml/xml";
+// TODO: Code mirror related imports.
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/mode/xml/xml";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";

@@ -6,23 +6,44 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, MenuItem, Select, TextField, Typography, List, ListItem, ListItemSecondaryAction, IconButton, FormControl, InputLabel, Divider, Paper, Box, ListItemText, Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
+import {
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Divider,
+  Paper,
+  Box,
+  ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEvent, PageLayoutView, VisitorVariable } from "../../generated/client";
 import { PhysicalButton, PhysicalButtonData } from '../../types';
 import strings from "../../localization/strings";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/lint/lint.css";
-import "codemirror/addon/lint/lint";
+// TODO: Code mirror related imports.
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/addon/lint/lint.css";
+// import "codemirror/addon/lint/lint";
 import _ from "lodash";
 import theme from "../../styles/theme";
 import produce from "immer";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import HelpDialog from "../generic/help-dialog";
-import ExpandMoreIcon from "@material-ui/icons/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
 import PageEventDialog from "./page-event-dialog";
 
 /**
@@ -90,7 +111,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
               title={ strings.contentEditor.editor.eventTriggers.addEvent }
               color="primary"
               onClick={ this.onAddPageEventClick }
-            >
+              size="large">
               <AddIcon />
             </IconButton>
           </Box>
@@ -450,9 +471,9 @@ class EventTriggerEditor extends React.Component<Props, State> {
     switch (propertyName) {
       case "delay":
         const valueString = value as string;
-        onSave({ 
+        onSave({
           ...selectedEventTrigger,
-          [propertyName]: isNumber(valueString) ? Number(valueString) : 0 
+          [propertyName]: isNumber(valueString) ? Number(valueString) : 0
         });
       break;
       case "clickViewId":
@@ -522,7 +543,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
   /**
    * Event handler for page event delete click
    *
-   * @param pageEventIndex page event index 
+   * @param pageEventIndex page event index
    */
   private onPageEventDeleteClick = (pageEventIndex: number) => () => {
     const { selectedEventTrigger, onSave } = this.props;
@@ -548,7 +569,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { onSave } = this.props;
     const { selectedPageEventIndex } = this.state;
     const trigger = { ...this.props.selectedEventTrigger } as ExhibitionPageEventTrigger;
-  
+
     if (selectedPageEventIndex === undefined) {
       return;
     }

@@ -1,5 +1,7 @@
 import * as React from "react";
-import { Button, WithStyles, withStyles, PropTypes } from '@material-ui/core';
+import { Button, PropTypes } from '@mui/material';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/generic-button";
 
 /**

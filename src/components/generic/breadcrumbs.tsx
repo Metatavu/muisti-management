@@ -3,8 +3,10 @@ import * as React from "react";
 import { History } from "history";
 import { Link as RouterLink } from "react-router-dom";
 import { BreadcrumbData } from "../../types";
-import { WithStyles, withStyles, Link, Breadcrumbs as MaterialBreadcrumbs } from "@material-ui/core";
-import ChevronRight from "@material-ui/icons/ChevronRight";
+import { Link, Breadcrumbs as MaterialBreadcrumbs } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
+import ChevronRight from "@mui/icons-material/ChevronRight";
 import styles from "../../styles/components/generic/breadcrumbs";
 
 /**

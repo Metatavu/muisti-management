@@ -9,7 +9,19 @@ import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, TextField, Select, MenuItem, Typography, InputLabel, FormControl, Box } from "@material-ui/core";
+import {
+  CircularProgress,
+  TextField,
+  Select,
+  MenuItem,
+  Typography,
+  InputLabel,
+  FormControl,
+  Box,
+  SelectChangeEvent,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
 import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
@@ -20,12 +32,13 @@ import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
 import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 import codemirror from "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/mode/xml/xml";
+// TODO: Code mirror related imports.
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/mode/xml/xml";
 import AndroidUtils from "../../utils/android-utils";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
@@ -552,7 +565,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onScreenOrientationChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  private onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
     this.setState({
       screenOrientation: event.target.value as ScreenOrientation,
       dataChanged: true
@@ -564,7 +577,7 @@ export class LayoutScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onDeviceModelChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  private onDeviceModelChange = (event: SelectChangeEvent<string>) => {
     this.setState({
       deviceModelId: event.target.value as string,
       dataChanged: true

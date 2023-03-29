@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { ContentRect } from 'react-measure';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
 import PagePreviewFrameLayout from "./page-preview-frame-layout";
 import PagePreviewTextView from "./page-preview-text-view";
@@ -16,7 +16,7 @@ import PagePreviewLinearLayout from "./page-preview-linear-layout";
 import PagePreviewMaterialTab from "./page-preview-material-tab";
 
 import DisplayMetrics from "../../../types/display-metrics";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 import { ResourceMap } from "../../../types";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 

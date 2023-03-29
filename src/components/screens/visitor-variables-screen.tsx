@@ -1,7 +1,25 @@
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line max-len
-import { Button, Checkbox, CircularProgress, FormControlLabel, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Toolbar, Typography, WithStyles, withStyles } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  IconButton,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
+import DeleteIcon from "@mui/icons-material/Delete";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
@@ -170,7 +188,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
             edge="end"
             aria-label="delete"
             onClick={ () => this.onDeleteVisitorVariableClick(visitorVariable) }
-          >
+            size="large">
             <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
@@ -275,7 +293,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
           />
         </ListItemText>
         <ListItemSecondaryAction>
-          <IconButton 
+          <IconButton
             size="small"
             edge="end"
             aria-label="delete"
@@ -501,7 +519,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onTypeChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  private onTypeChange = (event: SelectChangeEvent<string>) => {
     const { selectedVisitorVariable } = this.state;
 
     if (!selectedVisitorVariable) {
@@ -548,7 +566,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       return;
     }
 
-    const _enum = [ ...selectedVisitorVariable._enum || []];
+    const _enum = [ ...(selectedVisitorVariable._enum || [])];
     _enum[index] = value;
 
     this.setState({
@@ -568,7 +586,7 @@ export class VisitorVariablesScreen extends React.Component<Props, State> {
       return;
     }
 
-    const _enum = [ ...selectedVisitorVariable._enum || []];
+    const _enum = [ ...(selectedVisitorVariable._enum || [])];
     _enum.splice(index, 1);
 
     this.setState({

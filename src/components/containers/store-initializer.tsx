@@ -29,6 +29,7 @@ interface Props {
   setLayouts: typeof setLayouts;
   setSubLayouts: typeof setSubLayouts;
   setDeviceModels: typeof setDeviceModels;
+  children: React.ReactNode;
 };
 
 /**

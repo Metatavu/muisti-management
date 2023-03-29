@@ -6,7 +6,19 @@ import { ReduxActions, ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/screens/manage-visitor-session-variables-screen";
-import { WithStyles, withStyles, CircularProgress, Typography, List, ListItem, ListItemText, TextField, Checkbox, FormControlLabel, MenuItem } from "@material-ui/core";
+import {
+  CircularProgress,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { DeviceModel, Visitor, VisitorSession, VisitorSessionVariable, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';

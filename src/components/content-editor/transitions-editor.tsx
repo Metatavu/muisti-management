@@ -1,15 +1,33 @@
 import * as React from "react";
 import { ExhibitionPage, ExhibitionDevice, Animation, AnimationTimeInterpolation, ExhibitionPageTransition } from "../../generated/client";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, TextField, MenuItem, Select, Typography, List, ListItem, Grid, Divider, ListItemSecondaryAction, IconButton, InputLabel, FormControl, FormHelperText, ListItemText, Box } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  Select,
+  Typography,
+  List,
+  ListItem,
+  Grid,
+  Divider,
+  ListItemSecondaryAction,
+  IconButton,
+  InputLabel,
+  FormControl,
+  FormHelperText,
+  ListItemText,
+  Box,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
-import AddIcon from "@material-ui/icons/AddSharp";
-import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from "@mui/icons-material/AddSharp";
+import DeleteIcon from '@mui/icons-material/Delete';
 import GenericDialog from "../generic/generic-dialog";
 import theme from "../../styles/theme";
 import PageTransitionViewsEditor from "./page-transition-elements-editor";
@@ -95,7 +113,7 @@ class TransitionsEditor extends React.Component<Props, State> {
             <IconButton
               color="primary"
               onClick={ () => this.onDeleteTransitionClick(transitionType, transitionIndex) }
-            >
+              size="large">
               <DeleteIcon />
             </IconButton>
           </ListItemSecondaryAction>

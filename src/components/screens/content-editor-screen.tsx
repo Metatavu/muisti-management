@@ -8,7 +8,25 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
-import { WithStyles, withStyles, CircularProgress, Divider, Accordion, AccordionSummary, Typography, AccordionDetails, Button, List, ListItem, ListItemSecondaryAction, TextField, Tabs, Tab, Box, MenuItem } from "@material-ui/core";
+import {
+  CircularProgress,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+  Button,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  TextField,
+  Tabs,
+  Tab,
+  Box,
+  MenuItem,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { AccessToken, ActionButton, ConfirmDialogData, LanguageOptions, PreviewDeviceData } from "../../types";
 import BasicLayout from "../layouts/basic-layout";
@@ -28,7 +46,7 @@ import CodeEditor from "../editor/code-editor";
 import AndroidUtils from "../../utils/android-utils";
 import PanZoom from "../generic/pan-zoom";
 import strings from "../../localization/strings";
-import ExpandMoreIcon from "@material-ui/icons/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
 import theme from "../../styles/theme";
 import ResourceUtils from "../../utils/resource-utils";
 import ResourceEditor from "../content-editor/resource-editor";
@@ -37,7 +55,7 @@ import TransitionsEditor from "../content-editor/transitions-editor";
 import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { allowedWidgetTypes, TabStructure, ExhibitionPageTab, ExhibitionPageTabProperty, ExhibitionPageTabHolder } from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";

@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from '@mui/material/styles';
 
 /**
  * Interface representing component properties

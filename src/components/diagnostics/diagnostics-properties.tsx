@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { ScreenOrientation, DeviceModel, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, DeviceImageLoadStrategy } from "../../generated/client";
 import strings from "../../localization/strings";
 

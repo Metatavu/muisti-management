@@ -5,7 +5,9 @@ import { ReduxState } from "../../store";
 
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, CircularProgress, ListItem, List, ListItemSecondaryAction, ListItemText } from "@material-ui/core";
+import { CircularProgress, ListItem, List, ListItemSecondaryAction, ListItemText } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { Exhibition, ExhibitionRoom } from "../../generated/client";
 import { AccessToken, BreadcrumbData } from '../../types';
@@ -15,7 +17,7 @@ import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
-import ArrowIcon from "@material-ui/icons/ChevronRight";
+import ArrowIcon from "@mui/icons-material/ChevronRight";
 
 /**
  * Component properties

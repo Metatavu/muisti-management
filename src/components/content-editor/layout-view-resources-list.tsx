@@ -1,10 +1,12 @@
 import * as React from "react";
 
-import { WithStyles, withStyles, List, ListItem, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/layout-view-resources-list";
 import { ExhibitionPageResource } from "../../generated/client/models";
 import ResourceUtils from "../../utils/resource-utils";
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import strings from "../../localization/strings";
 
 /**

@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/element-timeline-pane";
 
 

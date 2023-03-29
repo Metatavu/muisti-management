@@ -5,10 +5,10 @@ import { createStore } from "redux";
 import { ReduxState, ReduxActions, rootReducer } from "../store";
 import * as immer from "immer";
 
-import { ThemeProvider } from "@material-ui/styles";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material/styles";
 import muistiTheme from "../styles/theme";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import { CssBaseline, responsiveFontSizes } from "@material-ui/core";
+import { CssBaseline, responsiveFontSizes } from "@mui/material";
 import strings from "../localization/strings";
 import AccessTokenRefresh from "./containers/access-token-refresh";
 import StoreInitializer from "./containers/store-initializer";
@@ -33,6 +33,13 @@ import VisitorVariablesScreen from "./screens/visitor-variables-screen";
 import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
 import VisitorsManagementScreen from "./screens/visitors-management-screen";
 import DiagnosticsScreen from "./screens/diagnostics-screen";
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
 
@@ -71,259 +78,236 @@ class App extends React.Component<Props, State> {
    */
   public render() {
     return (
-      <ThemeProvider theme={ theme }>
-        <CssBaseline />
-        <Provider store={ store }>
-          <AccessTokenRefresh>
-            <StoreInitializer>
-              <BrowserRouter>
-                <div className="App">
-                  <Switch>
-                    <Redirect
-                      exact
-                      from="/"
-                      to="/exhibitions"
-                    />
-                    <Route
-                      path="/exhibitions"
-                      exact
-                      render={({ history }) => (
-                        <ExhibitionsScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
-                      exact
-                      render={({ history, match }) => (
-                        <FloorPlanEditorView
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          exhibitionFloorId={ match.params.exhibitionFloorId }
-                          readOnly
-                        />
-                      )}
-                    />
-                    <Route
-                      path={[
-                        "/exhibitions/:exhibitionId/content",
-                        "/exhibitions/:exhibitionId/content/floors/:floorId"
-                      ]}
-                      exact
-                      render={({ history, match }) => (
-                        <RoomsScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId"
-                      exact
-                      render={({ history, match }) => (
-                        <ContentVersionsScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          roomId={ match.params.roomId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId"
-                      exact
-                      render={({ history, match }) => (
-                        <FloorPlanEditorView
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          exhibitionFloorId={ match.params.floorId }
-                          roomId={ match.params.roomId }
-                          readOnly
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                      exact
-                      render={({ history, match }) => (
-                        <GroupContentVersionsScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          roomId={ match.params.roomId }
-                          contentVersionId={ match.params.contentVersionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                      exact
-                      render={({ history, match }) => (
-                        <FloorPlanEditorView
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          exhibitionFloorId={ match.params.floorId }
-                          roomId={ match.params.roomId }
-                          contentVersionId={ match.params.contentVersionId }
-                          readOnly
-                        />
-                      )}
-                    />
-                    <Route
-                      path={[
-                        "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
-                        "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline"
-                      ]}
-                      exact
-                      render={({ history, match }) => (
-                        <ContentEditorScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                          floorId={ match.params.floorId }
-                          roomId={ match.params.roomId }
-                          contentVersionId={ match.params.contentVersionId }
-                          groupContentVersionId={ match.params.groupContentVersionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/layouts"
-                      exact
-                      render={({ history }) => (
-                        <LayoutsScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/layouts/:layoutId"
-                      exact
-                      render={({ history, match }) => (
-                        <LayoutScreen
-                          history={ history }
-                          layoutId={ match.params.layoutId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/layouts/sub/:subLayoutId"
-                      exact
-                      render={({ history, match }) => (
-                        <SubLayoutScreen
-                          history={ history }
-                          subLayoutId={ match.params.subLayoutId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/deviceModels"
-                      exact
-                      render={({ history }) => (
-                        <DeviceModelsScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/visitors"
-                      exact
-                      render={({ history, match }) => (
-                        <VisitorsManagementScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/reception"
-                      exact
-                      render={({ history, match }) => (
-                        <ReceptionScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/visitorVariables"
-                      exact
-                      render={({ history, match }) => (
-                        <VisitorVariablesScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/resetVisitorVariables"
-                      exact
-                      render={({ history, match }) => (
-                        <ManageVisitorSessionVariablesScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/exhibitions/:exhibitionId/diagnostics"
-                      exact
-                      render={({ history, match }) => (
-                        <DiagnosticsScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/floorPlans"
-                      exact
-                      render={({ history }) => (
-                        <FloorPlansScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/floorPlans/:exhibitionId"
-                      exact
-                      render={({ history, match }) => (
-                        <FloorPlanScreen
-                          history={ history }
-                          exhibitionId={ match.params.exhibitionId }
-                        />
-                      )}
-                    />
-                    {
-                      /**
-                       * TODO:
-                       * Remove commenting below when all views are done
-                       */
-                    }
-                    {/* <Route
-                      path="/users"
-                      exact
-                      render={({ history }) => (
-                        <UsersScreen
-                          history={ history }
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/users/:userId"
-                      exact
-                      render={({ history, match }) => (
-                        <UserScreen
-                          history={ history }
-                          userId={ match.params.userId }
-                        />
-                      )}
-                    /> */}
-                  </Switch>
-                </div>
-              </BrowserRouter>
-            </StoreInitializer>
-          </AccessTokenRefresh>
-        </Provider>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={ theme }>
+          <CssBaseline />
+          <Provider store={ store }>
+            <AccessTokenRefresh>
+              <StoreInitializer>
+                <BrowserRouter>
+                  <div className="App">
+                    <Switch>
+                      <Redirect
+                        exact
+                        from="/"
+                        to="/exhibitions"
+                      />
+                      <Route
+                        path="/exhibitions"
+                        exact
+                        render={({ history }) => (
+                          <ExhibitionsScreen
+                            history={ history }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
+                        exact
+                        render={({ history, match }) => (
+                          <FloorPlanEditorView
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            exhibitionFloorId={ match.params.floorId }
+                            readOnly
+                          />
+                        )}
+                      />
+                      <Route
+                        path={[
+                          "/exhibitions/:exhibitionId/content",
+                          "/exhibitions/:exhibitionId/content/floors/:floorId"
+                        ]}
+                        exact
+                        render={({ history, match }) => (
+                          <RoomsScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId"
+                        exact
+                        render={({ history, match }) => (
+                          <ContentVersionsScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            roomId={ match.params.roomId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId"
+                        exact
+                        render={({ history, match }) => (
+                          <FloorPlanEditorView
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            exhibitionFloorId={ match.params.floorId }
+                            roomId={ match.params.roomId }
+                            readOnly
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
+                        exact
+                        render={({ history, match }) => (
+                          <GroupContentVersionsScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            roomId={ match.params.roomId }
+                            contentVersionId={ match.params.contentVersionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
+                        exact
+                        render={({ history, match }) => (
+                          <FloorPlanEditorView
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            exhibitionFloorId={ match.params.floorId }
+                            roomId={ match.params.roomId }
+                            contentVersionId={ match.params.contentVersionId }
+                            readOnly
+                          />
+                        )}
+                      />
+                      <Route
+                        path={[
+                          "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
+                          "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline"
+                        ]}
+                        exact
+                        render={({ history, match }) => (
+                          <ContentEditorScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                            floorId={ match.params.floorId }
+                            roomId={ match.params.roomId }
+                            contentVersionId={ match.params.contentVersionId }
+                            groupContentVersionId={ match.params.groupContentVersionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/layouts"
+                        exact
+                        render={({ history }) => (
+                          <LayoutsScreen
+                            history={ history }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/layouts/:layoutId"
+                        exact
+                        render={({ history, match }) => (
+                          <LayoutScreen
+                            history={ history }
+                            layoutId={ match.params.layoutId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/layouts/sub/:subLayoutId"
+                        exact
+                        render={({ history, match }) => (
+                          <SubLayoutScreen
+                            history={ history }
+                            subLayoutId={ match.params.subLayoutId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/deviceModels"
+                        exact
+                        render={({ history }) => (
+                          <DeviceModelsScreen
+                            history={ history }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/visitors"
+                        exact
+                        render={({ history, match }) => (
+                          <VisitorsManagementScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/reception"
+                        exact
+                        render={({ history, match }) => (
+                          <ReceptionScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/visitorVariables"
+                        exact
+                        render={({ history, match }) => (
+                          <VisitorVariablesScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/resetVisitorVariables"
+                        exact
+                        render={({ history, match }) => (
+                          <ManageVisitorSessionVariablesScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/exhibitions/:exhibitionId/diagnostics"
+                        exact
+                        render={({ history, match }) => (
+                          <DiagnosticsScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/floorPlans"
+                        exact
+                        render={({ history }) => (
+                          <FloorPlansScreen
+                            history={ history }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/floorPlans/:exhibitionId"
+                        exact
+                        render={({ history, match }) => (
+                          <FloorPlanScreen
+                            history={ history }
+                            exhibitionId={ match.params.exhibitionId }
+                          />
+                        )}
+                      />
+                    </Switch>
+                  </div>
+                </BrowserRouter>
+              </StoreInitializer>
+            </AccessTokenRefresh>
+          </Provider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     );
   }
 }

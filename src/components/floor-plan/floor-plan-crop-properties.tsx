@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import strings from "../../localization/strings";
-import { TextField } from "@material-ui/core";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { TextField } from "@mui/material";
+import { CSSProperties } from '@mui/material/styles';
 
 /**
  * Component props

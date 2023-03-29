@@ -1,13 +1,16 @@
 import * as React from "react";
 
 import styles from "../../styles/exhibition-view";
-import { WithStyles, withStyles, TextField, Typography, MenuItem, Select, Button } from "@material-ui/core";
+import { TextField, Typography, MenuItem, Select, Button, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import strings from "../../localization/strings";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/lint/lint.css";
-import "codemirror/addon/lint/lint";
+// TODO: Code mirror related imports.
+// import "codemirror/lib/codemirror.css";
+// import "codemirror/theme/material.css";
+// import "codemirror/mode/javascript/javascript";
+// import "codemirror/addon/lint/lint.css";
+// import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
 import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
 import { ExhibitionPageResourceType } from "../../generated/client";
@@ -29,15 +32,15 @@ interface Props extends WithStyles<typeof styles> {
   onSave: (updatedTab: ExhibitionPageTab) => void;
 }
 
-  /**
-   * Component state
-   */
-  interface State {
-    error?: Error;
-    loading: boolean;
-    selectedResourceType?: ExhibitionPageResourceType;
-    showCKEditorModal: boolean;
-  }
+/**
+ * Component state
+ */
+interface State {
+  error?: Error;
+  loading: boolean;
+  selectedResourceType?: ExhibitionPageResourceType;
+  showCKEditorModal: boolean;
+}
 
 /**
  * Component for tab editor
@@ -213,7 +216,7 @@ class TabEditor extends React.Component<Props, State> {
     const keys = GenericUtils.enumKeys(ExhibitionPageResourceType);
 
     const items = keys.map((key, index) => {
-      return <MenuItem key={ key } value={ values[index] }>{ key }</MenuItem>;
+      return <MenuItem key={ key } value={ values[index] as ExhibitionPageResourceType[] }>{ key }</MenuItem>;
     });
 
     const currentValue = selectedTab.resources ? selectedTab.resources[0] : undefined;
@@ -307,7 +310,7 @@ class TabEditor extends React.Component<Props, State> {
    *
    * @param event change event
    */
-  private handleSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private handleSelectChange = (event: SelectChangeEvent<string>) => {
     const { onSave } = this.props;
 
     const key = event.target.name;

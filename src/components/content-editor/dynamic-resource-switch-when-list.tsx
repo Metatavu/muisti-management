@@ -1,11 +1,13 @@
 import * as React from "react";
 import { DynamicPageResourceSwitchWhen, ExhibitionPageResourceType, VisitorVariable, VisitorVariableType } from "../../generated/client";
 import strings from "../../localization/strings";
-import { WithStyles, withStyles, TextField, IconButton, Button, Typography, TextFieldProps, MenuItem } from "@material-ui/core";
+import { TextField, IconButton, Button, Typography, TextFieldProps, MenuItem } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/content-editor/resource-editor";
 import MediaLibraryButton from "./media-library-button";
-import AddIcon from '@material-ui/icons/Add';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import produce from "immer";
 import { AccessToken, MediaType } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
@@ -90,7 +92,7 @@ const renderWhenRow = (
       <IconButton
         className={ classes.iconButton }
         onClick={ () => onUpdate(getUpdatedWhenList(whenList, { deletedIndex: index })) }
-      >
+        size="large">
         <DeleteOutlineIcon />
       </IconButton>
     </div>

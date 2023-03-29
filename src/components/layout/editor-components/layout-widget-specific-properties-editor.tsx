@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PageLayoutViewProperty, PageLayoutView, PageLayout, PageLayoutWidgetType, SubLayout } from "../../../generated/client";
-import { WithStyles, withStyles } from "@material-ui/core";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/common-properties-editor";
 
 import { connect } from "react-redux";

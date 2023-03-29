@@ -1,9 +1,11 @@
 import * as React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Measure, { ContentRect } from "react-measure";
-import { Button, WithStyles, withStyles } from '@material-ui/core';
-import ZoomInIcon from "@material-ui/icons/Add";
-import ZoomOutIcon from "@material-ui/icons/Remove";
+import { Button } from '@mui/material';
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
+import ZoomInIcon from "@mui/icons-material/Add";
+import ZoomOutIcon from "@mui/icons-material/Remove";
 import styles from "../../styles/components/generic/pan-zoom";
 
 /**
@@ -18,6 +20,7 @@ interface Props extends WithStyles<typeof styles> {
   contentWidth?: number;
   contentHeight?: number;
   disabled?: boolean;
+  children: React.ReactNode;
 }
 
 /**
@@ -98,7 +101,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    * @param opts transform wrapper options
    */
   private renderContents = (opts: any) => {
-    const { classes } = this.props;
+    const { classes, children } = this.props;
     const { containerWidth, containerHeight } = this.state;
 
     return (
@@ -140,7 +143,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
 
   /**
    * Returns scale as percentage
-   * 
+   *
    * @param scale scale
    * @returns scale as percentage string
    */

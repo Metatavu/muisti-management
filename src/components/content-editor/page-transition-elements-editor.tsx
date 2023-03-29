@@ -1,14 +1,16 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionPageTransition, ExhibitionPageTransitionOptionsMorphView } from "../../generated/client";
-import { WithStyles, withStyles, MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel } from "@material-ui/core";
+import { MenuItem, Select, Typography, Grid, IconButton, FormControl, InputLabel, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/page-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import strings from "../../localization/strings";
 import GenericButton from "../generic/generic-button";
-import AddIcon from "@material-ui/icons/AddSharp";
-import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from "@mui/icons-material/AddSharp";
+import DeleteIcon from '@mui/icons-material/Delete';
 import theme from "../../styles/theme";
 
 /**
@@ -117,12 +119,15 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
             { this.renderTargetSelect(view, index, targetLayouts) }
           </Grid>
           <Grid item xs={ 2 }>
-            <IconButton color="primary" onClick={ () => this.onDeleteViewPair(index) }>
+            <IconButton
+              color="primary"
+              onClick={ () => this.onDeleteViewPair(index) }
+              size="large">
               <DeleteIcon />
             </IconButton>
           </Grid>
         </>
-      );
+      )
     });
   }
 
@@ -190,7 +195,7 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
    * @param index view index
    * @param event react change event
    */
-  private handleViewSelectChange = (index: number) => (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+  private handleViewSelectChange = (index: number) => (event: SelectChangeEvent<string>) => {
     const { selectedTransition } = this.props;
 
     const key = event.target.name as string;
@@ -210,7 +215,7 @@ class PageTransitionsViewsEditor extends React.Component<Props, State> {
       this.props.onTransitionUpdate(transitionToUpdate);
     } else {
       transitionToUpdate.options.morph.views[index] = { ...transitionToUpdate.options.morph.views[index], [key] : value};
-      this.props.onTransitionUpdate(transitionToUpdate); 
+      this.props.onTransitionUpdate(transitionToUpdate);
     }
   }
 

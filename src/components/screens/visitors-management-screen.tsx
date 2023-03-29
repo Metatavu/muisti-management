@@ -5,7 +5,31 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import Api from "../../api/api";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-import { Box, Button, Checkbox, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, MenuItem, Select, Typography, WithStyles, withStyles, Dialog, DialogTitle, DialogActions, DialogContent } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  MenuItem,
+  Select,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  SelectChangeEvent,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { ContentVersion, Exhibition, Visitor, VisitorSession, VisitorSessionState, VisitorVariable } from "../../generated/client";
 import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
@@ -15,9 +39,9 @@ import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/screens/visitors-management-screen";
 import theme from "../../styles/theme";
-import AddIcon from "@material-ui/icons/AddCircle";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
-import TagIcon from "@material-ui/icons/NfcOutlined";
+import AddIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import TagIcon from "@mui/icons-material/NfcOutlined";
 import ElementPropertiesPane from "../layouts/element-properties-pane";
 import { MqttListener } from "../generic/mqtt-listener";
 import TagListener from "../generic/tag-listener";
@@ -183,7 +207,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
             <IconButton
               title={ strings.visitorsManagement.scanRFID }
               onClick={ this.onScanTagClick }
-            >
+              size="large">
               <TagIcon />
             </IconButton>
           </Box>
@@ -214,7 +238,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
           secondary={ VisitorUtils.getSessionExpiresTime(session) }
         />
         <ListItemSecondaryAction>
-          <IconButton onClick={ () => this.onSessionDeleteClick(session) }>
+          <IconButton onClick={ () => this.onSessionDeleteClick(session) } size="large">
             <DeleteIcon/>
           </IconButton>
         </ListItemSecondaryAction>
@@ -440,17 +464,14 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         aria-describedby="RFID-dialog-description"
         fullWidth
       >
-        <DialogTitle
-          disableTypography
-          id="RFID-dialog-title"
-        >
+        <DialogTitle id="RFID-dialog-title">
           { strings.visitorsManagement.searchGroup }
         </DialogTitle>
         <DialogContent>
           <Box
             flex={ 1 }
             display="flex"
-            justifyContent="center"  
+            justifyContent="center"
           >
             <Typography>{ strings.visitorsManagement.scanRFID }</Typography>
           </Box>
@@ -698,7 +719,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
    * @param event react change event
    * @param child react child node
    */
-  private onLanguageChange = (event: React.ChangeEvent<{ name?: string, value: any }>, child: React.ReactNode) => {
+  private onLanguageChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
     this.setState({
       selectedLanguage: event.target.value,
       dataChanged: true

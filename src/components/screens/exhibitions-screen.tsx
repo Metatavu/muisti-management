@@ -1,10 +1,23 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, TextField, Typography, WithStyles, withStyles } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { History } from "history";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { compose, Dispatch } from "redux";
 import { setExhibitions } from "../../actions/exhibitions";
 import Api from "../../api/api";
 // eslint-disable-next-line max-len
@@ -253,7 +266,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
             >
               { strings.exhibitions.cardMenu.copyExhibition }
             </Button>
-          </DialogActions> 
+          </DialogActions>
         }
       </Dialog>
     );
@@ -305,7 +318,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
           >
             { strings.generic.save }
           </Button>
-        </DialogActions> 
+        </DialogActions>
       </Dialog>
     );
   }
@@ -385,7 +398,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for copy exhibition click
-   * 
+   *
    * @param selectedExhibition exhibition to be copied
    */
   private onCopyExhibitionClick = (selectedExhibition: Exhibition) => {
@@ -401,7 +414,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Event handler for rename exhibition click
-   * 
+   *
    * @param selectedExhibition exhibition to be copied
    */
   private onRenameExhibitionClick = (selectedExhibition: Exhibition) => {
@@ -564,7 +577,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Copy exhibition
-   * 
+   *
    * @param selectedExhibition exhibition
    */
   private copyExhibition = async (selectedExhibition: Exhibition) => {
@@ -581,7 +594,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
     try {
       const copiedExhibition = await Api.getExhibitionsApi(accessToken).createExhibition({ sourceExhibitionId: exhibitionId });
-      
+
       this.props.setExhibitions([ ...exhibitions, copiedExhibition ]);
     } catch (error) {
       this.setState({
@@ -598,7 +611,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
 
   /**
    * Rename exhibition
-   * 
+   *
    * @param selectedExhibition exhibition
    */
   private renameExhibition = async (selectedExhibition: Exhibition) => {
@@ -613,7 +626,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       loading: true
     });
 
-    const updatedExhibition = await Api.getExhibitionsApi(accessToken).updateExhibition({ 
+    const updatedExhibition = await Api.getExhibitionsApi(accessToken).updateExhibition({
       exhibition: selectedExhibition,
       exhibitionId: exhibitionId
     });
@@ -621,7 +634,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     const otherExihibitions = exhibitions.filter(exhibition => exhibition.id !== updatedExhibition.id );
 
     this.props.setExhibitions([ ...otherExihibitions, updatedExhibition ]);
-    
+
     this.setState({
       renameDialogOpen: false,
       selectedExhibition: undefined,
@@ -685,4 +698,6 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   };
 }
 
+// TODO: withStyles type issue might be resolved with using compose?
+// export default compose(connect(mapStateToProps, mapDispatchToProps),withStyles(styles))(ExhibitionsScreen);
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ExhibitionsScreen));

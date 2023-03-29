@@ -1,8 +1,10 @@
 import * as React from "react";
 
-import { withStyles, WithStyles, MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@material-ui/core";
+import { MenuItem, IconButton, Popper, Grow, Paper, ClickAwayListener, MenuList } from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/menu-button";
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import { ActionButton } from "../../types";
 import theme from "../../styles/theme";
 
@@ -41,7 +43,7 @@ const MenuButton: React.FC<Props> = props => {
 
   /**
    * Handler for close menu
-   * @param event 
+   * @param event
    */
   const handleClose = (event: React.MouseEvent<EventTarget>) => {
     if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
@@ -68,7 +70,11 @@ const MenuButton: React.FC<Props> = props => {
 
   return (
     <>
-      <IconButton onClick={ handleToggle } ref={ anchorRef }>
+      <IconButton
+        onClick={ handleToggle }
+        ref={ anchorRef }
+        size="large"
+      >
         { icon || <MenuIcon/> }
       </IconButton>
       <Popper
@@ -95,7 +101,7 @@ const MenuButton: React.FC<Props> = props => {
         )}
       </Popper>
     </>
-  );
+  )
 }
 
 export default withStyles(styles)(MenuButton);

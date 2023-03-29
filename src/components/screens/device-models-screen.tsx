@@ -7,7 +7,20 @@ import { ReduxActions, ReduxState } from "../../store";
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 // eslint-disable-next-line max-len
-import { WithStyles, withStyles, CircularProgress, Typography, Grid, TextField, InputAdornment, Select, MenuItem, FormControlLabel, Switch } from "@material-ui/core";
+import {
+  CircularProgress,
+  Typography,
+  Grid,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Switch,
+  SelectChangeEvent,
+} from "@mui/material";
+import { WithStyles } from '@mui/styles';
+import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // tslint:disable-next-line: max-line-length
 import { DeviceModel, DeviceModelCapabilities, DeviceModelDisplayMetrics, DeviceModelDimensions, ScreenOrientation, ExhibitionDevice, PageLayout, Exhibition } from "../../generated/client";
@@ -566,7 +579,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
    *
    * @param event react change event
    */
-  private onDeviceInfoSelectChange = (event: React.ChangeEvent<{ name?: string | undefined; value: any; }>) => {
+  private onDeviceInfoSelectChange = (event: SelectChangeEvent<string>) => {
     const { selectedDeviceModel } = this.state;
     if (!selectedDeviceModel) {
       return;
