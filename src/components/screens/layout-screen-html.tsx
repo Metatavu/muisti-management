@@ -27,6 +27,7 @@ import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
+import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
 
 /**
  * Component props
@@ -191,6 +192,7 @@ export const LayoutScreenHTML: React.FC<Props> = ({
             />
             { renderDeviceModelSelect() }
             { renderScreenOrientationSelect() }
+            <LayoutTreeMenuHtml />
           </div>
         </ElementNavigationPane>
         <EditorView>
