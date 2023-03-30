@@ -51,25 +51,25 @@ const AddNewLayoutDialog: React.FC<Props> = ({
    * Render device model select
    */
   const renderDeviceModelSelect = () => (
-      <FormControl variant="outlined">
-        <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
-          { strings.layout.settings.deviceModelId }
-        </InputLabel>
-        <Select
-          fullWidth
-          style={{ marginTop: theme.spacing(2) }}
-          label={ strings.device.dialog.model }
-          labelId="screenOrientation-label"
-          name="modelId"
-          value={ selectedDeviceModelId ?? "" }
-          onChange={ onDeviceModelChange }
-        >
-          { deviceModels.map(model =>
-            <MenuItem key={ model.id } value={ model.id }>
-              { `${model.manufacturer} ${model.model}` }
-            </MenuItem>
-          )}
-        </Select>
+    <FormControl variant="outlined">
+      <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
+        { strings.layout.settings.deviceModelId }
+      </InputLabel>
+      <Select
+        fullWidth
+        style={{ marginTop: theme.spacing(2) }}
+        label={ strings.device.dialog.model }
+        labelId="screenOrientation-label"
+        name="modelId"
+        value={ selectedDeviceModelId ?? "" }
+        onChange={ onDeviceModelChange }
+      >
+        { deviceModels.map(model =>
+          <MenuItem key={ model.id } value={ model.id }>
+            { `${model.manufacturer} ${model.model}` }
+          </MenuItem>
+        )}
+      </Select>
     </FormControl>
   );
   
