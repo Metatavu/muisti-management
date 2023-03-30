@@ -6,18 +6,11 @@ import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import {
   CircularProgress,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControlLabel,
-  Switch,
-  FormControl,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
 import { PageLayout, ScreenOrientation, DeviceModel, SubLayout, ExhibitionPage, Exhibition, LayoutType } from "../../generated/client";
 import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
 import strings from "../../localization/strings";
@@ -27,13 +20,11 @@ import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
 import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
-import GenericDialog from "../generic/generic-dialog";
-import theme from "../../styles/theme";
 import produce from "immer";
-import { v4 as uuid } from "uuid";
 import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
 import { HTML_LAYOUT_ROOT } from "../../constants/html-layout-root";
+import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 
 /**
  * Component props
@@ -143,7 +134,13 @@ class LayoutsScreen extends React.Component<Props, State> {
         noBackButton
       >
         { this.renderLayoutCardsList() }
-        { this.renderAddNewDialog() }
+        <AddNewLayoutDialog
+          open={ this.state.addNewDialogOpen }
+          deviceModels={ this.props.deviceModels }
+          onClose={ this.toggleAddNewDialog }
+          onCreateNewLayout={ this.createNewLayout }
+          onCreateNewSubLayout={ this.createNewSubLayout }
+        />
         { this.renderConfirmDialog() }
       </BasicLayout>
     );
@@ -214,52 +211,6 @@ class LayoutsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * Renders add new dialog
-   */
-  private renderAddNewDialog = () => {
-    const { newLayout, newSubLayout, addNewDialogOpen, createSubLayout } = this.state;
-
-    return (
-      <GenericDialog
-        error={ !newLayout.name && !newSubLayout.name }
-        open={ addNewDialogOpen }
-        title={ createSubLayout ? strings.subLayout.addNew : strings.layout.addNew }
-        positiveButtonText={ strings.generic.add }
-        cancelButtonText={ strings.generic.cancel }
-        onCancel={ this.toggleAddNewDialog }
-        onClose={ this.toggleAddNewDialog }
-        onConfirm={ createSubLayout ? this.createNewSubLayout : this.createNewLayout }
-      >
-        <TextField
-          fullWidth
-          variant="outlined"
-          label={ strings.generic.name }
-          name="name"
-          value={ createSubLayout ? newSubLayout.name : newLayout.name }
-          onChange={ this.onNewLayoutChange }
-        />
-        <FormControlLabel
-          style={{ marginTop: theme.spacing(2) }}
-          control={
-            <Switch
-              checked={ createSubLayout }
-              onChange={ this.onSubLayoutSwitchChange }
-              color="secondary"
-              name="sublayout"
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            }
-          label={ strings.layout.makeAsSubLayout }
-        />
-        { !createSubLayout &&
-          this.renderDeviceModelSelect()
-        }
-
-      </GenericDialog>
-    );
-  }
-
-  /**
    * Renders confirmation dialog
    */
   private renderConfirmDialog = () => {
@@ -270,37 +221,6 @@ class LayoutsScreen extends React.Component<Props, State> {
         open={ deleteDialogOpen }
         confirmDialogData={ confirmDialogData }
       />
-    );
-  }
-
-  /**
-   * Render device modal select
-   */
-  private renderDeviceModelSelect = () => {
-    const { deviceModels } = this.props;
-    const { newLayout } = this.state;
-
-    return (
-      <FormControl variant="outlined">
-        <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
-          { strings.layout.settings.deviceModelId }
-        </InputLabel>
-        <Select
-          fullWidth
-          style={{ marginTop: theme.spacing(2), width: 200 }}
-          label={ strings.device.dialog.model }
-          labelId="screenOrientation-label"
-          name="modelId"
-          value={ newLayout.modelId || "" }
-          onChange={ this.onNewLayoutChange }
-        >
-          { deviceModels.map(model =>
-            <MenuItem key={ model.id } value={ model.id }>
-              { `${model.manufacturer} ${model.model}` }
-            </MenuItem>
-          )}
-        </Select>
-    </FormControl>
     );
   }
 
@@ -422,21 +342,20 @@ class LayoutsScreen extends React.Component<Props, State> {
    *
    * @param layout layout
    */
-  private createNewLayout = async () => {
+  private createNewLayout = async (name: string, deviceModelId: string) => {
     const { accessToken, setLayouts, layouts } = this.props;
-    const { newLayout } = this.state;
 
-    if (!newLayout.name || !newLayout.modelId) {
+    if (!name || !deviceModelId) {
       return;
     }
 
     const pageLayout: PageLayout = {
-      name: newLayout.name,
+      name: name,
       screenOrientation: ScreenOrientation.Landscape,
-      modelId: newLayout.modelId,
+      modelId: deviceModelId,
       layoutType: LayoutType.Html,
       data: {
-        html: HTML_LAYOUT_ROOT
+        html: HTML_LAYOUT_ROOT()
       }
     };
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
@@ -451,18 +370,18 @@ class LayoutsScreen extends React.Component<Props, State> {
   /**
    * Creates new sub layout
    */
-  private createNewSubLayout = async () => {
+  private createNewSubLayout = async (name: string) => {
     const { accessToken, setSubLayouts, subLayouts } = this.props;
-    const { newSubLayout } = this.state;
-    if (!newSubLayout.name) {
+
+    if (!name) {
       return;
     }
 
     const subLayout: SubLayout = {
-      name: newSubLayout.name,
+      name: name,
       layoutType: LayoutType.Html,
       data: {
-        html: HTML_LAYOUT_ROOT
+        html: HTML_LAYOUT_ROOT()
       }
     };
 
@@ -522,23 +441,11 @@ class LayoutsScreen extends React.Component<Props, State> {
   }
 
   /**
-   * On Sub layout switch change handler
-   *
-   * @param event react event
-   * @param checked is switch checked
-   */
-  private onSubLayoutSwitchChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean)  => {
-    this.setState({
-      createSubLayout: checked
-    });
-  }
-
-  /**
    * Event handler for new layout change
    *
    * @param event event
    */
-  private onNewLayoutChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onNewLayoutChange = (event: SelectChangeEvent<string>) => {
     const { newLayout, newSubLayout, createSubLayout } = this.state;
     const { name, value } = event.target;
 
