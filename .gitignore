@@ -24,4 +24,8 @@ yarn-error.log*
 .env*
 .vscode/launch.json
 
-generated/
+src/generated
+dist
+
+src/generated
+dist

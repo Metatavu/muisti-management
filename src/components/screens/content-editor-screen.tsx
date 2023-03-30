@@ -1,10 +1,8 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
-
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
 // tslint:disable-next-line: max-line-length
@@ -640,6 +638,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
             layouts={ layouts }
             pageData={ selectedPage }
             onChange={ this.onPageDataChange }
+            onChangeText={ this.onPageDataTextChange }
             onLayoutChange={ this.onLayoutChange }
           />
         </AccordionDetails>
@@ -1088,7 +1087,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onPageDataChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+  private onPageDataChange = (event: SelectChangeEvent<string>) => {
     const { selectedPage } = this.state;
     const { name, value } = event.target;
     if (!selectedPage || !name) {
@@ -1102,6 +1101,24 @@ class ContentEditorScreen extends React.Component<Props, State> {
       })
     );
   }
+  
+  /**
+   * 
+   */
+  private onPageDataTextChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const { selectedPage } = this.state;
+    const { name, value } = event.target;
+    if (!selectedPage || !name) {
+      return;
+    }
+
+    this.setState(
+      produce((draft: State) => {
+        draft.selectedPage = { ...draft.selectedPage!, [name]: value };
+        draft.dataChanged = true;
+      })
+    );
+  };
 
   /**
    * Event handler for layout change
@@ -1120,7 +1137,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data);
+    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data as PageLayoutView);
 
     this.setState(
       produce((draft: State) => {

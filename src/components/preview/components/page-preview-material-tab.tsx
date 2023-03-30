@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import Measure, { ContentRect } from "react-measure";
 import { Tabs, Tab } from "@mui/material";
 import { WithStyles } from '@mui/styles';

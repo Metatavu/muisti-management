@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { ContentRect } from 'react-measure';
 import { Typography } from '@mui/material';
 import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
