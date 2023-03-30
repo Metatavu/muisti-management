@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --open",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-client": "openapi-generator-cli generate -i noheva-api-spec/swagger.yaml -o src/generated/client -c generator-config.json -g typescript-fetch"
   },
   "dependencies": {
     "@emotion/react": "11.10.6",
@@ -55,6 +56,7 @@
     "uuid": "9.0.0"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.5.2",
     "@types/leaflet": "1.5.12",
     "@types/leaflet-draw": "1.0.2",
     "@types/lodash": "4.14.191",
