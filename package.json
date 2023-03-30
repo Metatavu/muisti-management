@@ -7,7 +7,8 @@
     "dev": "vite --open",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "build-client": "openapi-generator-cli generate -i noheva-api-spec/swagger.yaml -o src/generated/client -c generator-config.json -g typescript-fetch"
+    "build-client": "openapi-generator-cli generate -i noheva-api-spec/swagger.yaml -o src/generated/client -c generator-config.json -g typescript-fetch",
+    "postinstall": "npm run build-client"
   },
   "dependencies": {
     "@emotion/react": "11.10.6",
