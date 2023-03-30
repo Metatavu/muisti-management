@@ -6,7 +6,6 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-// eslint-disable-next-line max-len
 import {
   CircularProgress,
   TextField,
@@ -19,7 +18,6 @@ import {
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
 import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -62,6 +60,57 @@ export const LayoutScreenHTML: React.FC<Props> = ({
   const [ dataChanged, setDataChanged ] = useState(false);
 
   /**
+   * Event handler for name input change
+   *
+   * @param event event
+   */
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+    setDataChanged(true);
+  }
+
+  /**
+   * Event handler for screen orientation select change
+   *
+   * @param event event
+   */
+  const onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
+    setScreenOrientation(event.target.value as ScreenOrientation);
+    setDataChanged(true);
+  }
+
+  /**
+   * Event handler for device model select change
+   *
+   * @param event event
+   */
+  const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
+    setDeviceModelId(event.target.value as string);
+    setDataChanged(true);
+  }
+
+  /**
+   * Gets action buttons
+   *
+   * @returns action buttons as array
+   */
+  const getActionButtons = (): ActionButton[] => (
+    [
+      {
+        name: view === "CODE" ?
+          strings.exhibitionLayouts.editView.switchToVisualButton :
+          strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: () => view === "CODE" ? setView("VISUAL") : setView("CODE"),
+      },
+      {
+        name: strings.exhibitionLayouts.editView.saveButton,
+        action: () => alert(strings.comingSoon),
+        disabled : !dataChanged
+      },
+    ]
+  );
+  
+  /**
    * Renders device model select
    */
   const renderDeviceModelSelect = () => {
@@ -72,7 +121,9 @@ export const LayoutScreenHTML: React.FC<Props> = ({
     return (
       <div className={ classes.select }>
         <FormControl variant="outlined">
-          <InputLabel id="deviceModelId">{ strings.layout.settings.deviceModelId }</InputLabel>
+          <InputLabel id="deviceModelId">
+            { strings.layout.settings.deviceModelId }
+          </InputLabel>
           <Select
             style={{ width: 200 }}
             title={ strings.helpTexts.layoutEditor.selectDevice }
@@ -110,57 +161,6 @@ export const LayoutScreenHTML: React.FC<Props> = ({
         </FormControl>
       </div>
     );
-  }
-
-  /**
-   * Gets action buttons
-   *
-   * @returns action buttons as array
-   */
-  const getActionButtons = (): ActionButton[] => (
-    [
-      {
-        name: view === "CODE" ?
-          strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: () => view === "CODE" ? setView("VISUAL") : setView("CODE"),
-      },
-      {
-        name: strings.exhibitionLayouts.editView.saveButton,
-        action: () => alert(strings.comingSoon),
-        disabled : !dataChanged
-      },
-    ]
-  );
-
-  /**
-   * Event handler for name input change
-   *
-   * @param event event
-   */
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-    setDataChanged(true);
-  }
-
-  /**
-   * Event handler for screen orientation select change
-   *
-   * @param event event
-   */
-  const onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
-    setScreenOrientation(event.target.value as ScreenOrientation);
-    setDataChanged(true);
-  }
-
-  /**
-   * Event handler for device model select change
-   *
-   * @param event event
-   */
-  const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
-    setDeviceModelId(event.target.value as string);
-    setDataChanged(true);
   }
 
   if (!layout || !layout.id || deviceModels.length === 0) {
