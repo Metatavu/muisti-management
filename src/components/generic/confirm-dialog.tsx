@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography, Box } from "@mui/material";
 import { ConfirmDialogData } from "../../types";
 
@@ -42,38 +41,39 @@ export default class ConfirmDialog extends React.Component<Props, State> {
 
     const dialogText = confirmDialogData.deletePossible ? confirmDialogData.text : confirmDialogData.contentTitle;
 
-    return
+    return (
       <>
-      <Dialog
-        open={ open }
-        onClose={ confirmDialogData.onClose }
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{ confirmDialogData?.title }</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            { dialogText }
-            { this.renderErrorMessage() }
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={ confirmDialogData.onCancel } color="primary">
-            { confirmDialogData?.cancelButtonText }
-          </Button>
-          <Button
-            disabled={ confirmDialogData ? !confirmDialogData?.deletePossible : false }
-            disableElevation
-            variant="contained"
-            onClick={ confirmDialogData.onConfirm }
-            color="secondary"
-            autoFocus
-          >
-            { confirmDialogData?.positiveButtonText }
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>;
+        <Dialog
+          open={ open }
+          onClose={ confirmDialogData.onClose }
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{ confirmDialogData?.title }</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              { dialogText }
+              { this.renderErrorMessage() }
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={ confirmDialogData.onCancel } color="primary">
+              { confirmDialogData?.cancelButtonText }
+            </Button>
+            <Button
+              disabled={ confirmDialogData ? !confirmDialogData?.deletePossible : false }
+              disableElevation
+              variant="contained"
+              onClick={ confirmDialogData.onConfirm }
+              color="secondary"
+              autoFocus
+            >
+              { confirmDialogData?.positiveButtonText }
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    );
   }
 
   /**
