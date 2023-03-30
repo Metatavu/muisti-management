@@ -93,9 +93,9 @@ interface State {
 }
 
 /**
- * Component for layout screen
+ * Component for android layout screen
  */
-export class LayoutScreen extends React.Component<Props, State> {
+export class LayoutScreenAndroid extends React.Component<Props, State> {
 
   /**
    * Constructor
@@ -753,4 +753,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreenAndroid));
