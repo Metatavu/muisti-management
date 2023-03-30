@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import Cropper from 'react-cropper';
 import * as cropperjs from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
