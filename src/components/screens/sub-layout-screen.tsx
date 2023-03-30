@@ -1,10 +1,8 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import Api from "../../api/api";
-
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
@@ -21,8 +19,8 @@ import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2-nibas";
-import codemirror from "codemirror";
 // TODO: Code mirror related imports.
+// import codemirror from "codemirror";
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
 // import "codemirror/mode/javascript/javascript";
@@ -486,18 +484,18 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @returns array of tree nodes in array
    */
   private constructTreeData = (subLayout: SubLayout): TreeNodeInArray[] => {
-    const path = subLayout.data.id;
-    const type = subLayout.data.widget;
+    const path = (subLayout.data as PageLayoutView).id;
+    const type = (subLayout.data as PageLayoutView).widget;
     const treeData = [{
-      key: subLayout.data.id,
+      key: (subLayout.data as PageLayoutView).id,
       path: path,
-      label: subLayout.data.widget,
+      label: (subLayout.data as PageLayoutView).widget,
       element: subLayout.data,
       type: type,
-      onSelect: () => this.onLayoutPageViewSelect(subLayout.data, type, path),
+      onSelect: () => this.onLayoutPageViewSelect(subLayout.data as PageLayoutView, type, path),
       parents: [ ],
-      nodes: subLayout.data.children.map(child => {
-        return this.getNode(path, subLayout.data, child);
+      nodes: (subLayout.data as PageLayoutView).children.map(child => {
+        return this.getNode(path, subLayout.data as PageLayoutView, child);
       })
     }];
     return treeData;
@@ -595,7 +593,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @param data editor data
    * @param value code
    */
-  private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
+  private onBeforeJsonCodeChange = (editor: any, data: any, value: string) => {
     this.setState({
       jsonCode: value,
       dataChanged: true

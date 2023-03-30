@@ -1,5 +1,4 @@
 import * as React from "react";
-// eslint-disable-next-line max-len
 import { ExhibitionPage, PageLayout, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
 import { TextField, MenuItem, InputLabel, Select, FormControl, SelectChangeEvent } from "@mui/material";
@@ -15,7 +14,8 @@ interface Props extends WithStyles<typeof styles> {
   layouts: PageLayout[];
   devices: ExhibitionDevice[];
   pageData: ExhibitionPage;
-  onChange: (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => void;
+  onChange: (event: SelectChangeEvent<string>) => void;
+  onChangeText: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
   onLayoutChange: (event: SelectChangeEvent<string>) => void;
 }
 
@@ -45,7 +45,7 @@ class CommonSettingsEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render() {
-    const { classes, pageData, onChange } = this.props;
+    const { classes, pageData, onChangeText } = this.props;
 
     return (
       <>
@@ -53,7 +53,7 @@ class CommonSettingsEditor extends React.Component<Props, State> {
           label={ strings.contentEditor.editor.pageName }
           name="name"
           value={ pageData.name }
-          onChange={ onChange }
+          onChange={ onChangeText }
         />
         <div className={ classes.selectFields }>
           { this.renderDeviceSelect(pageData) }

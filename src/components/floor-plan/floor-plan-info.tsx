@@ -1,8 +1,6 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { ReduxState } from "../../store";
-
 import styles from "../../styles/exhibition-view";
 import {
   TextField,

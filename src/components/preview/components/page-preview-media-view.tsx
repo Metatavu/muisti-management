@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { ContentRect } from 'react-measure';
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';

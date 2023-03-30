@@ -1,9 +1,7 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import { CircularProgress, TextField, Box, Typography, MenuItem, TextFieldProps } from "@mui/material";

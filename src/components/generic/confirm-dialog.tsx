@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography, Box } from "@mui/material";
 import { ConfirmDialogData } from "../../types";
 
