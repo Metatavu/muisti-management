@@ -1,65 +1,43 @@
-import { TreeItem, TreeView } from '@mui/lab';
-import { HTML_LAYOUT_ROOT } from '../../constants/html-layout-root';
-import { parseToHtml } from './utils/tree-html-data-utils';
+import { AddBoxOutlined } from '@mui/icons-material';
+import { TreeView } from '@mui/lab';
+import { Stack, Typography } from '@mui/material';
+import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
+import { ComponentType, TreeObject } from '../../types';
 
-interface RenderTree {
-  id: string;
-  name: string;
-  children?: readonly RenderTree[];
+/**
+ * Components properties
+ */
+interface Props {
+  htmlString: string;
 }
 
-const exampleTreeData = {
-  id: 'root',
-  name: 'Parent',
-  children: [
-    {
-      id: '1',
-      name: 'Child - 1',
-    },
-    {
-      id: '3',
-      name: 'Child - 3',
-      children: [
-        {
-          id: '4',
-          name: 'Child - 4',
-        },
-      ],
-    },
-  ],
-}
-
-const LayoutTreeMenuHtml = () => {
-
-  const htmlString = HTML_LAYOUT_ROOT;
-  const htmlDom = parseToHtml(htmlString);
-
-  const domArray = Array.from(htmlDom.querySelectorAll("*"));
-
-  type TreeObject = {
-    type: ComponentType;
-    id: string;
-    resourceId?: string;
-    children: TreeObject[];
-  };
-  enum ComponentType {
-    LAYOUT = "layout",
-    BUTTON = "button",
-    IMAGE = "image",
-    TEXT = "text"
-  };
-  const extractTreeObject = (element: Element): TreeObject | undefined => {
+/**
+ * Layout Tree Menu HTML Component
+ */
+const LayoutTreeMenuHtml: React.FC<Props> = ({
+  htmlString
+}) => {
+  const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
+  const domArray = Array.from(dom.children);
+  
+  /**
+   * Creates Tree Object from HTML Element
+   * 
+   * @param element element
+   * @returns TreeObject
+   */
+  const createTreeObject = (element: Element): TreeObject | undefined => {
     const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
-    const id = element.id;
+    const id = element.id ?? "";
 
     if (!componentType) return;
 
-    if (!Object.values(ComponentType).includes(componentType)) return;
+    if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
 
     const children: any[] = [];
 
     for (const child of element.children) {
-      children.push(extractTreeObject(child));
+      children.push(createTreeObject(child));
     }
 
     return {
@@ -69,25 +47,46 @@ const LayoutTreeMenuHtml = () => {
     }
   };
 
-  domArray.forEach(x => console.log(extractTreeObject(x)));
-
-
-  console.log(extractTreeObject(domArray[0]))
-
-  // TODO: export to tree utils
-  const renderTree = (nodes: RenderTree) => (
-    <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
-      {Array.isArray(nodes.children)
-        ? nodes.children.map((node) => renderTree(node))
-        : null}
-    </TreeItem>
-  );
-
+  /**
+   * Renders Tree Item
+   * 
+   * @param item item
+   * @param isRoot is root element
+   */
+  const renderTreeItem = (item?: TreeObject, isRoot?: boolean) => {
+    if (!item) return;
+    const hasChildren = !!item.children.length;
+    
+    return (
+      <StyledTreeItem
+        key={ item.id }
+        nodeId={ item?.id ?? "" }
+        labelText={ item.type }
+        isLayoutComponent={ item.type === ComponentType.LAYOUT }
+        isRoot={ isRoot }
+        hasChildren={ hasChildren }
+      >
+        { item.children.map((x, i) => renderTreeItem(x, undefined)) }
+        { item.type === ComponentType.LAYOUT &&
+            <Stack direction="row" alignItems="center">
+              <AddBoxOutlined/>
+              <Typography variant="caption" textTransform="uppercase">Lisää elementti</Typography>
+            </Stack>
+        }
+      </StyledTreeItem>
+    );
+  };
+  
   return (
     <TreeView>
-      {renderTree(exampleTreeData)}
+      { Array.isArray(domArray) &&
+        domArray.map((x, i) => {
+          const item = createTreeObject(x);
+          return renderTreeItem(item, true);
+        })
+      }
     </TreeView>
-  )
+  );
 };
 
 export default LayoutTreeMenuHtml;

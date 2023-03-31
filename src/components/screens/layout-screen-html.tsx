@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -6,7 +6,6 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-// eslint-disable-next-line max-len
 import {
   CircularProgress,
   TextField,
@@ -19,8 +18,7 @@ import {
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -28,6 +26,8 @@ import { AccessToken, ActionButton } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
+import { useParams } from "react-router-dom";
+import Api from "../../api/api";
 
 /**
  * Component props
@@ -54,14 +54,35 @@ export const LayoutScreenHTML: React.FC<Props> = ({
   keycloak,
   deviceModels,
   layout,
-  classes
+  classes,
+  accessToken
 }) => {
   const [ name, setName ] = useState("");
   const [ deviceModelId, setDeviceModelId ] = useState("");
   const [ screenOrientation, setScreenOrientation ] = useState<ScreenOrientation>(ScreenOrientation.Portrait);
   const [ view, setView ] = useState("VISUAL")
   const [ dataChanged, setDataChanged ] = useState(false);
-
+  const [ foundLayout, setFoundLayout ] = useState(layout);
+  
+  const { layoutId } = useParams();
+  
+  useEffect(() => {
+    fetchLayout()
+   }, []);
+  
+   /**
+    * Fetches PageLayout
+    */
+  const fetchLayout = async () => {
+    const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+    
+    const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: layoutId })
+    
+    setFoundLayout(pageLayout);
+    
+    console.log(pageLayout)
+  };
+  
   /**
    * Renders device model select
    */
@@ -164,7 +185,7 @@ export const LayoutScreenHTML: React.FC<Props> = ({
     setDataChanged(true);
   }
 
-  if (!layout || !layout.id || deviceModels.length === 0) {
+  if (!foundLayout || !foundLayout.id || deviceModels.length === 0) {
     return (
       <div className={ classes.loader }>
         <CircularProgress size={ 50 } color="secondary" />
@@ -175,7 +196,7 @@ export const LayoutScreenHTML: React.FC<Props> = ({
   return (
     <BasicLayout
       history={ history }
-      title={ layout.name }
+      title={ foundLayout.name }
       breadcrumbs={ [] }
       actionBarButtons={ getActionButtons() }
       keycloak={ keycloak }
@@ -192,7 +213,9 @@ export const LayoutScreenHTML: React.FC<Props> = ({
             />
             { renderDeviceModelSelect() }
             { renderScreenOrientationSelect() }
-            <LayoutTreeMenuHtml />
+            <LayoutTreeMenuHtml
+              htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+            />
           </div>
         </ElementNavigationPane>
         <EditorView>

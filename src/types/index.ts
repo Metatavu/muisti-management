@@ -231,3 +231,25 @@ export interface DiagnosticsConfig {
   tagZeroDelay: number;
   tagRemoveDelay: number;
 }
+
+/**
+ * Tree Object type
+ */
+export type TreeObject = {
+  type: ComponentType;
+  id: string;
+  resourceId?: string;
+  children: TreeObject[];
+};
+
+/**
+ * Component Type enum
+ */
+export enum ComponentType {
+  LAYOUT = "layout",
+  BUTTON = "button",
+  IMAGE = "image",
+  TEXT = "text",
+  TABS = "tabs",
+  TAB = "tab"
+};
