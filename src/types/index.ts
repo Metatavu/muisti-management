@@ -117,6 +117,14 @@ export enum MediaType {
 }
 
 /**
+ * Enum for layout editor view
+ */
+export enum LayoutEditorView {
+  VISUAL = "VISUAL",
+  CODE = "CODE"
+}
+
+/**
  * CSS property value pairs
  */
 export interface CSSPropertyValuePairs {

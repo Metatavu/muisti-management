@@ -91,6 +91,7 @@ export interface IStrings extends LocalizedStringsMethods {
     errorMessage: string;
     close: string;
     reload: string;
+    layoutFetchNotFound: string;
   };
 
   exhibitionLayouts: {
