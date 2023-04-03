@@ -22,7 +22,7 @@ import RoomsScreen from "./screens/rooms-screen";
 import ContentVersionsScreen from "./screens/content-versions-screen";
 import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
 import LayoutsScreen from "./screens/layouts-screen";
-import LayoutScreen from "./screens/layout-screen";
+import LayoutScreenHTML from "./screens/layout-screen-html";
 import DeviceModelsScreen from "./screens/device-models-screen";
 import ReceptionScreen from "./screens/reception-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
@@ -33,6 +33,7 @@ import VisitorVariablesScreen from "./screens/visitor-variables-screen";
 import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
 import VisitorsManagementScreen from "./screens/visitors-management-screen";
 import DiagnosticsScreen from "./screens/diagnostics-screen";
+import LayoutScreenAndroid from "./screens/layout-screen-android";
 
 
 declare module '@mui/styles/defaultTheme' {
@@ -203,10 +204,20 @@ class App extends React.Component<Props, State> {
                         )}
                       />
                       <Route
-                        path="/layouts/:type/:layoutId"
+                        path="/layouts/HTML/:layoutId"
                         exact
                         render={({ history, match }) => (
-                          <LayoutScreen
+                          <LayoutScreenHTML
+                            history={ history }
+                            layoutId={ match.params.layoutId }
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/layouts/ANDROID/:layoutId"
+                        exact
+                        render={({ history, match }) => (
+                          <LayoutScreenAndroid
                             history={ history }
                             layoutId={ match.params.layoutId }
                           />

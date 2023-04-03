@@ -30,7 +30,7 @@ interface Props extends WithStyles<typeof styles> {
   hideHeader?: boolean;
   setSelectedDevice?: (deviceId: string) => ExhibitionDevice | undefined;
   clearError?: () => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**

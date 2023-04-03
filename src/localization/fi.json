@@ -17,7 +17,7 @@
     "inProduction": "Tuotannossa",
     "inDraft": "Luonnokset",
     "status": {
-      "ready": "Valmis" 
+      "ready": "Valmis"
     }
   },
 
@@ -100,7 +100,8 @@
     "url": "Osoite: {0}",
     "errorMessage": "Virheilmoitus: ",
     "close": "Sulje",
-    "reload": "Lataa uudelleen"
+    "reload": "Lataa uudelleen",
+    "layoutFetchNotFound": "Sivun asettelua ei löydy."
   },
 
   "exhibitionLayouts": {
@@ -404,7 +405,7 @@
       "room": "Huone johon antenni kuuluu",
       "antennaNumber": "Antennin numero"
     },
-    
+
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
     "brokenData": "Kartan saamat tiedot ovat viallisia eikä karttaa voida luoda!"
   },
@@ -965,7 +966,7 @@
       "antennaReaderIdDescription": "Antenniyksikön tunnus (ID), mihin tämä antenni on kytketty.",
       "antennaPortNumberDescription": "Antenniyksikön portti, mihin antenni on kytketty. Antenniin kannattaa kirjata tämä portin numero helpottamaan vianetsintää.",
       "indexPageTimeoutDescription": "Passiivisen vierailijan etuvisulle palautuksen viive.",
-      "indexPageTimeoutAdditionalDescription": "Vierailija palautetaan takaisin etusivulle kun tähän kenttään määritelty millisekuntimäärä on kulunut. Mikäli kenttään ei ole syötety arvoa, toiminto ei ole päällä." 
+      "indexPageTimeoutAdditionalDescription": "Vierailija palautetaan takaisin etusivulle kun tähän kenttään määritelty millisekuntimäärä on kulunut. Mikäli kenttään ei ole syötety arvoa, toiminto ei ole päällä."
     },
     "layoutEditor": {
       "commonProperties": {
