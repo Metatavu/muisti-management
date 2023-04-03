@@ -100,7 +100,7 @@
     "errorMessage": "Error message: ",
     "close": "Close",
     "reload": "Reload",
-    "layoutFetchNotFound": "Page layout not found. CLicking close will redirect back to layouts page."
+    "layoutFetchNotFound": "Page layout not found."
   },
 
   "exhibitionLayouts": {

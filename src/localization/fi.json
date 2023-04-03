@@ -101,7 +101,7 @@
     "errorMessage": "Virheilmoitus: ",
     "close": "Sulje",
     "reload": "Lataa uudelleen",
-    "layoutFetchNotFound": "Sivun asettelua ei löydy. Sulje-painikkeen napsauttaminen ohjaa takaisin asettelusivulle"
+    "layoutFetchNotFound": "Sivun asettelua ei löydy."
   },
 
   "exhibitionLayouts": {

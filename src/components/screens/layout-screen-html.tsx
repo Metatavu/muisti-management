@@ -78,16 +78,12 @@ const LayoutScreenHTML: React.FC<Props> = ({
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
 
-      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: layoutId });
-
-      if (!pageLayout) {
-        throw new Error(strings.errorDialog.layoutFetchNotFound);
-      }
+      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: "layoutId" });
 
       setFoundLayout(pageLayout);
     } catch (e) {
       console.error(e);
-      setError(e as Error);
+      setError(new Error(strings.errorDialog.layoutFetchNotFound));
     }
     setLoading(false);
   };
@@ -241,39 +237,18 @@ const LayoutScreenHTML: React.FC<Props> = ({
     }
   }
 
-  /**
-   * Clear error and return to layouts screen
-   */
-  const clearErrorAndRedirect = () => {
-    setError(undefined);
-    history.goBack();
-  }
-
-  if (loading && (!foundLayout || !foundLayout.id || deviceModels.length === 0)) {
+  if (loading) {
     return (
       <div className={ classes.loader }>
-        <CircularProgress size={ 50 } color="secondary" />
+        <CircularProgress size={ 50 } color="secondary"/>
       </div>
-    );
-  }
-
-  if (!loading && (!foundLayout || !foundLayout.id || deviceModels.length === 0)) {
-    return (
-      <BasicLayout
-        history={ history }
-        title={ "" }
-        keycloak={ keycloak }
-        error={ error }
-        clearError={ clearErrorAndRedirect }
-        breadcrumbs={ [] }
-      />
     );
   }
 
   return (
     <BasicLayout
       history={ history }
-      title={ foundLayout.name || "" }
+      title={ foundLayout?.name! }
       breadcrumbs={ [] }
       actionBarButtons={ getActionButtons() }
       keycloak={ keycloak }
@@ -281,23 +256,23 @@ const LayoutScreenHTML: React.FC<Props> = ({
       clearError={ () => setError(undefined) }
       openDataChangedPrompt={ true }
     >
-      <div className={ classes.editorLayout }>
-        <ElementNavigationPane width={ 320 } title={ strings.layout.title }>
-          <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
-            <TextField
-              style={{ width: 200 }}
-              label={ strings.layout.toolbar.name }
-              value={ name }
-              onChange={ onNameChange }
-            />
-            { renderDeviceModelSelect() }
-            { renderScreenOrientationSelect() }
-          </div>
-        </ElementNavigationPane>
-        <EditorView>
-          {/* TODO:  Editor view will be used in future  */}
-        </EditorView>
-      </div>
+        <div className={ classes.editorLayout }>
+          <ElementNavigationPane width={ 320 } title={ strings.layout.title }>
+            <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+              <TextField
+                style={{ width: 200 }}
+                label={ strings.layout.toolbar.name }
+                value={ name }
+                onChange={ onNameChange }
+              />
+              { renderDeviceModelSelect() }
+              { renderScreenOrientationSelect() }
+            </div>
+          </ElementNavigationPane>
+          <EditorView>
+            {/* TODO:  Editor view will be used in future  */}
+          </EditorView>
+        </div>
     </BasicLayout>
   );
 }
