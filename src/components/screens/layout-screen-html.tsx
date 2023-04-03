@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
+import Api from "../../api/api";
+
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 // eslint-disable-next-line max-len
@@ -20,11 +22,11 @@ import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 // eslint-disable-next-line max-len
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton } from '../../types';
+import { AccessToken, ActionButton, LayoutEditorView } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 
@@ -48,18 +50,50 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Component for html layout screen
  */
-export const LayoutScreenHTML: React.FC<Props> = ({
+const LayoutScreenHTML: React.FC<Props> = ({
   history,
   keycloak,
   deviceModels,
   layout,
+  layouts,
+  layoutId,
+  accessToken,
   classes
 }) => {
   const [ name, setName ] = useState("");
   const [ deviceModelId, setDeviceModelId ] = useState("");
   const [ screenOrientation, setScreenOrientation ] = useState<ScreenOrientation>(ScreenOrientation.Portrait);
-  const [ view, setView ] = useState("VISUAL")
+  const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
+  const [ foundLayout, setFoundLayout ] = useState(layout);
+  const [ error, setError ] = useState<Error | undefined>(undefined);
+  const [ loading, setLoading ] = useState(false);
+
+  useEffect(() => {
+    fetchLayout();
+  }, []);
+
+  /**
+   * Fetches PageLayout
+   */
+  const fetchLayout = async () => {
+    setLoading(true);
+    try {
+      const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+
+      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: layoutId });
+
+      if (!pageLayout) {
+        throw new Error(strings.errorDialog.layoutFetchNotFound);
+      }
+
+      setFoundLayout(pageLayout);
+    } catch (e) {
+      console.error(e);
+      setError(e as Error);
+    }
+    setLoading(false);
+  };
 
   /**
    * Renders device model select
@@ -120,14 +154,16 @@ export const LayoutScreenHTML: React.FC<Props> = ({
   const getActionButtons = (): ActionButton[] => (
     [
       {
-        name: view === "CODE" ?
+        name: view === LayoutEditorView.CODE ?
           strings.exhibitionLayouts.editView.switchToVisualButton :
           strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: () => view === "CODE" ? setView("VISUAL") : setView("CODE"),
+        action: () => view === LayoutEditorView.CODE
+          ? setView(LayoutEditorView.VISUAL)
+          : setView(LayoutEditorView.CODE)
       },
       {
         name: strings.exhibitionLayouts.editView.saveButton,
-        action: () => alert(strings.comingSoon),
+        action: () => onSaveClick(),
         disabled : !dataChanged
       },
     ]
@@ -163,7 +199,60 @@ export const LayoutScreenHTML: React.FC<Props> = ({
     setDataChanged(true);
   }
 
-  if (!layout || !layout.id || deviceModels.length === 0) {
+  /**
+   * Event handler for save button click
+   */
+  const onSaveClick = () => {
+    const newLayout: PageLayout = {
+      ...layout,
+      name: name,
+      data: {
+        // TODO: HTML data to be implemented
+        html: strings.comingSoon
+      },
+      modelId: deviceModelId,
+      screenOrientation: screenOrientation,
+      layoutType: LayoutType.Html
+    };
+
+    onLayoutSave(newLayout);
+  }
+
+  /**
+   * Event handler for layout save
+   *
+   * @param layout layout
+   */
+  const onLayoutSave = async (layout: PageLayout) => {
+    try {
+      const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+      const pageLayoutId = layout.id!;
+
+      const updatedLayout = await pageLayoutsApi.updatePageLayout({
+        pageLayoutId: pageLayoutId,
+        pageLayout: layout
+      });
+
+      const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
+      setLayouts([ ...updatedLayouts, layout ]);
+
+      // TODO: Will update html state here
+      setDataChanged(false);
+    } catch (e) {
+      console.error(e);
+      setError(e as Error);
+    }
+  }
+
+  /**
+   * Clear error and return to layouts screen
+   */
+  const clearErrorAndRedirect = () => {
+    setError(undefined);
+    history.goBack();
+  }
+
+  if (loading && (!foundLayout || !foundLayout.id || deviceModels.length === 0)) {
     return (
       <div className={ classes.loader }>
         <CircularProgress size={ 50 } color="secondary" />
@@ -171,13 +260,28 @@ export const LayoutScreenHTML: React.FC<Props> = ({
     );
   }
 
+  if (!loading && (!foundLayout || !foundLayout.id || deviceModels.length === 0)) {
+    return (
+      <BasicLayout
+        history={ history }
+        title={ "" }
+        keycloak={ keycloak }
+        error={ error }
+        clearError={ clearErrorAndRedirect }
+        breadcrumbs={ [] }
+      />
+    );
+  }
+
   return (
     <BasicLayout
       history={ history }
-      title={ layout.name }
+      title={ foundLayout.name || "" }
       breadcrumbs={ [] }
       actionBarButtons={ getActionButtons() }
       keycloak={ keycloak }
+      error={ error }
+      clearError={ () => setError(undefined) }
       openDataChangedPrompt={ true }
     >
       <div className={ classes.editorLayout }>
