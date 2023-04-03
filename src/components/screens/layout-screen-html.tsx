@@ -5,7 +5,6 @@ import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
-
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
