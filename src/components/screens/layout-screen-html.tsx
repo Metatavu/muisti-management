@@ -26,8 +26,6 @@ import { AccessToken, ActionButton, LayoutEditorView } from '../../types';
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
-import { useParams } from "react-router-dom";
-import Api from "../../api/api";
 
 /**
  * Component props
@@ -80,7 +78,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
 
-      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: "layoutId" });
+      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: layoutId });
 
       setFoundLayout(pageLayout);
     } catch (e) {
@@ -269,10 +267,11 @@ const LayoutScreenHTML: React.FC<Props> = ({
               />
               { renderDeviceModelSelect() }
               { renderScreenOrientationSelect() }
-              <LayoutTreeMenuHtml
-              htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
-            />
-          </div>
+              { foundLayout &&
+                <LayoutTreeMenuHtml
+                  htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+                />}
+            </div>
           </ElementNavigationPane>
           <EditorView>
             {/* TODO:  Editor view will be used in future  */}
