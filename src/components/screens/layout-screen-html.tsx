@@ -176,7 +176,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
         pageLayoutId: layoutId,
         pageLayout: foundLayout
       });
-      console.log("MOI")
+
       const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
       setLayouts([ ...updatedLayouts, layout ]);
       setDataChanged(false);
