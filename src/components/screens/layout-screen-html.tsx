@@ -29,8 +29,7 @@ import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
-import { StreamLanguage } from "@codemirror/language";
-import codemirror from "codemirror";
+import { html_beautify } from "js-beautify";
 
 /**
  * Component props
@@ -62,10 +61,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
   accessToken,
   classes
 }) => {
-  // TODO: can remove name, screen orientation, htmlCode and device model id to access from the foundLayout
-  const [ name, setName ] = useState("");
-  const [ deviceModelId, setDeviceModelId ] = useState("");
-  const [ screenOrientation, setScreenOrientation ] = useState<ScreenOrientation>(ScreenOrientation.Portrait);
   const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
   const [ foundLayout, setFoundLayout ] = useState(layout);
@@ -75,6 +70,8 @@ const LayoutScreenHTML: React.FC<Props> = ({
   useEffect(() => {
     fetchLayout();
   }, []);
+  
+  useEffect(() => setDataChanged(true), [foundLayout]);
 
   /**
    * Fetches PageLayout
@@ -99,9 +96,14 @@ const LayoutScreenHTML: React.FC<Props> = ({
    *
    * @param event event
    */
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-    setDataChanged(true);
+  const onNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    if (!foundLayout) {
+      return;
+    }
+    setFoundLayout({
+      ...foundLayout,
+      name: value
+    });
   };
 
   /**
@@ -109,9 +111,15 @@ const LayoutScreenHTML: React.FC<Props> = ({
    *
    * @param event event
    */
-  const onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
-    setScreenOrientation(event.target.value as ScreenOrientation);
-    setDataChanged(true);
+  const onScreenOrientationChange = ({ target: { value } }: SelectChangeEvent<ScreenOrientation>) => {
+    if (!foundLayout) {
+      return;
+    }
+    
+    setFoundLayout({
+      ...foundLayout,
+      screenOrientation: value as ScreenOrientation
+    });
   };
 
   /**
@@ -120,8 +128,14 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * @param event event
    */
   const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
-    setDeviceModelId(event.target.value as string);
-    setDataChanged(true);
+    if (!foundLayout) {
+      return;
+    }
+    
+    setFoundLayout({
+      ...foundLayout,
+      modelId: event.target.value
+    });
   };
 
   /**
@@ -139,49 +153,32 @@ const LayoutScreenHTML: React.FC<Props> = ({
       },
       {
         name: strings.exhibitionLayouts.editView.saveButton,
-        action: () => onSaveClick(),
+        action: onLayoutSave,
         disabled : !dataChanged
       },
     ]
   );
 
   /**
-   * Event handler for save button click
-   */
-  const onSaveClick = () => {
-    const newLayout: PageLayout = {
-      ...foundLayout,
-      name: name,
-      data: {
-        html: htmlCode
-      },
-      modelId: deviceModelId,
-      screenOrientation: screenOrientation,
-      layoutType: LayoutType.Html
-    };
-
-    onLayoutSave(newLayout);
-  };
-
-  /**
    * Event handler for layout save
    *
    * @param layout layout
    */
-  const onLayoutSave = async (layout: PageLayout) => {
+  const onLayoutSave = async () => {
     try {
+      if (!foundLayout) {
+        return;
+      }
+      
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
-      const pageLayoutId = layout.id!;
 
       const updatedLayout = await pageLayoutsApi.updatePageLayout({
-        pageLayoutId: pageLayoutId,
-        pageLayout: layout
+        pageLayoutId: layoutId,
+        pageLayout: foundLayout
       });
-
+      console.log("MOI")
       const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
       setLayouts([ ...updatedLayouts, layout ]);
-
-      // TODO: Will update html state here
       setDataChanged(false);
     } catch (e) {
       console.error(e);
@@ -189,13 +186,13 @@ const LayoutScreenHTML: React.FC<Props> = ({
     }
   };
 
-  // TODO: should be a string
-  const onCodeChange = React.useCallback((value: string, viewUpdate) => {
-    console.log('value:', value);
-    console.log("html code", foundLayout.data);
+  /**
+   * Handler for Code Editor onChange events
+   */
+  const onCodeChange = React.useCallback((value: string) => {
     setFoundLayout({ ...foundLayout!, data: { html: value } });
-  }, []);
-
+  }, [foundLayout]);
+  
   /**
    * Renders editor view
    */
@@ -229,7 +226,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
             title={ strings.helpTexts.layoutEditor.selectDevice }
             label={ strings.layout.settings.deviceModelId }
             labelId="deviceModelId"
-            value={ deviceModelId }
+            value={ foundLayout?.modelId ?? "" }
             onChange={ onDeviceModelChange }
             >
           { deviceModelSelectItems }
@@ -252,7 +249,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
             title={ strings.helpTexts.layoutEditor.selectOrientation }
             label={ strings.layout.settings.screenOrientation }
             labelId="screenOrientation"
-            value={ screenOrientation }
+            value={ foundLayout?.screenOrientation ?? "" }
             onChange={ onScreenOrientationChange }
             >
             <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
@@ -261,8 +258,8 @@ const LayoutScreenHTML: React.FC<Props> = ({
         </FormControl>
       </div>
     );
-  }
-
+  };
+  
   /**
    * Renders code editor view
    */
@@ -271,8 +268,12 @@ const LayoutScreenHTML: React.FC<Props> = ({
       <div className={ classes.editorContainer }>
         <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
           <CodeMirror
-            value={ foundLayout?.data.html }
-            height="200px"
+            value={ html_beautify(foundLayout?.data.html, {
+              indent_size: 2,
+              inline: []
+            }) }
+            height="500px"
+            style={{ overflow: "auto" }}
             extensions={ [ html() ] }
             onChange={ onCodeChange }
           />
@@ -305,7 +306,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
               <TextField
                 style={{ width: 200 }}
                 label={ strings.layout.toolbar.name }
-                value={ name }
+                value={ foundLayout?.name ?? "" }
                 onChange={ onNameChange }
               />
               { renderDeviceModelSelect() }
