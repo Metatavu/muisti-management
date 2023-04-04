@@ -70,7 +70,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   useEffect(() => {
     fetchLayout();
   }, []);
-  
+
   useEffect(() => setDataChanged(true), [foundLayout]);
 
   /**
@@ -115,7 +115,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
     if (!foundLayout) {
       return;
     }
-    
+
     setFoundLayout({
       ...foundLayout,
       screenOrientation: value as ScreenOrientation
@@ -131,7 +131,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
     if (!foundLayout) {
       return;
     }
-    
+
     setFoundLayout({
       ...foundLayout,
       modelId: event.target.value
@@ -169,7 +169,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       if (!foundLayout) {
         return;
       }
-      
+
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
 
       const updatedLayout = await pageLayoutsApi.updatePageLayout({
@@ -192,7 +192,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const onCodeChange = React.useCallback((value: string) => {
     setFoundLayout({ ...foundLayout!, data: { html: value } });
   }, [foundLayout]);
-  
+
   /**
    * Renders editor view
    */
@@ -259,7 +259,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       </div>
     );
   };
-  
+
   /**
    * Renders code editor view
    */
@@ -270,7 +270,8 @@ const LayoutScreenHTML: React.FC<Props> = ({
           <CodeMirror
             value={ html_beautify(foundLayout?.data.html, {
               indent_size: 2,
-              inline: []
+              inline: [],
+              indent_empty_lines: true
             }) }
             height="500px"
             style={{ overflow: "auto" }}

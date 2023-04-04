@@ -353,6 +353,7 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
           <CodeMirror className={ classes.editor }
             value={ this.state.jsonCode }
             height="500px"
+            style={{ overflow: "auto" }}
             extensions={ [ json() ] }
           />
         </div>
