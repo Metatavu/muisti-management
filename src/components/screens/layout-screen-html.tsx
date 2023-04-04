@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
@@ -14,18 +14,23 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
+  Typography,
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
 import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, LayoutEditorView } from '../../types';
+import { AccessToken, ActionButton, LayoutEditorView } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
+import CodeMirror from "@uiw/react-codemirror";
+import { html } from "@codemirror/lang-html";
+import { StreamLanguage } from "@codemirror/language";
+import codemirror from "codemirror";
 
 /**
  * Component props
@@ -57,6 +62,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   accessToken,
   classes
 }) => {
+  // TODO: can remove name, screen orientation, htmlCode and device model id to access from the foundLayout
   const [ name, setName ] = useState("");
   const [ deviceModelId, setDeviceModelId ] = useState("");
   const [ screenOrientation, setScreenOrientation ] = useState<ScreenOrientation>(ScreenOrientation.Portrait);
@@ -96,7 +102,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
     setDataChanged(true);
-  }
+  };
 
   /**
    * Event handler for screen orientation select change
@@ -106,7 +112,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const onScreenOrientationChange = (event: SelectChangeEvent<ScreenOrientation>) => {
     setScreenOrientation(event.target.value as ScreenOrientation);
     setDataChanged(true);
-  }
+  };
 
   /**
    * Event handler for device model select change
@@ -116,7 +122,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
     setDeviceModelId(event.target.value as string);
     setDataChanged(true);
-  }
+  };
 
   /**
    * Gets action buttons
@@ -129,7 +135,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
         name: view === LayoutEditorView.CODE ?
           strings.exhibitionLayouts.editView.switchToVisualButton :
           strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
+          action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
       },
       {
         name: strings.exhibitionLayouts.editView.saveButton,
@@ -138,6 +144,71 @@ const LayoutScreenHTML: React.FC<Props> = ({
       },
     ]
   );
+
+  /**
+   * Event handler for save button click
+   */
+  const onSaveClick = () => {
+    const newLayout: PageLayout = {
+      ...foundLayout,
+      name: name,
+      data: {
+        html: htmlCode
+      },
+      modelId: deviceModelId,
+      screenOrientation: screenOrientation,
+      layoutType: LayoutType.Html
+    };
+
+    onLayoutSave(newLayout);
+  };
+
+  /**
+   * Event handler for layout save
+   *
+   * @param layout layout
+   */
+  const onLayoutSave = async (layout: PageLayout) => {
+    try {
+      const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+      const pageLayoutId = layout.id!;
+
+      const updatedLayout = await pageLayoutsApi.updatePageLayout({
+        pageLayoutId: pageLayoutId,
+        pageLayout: layout
+      });
+
+      const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
+      setLayouts([ ...updatedLayouts, layout ]);
+
+      // TODO: Will update html state here
+      setDataChanged(false);
+    } catch (e) {
+      console.error(e);
+      setError(e as Error);
+    }
+  };
+
+  // TODO: should be a string
+  const onCodeChange = React.useCallback((value: string, viewUpdate) => {
+    console.log('value:', value);
+    console.log("html code", foundLayout.data);
+    setFoundLayout({ ...foundLayout!, data: { html: value } });
+  }, []);
+
+  /**
+   * Renders editor view
+   */
+  const renderEditor = () => {
+    switch (view) {
+      case "CODE":
+        return renderCodeEditor();
+      // case "VISUAL":
+      //   return renderVisualEditor();
+      default:
+        return null;
+    }
+  }
 
   /**
    * Renders device model select
@@ -193,49 +264,21 @@ const LayoutScreenHTML: React.FC<Props> = ({
   }
 
   /**
-   * Event handler for save button click
+   * Renders code editor view
    */
-  const onSaveClick = () => {
-    const newLayout: PageLayout = {
-      ...layout,
-      name: name,
-      data: {
-        // TODO: HTML data to be implemented
-        html: strings.comingSoon
-      },
-      modelId: deviceModelId,
-      screenOrientation: screenOrientation,
-      layoutType: LayoutType.Html
-    };
-
-    onLayoutSave(newLayout);
-  }
-
-  /**
-   * Event handler for layout save
-   *
-   * @param layout layout
-   */
-  const onLayoutSave = async (layout: PageLayout) => {
-    try {
-      const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
-      const pageLayoutId = layout.id!;
-
-      const updatedLayout = await pageLayoutsApi.updatePageLayout({
-        pageLayoutId: pageLayoutId,
-        pageLayout: layout
-      });
-
-      const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
-      setLayouts([ ...updatedLayouts, layout ]);
-
-      // TODO: Will update html state here
-      setDataChanged(false);
-    } catch (e) {
-      console.error(e);
-      setError(e as Error);
-    }
-  }
+  const renderCodeEditor = () => (
+    <div className={ classes.editors }>
+      <div className={ classes.editorContainer }>
+        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
+          <CodeMirror
+            value={ foundLayout?.data.html }
+            height="200px"
+            extensions={ [ html() ] }
+            onChange={ onCodeChange }
+          />
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -274,7 +317,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
             </div>
           </ElementNavigationPane>
           <EditorView>
-            {/* TODO:  Editor view will be used in future  */}
+            { renderEditor() }
           </EditorView>
         </div>
     </BasicLayout>

@@ -30,13 +30,8 @@ import EditorView from "../editor/editor-view";
 import PagePreview from "../preview/page-preview";
 import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
 import strings from "../../localization/strings";
-import { Controlled as CodeMirror } from "react-codemirror2-nibas";
-import codemirror from "codemirror";
-// TODO: Code mirror related imports.
-// import "codemirror/lib/codemirror.css";
-// import "codemirror/theme/material.css";
-// import "codemirror/mode/javascript/javascript";
-// import "codemirror/mode/xml/xml";
+import CodeMirror from "@uiw/react-codemirror";
+import { json } from "@codemirror/lang-json";
 import AndroidUtils from "../../utils/android-utils";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
@@ -351,20 +346,15 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
   private renderCodeEditor = () => {
     const { classes } = this.props;
 
-    const jsonEditorOptions = {
-      mode: "javascript",
-      theme: "material",
-      lineNumbers: true
-    };
-
     return (
       <div className={ classes.editors }>
         <div className={ classes.editorContainer }>
           <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
           <CodeMirror className={ classes.editor }
             value={ this.state.jsonCode }
-            options={ jsonEditorOptions }
-            onBeforeChange={ this.onBeforeJsonCodeChange } />
+            height="500px"
+            extensions={ [ json() ] }
+          />
         </div>
       </div>
     );
@@ -578,20 +568,6 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
   private onDeviceModelChange = (event: SelectChangeEvent<string>) => {
     this.setState({
       deviceModelId: event.target.value as string,
-      dataChanged: true
-    });
-  }
-
-  /**
-   * Event handler for before JSON code change event
-   *
-   * @param editor editor instance
-   * @param data editor data
-   * @param value code
-   */
-  private onBeforeJsonCodeChange = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
-    this.setState({
-      jsonCode: value,
       dataChanged: true
     });
   }

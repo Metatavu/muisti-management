@@ -98,6 +98,7 @@ export interface IStrings extends LocalizedStringsMethods {
     editView: {
       xml: string;
       json: string;
+      html: string;
       saveButton: string;
       switchToCodeButton: string;
       switchToVisualButton: string;
