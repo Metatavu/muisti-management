@@ -1,7 +1,7 @@
 import { AddBoxOutlined } from '@mui/icons-material';
 import { TreeView } from '@mui/lab';
 import { Stack, Typography } from '@mui/material';
-import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
+import StyledTreeItem from '../../styles/components/layout-screen/styled-tree-item';
 import { ComponentType, TreeObject } from '../../types';
 
 /**
@@ -19,10 +19,10 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
-  
+
   /**
    * Creates Tree Object from HTML Element
-   * 
+   *
    * @param element element
    * @returns TreeObject
    */
@@ -34,10 +34,12 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
 
     if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
 
-    const children: any[] = [];
+    const children: TreeObject[] = [];
 
     for (const child of element.children) {
-      children.push(createTreeObject(child));
+      const treeObject = createTreeObject(child);
+
+      if (treeObject) children.push(treeObject);
     }
 
     return {
@@ -49,14 +51,14 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
 
   /**
    * Renders Tree Item
-   * 
+   *
    * @param item item
    * @param isRoot is root element
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean) => {
     if (!item) return;
     const hasChildren = !!item.children.length;
-    
+
     return (
       <StyledTreeItem
         key={ item.id }
@@ -76,7 +78,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
       </StyledTreeItem>
     );
   };
-  
+
   return (
     <TreeView>
       { Array.isArray(domArray) &&
