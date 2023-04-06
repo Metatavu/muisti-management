@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
@@ -16,16 +15,17 @@ import {
   FormControl,
   SelectChangeEvent,
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, LayoutEditorView } from '../../types';
+import { AccessToken, ActionButton, LayoutEditorView } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
+import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
 
 /**
  * Component props
@@ -78,7 +78,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
 
-      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: "layoutId" });
+      const pageLayout = await pageLayoutsApi.findPageLayout({ pageLayoutId: layoutId });
 
       setFoundLayout(pageLayout);
     } catch (e) {
@@ -267,6 +267,10 @@ const LayoutScreenHTML: React.FC<Props> = ({
               />
               { renderDeviceModelSelect() }
               { renderScreenOrientationSelect() }
+              { foundLayout &&
+                <LayoutTreeMenuHtml
+                  htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+                />}
             </div>
           </ElementNavigationPane>
           <EditorView>
