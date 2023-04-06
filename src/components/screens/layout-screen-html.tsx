@@ -15,8 +15,8 @@ import {
   FormControl,
   SelectChangeEvent,
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
 import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
