@@ -57,7 +57,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
    * @param item item
    * @param isRoot is root element
    */
-  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
+  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubDirectory?: boolean) => {
     if (!item) return;
     const hasChildren = !!item.children.length;
 
