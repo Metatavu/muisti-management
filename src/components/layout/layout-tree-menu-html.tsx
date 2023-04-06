@@ -9,20 +9,25 @@ import { ComponentType, TreeObject } from '../../types';
  */
 interface Props {
   htmlString: string;
+  // TODO: fix type
+  setOpenDraw: React.Dispatch<React.SetStateAction<boolean>>;
+  openDraw: boolean;
 }
 
 /**
  * Layout Tree Menu HTML Component
  */
 const LayoutTreeMenuHtml: React.FC<Props> = ({
-  htmlString
+  htmlString,
+  setOpenDraw,
+  openDraw,
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
-  
+
   /**
    * Creates Tree Object from HTML Element
-   * 
+   *
    * @param element element
    * @returns TreeObject
    */
@@ -49,14 +54,14 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
 
   /**
    * Renders Tree Item
-   * 
+   *
    * @param item item
    * @param isRoot is root element
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean) => {
     if (!item) return;
     const hasChildren = !!item.children.length;
-    
+
     return (
       <StyledTreeItem
         key={ item.id }
@@ -65,6 +70,8 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
         hasChildren={ hasChildren }
+        setOpenDraw={ setOpenDraw }
+        openDraw={ openDraw }
       >
         { item.children.map((x, i) => renderTreeItem(x, undefined)) }
         { item.type === ComponentType.LAYOUT &&
@@ -76,7 +83,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
       </StyledTreeItem>
     );
   };
-  
+
   return (
     <TreeView>
       { Array.isArray(domArray) &&

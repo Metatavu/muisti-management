@@ -30,6 +30,9 @@ import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { html_beautify } from "js-beautify";
+import LayoutComponentDraw from "../layout/editor-components/html/generic-component-properties";
+import GenericComponentDrawProperties from "../layout/editor-components/html/generic-component-properties";
+import { Close } from "@mui/icons-material";
 
 /**
  * Component props
@@ -66,6 +69,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const [ foundLayout, setFoundLayout ] = useState(layout);
   const [ error, setError ] = useState<Error | undefined>(undefined);
   const [ loading, setLoading ] = useState(false);
+  const [ openDraw, setOpenDraw ] = useState(false)
 
   useEffect(() => {
     fetchLayout();
@@ -261,6 +265,15 @@ const LayoutScreenHTML: React.FC<Props> = ({
   };
 
   /**
+   * Options for html beautify
+   */
+  const htmlBeautifyOptions = {
+    indent_size: 2,
+    inline: [],
+    indent_empty_lines: true
+  };
+
+  /**
    * Renders code editor view
    */
   const renderCodeEditor = () => (
@@ -268,11 +281,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       <div className={ classes.editorContainer }>
         <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
           <CodeMirror
-            value={ html_beautify(foundLayout?.data.html, {
-              indent_size: 2,
-              inline: [],
-              indent_empty_lines: true
-            }) }
+            value={ html_beautify(foundLayout?.data.html, htmlBeautifyOptions) }
             height="500px"
             style={{ overflow: "auto" }}
             extensions={ [ html() ] }
@@ -281,6 +290,33 @@ const LayoutScreenHTML: React.FC<Props> = ({
       </div>
     </div>
   );
+
+  const elementPaneMenuOptions = [
+    {
+      name: strings.genericDialog.close,
+      action: () => setOpenDraw(!openDraw)
+    }
+  ];
+
+  /**
+   * Renders element settings pane
+   */
+  const renderElementSettingsPane = () => {
+    return (
+      <ElementSettingsPane
+        width={ 520 }
+        open={ openDraw }
+        title="Element settings"
+        // TODO: Icon disappears
+        actionIcon={ <Close /> }
+        menuOptions={ elementPaneMenuOptions }
+      >
+      {/* TODO: Change the tree render function to also pass styles data as part of the returned object */}
+      <GenericComponentDrawProperties />
+      {/* WOuld have conditional renders based on the element type */}
+    </ElementSettingsPane>
+    )
+  }
 
   if (loading) {
     return (
@@ -315,12 +351,15 @@ const LayoutScreenHTML: React.FC<Props> = ({
               { foundLayout &&
                 <LayoutTreeMenuHtml
                   htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+                  setOpenDraw={ setOpenDraw }
+                  openDraw={ openDraw }
                 />}
             </div>
           </ElementNavigationPane>
           <EditorView>
             { renderEditor() }
           </EditorView>
+          { renderElementSettingsPane() }
         </div>
     </BasicLayout>
   );
