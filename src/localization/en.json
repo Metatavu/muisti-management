@@ -274,8 +274,10 @@
       "title": "properties"
     },
     "htmlProperties": {
+      "elementSettings": "Element settings",
       "genericProperties": {
         "element": "Element",
+        "elementName": "Element name",
         "proportions": "Proportions",
         "width": "Width",
         "height": "Height",

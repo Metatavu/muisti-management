@@ -23,7 +23,7 @@ import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, Layo
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, ComponentType, LayoutEditorView } from "../../types";
+import { AccessToken, ActionButton, ComponentType, LayoutEditorView, TreeObject } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
@@ -71,7 +71,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const [ error, setError ] = useState<Error | undefined>(undefined);
   const [ loading, setLoading ] = useState(false);
   const [ openDraw, setOpenDraw ] = useState(false);
-  const [ panelComponentType, setPanelComponentType ] = useState<ComponentType | undefined>(undefined);
+  const [ panelComponentData, setPanelComponentData ] = useState<TreeObject | undefined>(undefined);
 
   useEffect(() => {
     fetchLayout();
@@ -214,6 +214,17 @@ const LayoutScreenHTML: React.FC<Props> = ({
   }
 
   /**
+   * Handles element selected from layout navigation tree
+   *
+   * @param openDraw
+   * @param panelComponentData
+   */
+  const onTreeComponentSelect = (openDraw: boolean, panelComponentData: TreeObject ) => {
+    setOpenDraw(openDraw);
+    setPanelComponentData(panelComponentData);
+  };
+
+  /**
    * Renders device model select
    */
   const renderDeviceModelSelect = () => {
@@ -308,15 +319,17 @@ const LayoutScreenHTML: React.FC<Props> = ({
       <ElementSettingsPane
         width={ 520 }
         open={ openDraw }
-        title="Element settings"
+        title={ strings.layout.htmlProperties.elementSettings }
         actionIcon={ <Close /> }
         menuOptions={ elementPaneMenuOptions }
       >
-      {/* TODO: Change the tree render function to also pass styles data as part of the returned object */}
-      <GenericComponentDrawProperties />
-      { panelComponentType === ComponentType.LAYOUT &&
-        <LayoutComponentProperties />}
-
+        <GenericComponentDrawProperties
+          panelComponentData={ panelComponentData }
+        />
+        { panelComponentData?.type === ComponentType.LAYOUT &&
+          <LayoutComponentProperties
+            panelComponentData={ panelComponentData }
+          />}
     </ElementSettingsPane>
     )
   }
@@ -354,16 +367,15 @@ const LayoutScreenHTML: React.FC<Props> = ({
               { foundLayout &&
                 <LayoutTreeMenuHtml
                   htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
-                  setOpenDraw={ setOpenDraw }
                   openDraw={ openDraw }
-                  setPanelComponentType={ setPanelComponentType }
+                  onTreeComponentSelect={ onTreeComponentSelect }
                 />}
             </div>
           </ElementNavigationPane>
           <EditorView>
             { renderEditor() }
           </EditorView>
-          { renderElementSettingsPane() }
+          { panelComponentData && renderElementSettingsPane() }
         </div>
     </BasicLayout>
   );

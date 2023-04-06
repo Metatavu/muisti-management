@@ -279,8 +279,10 @@ export interface IStrings extends LocalizedStringsMethods {
       title: string;
     };
     htmlProperties: {
+      elementSettings: string;
       genericProperties: {
         element: string;
+        elementName: string;
         proportions: string;
         width: string;
         height: string;

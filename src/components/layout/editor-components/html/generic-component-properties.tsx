@@ -1,18 +1,23 @@
-import * as React from 'react';
+import { useState, FC } from 'react';
 import { Box, Checkbox, TextField, Typography } from '@mui/material';
 import { SketchPicker, SketchPickerProps } from 'react-color';
 import strings from '../../../../localization/strings';
+import { TreeObject } from '../../../../types';
 
 /**
  * Component props
  */
 interface Props {
+  panelComponentData?: TreeObject;
 }
 
 /**
  * Component for Generic Properties
  */
-const GenericComponentProperties: React.FC<Props> = () => {
+const GenericComponentProperties: FC<Props> = ({
+  panelComponentData
+}) => {
+  const [ htmlData, setHtmlData ] = useState(panelComponentData);
 
   return (
     <div>
@@ -20,12 +25,13 @@ const GenericComponentProperties: React.FC<Props> = () => {
           <Typography>
             { strings.layout.htmlProperties.genericProperties.element }
           </Typography>
-          <TextField />
+          <TextField
+            value={ htmlData?.type }
+          />
         </Box>
         <Box>
           <Typography>
-            {/* Will come from the state/ styles */}
-            Elementti nimi
+            { strings.layout.htmlProperties.genericProperties.elementName }
           </Typography>
           <TextField />
         </Box>

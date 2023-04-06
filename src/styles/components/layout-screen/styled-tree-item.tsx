@@ -2,7 +2,7 @@ import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, SvgIcon, Typography } from "@mui/material";
 import strings from "../../../localization/strings";
-import { ComponentType } from "../../../types";
+import { TreeObject } from "../../../types";
 import theme from "../../theme";
 
 type StyledTreeItemProps = TreeItemProps & {
@@ -10,9 +10,9 @@ type StyledTreeItemProps = TreeItemProps & {
   isLayoutComponent: boolean;
   isRoot?: boolean;
   hasChildren?: boolean;
-  setOpenDraw: React.Dispatch<React.SetStateAction<boolean>>;
   openDraw: boolean;
-  setPanelComponentType: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
+  itemData: TreeObject;
+  onTreeComponentSelect: (openDraw: boolean, panelComponentData: TreeObject) => void;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -46,9 +46,9 @@ export const StyledTreeItem = ({
   isLayoutComponent,
   isRoot,
   hasChildren,
-  setOpenDraw,
   openDraw,
-  setPanelComponentType,
+  onTreeComponentSelect,
+  itemData,
   ...other
 }: StyledTreeItemProps) => {
 
@@ -68,10 +68,8 @@ export const StyledTreeItem = ({
             }
             <Stack
               direction="column"
-              onClick={ () => {
-                setOpenDraw(!openDraw)
-                setPanelComponentType(labelText as ComponentType)
-              } }
+              // TODO: THIS COULD use redux
+              onClick={ () => onTreeComponentSelect(!openDraw, itemData) }
             >
               <Typography
                 variant="body2"

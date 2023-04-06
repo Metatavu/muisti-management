@@ -9,10 +9,8 @@ import { ComponentType, HtmlStyles, TreeObject } from '../../types';
  */
 interface Props {
   htmlString: string;
-  // TODO: fix type
-  setOpenDraw: React.Dispatch<React.SetStateAction<boolean>>;
   openDraw: boolean;
-  setPanelComponentType: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
+  onTreeComponentSelect: (openDraw: boolean, panelComponentData: TreeObject) => void;
 }
 
 /**
@@ -20,9 +18,8 @@ interface Props {
  */
 const LayoutTreeMenuHtml: React.FC<Props> = ({
   htmlString,
-  setOpenDraw,
   openDraw,
-  setPanelComponentType
+  onTreeComponentSelect
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
@@ -100,9 +97,9 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
         hasChildren={ hasChildren }
-        setOpenDraw={ setOpenDraw }
         openDraw={ openDraw }
-        setPanelComponentType={ setPanelComponentType }
+        onTreeComponentSelect={ onTreeComponentSelect }
+        itemData={ item }
       >
         { item.children.map((x, i) => renderTreeItem(x, undefined)) }
         { item.type === ComponentType.LAYOUT &&

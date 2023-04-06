@@ -276,9 +276,11 @@
       "title": "Ominaisuudet"
     },
     "htmlProperties": {
+      "elementSettings": "Elementin asetukset",
       "genericProperties": {
         "element": "Elementti",
-        "proportions": "Elementti nimi",
+        "elementName": "Elementti nimi",
+        "proportions": "Mittasuhteet",
         "width": "Leveys",
         "height": "Korkeus",
         "elevation": "Elevation??",
