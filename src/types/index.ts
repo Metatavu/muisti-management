@@ -248,6 +248,7 @@ export type TreeObject = {
   id: string;
   resourceId?: string;
   children: TreeObject[];
+  style?: HtmlStyles;
 };
 
 /**
@@ -261,3 +262,5 @@ export enum ComponentType {
   TABS = "tabs",
   TAB = "tab"
 };
+
+export type HtmlStyles = Record<string, string>;

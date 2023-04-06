@@ -2,7 +2,7 @@ import { AddBoxOutlined } from '@mui/icons-material';
 import { TreeView } from '@mui/lab';
 import { Stack, Typography } from '@mui/material';
 import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
-import { ComponentType, TreeObject } from '../../types';
+import { ComponentType, HtmlStyles, TreeObject } from '../../types';
 
 /**
  * Components properties
@@ -27,6 +27,29 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
 
+
+  /**
+   * Parse styles string to object
+   *
+   * @param stylesString
+   * @returns styles object
+   */
+  const parseStyles = (stylesString?: string) => {
+    if (!stylesString) return;
+
+    const componentStyles: HtmlStyles = {};
+    const attributes = stylesString?.split(";").slice(0, -1);
+
+    if (attributes) {
+      attributes.forEach(attribute => {
+        const entry = attribute.split(":");
+        componentStyles[entry.splice(0,1)[0].trim()] = entry.join(":").trim();
+      })
+    }
+
+    return componentStyles;
+  };
+
   /**
    * Creates Tree Object from HTML Element
    *
@@ -35,6 +58,10 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
    */
   const createTreeObject = (element: Element): TreeObject | undefined => {
     const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
+
+    const componentStylesString = element.attributes.getNamedItem("style")?.nodeValue || undefined;
+    const stylesObject = parseStyles(componentStylesString);
+
     const id = element.id ?? "";
 
     if (!componentType) return;
@@ -50,7 +77,8 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
     return {
       type: componentType as ComponentType,
       id: id,
-      children: children
+      children: children,
+      style: stylesObject
     }
   };
 
