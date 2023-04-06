@@ -1,8 +1,10 @@
-import { AddBoxOutlined } from '@mui/icons-material';
-import { TreeView } from '@mui/lab';
-import { Stack, Typography } from '@mui/material';
-import StyledTreeItem from '../../styles/components/layout-screen/styled-tree-item';
-import { ComponentType, TreeObject } from '../../types';
+import { FC } from "react";
+import { AddBoxOutlined } from "@mui/icons-material";
+import { TreeView } from "@mui/lab";
+import { Stack, Typography } from "@mui/material";
+import strings from "../../localization/strings";
+import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
+import { ComponentType, TreeObject } from "../../types";
 
 /**
  * Components properties
@@ -14,7 +16,7 @@ interface Props {
 /**
  * Layout Tree Menu HTML Component
  */
-const LayoutTreeMenuHtml: React.FC<Props> = ({
+const LayoutTreeMenuHtml: FC<Props> = ({
   htmlString
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
@@ -55,7 +57,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
    * @param item item
    * @param isRoot is root element
    */
-  const renderTreeItem = (item?: TreeObject, isRoot?: boolean) => {
+  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubDirectory?: boolean) => {
     if (!item) return;
     const hasChildren = !!item.children.length;
 
@@ -66,14 +68,21 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
         labelText={ item.type }
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
+        isRootSubdirectory={ isRootSubDirectory }
         hasChildren={ hasChildren }
       >
-        { item.children.map((x, i) => renderTreeItem(x, undefined)) }
+        { item.children.map((child, i) => {
+          const isRootSubDirectory = i === 0;
+          return renderTreeItem(child, false , isRootSubDirectory)
+          })
+        }
         { item.type === ComponentType.LAYOUT &&
-            <Stack direction="row" alignItems="center">
-              <AddBoxOutlined/>
-              <Typography variant="caption" textTransform="uppercase">Lisää elementti</Typography>
-            </Stack>
+          <Stack direction="row" alignItems="center">
+            <AddBoxOutlined/>
+            <Typography variant="caption" textTransform="uppercase">
+              { strings.layoutEditor.addLayoutViewDialog.title }
+            </Typography>
+          </Stack>
         }
       </StyledTreeItem>
     );
@@ -82,8 +91,8 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
   return (
     <TreeView>
       { Array.isArray(domArray) &&
-        domArray.map((x, i) => {
-          const item = createTreeObject(x);
+        domArray.map(domElement => {
+          const item = createTreeObject(domElement);
           return renderTreeItem(item, true);
         })
       }
