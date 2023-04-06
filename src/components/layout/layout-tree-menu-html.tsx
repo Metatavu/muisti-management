@@ -73,7 +73,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
       >
         { item.children.map((child, i) => {
           const isRootSubdirectory = i === 0;
-          return renderTreeItem(child, false , isRootSubdirectory)
+          return renderTreeItem(child, false , isRootSubDirectory)
           })
         }
         { item.type === ComponentType.LAYOUT &&
