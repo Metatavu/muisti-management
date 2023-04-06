@@ -68,7 +68,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
         labelText={ item.type }
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
-        isRootSubdirectory={ isRootSubdirectory }
+        isRootSubdirectory={ isRootSubDirectory }
         hasChildren={ hasChildren }
       >
         { item.children.map((child, i) => {
