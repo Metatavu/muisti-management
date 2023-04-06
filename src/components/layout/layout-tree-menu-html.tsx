@@ -72,7 +72,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
         hasChildren={ hasChildren }
       >
         { item.children.map((child, i) => {
-          const isRootSubdirectory = i === 0;
+          const isRootSubDirectory = i === 0;
           return renderTreeItem(child, false , isRootSubDirectory)
           })
         }
