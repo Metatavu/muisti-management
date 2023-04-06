@@ -12,6 +12,7 @@ interface Props {
   // TODO: fix type
   setOpenDraw: React.Dispatch<React.SetStateAction<boolean>>;
   openDraw: boolean;
+  setPanelComponentType: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 }
 
 /**
@@ -21,6 +22,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
   htmlString,
   setOpenDraw,
   openDraw,
+  setPanelComponentType
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
@@ -72,6 +74,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
         hasChildren={ hasChildren }
         setOpenDraw={ setOpenDraw }
         openDraw={ openDraw }
+        setPanelComponentType={ setPanelComponentType }
       >
         { item.children.map((x, i) => renderTreeItem(x, undefined)) }
         { item.type === ComponentType.LAYOUT &&

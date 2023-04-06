@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Box, TextField, Typography } from '@mui/material';
-import { SketchPickerProps } from 'react-color';
-import { CheckBox } from '@mui/icons-material';
-
+import { Box, Checkbox, TextField, Typography } from '@mui/material';
+import { SketchPicker, SketchPickerProps } from 'react-color';
+import strings from '../../../../localization/strings';
 
 /**
  * Component props
@@ -19,28 +18,29 @@ const GenericComponentProperties: React.FC<Props> = () => {
     <div>
         <Box>
           <Typography>
-            Elementti
+            { strings.layout.htmlProperties.genericProperties.element }
           </Typography>
           <TextField />
         </Box>
         <Box>
           <Typography>
+            {/* Will come from the state/ styles */}
             Elementti nimi
           </Typography>
           <TextField />
         </Box>
         <Box>
           <Typography>
-            Mittasuhteet
+          { strings.layout.htmlProperties.genericProperties.proportions }
           </Typography>
           <Typography>
-            Width
+          { strings.layout.htmlProperties.genericProperties.width }
           </Typography>
           <TextField
             type="number"
           />
           <Typography>
-            Height
+          { strings.layout.htmlProperties.genericProperties.height }
           </Typography>
           <TextField
             type="number"
@@ -48,7 +48,7 @@ const GenericComponentProperties: React.FC<Props> = () => {
         </Box>
         <Box>
           <Typography>
-            Elevation
+          { strings.layout.htmlProperties.genericProperties.elevation }
           </Typography>
           <TextField
             type="number"
@@ -57,13 +57,13 @@ const GenericComponentProperties: React.FC<Props> = () => {
         <Box>
           {/* TODO: color picker, or image, so a switch to change between */}
           <Typography>
-            Color
+          { strings.layout.htmlProperties.genericProperties.color }
           </Typography>
           <SketchPicker />
         </Box>
         <Box>
           <Typography>
-            Margin
+          { strings.layout.htmlProperties.genericProperties.margin }
           </Typography>
           <Box
             style={{
@@ -92,7 +92,7 @@ const GenericComponentProperties: React.FC<Props> = () => {
         </Box>
         <Box>
           <Typography>
-            Padding
+          { strings.layout.htmlProperties.genericProperties.padding }
           </Typography>
           <Box
             style={{
@@ -120,9 +120,9 @@ const GenericComponentProperties: React.FC<Props> = () => {
           </Box>
           <Box>
             <Typography>
-              Justify self
+            { strings.layout.htmlProperties.genericProperties.justifySelf }
             </Typography>
-            <CheckBox />
+            <Checkbox />
           </Box>
         </Box>
     </div>

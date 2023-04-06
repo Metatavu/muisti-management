@@ -2,6 +2,7 @@ import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, SvgIcon, Typography } from "@mui/material";
 import strings from "../../../localization/strings";
+import { ComponentType } from "../../../types";
 import theme from "../../theme";
 
 type StyledTreeItemProps = TreeItemProps & {
@@ -11,6 +12,7 @@ type StyledTreeItemProps = TreeItemProps & {
   hasChildren?: boolean;
   setOpenDraw: React.Dispatch<React.SetStateAction<boolean>>;
   openDraw: boolean;
+  setPanelComponentType: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -46,6 +48,7 @@ export const StyledTreeItem = ({
   hasChildren,
   setOpenDraw,
   openDraw,
+  setPanelComponentType,
   ...other
 }: StyledTreeItemProps) => {
 
@@ -65,7 +68,10 @@ export const StyledTreeItem = ({
             }
             <Stack
               direction="column"
-              onClick={ () => setOpenDraw(!openDraw) }
+              onClick={ () => {
+                setOpenDraw(!openDraw)
+                setPanelComponentType(labelText as ComponentType)
+              } }
             >
               <Typography
                 variant="body2"

@@ -273,6 +273,22 @@
     "properties": {
       "title": "properties"
     },
+    "htmlProperties": {
+      "genericProperties": {
+        "element": "Element",
+        "proportions": "Proportions",
+        "width": "Width",
+        "height": "Height",
+        "elevation": "Elevation",
+        "color": "Color",
+        "margin": "Margin",
+        "padding": "Padding",
+        "justifySelf": "Justify self"
+      },
+      "layoutProperties": {
+        "justifyChildren": "Justify Children"
+      }
+    },
     "delete": {
       "deleteTitle": "Delete page layout",
       "deleteText": "Are you sure you want to delete selected page layout?",

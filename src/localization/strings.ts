@@ -278,6 +278,22 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: {
       title: string;
     };
+    htmlProperties: {
+      genericProperties: {
+        element: string;
+        proportions: string;
+        width: string;
+        height: string;
+        elevation: string;
+        color: string;
+        margin: string;
+        padding: string;
+        justifySelf: string;
+      }
+      layoutProperties: {
+        justifyChildren: string;
+      }
+    }
     delete: {
       deleteTitle: string;
       deleteText: string;

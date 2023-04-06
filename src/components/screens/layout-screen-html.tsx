@@ -23,16 +23,17 @@ import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, Layo
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, LayoutEditorView } from "../../types";
+import { AccessToken, ActionButton, ComponentType, LayoutEditorView } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { html_beautify } from "js-beautify";
-import LayoutComponentDraw from "../layout/editor-components/html/generic-component-properties";
 import GenericComponentDrawProperties from "../layout/editor-components/html/generic-component-properties";
 import { Close } from "@mui/icons-material";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import LayoutComponentProperties from "../layout/editor-components/html/layout-component-properties";
 
 /**
  * Component props
@@ -69,7 +70,8 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const [ foundLayout, setFoundLayout ] = useState(layout);
   const [ error, setError ] = useState<Error | undefined>(undefined);
   const [ loading, setLoading ] = useState(false);
-  const [ openDraw, setOpenDraw ] = useState(false)
+  const [ openDraw, setOpenDraw ] = useState(false);
+  const [ panelComponentType, setPanelComponentType ] = useState<ComponentType | undefined>(undefined);
 
   useEffect(() => {
     fetchLayout();
@@ -307,13 +309,14 @@ const LayoutScreenHTML: React.FC<Props> = ({
         width={ 520 }
         open={ openDraw }
         title="Element settings"
-        // TODO: Icon disappears
         actionIcon={ <Close /> }
         menuOptions={ elementPaneMenuOptions }
       >
       {/* TODO: Change the tree render function to also pass styles data as part of the returned object */}
       <GenericComponentDrawProperties />
-      {/* WOuld have conditional renders based on the element type */}
+      { panelComponentType === ComponentType.LAYOUT &&
+        <LayoutComponentProperties />}
+
     </ElementSettingsPane>
     )
   }
@@ -353,6 +356,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
                   htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
                   setOpenDraw={ setOpenDraw }
                   openDraw={ openDraw }
+                  setPanelComponentType={ setPanelComponentType }
                 />}
             </div>
           </ElementNavigationPane>

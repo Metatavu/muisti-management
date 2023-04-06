@@ -275,7 +275,22 @@
     "properties": {
       "title": "Ominaisuudet"
     },
-
+    "htmlProperties": {
+      "genericProperties": {
+        "element": "Elementti",
+        "proportions": "Elementti nimi",
+        "width": "Leveys",
+        "height": "Korkeus",
+        "elevation": "Elevation??",
+        "color": "Taustaväri",
+        "margin": "Marginaalit",
+        "padding": "Täyttö",
+        "justifySelf": "Justify self??"
+      },
+      "layoutProperties": {
+        "justifyChildren": "Justify Children??"
+      }
+    },
     "delete": {
       "deleteTitle": "Poista asettelu",
       "deleteText": "Haluatko varmasti poistaa asettelun?",
