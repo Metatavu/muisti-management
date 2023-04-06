@@ -92,11 +92,11 @@ const LayoutScreenHTML: React.FC<Props> = ({
   };
 
   /**
-   * Event handler for name input change
+   * Event handler for layout name input change
    *
    * @param event event
    */
-  const onNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+  const onLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     if (!foundLayout) {
       return;
     }
@@ -308,7 +308,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
                 style={{ width: 200 }}
                 label={ strings.layout.toolbar.name }
                 value={ foundLayout?.name ?? "" }
-                onChange={ onNameChange }
+                onChange={ onLayoutNameChange }
               />
               { renderDeviceModelSelect() }
               { renderScreenOrientationSelect() }
