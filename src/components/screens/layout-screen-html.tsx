@@ -22,7 +22,7 @@ import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, Layo
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, LayoutEditorView } from '../../types';
+import { AccessToken, ActionButton, LayoutEditorView } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
