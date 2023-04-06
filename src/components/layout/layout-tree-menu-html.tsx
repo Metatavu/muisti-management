@@ -1,8 +1,8 @@
-import { AddBoxOutlined } from '@mui/icons-material';
-import { TreeView } from '@mui/lab';
-import { Stack, Typography } from '@mui/material';
-import StyledTreeItem from '../../styles/components/layout-screen/styled-tree-item';
-import { ComponentType, TreeObject } from '../../types';
+import { AddBoxOutlined } from "@mui/icons-material";
+import { TreeView } from "@mui/lab";
+import { Stack, Typography } from "@mui/material";
+import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
+import { ComponentType, TreeObject } from "../../types";
 
 /**
  * Components properties
