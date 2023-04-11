@@ -309,7 +309,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       <div className={ classes.editorContainer }>
         <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
           <CodeMirror
-            value={ html_beautify(foundLayout?.data.html, htmlBeautifyOptions) }
+            value={ html_beautify(foundLayout.data.html, htmlBeautifyOptions) }
             height="500px"
             style={{ overflow: "auto" }}
             extensions={ [ html() ] }
