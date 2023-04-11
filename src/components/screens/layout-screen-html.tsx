@@ -95,15 +95,27 @@ const LayoutScreenHTML: React.FC<Props> = ({
     setLoading(false);
   };
 
+  if (!foundLayout) {
+    const layoutError = new Error(strings.errorDialog.layoutFetchNotFound);
+
+    return (
+      <BasicLayout
+        history={ history }
+        title={ "" }
+        breadcrumbs={ [] }
+        keycloak={ keycloak }
+        error={ layoutError }
+        clearError={ () => history.goBack() }
+      />
+    )
+  }
+
   /**
-   * Event handler for name input change
+   * Event handler for layout name input change
    *
    * @param event event
    */
-  const onNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    if (!foundLayout) {
-      return;
-    }
+  const onLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     setFoundLayout({
       ...foundLayout,
       name: value
@@ -117,10 +129,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * @param event event
    */
   const onScreenOrientationChange = ({ target: { value } }: SelectChangeEvent<ScreenOrientation>) => {
-    if (!foundLayout) {
-      return;
-    }
-
     setFoundLayout({
       ...foundLayout,
       screenOrientation: value as ScreenOrientation
@@ -134,10 +142,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * @param event event
    */
   const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
-    if (!foundLayout) {
-      return;
-    }
-
     setFoundLayout({
       ...foundLayout,
       modelId: event.target.value
@@ -150,10 +154,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
    *
    */
   const onStylesChange = (htmlData: string) => {
-    if (!foundLayout) {
-      return;
-    }
-
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -191,10 +191,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
    */
   const onLayoutSave = async () => {
     try {
-      if (!foundLayout) {
-        return;
-      }
-
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
 
       const updatedLayout = await pageLayoutsApi.updatePageLayout({
@@ -214,9 +210,9 @@ const LayoutScreenHTML: React.FC<Props> = ({
   /**
    * Handler for Code Editor onChange events
    */
-  const onCodeChange = React.useCallback((value: string) => {
-    setFoundLayout({ ...foundLayout!, data: { html: value } });
-  }, [foundLayout]);
+  const onCodeChange = (value: string) => {
+    setFoundLayout({ ...foundLayout, data: { html: value } });
+  };
 
   /**
    * Renders editor view
@@ -262,7 +258,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
             title={ strings.helpTexts.layoutEditor.selectDevice }
             label={ strings.layout.settings.deviceModelId }
             labelId="deviceModelId"
-            value={ foundLayout?.modelId ?? "" }
+            value={ foundLayout.modelId }
             onChange={ onDeviceModelChange }
             >
           { deviceModelSelectItems }
@@ -285,7 +281,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
             title={ strings.helpTexts.layoutEditor.selectOrientation }
             label={ strings.layout.settings.screenOrientation }
             labelId="screenOrientation"
-            value={ foundLayout?.screenOrientation ?? "" }
+            value={ foundLayout.screenOrientation }
             onChange={ onScreenOrientationChange }
             >
             <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
@@ -367,7 +363,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   return (
     <BasicLayout
       history={ history }
-      title={ foundLayout?.name! }
+      title={ foundLayout.name }
       breadcrumbs={ [] }
       actionBarButtons={ getActionButtons() }
       keycloak={ keycloak }
@@ -381,17 +377,16 @@ const LayoutScreenHTML: React.FC<Props> = ({
               <TextField
                 style={{ width: 200 }}
                 label={ strings.layout.toolbar.name }
-                value={ foundLayout?.name ?? "" }
-                onChange={ onNameChange }
+                value={ foundLayout.name }
+                onChange={ onLayoutNameChange }
               />
               { renderDeviceModelSelect() }
               { renderScreenOrientationSelect() }
-              { foundLayout &&
-                <LayoutTreeMenuHtml
-                  htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
-                  openDraw={ openDraw }
-                  onTreeComponentSelect={ onTreeComponentSelect }
-                />}
+              <LayoutTreeMenuHtml
+                htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+                openDraw={ openDraw }
+                onTreeComponentSelect={ onTreeComponentSelect }
+              />
             </div>
           </ElementNavigationPane>
           <EditorView>
