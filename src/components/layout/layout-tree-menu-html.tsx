@@ -45,10 +45,12 @@ const LayoutTreeMenuHtml: FC<Props> = ({
 
     if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
 
-    const children: any[] = [];
+    const children: TreeObject[] = [];
 
     for (const child of element.children) {
-      children.push(createTreeObject(child));
+      const treeObject = createTreeObject(child);
+
+      if (treeObject) children.push(treeObject);
     }
 
     return {
@@ -64,6 +66,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
    *
    * @param item item
    * @param isRoot is root element
+   * @param isRootSubDirectory is root element of sub-directory in tree
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
