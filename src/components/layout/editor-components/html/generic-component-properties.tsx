@@ -1,23 +1,50 @@
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { Box, Checkbox, TextField, Typography } from '@mui/material';
 import { SketchPicker, SketchPickerProps } from 'react-color';
 import strings from '../../../../localization/strings';
 import { TreeObject } from '../../../../types';
+import { PageLayout } from '../../../../generated/client';
 
 /**
  * Component props
  */
 interface Props {
-  panelComponentData?: TreeObject;
+  panelComponentData: TreeObject;
+  onStylesChange: (htmlData: string) => void;
 }
 
 /**
  * Component for Generic Properties
  */
 const GenericComponentProperties: FC<Props> = ({
-  panelComponentData
+  panelComponentData,
+  onStylesChange
 }) => {
   const [ htmlData, setHtmlData ] = useState(panelComponentData);
+
+  const onPropertyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    console.log("name is, value is ", name, value);
+
+    setHtmlData({
+      ...htmlData,
+      style: {
+        ...htmlData?.style,
+      [name]: value
+      }
+    });
+
+    // TODO:
+    // Need to parse the Tree Object back into the element and html string.
+
+    // onStylesChange({
+    //   ...htmlData?.style,
+    //   [name]: value
+    // });
+  }
+
+
 
   return (
     <div>
@@ -44,6 +71,8 @@ const GenericComponentProperties: FC<Props> = ({
           </Typography>
           <TextField
             type="number"
+            name="width"
+            onChange={ onPropertyChange }
           />
           <Typography>
           { strings.layout.htmlProperties.genericProperties.height }

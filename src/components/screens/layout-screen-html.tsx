@@ -77,8 +77,6 @@ const LayoutScreenHTML: React.FC<Props> = ({
     fetchLayout();
   }, []);
 
-  useEffect(() => setDataChanged(true), [foundLayout]);
-
   /**
    * Fetches PageLayout
    */
@@ -110,6 +108,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       ...foundLayout,
       name: value
     });
+    setDataChanged(true);
   };
 
   /**
@@ -126,6 +125,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       ...foundLayout,
       screenOrientation: value as ScreenOrientation
     });
+    setDataChanged(true);
   };
 
   /**
@@ -142,6 +142,25 @@ const LayoutScreenHTML: React.FC<Props> = ({
       ...foundLayout,
       modelId: event.target.value
     });
+    setDataChanged(true);
+  };
+
+  /**
+   * Event handler for styles change
+   *
+   */
+  const onStylesChange = (htmlData: string) => {
+    if (!foundLayout) {
+      return;
+    }
+
+    setFoundLayout({
+      ...foundLayout,
+      data: {
+        html: htmlData
+      }
+    });
+    setDataChanged(true);
   };
 
   /**
@@ -315,6 +334,8 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * Renders element settings pane
    */
   const renderElementSettingsPane = () => {
+    if (!panelComponentData) return null;
+
     return (
       <ElementSettingsPane
         width={ 520 }
@@ -325,6 +346,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
       >
         <GenericComponentDrawProperties
           panelComponentData={ panelComponentData }
+          onStylesChange={ onStylesChange }
         />
         { panelComponentData?.type === ComponentType.LAYOUT &&
           <LayoutComponentProperties
