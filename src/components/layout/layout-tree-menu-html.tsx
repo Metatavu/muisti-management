@@ -24,29 +24,6 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
   const domArray = Array.from(dom.children);
 
-
-  /**
-   * Parse styles string to object
-   *
-   * @param stylesString
-   * @returns styles object
-   */
-  const parseStyles = (stylesString?: string) => {
-    if (!stylesString) return;
-
-    const componentStyles: HtmlStyles = {};
-    const attributes = stylesString?.split(";").slice(0, -1);
-
-    if (attributes) {
-      attributes.forEach(attribute => {
-        const entry = attribute.split(":");
-        componentStyles[entry.splice(0,1)[0].trim()] = entry.join(":").trim();
-      })
-    }
-
-    return componentStyles;
-  };
-
   /**
    * Creates Tree Object from HTML Element
    *
@@ -57,7 +34,8 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
     const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
 
     const componentStylesString = element.attributes.getNamedItem("style")?.nodeValue || undefined;
-    const stylesObject = parseStyles(componentStylesString);
+
+    const styleElement = (element as HTMLElement).style;
 
     const id = element.id ?? "";
 
@@ -75,7 +53,7 @@ const LayoutTreeMenuHtml: React.FC<Props> = ({
       type: componentType as ComponentType,
       id: id,
       children: children,
-      style: stylesObject
+      style: styleElement
     }
   };
 

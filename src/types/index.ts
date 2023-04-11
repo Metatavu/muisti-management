@@ -248,7 +248,7 @@ export type TreeObject = {
   id: string;
   resourceId?: string;
   children: TreeObject[];
-  style?: HtmlStyles;
+  style?: CSSStyleDeclaration;
 };
 
 /**
