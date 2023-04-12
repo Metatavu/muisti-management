@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
@@ -55,7 +55,7 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Component for html layout screen
  */
-const LayoutScreenHTML: React.FC<Props> = ({
+const LayoutScreenHTML: FC<Props> = ({
   history,
   keycloak,
   deviceModels,
@@ -116,7 +116,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
    *
    * @param event event
    */
-  const onLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+  const onLayoutNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setFoundLayout({
       ...foundLayout,
       name: value
@@ -142,10 +142,10 @@ const LayoutScreenHTML: React.FC<Props> = ({
    *
    * @param event event
    */
-  const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
+  const onDeviceModelChange = ({ target: { value } } : SelectChangeEvent<string>) => {
     setFoundLayout({
       ...foundLayout,
-      modelId: event.target.value
+      modelId: value
     });
     setDataChanged(true);
   };
