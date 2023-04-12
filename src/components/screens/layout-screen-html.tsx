@@ -72,6 +72,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const [ loading, setLoading ] = useState(false);
   const [ openDraw, setOpenDraw ] = useState(false);
   const [ panelComponentData, setPanelComponentData ] = useState<TreeObject | undefined>(undefined);
+  const [ domArray, setDomArray ] = useState<Element[] | undefined>(undefined);
 
   useEffect(() => {
     fetchLayout();
@@ -234,9 +235,14 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * @param openDraw
    * @param panelComponentData
    */
-  const onTreeComponentSelect = (openDraw: boolean, panelComponentData: TreeObject ) => {
+  const onTreeComponentSelect = (
+    openDraw: boolean,
+    panelComponentData: TreeObject,
+    domArray: Element[]
+    ) => {
     setOpenDraw(openDraw);
     setPanelComponentData(panelComponentData);
+    setDomArray(domArray)
   };
 
   /**
@@ -330,7 +336,7 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * Renders element settings pane
    */
   const renderElementSettingsPane = () => {
-    if (!panelComponentData) return null;
+    if (!panelComponentData || !domArray) return null;
 
     return (
       <ElementSettingsPane
@@ -342,7 +348,10 @@ const LayoutScreenHTML: React.FC<Props> = ({
       >
         <GenericComponentDrawProperties
           panelComponentData={ panelComponentData }
+          setPanelComponentData={ setPanelComponentData }
+          // TODO: Props below to be lifted up into this component via convertDomArrayToString function
           onStylesChange={ onStylesChange }
+          domArray={ domArray }
         />
         { panelComponentData?.type === ComponentType.LAYOUT &&
           <LayoutComponentProperties

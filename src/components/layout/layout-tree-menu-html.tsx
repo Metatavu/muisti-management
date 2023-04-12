@@ -12,7 +12,11 @@ import strings from '../../localization/strings';
 interface Props {
   htmlString: string;
   openDraw: boolean;
-  onTreeComponentSelect: (openDraw: boolean, panelComponentData: TreeObject) => void;
+  onTreeComponentSelect: (
+    openDraw: boolean,
+    panelComponentData: TreeObject,
+    domArray: Element[]
+  ) => void;
 }
 
 /**
@@ -35,10 +39,6 @@ const LayoutTreeMenuHtml: FC<Props> = ({
   const createTreeObject = (element: Element): TreeObject | undefined => {
     const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
 
-    const componentStylesString = element.attributes.getNamedItem("style")?.nodeValue || undefined;
-
-    const styleElement = (element as HTMLElement).style;
-
     const id = element.id ?? "";
 
     if (!componentType) return;
@@ -57,7 +57,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
       type: componentType as ComponentType,
       id: id,
       children: children,
-      style: styleElement
+      element: element as HTMLElement
     }
   };
 
@@ -83,6 +83,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
         hasChildren={ hasChildren }
         openDraw={ openDraw }
         onTreeComponentSelect={ onTreeComponentSelect }
+        domArray={ domArray }
         itemData={ item }
       >
         { item.children.map((child, i) => {

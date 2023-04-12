@@ -3,14 +3,15 @@ import { Box, Checkbox, TextField, Typography } from '@mui/material';
 import { SketchPicker, SketchPickerProps } from 'react-color';
 import strings from '../../../../localization/strings';
 import { TreeObject } from '../../../../types';
-import { PageLayout } from '../../../../generated/client';
 
 /**
  * Component props
  */
 interface Props {
   panelComponentData: TreeObject;
+  setPanelComponentData: React.Dispatch<React.SetStateAction<TreeObject | undefined>>;
   onStylesChange: (htmlData: string) => void;
+  domArray: Element[];
 }
 
 /**
@@ -18,34 +19,63 @@ interface Props {
  */
 const GenericComponentProperties: FC<Props> = ({
   panelComponentData,
-  onStylesChange
+  setPanelComponentData,
+  onStylesChange,
+  domArray
 }) => {
-  const [ htmlData, setHtmlData ] = useState(panelComponentData);
+  const [ htmlElementProperties, setHtmlElementProperties ] = useState<TreeObject | undefined>();
 
-  const onPropertyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    console.log("name is, value is ", name, value);
+  /**
+   * Resets settings when selected element changes.
+   */
+  useEffect(() => {
+    setHtmlElementProperties(panelComponentData);
+  }, [panelComponentData]);
 
-    setHtmlData({
-      ...htmlData,
-      style: {
-        ...htmlData?.style,
-      [name]: value
-      }
-    });
 
-    // TODO:
-    // Need to parse the Tree Object back into the element and html string.
+  if (!htmlElementProperties) return null;
+
+
+  //TODO: Lift function to layoutscreenhtml, should fire on save?
+  /**
+   * Updates Dom Array with property changes
+   */
+  const convertDomArrayToString = () => {
+      // Reinsert the updated panelComponentData into the dom array, via id, as child?.
+    // updateDomArray()
+
+    const s = new XMLSerializer();
+    const string = s.serializeToString(domArray[0]);
+    // This adds a xmlns attribute to the first element.
+    // console.log("dom array string?", string);
 
     // onStylesChange({
     //   ...htmlData?.style,
     //   [name]: value
     // });
+  };
+
+  const onPropertyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    setHtmlElementProperties({
+      ...htmlElementProperties,
+      element: {
+        ...htmlElementProperties.element,
+        style: {
+          ...htmlElementProperties.element.style,
+          [name]: value
+        }
+      }
+    });
+
+
   }
 
 
 
+  // TODO: Need to set all values from the component state
   return (
     <div>
         <Box>
@@ -53,7 +83,7 @@ const GenericComponentProperties: FC<Props> = ({
             { strings.layout.htmlProperties.genericProperties.element }
           </Typography>
           <TextField
-            value={ htmlData?.type }
+            value={ panelComponentData?.type }
           />
         </Box>
         <Box>
@@ -72,6 +102,7 @@ const GenericComponentProperties: FC<Props> = ({
           <TextField
             type="number"
             name="width"
+            value={ htmlElementProperties.element.style.width }
             onChange={ onPropertyChange }
           />
           <Typography>

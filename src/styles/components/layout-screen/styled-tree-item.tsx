@@ -14,7 +14,12 @@ type StyledTreeItemProps = TreeItemProps & {
   hasChildren?: boolean;
   openDraw: boolean;
   itemData: TreeObject;
-  onTreeComponentSelect: (openDraw: boolean, panelComponentData: TreeObject) => void;
+  onTreeComponentSelect: (
+    openDraw: boolean,
+    panelComponentData: TreeObject,
+    domArray: Element[]
+  ) => void;
+  domArray: Element[];
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -52,6 +57,7 @@ export const StyledTreeItem = ({
   openDraw,
   onTreeComponentSelect,
   itemData,
+  domArray,
   ...other
 }: StyledTreeItemProps) => {
 
@@ -74,7 +80,7 @@ export const StyledTreeItem = ({
             }
             <Stack
               direction="column"
-              onClick={ () => onTreeComponentSelect(!openDraw, itemData) }
+              onClick={ () => onTreeComponentSelect(!openDraw, itemData, domArray) }
             >
               <Typography
                 variant="body2"
@@ -90,7 +96,8 @@ export const StyledTreeItem = ({
                 { strings.comingSoon }
               </Typography>
             </Stack>
-            { hasChildren && <ParentTreeIcon /> }
+            { hasChildren &&
+            <ParentTreeIcon /> }
           </div>
 
         </Stack>
