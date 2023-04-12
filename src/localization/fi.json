@@ -109,6 +109,7 @@
     "editView": {
       "xml": "XML",
       "json": "JSON",
+      "html": "HTML",
       "saveButton": "Tallenna",
       "switchToCodeButton": "Näytä koodi",
       "switchToVisualButton": "Näytä editori",
