@@ -300,11 +300,10 @@
           "southeast": "Oikea alalaita"
         },
         "margin": "Marginaalit",
-        "padding": "Täyttö",
-        "justifySelf": "Justify self??"
+        "padding": "Täyttö"
       },
       "layoutProperties": {
-        "justifyChildren": "Justify Children??"
+        "contentEmphasis": "Sisällön painotus"
       }
     },
     "delete": {

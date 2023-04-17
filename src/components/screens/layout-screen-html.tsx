@@ -489,7 +489,8 @@ const LayoutScreenHTML: FC<Props> = ({
         />
         { selectedComponent?.type === ComponentType.LAYOUT &&
           <LayoutComponentProperties
-            panelComponentData={ selectedComponent }
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
           />}
     </ElementSettingsPane>
     )

@@ -1,19 +1,13 @@
-import React, { useState, FC } from 'react';
-import { Box, Button, Divider, MenuItem, Popover, Stack, TextField, Typography } from '@mui/material';
-import { ColorResult, SketchPicker } from 'react-color';
-import strings from '../../../../localization/strings';
-import { ComponentType, TreeObject } from '../../../../types';
-import theme from '../../../../styles/theme';
-import { FormatColorFillOutlined, PaletteOutlined } from '@mui/icons-material';
-import MarginPaddingEditorHtml from './margin-padding-editor-html';
-import ProportionsEditorHtml from './proportions-editor-html';
-import AlignmentEditorHtml from './alignment-editor-html';
-
-const PropertyBox = ({ children }: { children: React.ReactNode }) => (
-  <Box paddingX={ theme.spacing(2) }  paddingY={ theme.spacing(1) }>
-    { children }
-  </Box>
-);
+import React, { useState, FC } from "react";
+import { Button, Divider, MenuItem, Popover, Stack, TextField } from "@mui/material";
+import { ColorResult, SketchPicker } from "react-color";
+import strings from "../../../../localization/strings";
+import { ComponentType, TreeObject } from "../../../../types";
+import { FormatColorFillOutlined, PaletteOutlined } from "@mui/icons-material";
+import MarginPaddingEditorHtml from "./margin-padding-editor-html";
+import ProportionsEditorHtml from "./proportions-editor-html";
+import PropertyBox from "./generic/property-box";
+import renderPanelSubtitle from "./generic/render-panel-subtitle";
 
 /**
  * Component props
@@ -54,23 +48,6 @@ const GenericComponentProperties: FC<Props> = ({
     component.element.setAttribute("name", value);
     updateComponent(component);
   };
-
-  /**
-   * Renders panel subtitle
-   *
-   * @param subtitle subtitle
-   */
-  const renderPanelSubtitle = (subtitle: string) => (
-    <Typography
-      fontWeight={ 500 }
-      fontSize="14px"
-      marginBottom={ theme.spacing(1) }
-      color="#000000"
-      sx={{ opacity: 0.6 }}
-    >
-      { subtitle }
-    </Typography>
-  );
 
   return (
     <>
@@ -154,13 +131,6 @@ const GenericComponentProperties: FC<Props> = ({
           <MarginPaddingEditorHtml
             styles={ component.element.style }
             type="padding"
-            onChange={ onPropertyChange }
-          />
-        </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
-        <PropertyBox>
-          { renderPanelSubtitle("Sisällön painotus") }
-          <AlignmentEditorHtml
             onChange={ onPropertyChange }
           />
         </PropertyBox>

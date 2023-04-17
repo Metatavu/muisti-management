@@ -298,11 +298,10 @@
           "southeast": "Bottom right"
         },
         "margin": "Margin",
-        "padding": "Padding",
-        "justifySelf": "Justify self"
+        "padding": "Padding"
       },
       "layoutProperties": {
-        "justifyChildren": "Justify Children"
+        "contentEmphasis": "Content emphasis"
       }
     },
     "delete": {

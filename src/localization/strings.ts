@@ -304,10 +304,9 @@ export interface IStrings extends LocalizedStringsMethods {
         };
         margin: string;
         padding: string;
-        justifySelf: string;
       }
       layoutProperties: {
-        justifyChildren: string;
+        contentEmphasis: string;
       }
     }
     delete: {
