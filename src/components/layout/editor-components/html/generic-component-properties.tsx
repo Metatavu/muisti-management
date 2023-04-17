@@ -1,12 +1,13 @@
 import React, { useState, FC } from 'react';
-import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Popover, Select, Stack, TextField, Typography } from '@mui/material';
-import { ColorResult, SketchPicker, SketchPickerProps } from 'react-color';
+import { Box, Button, Divider, MenuItem, Popover, Stack, TextField, Typography } from '@mui/material';
+import { ColorResult, SketchPicker } from 'react-color';
 import strings from '../../../../localization/strings';
 import { ComponentType, TreeObject } from '../../../../types';
 import theme from '../../../../styles/theme';
-import { ExpandOutlined, FormatColorFillOutlined, HeightOutlined, LinkRounded, PaletteOutlined } from '@mui/icons-material';
+import { FormatColorFillOutlined, PaletteOutlined } from '@mui/icons-material';
 import MarginPaddingEditorHtml from './margin-padding-editor-html';
 import ProportionsEditorHtml from './proportions-editor-html';
+import AlignmentEditorHtml from './alignment-editor-html';
 
 const PropertyBox = ({ children }: { children: React.ReactNode }) => (
   <Box paddingX={ theme.spacing(2) }  paddingY={ theme.spacing(1) }>
@@ -147,6 +148,13 @@ const GenericComponentProperties: FC<Props> = ({
           { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.padding) }
           <MarginPaddingEditorHtml
             type="padding"
+            onChange={ onPropertyChange }
+          />
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          { renderPanelSubtitle("Sisällön painotus") }
+          <AlignmentEditorHtml
             onChange={ onPropertyChange }
           />
         </PropertyBox>

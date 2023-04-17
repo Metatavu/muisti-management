@@ -291,6 +291,17 @@ export interface IStrings extends LocalizedStringsMethods {
           label: string;
           button: string;
         };
+        alignment: {
+          northwest: string;
+          north: string;
+          northeast: string;
+          west: string;
+          center: string;
+          east: string;
+          southwest: string;
+          south: string;
+          southeast: string;
+        };
         margin: string;
         padding: string;
         justifySelf: string;

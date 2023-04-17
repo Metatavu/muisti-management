@@ -19,7 +19,7 @@ import {
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -82,18 +82,24 @@ const LayoutScreenHTML: FC<Props> = ({
     setDrawerOpen(!!selectedComponent);
   }, [selectedComponent]);
 
+  useEffect(() => {
+    if (!foundLayout) return;
+
+    setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
+  }, [foundLayout]);
+
+  /**
+   * Constructs an array of tree objects from given html
+   * 
+   * @param html html
+   * @returns Array of Tree Objects
+   */
   const constructTree = (html: string) => {
     const dom = new DOMParser().parseFromString(html, "text/html").body;
     const domArray = Array.from(dom.children);
 
     return domArray.map(x => createTreeObject(x) as TreeObject);
   };
-
-  useEffect(() => {
-    if (!foundLayout) return;
-
-    setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
-  }, [foundLayout]);
 
   /**
    * Creates Tree Object from HTML Element
@@ -312,14 +318,14 @@ const LayoutScreenHTML: FC<Props> = ({
       return cleanNodes;
     } else {
       for (let i = 0; i < treeData.length; i++) {
-      const child = treeData[i];
-      const updatedPath = `${currentPath}/${child.id}`;
-      child.children = updateFromTree(child.children ?? [], destinationPath, updatedPath, updatedComponent);
+        const child = treeData[i];
+        const updatedPath = `${currentPath}/${child.id}`;
+        child.children = updateFromTree(child.children ?? [], destinationPath, updatedPath, updatedComponent);
+      }
     }
-  }
 
-  return treeData;
-};
+    return treeData;
+  };
 
   const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
     const element = treeObject.element;

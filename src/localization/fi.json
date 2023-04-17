@@ -288,6 +288,17 @@
           "label": "Taustaväri",
           "button": "Valitse väri"
         },
+        "alignment": {
+          "northwest": "Vasen ylälaita",
+          "north": "Ylälaita",
+          "northeast": "Oikea ylälaita",
+          "west": "Vasen",
+          "center": "Keskellä",
+          "east": "Oikea",
+          "southwest": "Vasen alalaita",
+          "south": "Alalaita",
+          "southeast": "Oikea alalaita"
+        },
         "margin": "Marginaalit",
         "padding": "Täyttö",
         "justifySelf": "Justify self??"

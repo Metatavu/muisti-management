@@ -265,4 +265,17 @@ export enum ComponentType {
   TAB = "tab"
 };
 
-export type HtmlStyles = Record<string, string>;
+/**
+ * Layout alignment enum
+ */
+export enum LayoutAlignment {
+  NORTH_WEST = "nw",
+  NORTH = "n",
+  NORTH_EAST = "ne",
+  WEST = "w",
+  CENTER = "c",
+  EAST = "e",
+  SOUTH_WEST = "sw",
+  SOUTH = "s",
+  SOUTH_EAST = "se"
+}

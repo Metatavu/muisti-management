@@ -1,6 +1,5 @@
-import { HeightOutlined } from "@mui/icons-material";
+import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
 import { Stack, Typography, TextField, Select, MenuItem } from "@mui/material";
-import strings from "../../../../localization/strings";
 import { useState } from "react";
 
 /**
@@ -8,7 +7,7 @@ import { useState } from "react";
  */
 interface Props {
   value: string;
-  name: string;
+  name: "width" | "height";
   label: string;
   onChange: (name: string, value: string) => void;
 }
@@ -41,6 +40,36 @@ const ProportionsEditorHtml = ({
 
     onChange(name, val);
   };
+  
+  /**
+   * Renders icon
+   */
+  const renderIcon = () => {
+    if (name === "width") {
+      return (
+        <HeightOutlined
+          sx={{
+            transform: "rotate(90deg)",
+            color: "#2196F3",
+            border: "1px solid #2196F3",
+            borderRadius: "5px"
+          }}
+        />
+      );
+    }
+    
+    if (name === "height") {
+      return (
+        <ExpandOutlined
+          sx={{
+            color: "#2196F3",
+            border: "1px solid #2196F3",
+            borderRadius: "5px"
+          }}
+        />
+      );
+    }
+  };
 
   return (
     <Stack direction="row" spacing={ 1 }>
@@ -53,7 +82,7 @@ const ProportionsEditorHtml = ({
       </Typography>
       <TextField
         variant="standard"
-        name="width"
+        name={ name }
         value={ value }
         onChange={ onValueChange }
         inputProps={{
@@ -72,14 +101,7 @@ const ProportionsEditorHtml = ({
         <MenuItem value="px" sx={{ color: "#2196F3" }}>px</MenuItem>
         <MenuItem value="%" sx={{ color: "#2196F3" }}>%</MenuItem>
       </Select>
-      <HeightOutlined
-        sx={{
-          transform: "rotate(90deg)",
-          color: "#2196F3",
-          border: "1px solid #2196F3",
-          borderRadius: "5px"
-        }}
-      />
+      { renderIcon() }
     </Stack>
   );
 };
