@@ -108,6 +108,7 @@
     "editView": {
       "xml": "XML",
       "json": "JSON",
+      "html": "HTML",
       "saveButton": "Save",
       "switchToCodeButton": "Switch to code",
       "switchToVisualButton": "Switch to visual",
