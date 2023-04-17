@@ -5,6 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
+import { pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
@@ -23,7 +24,7 @@ import {
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml, PageLayoutWidgetType } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml, PageLayoutWidgetType, PageLayoutView } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -65,7 +66,8 @@ const LayoutScreenHTML: FC<Props> = ({
   layouts,
   layoutId,
   accessToken,
-  classes
+  classes,
+  subLayouts
 }) => {
   const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
@@ -75,6 +77,9 @@ const LayoutScreenHTML: FC<Props> = ({
   const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
   const [ newComponentType, setNewComponentType ] = useState<ComponentType | undefined>(undefined);
   const [ componentName, setComponentName ] = useState("");
+  const [ newPageLayoutViewHtml, setNewPageLayoutViewHtml ] = useState<PageLayoutViewHtml | undefined>(undefined);
+  const [ selectedSubLayoutId, setSelectedSubLayoutId ] = useState<string | undefined>(undefined);
+  const [ newPageLayoutViewPath, setNewPageLayoutViewPath ] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     fetchLayout();
@@ -304,19 +309,24 @@ const LayoutScreenHTML: FC<Props> = ({
   );
 
   /**
- * Event handler for tree view component add click
- *
- * @param path path to the parent element where the new child item will be added
- */
-  const onAddComponentClick = () => {
+   * Event handler for layout view property add click
+   *
+   * @param path path to the parent element where the new child item will be added
+   */
+  const onAddComponentClick = (path: string) => {
     setAddComponentDialogOpen(true);
+    setNewPageLayoutViewPath(path);
   }
 
   /**
    * Event handler for dialog confirm click
    */
   const onConfirmClick = () => {
+    if (!newPageLayoutViewHtml) return;
+    // const updatedLayout = pushNewPageLayoutViewToTree(foundLayout, newPageLayoutViewHtml, newPageLayoutViewPath);
+    setNewPageLayoutViewHtml(undefined);
     setAddComponentDialogOpen(false);
+    setNewPageLayoutViewPath("");
   }
 
   /**
@@ -324,7 +334,9 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const onCloseOrCancelClick = () => {
     setAddComponentDialogOpen(false);
-
+    setNewPageLayoutViewHtml(undefined);
+    setSelectedSubLayoutId(undefined);
+    setNewPageLayoutViewPath("");
   }
 
   /**
@@ -335,15 +347,45 @@ const LayoutScreenHTML: FC<Props> = ({
   }
 
   /**
+   * Event handler for sub layout change event
+   *
+   * @param event React change event
+   */
+  const onSubLayoutChange = ({ target: { value } } : SelectChangeEvent<string>) => {
+    const subLayoutId = value;
+
+    if (!subLayoutId) {
+      return;
+    }
+
+    const subLayout = subLayouts.find(layout => layout.id === subLayoutId);
+
+    if (!subLayout) {
+      return;
+    }
+
+    const pageLayoutViewHtml: PageLayoutViewHtml = {
+      ...subLayout.data.html
+    };
+
+    setNewPageLayoutViewHtml(pageLayoutViewHtml);
+    setSelectedSubLayoutId(subLayoutId);
+  }
+
+  /**
    * Render add layout component dialog
    */
   const renderLayoutDialog = () => {
-
-      const componentItems = Object.keys(ComponentType).map(widget => {
-        return (
-          <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
-        );
-      });
+    const componentItems = Object.keys(ComponentType).map(widget => {
+      return (
+        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+      );
+    });
+    const subLayoutItems = subLayouts.map(layout => {
+      return (
+        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
+      );
+    });
   
       return (
         <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
@@ -371,6 +413,20 @@ const LayoutScreenHTML: FC<Props> = ({
             </Typography>
           </div>
           <Grid item xs={ 12 }>
+            <FormControl variant="outlined">
+              <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
+                { strings.layoutEditor.addLayoutViewDialog.subLayout }
+              </InputLabel>
+              <Select
+                labelId="subLayout"
+                label={ strings.layoutEditor.addLayoutViewDialog.subLayout }
+                name="subLayout"
+                value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
+                onChange={ onSubLayoutChange }
+              >
+                { subLayoutItems }
+              </Select>
+            </FormControl>
             <Box mt={ 2 }>
               <TextField
                 helperText={ strings.helpTexts.layoutEditor.giveElementName }

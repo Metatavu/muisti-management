@@ -14,7 +14,7 @@ type StyledTreeItemProps = TreeItemProps & {
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
-  onAddComponentClick: () => void;
+  onAddComponentClick: (path: string) => void;
 };
 
 /**
@@ -62,17 +62,16 @@ const StyledTreeItem = ({
 /**
  * Renders Add New Element button
  */
-  const renderAddNewElementButton = (index?: number) => {
-    console.log(index);
+  const renderAddNewElementButton = (id: string) => {
+    console.log(id);
 
     return (
       <Stack direction="row" alignItems="center">
-        <AddBoxOutlined style={{ color: "#2196F3" }}/>
+        <AddBoxOutlined style={{ color: "#2196F3" }} onClick={ () => onAddComponentClick(id) }/>
         <Typography
           variant="caption"
           textTransform="uppercase"
           style={{ color: "#2196F3" }}
-          onClick={ onAddComponentClick }
         >
           { strings.layoutEditor.addLayoutViewDialog.title }
         </Typography>
@@ -111,7 +110,7 @@ const StyledTreeItem = ({
               <Typography>
                 { strings.comingSoon }
               </Typography>
-              { renderAddNewElementButton() }
+              { renderAddNewElementButton(other.nodeId) }
             </Stack>
           </div>
           { hasChildren &&

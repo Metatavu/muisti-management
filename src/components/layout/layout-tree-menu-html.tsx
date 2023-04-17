@@ -1,8 +1,5 @@
-import { FC, Fragment, useState } from "react";
-import { AddBoxOutlined } from "@mui/icons-material";
+import { FC } from "react";
 import { TreeView } from "@mui/lab";
-import { Box, Stack, Typography } from "@mui/material";
-import strings from "../../localization/strings";
 import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
 import { ComponentType, TreeObject } from "../../types";
 import { PageLayout } from "../../generated/client";
@@ -21,7 +18,6 @@ interface Props {
  */
 const LayoutTreeMenuHtml: FC<Props> = ({
   htmlString,
-  addHtmlComponent,
   onAddComponentClick
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
