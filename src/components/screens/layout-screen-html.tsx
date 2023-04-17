@@ -90,7 +90,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Constructs an array of tree objects from given html
-   * 
+   *
    * @param html html
    * @returns Array of Tree Objects
    */
@@ -232,8 +232,6 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Event handler for layout save
-   *
-   * @param layout layout
    */
   const onLayoutSave = async () => {
     try {
@@ -284,7 +282,12 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * TODO: ADD DOCS
+   * Update item within tree structure
+   *
+   * @param treeData list of TreeObject
+   * @param updatedComponent updated TreeObject
+   * @param destinationPath path of the element to be updated within tree
+   * @returns updatedTree list of TreeObjects
    */
   const constructTreeUpdateData = (treeData: TreeObject[], updatedComponent: TreeObject, destinationPath: string): TreeObject[] => {
     const updatedTree: TreeObject[] = [treeData[0]];
@@ -298,7 +301,13 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * TODO: ADD DOCS
+   * Recursive function that checks the updatedComponent children and to find item to be updated.
+   *
+   * @param treeData list of TreeObject
+   * @param destinationPath path to the item to be updated within tree
+   * @param currentPath current path inside the recursion
+   * @param updatedComponent updated TreeObject
+   * @returns list of TreeObjects
    */
   const updateFromTree = (treeData: TreeObject[], destinationPath: string, currentPath: string, updatedComponent: TreeObject): TreeObject[] => {
     const cleanNodes: TreeObject[] = [];
@@ -327,6 +336,12 @@ const LayoutScreenHTML: FC<Props> = ({
     return treeData;
   };
 
+  /**
+   * Convert tree object to html element
+   *
+   * @param treeObject
+   * @returns HTMLElement
+   */
   const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
     const element = treeObject.element;
     element.replaceChildren();
@@ -340,13 +355,17 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * TODO: ADD DOCS
+   * Update html element and tree data
+   *
+   * @param updatedComponent TreeObject
    */
   const updateComponent = (updatedComponent: TreeObject) => {
+    if (!selectedComponent) return null;
+
     const updatedTreeObjects = constructTreeUpdateData(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
-      selectedComponent!.path
+      selectedComponent.path
     );
     const updatedHtmlElements = updatedTreeObjects.map(treeObjectToHtmlElement);
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
@@ -359,6 +378,7 @@ const LayoutScreenHTML: FC<Props> = ({
     });
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
+    setDataChanged(true);
   };
 
   /**
