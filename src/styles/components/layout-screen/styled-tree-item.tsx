@@ -1,4 +1,4 @@
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import { AddBoxOutlined, SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, Typography } from "@mui/material";
 import strings from "../../../localization/strings";
@@ -14,12 +14,14 @@ type StyledTreeItemProps = TreeItemProps & {
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
+  onAddComponentClick: () => void;
 };
 
 /**
  * Styled tree item theme
  */
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+  marginTop: theme.spacing(2),
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
     color: theme.palette.text.secondary,
@@ -53,8 +55,30 @@ const StyledTreeItem = ({
   isRoot,
   isRootSubdirectory,
   hasChildren,
+  onAddComponentClick,
   ...other
 }: StyledTreeItemProps) => {
+
+/**
+ * Renders Add New Element button
+ */
+  const renderAddNewElementButton = (index?: number) => {
+    console.log(index);
+
+    return (
+      <Stack direction="row" alignItems="center">
+        <AddBoxOutlined style={{ color: "#2196F3" }}/>
+        <Typography
+          variant="caption"
+          textTransform="uppercase"
+          style={{ color: "#2196F3" }}
+          onClick={ onAddComponentClick }
+        >
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Typography>
+      </Stack>
+    );
+  };
 
   return (
     <StyledTreeItemRoot
@@ -87,6 +111,7 @@ const StyledTreeItem = ({
               <Typography>
                 { strings.comingSoon }
               </Typography>
+              { renderAddNewElementButton() }
             </Stack>
           </div>
           { hasChildren &&

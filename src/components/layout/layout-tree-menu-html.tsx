@@ -1,26 +1,31 @@
-import { FC } from "react";
+import { FC, Fragment, useState } from "react";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import strings from "../../localization/strings";
 import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
 import { ComponentType, TreeObject } from "../../types";
+import { PageLayout } from "../../generated/client";
 
 /**
  * Components properties
  */
 interface Props {
   htmlString: string;
+  addHtmlComponent: (layout: PageLayout) => void;
+  onAddComponentClick: () => void;
 }
 
 /**
  * Layout Tree Menu HTML Component
  */
 const LayoutTreeMenuHtml: FC<Props> = ({
-  htmlString
+  htmlString,
+  addHtmlComponent,
+  onAddComponentClick
 }) => {
   const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
-  const domArray = Array.from(dom.children);
+  const domChildrenArray = Array.from(dom.children);
 
   /**
    * Creates Tree Object from HTML Element
@@ -64,25 +69,18 @@ const LayoutTreeMenuHtml: FC<Props> = ({
     return (
       <StyledTreeItem
         key={ item.id }
-        nodeId={ item?.id ?? "" }
+        nodeId={ item.id }
         labelText={ item.type }
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
         isRootSubdirectory={ isRootSubDirectory }
         hasChildren={ hasChildren }
+        onAddComponentClick={ onAddComponentClick }
       >
         { item.children.map((child, i) => {
-          const isRootSubDirectory = i === 0;
-          return renderTreeItem(child, false , isRootSubDirectory)
+            const isRootSubDirectory = i === 0;
+            return renderTreeItem(child, false, isRootSubDirectory)
           })
-        }
-        { item.type === ComponentType.LAYOUT &&
-          <Stack direction="row" alignItems="center">
-            <AddBoxOutlined/>
-            <Typography variant="caption" textTransform="uppercase">
-              { strings.layoutEditor.addLayoutViewDialog.title }
-            </Typography>
-          </Stack>
         }
       </StyledTreeItem>
     );
@@ -90,8 +88,8 @@ const LayoutTreeMenuHtml: FC<Props> = ({
 
   return (
     <TreeView>
-      { Array.isArray(domArray) &&
-        domArray.map(domElement => {
+      { Array.isArray(domChildrenArray) &&
+        domChildrenArray.map(domElement => {
           const item = createTreeObject(domElement);
           return renderTreeItem(item, true);
         })

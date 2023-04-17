@@ -14,11 +14,16 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
+  Box,
+  FormHelperText,
+  Grid,
+  Typography,
+  Divider,
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, LayoutType, PageLayoutViewHtml, PageLayoutWidgetType } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -26,6 +31,8 @@ import { AccessToken, ActionButton, LayoutEditorView } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
+import GenericDialog from "../generic/generic-dialog";
+import { ComponentType } from "../../types";
 
 /**
  * Component props
@@ -62,9 +69,12 @@ const LayoutScreenHTML: React.FC<Props> = ({
   const [ screenOrientation, setScreenOrientation ] = useState<ScreenOrientation>(ScreenOrientation.Portrait);
   const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
-  const [ foundLayout, setFoundLayout ] = useState(layout);
+  const [ foundLayout, setFoundLayout ] = useState<PageLayout | undefined>(layout);
   const [ error, setError ] = useState<Error | undefined>(undefined);
   const [ loading, setLoading ] = useState(false);
+  const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
+  const [ newComponentType, setNewComponentType ] = useState<ComponentType | undefined>(undefined);
+  const [ componentName, setComponentName ] = useState("");
 
   useEffect(() => {
     fetchLayout();
@@ -114,8 +124,20 @@ const LayoutScreenHTML: React.FC<Props> = ({
    * @param event event
    */
   const onDeviceModelChange = (event: SelectChangeEvent<string>) => {
-    setDeviceModelId(event.target.value as string);
+    setDeviceModelId(event.target.value);
     setDataChanged(true);
+  }
+
+  /**
+   * Event handler for layout component add
+   *
+   * @param layoutHtml layout view
+   */
+  const onHtmlLayoutComponentAdd = async (layoutHtml: PageLayout) => {
+    if (!layout) return;
+
+    const updatedLayout = { ...layout, data: layoutHtml };
+    setFoundLayout(updatedLayout);
   }
 
   /**
@@ -237,6 +259,91 @@ const LayoutScreenHTML: React.FC<Props> = ({
     }
   }
 
+  /**
+ * Event handler for tree view component add click
+ *
+ * @param path path to the parent element where the new child item will be added
+ */
+  const onAddComponentClick = () => {
+    setAddComponentDialogOpen(true);
+  }
+
+  /**
+   * Event handler for dialog confirm click
+   */
+  const onConfirmClick = () => {
+    setAddComponentDialogOpen(false);
+  }
+
+  /**
+   * Event handler for dialog close or cancel click
+   */
+  const onCloseOrCancelClick = () => {
+    setAddComponentDialogOpen(false);
+
+  }
+
+  /**
+   * Render dialog content based on editingSubLayout boolean
+   */
+  const renderDialogContent = () => {
+    return renderLayoutDialog();
+  }
+
+  /**
+   * Render add layout component dialog
+   */
+  const renderLayoutDialog = () => {
+
+      const componentItems = Object.keys(ComponentType).map(widget => {
+        return (
+          <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+        );
+      });
+  
+      return (
+        <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
+          <Grid item xs={ 12 }>
+            <FormControl variant="outlined">
+              <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
+                { strings.layoutEditor.addLayoutViewDialog.widget }
+              </InputLabel>
+              <Select
+                labelId="component"
+                label={ strings.layoutEditor.addLayoutViewDialog.widget }
+                name="component"
+                value={ newComponentType ?? "" }
+                onChange={ (event) => { setNewComponentType(event.target.value as ComponentType) } }>
+                { componentItems }
+              </Select>
+              <FormHelperText>
+                { strings.helpTexts.layoutEditor.buttonDescription }
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+            <Typography variant="h6">
+              { strings.layoutEditor.addLayoutViewDialog.or }
+            </Typography>
+          </div>
+          <Grid item xs={ 12 }>
+            <Box mt={ 2 }>
+              <TextField
+                helperText={ strings.helpTexts.layoutEditor.giveElementName }
+                style={{ marginTop: theme.spacing(2) }}
+                label={ strings.layoutEditor.addLayoutViewDialog.name }
+                type="text"
+                name="name"
+                disabled={ foundLayout ? false : true }
+                value={ componentName ?? "" }
+                onChange={ (event) => { setComponentName(event.target.value) } }
+              />
+            </Box>
+          </Grid>
+        </Grid>
+      );
+    }
+
   if (loading) {
     return (
       <div className={ classes.loader }>
@@ -270,8 +377,22 @@ const LayoutScreenHTML: React.FC<Props> = ({
               { foundLayout &&
                 <LayoutTreeMenuHtml
                   htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+                  addHtmlComponent={ onHtmlLayoutComponentAdd }
+                  onAddComponentClick={ onAddComponentClick }
                 />}
             </div>
+            <GenericDialog
+              cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
+              positiveButtonText={ strings.layoutEditor.addLayoutViewDialog.confirm }
+              title={ strings.layoutEditor.addLayoutViewDialog.title }
+              error={ false }
+              onConfirm={ onConfirmClick }
+              onCancel={ onCloseOrCancelClick }
+              open={ addComponentDialogOpen }
+              onClose={ onCloseOrCancelClick }
+            >
+              { renderDialogContent() }
+            </GenericDialog>
           </ElementNavigationPane>
           <EditorView>
             {/* TODO:  Editor view will be used in future  */}
