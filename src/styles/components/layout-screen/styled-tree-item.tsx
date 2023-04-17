@@ -1,25 +1,16 @@
 import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, SvgIcon, Typography } from "@mui/material";
-import strings from "../../../localization/strings";
-import { TreeObject } from "../../../types";
 import theme from "../../theme";
 import ParentTreeIcon from "./parent-tree-icon";
 
 type StyledTreeItemProps = TreeItemProps & {
-  labelText: string;
+  itemType: string;
+  itemName: string;
   isLayoutComponent: boolean;
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
-  openDraw: boolean;
-  itemData: TreeObject;
-  onTreeComponentSelect: (
-    openDraw: boolean,
-    panelComponentData: TreeObject,
-    domArray: Element[]
-  ) => void;
-  domArray: Element[];
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -49,15 +40,12 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 ));
 
 export const StyledTreeItem = ({
-  labelText,
+  itemType,
+  itemName,
   isLayoutComponent,
   isRoot,
   isRootSubdirectory,
   hasChildren,
-  openDraw,
-  onTreeComponentSelect,
-  itemData,
-  domArray,
   ...other
 }: StyledTreeItemProps) => {
 
@@ -78,10 +66,7 @@ export const StyledTreeItem = ({
             { (!isRoot && !isRootSubdirectory) &&
               <div style={{ marginRight: theme.spacing(5) }}/>
             }
-            <Stack
-              direction="column"
-              onClick={ () => onTreeComponentSelect(!openDraw, itemData, domArray) }
-            >
+            <Stack direction="column">
               <Typography
                 variant="body2"
                 sx={{
@@ -90,10 +75,10 @@ export const StyledTreeItem = ({
                   color: "#2196F3"
                 }}
               >
-                { labelText }
+                { itemName }
               </Typography>
               <Typography>
-                { strings.comingSoon }
+                { itemType }
               </Typography>
             </Stack>
             { hasChildren &&

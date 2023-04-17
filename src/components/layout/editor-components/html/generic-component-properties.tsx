@@ -1,197 +1,199 @@
-import { useState, FC, useEffect } from 'react';
-import { Box, Checkbox, TextField, Typography } from '@mui/material';
-import { SketchPicker, SketchPickerProps } from 'react-color';
+import React, { useState, FC } from 'react';
+import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Popover, Select, Stack, TextField, Typography } from '@mui/material';
+import { ColorResult, SketchPicker, SketchPickerProps } from 'react-color';
 import strings from '../../../../localization/strings';
-import { TreeObject } from '../../../../types';
+import { ComponentType, TreeObject } from '../../../../types';
+import theme from '../../../../styles/theme';
+import { ExpandOutlined, FormatColorFillOutlined, HeightOutlined, LinkRounded, PaletteOutlined } from '@mui/icons-material';
+import MarginPaddingEditorHtml from './margin-padding-editor-html';
+import ProportionsEditorHtml from './proportions-editor-html';
+
+const PropertyBox = ({ children }: { children: React.ReactNode }) => (
+  <Box paddingX={ theme.spacing(2) }  paddingY={ theme.spacing(1) }>
+    { children }
+  </Box>
+);
 
 /**
  * Component props
  */
 interface Props {
-  panelComponentData: TreeObject;
-  setPanelComponentData: React.Dispatch<React.SetStateAction<TreeObject | undefined>>;
-  onStylesChange: (htmlData: string) => void;
-  domArray: Element[];
+  component: TreeObject;
+  updateComponent: (updatedComponent: TreeObject) => void;
 }
 
 /**
  * Component for Generic Properties
  */
 const GenericComponentProperties: FC<Props> = ({
-  panelComponentData,
-  setPanelComponentData,
-  onStylesChange,
-  domArray
+  component,
+  updateComponent
 }) => {
-  const [ htmlElementProperties, setHtmlElementProperties ] = useState<TreeObject | undefined>();
+  const [ popoverAnchorElement, setPopoverAnchorElement ] = useState<HTMLButtonElement>();
+
+  if (!component) return null;
 
   /**
-   * Resets settings when selected element changes.
+   * Event handler for property change events
+   *
+   * @param name name
+   * @param value value
    */
-  useEffect(() => {
-    setHtmlElementProperties(panelComponentData);
-  }, [panelComponentData]);
-
-
-  if (!htmlElementProperties) return null;
-
-
-  //TODO: Lift function to layoutscreenhtml, should fire on save?
-  /**
-   * Updates Dom Array with property changes
-   */
-  const convertDomArrayToString = () => {
-      // Reinsert the updated panelComponentData into the dom array, via id, as child?.
-    // updateDomArray()
-
-    const s = new XMLSerializer();
-    const string = s.serializeToString(domArray[0]);
-    // This adds a xmlns attribute to the first element.
-    // console.log("dom array string?", string);
-
-    // onStylesChange({
-    //   ...htmlData?.style,
-    //   [name]: value
-    // });
+  const onPropertyChange = (name: string, value: string) => {
+    component.element.style[name as any] = value;
+    updateComponent(component);
   };
 
-  const onPropertyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.name;
-    const value = event.target.value;
+  /**
+   * Event handler for name change events
+   *
+   * @param event event
+   */
+  const onNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    component.element.setAttribute("name", value);
+    updateComponent(component);
+  };
 
-    setHtmlElementProperties({
-      ...htmlElementProperties,
-      element: {
-        ...htmlElementProperties.element,
-        style: {
-          ...htmlElementProperties.element.style,
-          [name]: value
-        }
-      }
-    });
+  /**
+   * Renders panel subtitle
+   *
+   * @param subtitle subtitle
+   */
+  const renderPanelSubtitle = (subtitle: string) => (
+    <Typography
+      fontWeight={ 500 }
+      fontSize="14px"
+      marginBottom={ theme.spacing(1) }
+      color="#000000"
+      sx={{ opacity: 0.6 }}
+    >
+      { subtitle }
+    </Typography>
+  );
 
-
-  }
-
-
-
-  // TODO: Need to set all values from the component state
   return (
-    <div>
-        <Box>
-          <Typography>
-            { strings.layout.htmlProperties.genericProperties.element }
-          </Typography>
-          <TextField
-            value={ panelComponentData?.type }
-          />
-        </Box>
-        <Box>
-          <Typography>
-            { strings.layout.htmlProperties.genericProperties.elementName }
-          </Typography>
-          <TextField />
-        </Box>
-        <Box>
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.proportions }
-          </Typography>
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.width }
-          </Typography>
-          <TextField
-            type="number"
+    <>
+      <Stack spacing={ 2 } paddingLeft={ 0 } paddingRight={ 0 }>
+          <PropertyBox>
+              { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.element) }
+              <TextField
+                defaultValue={ component.type }
+                variant="standard"
+                select
+                fullWidth
+                sx={{ backgroundColor: "#F5F5F5" }}
+                InputProps={{
+                    disableUnderline: true,
+                    sx: {  backgroundColor: "#F5F5F5" }
+                }}
+                SelectProps={{
+                  sx: {
+                    "& .MuiInputBase-input": {
+                      color: "#2196F3",
+                      height: "20px",
+                      padding: 0,
+                    },
+                    height: "20px",
+                    backgroundColor: "#F5F5F5"
+                  }
+                }}
+              >
+                { Object.values(ComponentType).map(type => (
+                  <MenuItem key={ type } value={ type } sx={{ color: "#2196F3" }}>
+                    { type }
+                  </MenuItem>
+                )) }
+              </TextField>
+            </PropertyBox>
+          <Divider sx={{ color: "#F5F5F5" }}/>
+          <PropertyBox>
+            { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.elementName) }
+            <TextField
+              variant="standard"
+              defaultValue={ component.name || "" }
+              onChange={ onNameChange }
+              inputProps={{
+                sx:{ backgroundColor: "#fbfbfb" }
+                }}
+              placeholder={ strings.layout.htmlProperties.genericProperties.elementName }
+            />
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.proportions) }
+          <ProportionsEditorHtml
+            value={ parseInt(component.element?.style?.width || "0").toString() }
             name="width"
-            value={ htmlElementProperties.element.style.width }
+            label={ strings.layout.htmlProperties.genericProperties.width }
             onChange={ onPropertyChange }
           />
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.height }
-          </Typography>
-          <TextField
-            type="number"
+          <ProportionsEditorHtml
+            value={ parseInt(component.element?.style?.height || "0").toString() }
+            name="height"
+            label={ strings.layout.htmlProperties.genericProperties.height }
+            onChange={ onPropertyChange }
           />
-        </Box>
-        <Box>
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.elevation }
-          </Typography>
-          <TextField
-            type="number"
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.margin) }
+          <MarginPaddingEditorHtml
+            type="margin"
+            onChange={ onPropertyChange }
           />
-        </Box>
-        <Box>
-          {/* TODO: color picker, or image, so a switch to change between */}
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.color }
-          </Typography>
-          <SketchPicker />
-        </Box>
-        <Box>
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.margin }
-          </Typography>
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: 200
-            }}
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.padding) }
+          <MarginPaddingEditorHtml
+            type="padding"
+            onChange={ onPropertyChange }
+          />
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={ 1 }
           >
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-          </Box>
-        </Box>
-        <Box>
-          <Typography>
-          { strings.layout.htmlProperties.genericProperties.padding }
-          </Typography>
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: 200
-            }}
+            <PaletteOutlined sx={{ opacity: 0.54 }}/>
+            { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.color.label) }
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
           >
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-            <TextField
-              type="number"
-              style={{ width: 34 }}
-            />
-          </Box>
-          <Box>
-            <Typography>
-            { strings.layout.htmlProperties.genericProperties.justifySelf }
-            </Typography>
-            <Checkbox />
-          </Box>
-        </Box>
-    </div>
+            <Button
+              sx={{ color: "#2196F3" }}
+              onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
+            >
+              { strings.layout.htmlProperties.genericProperties.color.button }
+            </Button>
+            <FormatColorFillOutlined sx={{ color: "#2196F3" }}/>
+          </Stack>
+        </PropertyBox>
+      </Stack>
+      <Popover
+        open={ !!popoverAnchorElement }
+        anchorEl={ popoverAnchorElement }
+        onClose={ () => setPopoverAnchorElement(undefined) }
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "left"
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: "right"
+        }}
+      >
+
+        <SketchPicker
+          color={ component.element.style.backgroundColor }
+          onChangeComplete={ (color: ColorResult) => onPropertyChange("background-color", color.hex) }
+        />
+      </Popover>
+    </>
   );
 }
 

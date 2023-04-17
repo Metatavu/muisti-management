@@ -279,12 +279,15 @@
       "elementSettings": "Elementin asetukset",
       "genericProperties": {
         "element": "Elementti",
-        "elementName": "Elementti nimi",
+        "elementName": "Elementin nimi",
         "proportions": "Mittasuhteet",
         "width": "Leveys",
         "height": "Korkeus",
         "elevation": "Elevation??",
-        "color": "Taustaväri",
+        "color": {
+          "label": "Taustaväri",
+          "button": "Valitse väri"
+        },
         "margin": "Marginaalit",
         "padding": "Täyttö",
         "justifySelf": "Justify self??"

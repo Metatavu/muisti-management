@@ -245,6 +245,8 @@ export interface DiagnosticsConfig {
  */
 export type TreeObject = {
   type: ComponentType;
+  path: string;
+  name?: string;
   id: string;
   resourceId?: string;
   children: TreeObject[];

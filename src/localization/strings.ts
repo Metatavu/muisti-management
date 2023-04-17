@@ -287,7 +287,10 @@ export interface IStrings extends LocalizedStringsMethods {
         width: string;
         height: string;
         elevation: string;
-        color: string;
+        color: {
+          label: string;
+          button: string;
+        };
         margin: string;
         padding: string;
         justifySelf: string;

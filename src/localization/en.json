@@ -282,7 +282,10 @@
         "width": "Width",
         "height": "Height",
         "elevation": "Elevation",
-        "color": "Color",
+        "color": {
+          "label": "Background color",
+          "button": "Choose color"
+        },
         "margin": "Margin",
         "padding": "Padding",
         "justifySelf": "Justify self"
