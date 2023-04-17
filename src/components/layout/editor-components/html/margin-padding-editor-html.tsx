@@ -1,7 +1,7 @@
 import { LinkRounded } from "@mui/icons-material";
 import { IconButton, Stack, TextField } from "@mui/material";
 import theme from "../../../../styles/theme";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 /**
  * Component props
@@ -9,6 +9,7 @@ import { useState } from "react";
 interface Props {
   type: "margin" | "padding";
   onChange: (name: string, value: string) => void;
+  styles: CSSStyleDeclaration;
 }
 
 /**
@@ -16,7 +17,8 @@ interface Props {
  */
 const MarginPaddingEditorHtml = ({
   type,
-  onChange
+  onChange,
+  styles
 }: Props) => {
   const [ lock, setLock ] = useState(false);
 
@@ -27,30 +29,31 @@ const MarginPaddingEditorHtml = ({
    *
    * @param event event
    */
-  const onValueChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => onChange(name, value);
+  const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => onChange(name, value);
 
   // TODO: Implement logic for locking values
   return (
     <Stack direction="row" spacing={ theme.spacing(2) }>
       { suffixes.map(suffix => (
-          <TextField
-            key={ type + suffix }
-            name={ `${type}${suffix}` }
-            inputProps={{
-              pattern: "[0-9]"
-            }}
-            InputProps={{
-              sx: {
-                "& .MuiInputBase-input": {
-                  color: "#2196F3",
-                  height: "20px",
-                  padding: 0,
-                }
+        <TextField
+          key={ type + suffix }
+          value={ parseInt(styles[`${type}${suffix}` as any] || "0").toString() }
+          name={ `${type}${suffix}` }
+          inputProps={{
+            pattern: "[0-9]"
+          }}
+          InputProps={{
+            sx: {
+              "& .MuiInputBase-input": {
+                color: "#2196F3",
+                height: "20px",
+                padding: 0,
               }
-            }}
-            sx={{ width: "34px" }}
-            onChange={ onValueChange }
-          />
+            }
+          }}
+          sx={{ width: "34px" }}
+          onChange={ onValueChange }
+        />
       )) }
       <IconButton sx={{ margin: 0, padding: 0 }} onClick={ () => setLock(!lock) }>
         <LinkRounded

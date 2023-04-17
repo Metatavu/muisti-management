@@ -78,7 +78,7 @@ const GenericComponentProperties: FC<Props> = ({
           <PropertyBox>
               { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.element) }
               <TextField
-                defaultValue={ component.type }
+                value={ component.type }
                 variant="standard"
                 select
                 fullWidth
@@ -100,7 +100,11 @@ const GenericComponentProperties: FC<Props> = ({
                 }}
               >
                 { Object.values(ComponentType).map(type => (
-                  <MenuItem key={ type } value={ type } sx={{ color: "#2196F3" }}>
+                  <MenuItem
+                    key={ type }
+                    value={ type }
+                    sx={{ color: "#2196F3" }}
+                  >
                     { type }
                   </MenuItem>
                 )) }
@@ -111,7 +115,7 @@ const GenericComponentProperties: FC<Props> = ({
             { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.elementName) }
             <TextField
               variant="standard"
-              defaultValue={ component.name || "" }
+              value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
               onChange={ onNameChange }
               inputProps={{
                 sx:{ backgroundColor: "#fbfbfb" }
@@ -139,6 +143,7 @@ const GenericComponentProperties: FC<Props> = ({
         <PropertyBox>
           { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.margin) }
           <MarginPaddingEditorHtml
+            styles={ component.element.style }
             type="margin"
             onChange={ onPropertyChange }
           />
@@ -147,6 +152,7 @@ const GenericComponentProperties: FC<Props> = ({
         <PropertyBox>
           { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.padding) }
           <MarginPaddingEditorHtml
+            styles={ component.element.style }
             type="padding"
             onChange={ onPropertyChange }
           />
