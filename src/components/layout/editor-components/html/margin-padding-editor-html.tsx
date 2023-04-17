@@ -31,7 +31,13 @@ const MarginPaddingEditorHtml = ({
    */
   const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => onChange(name, value);
 
-  // TODO: Implement logic for locking values
+  /**
+   * Event handler for linked input change events
+   *
+   * @param event event
+   */
+  const onLinkedValueChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => onChange(type, value);
+
   return (
     <Stack direction="row" spacing={ theme.spacing(2) }>
       { suffixes.map(suffix => (
@@ -52,7 +58,7 @@ const MarginPaddingEditorHtml = ({
             }
           }}
           sx={{ width: "34px" }}
-          onChange={ onValueChange }
+          onChange={ lock ? onLinkedValueChange: onValueChange }
         />
       )) }
       <IconButton sx={{ margin: 0, padding: 0 }} onClick={ () => setLock(!lock) }>

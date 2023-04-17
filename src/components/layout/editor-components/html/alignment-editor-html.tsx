@@ -1,7 +1,7 @@
 import { Icon } from "@material-ui/core";
 import { EastOutlined, FilterCenterFocusRounded, NorthEastOutlined, NorthOutlined, NorthWestOutlined, SouthEastOutlined, SouthOutlined, SouthWestOutlined, WestOutlined } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
-import { ElementType, useState } from "react";
+import { ElementType, useEffect, useState } from "react";
 import LanguageUtils from "../../../../utils/language-utils";
 import { LayoutAlignment } from "../../../../types";
 
@@ -20,6 +20,7 @@ interface Props {
   onChange: (name: string, value: string) => void;
 }
 
+// TODO: Not yet implemented as a controlled componenet
 /**
  * HTML Component Alignment editor component
  */
@@ -27,7 +28,7 @@ const AlignmentEditorHtml = ({
   onChange
 }: Props) => {
   const [ selected, setSelected ] = useState<LayoutAlignment>();
-  
+
   const topRowIcons: AlignmentIconRow[] = [{
     icon: NorthWestOutlined,
     name: LayoutAlignment.NORTH_WEST
@@ -38,7 +39,7 @@ const AlignmentEditorHtml = ({
     icon: NorthEastOutlined,
     name: LayoutAlignment.NORTH_EAST
   }];
-  
+
   const middleRowIcons: AlignmentIconRow[] = [{
     icon: WestOutlined,
     name: LayoutAlignment.WEST
@@ -49,7 +50,7 @@ const AlignmentEditorHtml = ({
     icon: EastOutlined,
     name: LayoutAlignment.EAST
   }];
-  
+
   const bottomRowIcons: AlignmentIconRow[] = [ {
     icon: SouthWestOutlined,
     name: LayoutAlignment.SOUTH_WEST
@@ -60,7 +61,7 @@ const AlignmentEditorHtml = ({
     icon: SouthEastOutlined,
     name: LayoutAlignment.SOUTH_EAST
   }];
-  
+
   const renderIconRow = (row: AlignmentIconRow[]) => (
     <Stack direction="row" spacing={ 0.5 }>
       { row.map(icon => (
@@ -68,17 +69,17 @@ const AlignmentEditorHtml = ({
       )) }
     </Stack>
   );
-  
+
   /**
    * Event handler
    */
   const onAlignmentChange = ({ currentTarget }: React.MouseEvent) => {
     const name = currentTarget.getAttribute("name");
-    
+
     if (!name) return;
-    
+
     setSelected(name as LayoutAlignment);
-    
+
     switch (name) {
       case "nw": {
         onChange("align-content", "flex-start");
@@ -127,10 +128,11 @@ const AlignmentEditorHtml = ({
       }
     }
   };
-  
+
   const renderIcon = (icon: AlignmentIconRow) => {
     const color = selected === icon.name ? "#ffffff" : "#2196F3";
     const backgroundColor = selected === icon.name ? "#2196F3" : undefined;
+
     return (
       <IconButton
         key={ icon.name }
@@ -154,7 +156,7 @@ const AlignmentEditorHtml = ({
       </IconButton>
     );
   };
-  
+
   return (
     <Stack direction="row" justifyContent="space-between" paddingRight={ 2 }>
       <Stack spacing={ 0.5 }>

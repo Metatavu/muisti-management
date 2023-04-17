@@ -75,53 +75,53 @@ const GenericComponentProperties: FC<Props> = ({
   return (
     <>
       <Stack spacing={ 2 } paddingLeft={ 0 } paddingRight={ 0 }>
-          <PropertyBox>
-              { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.element) }
-              <TextField
-                value={ component.type }
-                variant="standard"
-                select
-                fullWidth
-                sx={{ backgroundColor: "#F5F5F5" }}
-                InputProps={{
-                    disableUnderline: true,
-                    sx: {  backgroundColor: "#F5F5F5" }
-                }}
-                SelectProps={{
-                  sx: {
-                    "& .MuiInputBase-input": {
-                      color: "#2196F3",
-                      height: "20px",
-                      padding: 0,
-                    },
-                    height: "20px",
-                    backgroundColor: "#F5F5F5"
-                  }
-                }}
+        <PropertyBox>
+          { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.element) }
+          <TextField
+            value={ component.type }
+            variant="standard"
+            select
+            fullWidth
+            sx={{ backgroundColor: "#F5F5F5" }}
+            InputProps={{
+                disableUnderline: true,
+                sx: {  backgroundColor: "#F5F5F5" }
+            }}
+            SelectProps={{
+              sx: {
+                "& .MuiInputBase-input": {
+                  color: "#2196F3",
+                  height: "20px",
+                  padding: 0,
+                },
+                height: "20px",
+                backgroundColor: "#F5F5F5"
+              }
+            }}
+          >
+            { Object.values(ComponentType).map(type => (
+              <MenuItem
+                key={ type }
+                value={ type }
+                sx={{ color: "#2196F3" }}
               >
-                { Object.values(ComponentType).map(type => (
-                  <MenuItem
-                    key={ type }
-                    value={ type }
-                    sx={{ color: "#2196F3" }}
-                  >
-                    { type }
-                  </MenuItem>
-                )) }
-              </TextField>
-            </PropertyBox>
-          <Divider sx={{ color: "#F5F5F5" }}/>
-          <PropertyBox>
-            { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.elementName) }
-            <TextField
-              variant="standard"
-              value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
-              onChange={ onNameChange }
-              inputProps={{
-                sx:{ backgroundColor: "#fbfbfb" }
-                }}
-              placeholder={ strings.layout.htmlProperties.genericProperties.elementName }
-            />
+                { type }
+              </MenuItem>
+            )) }
+          </TextField>
+        </PropertyBox>
+        <Divider sx={{ color: "#F5F5F5" }}/>
+        <PropertyBox>
+          { renderPanelSubtitle(strings.layout.htmlProperties.genericProperties.elementName) }
+          <TextField
+            variant="standard"
+            value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
+            onChange={ onNameChange }
+            inputProps={{
+              sx:{ backgroundColor: "#fbfbfb" }
+              }}
+            placeholder={ strings.layout.htmlProperties.genericProperties.elementName }
+          />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
@@ -201,7 +201,6 @@ const GenericComponentProperties: FC<Props> = ({
           horizontal: "right"
         }}
       >
-
         <SketchPicker
           color={ component.element.style.backgroundColor }
           onChangeComplete={ (color: ColorResult) => onPropertyChange("background-color", color.hex) }
