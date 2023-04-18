@@ -98,7 +98,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const dom = new DOMParser().parseFromString(html, "text/html").body;
     const domArray = Array.from(dom.children);
 
-    return domArray.map(x => createTreeObject(x) as TreeObject);
+    return domArray.map(domElement => createTreeObject(domElement) as TreeObject);
   };
 
   /**
