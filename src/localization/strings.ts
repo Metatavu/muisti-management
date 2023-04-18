@@ -320,6 +320,16 @@ export interface IStrings extends LocalizedStringsMethods {
         deleteText: string;
       };
     };
+    html: {
+      types: {
+        layout: string;
+        button: string;
+        text: string;
+        image: string;
+        tabs: string;
+        tab: string;
+      };
+    };
   };
 
   subLayout: {

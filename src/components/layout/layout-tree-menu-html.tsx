@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { AddBoxOutlined } from '@mui/icons-material';
 import { TreeView } from '@mui/lab';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
-import { ComponentType, TreeObject } from '../../types';
+import { HtmlComponentType, TreeObject } from '../../types';
 import strings from '../../localization/strings';
 import { PageLayout } from "../../generated/client";
 
@@ -14,7 +14,7 @@ interface Props {
   treeObjects: TreeObject[];
   onTreeComponentSelect: (selectedComponent: TreeObject) => void;
   addHtmlComponent: (layout: PageLayout) => void;
-  onAddComponentClick: () => void;
+  onAddComponentClick: (path: string) => void;
 }
 
 /**
@@ -30,27 +30,23 @@ const LayoutTreeMenuHtml = ({
   /**
    * Renders Add New Element button
    */
-    const renderAddNewElementButton = (id: string) => {
-      console.log(id);
-  
-      return (
-        <Stack direction="row" alignItems="center" key={ id + "btn" }>
-          <Button
-            variant="text"
-            sx={{
-              textTransform: "uppercase",
-              fontWeight: 400,
-              fontSize: "0.75rem",
-              color: "#2196F3"
-            }}
-            startIcon={ <AddBoxOutlined style={{ color: "#2196F3" }}/> }
-            onClick={ () => onAddComponentClick() }
-          >
-            { strings.layoutEditor.addLayoutViewDialog.title }
-          </Button>
-        </Stack>
-      );
-    };
+    const renderAddNewElementButton = (item: TreeObject) => (
+      <Stack direction="row" alignItems="center" key={ item.id + "btn" }>
+        <Button
+          variant="text"
+          sx={{
+            textTransform: "uppercase",
+            fontWeight: 400,
+            fontSize: "0.75rem",
+            color: "#2196F3"
+          }}
+          startIcon={ <AddBoxOutlined style={{ color: "#2196F3" }}/> }
+          onClick={ () => onAddComponentClick(item.path) }
+        >
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Button>
+      </Stack>
+    );
     
   /**
    * Renders Tree Item
@@ -61,16 +57,17 @@ const LayoutTreeMenuHtml = ({
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
+    
     const hasChildren = !!item.children?.length;
-    const isLayoutComponent = item.type === ComponentType.LAYOUT;
+    const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
       <Stack
+        key={ item.id }
         onMouseEnter={ () => setHover(item.id) }
         onMouseLeave={ () => setHover(undefined) }
       >
         <StyledTreeItem
-          key={ item.id }
           nodeId={ item.id }
           itemType={ item.type }
           itemName={ item.name || "Nimetön" }
@@ -85,8 +82,8 @@ const LayoutTreeMenuHtml = ({
               return renderTreeItem(child, false , isRootSubDirectory)
             })
           }
-          { (isLayoutComponent && hover === item.id) && renderAddNewElementButton(item.id) }
         </StyledTreeItem>
+          { (isLayoutComponent && hover === item.id) && renderAddNewElementButton(item) }
       </Stack>
     );
   };

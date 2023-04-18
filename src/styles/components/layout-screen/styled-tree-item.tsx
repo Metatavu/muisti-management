@@ -1,9 +1,12 @@
-import { AddBoxOutlined, SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
-import { Stack, styled, SvgIcon, Typography } from "@mui/material";
+import { Stack, styled, Typography } from "@mui/material";
 import theme from "../../theme";
 import ParentTreeIcon from "./parent-tree-icon";
 
+/**
+ * Styled Tree Item Props type
+ */
 type StyledTreeItemProps = TreeItemProps & {
   itemType: string;
   itemName: string;
@@ -11,9 +14,11 @@ type StyledTreeItemProps = TreeItemProps & {
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
-  onAddComponentClick: (path: string) => void;
 };
 
+/**
+ * Styled Tree Item Root styled component
+ */
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   marginTop: theme.spacing(2),
   color: theme.palette.text.secondary,
@@ -41,6 +46,9 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 }
 ));
 
+/**
+ * Styled Tree Item Component
+ */
 export const StyledTreeItem = ({
   itemType,
   itemName,
@@ -48,50 +56,45 @@ export const StyledTreeItem = ({
   isRoot,
   isRootSubdirectory,
   hasChildren,
-  onAddComponentClick,
   ...other
-}: StyledTreeItemProps) => {
+}: StyledTreeItemProps) => (
+  <StyledTreeItemRoot
+    label={
+      <Stack direction="row" justifyContent="space-between" >
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          { (isRootSubdirectory) &&
+            <SubdirectoryArrowRightRounded
+              sx={{
+                color: "#BDBDBD",
+                alignSelf: "center",
+                marginRight: theme.spacing(2),
+              }}
+            />
+          }
+          { (!isRoot && !isRootSubdirectory) &&
+            <div style={{ marginRight: theme.spacing(5) }}/>
+          }
+          <Stack direction="column">
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: "inherit",
+                flexGrow: 1,
+                color: "#2196F3"
+              }}
+            >
+              { itemName }
+            </Typography>
+            <Typography>
+              { itemType }
+            </Typography>
+          </Stack>
+          { hasChildren &&
+          <ParentTreeIcon /> }
+        </div>
 
-
-  return (
-    <StyledTreeItemRoot
-      label={
-        <Stack direction="row" justifyContent="space-between" >
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            { (isRootSubdirectory) &&
-              <SubdirectoryArrowRightRounded
-                sx={{
-                  color: "#BDBDBD",
-                  alignSelf: "center",
-                  marginRight: theme.spacing(2),
-                }}
-              />
-            }
-            { (!isRoot && !isRootSubdirectory) &&
-              <div style={{ marginRight: theme.spacing(5) }}/>
-            }
-            <Stack direction="column">
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: "inherit",
-                  flexGrow: 1,
-                  color: "#2196F3"
-                }}
-              >
-                { itemName }
-              </Typography>
-              <Typography>
-                { itemType }
-              </Typography>
-            </Stack>
-            { hasChildren &&
-            <ParentTreeIcon /> }
-          </div>
-
-        </Stack>
-      }
-      {...other}
-    />
-  );
-}
+      </Stack>
+    }
+    {...other}
+  />
+);

@@ -316,6 +316,16 @@
         "deleteTitle": "Poista valittu asettelun elementti",
         "deleteText": "Poistetaanko valittu asettelun elementti?"
       }
+    },
+    "html": {
+      "types": {
+        "layout": "FlexContainer",
+        "button": "Nappi",
+        "text": "Teksti",
+        "image": "Kuva",
+        "tabs": "Välilehdet",
+        "tab": "Välilehti"
+      }
     }
   },
 

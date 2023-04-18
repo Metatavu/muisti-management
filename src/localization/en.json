@@ -314,6 +314,16 @@
         "deleteTitle": "Delete selected page layout element",
         "deleteText": "Are you sure you want to delete selected element from page layout?"
       }
+    },
+    "html": {
+      "types": {
+        "layout": "FlexContainer",
+        "button": "Button",
+        "text": "Text",
+        "image": "Image",
+        "tabs": "Tabs",
+        "tab": "Tab"
+      }
     }
   },
 
