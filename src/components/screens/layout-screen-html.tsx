@@ -5,7 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
-import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-data-utils";
+import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-html-data-utils";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
