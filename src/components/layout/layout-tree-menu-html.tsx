@@ -1,17 +1,18 @@
-import { FC, useState } from "react";
-import { TreeView } from "@mui/lab";
-import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
-import { ComponentType, TreeObject } from "../../types";
+import { useState } from "react";
+import { AddBoxOutlined } from '@mui/icons-material';
+import { TreeView } from '@mui/lab';
+import { Button, Stack, Typography } from '@mui/material';
+import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
+import { ComponentType, TreeObject } from '../../types';
+import strings from '../../localization/strings';
 import { PageLayout } from "../../generated/client";
-import { AddBoxOutlined } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
-import strings from "../../localization/strings";
 
 /**
  * Components properties
  */
 interface Props {
-  htmlString: string;
+  treeObjects: TreeObject[];
+  onTreeComponentSelect: (selectedComponent: TreeObject) => void;
   addHtmlComponent: (layout: PageLayout) => void;
   onAddComponentClick: () => void;
 }
@@ -19,43 +20,12 @@ interface Props {
 /**
  * Layout Tree Menu HTML Component
  */
-const LayoutTreeMenuHtml: FC<Props> = ({
-  htmlString,
+const LayoutTreeMenuHtml = ({
+  treeObjects,
+  onTreeComponentSelect,
   onAddComponentClick
-}) => {
+}: Props) => {
   const [ hover, setHover ] = useState<string>();
-  
-  const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
-  const domChildrenArray = Array.from(dom.children);
-
-  /**
-   * Creates Tree Object from HTML Element
-   *
-   * @param element element
-   * @returns TreeObject
-   */
-  const createTreeObject = (element: Element): TreeObject | undefined => {
-    const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
-    const id = element.id ?? "";
-
-    if (!componentType) return;
-
-    if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
-
-    const children: TreeObject[] = [];
-
-    for (const child of element.children) {
-      const treeObject = createTreeObject(child);
-
-      if (treeObject) children.push(treeObject);
-    }
-
-    return {
-      type: componentType as ComponentType,
-      id: id,
-      children: children
-    }
-  };
   
   /**
    * Renders Add New Element button
@@ -81,16 +51,17 @@ const LayoutTreeMenuHtml: FC<Props> = ({
         </Stack>
       );
     };
-
+    
   /**
    * Renders Tree Item
    *
    * @param item item
    * @param isRoot is root element
+   * @param isRootSubDirectory is root element of sub-directory in tree
    */
-  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubDirectory?: boolean) => {
+  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
-    const hasChildren = !!item.children.length;
+    const hasChildren = !!item.children?.length;
     const isLayoutComponent = item.type === ComponentType.LAYOUT;
 
     return (
@@ -101,32 +72,28 @@ const LayoutTreeMenuHtml: FC<Props> = ({
         <StyledTreeItem
           key={ item.id }
           nodeId={ item.id }
-          labelText={ item.type }
+          itemType={ item.type }
+          itemName={ item.name || "Nimetön" }
           isLayoutComponent={ isLayoutComponent }
           isRoot={ isRoot }
-          isRootSubdirectory={ isRootSubDirectory }
+          isRootSubdirectory={ isRootSubdirectory }
           hasChildren={ hasChildren }
-          onAddComponentClick={ onAddComponentClick }
+          onClick={ () => onTreeComponentSelect(item) }
         >
-          { item.children.map((child, i) => {
+          { (item.children ?? []).map((child, i) => {
               const isRootSubDirectory = i === 0;
-              return renderTreeItem(child, false, isRootSubDirectory)
+              return renderTreeItem(child, false , isRootSubDirectory)
             })
           }
+          { (isLayoutComponent && hover === item.id) && renderAddNewElementButton(item.id) }
         </StyledTreeItem>
-        { (isLayoutComponent && hover === item.id) && renderAddNewElementButton(item.id) }
       </Stack>
     );
   };
 
   return (
     <TreeView>
-      { Array.isArray(domChildrenArray) &&
-        domChildrenArray.map(domElement => {
-          const item = createTreeObject(domElement);
-          return renderTreeItem(item, true);
-        })
-      }
+      { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );
 };

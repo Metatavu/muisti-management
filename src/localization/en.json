@@ -273,6 +273,37 @@
     "properties": {
       "title": "properties"
     },
+    "htmlProperties": {
+      "elementSettings": "Element settings",
+      "genericProperties": {
+        "element": "Element",
+        "elementName": "Element name",
+        "proportions": "Proportions",
+        "width": "Width",
+        "height": "Height",
+        "elevation": "Elevation",
+        "color": {
+          "label": "Background color",
+          "button": "Choose color"
+        },
+        "alignment": {
+          "northwest": "Top left",
+          "north": "Top",
+          "northeast": "Top right",
+          "west": "Left",
+          "center": "Center",
+          "east": "Right",
+          "southwest": "Bottom left",
+          "south": "Bottom",
+          "southeast": "Bottom right"
+        },
+        "margin": "Margin",
+        "padding": "Padding"
+      },
+      "layoutProperties": {
+        "contentEmphasis": "Content emphasis"
+      }
+    },
     "delete": {
       "deleteTitle": "Delete page layout",
       "deleteText": "Are you sure you want to delete selected page layout?",
