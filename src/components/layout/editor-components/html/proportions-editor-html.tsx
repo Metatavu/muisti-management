@@ -1,6 +1,6 @@
+import { ChangeEvent, useState } from "react";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
 import { Stack, Typography, TextField, Select, MenuItem } from "@mui/material";
-import { useState } from "react";
 
 /**
  * Components properties
@@ -34,13 +34,13 @@ const ProportionsEditorHtml = ({
    *
    * @param event event
    */
-  const onValueChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+  const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     const type = settings[name as keyof typeof settings];
     const val = type === "px" ? value : `${value}${type}`;
 
     onChange(name, val);
   };
-  
+
   /**
    * Renders icon
    */
@@ -57,7 +57,7 @@ const ProportionsEditorHtml = ({
         />
       );
     }
-    
+
     if (name === "height") {
       return (
         <ExpandOutlined

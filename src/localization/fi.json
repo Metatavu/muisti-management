@@ -283,7 +283,7 @@
         "proportions": "Mittasuhteet",
         "width": "Leveys",
         "height": "Korkeus",
-        "elevation": "Elevation??",
+        "elevation": "Varjostus",
         "color": {
           "label": "Taustaväri",
           "button": "Valitse väri"

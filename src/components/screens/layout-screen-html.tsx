@@ -430,7 +430,7 @@ const LayoutScreenHTML: FC<Props> = ({
           <LayoutComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
-          />}
+          /> }
     </ElementSettingsPane>
     )
   }

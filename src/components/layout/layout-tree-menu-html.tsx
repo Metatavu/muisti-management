@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { AddBoxOutlined } from '@mui/icons-material';
-import { TreeView } from '@mui/lab';
-import { Button, Stack } from '@mui/material';
-import { StyledTreeItem } from '../../styles/components/layout-screen/styled-tree-item';
-import { HtmlComponentType, TreeObject } from '../../types';
-import strings from '../../localization/strings';
+import { AddBoxOutlined } from "@mui/icons-material";
+import { TreeView } from "@mui/lab";
+import { Button, Stack } from "@mui/material";
+import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
+import { HtmlComponentType, TreeObject } from "../../types";
+import strings from "../../localization/strings";
 import { PageLayout } from "../../generated/client";
 
 /**

@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import React, { useState, FC, ChangeEvent } from "react";
 import { Button, Divider, MenuItem, Popover, Stack, TextField } from "@mui/material";
 import { ColorResult, SketchPicker } from "react-color";
 import strings from "../../../../localization/strings";
@@ -44,7 +44,7 @@ const GenericComponentProperties: FC<Props> = ({
    *
    * @param event event
    */
-  const onNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+  const onNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     component.element.setAttribute("name", value);
     updateComponent(component);
   };
