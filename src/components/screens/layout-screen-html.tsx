@@ -419,6 +419,7 @@ const LayoutScreenHTML: FC<Props> = ({
               </InputLabel>
               <Select
                 labelId="subLayout"
+                fullWidth
                 label={ strings.layoutEditor.addLayoutViewDialog.subLayout }
                 name="subLayout"
                 value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }

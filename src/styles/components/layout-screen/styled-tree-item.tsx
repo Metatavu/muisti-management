@@ -59,25 +59,6 @@ const StyledTreeItem = ({
   ...other
 }: StyledTreeItemProps) => {
 
-/**
- * Renders Add New Element button
- */
-  const renderAddNewElementButton = (id: string) => {
-    console.log(id);
-
-    return (
-      <Stack direction="row" alignItems="center">
-        <AddBoxOutlined style={{ color: "#2196F3" }} onClick={ () => onAddComponentClick(id) }/>
-        <Typography
-          variant="caption"
-          textTransform="uppercase"
-          style={{ color: "#2196F3" }}
-        >
-          { strings.layoutEditor.addLayoutViewDialog.title }
-        </Typography>
-      </Stack>
-    );
-  };
 
   return (
     <StyledTreeItemRoot
@@ -110,7 +91,6 @@ const StyledTreeItem = ({
               <Typography>
                 { strings.comingSoon }
               </Typography>
-              { renderAddNewElementButton(other.nodeId) }
             </Stack>
           </div>
           { hasChildren &&
