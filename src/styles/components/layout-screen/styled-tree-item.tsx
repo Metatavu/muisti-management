@@ -20,7 +20,6 @@ type StyledTreeItemProps = TreeItemProps & {
  * Styled Tree Item Root styled component
  */
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-  marginTop: theme.spacing(2),
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
     color: theme.palette.text.secondary,
@@ -89,10 +88,8 @@ export const StyledTreeItem = ({
               { itemType }
             </Typography>
           </Stack>
-          { hasChildren &&
-          <ParentTreeIcon /> }
         </div>
-
+        { hasChildren && <ParentTreeIcon/> }
       </Stack>
     }
     {...other}

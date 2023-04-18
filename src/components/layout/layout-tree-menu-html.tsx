@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
-import { Button, Stack } from "@mui/material";
+import { Button, Fade, Stack } from "@mui/material";
 import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
 import { HtmlComponentType, TreeObject } from "../../types";
 import strings from "../../localization/strings";
@@ -25,28 +25,32 @@ const LayoutTreeMenuHtml = ({
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
-  const [ hover, setHover ] = useState<string>();
+  const [ hover, setHover ] = useState<string>("");
   
   /**
    * Renders Add New Element button
    */
-    const renderAddNewElementButton = (item: TreeObject) => (
-      <Stack direction="row" alignItems="center" key={ item.id + "btn" }>
-        <Button
-          variant="text"
-          sx={{
-            textTransform: "uppercase",
-            fontWeight: 400,
-            fontSize: "0.75rem",
-            color: "#2196F3"
-          }}
-          startIcon={ <AddBoxOutlined style={{ color: "#2196F3" }}/> }
-          onClick={ () => onAddComponentClick(item.path) }
-        >
-          { strings.layoutEditor.addLayoutViewDialog.title }
-        </Button>
-      </Stack>
-    );
+    const renderAddNewElementButton = (item: TreeObject, hover: string) => {
+      return (
+        <Fade in={ hover === item.id } timeout={ 500 }>
+          <Stack direction="row-reverse" alignItems="center" key={ `${item.id}-btn` }>
+            <Button
+              variant="text"
+              sx={{
+                textTransform: "uppercase",
+                fontWeight: 400,
+                fontSize: "0.75rem",
+                color: "#2196F3"
+              }}
+              startIcon={ <AddBoxOutlined style={{ color: "#2196F3" }}/> }
+              onClick={ () => onAddComponentClick(item.path) }
+            >
+              { strings.layoutEditor.addLayoutViewDialog.title }
+            </Button>
+          </Stack>
+        </Fade>
+      )
+    };
     
   /**
    * Renders Tree Item
@@ -65,12 +69,12 @@ const LayoutTreeMenuHtml = ({
       <Stack
         key={ item.id }
         onMouseEnter={ () => setHover(item.id) }
-        onMouseLeave={ () => setHover(undefined) }
+        onMouseLeave={ () => setHover("") }
       >
         <StyledTreeItem
           nodeId={ item.id }
           itemType={ item.type }
-          itemName={ item.name || "Nimetön" }
+          itemName={ item.name || strings.generic.name }
           isLayoutComponent={ isLayoutComponent }
           isRoot={ isRoot }
           isRootSubdirectory={ isRootSubdirectory }
@@ -83,7 +87,7 @@ const LayoutTreeMenuHtml = ({
             })
           }
         </StyledTreeItem>
-          { (isLayoutComponent && hover === item.id) && renderAddNewElementButton(item) }
+          { renderAddNewElementButton(item, hover) }
       </Stack>
     );
   };
