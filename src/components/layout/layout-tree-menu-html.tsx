@@ -12,7 +12,8 @@ import { PageLayout } from "../../generated/client";
  */
 interface Props {
   treeObjects: TreeObject[];
-  onTreeComponentSelect: (selectedComponent: TreeObject) => void;
+  selectedPath?: string;
+  onTreeComponentSelect: (selectedComponent?: TreeObject) => void;
   addHtmlComponent: (layout: PageLayout) => void;
   onAddComponentClick: (path: string) => void;
 }
@@ -22,6 +23,7 @@ interface Props {
  */
 const LayoutTreeMenuHtml = ({
   treeObjects,
+  selectedPath,
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
@@ -88,8 +90,36 @@ const LayoutTreeMenuHtml = ({
     );
   };
 
+  /**
+   * Gets parent ids, based on selected path.
+   * This is being used to expand the tree view automatically after adding a new element.
+   * In case of the root element we return the path as is.
+   * 
+   * @param path path
+   * @retuns IDs of parent elements
+   */
+  const getParentIds = (path?: string) => {
+    const slashes = path?.match(/\//g)?.length ?? 0;
+    
+    if (!slashes) {
+      return [ path ];
+    }
+    
+    let parentIds: string[] = [];
+    for (let i = 0; i < slashes; i++) {
+      if (path?.split("/")[i]) {
+        parentIds.push(path?.split("/")[i]); 
+      }
+    }
+    
+    return parentIds;
+  };
+
   return (
-    <TreeView>
+    <TreeView
+      expanded={ getParentIds(selectedPath) }
+      onBlur={ () => onTreeComponentSelect(undefined) }
+    >
       { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );

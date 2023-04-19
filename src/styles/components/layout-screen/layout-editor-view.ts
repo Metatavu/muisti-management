@@ -105,7 +105,8 @@ export default createStyles({
     minHeight: "100%",
     justifyContent: "center",
     alignContent: "center",
-    position: "relative"
+    position: "relative",
+    backgroundColor: "#EFF0F1"
   },
 
   editorContainer: {

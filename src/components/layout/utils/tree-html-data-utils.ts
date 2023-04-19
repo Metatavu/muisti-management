@@ -61,16 +61,25 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  * @param treeObject
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
+export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
   const element = treeObject.element;
+  const wrapper = document.createElement("div");
+  if (element.id === selectedComponentId) {
+    const parent = element.parentNode;
+    parent?.replaceChild(wrapper, element);
+    wrapper.appendChild(element); 
+    wrapper.style["border"] = "1px solid #2196F3";
+    wrapper.setAttribute("data-component-type", "layout");
+    wrapper.id = element.id + "wrapper";
+  }
   element.replaceChildren();
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(treeObjectToHtmlElement(treeObject.children[i]));
+      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId));
     }
   }
 
-  return element;
+  return element.id === selectedComponentId ? wrapper : element;
 };
 
 /**
