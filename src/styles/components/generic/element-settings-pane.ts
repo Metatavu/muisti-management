@@ -49,7 +49,6 @@ export default createStyles({
     }
   },
   content: {
-    padding: theme.spacing(2),
     overflowY: "auto",
     maxHeight: "100%",
     height: "100%",

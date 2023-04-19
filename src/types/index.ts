@@ -245,9 +245,12 @@ export interface DiagnosticsConfig {
  */
 export type TreeObject = {
   type: ComponentType;
+  path: string;
+  name?: string;
   id: string;
   resourceId?: string;
   children: TreeObject[];
+  element: HTMLElement;
 };
 
 /**
@@ -261,3 +264,18 @@ export enum ComponentType {
   TABS = "tabs",
   TAB = "tab"
 };
+
+/**
+ * Layout alignment enum
+ */
+export enum LayoutAlignment {
+  NORTH_WEST = "nw",
+  NORTH = "n",
+  NORTH_EAST = "ne",
+  WEST = "w",
+  CENTER = "c",
+  EAST = "e",
+  SOUTH_WEST = "sw",
+  SOUTH = "s",
+  SOUTH_EAST = "se"
+}

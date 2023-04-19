@@ -1,88 +1,60 @@
-import { FC } from "react";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
 import { Stack, Typography } from "@mui/material";
-import strings from "../../localization/strings";
-import StyledTreeItem from "../../styles/components/layout-screen/styled-tree-item";
+import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
 import { ComponentType, TreeObject } from "../../types";
+import strings from "../../localization/strings";
 
 /**
  * Components properties
  */
 interface Props {
-  htmlString: string;
+  treeObjects: TreeObject[];
+  onTreeComponentSelect: (selectedComponent: TreeObject) => void;
 }
 
 /**
  * Layout Tree Menu HTML Component
  */
-const LayoutTreeMenuHtml: FC<Props> = ({
-  htmlString
-}) => {
-  const dom = new DOMParser().parseFromString(htmlString, "text/html").body;
-  const domArray = Array.from(dom.children);
-
-  /**
-   * Creates Tree Object from HTML Element
-   *
-   * @param element element
-   * @returns TreeObject
-   */
-  const createTreeObject = (element: Element): TreeObject | undefined => {
-    const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
-    const id = element.id ?? "";
-
-    if (!componentType) return;
-
-    if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
-
-    const children: TreeObject[] = [];
-
-    for (const child of element.children) {
-      const treeObject = createTreeObject(child);
-
-      if (treeObject) children.push(treeObject);
-    }
-
-    return {
-      type: componentType as ComponentType,
-      id: id,
-      children: children
-    }
-  };
-
+const LayoutTreeMenuHtml = ({
+  treeObjects,
+  onTreeComponentSelect
+}: Props) => {
   /**
    * Renders Tree Item
    *
    * @param item item
    * @param isRoot is root element
+   * @param isRootSubDirectory is root element of sub-directory in tree
    */
-  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubDirectory?: boolean) => {
+  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
-    const hasChildren = !!item.children.length;
+    const hasChildren = !!item.children?.length;
 
     return (
       <StyledTreeItem
         key={ item.id }
-        nodeId={ item?.id ?? "" }
-        labelText={ item.type }
+        nodeId={ item.id }
+        itemType={ item.type }
+        itemName={ item.name || "Nimetön" }
         isLayoutComponent={ item.type === ComponentType.LAYOUT }
         isRoot={ isRoot }
-        isRootSubdirectory={ isRootSubDirectory }
+        isRootSubdirectory={ isRootSubdirectory }
         hasChildren={ hasChildren }
+        onClick={ () => onTreeComponentSelect(item) }
       >
-        { item.children.map((child, i) => {
-          const isRootSubDirectory = i === 0;
-          return renderTreeItem(child, false , isRootSubDirectory)
+        { (item.children ?? []).map((child, i) => {
+            const isRootSubDirectory = i === 0;
+            return renderTreeItem(child, false , isRootSubDirectory)
           })
         }
         { item.type === ComponentType.LAYOUT &&
-          <Stack direction="row" alignItems="center">
-            <AddBoxOutlined/>
-            <Typography variant="caption" textTransform="uppercase">
-              { strings.layoutEditor.addLayoutViewDialog.title }
-            </Typography>
-          </Stack>
+            <Stack direction="row" alignItems="center">
+              <AddBoxOutlined/>
+              <Typography variant="caption" textTransform="uppercase">
+                { strings.layoutEditor.addLayoutViewDialog.title }
+              </Typography>
+            </Stack>
         }
       </StyledTreeItem>
     );
@@ -90,12 +62,7 @@ const LayoutTreeMenuHtml: FC<Props> = ({
 
   return (
     <TreeView>
-      { Array.isArray(domArray) &&
-        domArray.map(domElement => {
-          const item = createTreeObject(domElement);
-          return renderTreeItem(item, true);
-        })
-      }
+      { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );
 };

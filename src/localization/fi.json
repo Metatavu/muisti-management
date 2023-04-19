@@ -275,7 +275,37 @@
     "properties": {
       "title": "Ominaisuudet"
     },
-
+    "htmlProperties": {
+      "elementSettings": "Elementin asetukset",
+      "genericProperties": {
+        "element": "Elementti",
+        "elementName": "Elementin nimi",
+        "proportions": "Mittasuhteet",
+        "width": "Leveys",
+        "height": "Korkeus",
+        "elevation": "Varjostus",
+        "color": {
+          "label": "Taustaväri",
+          "button": "Valitse väri"
+        },
+        "alignment": {
+          "northwest": "Vasen ylälaita",
+          "north": "Ylälaita",
+          "northeast": "Oikea ylälaita",
+          "west": "Vasen",
+          "center": "Keskellä",
+          "east": "Oikea",
+          "southwest": "Vasen alalaita",
+          "south": "Alalaita",
+          "southeast": "Oikea alalaita"
+        },
+        "margin": "Marginaalit",
+        "padding": "Täyttö"
+      },
+      "layoutProperties": {
+        "contentEmphasis": "Sisällön painotus"
+      }
+    },
     "delete": {
       "deleteTitle": "Poista asettelu",
       "deleteText": "Haluatko varmasti poistaa asettelun?",

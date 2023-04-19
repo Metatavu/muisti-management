@@ -1,24 +1,18 @@
 import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
-import { Stack, styled, Typography } from "@mui/material";
-import strings from "../../../localization/strings";
+import { Stack, styled, SvgIcon, Typography } from "@mui/material";
 import theme from "../../theme";
 import ParentTreeIcon from "./parent-tree-icon";
 
-/**
- * Styled tree item component props
- */
 type StyledTreeItemProps = TreeItemProps & {
-  labelText: string;
+  itemType: string;
+  itemName: string;
   isLayoutComponent: boolean;
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
 };
 
-/**
- * Styled tree item theme
- */
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
@@ -42,13 +36,12 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
       color: "inherit",
     },
   }
-}));
+}
+));
 
-/**
- * Styled tree item component
- */
-const StyledTreeItem = ({
-  labelText,
+export const StyledTreeItem = ({
+  itemType,
+  itemName,
   isLayoutComponent,
   isRoot,
   isRootSubdirectory,
@@ -59,14 +52,14 @@ const StyledTreeItem = ({
   return (
     <StyledTreeItemRoot
       label={
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-between" >
           <div style={{ display: "flex", flexDirection: "row" }}>
             { (isRootSubdirectory) &&
               <SubdirectoryArrowRightRounded
                 sx={{
                   color: "#BDBDBD",
                   alignSelf: "center",
-                  marginRight: theme.spacing(2)
+                  marginRight: theme.spacing(2),
                 }}
               />
             }
@@ -82,21 +75,19 @@ const StyledTreeItem = ({
                   color: "#2196F3"
                 }}
               >
-                { labelText }
+                { itemName }
               </Typography>
               <Typography>
-                { strings.comingSoon }
+                { itemType }
               </Typography>
             </Stack>
+            { hasChildren &&
+            <ParentTreeIcon /> }
           </div>
-          { hasChildren &&
-            <ParentTreeIcon />
-          }
+
         </Stack>
       }
       {...other}
     />
   );
-};
-
-export default StyledTreeItem;
+}
