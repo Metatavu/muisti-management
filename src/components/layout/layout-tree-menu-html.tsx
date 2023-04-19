@@ -33,7 +33,7 @@ const LayoutTreeMenuHtml = ({
     const renderAddNewElementButton = (item: TreeObject, hover: string) => {
       return (
         <Fade in={ hover === item.id } timeout={ 500 }>
-          <Stack direction="row-reverse" alignItems="center" key={ `${item.id}-btn` }>
+          <Stack direction={ item.children.length > 0 ? "row" : "row-reverse" } alignItems="center" key={ `${item.id}-btn` }>
             <Button
               variant="text"
               sx={{
