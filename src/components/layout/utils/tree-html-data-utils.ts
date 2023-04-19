@@ -67,7 +67,7 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
   if (element.id === selectedComponentId) {
     const parent = element.parentNode;
     parent?.replaceChild(wrapper, element);
-    wrapper.appendChild(element); 
+    wrapper.appendChild(element);
     wrapper.style["border"] = "1px solid #2196F3";
     wrapper.setAttribute("data-component-type", "layout");
     wrapper.id = element.id + "wrapper";
@@ -84,7 +84,7 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
 
 /**
  * Adds new HTML component to tree
- * 
+ *
  * @param treeData tree data
  * @param newComponent new component to be added
  * @param siblingPath path of the sibling component
@@ -97,13 +97,13 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
   } else {
     updatedTree[0].children = pushToTree(updatedTree[0].children, newComponent, treeData[0].id, siblingPath);
   }
-  
+
   return updatedTree;
 };
 
 /**
  * Pushes new HTML Component to tree
- * 
+ *
  * @param treeData tree data
  * @param newComponent new component to be added
  * @param currentPath current path
@@ -122,7 +122,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
       found = true
     }
   }
-  
+
   if (found) {
     return cleanNodes;
   } else {
@@ -132,13 +132,13 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
       child.children = pushToTree(child.children ?? [], newComponent, updatedPath, siblingPath);
     }
   }
-  
+
   return treeData;
 };
 
 /**
  * Deserializes HTML element from string
- * 
+ *
  * @param element serialized element
  * @returns deserialized element
  */
@@ -194,3 +194,8 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     element: element as HTMLElement
   }
 };
+
+/**
+ * Elements that are able to hold children
+ */
+export const CONTAINER_ELEMENTS = [ HtmlComponentType.LAYOUT, HtmlComponentType.TAB, HtmlComponentType.TABS ];

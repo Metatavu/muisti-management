@@ -264,18 +264,18 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Create new component and add it to the layout
-   * 
+   *
    * @param componentData component data
    * @param siblingPath sibling path
    */
   const createComponent = (componentData: string, siblingPath: string) => {
     if (!newPageLayoutViewPath) return;
-    
+
     const newElement = deserializeElement(componentData);
     const newComponent = createTreeObject(newElement, siblingPath);
-    
+
     if (!newComponent) return;
-    
+
     const updatedLayout = addNewHtmlComponent(
       treeObjects,
       newComponent,
@@ -284,7 +284,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
     const updatedHtmlElements = updatedLayout.map(treeObjectToHtmlElement);
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
-    
+
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -295,7 +295,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(newComponent);
     setDataChanged(true);
   }
-  
+
   /**
    * Update component and add it to the layout
    *
@@ -303,7 +303,7 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-  
+
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
@@ -311,7 +311,7 @@ const LayoutScreenHTML: FC<Props> = ({
     );
     const updatedHtmlElements = updatedTreeObjects.map(treeObjectToHtmlElement);
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
-  
+
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -321,7 +321,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
-  };  
+  };
 
   /**
    * Renders device model select
@@ -409,20 +409,20 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const renderVisualEditor = () => {
     if (deviceModels.length === 0) return;
-    
+
     const deviceModel = deviceModels.find(model => model.id === foundLayout.modelId);
-    
+
     if (!deviceModel) return;
 
     const { dimensions: { screenHeight, screenWidth } } = deviceModel;
-    
+
     const scale = 1;
     const { screenOrientation } = foundLayout;
     const { screenOrientation: deviceOrientation } = deviceModel;
-    
+
     let height = screenHeight ?? 1 * scale;
     let width = screenWidth ?? 1 * scale;
-    
+
     if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
       height = width;
       width = height;
@@ -529,7 +529,7 @@ const LayoutScreenHTML: FC<Props> = ({
               { renderScreenOrientationSelect() }
               <LayoutTreeMenuHtml
                 treeObjects={ treeObjects }
-                selectedPath={ selectedComponent?.path }
+                selectedComponent={ selectedComponent }
                 onTreeComponentSelect={ onTreeComponentSelect }
                 addHtmlComponent={ onHtmlLayoutComponentAdd }
                 onAddComponentClick={ onAddComponentClick }

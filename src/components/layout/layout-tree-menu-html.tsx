@@ -6,13 +6,14 @@ import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tre
 import { HtmlComponentType, TreeObject } from "../../types";
 import strings from "../../localization/strings";
 import { PageLayout } from "../../generated/client";
+import { CONTAINER_ELEMENTS } from "./utils/tree-html-data-utils";
 
 /**
  * Components properties
  */
 interface Props {
   treeObjects: TreeObject[];
-  selectedPath?: string;
+  selectedComponent?: TreeObject;
   onTreeComponentSelect: (selectedComponent?: TreeObject) => void;
   addHtmlComponent: (layout: PageLayout) => void;
   onAddComponentClick: (path: string) => void;
@@ -23,12 +24,12 @@ interface Props {
  */
 const LayoutTreeMenuHtml = ({
   treeObjects,
-  selectedPath,
+  selectedComponent,
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
   const [ hover, setHover ] = useState<string>("");
-  
+
   /**
    * Renders Add New Element button
    */
@@ -53,7 +54,7 @@ const LayoutTreeMenuHtml = ({
         </Fade>
       )
     };
-    
+
   /**
    * Renders Tree Item
    *
@@ -63,7 +64,7 @@ const LayoutTreeMenuHtml = ({
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
-    
+
     const hasChildren = !!item.children?.length;
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
@@ -85,6 +86,11 @@ const LayoutTreeMenuHtml = ({
           isRootSubdirectory={ isRootSubdirectory }
           hasChildren={ hasChildren }
           onClick={ () => onTreeComponentSelect(item) }
+          onDoubleClick={ () => {
+            if (selectedComponent?.id === item.id) {
+              onTreeComponentSelect(undefined);
+            }
+          }}
         >
           { (item.children ?? []).map((child, i) => {
               const isRootSubDirectory = i === 0;
@@ -100,30 +106,40 @@ const LayoutTreeMenuHtml = ({
    * Gets parent ids, based on selected path.
    * This is being used to expand the tree view automatically after adding a new element.
    * In case of the root element we return the path as is.
-   * 
+   *
    * @param path path
    * @retuns IDs of parent elements
    */
-  const getParentIds = (path?: string) => {
+  const getParentIds = (): string[] => {
+    if (!selectedComponent) {
+      return [];
+    }
+
+    const { path, type } = selectedComponent;
+
+    if (!path || !type) {
+      return [];
+    }
+
     const slashes = path?.match(/\//g)?.length ?? 0;
-    
+
     if (!slashes) {
       return [ path ];
     }
-    
+
     let parentIds: string[] = [];
-    for (let i = 0; i < slashes; i++) {
+    for (let i = 0; i <= slashes; i++) {
       if (path?.split("/")[i]) {
-        parentIds.push(path?.split("/")[i]); 
+        parentIds.push(path?.split("/")[i]);
       }
     }
-    
+
     return parentIds;
   };
 
   return (
     <TreeView
-      expanded={ getParentIds(selectedPath) }
+      expanded={ getParentIds() }
       onBlur={ () => onTreeComponentSelect(undefined) }
     >
       { treeObjects.map(item => renderTreeItem(item, true)) }
