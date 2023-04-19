@@ -31,8 +31,8 @@ export const updateHtmlComponent = (treeData: TreeObject[], updatedComponent: Tr
 const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPath: string, updatedComponent: TreeObject): TreeObject[] => {
   const cleanNodes: TreeObject[] = [];
   let found = false;
-  for (let i = 0; i < treeData.length; i++) {
-    const node = treeData[i];
+  for (const element of treeData) {
+    const node = element;
     const fullPath = `${currentPath}/${node.id}`;
     if (fullPath !== destinationPath) {
       cleanNodes.push(node);
@@ -45,8 +45,8 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
   if (found) {
     return cleanNodes;
   } else {
-    for (let i = 0; i < treeData.length; i++) {
-      const child = treeData[i];
+    for (const element of treeData) {
+      const child = element;
       const updatedPath = `${currentPath}/${child.id}`;
       child.children = updateInTree(child.children ?? [], destinationPath, updatedPath, updatedComponent);
     }
@@ -102,7 +102,7 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
 };
 
 /**
- * Pushes new HTML Componen to tree
+ * Pushes new HTML Component to tree
  * 
  * @param treeData tree data
  * @param newComponent new component to be added
@@ -113,8 +113,8 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
 const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPath: string, siblingPath: string): TreeObject[] => {
   const cleanNodes: TreeObject[] = [];
   let found = false;
-  for (let i = 0; i < treeData.length; i++) {
-    const node = treeData[i];
+  for (const element of treeData) {
+    const node = element;
     const fullPath = `${currentPath}/${node.id}`;
     cleanNodes.push(node);
     if (fullPath === siblingPath) {
@@ -126,8 +126,8 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
   if (found) {
     return cleanNodes;
   } else {
-    for (let i = 0; i < treeData.length; i++) {
-      const child = treeData[i];
+    for (const element of treeData) {
+      const child = element;
       const updatedPath = `${currentPath}/${child.id}`;
       child.children = pushToTree(child.children ?? [], newComponent, updatedPath, siblingPath);
     }

@@ -977,6 +977,14 @@ export interface IStrings extends LocalizedStringsMethods {
       visitorsViewDescription: string;
       webViewDescription: string;
     };
+    layoutEditorHtml: {
+      buttonDescription: string;
+      textViewDescription: string;
+      imageViewDescription: string;
+      layoutDescription: string;
+      tabViewDescription: string;
+      tabsViewDescription: string;
+    };
     contentManager: {
       animationInterpolations: {
         accelerateDecelerate: string;
