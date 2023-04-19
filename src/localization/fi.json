@@ -961,6 +961,14 @@
       "visitorsViewDescription": "Ryhmämuodostuspisteen kävijöitä esittävä lista.",
       "webViewDescription": "Internetsisältö. Tällä voidaan esittää esim. haluttu internet-sivu tai jokin muu internet-sisältö, mikä ei ole Noheva Alustan sisällönhallinnan kautta hallittavissa."
     },
+    "layoutEditorHtml": {
+      "buttonDescription": "Painike-elementti esimerkiksi valintojen ja navigoinnin luomiseen sivujen välillä.",
+      "textViewDescription": "Tekstielementti tekstin esittämistä varten.",
+      "imageViewDescription": "Elementti kuvien esittämistä varten",
+      "layoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
+      "tabViewDescription": "Välilehtiasettelu.",
+      "tabsViewDescription": "Välilehtien asettelu."
+    },
     "contentManager": {
       "animationInterpolations": {
         "accelerateDecelerate": "Alkuun kiihtyvä ja loppuun hidastuva siirtymä",

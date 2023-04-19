@@ -119,12 +119,34 @@ const AddNewElementDialog = ({
       );
     })
   );
+
+   /**
+   * Render help text according to selected component
+   */
+   const renderHelpTextBySelectedComponent = (componentType?: HtmlComponentType): string => {
+    switch(true) {
+      case componentType === HtmlComponentType.BUTTON:
+        return strings.helpTexts.layoutEditorHtml.buttonDescription;
+      case componentType === HtmlComponentType.TEXT:
+        return strings.helpTexts.layoutEditorHtml.textViewDescription;
+      case componentType === HtmlComponentType.IMAGE:
+        return strings.helpTexts.layoutEditorHtml.imageViewDescription;
+      case componentType === HtmlComponentType.LAYOUT:
+        return strings.helpTexts.layoutEditorHtml.layoutDescription;
+      case componentType === HtmlComponentType.TAB:
+        return strings.helpTexts.layoutEditorHtml.tabViewDescription;
+      case componentType === HtmlComponentType.TABS:
+        return strings.helpTexts.layoutEditorHtml.tabsViewDescription;
+      default:
+        return "";
+    }
+  }
   
   /**
    * Render add layout component dialog
    */
   const renderDialogContent = () => (
-    <Stack spacing={ 2 }>
+    <Stack spacing={ 2 } sx={{ minWidth: 300 }}>
       <FormControl variant="outlined">
           { renderInputLabel(strings.layoutEditor.addLayoutViewDialog.widget) }
           <Select
@@ -134,23 +156,8 @@ const AddNewElementDialog = ({
             { renderComponentTypesMenuItems() }
           </Select>
           <FormHelperText>
-            { strings.helpTexts.layoutEditor.buttonDescription }
+            { renderHelpTextBySelectedComponent(newComponentType) }
           </FormHelperText>
-        </FormControl>
-      <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
-        <Typography variant="h6">
-          { strings.layoutEditor.addLayoutViewDialog.or }
-        </Typography>
-      </div>
-        <FormControl variant="outlined">
-          { renderInputLabel(strings.layoutEditor.addLayoutViewDialog.subLayout) }
-          <Select
-            label={ strings.layoutEditor.addLayoutViewDialog.subLayout }
-            value={ selectedSubLayoutId ?? "" }
-            onChange={ onSubLayoutChange }
-          >
-            { renderSubLayoutsMenuItems() }
-          </Select>
         </FormControl>
         <Box mt={ 2 }>
           <TextField

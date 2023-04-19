@@ -224,6 +224,7 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const onCodeChange = (value: string) => {
     setFoundLayout({ ...foundLayout, data: { html: value } });
+    setDataChanged(true);
   };
 
   /**
