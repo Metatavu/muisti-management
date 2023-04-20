@@ -140,7 +140,6 @@ const LayoutTreeMenuHtml = ({
   return (
     <TreeView
       expanded={ getParentIds() }
-      onBlur={ () => onTreeComponentSelect(undefined) }
     >
       { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
