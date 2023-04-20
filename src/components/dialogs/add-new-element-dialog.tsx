@@ -64,6 +64,8 @@ const AddNewElementDialog = ({
   
   /**
    * Event handler for component type select change event
+   *
+   * @param event event
    */
   const onComponentTypeChange = ({ target: { value } }: SelectChangeEvent<HtmlComponentType>) => setNewComponentType(value as HtmlComponentType);
 
