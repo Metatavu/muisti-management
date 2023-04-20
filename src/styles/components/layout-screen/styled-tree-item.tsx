@@ -15,9 +15,6 @@ type StyledTreeItemProps = TreeItemProps & {
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
-  item: TreeObject;
-  hover: string;
-  renderAddNewElementButton: (item: TreeObject, hover: string) => JSX.Element;
 };
 
 /**
@@ -59,9 +56,6 @@ export const StyledTreeItem = ({
   isRoot,
   isRootSubdirectory,
   hasChildren,
-  hover,
-  item,
-  renderAddNewElementButton,
   ...other
 }: StyledTreeItemProps) => (
   <StyledTreeItemRoot
@@ -99,7 +93,6 @@ export const StyledTreeItem = ({
           </div>
           { hasChildren && <ParentTreeIcon/> }
         </Stack>
-        { renderAddNewElementButton(item, hover) }
       </>
     }
     {...other}
