@@ -143,7 +143,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
  * @param element serialized element
  * @returns deserialized element
  */
-export const deserializeElement = (element: string): HTMLElement =>(
+export const deserializeElement = (element: string): HTMLElement => (
   new DOMParser().parseFromString(element, "text/html").body.firstChild as HTMLElement
 );
 
