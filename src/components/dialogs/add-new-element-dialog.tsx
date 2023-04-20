@@ -78,6 +78,8 @@ const AddNewElementDialog = ({
   
   /**
    * Event handler for component name text field change event
+   *
+   * @param event event
    */
   const onNewLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
   
