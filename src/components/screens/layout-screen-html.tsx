@@ -38,6 +38,7 @@ import LayoutComponentProperties from "../layout/editor-components/html/layout-c
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import PanZoom from "../generic/pan-zoom";
 import Fraction from "fraction.js";
+import TextComponentProperties from "../layout/editor-components/html/text-component-properties";
 
 /**
  * Component props
@@ -493,6 +494,11 @@ const LayoutScreenHTML: FC<Props> = ({
         />
         { selectedComponent?.type === HtmlComponentType.LAYOUT &&
           <LayoutComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
+          /> }
+        { selectedComponent?.type === HtmlComponentType.TEXT &&
+          <TextComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
           /> }
