@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { PageLayoutViewHtml, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 import GenericDialog from "../generic/generic-dialog";
@@ -29,7 +29,7 @@ const AddNewElementDialog = ({
   onConfirm,
   onClose
 }: Props) => {
-  const [ newComponentName, setNewComponentName ] = useState<string>();
+  const [ newComponentName, setNewComponentName ] = useState<string | undefined>();
   const [ newComponentType, setNewComponentType ] = useState<HtmlComponentType>();
   const [ selectedSubLayoutId, setSelectedSubLayoutId ] = useState<string>();
   
@@ -68,6 +68,7 @@ const AddNewElementDialog = ({
   const onComponentTypeChange = ({ target: { value } }: SelectChangeEvent<HtmlComponentType>) => setNewComponentType(value as HtmlComponentType);
 
   /**
+   * TODO: Will be implemented later
    * Event handler for sublayout select change event
    */
   const onSubLayoutChange = ({ target: { value } }: SelectChangeEvent<string>) => setSelectedSubLayoutId(value);
@@ -75,7 +76,7 @@ const AddNewElementDialog = ({
   /**
    * Event handler for component name text field change event
    */
-  const onNewLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
+  const onNewLayoutNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
   
   /**
    * Renders input label
@@ -105,6 +106,7 @@ const AddNewElementDialog = ({
   );
   
   /**
+   * TODO: Will be implemented later
    * Renders sublayouts menu items
    */
   const renderSubLayoutsMenuItems = () => (
@@ -119,28 +121,6 @@ const AddNewElementDialog = ({
       );
     })
   );
-
-   /**
-   * Render help text according to selected component
-   */
-   const renderHelpTextBySelectedComponent = (componentType?: HtmlComponentType): string => {
-    switch(true) {
-      case componentType === HtmlComponentType.BUTTON:
-        return strings.helpTexts.layoutEditorHtml.buttonDescription;
-      case componentType === HtmlComponentType.TEXT:
-        return strings.helpTexts.layoutEditorHtml.textViewDescription;
-      case componentType === HtmlComponentType.IMAGE:
-        return strings.helpTexts.layoutEditorHtml.imageViewDescription;
-      case componentType === HtmlComponentType.LAYOUT:
-        return strings.helpTexts.layoutEditorHtml.layoutDescription;
-      case componentType === HtmlComponentType.TAB:
-        return strings.helpTexts.layoutEditorHtml.tabViewDescription;
-      case componentType === HtmlComponentType.TABS:
-        return strings.helpTexts.layoutEditorHtml.tabsViewDescription;
-      default:
-        return "";
-    }
-  }
   
   /**
    * Render add layout component dialog
@@ -156,7 +136,7 @@ const AddNewElementDialog = ({
             { renderComponentTypesMenuItems() }
           </Select>
           <FormHelperText>
-            { renderHelpTextBySelectedComponent(newComponentType) }
+            { newComponentType && LanguageUtils.getLocalizedNewComponentHelpText(newComponentType) }
           </FormHelperText>
         </FormControl>
         <Box mt={ 2 }>
