@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { PageLayoutViewHtml, SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 import GenericDialog from "../generic/generic-dialog";
@@ -32,26 +32,26 @@ const AddNewElementDialog = ({
   const [ newComponentName, setNewComponentName ] = useState<string>();
   const [ newComponentType, setNewComponentType ] = useState<HtmlComponentType>();
   const [ selectedSubLayoutId, setSelectedSubLayoutId ] = useState<string>();
-  
+
   /**
    * Event handler for dialog confirm click
    */
   const onConfirmClick = () => {
     if (!siblingPath) return;
-    
+
     if (selectedSubLayoutId) {
       const foundSublayout = subLayouts.find(subLayout => subLayout.id === selectedSubLayoutId);
-      
+
       if (!foundSublayout) return;
-      
+
       onConfirm((foundSublayout.data as PageLayoutViewHtml).html, siblingPath);
     } else if (newComponentType) {
-      onConfirm(HtmlComponentsUtils.getSerializedHtmlElement(newComponentType, newComponentName), siblingPath); 
+      onConfirm(HtmlComponentsUtils.getSerializedHtmlElement(newComponentType, newComponentName), siblingPath);
     }
-    
+
     onCloseOrCancelClick();
   };
-  
+
   /**
    * Event handler for dialog close click
    */
@@ -61,7 +61,7 @@ const AddNewElementDialog = ({
     setSelectedSubLayoutId(undefined);
     onClose();
   };
-  
+
   /**
    * Event handler for component type select change event
    */
@@ -71,15 +71,15 @@ const AddNewElementDialog = ({
    * Event handler for sublayout select change event
    */
   const onSubLayoutChange = ({ target: { value } }: SelectChangeEvent<string>) => setSelectedSubLayoutId(value);
-  
+
   /**
    * Event handler for component name text field change event
    */
-  const onNewLayoutNameChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
-  
+  const onNewLayoutNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
+
   /**
    * Renders input label
-   * 
+   *
    * @param label label
    */
   const renderInputLabel = (label: string) => (
@@ -87,7 +87,7 @@ const AddNewElementDialog = ({
       { label }
     </InputLabel>
   );
-  
+
   /**
    * Renders Component types menu items
    */
@@ -103,7 +103,7 @@ const AddNewElementDialog = ({
       );
     })
   );
-  
+
   /**
    * Renders sublayouts menu items
    */
@@ -141,7 +141,7 @@ const AddNewElementDialog = ({
         return "";
     }
   }
-  
+
   /**
    * Render add layout component dialog
    */
@@ -169,7 +169,7 @@ const AddNewElementDialog = ({
         </Box>
     </Stack>
   );
-  
+
   return (
     <GenericDialog
       cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
@@ -183,7 +183,7 @@ const AddNewElementDialog = ({
     >
       { renderDialogContent() }
     </GenericDialog>
-    
+
   );
 };
 
