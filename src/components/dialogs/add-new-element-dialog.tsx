@@ -68,7 +68,9 @@ const AddNewElementDialog = ({
   const onComponentTypeChange = ({ target: { value } }: SelectChangeEvent<HtmlComponentType>) => setNewComponentType(value as HtmlComponentType);
 
   /**
-   * Event handler for sublayout select change event
+   * Event handler for subLayout select change event
+   *
+   * @param event event
    */
   const onSubLayoutChange = ({ target: { value } }: SelectChangeEvent<string>) => setSelectedSubLayoutId(value);
   
