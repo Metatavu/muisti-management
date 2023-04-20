@@ -110,7 +110,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
     cleanNodes.push(node);
     if (fullPath === siblingPath) {
       cleanNodes.push(newComponent);
-      found = true
+      found = true;
     }
   }
   
