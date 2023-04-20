@@ -59,6 +59,7 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  * Convert tree object to html element
  *
  * @param treeObject
+ * @param selectedComponenetId
  * @returns HTMLElement
  */
 export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
@@ -70,7 +71,7 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
     wrapper.appendChild(element);
     wrapper.style["border"] = "1px solid #2196F3";
     wrapper.setAttribute("data-component-type", "layout");
-    wrapper.id = element.id + "wrapper";
+    wrapper.id = `${element.id}wrapper`;
   }
   element.replaceChildren();
   if (treeObject.children) {

@@ -282,7 +282,7 @@ const LayoutScreenHTML: FC<Props> = ({
       siblingPath
     );
 
-    const updatedHtmlElements = updatedLayout.map(treeObjectToHtmlElement);
+    const updatedHtmlElements = updatedLayout.map(treeObject => treeObjectToHtmlElement(treeObject));
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -309,7 +309,7 @@ const LayoutScreenHTML: FC<Props> = ({
       updatedComponent,
       selectedComponent.path
     );
-    const updatedHtmlElements = updatedTreeObjects.map(treeObjectToHtmlElement);
+    const updatedHtmlElements = updatedTreeObjects.map(treeObject => treeObjectToHtmlElement(treeObject));
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -456,7 +456,10 @@ const LayoutScreenHTML: FC<Props> = ({
               maxHeight: height,
             }}
           >
-            <span dangerouslySetInnerHTML={{ __html: treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML }}></span>
+            <span dangerouslySetInnerHTML={{
+              __html: treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML
+              }}
+            />
           </div>
         </PanZoom>
       </div>
