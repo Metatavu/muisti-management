@@ -75,10 +75,7 @@ const LayoutTreeMenuHtml = ({
         onMouseLeave={ () => setHover("") }
       >
         <StyledTreeItem
-          renderAddNewElementButton={ renderAddNewElementButton }
           nodeId={ item.id }
-          item={ item }
-          hover={ hover }
           itemType={ item.type }
           itemName={ item.name || strings.generic.name }
           isLayoutComponent={ isLayoutComponent }
@@ -98,6 +95,7 @@ const LayoutTreeMenuHtml = ({
             })
           }
         </StyledTreeItem>
+        { renderAddNewElementButton(item, hover) }
       </Stack>
     );
   };

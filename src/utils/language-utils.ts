@@ -56,4 +56,18 @@ export default class LanguageUtils {
     [HtmlComponentType.TABS]: strings.layout.html.types.tabs,
     [HtmlComponentType.TAB]: strings.layout.html.types.tab
   })[componentType]
+
+  /**
+   * Return localized help text according to selected component
+   * 
+   * @param componentType component type
+   */
+  public static getLocalizedNewComponentHelpText = (componentType: HtmlComponentType) => ({
+    [HtmlComponentType.LAYOUT]: strings.helpTexts.layoutEditorHtml.layoutDescription,
+    [HtmlComponentType.BUTTON]: strings.helpTexts.layoutEditorHtml.buttonDescription,
+    [HtmlComponentType.IMAGE]: strings.helpTexts.layoutEditorHtml.imageViewDescription,
+    [HtmlComponentType.TEXT]: strings.helpTexts.layoutEditorHtml.textViewDescription,
+    [HtmlComponentType.TABS]: strings.helpTexts.layoutEditorHtml.tabsViewDescription,
+    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription
+  })[componentType]
 }

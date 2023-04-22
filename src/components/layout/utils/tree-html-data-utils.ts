@@ -38,7 +38,7 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
       cleanNodes.push(node);
     } else {
       cleanNodes.push(updatedComponent);
-      found = true
+      found = true;
     }
   }
 
@@ -120,7 +120,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
     cleanNodes.push(node);
     if (fullPath === siblingPath) {
       cleanNodes.push(newComponent);
-      found = true
+      found = true;
     }
   }
 
