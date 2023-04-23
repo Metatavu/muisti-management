@@ -78,15 +78,16 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => 
  * 
  * @param treeData tree data
  * @param newComponent new component to be added
- * @param siblingPath path of the sibling component
+ * @param targetPath path of the sibling component
+ * @param asChildren whether to add as children or sibling
  * @returns updated tree data
  */
-export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeObject, siblingPath: string) => {
+export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeObject, targetPath: string, asChildren: boolean) => {
   const updatedTree: TreeObject[] = [treeData[0]];
-  if (treeData[0].id === siblingPath) {
+  if (treeData[0].id === targetPath) {
     updatedTree[0].children.push(newComponent);
   } else {
-    updatedTree[0].children = pushToTree(updatedTree[0].children, newComponent, treeData[0].id, siblingPath);
+    updatedTree[0].children = pushToTree(updatedTree[0].children, newComponent, treeData[0].id, targetPath, asChildren);
   }
   
   return updatedTree;
@@ -98,18 +99,23 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
  * @param treeData tree data
  * @param newComponent new component to be added
  * @param currentPath current path
- * @param siblingPath path of the sibling component
+ * @param targetPath path of the sibling component
+ * @param asChildren whether to add as children or sibling
  * @returns updated tree data
  */
-const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPath: string, siblingPath: string): TreeObject[] => {
+const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPath: string, targetPath: string, asChildren: boolean): TreeObject[] => {
   const cleanNodes: TreeObject[] = [];
   let found = false;
   for (const element of treeData) {
     const node = element;
     const fullPath = `${currentPath}/${node.id}`;
     cleanNodes.push(node);
-    if (fullPath === siblingPath) {
-      cleanNodes.push(newComponent);
+    if (fullPath === targetPath) {
+      if (asChildren) {
+        node.children.push(newComponent);
+      } else {
+        cleanNodes.push(newComponent);
+      }
       found = true;
     }
   }
@@ -120,7 +126,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
     for (const element of treeData) {
       const child = element;
       const updatedPath = `${currentPath}/${child.id}`;
-      child.children = pushToTree(child.children ?? [], newComponent, updatedPath, siblingPath);
+      child.children = pushToTree(child.children ?? [], newComponent, updatedPath, targetPath, asChildren);
     }
   }
   

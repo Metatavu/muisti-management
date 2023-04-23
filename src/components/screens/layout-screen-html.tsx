@@ -70,14 +70,15 @@ const LayoutScreenHTML: FC<Props> = ({
 }) => {
   const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
-  const [ foundLayout, setFoundLayout ] = useState<PageLayout | undefined>(layout);
-  const [ error, setError ] = useState<Error | undefined>(undefined);
+  const [ foundLayout, setFoundLayout ] = useState<PageLayout>();
+  const [ error, setError ] = useState<Error>();
   const [ loading, setLoading ] = useState(false);
   const [ drawerOpen, setDrawerOpen ] = useState(false);
-  const [ selectedComponent, setSelectedComponent ] = useState<TreeObject | undefined>(undefined);
+  const [ selectedComponent, setSelectedComponent ] = useState<TreeObject>();
   const [ treeObjects, setTreeObjects ] = useState<TreeObject[]>([]);
   const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
-  const [ newPageLayoutViewPath, setNewPageLayoutViewPath ] = useState<string | undefined>(undefined);
+  const [ newComponentPath, setNewComponentPath ] = useState<string>();
+  const [ isNewComponentSibling, setIsNewComponentSibling ] = useState<boolean>();
 
   useEffect(() => {
     fetchLayout();
@@ -89,7 +90,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
   useEffect(() => {
     if (!foundLayout) return;
-
+    console.log(foundLayout);
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
   }, [foundLayout]);
 
@@ -164,18 +165,6 @@ const LayoutScreenHTML: FC<Props> = ({
     });
     setDataChanged(true);
   };
-
-  /**
-   * Event handler for layout component add
-   *
-   * @param layoutHtml layout view
-   */
-  const onHtmlLayoutComponentAdd = async (layoutHtml: PageLayout) => {
-    if (!layout) return;
-
-    const updatedLayout = { ...layout, data: layoutHtml };
-    setFoundLayout(updatedLayout);
-  }
 
   /**
    * Gets action buttons
@@ -254,30 +243,33 @@ const LayoutScreenHTML: FC<Props> = ({
    * Event handler for add component click
    *
    * @param path path to the parent element where the new child item will be added
+   * @param asChildren whether to add as children or sibling
    */
-  const onAddComponentClick = (path: string) => {
+  const onAddComponentClick = (path: string, asChildren: boolean) => {
     setAddComponentDialogOpen(true);
-    setNewPageLayoutViewPath(path);
+    setNewComponentPath(path);
+    setIsNewComponentSibling(asChildren);
   }
 
   /**
    * Create new component and add it to the layout
    * 
    * @param componentData component data
-   * @param siblingPath sibling path
+   * @param targetPath sibling path
    */
-  const createComponent = (componentData: string, siblingPath: string) => {
-    if (!newPageLayoutViewPath) return;
+  const createComponent = (componentData: string, targetPath: string) => {
+    if (!newComponentPath) return;
     
     const newElement = deserializeElement(componentData);
-    const newComponent = createTreeObject(newElement, siblingPath);
+    const newComponent = createTreeObject(newElement, targetPath);
     
     if (!newComponent) return;
     
     const updatedLayout = addNewHtmlComponent(
       treeObjects,
       newComponent,
-      siblingPath
+      targetPath,
+      !!isNewComponentSibling
     );
 
     const updatedHtmlElements = updatedLayout.map(treeObjectToHtmlElement);
@@ -405,7 +397,10 @@ const LayoutScreenHTML: FC<Props> = ({
   const elementPaneMenuOptions = [
     {
       name: strings.genericDialog.close,
-      action: () => setDrawerOpen(!drawerOpen)
+      action: () => {
+        setDrawerOpen(!drawerOpen);
+        setSelectedComponent(undefined);
+      }
     }
   ];
 
@@ -468,8 +463,8 @@ const LayoutScreenHTML: FC<Props> = ({
               { renderScreenOrientationSelect() }
               <LayoutTreeMenuHtml
                 treeObjects={ treeObjects }
+                selectedComponent={ selectedComponent }
                 onTreeComponentSelect={ onTreeComponentSelect }
-                addHtmlComponent={ onHtmlLayoutComponentAdd }
                 onAddComponentClick={ onAddComponentClick }
               />
             </div>
@@ -482,7 +477,7 @@ const LayoutScreenHTML: FC<Props> = ({
         <AddNewElementDialog
           open={ addComponentDialogOpen }
           subLayouts={ subLayouts }
-          siblingPath={ newPageLayoutViewPath }
+          siblingPath={ newComponentPath }
           onConfirm={ createComponent }
           onClose={ () => setAddComponentDialogOpen(false) }
         />
