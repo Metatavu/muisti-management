@@ -26,18 +26,20 @@ const TextComponentProperties: FC<Props> = ({
    * @param value value
    */
   const onPropertyChange = ({ target: { value } } : ChangeEvent<HTMLTextAreaElement>) => {
-    console.log("property change here", value);
 
-    // TODO: Not yet implemented
-    // const updatedHTMLTag = document.createElement(value);
-    // updatedHTMLTag.innerHTML = component.element.innerHTML;
+    const updatedHTMLTag = document.createElement(value);
 
-    // console.log("component before", component.element.parentNode)
-    // component.element.parentNode?.replaceChild(updatedHTMLTag, component.element);
-    // // Undefined?
-    // console.log("component after", component.element.parentNode)
+    // TODO: Inner html is not currently saved to the tree?
+    updatedHTMLTag.innerHTML = component.element.innerHTML;
 
-    // updateComponent(component);
+    for (let attribute of component.element.attributes) {
+      updatedHTMLTag.setAttribute(attribute.name, attribute.value);
+    }
+
+    updateComponent({
+      ...component,
+      element: updatedHTMLTag
+    });
   };
 
 	return (
