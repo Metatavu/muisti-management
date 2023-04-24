@@ -457,6 +457,7 @@ const LayoutScreenHTML: FC<Props> = ({
               maxHeight: height,
             }}
           >
+            {/* TODO: Map over the default resource for a each element */}
             <span dangerouslySetInnerHTML={{
               __html: treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML
               }}
@@ -497,6 +498,8 @@ const LayoutScreenHTML: FC<Props> = ({
           <TextComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
+            pageLayout={ foundLayout }
+            setPageLayout={ setFoundLayout }
           /> }
         <GenericComponentDrawProperties
           component={ selectedComponent }

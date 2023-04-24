@@ -311,6 +311,7 @@ export interface IStrings extends LocalizedStringsMethods {
       textProperties: {
         elementType: string;
         googleFontLink: string;
+        defaultResources: string;
       }
     }
     delete: {

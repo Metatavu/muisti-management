@@ -4,6 +4,7 @@ import PropertyBox from "./generic/property-box";
 import renderPanelSubtitle from "./generic/render-panel-subtitle";
 import { ChangeEvent, FC } from "react";
 import strings from "../../../../localization/strings";
+import { ExhibitionPageResource, ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../../generated/client";
 
 /**
  * Component props
@@ -11,6 +12,8 @@ import strings from "../../../../localization/strings";
 interface Props {
   component: TreeObject;
   updateComponent: (updatedComponent: TreeObject) => void;
+  pageLayout: PageLayout;
+  setPageLayout: (foundLayout: PageLayout) => void;
 }
 
 /**
@@ -18,7 +21,9 @@ interface Props {
  */
 const TextComponentProperties: FC<Props> = ({
   component,
-  updateComponent
+  updateComponent,
+  pageLayout,
+  setPageLayout
 }) => {
   /**
    * Event handler for element change events
@@ -46,6 +51,56 @@ const TextComponentProperties: FC<Props> = ({
   const onFontChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     component.element.setAttribute("data-google-font", value);
     updateComponent(component);
+  };
+
+  /**
+   * Get default resource associated with element
+   *
+   * @returns matchingResource string
+   */
+  const getElementsDefaultResource = () => {
+    if (!pageLayout.defaultResources) return;
+
+    const matchingResource = pageLayout.defaultResources.find(resource => resource.id === component.element.id);
+
+    return matchingResource?.data;
+  }
+
+  // TODO: This can be lifted tot he layout-screen-html
+  /**
+   * Event handler for default resources change
+   *
+   * @param value value
+   */
+  const onDefaultResourcesChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    const hasResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
+
+    if (hasResource) {
+      const updatedResources = pageLayout.defaultResources?.map(resource => {
+        if (resource.id === hasResource.id) {
+          resource.data = value;
+          return resource;
+        }
+        return resource;
+      });
+
+      setPageLayout({
+        ...pageLayout,
+        defaultResources: updatedResources
+      });
+    } else {
+      const newResource: ExhibitionPageResource = {
+        id: component.element.id,
+        data: value,
+        type: ExhibitionPageResourceType.Text,
+        mode: PageResourceMode.Static
+      };
+
+      setPageLayout({
+        ...pageLayout,
+        defaultResources: [ ...pageLayout.defaultResources ?? [] , newResource ]
+      });
+    }
   };
 
 	return (
@@ -98,6 +153,19 @@ const TextComponentProperties: FC<Props> = ({
             sx:{ backgroundColor: "#fbfbfb" }
             }}
           placeholder={ strings.layout.htmlProperties.textProperties.googleFontLink }
+        />
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }}/>
+      <PropertyBox>
+        { renderPanelSubtitle(strings.layout.htmlProperties.textProperties.defaultResources) }
+        <TextField
+          variant="standard"
+          value={ getElementsDefaultResource() || "" }
+          onChange={ onDefaultResourcesChange }
+          inputProps={{
+            sx:{ backgroundColor: "#fbfbfb" }
+            }}
+          placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }}/>

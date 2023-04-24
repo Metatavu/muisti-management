@@ -307,7 +307,8 @@
       },
       "textProperties": {
         "elementType": "Tekstielementin tyyppi",
-        "googleFontLink": "Linkki Google-fonttiin"
+        "googleFontLink": "Linkki Google-fonttiin",
+        "defaultResources": "Oletusresurssit"
       }
     },
     "delete": {

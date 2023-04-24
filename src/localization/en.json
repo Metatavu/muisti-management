@@ -305,7 +305,8 @@
       },
       "textProperties": {
         "elementType": "Text element type",
-        "googleFontLink": "Link to Google font"
+        "googleFontLink": "Link to Google font",
+        "defaultResources": "Default resources"
       }
     },
     "delete": {
