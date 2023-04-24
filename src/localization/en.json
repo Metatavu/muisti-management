@@ -302,6 +302,10 @@
       },
       "layoutProperties": {
         "contentEmphasis": "Content emphasis"
+      },
+      "textProperties": {
+        "elementType": "Text element type",
+        "googleFontLink": "Link to Google font"
       }
     },
     "delete": {

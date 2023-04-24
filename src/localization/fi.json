@@ -304,6 +304,10 @@
       },
       "layoutProperties": {
         "contentEmphasis": "Sisällön painotus"
+      },
+      "textProperties": {
+        "elementType": "Tekstielementin tyyppi",
+        "googleFontLink": "Linkki Google-fonttiin"
       }
     },
     "delete": {

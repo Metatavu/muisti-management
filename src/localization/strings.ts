@@ -307,6 +307,10 @@ export interface IStrings extends LocalizedStringsMethods {
       }
       layoutProperties: {
         contentEmphasis: string;
+      };
+      textProperties: {
+        elementType: string;
+        googleFontLink: string;
       }
     }
     delete: {

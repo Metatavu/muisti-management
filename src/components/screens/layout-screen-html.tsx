@@ -488,10 +488,6 @@ const LayoutScreenHTML: FC<Props> = ({
         actionIcon={ <Close sx={{ color:"#2196F3" }}/> }
         menuOptions={ elementPaneMenuOptions }
       >
-        <GenericComponentDrawProperties
-          component={ selectedComponent }
-          updateComponent={ updateComponent }
-        />
         { selectedComponent?.type === HtmlComponentType.LAYOUT &&
           <LayoutComponentProperties
             component={ selectedComponent }
@@ -502,6 +498,10 @@ const LayoutScreenHTML: FC<Props> = ({
             component={ selectedComponent }
             updateComponent={ updateComponent }
           /> }
+        <GenericComponentDrawProperties
+          component={ selectedComponent }
+          updateComponent={ updateComponent }
+        />
     </ElementSettingsPane>
     )
   }
