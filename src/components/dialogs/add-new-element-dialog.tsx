@@ -136,7 +136,8 @@ const AddNewElementDialog = ({
           <Select
             label={ strings.layoutEditor.addLayoutViewDialog.widget }
             value={ newComponentType ?? "" }
-            onChange={ onComponentTypeChange }>
+            onChange={ onComponentTypeChange }
+          >
             { renderComponentTypesMenuItems() }
           </Select>
           <FormHelperText>
