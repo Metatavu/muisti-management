@@ -168,7 +168,6 @@ const AddNewElementDialog = ({
     >
       { renderDialogContent() }
     </GenericDialog>
-    
   );
 };
 
