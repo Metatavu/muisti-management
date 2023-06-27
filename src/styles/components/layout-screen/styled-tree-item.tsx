@@ -61,7 +61,7 @@ export const StyledTreeItem = ({
   <StyledTreeItemRoot
     label={
       <>
-        <Stack direction="row" justifyContent="space-between" >
+        <Stack direction="row" justifyContent="space-between">
           <div style={{ display: "flex", flexDirection: "row" }}>
             { (isRootSubdirectory) &&
               <SubdirectoryArrowRightRounded
