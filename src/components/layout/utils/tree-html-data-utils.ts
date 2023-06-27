@@ -63,7 +63,6 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  * @returns HTMLElement
  */
 export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
-  console.log("selectedComponentId: ", selectedComponentId);
   const element = treeObject.element;
   if (element.id === selectedComponentId) {
     element.style["outline"] = "1px solid #2196F3";

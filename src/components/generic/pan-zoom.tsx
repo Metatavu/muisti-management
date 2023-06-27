@@ -73,7 +73,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
     const { containerHeight, containerWidth } = this.state;
     const { defaultPositionX, defaultPositionY, minScale, disabled } = this.props;
 
-    if (!containerHeight || !containerWidth) {
+    if (!containerHeight || !containerWidth) {
       return null;
     }
 
