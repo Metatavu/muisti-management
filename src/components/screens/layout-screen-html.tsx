@@ -5,7 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
-import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-html-data-utils";
+import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
@@ -442,7 +442,27 @@ const LayoutScreenHTML: FC<Props> = ({
             >
               { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
             </Typography>
-          <div
+            <iframe
+              srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML) }
+              title="preview"
+              seamless
+              style={{
+                position: "relative",
+                borderRadius: 3,
+                border: "none",
+                boxSizing: "content-box",
+                backgroundColor: "#ffffff",
+                overflow: "auto",
+                transition: "border-color 0.2s ease-out",
+                width: width,
+                height: height,
+                minWidth: width,
+                minHeight: height,
+                maxWidth: width,
+                maxHeight: height                
+              }}
+              />
+          {/* <div
             style={{
               position: "relative",
               borderRadius: 3,
@@ -462,7 +482,7 @@ const LayoutScreenHTML: FC<Props> = ({
               __html: treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML
               }}
             />
-          </div>
+          </div> */}
         </PanZoom>
       </div>
     );

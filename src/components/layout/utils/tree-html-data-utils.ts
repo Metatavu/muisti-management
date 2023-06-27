@@ -58,20 +58,18 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
 /**
  * Convert tree object to html element
  *
- * @param treeObject
- * @param selectedComponenetId
+ * @param treeObject tree object
+ * @param selectedComponentId selected component id
  * @returns HTMLElement
  */
 export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
+  console.log("selectedComponentId: ", selectedComponentId);
   const element = treeObject.element;
-  const wrapper = document.createElement("div");
   if (element.id === selectedComponentId) {
-    const parent = element.parentNode;
-    parent?.replaceChild(wrapper, element);
-    wrapper.appendChild(element);
-    wrapper.style["border"] = "1px solid #2196F3";
-    wrapper.setAttribute("data-component-type", "layout");
-    wrapper.id = `${element.id}wrapper`;
+    element.style["outline"] = "1px solid #2196F3";
+    element.style["outlineOffset"] = "-1px";
+  } else {
+    element.style["outline"] = "none";
   }
   element.replaceChildren();
   if (treeObject.children) {
@@ -80,7 +78,7 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
     }
   }
 
-  return element.id === selectedComponentId ? wrapper : element;
+  return element;
 };
 
 /**
@@ -206,3 +204,28 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
  * Elements that are able to hold children
  */
 export const CONTAINER_ELEMENTS = [ HtmlComponentType.LAYOUT, HtmlComponentType.TAB, HtmlComponentType.TABS ];
+
+/**
+ * Wrap template HTML body content
+ *
+ * @param bodyContent body content
+ * @returns HTML string
+ */
+export const wrapTemplate = (bodyContent: string) => `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Preview</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      </style>
+    </head>
+    <body>
+      ${bodyContent}
+    </body>
+  </html>`;
