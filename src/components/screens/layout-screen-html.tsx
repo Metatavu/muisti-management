@@ -38,6 +38,7 @@ import LayoutComponentProperties from "../layout/editor-components/html/layout-c
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import PanZoom from "../generic/pan-zoom";
 import Fraction from "fraction.js";
+import PagePreviewHtml from "../preview/page-preview-html";
 
 /**
  * Component props
@@ -173,21 +174,19 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @returns action buttons as array
    */
-  const getActionButtons = (): ActionButton[] => (
-    [
-      {
-        name: view === LayoutEditorView.CODE ?
-          strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton,
-          action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
-      },
-      {
-        name: strings.exhibitionLayouts.editView.saveButton,
-        action: onLayoutSave,
-        disabled : !dataChanged
-      },
-    ]
-  );
+  const getActionButtons = (): ActionButton[] => ([
+    {
+      name: view === LayoutEditorView.CODE ?
+        strings.exhibitionLayouts.editView.switchToVisualButton :
+        strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
+    },
+    {
+      name: strings.exhibitionLayouts.editView.saveButton,
+      action: onLayoutSave,
+      disabled : !dataChanged
+    },
+  ]);
 
   /**
    * Event handler for layout save
@@ -226,7 +225,14 @@ const LayoutScreenHTML: FC<Props> = ({
       case LayoutEditorView.CODE:
         return renderCodeEditor();
       case LayoutEditorView.VISUAL:
-        return renderVisualEditor();
+        return (
+          <PagePreviewHtml
+            deviceModels={ deviceModels }
+            layout={ foundLayout }
+            treeObjects={ treeObjects }
+            selectedComponentId={ selectedComponent?.id }
+          />
+        );
       default:
         return null;
     }
@@ -287,16 +293,6 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(newComponent);
     setDataChanged(true);
   }
-
-  /**
-   * TODO: ADD DOCS
-   */
-  const updateDefaultResources = (defaultResource: ExhibitionPageResource) => {
-    setFoundLayout({
-      ...foundLayout,
-      defaultResources: [ ...foundLayout?.defaultResources ?? [], defaultResource ]
-    })
-  };
   
   /**
    * Update component and add it to the layout
@@ -405,88 +401,6 @@ const LayoutScreenHTML: FC<Props> = ({
       </div>
     </div>
   );
-
-  /**
-   * Renders a visual editor view
-   */
-  const renderVisualEditor = () => {
-    if (deviceModels.length === 0) return;
-
-    const deviceModel = deviceModels.find(model => model.id === foundLayout.modelId);
-
-    if (!deviceModel) return;
-
-    const { dimensions: { screenHeight, screenWidth } } = deviceModel;
-
-    const scale = 1;
-    const { screenOrientation } = foundLayout;
-    const { screenOrientation: deviceOrientation } = deviceModel;
-
-    let height = screenHeight ?? 1 * scale;
-    let width = screenWidth ?? 1 * scale;
-
-    if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
-      height = width;
-      width = height;
-    }
-
-    return (
-      <div className={ classes.editors }>
-        <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
-            <Typography
-              sx={{
-                position: "absolute",
-                top: -20,
-                opacity: 0.6
-              }}
-            >
-              { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
-            </Typography>
-            <iframe
-              srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML) }
-              title="preview"
-              seamless
-              style={{
-                position: "relative",
-                borderRadius: 3,
-                border: "none",
-                boxSizing: "content-box",
-                backgroundColor: "#ffffff",
-                overflow: "auto",
-                transition: "border-color 0.2s ease-out",
-                width: width,
-                height: height,
-                minWidth: width,
-                minHeight: height,
-                maxWidth: width,
-                maxHeight: height                
-              }}
-              />
-          {/* <div
-            style={{
-              position: "relative",
-              borderRadius: 3,
-              boxSizing: "content-box",
-              backgroundColor: "#ffffff",
-              overflow: "auto",
-              transition: "border-color 0.2s ease-out",
-              width: width,
-              height: height,
-              minWidth: width,
-              minHeight: height,
-              maxWidth: width,
-              maxHeight: height,
-            }}
-          >
-            <span dangerouslySetInnerHTML={{
-              __html: treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponent?.id))[0]?.outerHTML
-              }}
-            />
-          </div> */}
-        </PanZoom>
-      </div>
-    );
-  };
   
   /**
    * Renders component specific properties
@@ -503,21 +417,19 @@ const LayoutScreenHTML: FC<Props> = ({
     }
   };
 
-  const elementPaneMenuOptions = [
-    {
-      name: strings.genericDialog.close,
-      action: () => {
-        setDrawerOpen(!drawerOpen);
-        setSelectedComponent(undefined);
-      }
-    }
-  ];
-
   /**
    * Renders element settings pane
    */
   const renderElementSettingsPane = () => {
     if (!selectedComponent) return;
+
+    const elementPaneMenuOptions = [{
+      name: strings.genericDialog.close,
+      action: () => {
+        setDrawerOpen(!drawerOpen);
+        setSelectedComponent(undefined);
+      }
+    }];
 
     return (
       <ElementSettingsPane

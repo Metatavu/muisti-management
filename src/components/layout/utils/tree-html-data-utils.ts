@@ -64,12 +64,14 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  */
 export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
   const element = treeObject.element;
+  
+  removeOutline(element);
+  
   if (element.id === selectedComponentId) {
     element.style["outline"] = "1px solid #2196F3";
     element.style["outlineOffset"] = "-1px";
-  } else {
-    element.style["outline"] = "none";
-  }
+  } 
+  
   element.replaceChildren();
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
@@ -188,6 +190,8 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
 
     if (treeObject) children.push(treeObject);
   }
+  
+  removeOutline(element as HTMLElement);
 
   return {
     type: componentType as HtmlComponentType,
@@ -197,6 +201,16 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     children: children,
     element: element as HTMLElement
   }
+};
+
+/**
+ * Removes outline from given element
+ * 
+ * @param element element
+ */
+const removeOutline = (element: HTMLElement) => {
+  element.style.removeProperty("outline");
+  element.style.removeProperty("outline-offset");
 };
 
 /**
@@ -221,6 +235,8 @@ export const wrapTemplate = (bodyContent: string) => `<!DOCTYPE html>
         body {
           margin: 0;
           padding: 0;
+          pointer-events: none;
+          min-height: 100vh;
         }
       </style>
     </head>

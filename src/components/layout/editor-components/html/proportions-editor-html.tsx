@@ -45,29 +45,28 @@ const ProportionsEditorHtml = ({
    * Renders icon
    */
   const renderIcon = () => {
-    if (name === "width") {
-      return (
-        <HeightOutlined
-          sx={{
-            transform: "rotate(90deg)",
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
-    }
-
-    if (name === "height") {
-      return (
-        <ExpandOutlined
-          sx={{
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
+    switch (name) {
+      case "width":
+        return (
+          <HeightOutlined
+            sx={{
+              transform: "rotate(90deg)",
+              color: "#2196F3",
+              border: "1px solid #2196F3",
+              borderRadius: "5px"
+            }}
+          />
+        );
+      case "height":
+        return (
+          <ExpandOutlined
+            sx={{
+              color: "#2196F3",
+              border: "1px solid #2196F3",
+              borderRadius: "5px"
+            }}
+          />
+        );
     }
   };
 
@@ -91,12 +90,12 @@ const ProportionsEditorHtml = ({
         }}
       />
       <Select
-        value={ settings.width }
+        value={ settings[name] }
         variant="standard"
         sx={{ backgroundColor: "#F5F5F5" }}
         onChange={ ({ target: { value } }) => {
-          setSettings({ ...settings, width: value as "px" | "%"});
-        } }
+          setSettings({ ...settings, [name]: value as "px" | "%"});
+        }}
       >
         <MenuItem value="px" sx={{ color: "#2196F3" }}>px</MenuItem>
         <MenuItem value="%" sx={{ color: "#2196F3" }}>%</MenuItem>
