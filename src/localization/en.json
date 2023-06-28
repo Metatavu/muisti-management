@@ -305,7 +305,7 @@
       },
       "textProperties": {
         "elementType": "Text element type",
-        "googleFontLink": "Link to Google font",
+        "fontColor": "Font color",
         "defaultResources": "Default resources"
       }
     },

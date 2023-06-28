@@ -310,7 +310,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       textProperties: {
         elementType: string;
-        googleFontLink: string;
+        fontColor: string;
         defaultResources: string;
       }
     }

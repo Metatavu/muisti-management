@@ -13,6 +13,7 @@ import PropertyBox from "./property-box";
 import PanelSubtitle from "./panel-subtitle";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import ColorPicker from "./color-picker";
 
 /**
  * Component props
@@ -53,13 +54,13 @@ const GenericComponentProperties: FC<Props> = ({
     component.element.setAttribute("name", value);
     updateComponent(component);
   };
-  
+
   /**
    * Gets elements background icon colors
    */
   const getElementBackgroundIconColors = () => {
     const elementsBackgroundColor = component.element.style.backgroundColor;
-    
+
     return {
       border: elementsBackgroundColor ? undefined : "1px solid #2196F3",
       backgroundColor: elementsBackgroundColor || "#F5F5F5"
@@ -159,24 +160,12 @@ const GenericComponentProperties: FC<Props> = ({
           </Stack>
         </PropertyBox>
       </Stack>
-      <Popover
-        open={ !!popoverAnchorElement }
+      <ColorPicker
+        color={ component.element.style.backgroundColor }
         anchorEl={ popoverAnchorElement }
         onClose={ () => setPopoverAnchorElement(undefined) }
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "left"
-        }}
-        transformOrigin={{
-          vertical: "center",
-          horizontal: "right"
-        }}
-      >
-        <SketchPicker
-          color={ component.element.style.backgroundColor }
-          onChangeComplete={ (color: ColorResult) => onPropertyChange("background-color", color.hex) }
-        />
-      </Popover>
+        onChangeComplete={ ({ hex }: ColorResult) => onPropertyChange("background-color", hex) }
+      />
     </>
   );
 }

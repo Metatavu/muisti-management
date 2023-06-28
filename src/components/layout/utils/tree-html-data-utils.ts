@@ -67,22 +67,22 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
 export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string, resources?: ExhibitionPageResource[]): HTMLElement => {
   const element = treeObject.element;
   const foundResource = resources?.find(resource => resource.id === treeObject.id);
-  
+
   removeOutline(element);
-  
+
   element.replaceChildren();
-  
+
   if (element.id === selectedComponentId) {
     element.style["outline"] = "1px solid #2196F3";
     element.style["outlineOffset"] = "-1px";
   }
-  
+
   if (foundResource) {
     if (treeObject.type === HtmlComponentType.TEXT) {
       element.innerText = foundResource.data;
     }
   };
-  
+
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
       element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources));
@@ -200,7 +200,7 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
 
     if (treeObject) children.push(treeObject);
   }
-  
+
   removeOutline(element as HTMLElement);
 
   return {
@@ -215,7 +215,7 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
 
 /**
  * Removes outline from given element
- * 
+ *
  * @param element element
  */
 const removeOutline = (element: HTMLElement) => {

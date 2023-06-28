@@ -37,7 +37,7 @@ const CodeEditorHTML = ({
     indent_empty_lines: true,
     end_with_newline: false
   };
-    
+
   return (
     <CodeEditorContainer>
     <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>

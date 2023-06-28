@@ -41,7 +41,7 @@ const LayoutLeftPanel = ({
 }: Props) => {
   /**
    * Renders device model menu item
-   * 
+   *
    * @param model device model
    */
   const renderDeviceModelMenuItem = (model: DeviceModel) => (
@@ -53,7 +53,7 @@ const LayoutLeftPanel = ({
       { `${ model.manufacturer } ${ model.model }` }
     </MenuItem>
   );
-  
+
   /**
    * Renders device model select
    */
@@ -78,7 +78,7 @@ const LayoutLeftPanel = ({
       </SelectBox>
     </>
   );
-  
+
   /**
    * Renders layout name change
    */
@@ -86,9 +86,9 @@ const LayoutLeftPanel = ({
     <>
       <PanelSubtitle subtitle={ strings.layout.toolbar.name }/>
       <TextField value={ layout.name } onChange={ onLayoutNameChange }/>
-    </>    
+    </>
   );
-  
+
   return (
     <ElementNavigationPane width={ 250 } title={ strings.layout.title }>
       <Stack spacing={ 2 }>
@@ -104,7 +104,7 @@ const LayoutLeftPanel = ({
         />
       </Stack>
     </ElementNavigationPane>
-    
+
   );
 };
 

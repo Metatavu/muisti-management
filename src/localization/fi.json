@@ -307,7 +307,7 @@
       },
       "textProperties": {
         "elementType": "Tekstielementin tyyppi",
-        "googleFontLink": "Linkki Google-fonttiin",
+        "fontColor": "Fontin väri",
         "defaultResources": "Oletusresurssit"
       }
     },

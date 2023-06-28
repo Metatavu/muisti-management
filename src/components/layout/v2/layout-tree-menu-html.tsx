@@ -24,7 +24,7 @@ const LayoutTreeMenuHtml = ({
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
-  
+
   /**
    * Renders Add New Element button
    */
@@ -52,7 +52,7 @@ const LayoutTreeMenuHtml = ({
         </Stack>
       </Button>
     );
-    
+
   /**
    * Renders Tree Item
    *
