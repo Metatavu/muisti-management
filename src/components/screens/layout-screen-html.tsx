@@ -27,7 +27,7 @@ import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import PagePreviewHtml from "../preview/page-preview-html";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
-import TextComponentProperties from "../layout/editor-components/html/text-component-properties";
+import TextComponentProperties from "../layout/v2/text-component-properties";
 
 /**
  * Component props

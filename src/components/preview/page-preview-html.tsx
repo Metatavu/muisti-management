@@ -107,7 +107,7 @@ const PagePreviewHtml = ({
           { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
         </Typography>
         <Preview
-          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
+          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources))[0]?.outerHTML) }
           width={ getPreviewDimensions().width }
           height={ getPreviewDimensions().height }
           />

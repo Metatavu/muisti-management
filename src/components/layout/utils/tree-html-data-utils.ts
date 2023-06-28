@@ -1,3 +1,4 @@
+import { ExhibitionPageResource } from "../../../generated/client";
 import { TreeObject, HtmlComponentType } from "../../../types";
 
 /**
@@ -60,22 +61,31 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  *
  * @param treeObject tree object
  * @param selectedComponentId selected component id
+ * @param resources resources
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
+export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string, resources?: ExhibitionPageResource[]): HTMLElement => {
   const element = treeObject.element;
+  const foundResource = resources?.find(resource => resource.id === treeObject.id);
   
   removeOutline(element);
+  
+  element.replaceChildren();
   
   if (element.id === selectedComponentId) {
     element.style["outline"] = "1px solid #2196F3";
     element.style["outlineOffset"] = "-1px";
-  } 
+  }
   
-  element.replaceChildren();
+  if (foundResource) {
+    if (treeObject.type === HtmlComponentType.TEXT) {
+      element.innerText = foundResource.data;
+    }
+  };
+  
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId));
+      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources));
     }
   }
 

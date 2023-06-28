@@ -1,10 +1,11 @@
 import { Divider, MenuItem, Stack, TextField } from "@mui/material";
-import { TextComponentHTMLElementTypes, TreeObject } from "../../../../types";
-import PropertyBox from "./generic/property-box";
-import renderPanelSubtitle from "./generic/render-panel-subtitle";
-import { ChangeEvent, FC } from "react";
-import strings from "../../../../localization/strings";
-import { ExhibitionPageResource, ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../../generated/client";
+import { TextComponentHTMLElementTypes, TreeObject } from "../../../types";
+import PropertyBox from "./property-box";
+import { ChangeEvent } from "react";
+import strings from "../../../localization/strings";
+import { ExhibitionPageResource, ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../generated/client";
+import PanelSubtitle from "./panel-subtitle";
+import SelectBox from "../../generic/v2/select-box";
 
 /**
  * Component props
@@ -19,18 +20,18 @@ interface Props {
 /**
  * Renders text component properties
  */
-const TextComponentProperties: FC<Props> = ({
+const TextComponentProperties = ({
   component,
   updateComponent,
   pageLayout,
   setPageLayout
-}) => {
+}: Props) => {
   /**
    * Event handler for element change events
    *
    * @param value value
    */
-  const onElementChange = ({ target: { value } } : ChangeEvent<HTMLTextAreaElement>) => {
+  const onElementChange = ({ target: { value } } : ChangeEvent<HTMLInputElement>) => {
     const updatedHTMLTag = document.createElement(value);
 
     for (const attribute of component.element.attributes) {
@@ -41,16 +42,6 @@ const TextComponentProperties: FC<Props> = ({
       ...component,
       element: updatedHTMLTag
     });
-  };
-
-  /**
-   * Event handler for google font change events
-   *
-   * @param value value
-   */
-  const onFontChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    component.element.setAttribute("data-google-font", value);
-    updateComponent(component);
   };
 
   /**
@@ -107,30 +98,8 @@ const TextComponentProperties: FC<Props> = ({
 		<Stack>
       <Divider sx={{ color: "#F5F5F5" }}/>
       <PropertyBox>
-        { renderPanelSubtitle(strings.layout.htmlProperties.textProperties.elementType) }
-        <TextField
-          value={ component.element.tagName }
-          variant="standard"
-          select
-          fullWidth
-          onChange={ onElementChange }
-          sx={{ backgroundColor: "#F5F5F5" }}
-          InputProps={{
-              disableUnderline: true,
-              sx: {  backgroundColor: "#F5F5F5" }
-          }}
-          SelectProps={{
-            sx: {
-              "& .MuiInputBase-input": {
-                color: "#2196F3",
-                height: "20px",
-                padding: 0,
-              },
-              height: "20px",
-              backgroundColor: "#F5F5F5"
-            }
-          }}
-        >
+        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.elementType }/>
+        <SelectBox value={ component.element.tagName } onChange={ onElementChange }>
           { Object.values(TextComponentHTMLElementTypes).map(type => (
             <MenuItem
               key={ type }
@@ -140,24 +109,11 @@ const TextComponentProperties: FC<Props> = ({
               { type }
             </MenuItem>
           )) }
-        </TextField>
+        </SelectBox>
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }}/>
       <PropertyBox>
-        { renderPanelSubtitle(strings.layout.htmlProperties.textProperties.googleFontLink) }
-        <TextField
-          variant="standard"
-          value={ component.element.attributes.getNamedItem("data-google-font")?.nodeValue || "" }
-          onChange={ onFontChange }
-          inputProps={{
-            sx:{ backgroundColor: "#fbfbfb" }
-            }}
-          placeholder={ strings.layout.htmlProperties.textProperties.googleFontLink }
-        />
-      </PropertyBox>
-      <Divider sx={{ color: "#F5F5F5" }}/>
-      <PropertyBox>
-        { renderPanelSubtitle(strings.layout.htmlProperties.textProperties.defaultResources) }
+        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
         <TextField
           variant="standard"
           value={ getElementsDefaultResource() || "" }
