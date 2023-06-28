@@ -37,7 +37,7 @@ const TextComponentProperties = ({
    *
    * @param value value
    */
-  const onElementChange = ({ target: { value } } : ChangeEvent<HTMLInputElement>) => {
+  const handleElementChange = ({ target: { value } } : ChangeEvent<HTMLInputElement>) => {
     const updatedHTMLTag = document.createElement(value);
 
     for (const attribute of component.element.attributes) {
@@ -64,25 +64,26 @@ const TextComponentProperties = ({
   }
 
   /**
-   * Event handler for default resources change
+   * Event handler for default resource change event
    *
    * @param event event
    */
-  const onDefaultResourcesChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     const hasResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
 
     if (hasResource) {
-      const updatedResources = pageLayout.defaultResources?.map(resource => {
-        if (resource.id === hasResource.id) {
-          resource.data = value;
-          return resource;
-        }
-        return resource;
-      });
-
       setPageLayout({
         ...pageLayout,
-        defaultResources: updatedResources
+        defaultResources: pageLayout.defaultResources?.map(resource => {
+          if (resource.id === hasResource.id) {
+            resource = {
+              ...resource,
+              data: value
+            };
+          }
+          
+          return resource;
+        })
       });
     } else {
       const newResource: ExhibitionPageResource = {
@@ -94,7 +95,7 @@ const TextComponentProperties = ({
 
       setPageLayout({
         ...pageLayout,
-        defaultResources: [ ...pageLayout.defaultResources ?? [] , newResource ]
+        defaultResources: [ ...pageLayout.defaultResources ?? [], newResource ]
       });
     }
   };
@@ -121,7 +122,7 @@ const TextComponentProperties = ({
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.elementType }/>
-          <SelectBox value={ component.element.tagName } onChange={ onElementChange }>
+          <SelectBox value={ component.element.tagName } onChange={ handleElementChange }>
             { Object.values(HtmlTextComponentType).map(type => (
               <MenuItem
                 key={ type }
@@ -154,7 +155,7 @@ const TextComponentProperties = ({
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
           <TextField
             value={ getElementsDefaultResource() || "" }
-            onChange={ onDefaultResourcesChange }
+            onChange={ handleDefaultResourceChange }
             placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
           />
         </PropertyBox>
