@@ -5,7 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
-import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
+import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-html-data-utils";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
@@ -15,12 +15,11 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml, ExhibitionPageResource } from "../../generated/client";
+import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
@@ -28,17 +27,13 @@ import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObj
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
-import CodeMirror from "@uiw/react-codemirror";
-import { html } from "@codemirror/lang-html";
-import { html_beautify } from "js-beautify";
 import GenericComponentDrawProperties from "../layout/editor-components/html/generic-component-properties";
 import { Close } from "@mui/icons-material";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import LayoutComponentProperties from "../layout/editor-components/html/layout-component-properties";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
-import PanZoom from "../generic/pan-zoom";
-import Fraction from "fraction.js";
 import PagePreviewHtml from "../preview/page-preview-html";
+import CodeEditorHTML from "../layout/code-editor-html";
 
 /**
  * Component props
@@ -220,7 +215,12 @@ const LayoutScreenHTML: FC<Props> = ({
   const renderEditor = () => {
     switch (view) {
       case LayoutEditorView.CODE:
-        return renderCodeEditor();
+        return (
+          <CodeEditorHTML
+            htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+            onCodeChange={ onCodeChange }
+          />
+        );
       case LayoutEditorView.VISUAL:
         return (
           <PagePreviewHtml
@@ -230,8 +230,6 @@ const LayoutScreenHTML: FC<Props> = ({
             selectedComponentId={ selectedComponent?.id }
           />
         );
-      default:
-        return null;
     }
   }
 
@@ -367,33 +365,6 @@ const LayoutScreenHTML: FC<Props> = ({
             <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
           </Select>
         </FormControl>
-      </div>
-    );
-  };
-  
-  /**
-   * Renders code editor view
-   */
-  const renderCodeEditor = () => {
-    const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
-      indent_size: 2,
-      inline: [],
-      indent_empty_lines: true,
-      end_with_newline: false
-    };
-  
-    return (
-      <div className={ classes.editors }>
-        <div className={ classes.editorContainer }>
-          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
-            <CodeMirror
-              value={ html_beautify((foundLayout.data as PageLayoutViewHtml).html, htmlBeautifyOptions) }
-              height="500px"
-              style={{ overflow: "auto" }}
-              extensions={ [ html() ] }
-              onChange={ onCodeChange }
-            />
-        </div>
       </div>
     );
   };
