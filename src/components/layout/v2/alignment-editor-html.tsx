@@ -1,9 +1,9 @@
 import { Icon } from "@material-ui/core";
 import { EastOutlined, FilterCenterFocusRounded, NorthEastOutlined, NorthOutlined, NorthWestOutlined, SouthEastOutlined, SouthOutlined, SouthWestOutlined, WestOutlined } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
-import { ElementType, useEffect, useState } from "react";
-import LanguageUtils from "../../../../utils/language-utils";
-import { LayoutAlignment } from "../../../../types";
+import { ElementType, useState } from "react";
+import LanguageUtils from "../../../utils/language-utils";
+import { LayoutAlignment } from "../../../types";
 
 /**
  * Alignment icon row type

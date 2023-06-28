@@ -1,6 +1,6 @@
 import { LinkRounded } from "@mui/icons-material";
 import { IconButton, Stack, TextField } from "@mui/material";
-import theme from "../../../../styles/theme";
+import theme from "../../../styles/theme";
 import { ChangeEvent, useState } from "react";
 
 /**
@@ -53,7 +53,7 @@ const MarginPaddingEditorHtml = ({
               "& .MuiInputBase-input": {
                 color: "#2196F3",
                 height: "20px",
-                padding: 0,
+                padding: `0 0 0 ${theme.spacing(1)}`,
               }
             }
           }}

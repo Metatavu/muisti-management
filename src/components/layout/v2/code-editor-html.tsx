@@ -1,5 +1,5 @@
 import { Typography, styled } from "@mui/material";
-import strings from "../../localization/strings";
+import strings from "../../../localization/strings";
 import { html_beautify } from "js-beautify";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";

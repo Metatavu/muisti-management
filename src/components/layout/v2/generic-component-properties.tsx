@@ -1,16 +1,18 @@
 import React, { useState, FC, ChangeEvent } from "react";
-import { Button, Divider, MenuItem, Popover, Stack, TextField } from "@mui/material";
+import { Button, Divider, MenuItem, Popover, Stack } from "@mui/material";
 import { ColorResult, SketchPicker } from "react-color";
-import strings from "../../../../localization/strings";
-import { HtmlComponentType, TreeObject } from "../../../../types";
+import strings from "../../../localization/strings";
+import { HtmlComponentType, TreeObject } from "../../../types";
 import {
   FormatColorFillOutlined as FormatColorFillOutlinedIcon,
   PaletteOutlined as PaletteOutlinedIcon
 } from "@mui/icons-material";
 import MarginPaddingEditorHtml from "./margin-padding-editor-html";
 import ProportionsEditorHtml from "./proportions-editor-html";
-import PropertyBox from "./generic/property-box";
-import PanelSubtitle from "./generic/panel-subtitle";
+import PropertyBox from "./property-box";
+import PanelSubtitle from "./panel-subtitle";
+import SelectBox from "../../generic/v2/select-box";
+import TextField from "../../generic/v2/text-field";
 
 /**
  * Component props
@@ -21,8 +23,8 @@ interface Props {
 }
 
 /**
- * Component for Generic Properties
- */
+ * Generic Component Properties
+*/
 const GenericComponentProperties: FC<Props> = ({
   component,
   updateComponent
@@ -69,28 +71,7 @@ const GenericComponentProperties: FC<Props> = ({
       <Stack spacing={ 2 } paddingLeft={ 0 } paddingRight={ 0 }>
         <PropertyBox>
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.element }/>
-          <TextField
-            value={ component.type }
-            variant="standard"
-            select
-            fullWidth
-            sx={{ backgroundColor: "#F5F5F5" }}
-            InputProps={{
-                disableUnderline: true,
-                sx: {  backgroundColor: "#F5F5F5" }
-            }}
-            SelectProps={{
-              sx: {
-                "& .MuiInputBase-input": {
-                  color: "#2196F3",
-                  height: "20px",
-                  padding: 0,
-                },
-                height: "20px",
-                backgroundColor: "#F5F5F5"
-              }
-            }}
-          >
+          <SelectBox value={ component.type }>
             { Object.values(HtmlComponentType).map(type => (
               <MenuItem
                 key={ type }
@@ -100,18 +81,14 @@ const GenericComponentProperties: FC<Props> = ({
                 { type }
               </MenuItem>
             )) }
-          </TextField>
+          </SelectBox>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.elementName }/>
           <TextField
-            variant="standard"
             value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
             onChange={ onNameChange }
-            inputProps={{
-              sx:{ backgroundColor: "#fbfbfb" }
-              }}
             placeholder={ strings.layout.htmlProperties.genericProperties.elementName }
           />
         </PropertyBox>

@@ -1,10 +1,9 @@
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
-import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
-import { HtmlComponentType, TreeObject } from "../../types";
-import strings from "../../localization/strings";
-import { CONTAINER_ELEMENTS } from "./utils/tree-html-data-utils";
+import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
+import { HtmlComponentType, TreeObject } from "../../../types";
+import strings from "../../../localization/strings";
 
 /**
  * Components properties
@@ -36,7 +35,6 @@ const LayoutTreeMenuHtml = ({
         sx={{
           textTransform: "uppercase",
           fontWeight: 400,
-          
           fontSize: "0.65rem",
           color: "#2196F3",
           display: selectedComponent?.id === item.id ? "block" : "none"
