@@ -50,7 +50,7 @@ const ButtonComponentProperties = ({
     if (foundResource) {
       setPageLayout({
         ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map(resource => 
+        defaultResources: pageLayout.defaultResources?.map(resource =>
           resource.id === foundResource?.id ? { ...resource, data: value } : resource)
       });
     } else {
@@ -68,24 +68,22 @@ const ButtonComponentProperties = ({
   };
 
 	return (
-    <>
-      <Stack>
-        <Divider sx={{ color: "#F5F5F5" }}/>
-        <FontColorEditor
-          component={ component }
-          updateComponent={ updateComponent }
+    <Stack>
+      <Divider sx={{ color: "#F5F5F5" }}/>
+      <FontColorEditor
+        component={ component }
+        updateComponent={ updateComponent }
+      />
+      <PropertyBox>
+        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
+        <TextField
+          value={ getElementsDefaultResource() || "" }
+          onChange={ handleDefaultResourceChange }
+          placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
         />
-        <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
-          <TextField
-            value={ getElementsDefaultResource() || "" }
-            onChange={ handleDefaultResourceChange }
-            placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
-          />
-        </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
-      </Stack>
-    </>
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }}/>
+    </Stack>
 	);
 };
 

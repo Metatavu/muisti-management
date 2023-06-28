@@ -29,6 +29,7 @@ import CodeEditorHTML from "../layout/v2/code-editor-html";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import TextComponentProperties from "../layout/v2/text-component-properties";
 import ButtonComponentProperties from "../layout/v2/button-component-properties";
+import ImageComponentProperties from "../layout/v2/image-component-properties";
 
 /**
  * Component props
@@ -257,10 +258,10 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const createComponent = (componentData: string, targetPath: string) => {
     if (!newComponentPath) return;
-    
+
     const newElement = deserializeElement(componentData);
     const newComponent = createTreeObject(newElement, targetPath);
-    
+
     if (!newComponent) return;
 
     const updatedLayout = addNewHtmlComponent(
@@ -283,7 +284,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(newComponent);
     setDataChanged(true);
   }
-  
+
   /**
    * Update component and add it to the layout
    *
@@ -310,7 +311,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
   };
-  
+
   /**
    * Renders component specific properties
    */
@@ -335,6 +336,15 @@ const LayoutScreenHTML: FC<Props> = ({
       case HtmlComponentType.BUTTON:
         return (
           <ButtonComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
+            pageLayout={ foundLayout }
+            setPageLayout={ setFoundLayout }
+          />
+        );
+      case HtmlComponentType.IMAGE:
+        return (
+          <ImageComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
             pageLayout={ foundLayout }
