@@ -28,6 +28,7 @@ import PagePreviewHtml from "../preview/page-preview-html";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import TextComponentProperties from "../layout/v2/text-component-properties";
+import ButtonComponentProperties from "../layout/v2/button-component-properties";
 
 /**
  * Component props
@@ -325,6 +326,15 @@ const LayoutScreenHTML: FC<Props> = ({
       case HtmlComponentType.TEXT:
         return (
           <TextComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
+            pageLayout={ foundLayout }
+            setPageLayout={ setFoundLayout }
+          />
+        );
+      case HtmlComponentType.BUTTON:
+        return (
+          <ButtonComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
             pageLayout={ foundLayout }
