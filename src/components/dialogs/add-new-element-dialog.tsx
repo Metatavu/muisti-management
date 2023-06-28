@@ -5,7 +5,7 @@ import GenericDialog from "../generic/generic-dialog";
 import { MenuItem, Stack, FormControl, InputLabel, Select, FormHelperText, Typography, Box, TextField, SelectChangeEvent } from "@mui/material";
 import theme from "../../styles/theme";
 import { HtmlComponentType } from "../../types";
-import LanguageUtils from "../../utils/language-utils";
+import LocalizationUtils from "../../utils/localization-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
 
 /**
@@ -103,7 +103,7 @@ const AddNewElementDialog = ({
           key={ type }
           value={ type }
         >
-          { LanguageUtils.getLocalizedComponentType(type) }
+          { LocalizationUtils.getLocalizedComponentType(type) }
         </MenuItem>
       );
     })
@@ -140,7 +140,7 @@ const AddNewElementDialog = ({
             { renderComponentTypesMenuItems() }
           </Select>
           <FormHelperText>
-            { newComponentType && LanguageUtils.getLocalizedNewComponentHelpText(newComponentType) }
+            { newComponentType && LocalizationUtils.getLocalizedNewComponentHelpText(newComponentType) }
           </FormHelperText>
         </FormControl>
         <Box mt={ 2 }>

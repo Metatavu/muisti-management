@@ -1,11 +1,13 @@
-import { Divider, MenuItem, Stack, TextField } from "@mui/material";
-import { TextComponentHTMLElementTypes, TreeObject } from "../../../types";
+import { Divider, MenuItem, Stack } from "@mui/material";
+import { HtmlTextComponentType, TreeObject } from "../../../types";
 import PropertyBox from "./property-box";
 import { ChangeEvent } from "react";
 import strings from "../../../localization/strings";
 import { ExhibitionPageResource, ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../generated/client";
 import PanelSubtitle from "./panel-subtitle";
 import SelectBox from "../../generic/v2/select-box";
+import TextField from "../../generic/v2/text-field";
+import LocalizationUtils from "../../../utils/localization-utils";
 
 /**
  * Component props
@@ -57,11 +59,10 @@ const TextComponentProperties = ({
     return matchingResource?.data;
   }
 
-  // TODO: This can be lifted tot he layout-screen-html
   /**
    * Event handler for default resources change
    *
-   * @param value value
+   * @param event event
    */
   const onDefaultResourcesChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     const hasResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
@@ -100,13 +101,13 @@ const TextComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.elementType }/>
         <SelectBox value={ component.element.tagName } onChange={ onElementChange }>
-          { Object.values(TextComponentHTMLElementTypes).map(type => (
+          { Object.values(HtmlTextComponentType).map(type => (
             <MenuItem
               key={ type }
               value={ type }
               sx={{ color: "#2196F3" }}
             >
-              { type }
+              { LocalizationUtils.getLocalizedTextComponentType(type) }
             </MenuItem>
           )) }
         </SelectBox>
@@ -115,12 +116,8 @@ const TextComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
         <TextField
-          variant="standard"
           value={ getElementsDefaultResource() || "" }
           onChange={ onDefaultResourcesChange }
-          inputProps={{
-            sx:{ backgroundColor: "#fbfbfb" }
-            }}
           placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
         />
       </PropertyBox>

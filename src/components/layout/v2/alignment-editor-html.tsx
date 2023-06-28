@@ -2,7 +2,7 @@ import { Icon } from "@material-ui/core";
 import { EastOutlined, FilterCenterFocusRounded, NorthEastOutlined, NorthOutlined, NorthWestOutlined, SouthEastOutlined, SouthOutlined, SouthWestOutlined, WestOutlined } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { ElementType, useState } from "react";
-import LanguageUtils from "../../../utils/language-utils";
+import LocalizationUtils from "../../../utils/localization-utils";
 import { LayoutAlignment } from "../../../types";
 
 /**
@@ -172,7 +172,7 @@ const AlignmentEditorHtml = ({
         alignSelf="center"
         color="#2196F3"
         >
-          { LanguageUtils.getLocalizedLayoutAlignment(selected as LayoutAlignment)}
+          { LocalizationUtils.getLocalizedLayoutAlignment(selected as LayoutAlignment)}
         </Typography>
     </Stack>
   );

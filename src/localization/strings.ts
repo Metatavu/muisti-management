@@ -334,6 +334,15 @@ export interface IStrings extends LocalizedStringsMethods {
         tabs: string;
         tab: string;
       };
+      textTypes: {
+        heading1: string;
+        heading2: string;
+        heading3: string;
+        heading4: string;
+        heading5: string;
+        heading6: string;
+        body: string;
+      };
     };
   };
 

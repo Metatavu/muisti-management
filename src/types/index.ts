@@ -283,7 +283,7 @@ export enum LayoutAlignment {
 /**
  * Text component HTML element types enum
  */
-export enum TextComponentHTMLElementTypes {
+export enum HtmlTextComponentType {
   H1 = "H1",
   H2 = "H2",
   H3 = "H3",
