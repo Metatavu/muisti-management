@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
-import { Button, Fade, Stack } from "@mui/material";
-import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
-import { HtmlComponentType, TreeObject } from "../../types";
-import strings from "../../localization/strings";
-import { PageLayout } from "../../generated/client";
-import { CONTAINER_ELEMENTS } from "./utils/tree-html-data-utils";
+import { Button, Stack } from "@mui/material";
+import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
+import { HtmlComponentType, TreeObject } from "../../../types";
+import strings from "../../../localization/strings";
 
 /**
  * Components properties
@@ -15,8 +12,7 @@ interface Props {
   treeObjects: TreeObject[];
   selectedComponent?: TreeObject;
   onTreeComponentSelect: (selectedComponent?: TreeObject) => void;
-  addHtmlComponent: (layout: PageLayout) => void;
-  onAddComponentClick: (path: string) => void;
+  onAddComponentClick: (path: string, asChildren: boolean) => void;
 }
 
 /**
@@ -28,33 +24,35 @@ const LayoutTreeMenuHtml = ({
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
-  const [ hover, setHover ] = useState<string>("");
-
+  
   /**
    * Renders Add New Element button
    */
-    const renderAddNewElementButton = (item: TreeObject, hover: string) => {
-      return (
-        <Fade in={ hover === item.id } timeout={ 500 }>
-          <Stack direction={ item.children.length > 0 ? "row" : "row-reverse" } alignItems="center" key={ `${item.id}-btn` }>
-            <Button
-              variant="text"
-              sx={{
-                textTransform: "uppercase",
-                fontWeight: 400,
-                fontSize: "0.65rem",
-                color: "#2196F3"
-              }}
-              startIcon={ <AddBoxOutlined style={{ color: "#2196F3" }}/> }
-              onClick={ () => onAddComponentClick(item.path) }
-            >
-              { strings.layoutEditor.addLayoutViewDialog.title }
-            </Button>
-          </Stack>
-        </Fade>
-      )
-    };
-
+    const renderAddNewElementButton = (item: TreeObject, asChildren: boolean) => (
+      <Button
+        variant="text"
+        size="small"
+        sx={{
+          textTransform: "uppercase",
+          fontWeight: 400,
+          fontSize: "0.65rem",
+          color: "#2196F3",
+          flexWrap: "wrap",
+          display: selectedComponent?.id === item.id ? "block" : "none"
+        }}
+        onClick={ () => onAddComponentClick(item.path, asChildren) }
+      >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Stack>
+      </Button>
+    );
+    
   /**
    * Renders Tree Item
    *
@@ -71,14 +69,9 @@ const LayoutTreeMenuHtml = ({
     return (
       <Stack
         key={ item.id }
-        onMouseEnter={ () => setHover(item.id) }
-        onMouseLeave={ () => setHover("") }
       >
         <StyledTreeItem
-          renderAddNewElementButton={ renderAddNewElementButton }
           nodeId={ item.id }
-          item={ item }
-          hover={ hover }
           itemType={ item.type }
           itemName={ item.name || strings.generic.name }
           isLayoutComponent={ isLayoutComponent }
@@ -97,7 +90,9 @@ const LayoutTreeMenuHtml = ({
               return renderTreeItem(child, false , isRootSubDirectory)
             })
           }
+          { (item.children?.length === 0 && item.type === HtmlComponentType.LAYOUT) && renderAddNewElementButton(item, true) }
         </StyledTreeItem>
+        { renderAddNewElementButton(item, false) }
       </Stack>
     );
   };

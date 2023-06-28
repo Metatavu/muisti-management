@@ -353,7 +353,6 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    * @param path path to the parent element where the new child item will be added
    */
   private onLayoutViewPropertyAddClick = (path: string) => {
-    console.log("onLayoutViewPropertyAddClick", path);
     this.setState({
       addPropertyDialogOpen: true,
       newPageLayoutViewPath: path,

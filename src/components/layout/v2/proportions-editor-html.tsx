@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from "react";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
-import { Stack, Typography, TextField, Select, MenuItem } from "@mui/material";
+import { Stack, Typography, MenuItem } from "@mui/material";
+import TextField from "../../generic/v2/text-field";
+import SelectBox from "../../generic/v2/select-box";
 
 /**
  * Components properties
@@ -45,34 +47,32 @@ const ProportionsEditorHtml = ({
    * Renders icon
    */
   const renderIcon = () => {
-    if (name === "width") {
-      return (
-        <HeightOutlined
-          sx={{
-            transform: "rotate(90deg)",
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
-    }
-
-    if (name === "height") {
-      return (
-        <ExpandOutlined
-          sx={{
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
+    const iconStyles = {
+      color: "#2196F3",
+      border: "1px solid #2196F3",
+      borderRadius: "5px"
+    };
+    switch (name) {
+      case "width":
+        return (
+          <HeightOutlined
+            sx={{
+              transform: "rotate(90deg)",
+              ...iconStyles
+            }}
+          />
+        );
+      case "height":
+        return (
+          <ExpandOutlined
+            sx={{...iconStyles}}
+          />
+        );
     }
   };
 
   return (
-    <Stack direction="row" spacing={ 1 }>
+    <Stack direction="row" spacing={ 1 } alignItems="center">
       <Typography
         variant="caption"
         fontWeight={ 500 }
@@ -81,26 +81,20 @@ const ProportionsEditorHtml = ({
         { label }
       </Typography>
       <TextField
-        variant="standard"
         name={ name }
         value={ value }
+        number
         onChange={ onValueChange }
-        inputProps={{
-          pattern: "[0-9]",
-          sx:{ backgroundColor: "#fbfbfb" }
-        }}
       />
-      <Select
-        value={ settings.width }
-        variant="standard"
-        sx={{ backgroundColor: "#F5F5F5" }}
+      <SelectBox
+        value={ settings[name] }
         onChange={ ({ target: { value } }) => {
-          setSettings({ ...settings, width: value as "px" | "%"});
-        } }
+          setSettings({ ...settings, [name]: value as "px" | "%"});
+        }}
       >
         <MenuItem value="px" sx={{ color: "#2196F3" }}>px</MenuItem>
         <MenuItem value="%" sx={{ color: "#2196F3" }}>%</MenuItem>
-      </Select>
+      </SelectBox>
       { renderIcon() }
     </Stack>
   );

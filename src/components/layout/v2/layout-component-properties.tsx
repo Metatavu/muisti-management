@@ -1,8 +1,8 @@
 import { Divider, Stack } from "@mui/material";
-import strings from "../../../../localization/strings";
-import { TreeObject } from "../../../../types";
-import PropertyBox from "./generic/property-box";
-import renderPanelSubtitle from "./generic/render-panel-subtitle";
+import strings from "../../../localization/strings";
+import { TreeObject } from "../../../types";
+import PropertyBox from "./property-box";
+import PanelSubtitle from "./panel-subtitle";
 import AlignmentEditorHtml from "./alignment-editor-html";
 import { FC } from "react";
 
@@ -36,7 +36,7 @@ const LayoutComponentProperties: FC<Props> = ({
 		<Stack>
       <Divider sx={{ color: "#F5F5F5" }}/>
       <PropertyBox>
-        { renderPanelSubtitle(strings.layout.htmlProperties.layoutProperties.contentEmphasis) }
+        <PanelSubtitle subtitle={ strings.layout.htmlProperties.layoutProperties.contentEmphasis }/>
         <AlignmentEditorHtml
           onChange={ onPropertyChange }
         />
