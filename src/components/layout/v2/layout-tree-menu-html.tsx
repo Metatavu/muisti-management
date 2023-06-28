@@ -37,12 +37,19 @@ const LayoutTreeMenuHtml = ({
           fontWeight: 400,
           fontSize: "0.65rem",
           color: "#2196F3",
+          flexWrap: "wrap",
           display: selectedComponent?.id === item.id ? "block" : "none"
         }}
-        startIcon={ <AddBoxOutlined sx={{ color: "#2196F3" }}/> }
         onClick={ () => onAddComponentClick(item.path, asChildren) }
       >
-        { strings.layoutEditor.addLayoutViewDialog.title }
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Stack>
       </Button>
     );
     
