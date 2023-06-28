@@ -93,7 +93,6 @@ const LayoutScreenHTML: FC<Props> = ({
 
   useEffect(() => {
     if (!foundLayout) return;
-    console.log(foundLayout);
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
   }, [foundLayout]);
 
@@ -116,15 +115,13 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   if (!foundLayout) {
-    const layoutError = new Error(strings.errorDialog.layoutFetchNotFound);
-
     return (
       <BasicLayout
         history={ history }
         title={ "" }
         breadcrumbs={ [] }
         keycloak={ keycloak }
-        error={ layoutError }
+        error={ error }
         clearError={ () => history.goBack() }
       />
     )
@@ -373,34 +370,33 @@ const LayoutScreenHTML: FC<Props> = ({
       </div>
     );
   };
-
-  /**
-   * Options for html beautify
-   */
-  const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
-    indent_size: 2,
-    inline: [],
-    indent_empty_lines: true,
-    end_with_newline: false
-  };
-
+  
   /**
    * Renders code editor view
    */
-  const renderCodeEditor = () => (
-    <div className={ classes.editors }>
-      <div className={ classes.editorContainer }>
-        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
-          <CodeMirror
-            value={ html_beautify((foundLayout.data as PageLayoutViewHtml).html, htmlBeautifyOptions) }
-            height="500px"
-            style={{ overflow: "auto" }}
-            extensions={ [ html() ] }
-            onChange={ onCodeChange }
-          />
+  const renderCodeEditor = () => {
+    const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
+      indent_size: 2,
+      inline: [],
+      indent_empty_lines: true,
+      end_with_newline: false
+    };
+  
+    return (
+      <div className={ classes.editors }>
+        <div className={ classes.editorContainer }>
+          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
+            <CodeMirror
+              value={ html_beautify((foundLayout.data as PageLayoutViewHtml).html, htmlBeautifyOptions) }
+              height="500px"
+              style={{ overflow: "auto" }}
+              extensions={ [ html() ] }
+              onChange={ onCodeChange }
+            />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
   
   /**
    * Renders component specific properties

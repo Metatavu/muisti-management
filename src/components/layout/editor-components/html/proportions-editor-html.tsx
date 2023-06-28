@@ -71,7 +71,7 @@ const ProportionsEditorHtml = ({
   };
 
   return (
-    <Stack direction="row" spacing={ 1 }>
+    <Stack direction="row" spacing={ 1 } alignItems="center">
       <Typography
         variant="caption"
         fontWeight={ 500 }
@@ -86,13 +86,21 @@ const ProportionsEditorHtml = ({
         onChange={ onValueChange }
         inputProps={{
           pattern: "[0-9]",
-          sx:{ backgroundColor: "#fbfbfb" }
+          sx: { backgroundColor: "#fbfbfb" }
         }}
       />
       <Select
         value={ settings[name] }
         variant="standard"
         sx={{ backgroundColor: "#F5F5F5" }}
+        inputProps={{
+          sx: {
+            backgroundColor: "#fbfbfb",
+            ":active, :focus": {
+              backgroundColor: "#fbfbfb"
+            }
+          }
+        }}
         onChange={ ({ target: { value } }) => {
           setSettings({ ...settings, [name]: value as "px" | "%"});
         }}

@@ -5,6 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import {
+  Badge,
   CircularProgress,
   SelectChangeEvent,
 } from "@mui/material";
@@ -25,6 +26,7 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
 
 /**
  * Component props
@@ -155,41 +157,58 @@ class LayoutsScreen extends React.Component<Props, State> {
       return null;
     }
 
+    // Sort layouts and sublayouts so that html layouts are first
+    layouts.sort((a, b) => a.layoutType === LayoutType.Html ? -1 : 1);
+    subLayouts.sort((a, b) => a.layoutType === LayoutType.Html ? -1 : 1);
+    
     const layoutCards = layouts.map(layout => {
       const layoutId = layout.id;
-      const layoutType = layout.layoutType;
-
-      if (!layoutId || !layoutType) {
+      if (!layoutId || !layout.layoutType) {
         return null;
       }
 
       const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
 
       return (
-        <CardItem
+        <Badge
           key={ layout.id }
-          title={ layout.name }
-          onClick={ () => this.onLayoutCardClick(layoutId, layoutType) }
-          menuOptions={ cardMenuOptions }
-        />
+          sx={{ position: "relative" }}
+          slotProps={{ badge: {style: {zIndex: 100000 }} }}
+          overlap="rectangular"
+          badgeContent={ layout.layoutType === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
+        >
+          <CardItem
+            title={ layout.name }
+            onClick={ () => this.onLayoutCardClick(layoutId, layout.layoutType) }
+            menuOptions={ cardMenuOptions }
+          />
+        </Badge>
       );
     });
 
     const subLayoutCards = subLayouts.map(subLayout => {
       const subLayoutId = subLayout.id;
-      if (!subLayoutId) {
+      if (!subLayoutId || !subLayout.layoutType) {
         return null;
       }
 
       const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
 
       return (
-        <CardItem
+        <Badge
           key={ subLayout.id }
-          title={ `${strings.subLayout.name} - ${subLayout.name}` }
-          onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
-          menuOptions={ cardMenuOptions }
-        />
+          sx={{ position: "relative" }}
+          slotProps={{ badge: {style: {zIndex: 100000 }} }}
+          overlap="rectangular"
+          badgeContent={ subLayout.layoutType === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
+        >
+          <CardItem
+            key={ subLayout.id }
+            title={ `${strings.subLayout.name} - ${subLayout.name}` }
+            onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
+            menuOptions={ cardMenuOptions }
+          />
+        </Badge>
       );
     });
 
