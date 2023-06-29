@@ -30,6 +30,7 @@ import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import TextComponentProperties from "../layout/v2/text-component-properties";
 import ButtonComponentProperties from "../layout/v2/button-component-properties";
 import ImageComponentProperties from "../layout/v2/image-component-properties";
+import VideoComponentProperties from "../layout/v2/video-component-properties";
 
 /**
  * Component props
@@ -345,6 +346,15 @@ const LayoutScreenHTML: FC<Props> = ({
       case HtmlComponentType.IMAGE:
         return (
           <ImageComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
+            pageLayout={ foundLayout }
+            setPageLayout={ setFoundLayout }
+          />
+        );
+      case HtmlComponentType.VIDEO:
+        return (
+          <VideoComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
             pageLayout={ foundLayout }

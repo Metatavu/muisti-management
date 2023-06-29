@@ -329,7 +329,8 @@
         "text": "Teksti",
         "image": "Kuva",
         "tabs": "Välilehdet",
-        "tab": "Välilehti"
+        "tab": "Välilehti",
+        "video": "Video"
       },
       "textTypes": {
         "heading1": "Otsikko 1",
@@ -981,7 +982,8 @@
       "imageViewDescription": "Elementti kuvien esittämistä varten",
       "layoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
       "tabViewDescription": "Välilehtiasettelu.",
-      "tabsViewDescription": "Välilehtien asettelu."
+      "tabsViewDescription": "Välilehtien asettelu.",
+      "videoViewDescription": "Elementti videoiden esittämistä varten"
     },
     "contentManager": {
       "animationInterpolations": {

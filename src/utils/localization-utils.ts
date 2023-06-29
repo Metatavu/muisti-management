@@ -33,7 +33,8 @@ namespace LocalizationUtils {
     [HtmlComponentType.IMAGE]: strings.layout.html.types.image,
     [HtmlComponentType.TEXT]: strings.layout.html.types.text,
     [HtmlComponentType.TABS]: strings.layout.html.types.tabs,
-    [HtmlComponentType.TAB]: strings.layout.html.types.tab
+    [HtmlComponentType.TAB]: strings.layout.html.types.tab,
+    [HtmlComponentType.VIDEO]: strings.layout.html.types.video
   })[componentType]
 
   /**
@@ -47,7 +48,8 @@ namespace LocalizationUtils {
     [HtmlComponentType.IMAGE]: strings.helpTexts.layoutEditorHtml.imageViewDescription,
     [HtmlComponentType.TEXT]: strings.helpTexts.layoutEditorHtml.textViewDescription,
     [HtmlComponentType.TABS]: strings.helpTexts.layoutEditorHtml.tabsViewDescription,
-    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription
+    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription,
+    [HtmlComponentType.VIDEO]: strings.helpTexts.layoutEditorHtml.videoViewDescription
   })[componentType]
   
   /**

@@ -1,6 +1,4 @@
 import { ContentVersion } from "../generated/client";
-import strings from "../localization/strings";
-import { HtmlComponentType, LayoutAlignment } from "../types";
 
 /**
  * Utility class for handling languages

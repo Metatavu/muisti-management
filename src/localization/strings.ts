@@ -333,6 +333,7 @@ export interface IStrings extends LocalizedStringsMethods {
         image: string;
         tabs: string;
         tab: string;
+        video: string;
       };
       textTypes: {
         heading1: string;
@@ -998,6 +999,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutDescription: string;
       tabViewDescription: string;
       tabsViewDescription: string;
+      videoViewDescription: string;
     };
     contentManager: {
       animationInterpolations: {
