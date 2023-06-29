@@ -97,12 +97,14 @@ const GenericComponentProperties: FC<Props> = ({
         <PropertyBox>
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.proportions}/>
           <ProportionsEditorHtml
+            component={ component }
             value={ parseInt(component.element?.style?.width || "0").toString() }
             name="width"
             label={ strings.layout.htmlProperties.genericProperties.width }
             onChange={ onPropertyChange }
           />
           <ProportionsEditorHtml
+            component={ component }
             value={ parseInt(component.element?.style?.height || "0").toString() }
             name="height"
             label={ strings.layout.htmlProperties.genericProperties.height }

@@ -1,13 +1,15 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
 import { Stack, Typography, MenuItem } from "@mui/material";
 import TextField from "../../generic/v2/text-field";
 import SelectBox from "../../generic/v2/select-box";
+import { TreeObject } from "../../../types";
 
 /**
  * Components properties
  */
 interface Props {
+  component: TreeObject;
   value: string;
   name: "width" | "height";
   label: string;
@@ -18,6 +20,7 @@ interface Props {
  * HTML Component proportions editor
  */
 const ProportionsEditorHtml = ({
+  component,
   value,
   name,
   label,
@@ -30,6 +33,16 @@ const ProportionsEditorHtml = ({
     width: "px",
     height: "px",
   });
+  
+  useEffect(() => {
+    const widthType = getElementProportionType("width");
+    const heightType = getElementProportionType("height");
+
+    setSettings({
+      width: widthType || "px",
+      height: heightType || "px"
+    });
+  }, [component])
 
   /**
    * Event handler for input change events
@@ -41,6 +54,19 @@ const ProportionsEditorHtml = ({
     const val = type === "px" ? value : `${value}${type}`;
 
     onChange(name, val);
+  };
+  
+  /**
+   * Gets element proportion type
+   * 
+   * @param proportion proportion
+   */
+  const getElementProportionType = (proportion: "width" | "height") => {
+    const elementDimension = component.element.style[proportion];
+    
+    if (!elementDimension) return;
+    if (elementDimension.endsWith("%")) return "%";
+    if (elementDimension.endsWith("px")) return "px";
   };
 
   /**
