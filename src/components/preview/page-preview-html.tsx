@@ -112,8 +112,7 @@ const PagePreviewHtml = ({
         </Typography>
         <Preview
           srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources, showElementBorders))[0]?.outerHTML) }
-          width={ getPreviewDimensions().width }
-          height={ getPreviewDimensions().height }
+          { ...getPreviewDimensions() }
           />
       </PanZoom>
           <FormControlLabel
