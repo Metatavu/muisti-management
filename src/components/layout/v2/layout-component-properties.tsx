@@ -40,12 +40,14 @@ const LayoutComponentProperties: FC<Props> = ({
    * @param event event
    */
   const onPropertyChange = ({ target: { value, name } }: ChangeEvent<HTMLInputElement>) => {
-    console.log(value, name)
-    if (name === "gap") {
-      component.element.style.gap = `${value}px ${value}px`;
-      // component.element.style.columnGap = value;
+    if (!value)  {
+      component.element.style.removeProperty(name);
     } else {
-      component.element.style[name as any] = value;
+      if (name === "gap") {
+        component.element.style.gap = `${value}px ${value}px`;
+      } else {
+        component.element.style[name as any] = value;
+      }
     }
 
     updateComponent(component);

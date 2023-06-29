@@ -71,7 +71,8 @@ class CommonSettingsEditor extends React.Component<Props, State> {
   private renderLayoutSelect = (page: ExhibitionPage) => {
     const { layouts, onLayoutChange } = this.props;
     const layoutSelectItems = layouts
-      .sort((a, b) => a.name.localeCompare(b.name))
+      // TODO: localeCompare() seems to be broken after React/dependency updates
+      // .sort((a, b) => a.name.localeCompare(b.name))
       .map(layout =>
         <MenuItem key={ layout.id } value={ layout.id }>
           { layout.name }
