@@ -5,7 +5,6 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 import { History } from "history";
 import styles from "../../styles/content-editor-screen";
-// tslint:disable-next-line: max-line-length
 import {
   CircularProgress,
   Divider,
@@ -22,15 +21,39 @@ import {
   Tab,
   Box,
   MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
-import { AccessToken, ActionButton, ConfirmDialogData, LanguageOptions, PreviewDeviceData } from "../../types";
+import {
+  AccessToken,
+  ActionButton,
+  ConfirmDialogData,
+  LanguageOptions,
+  PreviewDeviceData
+} from "../../types";
 import BasicLayout from "../layouts/basic-layout";
 import Api from "../../api/api";
-// tslint:disable-next-line: max-line-length
-import { GroupContentVersion, ExhibitionDevice, ExhibitionPage, Exhibition, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, DeviceModel, PageLayout, PageLayoutView, ExhibitionPageResource, ExhibitionPageTransition, ExhibitionPageEventTrigger, PageLayoutWidgetType, ContentVersion, VisitorVariable, GroupContentVersionStatus } from "../../generated/client";
+import {
+  GroupContentVersion,
+  ExhibitionDevice,
+  ExhibitionPage,
+  Exhibition,
+  ExhibitionPageEventTriggerFromJSON,
+  ExhibitionPageResourceFromJSON,
+  DeviceModel,
+  PageLayout,
+  PageLayoutView,
+  ExhibitionPageResource,
+  ExhibitionPageTransition,
+  ExhibitionPageEventTrigger,
+  PageLayoutWidgetType,
+  ContentVersion,
+  VisitorVariable,
+  GroupContentVersionStatus,
+  LayoutType
+} from "../../generated/client";
 import EditorView from "../editor/editor-view";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import ElementContentsPane from "../layouts/element-contents-pane";
@@ -61,7 +84,7 @@ import LanguageUtils from "../../utils/language-utils";
 import GenericDialog from "../generic/generic-dialog";
 import ConfirmDialog from "../generic/confirm-dialog";
 
-type View = "CODE" | "VISUAL";
+type View = "CODE" | "VISUAL";
 
 /**
  * Component props
@@ -271,7 +294,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
                 this.renderIdlePageEditor()
               }
               { timelineTabIndex === 1 &&
-                this.renderTimeline() 
+                this.renderTimeline()
               }
             </div>
 
@@ -449,20 +472,24 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <Typography variant="h1" style={{ fontSize: 72 }}>
             { `${previewData.device?.name} - ${previewPage.name}` }
           </Typography>
-          <PagePreview
-            screenOrientation={ previewLayout.screenOrientation }
-            deviceOrientation={ deviceModel?.screenOrientation }
-            device={ previewData.device }
-            page={ previewPage }
-            view={ view }
-            selectedView={ selectedLayoutView }
-            resources={ resources }
-            displayMetrics={ displayMetrics }
-            scale={ scale }
-            onViewClick={ this.onLayoutViewClick }
-            onTabClick={ this.onPreviewTabClick }
-            tabMap={ tabMap }
-          />
+          { previewLayout.layoutType === LayoutType.Android ? (
+              <PagePreview
+              screenOrientation={ previewLayout.screenOrientation }
+              deviceOrientation={ deviceModel?.screenOrientation }
+              device={ previewData.device }
+              page={ previewPage }
+              view={ view }
+              selectedView={ selectedLayoutView }
+              resources={ resources }
+              displayMetrics={ displayMetrics }
+              scale={ scale }
+              onViewClick={ this.onLayoutViewClick }
+              onTabClick={ this.onPreviewTabClick }
+              tabMap={ tabMap }
+            />
+          ) : (
+            null
+          )}
         </div>
       );
     });
@@ -1101,9 +1128,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
       })
     );
   }
-  
+
   /**
-   * 
+   *
    */
   private onPageDataTextChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { selectedPage } = this.state;
@@ -1854,7 +1881,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private getCorrespondingSelectedPage = (contentVersion: ContentVersion): ExhibitionPage | undefined => {
     const { selectedDevice, selectedPage, pages } = this.state;
-    return pages.find(page => 
+    return pages.find(page =>
       page.contentVersionId === contentVersion.id &&
       page.deviceId === selectedDevice?.id &&
       page.orderNumber === selectedPage?.orderNumber
@@ -1908,7 +1935,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Filters device pages from all pages and sorts them by order number
-   * 
+   *
    * @param pages pages
    * @param device device
    * @param contentVersionId possible content version ID
@@ -1925,7 +1952,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
   /**
    * Get list of device pages in updated order
-   * 
+   *
    * @param devicePages device pages
    * @param movedPageId moved or removed page id
    * @param newIndex possible new index for moved page
