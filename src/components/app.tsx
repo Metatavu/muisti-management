@@ -35,7 +35,6 @@ import VisitorsManagementScreen from "./screens/visitors-management-screen";
 import DiagnosticsScreen from "./screens/diagnostics-screen";
 import LayoutScreenAndroid from "./screens/layout-screen-android";
 
-
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
@@ -72,6 +71,7 @@ class App extends React.Component<Props, State> {
   public componentDidMount = () => {
     moment.locale(strings.getLanguage());
     immer.enableAllPlugins();
+    strings.setLanguage("fi");
   }
 
   /**

@@ -23,7 +23,7 @@ interface Props extends WithStyles<typeof styles> {
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
-  error?: string | Error;
+  error?: string | Error;
   devices?: ExhibitionDevice[];
   dataChanged?: boolean;
   openDataChangedPrompt?: boolean;
