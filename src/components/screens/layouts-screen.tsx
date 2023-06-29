@@ -27,6 +27,7 @@ import DeleteUtils from "../../utils/delete-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
 import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
+import theme from "../../styles/theme";
 
 /**
  * Component props
@@ -173,7 +174,7 @@ class LayoutsScreen extends React.Component<Props, State> {
         <Badge
           key={ layout.id }
           sx={{ position: "relative" }}
-          slotProps={{ badge: {style: {zIndex: 100000 }} }}
+          slotProps={{ badge: {style: {zIndex: theme.zIndex.modal - 1 }} }}
           overlap="rectangular"
           badgeContent={ layout.layoutType === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
         >
