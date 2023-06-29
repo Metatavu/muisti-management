@@ -549,6 +549,9 @@
       "autoPlay": "Automaattinen toisto",
       "controls": "Näytä allintapainikkeet",
       "defaultResource": "Oletusvideo"
+    },
+    "preview": {
+      "showElementBorders": "Näytä elementtien reunat"
     }
   },
   "layoutEditor": {

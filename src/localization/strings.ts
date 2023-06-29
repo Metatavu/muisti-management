@@ -554,6 +554,9 @@ export interface IStrings extends LocalizedStringsMethods {
         controls: string;
         defaultResource: string;
       };
+      preview: {
+        showElementBorders: string;
+      };
     };
 
   layoutEditor: {

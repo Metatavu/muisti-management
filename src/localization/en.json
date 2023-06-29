@@ -546,6 +546,9 @@
       "autoPlay": "Automatic playback",
       "controls": "Show controls",
       "defaultResource": "Default video"
+    },
+    "preview": {
+      "showElementBorders": "Show element borders"
     }
   },
   "layoutEditor": {

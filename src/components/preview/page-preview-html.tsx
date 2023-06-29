@@ -1,9 +1,11 @@
-import { Typography, styled } from "@mui/material";
+import { Checkbox, FormControlLabel, Switch, Typography, styled } from "@mui/material";
 import PanZoom from "../generic/pan-zoom";
 import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
 import Fraction from "fraction.js";
 import { DeviceModel, PageLayout } from "../../generated/client";
 import { TreeObject } from "../../types";
+import { useState } from "react";
+import strings from "../../localization/strings";
 
 /**
  * Components properties
@@ -64,6 +66,8 @@ const PagePreviewHtml = ({
   treeObjects,
   selectedComponentId
 }: Props) => {
+  const [ showElementBorders, setShowElementBorders ] = useState(false);
+  
   if (deviceModels.length === 0) return null;
   
   const deviceModel = deviceModels.find(model => model.id === layout.modelId);
@@ -96,7 +100,7 @@ const PagePreviewHtml = ({
   
   return (
     <PreviewContainer>
-    <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
+      <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
         <Typography
           sx={{
             position: "absolute",
@@ -107,12 +111,21 @@ const PagePreviewHtml = ({
           { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
         </Typography>
         <Preview
-          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources))[0]?.outerHTML) }
+          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources, showElementBorders))[0]?.outerHTML) }
           width={ getPreviewDimensions().width }
           height={ getPreviewDimensions().height }
           />
-    </PanZoom>
-      
+      </PanZoom>
+          <FormControlLabel
+            sx={{
+              position: "absolute",
+              bottom: 10,
+            }}
+            label={ strings.layoutEditorV2.preview.showElementBorders }
+            onChange={ () => setShowElementBorders(!showElementBorders) }
+            value={ showElementBorders }
+            control={ <Switch checked={ showElementBorders } color="secondary"/> }
+          />
     </PreviewContainer>
   );
 };
