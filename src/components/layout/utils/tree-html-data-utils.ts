@@ -9,12 +9,21 @@ import { TreeObject, HtmlComponentType } from "../../../types";
  * @param destinationPath path of the element to be updated within tree
  * @returns updatedTree list of TreeObjects
  */
-export const updateHtmlComponent = (treeData: TreeObject[], updatedComponent: TreeObject, destinationPath: string): TreeObject[] => {
+export const updateHtmlComponent = (
+  treeData: TreeObject[],
+  updatedComponent: TreeObject,
+  destinationPath: string
+): TreeObject[] => {
   const updatedTree: TreeObject[] = [treeData[0]];
   if (treeData[0].id === destinationPath) {
     updatedTree[0] = updatedComponent;
   } else {
-    updatedTree[0].children = updateInTree(updatedTree[0].children, destinationPath, treeData[0].id, updatedComponent);
+    updatedTree[0].children = updateInTree(
+      updatedTree[0].children,
+      destinationPath,
+      treeData[0].id,
+      updatedComponent
+    );
   }
 
   return updatedTree;
@@ -29,7 +38,12 @@ export const updateHtmlComponent = (treeData: TreeObject[], updatedComponent: Tr
  * @param updatedComponent updated TreeObject
  * @returns list of TreeObjects
  */
-const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPath: string, updatedComponent: TreeObject): TreeObject[] => {
+const updateInTree = (
+  treeData: TreeObject[],
+  destinationPath: string,
+  currentPath: string,
+  updatedComponent: TreeObject
+): TreeObject[] => {
   const cleanNodes: TreeObject[] = [];
   let found = false;
   for (const element of treeData) {
@@ -49,7 +63,12 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
     for (const element of treeData) {
       const child = element;
       const updatedPath = `${currentPath}/${child.id}`;
-      child.children = updateInTree(child.children ?? [], destinationPath, updatedPath, updatedComponent);
+      child.children = updateInTree(
+        child.children ?? [],
+        destinationPath,
+        updatedPath,
+        updatedComponent
+      );
     }
   }
 
@@ -65,9 +84,14 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  * @param showBorders whether to show borders or not
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string, resources?: ExhibitionPageResource[], showBorders?: boolean): HTMLElement => {
+export const treeObjectToHtmlElement = (
+  treeObject: TreeObject,
+  selectedComponentId?: string,
+  resources?: ExhibitionPageResource[],
+  showBorders?: boolean
+): HTMLElement => {
   const element = treeObject.element;
-  const foundResource = resources?.find(resource => resource.id === treeObject.id);
+  const foundResource = resources?.find((resource) => resource.id === treeObject.id);
 
   removeOutline(element);
 
@@ -93,11 +117,13 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
         (element as HTMLVideoElement).appendChild(sourceElement);
         break;
     }
-  };
+  }
 
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources, showBorders));
+      element.appendChild(
+        treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources, showBorders)
+      );
     }
   }
 
@@ -113,12 +139,23 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
  * @param asChildren whether to add as children or sibling
  * @returns updated tree data
  */
-export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeObject, targetPath: string, asChildren: boolean) => {
+export const addNewHtmlComponent = (
+  treeData: TreeObject[],
+  newComponent: TreeObject,
+  targetPath: string,
+  asChildren: boolean
+) => {
   const updatedTree: TreeObject[] = [treeData[0]];
   if (treeData[0].id === targetPath) {
     updatedTree[0].children.push(newComponent);
   } else {
-    updatedTree[0].children = pushToTree(updatedTree[0].children, newComponent, treeData[0].id, targetPath, asChildren);
+    updatedTree[0].children = pushToTree(
+      updatedTree[0].children,
+      newComponent,
+      treeData[0].id,
+      targetPath,
+      asChildren
+    );
   }
 
   return updatedTree;
@@ -134,7 +171,13 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
  * @param asChildren whether to add as children or sibling
  * @returns updated tree data
  */
-const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPath: string, targetPath: string, asChildren: boolean): TreeObject[] => {
+const pushToTree = (
+  treeData: TreeObject[],
+  newComponent: TreeObject,
+  currentPath: string,
+  targetPath: string,
+  asChildren: boolean
+): TreeObject[] => {
   const cleanNodes: TreeObject[] = [];
   let found = false;
   for (const element of treeData) {
@@ -157,7 +200,13 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
     for (const element of treeData) {
       const child = element;
       const updatedPath = `${currentPath}/${child.id}`;
-      child.children = pushToTree(child.children ?? [], newComponent, updatedPath, targetPath, asChildren);
+      child.children = pushToTree(
+        child.children ?? [],
+        newComponent,
+        updatedPath,
+        targetPath,
+        asChildren
+      );
     }
   }
 
@@ -170,9 +219,8 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
  * @param element serialized element
  * @returns deserialized element
  */
-export const deserializeElement = (element: string): HTMLElement => (
-  new DOMParser().parseFromString(element, "text/html").body.firstChild as HTMLElement
-);
+export const deserializeElement = (element: string): HTMLElement =>
+  new DOMParser().parseFromString(element, "text/html").body.firstChild as HTMLElement;
 
 /**
  * Constructs an array of tree objects from given html
@@ -184,7 +232,7 @@ export const constructTree = (html: string) => {
   const dom = new DOMParser().parseFromString(html, "text/html").body;
   const domArray = Array.from(dom.children);
 
-  return domArray.map(element => createTreeObject(element) as TreeObject);
+  return domArray.map((element) => createTreeObject(element) as TreeObject);
 };
 
 /**
@@ -222,7 +270,7 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     id: id,
     children: children,
     element: element as HTMLElement
-  }
+  };
 };
 
 /**
@@ -238,7 +286,11 @@ const removeOutline = (element: HTMLElement) => {
 /**
  * Elements that are able to hold children
  */
-export const CONTAINER_ELEMENTS = [ HtmlComponentType.LAYOUT, HtmlComponentType.TAB, HtmlComponentType.TABS ];
+export const CONTAINER_ELEMENTS = [
+  HtmlComponentType.LAYOUT,
+  HtmlComponentType.TAB,
+  HtmlComponentType.TABS
+];
 
 /**
  * Wrap template HTML body content

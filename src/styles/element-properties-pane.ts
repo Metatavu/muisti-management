@@ -1,4 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "./theme";
 
 export default createStyles({
@@ -21,7 +21,7 @@ export default createStyles({
     width: 400,
     transition: "opacity 0.2s 0.2s ease-in-out",
     "&.closed": {
-      opacity: 0,
+      opacity: 0
     }
   },
   header: {
@@ -42,5 +42,5 @@ export default createStyles({
     padding: theme.spacing(2),
     overflowY: "auto",
     maxWidth: "calc(100% -  16px)"
-  },
+  }
 });

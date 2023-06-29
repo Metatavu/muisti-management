@@ -23,7 +23,9 @@ export interface SetExhibitionsAction {
  *
  * @param exhibition exhibition being dispatched
  */
-export const setSelectedExhibition: ActionCreator<SetSelectedExhibitionAction> = (exhibition: Exhibition) => {
+export const setSelectedExhibition: ActionCreator<SetSelectedExhibitionAction> = (
+  exhibition: Exhibition
+) => {
   return {
     type: actionTypes.SET_SELECTED_EXHIBITION,
     exhibition: exhibition

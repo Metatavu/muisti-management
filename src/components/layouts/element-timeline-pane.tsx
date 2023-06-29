@@ -1,26 +1,24 @@
 import * as React from "react";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/element-timeline-pane";
-
 
 /**
  * Interface representing component properties
  */
-interface Props extends WithStyles<typeof styles> {
-}
+interface Props extends WithStyles<typeof styles> {}
 
 /**
  * Interface representing component state
  */
 interface State {
+  open: boolean;
 }
 
 /**
  * Component for element timeline pane
  */
 class ElementTimelinePane extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -39,13 +37,8 @@ class ElementTimelinePane extends React.Component<Props, State> {
   public render() {
     const { classes } = this.props;
 
-    return (
-      <div className={ classes.root }>
-        { this.props.children }
-      </div>
-    );
+    return <div className={classes.root}>{this.props.children}</div>;
   }
-
 }
 
 export default withStyles(styles)(ElementTimelinePane);

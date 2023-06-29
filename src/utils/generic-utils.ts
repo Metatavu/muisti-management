@@ -1,5 +1,4 @@
 export default class GenericUtils {
-
   /**
    * Get any enum keys
    *
@@ -17,5 +16,4 @@ export default class GenericUtils {
   public static enumValues<T>(enumObject: T) {
     return Object.values(enumObject);
   }
-
 }

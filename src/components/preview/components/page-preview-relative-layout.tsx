@@ -1,10 +1,14 @@
 import * as React from "react";
-import Measure, { ContentRect, BoundingRect } from 'react-measure'
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import Measure, { ContentRect, BoundingRect } from "react-measure";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
+import { CSSProperties } from "@mui/material/styles";
 import PagePreviewComponentEditor from "./page-preview-component";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
@@ -27,7 +31,10 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
   onTabClick?: (viewId: string, newIndex: number) => void;
 }
@@ -46,7 +53,6 @@ interface State {
  * Component for rendering RelativeLayout views
  */
 class PagePreviewRelativeLayout extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -67,20 +73,17 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     const tabData = PreviewUtils.getTabContent(view, tabMap);
 
     return (
-      <Measure onResize={ this.onRootResize } bounds={ true }>
+      <Measure onResize={this.onRootResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            className={ classes.relativeLayout }
-            style={ this.resolveStyles() }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            className={classes.relativeLayout}
+            style={this.resolveStyles()}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           >
-            { tabData.length > 0 ?
-              this.renderTabContent(tabData) :
-              this.renderChildren()
-            }
+            {tabData.length > 0 ? this.renderTabContent(tabData) : this.renderChildren()}
           </div>
         )}
       </Measure>
@@ -104,25 +107,25 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       handleLayoutProperties
     } = this.props;
 
-    return (view.children || []).map((child: PageLayoutView, index: number) =>
+    return (view.children || []).map((child: PageLayoutView, index: number) => (
       <PagePreviewComponentEditor
-        key={ `child-${index}` }
-        view={ child }
-        parentView={ view }
-        selectedView={ selectedView }
-        layer={ layer }
-        resourceMap={ resourceMap }
-        displayMetrics={ displayMetrics }
-        scale={ scale }
-        style={ this.resolveChildStyles(child) }
-        handleLayoutProperties={ handleLayoutProperties }
-        onResize={ (contentRect: ContentRect) => this.onChildResize(child.id, contentRect) }
-        onViewClick={ onViewClick }
-        onTabClick={ onTabClick }
-        tabMap={ tabMap }
+        key={`child-${index}`}
+        view={child}
+        parentView={view}
+        selectedView={selectedView}
+        layer={layer}
+        resourceMap={resourceMap}
+        displayMetrics={displayMetrics}
+        scale={scale}
+        style={this.resolveChildStyles(child)}
+        handleLayoutProperties={handleLayoutProperties}
+        onResize={(contentRect: ContentRect) => this.onChildResize(child.id, contentRect)}
+        onViewClick={onViewClick}
+        onTabClick={onTabClick}
+        tabMap={tabMap}
       />
-    );
-  }
+    ));
+  };
 
   /**
    * Renders tab contents
@@ -139,16 +142,16 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
 
       return (
         <TabItem
-          key={ `TabItem-${index}` }
-          index={ index }
-          resource={ tab.resources[0] }
-          visible={ index === activeIndex }
+          key={`TabItem-${index}`}
+          index={index}
+          resource={tab.resources[0]}
+          visible={index === activeIndex}
         />
       );
     });
 
     return tabItems;
-  }
+  };
 
   /**
    * Handles an unknown property logging
@@ -158,7 +161,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // console.log(`PagePreviewRelativeLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
+  };
 
   /**
    * Resolves child component styles
@@ -166,24 +169,22 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
    * @param child child
    * @return child component styles
    */
-  private resolveChildStyles = (child: PageLayoutView): CSSProperties  => {
-    const rightOfChildId = child.properties
-      .find(item => item.name === "layout_toRightOf")
-      ?.value;
+  private resolveChildStyles = (child: PageLayoutView): CSSProperties => {
+    const rightOfChildId = child.properties.find((item) => item.name === "layout_toRightOf")?.value;
 
     const result: CSSProperties = {
-      "position": "absolute"
+      position: "absolute"
     };
 
     if (rightOfChildId) {
       const rightOfBounds = this.state.childBounds[rightOfChildId];
       if (rightOfBounds) {
-        result.left = rightOfBounds.right - (this.state.rootBounds?.left || 0);
+        result.left = rightOfBounds.right - (this.state.rootBounds?.left || 0);
       }
     }
 
     return result;
-  }
+  };
 
   /**
    * Resolves component styles
@@ -193,25 +194,29 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, parentView, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = handleLayoutProperties(properties, {
       zIndex: layer,
       position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       if (property.name.startsWith("layout_")) {
-        switch(property.name) {
+        switch (property.name) {
           case "layout_gravity":
             if (parentIsFrameLayout) {
-              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
-              gravityProps.forEach(prop => {
+              const gravityProps: CSSPropertyValuePairs[] =
+                AndroidUtils.layoutGravityToCSSPositioning(
+                  property.value as LayoutGravityValuePairs
+                );
+              gravityProps.forEach((prop) => {
                 result[prop.key] = prop.value;
               });
             } else {
               result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
             }
-          break;
+            break;
         }
         return;
       }
@@ -219,15 +224,15 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-        break;
+          break;
         default:
           this.handleUnknownProperty(property, "unknown property");
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Updates child bounds into state
@@ -242,7 +247,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     this.setState({
       childBounds: childBounds
     });
-  }
+  };
 
   /**
    * Event handler for root component resize
@@ -257,7 +262,7 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     if (this.props.onResize) {
       this.props.onResize(contentRect);
     }
-  }
+  };
 
   /**
    * Event handler for child resize event
@@ -269,32 +274,32 @@ class PagePreviewRelativeLayout extends React.Component<Props, State> {
     if (id && contentRect.bounds) {
       this.updateChildBounds(id, contentRect.bounds);
     }
-  }
+  };
 
   /**
    * Event handler for mouse over
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for mouse out
-   * 
+   *
    * @param event react mouse event
    */
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for on click
    */
   private onClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewRelativeLayout);

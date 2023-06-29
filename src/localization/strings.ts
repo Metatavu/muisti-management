@@ -498,66 +498,66 @@ export interface IStrings extends LocalizedStringsMethods {
       dialogTitle: string;
     };
   };
-  
+
   // Translations related to new presentation format layouts
   layoutEditorV2: {
-      drawerTitle: string;
-      genericProperties: {
-        element: string;
-        elementName: string;
-        proportions: string;
-        width: string;
-        height: string;
-        elevation: string;
-        color: {
-          label: string;
-          button: string;
-        };
-        margin: string;
-        padding: string;
+    drawerTitle: string;
+    genericProperties: {
+      element: string;
+      elementName: string;
+      proportions: string;
+      width: string;
+      height: string;
+      elevation: string;
+      color: {
+        label: string;
+        button: string;
       };
-      layoutProperties: {
-        contentEmphasis: string;
-        contentDirection: {
-          label: string;
-          row: string;
-          column: string;
-        };
-        contentGap: string;
-        alignment: {
-          northwest: string;
-          north: string;
-          northeast: string;
-          west: string;
-          center: string;
-          east: string;
-          southwest: string;
-          south: string;
-          southeast: string;
-        };
+      margin: string;
+      padding: string;
+    };
+    layoutProperties: {
+      contentEmphasis: string;
+      contentDirection: {
+        label: string;
+        row: string;
+        column: string;
       };
-      textProperties: {
-        elementType: string;
-        fontColor: string;
-        defaultResource: string;
-      };
-      buttonProperties: {
-        fontColor: string;
-        defaultResource: string;
-      };
-      imageProperties: {
-        defaultResource: string;
-      };
-      videoProperties: {
-        loop: string;
-        autoPlay: string;
-        controls: string;
-        defaultResource: string;
-      };
-      preview: {
-        showElementBorders: string;
+      contentGap: string;
+      alignment: {
+        northwest: string;
+        north: string;
+        northeast: string;
+        west: string;
+        center: string;
+        east: string;
+        southwest: string;
+        south: string;
+        southeast: string;
       };
     };
+    textProperties: {
+      elementType: string;
+      fontColor: string;
+      defaultResource: string;
+    };
+    buttonProperties: {
+      fontColor: string;
+      defaultResource: string;
+    };
+    imageProperties: {
+      defaultResource: string;
+    };
+    videoProperties: {
+      loop: string;
+      autoPlay: string;
+      controls: string;
+      defaultResource: string;
+    };
+    preview: {
+      showElementBorders: string;
+    };
+  };
 
   layoutEditor: {
     commonComponents: {

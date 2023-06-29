@@ -1,6 +1,6 @@
 import React, { useState, FC, ChangeEvent } from "react";
-import { Button, Divider, MenuItem, Popover, Stack } from "@mui/material";
-import { ColorResult, SketchPicker } from "react-color";
+import { Button, Divider, MenuItem, Stack } from "@mui/material";
+import { ColorResult } from "react-color";
 import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
 import {
@@ -26,12 +26,9 @@ interface Props {
 
 /**
  * Generic Component Properties
-*/
-const GenericComponentProperties: FC<Props> = ({
-  component,
-  updateComponent
-}) => {
-  const [ popoverAnchorElement, setPopoverAnchorElement ] = useState<HTMLButtonElement>();
+ */
+const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) => {
+  const [popoverAnchorElement, setPopoverAnchorElement] = useState<HTMLButtonElement>();
 
   if (!component) return null;
 
@@ -65,88 +62,76 @@ const GenericComponentProperties: FC<Props> = ({
     return {
       border: elementsBackgroundColor ? undefined : "1px solid #2196F3",
       backgroundColor: elementsBackgroundColor || "#F5F5F5"
-    }
+    };
   };
 
   return (
     <>
-      <Stack spacing={ 2 } paddingLeft={ 0 } paddingRight={ 0 }>
+      <Stack spacing={2} paddingLeft={0} paddingRight={0}>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.element }/>
-          <ConditionalTooltip enabled title={ strings.generic.notYetImplemented }>
-          <SelectBox value={ component.type } disabled>
-            { Object.values(HtmlComponentType).map(type => (
-              <MenuItem
-                key={ type }
-                value={ type }
-                sx={{ color: "#2196F3" }}
-              >
-                { type }
-              </MenuItem>
-            )) }
-          </SelectBox>
+          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.element} />
+          <ConditionalTooltip enabled title={strings.generic.notYetImplemented}>
+            <SelectBox value={component.type} disabled>
+              {Object.values(HtmlComponentType).map((type) => (
+                <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
+                  {type}
+                </MenuItem>
+              ))}
+            </SelectBox>
           </ConditionalTooltip>
         </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.elementName }/>
+          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.elementName} />
           <TextField
-            value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
-            onChange={ onNameChange }
-            placeholder={ strings.layoutEditorV2.genericProperties.elementName }
+            value={component.element.attributes.getNamedItem("name")?.nodeValue || ""}
+            onChange={onNameChange}
+            placeholder={strings.layoutEditorV2.genericProperties.elementName}
           />
         </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.proportions}/>
+          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.proportions} />
           <ProportionsEditorHtml
-            component={ component }
-            value={ parseInt(component.element?.style?.width || "0").toString() }
+            component={component}
+            value={parseInt(component.element?.style?.width || "0").toString()}
             name="width"
-            label={ strings.layoutEditorV2.genericProperties.width }
-            onChange={ onPropertyChange }
+            label={strings.layoutEditorV2.genericProperties.width}
+            onChange={onPropertyChange}
           />
           <ProportionsEditorHtml
-            component={ component }
-            value={ parseInt(component.element?.style?.height || "0").toString() }
+            component={component}
+            value={parseInt(component.element?.style?.height || "0").toString()}
             name="height"
-            label={ strings.layoutEditorV2.genericProperties.height }
-            onChange={ onPropertyChange }
+            label={strings.layoutEditorV2.genericProperties.height}
+            onChange={onPropertyChange}
           />
         </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.margin }/>
+          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.margin} />
           <MarginPaddingEditorHtml
-            styles={ component.element.style }
+            styles={component.element.style}
             type="margin"
-            onChange={ onPropertyChange }
+            onChange={onPropertyChange}
           />
         </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.padding }/>
+          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.padding} />
           <MarginPaddingEditorHtml
-            styles={ component.element.style }
+            styles={component.element.style}
             type="padding"
-            onChange={ onPropertyChange }
+            onChange={onPropertyChange}
           />
         </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={ 1 }
-          >
-            <PaletteOutlinedIcon sx={{ opacity: 0.54 }}/>
-            <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.color.label }/>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <PaletteOutlinedIcon sx={{ opacity: 0.54 }} />
+            <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.color.label} />
           </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
             <span
               style={{
                 width: 16,
@@ -157,22 +142,24 @@ const GenericComponentProperties: FC<Props> = ({
             />
             <Button
               sx={{ color: "#2196F3" }}
-              onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
+              onClick={({ currentTarget }: React.MouseEvent<HTMLButtonElement>) =>
+                setPopoverAnchorElement(currentTarget)
+              }
             >
-              { strings.layoutEditorV2.genericProperties.color.button }
+              {strings.layoutEditorV2.genericProperties.color.button}
             </Button>
-            <FormatColorFillOutlinedIcon sx={{ color: "#2196F3" }}/>
+            <FormatColorFillOutlinedIcon sx={{ color: "#2196F3" }} />
           </Stack>
         </PropertyBox>
       </Stack>
       <ColorPicker
-        color={ component.element.style.backgroundColor }
-        anchorEl={ popoverAnchorElement }
-        onClose={ () => setPopoverAnchorElement(undefined) }
-        onChangeComplete={ ({ hex }: ColorResult) => onPropertyChange("background-color", hex) }
+        color={component.element.style.backgroundColor}
+        anchorEl={popoverAnchorElement}
+        onClose={() => setPopoverAnchorElement(undefined)}
+        onChangeComplete={({ hex }: ColorResult) => onPropertyChange("background-color", hex)}
       />
     </>
   );
-}
+};
 
 export default GenericComponentProperties;

@@ -24,34 +24,29 @@ const LayoutTreeMenuHtml = ({
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
-
   /**
    * Renders Add New Element button
    */
-    const renderAddNewElementButton = (item: TreeObject, asChildren: boolean) => (
-      <Button
-        variant="text"
-        size="small"
-        sx={{
-          textTransform: "uppercase",
-          fontWeight: 400,
-          fontSize: "0.65rem",
-          color: "#2196F3",
-          flexWrap: "wrap",
-          display: selectedComponent?.id === item.id ? "block" : "none"
-        }}
-        onClick={ () => onAddComponentClick(item.path, asChildren) }
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
-          { strings.layoutEditor.addLayoutViewDialog.title }
-        </Stack>
-      </Button>
-    );
+  const renderAddNewElementButton = (item: TreeObject, asChildren: boolean) => (
+    <Button
+      variant="text"
+      size="small"
+      sx={{
+        textTransform: "uppercase",
+        fontWeight: 400,
+        fontSize: "0.65rem",
+        color: "#2196F3",
+        flexWrap: "wrap",
+        display: selectedComponent?.id === item.id ? "block" : "none"
+      }}
+      onClick={() => onAddComponentClick(item.path, asChildren)}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <AddBoxOutlined sx={{ color: "#2196F3" }} />
+        {strings.layoutEditor.addLayoutViewDialog.title}
+      </Stack>
+    </Button>
+  );
 
   /**
    * Renders Tree Item
@@ -67,32 +62,31 @@ const LayoutTreeMenuHtml = ({
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
-      <Stack
-        key={ item.id }
-      >
+      <Stack key={item.id}>
         <StyledTreeItem
-          nodeId={ item.id }
-          itemType={ item.type }
-          itemName={ item.name || strings.generic.name }
-          isLayoutComponent={ isLayoutComponent }
-          isRoot={ isRoot }
-          isRootSubdirectory={ isRootSubdirectory }
-          hasChildren={ hasChildren }
-          onClick={ () => onTreeComponentSelect(item) }
-          onDoubleClick={ () => {
+          nodeId={item.id}
+          itemType={item.type}
+          itemName={item.name || strings.generic.name}
+          isLayoutComponent={isLayoutComponent}
+          isRoot={isRoot}
+          isRootSubdirectory={isRootSubdirectory}
+          hasChildren={hasChildren}
+          onClick={() => onTreeComponentSelect(item)}
+          onDoubleClick={() => {
             if (selectedComponent?.id === item.id) {
               onTreeComponentSelect(undefined);
             }
           }}
         >
-          { (item.children ?? []).map((child, i) => {
-              const isRootSubDirectory = i === 0;
-              return renderTreeItem(child, false , isRootSubDirectory)
-            })
-          }
-          { (item.children?.length === 0 && item.type === HtmlComponentType.LAYOUT) && renderAddNewElementButton(item, true) }
+          {(item.children ?? []).map((child, i) => {
+            const isRootSubDirectory = i === 0;
+            return renderTreeItem(child, false, isRootSubDirectory);
+          })}
+          {item.children?.length === 0 &&
+            item.type === HtmlComponentType.LAYOUT &&
+            renderAddNewElementButton(item, true)}
         </StyledTreeItem>
-        { renderAddNewElementButton(item, false) }
+        {renderAddNewElementButton(item, false)}
       </Stack>
     );
   };
@@ -119,7 +113,7 @@ const LayoutTreeMenuHtml = ({
     const slashes = path?.match(/\//g)?.length ?? 0;
 
     if (!slashes) {
-      return [ path ];
+      return [path];
     }
 
     let parentIds: string[] = [];
@@ -133,10 +127,8 @@ const LayoutTreeMenuHtml = ({
   };
 
   return (
-    <TreeView
-      expanded={ getParentIds() }
-    >
-      { treeObjects.map(item => renderTreeItem(item, true)) }
+    <TreeView expanded={getParentIds()}>
+      {treeObjects.map((item) => renderTreeItem(item, true))}
     </TreeView>
   );
 };

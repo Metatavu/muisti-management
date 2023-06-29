@@ -1,6 +1,25 @@
 // eslint-disable-next-line max-len
-import { ExhibitionPageResource, DeviceModelCapabilities, ExhibitionPage, Exhibition, ContentVersion, ExhibitionFloor, ExhibitionRoom, ExhibitionDevice, ExhibitionDeviceGroup, RfidAntenna, GroupContentVersion, PageLayout, VisitorVariable, Visitor, VisitorSession } from "../generated/client";
-import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./device-model-string-data";
+import {
+  ExhibitionPageResource,
+  DeviceModelCapabilities,
+  ExhibitionPage,
+  Exhibition,
+  ContentVersion,
+  ExhibitionFloor,
+  ExhibitionRoom,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  RfidAntenna,
+  GroupContentVersion,
+  PageLayout,
+  VisitorVariable,
+  Visitor,
+  VisitorSession
+} from "../generated/client";
+import {
+  DeviceModelDimensionsData,
+  DeviceModelDisplayMetricsData
+} from "./device-model-string-data";
 
 /**
  * Interface describing an access token
@@ -8,7 +27,7 @@ import { DeviceModelDimensionsData, DeviceModelDisplayMetricsData } from "./devi
 export interface AccessToken {
   token: string;
   userId: string;
-};
+}
 
 /**
  * Map of resources with id as a key
@@ -20,22 +39,28 @@ export type ResourceMap = { [key: string]: ExhibitionPageResource };
  */
 export interface JsonLintParseErrorHash {
   loc: {
-    "first_line": number;
-    "first_column": number;
-    "last_line": number;
-    "last_column": number;
+    first_line: number;
+    first_column: number;
+    last_line: number;
+    last_column: number;
   };
-};
+}
 
 /**
  * Union type for device model data sub properties
  */
-export type DeviceModelDataProperty = DeviceModelDimensionsData | DeviceModelDisplayMetricsData | DeviceModelCapabilities;
+export type DeviceModelDataProperty =
+  | DeviceModelDimensionsData
+  | DeviceModelDisplayMetricsData
+  | DeviceModelCapabilities;
 
 /**
  * Union type for keys of device model data sub properties
  */
-export type DeviceModelDataSubPropertyKey = keyof DeviceModelDimensionsData | keyof DeviceModelDisplayMetricsData | keyof DeviceModelCapabilities;
+export type DeviceModelDataSubPropertyKey =
+  | keyof DeviceModelDimensionsData
+  | keyof DeviceModelDisplayMetricsData
+  | keyof DeviceModelCapabilities;
 
 /**
  * Enum for physical event trigger button values
@@ -50,7 +75,7 @@ export enum PhysicalButton {
   BUTTON_7 = "F7",
   BUTTON_8 = "F8",
   BUTTON_9 = "F9"
-};
+}
 
 /**
  * Interface for a single physical event trigger button
@@ -58,13 +83,19 @@ export enum PhysicalButton {
 export interface PhysicalButtonData {
   name: string;
   value: PhysicalButton;
-};
+}
 
 /**
  * Interface describing exhibition element in exhibition editor
  */
 export interface ExhibitionElement {
-  data: Exhibition | ContentVersion | ExhibitionFloor | ExhibitionRoom | ExhibitionDevice | ExhibitionPage;
+  data:
+    | Exhibition
+    | ContentVersion
+    | ExhibitionFloor
+    | ExhibitionRoom
+    | ExhibitionDevice
+    | ExhibitionPage;
   type: ExhibitionElementType;
 }
 
@@ -177,19 +208,19 @@ export interface ContentSpecificDeleteMessage {
  */
 export interface DeleteDataHolder {
   objects: (
-    Exhibition |
-    ContentVersion |
-    ExhibitionFloor |
-    GroupContentVersion |
-    ExhibitionRoom |
-    ExhibitionDeviceGroup |
-    ExhibitionDevice |
-    RfidAntenna |
-    ExhibitionPage |
-    PageLayout |
-    Visitor |
-    VisitorSession |
-    VisitorVariable
+    | Exhibition
+    | ContentVersion
+    | ExhibitionFloor
+    | GroupContentVersion
+    | ExhibitionRoom
+    | ExhibitionDeviceGroup
+    | ExhibitionDevice
+    | RfidAntenna
+    | ExhibitionPage
+    | PageLayout
+    | Visitor
+    | VisitorSession
+    | VisitorVariable
   )[];
   localizedMessage: string;
 }
@@ -264,7 +295,7 @@ export enum HtmlComponentType {
   TABS = "tabs",
   TAB = "tab",
   VIDEO = "video"
-};
+}
 
 /**
  * Layout alignment enum

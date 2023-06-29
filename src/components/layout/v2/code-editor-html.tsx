@@ -27,10 +27,7 @@ const CodeEditorContainer = styled("div")(() => ({
 /**
  * Code Editor HTML component
  */
-const CodeEditorHTML = ({
-  htmlString,
-  onCodeChange
-}: Props) => {
+const CodeEditorHTML = ({ htmlString, onCodeChange }: Props) => {
   const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
     indent_size: 2,
     inline: [],
@@ -40,13 +37,13 @@ const CodeEditorHTML = ({
 
   return (
     <CodeEditorContainer>
-    <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
+      <Typography style={{ margin: 8 }}>{strings.exhibitionLayouts.editView.html}</Typography>
       <CodeMirror
-        value={ html_beautify(htmlString, htmlBeautifyOptions) }
+        value={html_beautify(htmlString, htmlBeautifyOptions)}
         height="500px"
         style={{ overflow: "auto" }}
-        extensions={ [ html() ] }
-        onChange={ onCodeChange }
+        extensions={[html()]}
+        onChange={onCodeChange}
       />
     </CodeEditorContainer>
   );

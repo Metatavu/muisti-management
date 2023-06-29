@@ -1,11 +1,15 @@
 import * as React from "react";
 import Measure, { ContentRect } from "react-measure";
 import { Tabs, Tab } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
+import { CSSProperties } from "@mui/material/styles";
 import DisplayMetrics from "../../../types/display-metrics";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";
@@ -25,7 +29,10 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
   onTabClick?: (viewId: string, newIndex: number) => void;
 }
@@ -33,14 +40,12 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Interface representing component state
  */
-interface State {
-}
+interface State {}
 
 /**
  * Component for rendering MaterialTabLayout views
  */
 class PagePreviewMaterialTab extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -48,8 +53,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -59,21 +63,21 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     const { onResize } = this.props;
 
     return (
-      <Measure onResize={ onResize } bounds={ true }>
+      <Measure onResize={onResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            style={ this.resolveStyles() }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            style={this.resolveStyles()}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           >
-            { this.renderTabs() }
+            {this.renderTabs()}
           </div>
         )}
       </Measure>
     );
-  }
+  };
 
   /**
    * Renders tabs
@@ -94,10 +98,10 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     const tabItems = tabResource.tabComponent.tabs.map((tab, index) => {
       return (
         <Tab
-          style={ this.resolveTabButtonStyles(activeIndex, index) }
-          key={ `${tab.label}-${index}` }
-          label={ tab.label }
-          value={ index }
+          style={this.resolveTabButtonStyles(activeIndex, index)}
+          key={`${tab.label}-${index}`}
+          label={tab.label}
+          value={index}
           fullWidth
         />
       );
@@ -106,21 +110,21 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     return (
       <>
         <Tabs
-          variant={ this.findTabProperty("variant") }
+          variant={this.findTabProperty("variant")}
           TabIndicatorProps={{
             style: this.resolveTabIndicatorStyles()
           }}
-          style={ this.resolveTabContainerStyles() }
-          value={ activeIndex }
-          name={ view.id }
-          onChange={ this.onTabClick(view.id) }
+          style={this.resolveTabContainerStyles()}
+          value={activeIndex}
+          name={view.id}
+          onChange={this.onTabClick(view.id)}
           aria-label="simple tabs example"
         >
-          { tabItems }
+          {tabItems}
         </Tabs>
       </>
     );
-  }
+  };
 
   /**
    * Find tab property and set tab settings according to the property value
@@ -134,11 +138,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
         if (!tabMode) {
           return "standard";
         }
-        return (tabMode.name === "fixed") ? "standard" : "scrollable";
+        return tabMode.name === "fixed" ? "standard" : "scrollable";
       default:
-      break;
+        break;
     }
-  }
+  };
 
   /**
    * Search for tab property
@@ -148,8 +152,8 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private searchForTabProperty = (propertyName: string): PageLayoutViewProperty | undefined => {
     const { view } = this.props;
-    return view.properties.find(prop => prop.name === propertyName);
-  }
+    return view.properties.find((prop) => prop.name === propertyName);
+  };
 
   /**
    * Get tab resource from resource map
@@ -163,7 +167,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
     }
 
     return tabMap.get(view.id);
-  }
+  };
 
   /**
    * Handles an unknown property logging
@@ -173,7 +177,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
+  };
 
   /**
    * Resolves component styles
@@ -188,20 +192,20 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       zIndex: layer
     });
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-        break;
+          break;
 
         default:
           // console.log(`Unknown property: ${property.name}`)
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Resolves styles for material ui tab container
@@ -215,11 +219,11 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       zIndex: layer + 1
     };
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-        break;
+          break;
         case "layout_height":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
@@ -227,19 +231,19 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown value");
           }
-        break;
+          break;
 
         case "unboundedRipple":
           // console.log("unboundedRipple")
-        break;
+          break;
 
         default:
-          // console.log(`Unknown property: ${property.name}`)
+        // console.log(`Unknown property: ${property.name}`)
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Resolves styles for material ui tab indicator
@@ -253,18 +257,21 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       zIndex: layer + 2
     };
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       switch (property.name) {
         case "selectedTabIndicatorColor":
-            result.backgroundColor = property.value;
-        break;
+          result.backgroundColor = property.value;
+          break;
 
         case "selectedTabIndicatorGravity":
-          const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.tabIndicatorGravityToCSSPositioning(property.value as SelectedTabIndicatorGravityValues);
-          gravityProps.forEach(prop => {
+          const gravityProps: CSSPropertyValuePairs[] =
+            AndroidUtils.tabIndicatorGravityToCSSPositioning(
+              property.value as SelectedTabIndicatorGravityValues
+            );
+          gravityProps.forEach((prop) => {
             result[prop.key] = prop.value;
           });
-        break;
+          break;
         case "selectedTabIndicatorHeight":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (px) {
@@ -272,19 +279,19 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown value");
           }
-        break;
+          break;
 
         case "tabIndicatorFullWidth":
           // console.log("tabIndicatorFullWidth")
-        break;
+          break;
 
         default:
-          // console.log(`Unknown property: ${property.name}`)
+        // console.log(`Unknown property: ${property.name}`)
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Resolves tab button styles
@@ -298,7 +305,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
       zIndex: layer + 3
     };
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       switch (property.name) {
         case "layout_height":
           const px = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
@@ -307,10 +314,10 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown value");
           }
-        break;
+          break;
         case "tabGravity":
           // console.log("tabGravity")
-        break;
+          break;
 
         case "tabTextColorNormal":
           const tabTextColorNormal = AndroidUtils.toCssColor(property.value);
@@ -319,7 +326,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown text color");
           }
-        break;
+          break;
         case "tabTextColorSelected":
           if (activeIndex === buttonIndex) {
             const tabTextColorSelected = AndroidUtils.toCssColor(property.value);
@@ -329,18 +336,18 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
               this.handleUnknownProperty(property, "Unknown text color");
             }
           }
-        break;
+          break;
         case "unboundedRipple":
           // console.log("unboundedRipple")
-        break;
+          break;
         default:
           // console.log(`Unknown property: ${property.name}`)
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Event handler for tab click
@@ -356,7 +363,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
 
     const selectedTabIndex = value;
     onTabClick(viewId, selectedTabIndex);
-  }
+  };
 
   /**
    * Event handler for mouse over
@@ -365,7 +372,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for mouse out
@@ -374,7 +381,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for mouse click
@@ -383,7 +390,7 @@ class PagePreviewMaterialTab extends React.Component<Props, State> {
    */
   private onClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewMaterialTab);

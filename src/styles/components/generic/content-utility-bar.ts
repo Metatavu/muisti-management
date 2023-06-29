@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "../../theme";
 
 export default createStyles({
-
   toolbar: {
     display: "flex",
     marginRight: theme.spacing(1),
@@ -11,5 +10,4 @@ export default createStyles({
       marginRight: theme.spacing(1)
     }
   }
-
 });

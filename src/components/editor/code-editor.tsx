@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/code-editor";
 import CodeMirror from "@uiw/react-codemirror";
 import strings from "../../localization/strings";
@@ -20,13 +20,13 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
 }
 
 /**
  * Component for code editor
  */
 class CodeEditor extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -44,17 +44,16 @@ class CodeEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes } = this.props;
-    
+
     return (
-      <div className={ classes.codeEditorContainer }>
-        <Typography style={{ margin: 8 }}>
-          { strings.exhibitionLayouts.editView.json }
-        </Typography>
+      <div className={classes.codeEditorContainer}>
+        <Typography style={{ margin: 8 }}>{strings.exhibitionLayouts.editView.json}</Typography>
         <CodeMirror
-          className={ classes.editor }
-          value={ this.props.json }
-          extensions={ [ json() ] }
-          onChange={ this.props.onChange } />
+          className={classes.editor}
+          value={this.props.json}
+          extensions={[json()]}
+          onChange={this.props.onChange}
+        />
       </div>
     );
   }
@@ -65,7 +64,10 @@ class CodeEditor extends React.Component<Props, State> {
    * @param parsedPage parsed page
    * @param errorHandler parser error handler
    */
-  private validateParsedPage = (parsedPage: Partial<ExhibitionPage>, errorHandler: (message: string, e?: SyntaxError) => void) => {
+  private validateParsedPage = (
+    parsedPage: Partial<ExhibitionPage>,
+    errorHandler: (message: string, e?: SyntaxError) => void
+  ) => {
     if (!parsedPage.resources) {
       return errorHandler("Invalid resources");
     }
@@ -91,7 +93,7 @@ class CodeEditor extends React.Component<Props, State> {
     }
 
     for (let i = 0; i < parsedPage.eventTriggers.length; i++) {
-      const events = parsedPage.eventTriggers[i].events || [];
+      const events = parsedPage.eventTriggers[i].events || [];
 
       for (let j = 0; j < events.length; j++) {
         const eventAction = events[j].action;
@@ -101,11 +103,13 @@ class CodeEditor extends React.Component<Props, State> {
         }
 
         if (!eventTypes.includes(eventAction)) {
-          return errorHandler(`Event ${i} action ${events[j].action} is not valid (${eventTypes.join(", ")})`);
+          return errorHandler(
+            `Event ${i} action ${events[j].action} is not valid (${eventTypes.join(", ")})`
+          );
         }
       }
     }
-  }
+  };
 }
 
 export default withStyles(styles)(CodeEditor);

@@ -1,10 +1,15 @@
 import * as React from "react";
-import Measure, { ContentRect } from 'react-measure'
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import Measure, { ContentRect } from "react-measure";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType, PageResourceMode } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType,
+  PageResourceMode
+} from "../../../generated/client";
+import { CSSProperties } from "@mui/material/styles";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
@@ -23,7 +28,10 @@ interface Props extends WithStyles<typeof styles> {
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
 }
 
@@ -38,7 +46,6 @@ interface State {
  * Component for TextView component preview
  */
 class PagePreviewTextView extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -60,19 +67,19 @@ class PagePreviewTextView extends React.Component<Props, State> {
     const selected = selectedView?.id === view.id;
 
     return (
-      <Measure onResize={ onResize } bounds={ true }>
+      <Measure onResize={onResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            style={ this.resolveStyles() }
-            className={ mouseOver || selected ? classes.highlighted : "" }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            style={this.resolveStyles()}
+            className={mouseOver || selected ? classes.highlighted : ""}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           >
-            <div style={ this.resolveTextViewStyles() }>
-              <div style={ this.resolveTextStyles() }>
-                <p style={{ margin: 0 }}>{ this.getText() }</p>
+            <div style={this.resolveTextViewStyles()}>
+              <div style={this.resolveTextStyles()}>
+                <p style={{ margin: 0 }}>{this.getText()}</p>
               </div>
             </div>
           </div>
@@ -89,7 +96,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // console.log(`PagePreviewTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
+  };
 
   /**
    * Returns text from view properties
@@ -97,7 +104,9 @@ class PagePreviewTextView extends React.Component<Props, State> {
    * @return text from view properties or undefined
    */
   private getText = (): string | undefined => {
-    const textProperty: PageLayoutViewProperty | undefined = this.props.view.properties.find(property => property.name === "text");
+    const textProperty: PageLayoutViewProperty | undefined = this.props.view.properties.find(
+      (property) => property.name === "text"
+    );
     const id = textProperty?.value;
     if (id && id.startsWith("@resources/")) {
       const resource = this.props.resourceMap[id.substring(11)];
@@ -117,7 +126,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
     }
 
     return id;
-  }
+  };
 
   /**
    * Resolves container styles
@@ -127,20 +136,24 @@ class PagePreviewTextView extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, parentView, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "flex",
       zIndex: layer,
       position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       if (property.name.startsWith("layout_")) {
         switch (property.name) {
           case "layout_gravity":
             if (parentIsFrameLayout) {
-              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
-              gravityProps.forEach(prop => {
+              const gravityProps: CSSPropertyValuePairs[] =
+                AndroidUtils.layoutGravityToCSSPositioning(
+                  property.value as LayoutGravityValuePairs
+                );
+              gravityProps.forEach((prop) => {
                 result[prop.key] = prop.value;
               });
             } else {
@@ -151,19 +164,19 @@ class PagePreviewTextView extends React.Component<Props, State> {
             return;
         }
       }
-      if (property.name === "text" || property.name.startsWith("inset")) {
+      if (property.name === "text" || property.name.startsWith("inset")) {
         return;
       }
 
       switch (property.name) {
         default:
           this.handleUnknownProperty(property, "Unknown or unsupported property for container");
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Resolves text view styles
@@ -179,12 +192,16 @@ class PagePreviewTextView extends React.Component<Props, State> {
       color: "#ffffff"
     });
 
-    properties.forEach(property => {
-      if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
-        switch(property.name) {
+    properties.forEach((property) => {
+      if (
+        property.name === "text" ||
+        property.name.startsWith("layout_") ||
+        property.name.startsWith("inset")
+      ) {
+        switch (property.name) {
           case "layout_gravity":
             result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
-          break;
+            break;
           default:
         }
         return result;
@@ -198,7 +215,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             console.log("Button: unknown width", property.value);
           }
-        break;
+          break;
         case "height":
           const heightInPixels = AndroidUtils.stringToPx(displayMetrics, property.value, scale);
           if (heightInPixels) {
@@ -206,7 +223,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             console.log("Button: unknown height", property.value);
           }
-        break;
+          break;
         case "background":
           const color = AndroidUtils.toCssColor(property.value);
           if (color) {
@@ -214,38 +231,42 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown background");
           }
-        break;
+          break;
         case "textSize":
-          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          const px = AndroidUtils.stringToPx(
+            this.props.displayMetrics,
+            property.value,
+            this.props.scale
+          );
           if (px) {
             result.fontSize = px;
           } else {
             console.log("TextView: unknown textSize", property.value);
           }
-        break;
+          break;
         case "textAlignment":
           switch (property.value) {
             case "inherit":
               result.textAlign = property.value;
-            break;
+              break;
             case "center":
               result.textAlign = property.value;
-            break;
+              break;
             case "text_start":
               result.textAlign = "left";
-            break;
+              break;
             case "text_end":
               result.textAlign = "right";
-            break;
+              break;
             case "view_start":
               result.textAlign = "left";
-            break;
+              break;
             case "view_end":
               result.textAlign = "right";
-            break;
+              break;
             default:
           }
-        break;
+          break;
         case "textColor":
           const textColor = AndroidUtils.toCssColor(property.value);
           if (textColor) {
@@ -253,15 +274,15 @@ class PagePreviewTextView extends React.Component<Props, State> {
           } else {
             this.handleUnknownProperty(property, "Unknown text color");
           }
-        break;
+          break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Resolves text styles
@@ -271,18 +292,20 @@ class PagePreviewTextView extends React.Component<Props, State> {
   private resolveTextStyles = (): CSSProperties => {
     const { view, parentView } = this.props;
     const properties = view.properties;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = {
       margin: 0,
-      position: "absolute",
+      position: "absolute"
     };
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       switch (property.name) {
         case "gravity":
           if (parentIsFrameLayout) {
-            const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
-            gravityProps.forEach(prop => {
+            const gravityProps: CSSPropertyValuePairs[] =
+              AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
+            gravityProps.forEach((prop) => {
               result[prop.key] = prop.value;
             });
           } else {
@@ -295,7 +318,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
     });
 
     return result;
-  }
+  };
 
   /**
    * Event handler for mouse over
@@ -305,7 +328,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: true });
-  }
+  };
 
   /**
    * Event handler for mouse out
@@ -315,7 +338,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: false });
-  }
+  };
 
   /**
    * Event handler for on click
@@ -324,7 +347,7 @@ class PagePreviewTextView extends React.Component<Props, State> {
     const { view, onViewClick } = this.props;
     event.stopPropagation();
     onViewClick && onViewClick(view);
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewTextView);

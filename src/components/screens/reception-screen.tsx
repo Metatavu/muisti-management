@@ -1,9 +1,7 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-
 import { History } from "history";
 import styles from "../../styles/screens/reception-screen";
 import {
@@ -15,13 +13,13 @@ import {
   MenuItem,
   Select,
   FormControl,
-  SelectChangeEvent,
+  SelectChangeEvent
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
 import { ContentVersion, DeviceModel, Visitor } from "../../generated/client";
-import { AccessToken } from '../../types';
+import { AccessToken } from "../../types";
 import strings from "../../localization/strings";
 import BasicLayout from "../layouts/basic-layout";
 import { setDeviceModels } from "../../actions/devices";
@@ -66,7 +64,6 @@ const config = Config.getConfig();
  * Component for reception screen
  */
 export class ReceptionScreen extends React.Component<Props, State> {
-
   private validator: SimpleReactValidator;
 
   /**
@@ -76,18 +73,16 @@ export class ReceptionScreen extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.validator = new SimpleReactValidator(
-      {
-        autoForceUpdate: this,
-        messages: {
-          required: strings.reception.errorMessages.required,
-          email: strings.reception.errorMessages.email,
-          phone: strings.reception.errorMessages.number,
-          min: strings.reception.errorMessages.minLength
-        },
-        element: (message: string) => <p style={{ color: "red", margin: 0 }}>{ message } </p>
-      }
-    );
+    this.validator = new SimpleReactValidator({
+      autoForceUpdate: this,
+      messages: {
+        required: strings.reception.errorMessages.required,
+        email: strings.reception.errorMessages.email,
+        phone: strings.reception.errorMessages.number,
+        min: strings.reception.errorMessages.minLength
+      },
+      element: (message: string) => <p style={{ color: "red", margin: 0 }}>{message} </p>
+    });
 
     this.state = {
       formError: false,
@@ -106,7 +101,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
    */
   public componentDidMount = async () => {
     await this.fetchData();
-  }
+  };
 
   /**
    * Component render method
@@ -121,37 +116,31 @@ export class ReceptionScreen extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        keycloak={ keycloak }
-        history={ history }
-        title={ strings.reception.title }
-        breadcrumbs={ [] }
-        error={ error }
+        keycloak={keycloak}
+        history={history}
+        title={strings.reception.title}
+        breadcrumbs={[]}
+        error={error}
         noBackButton
-        hideHeader={ true }
+        hideHeader={true}
       >
-        { this.resolveComponentToRender() }
+        {this.resolveComponentToRender()}
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Resolves what component to render inside basic layout
    */
   private resolveComponentToRender = () => {
     const { classes } = this.props;
-    const {
-      loading,
-      beginRegistrationProcess,
-      languageSelected,
-      emailGiven,
-      tag,
-      visitorCreated
-    } = this.state;
+    const { loading, beginRegistrationProcess, languageSelected, emailGiven, tag, visitorCreated } =
+      this.state;
 
     if (loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        <div className={classes.loader}>
+          <CircularProgress size={50} color="secondary"></CircularProgress>
         </div>
       );
     }
@@ -177,8 +166,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     return this.renderConfirmation();
-
-  }
+  };
 
   /**
    * Renders begin registration process
@@ -187,23 +175,23 @@ export class ReceptionScreen extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={ classes.container }>
-        <div className={ classes.logoContainer }>
-          <img alt="Muisti logo" src={ logo } />
+      <div className={classes.container}>
+        <div className={classes.logoContainer}>
+          <img alt="Muisti logo" src={logo} />
         </div>
-        <div className={ classes.formContainer }>
+        <div className={classes.formContainer}>
           <Button
             variant="contained"
             color="primary"
-            onClick={ this.onRegisterNewVisitorClick }
-            className={ classes.registerButton }
-            >
-            { strings.reception.registerNewVisitor }
+            onClick={this.onRegisterNewVisitorClick}
+            className={classes.registerButton}
+          >
+            {strings.reception.registerNewVisitor}
           </Button>
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders content version select
@@ -216,55 +204,48 @@ export class ReceptionScreen extends React.Component<Props, State> {
       return null;
     }
 
-    const selectOptions = languages.map(language => {
+    const selectOptions = languages.map((language) => {
       return (
-        <MenuItem key={ language } value={ language }>
-          { language }
+        <MenuItem key={language} value={language}>
+          {language}
         </MenuItem>
       );
     });
 
     return (
-      <div className={ classes.container }>
-        <div className={ classes.logoContainer }>
-          <img alt="Muisti logo" src={ logo } />
+      <div className={classes.container}>
+        <div className={classes.logoContainer}>
+          <img alt="Muisti logo" src={logo} />
         </div>
-        <div className={ classes.formContainer }>
-          <Typography
-            className={ classes.title }
-            variant="h3"
-          >
-            { strings.reception.selectLanguageTitle }
+        <div className={classes.formContainer}>
+          <Typography className={classes.title} variant="h3">
+            {strings.reception.selectLanguageTitle}
           </Typography>
-          <FormControl
-            className={ classes.languageSelectControl }
-          >
-            <InputLabel id="languageLabel">
-              { strings.reception.language }
-            </InputLabel>
+          <FormControl className={classes.languageSelectControl}>
+            <InputLabel id="languageLabel">{strings.reception.language}</InputLabel>
             <Select
-              label={ strings.reception.language }
+              label={strings.reception.language}
               labelId="languageLabel"
-              onChange={ this.onLanguageChange }
-              name={ "language" }
-              value={ visitor.language }
-              >
-              { selectOptions }
+              onChange={this.onLanguageChange}
+              name={"language"}
+              value={visitor.language}
+            >
+              {selectOptions}
             </Select>
           </FormControl>
 
           <Button
             variant="contained"
             color="primary"
-            onClick={ this.onLanguageSaveClick }
-            className={ classes.saveButton }
+            onClick={this.onLanguageSaveClick}
+            className={classes.saveButton}
           >
-            { strings.reception.selectLanguage }
+            {strings.reception.selectLanguage}
           </Button>
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders registration form
@@ -278,52 +259,53 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     return (
-      <div className={ classes.container }>
-        <div className={ classes.logoContainer }>
-          <img alt="Muisti logo" src={ logo } />
+      <div className={classes.container}>
+        <div className={classes.logoContainer}>
+          <img alt="Muisti logo" src={logo} />
         </div>
-        <div className={ classes.formContainer }>
-          <Typography
-            className={ classes.title }
-            variant="h3"
-            >
-            { strings.reception.checkEmail }
+        <div className={classes.formContainer}>
+          <Typography className={classes.title} variant="h3">
+            {strings.reception.checkEmail}
           </Typography>
-          { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
+          {this.renderTextField(
+            strings.reception.visitor.email,
+            "email",
+            "required|email",
+            visitor.email
+          )}
 
           <Button
-            disabled={ !this.validator.allValid() }
+            disabled={!this.validator.allValid()}
             variant="contained"
             color="primary"
-            onClick={ this.onEmailSaveClick }
-            className={ classes.saveButton }
-            >
-            { strings.reception.saveEmail }
+            onClick={this.onEmailSaveClick}
+            className={classes.saveButton}
+          >
+            {strings.reception.saveEmail}
           </Button>
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders tag listener
    */
   private renderTagListener = () => {
-
     return (
-      <MqttListener onError={ this.onMqttError }>
-      { mqtt => (
-        <TagListener
-          threshold={ 75 }
-          mqtt={ mqtt }
-          antenna={ config.mqttConfig.newVisitorAntenna }
-          hide={ false }
-          onTagRegister={ this.onTagRegister }
-        />
-      )}
-    </MqttListener>
+      <MqttListener onError={this.onMqttError}>
+        {(mqtt) => (
+          <TagListener
+            threshold={75}
+            mqtt={mqtt}
+            antenna={config.mqttConfig.newVisitorAntenna}
+            hide={false}
+            onTagRegister={this.onTagRegister}
+          />
+        )}
+      </MqttListener>
     );
-  }
+  };
 
   /**
    * Renders registration form
@@ -337,40 +319,63 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     return (
-      <div className={ classes.container }>
-        <div className={ classes.logoContainer }>
-          <img alt="Muisti logo" src={ logo } />
+      <div className={classes.container}>
+        <div className={classes.logoContainer}>
+          <img alt="Muisti logo" src={logo} />
         </div>
-        <div className={ classes.formContainer }>
-          <Typography
-            className={ classes.title }
-            variant="h3"
-          >
-            { strings.reception.visitor.visitorInfoFormTitle }
+        <div className={classes.formContainer}>
+          <Typography className={classes.title} variant="h3">
+            {strings.reception.visitor.visitorInfoFormTitle}
           </Typography>
 
-          { this.renderTextField(strings.reception.visitor.firstName, "firstName", "required|min:3", visitor.firstName) }
-          { this.renderTextField(strings.reception.visitor.lastName, "lastName", "required|min:3", visitor.lastName) }
-          { this.renderTextField(strings.reception.visitor.email, "email", "required|email", visitor.email) }
-          { this.renderTextField(strings.reception.visitor.number, "phone", "required|phone", visitor.phone) }
-          { this.renderTextField(strings.reception.visitor.birthYear, "birthYear", "required|numeric", visitor.birthYear, "number") }
+          {this.renderTextField(
+            strings.reception.visitor.firstName,
+            "firstName",
+            "required|min:3",
+            visitor.firstName
+          )}
+          {this.renderTextField(
+            strings.reception.visitor.lastName,
+            "lastName",
+            "required|min:3",
+            visitor.lastName
+          )}
+          {this.renderTextField(
+            strings.reception.visitor.email,
+            "email",
+            "required|email",
+            visitor.email
+          )}
+          {this.renderTextField(
+            strings.reception.visitor.number,
+            "phone",
+            "required|phone",
+            visitor.phone
+          )}
+          {this.renderTextField(
+            strings.reception.visitor.birthYear,
+            "birthYear",
+            "required|numeric",
+            visitor.birthYear,
+            "number"
+          )}
 
           <Button
-            disabled={ !this.validator.allValid() }
+            disabled={!this.validator.allValid()}
             variant="contained"
             color="primary"
-            onClick={ this.onSaveNewVisitorClick }
-            className={ classes.saveButton }
+            onClick={this.onSaveNewVisitorClick}
+            className={classes.saveButton}
           >
-            { strings.reception.saveVisitor }
+            {strings.reception.saveVisitor}
           </Button>
-          <div className={ classes.visitorTagContainer }>
-            { `${ strings.reception.visitor.tag }: ${ tag }` }
+          <div className={classes.visitorTagContainer}>
+            {`${strings.reception.visitor.tag}: ${tag}`}
           </div>
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders text field with given parameters
@@ -386,7 +391,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     name: string,
     validationRules: string,
     value?: string | number,
-    inputType?: string,
+    inputType?: string
   ) => {
     const { classes } = this.props;
 
@@ -394,20 +399,20 @@ export class ReceptionScreen extends React.Component<Props, State> {
       <>
         <TextField
           required
-          className={ classes.textField }
+          className={classes.textField}
           fullWidth
-          label={ label }
+          label={label}
           variant="outlined"
-          name={ name }
-          value={ value }
-          type={ inputType ? inputType : "string" }
-          onChange={ this.onTextFieldChange }
-          onBlur={ () => this.validator.showMessageFor(name) }
+          name={name}
+          value={value}
+          type={inputType ? inputType : "string"}
+          onChange={this.onTextFieldChange}
+          onBlur={() => this.validator.showMessageFor(name)}
         />
-        { this.validator.message(name, value, validationRules) }
+        {this.validator.message(name, value, validationRules)}
       </>
     );
-  }
+  };
 
   /**
    * Renders confirmation view
@@ -416,24 +421,21 @@ export class ReceptionScreen extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={ classes.formContainer }>
-        <Typography
-          className={ classes.title }
-          variant="h3"
-        >
-          { strings.reception.confirmation }
+      <div className={classes.formContainer}>
+        <Typography className={classes.title} variant="h3">
+          {strings.reception.confirmation}
         </Typography>
         <Button
           variant="contained"
           color="primary"
-          onClick={ this.onReturnClick }
-          className={ classes.saveButton }
+          onClick={this.onReturnClick}
+          className={classes.saveButton}
         >
-          { strings.reception.return }
+          {strings.reception.return}
         </Button>
       </div>
     );
-  }
+  };
 
   /**
    * Construct available language options from content version
@@ -446,7 +448,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     this.setState({
       languages: languages
     });
-  }
+  };
 
   /**
    * Event handler for tag register
@@ -468,16 +470,16 @@ export class ReceptionScreen extends React.Component<Props, State> {
       tag,
       visitor: newVisitor
     });
-  }
+  };
 
   /**
    * Event handler for register new visitor click
    */
   private onRegisterNewVisitorClick = () => {
     this.setState({
-      beginRegistrationProcess: true,
+      beginRegistrationProcess: true
     });
-  }
+  };
 
   /**
    * Event handler for language change
@@ -497,9 +499,9 @@ export class ReceptionScreen extends React.Component<Props, State> {
     strings.setLanguage(value.toLocaleLowerCase());
 
     this.setState({
-      visitor: { ...visitor, [name] : value }
+      visitor: { ...visitor, [name]: value }
     });
-  }
+  };
 
   /**
    * Event handler for mqtt error
@@ -510,14 +512,16 @@ export class ReceptionScreen extends React.Component<Props, State> {
     this.setState({
       error: error
     });
-  }
+  };
 
   /**
    * Event handler for text field change
    *
    * @param event react change event
    */
-  private onTextFieldChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  private onTextFieldChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { visitor } = this.state;
     const { name, value } = event.target;
 
@@ -526,9 +530,9 @@ export class ReceptionScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      visitor: { ...visitor, [name] : value }
+      visitor: { ...visitor, [name]: value }
     });
-  }
+  };
 
   /**
    * Event handler for language save click
@@ -537,7 +541,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     this.setState({
       languageSelected: true
     });
-  }
+  };
 
   /**
    * Event handler for email save click
@@ -557,7 +561,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     });
 
     let visitorToSave: Visitor;
-    const foundVisitor = existingVisitors.find(v => v.email === visitor.email);
+    const foundVisitor = existingVisitors.find((v) => v.email === visitor.email);
 
     if (!foundVisitor) {
       visitorToSave = visitor;
@@ -570,7 +574,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
       emailGiven: true,
       visitor: visitorToSave
     });
-  }
+  };
 
   /**
    * Event handler for new visitor save click
@@ -592,7 +596,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     this.setState({
       visitorCreated: true
     });
-  }
+  };
 
   /**
    * Handles visitor update
@@ -610,9 +614,9 @@ export class ReceptionScreen extends React.Component<Props, State> {
     await visitorsApi.updateVisitor({
       exhibitionId: exhibitionId,
       visitorId: visitor.id,
-      visitor: visitor,
+      visitor: visitor
     });
-  }
+  };
 
   /**
    * Handles visitor creation
@@ -631,7 +635,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
       exhibitionId: exhibitionId,
       visitor: visitor
     });
-  }
+  };
 
   /**
    * Event handler for return click
@@ -646,7 +650,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
       visitor: undefined,
       visitorCreated: false
     });
-  }
+  };
 
   /**
    * Fetches initial data from API
@@ -662,7 +666,7 @@ export class ReceptionScreen extends React.Component<Props, State> {
     const contentVersions = await contentVersionsApi.listContentVersions({ exhibitionId });
 
     this.constructAvailableLanguages(contentVersions);
-  }
+  };
 }
 
 /**

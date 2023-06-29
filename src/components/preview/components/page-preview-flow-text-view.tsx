@@ -1,10 +1,14 @@
 import * as React from "react";
-import Measure, { ContentRect } from 'react-measure'
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import Measure, { ContentRect } from "react-measure";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
+import { CSSProperties } from "@mui/material/styles";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
 import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
@@ -24,7 +28,10 @@ interface Props extends WithStyles<typeof styles> {
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
 }
 
@@ -39,10 +46,9 @@ interface State {
  * Component for FlowTextView component preview
  */
 class PagePreviewFlowTextView extends React.Component<Props, State> {
-
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -61,19 +67,19 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
     const selected = selectedView?.id === view.id;
 
     return (
-      <Measure onResize={ onResize } bounds={ true }>
+      <Measure onResize={onResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            style={ this.resolveStyles() }
-            className={ mouseOver || selected ? classes.highlighted : "" }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            style={this.resolveStyles()}
+            className={mouseOver || selected ? classes.highlighted : ""}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           >
-            { this.renderChildren() }
-            { this.renderText() }
-            { this.getText() }
+            {this.renderChildren()}
+            {this.renderText()}
+            {this.getText()}
           </div>
         )}
       </Measure>
@@ -84,30 +90,23 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
    * Renders layout child components
    */
   private renderChildren = () => {
-    const {
-      view,
-      layer,
-      resourceMap,
-      displayMetrics,
-      scale,
-      onViewClick,
-      handleLayoutProperties
-    } = this.props;
+    const { view, layer, resourceMap, displayMetrics, scale, onViewClick, handleLayoutProperties } =
+      this.props;
 
-    return (view.children || []).map((childView, index) =>
+    return (view.children || []).map((childView, index) => (
       <PagePreviewComponentEditor
-        key={ index }
-        view={ childView }
-        parentView={ view }
-        layer={ layer }
-        resourceMap={ resourceMap }
-        displayMetrics={ displayMetrics }
-        scale={ scale }
-        handleLayoutProperties={ handleLayoutProperties }
-        onViewClick={ onViewClick }
+        key={index}
+        view={childView}
+        parentView={view}
+        layer={layer}
+        resourceMap={resourceMap}
+        displayMetrics={displayMetrics}
+        scale={scale}
+        handleLayoutProperties={handleLayoutProperties}
+        onViewClick={onViewClick}
       />
-    );
-  }
+    ));
+  };
 
   /**
    * Renders text
@@ -119,7 +118,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
     }
 
     return ReactHtmlParser(text);
-  }
+  };
 
   /**
    * Handles an unknown property logging
@@ -129,7 +128,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // console.log(`PagePreviewFlowTextView: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
+  };
 
   /**
    * Returns text from view properties
@@ -137,17 +136,17 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
    * @return text from view properties
    */
   private getText = () => {
-    const textProperty = this.props.view.properties.find(property => property.name === "text");
+    const textProperty = this.props.view.properties.find((property) => property.name === "text");
     const id = textProperty?.value;
     if (id && id.startsWith("@resources/")) {
       const resource = this.props.resourceMap[id.substring(11)];
-      if (resource) {
+      if (resource) {
         return resource.data;
       }
     }
 
     return id;
-  }
+  };
 
   /**
    * Resolves component styles
@@ -157,26 +156,34 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, parentView, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "inline-block",
       zIndex: layer,
       position: parentIsFrameLayout ? "absolute" : "initial"
     });
 
-    properties.forEach(property => {
-      if (property.name === "text" || property.name.startsWith("layout_") || property.name.startsWith("inset")) {
-        switch(property.name) {
+    properties.forEach((property) => {
+      if (
+        property.name === "text" ||
+        property.name.startsWith("layout_") ||
+        property.name.startsWith("inset")
+      ) {
+        switch (property.name) {
           case "layout_gravity":
             if (parentIsFrameLayout) {
-              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
-              gravityProps.forEach(prop => {
+              const gravityProps: CSSPropertyValuePairs[] =
+                AndroidUtils.layoutGravityToCSSPositioning(
+                  property.value as LayoutGravityValuePairs
+                );
+              gravityProps.forEach((prop) => {
                 result[prop.key] = prop.value;
               });
             } else {
               result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
             }
-          break;
+            break;
           default:
         }
         return;
@@ -184,21 +191,25 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
 
       switch (property.name) {
         case "textSize":
-          const px = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+          const px = AndroidUtils.stringToPx(
+            this.props.displayMetrics,
+            property.value,
+            this.props.scale
+          );
           if (px) {
             result.fontSize = px;
           } else {
             console.log("FlowTextView: unknown layout_height", property.value);
           }
-        break;
+          break;
         default:
           this.handleUnknownProperty(property, "Unknown property");
-        break;
+          break;
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Event handler for mouse over
@@ -208,7 +219,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: true });
-  }
+  };
 
   /**
    * Event handler for mouse out
@@ -218,7 +229,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: false });
-  }
+  };
 
   /**
    * Event handler for on click
@@ -227,7 +238,7 @@ class PagePreviewFlowTextView extends React.Component<Props, State> {
     const { view, onViewClick } = this.props;
     event.stopPropagation();
     onViewClick && onViewClick(view);
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewFlowTextView);

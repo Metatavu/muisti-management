@@ -18,11 +18,8 @@ interface Props {
 /**
  * Font Color Editor component for HTML Layouts
  */
-const FontColorEditor = ({
-  component,
-  updateComponent
-}: Props) => {
-  const [ popoverAnchorElement, setPopoverAnchorElement ] = useState<HTMLButtonElement>();
+const FontColorEditor = ({ component, updateComponent }: Props) => {
+  const [popoverAnchorElement, setPopoverAnchorElement] = useState<HTMLButtonElement>();
 
   /**
    * Event handler for font color change events
@@ -39,30 +36,28 @@ const FontColorEditor = ({
       element: element
     });
   };
-  
+
   return (
     <>
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layoutEditorV2.textProperties.fontColor }/>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.fontColor} />
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Button
             sx={{ color: "#2196F3" }}
-            onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
+            onClick={({ currentTarget }: React.MouseEvent<HTMLButtonElement>) =>
+              setPopoverAnchorElement(currentTarget)
+            }
           >
-            { strings.layoutEditorV2.genericProperties.color.button }
+            {strings.layoutEditorV2.genericProperties.color.button}
           </Button>
         </Stack>
       </PropertyBox>
-      <Divider sx={{ color: "#F5F5F5" }}/>
+      <Divider sx={{ color: "#F5F5F5" }} />
       <ColorPicker
-        color={ component.element.style.color }
-        anchorEl={ popoverAnchorElement }
-        onClose={ () => setPopoverAnchorElement(undefined) }
-        onChangeComplete={ handleFontColorChange }
+        color={component.element.style.color}
+        anchorEl={popoverAnchorElement}
+        onClose={() => setPopoverAnchorElement(undefined)}
+        onChangeComplete={handleFontColorChange}
       />
     </>
   );

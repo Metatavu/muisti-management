@@ -4,7 +4,6 @@ import { ContentVersion } from "../generated/client";
  * Utility class for handling languages
  */
 export default class LanguageUtils {
-
   /**
    * Returns available language options from content version
    *
@@ -14,7 +13,7 @@ export default class LanguageUtils {
   public static getAvailableLanguages = (contentVersions: ContentVersion[]): string[] => {
     const languages: string[] = [];
 
-    contentVersions.forEach(version => {
+    contentVersions.forEach((version) => {
       const language = version.language;
       if (!languages.includes(language)) {
         languages.push(language);
@@ -22,5 +21,5 @@ export default class LanguageUtils {
     });
 
     return languages;
-  }
+  };
 }

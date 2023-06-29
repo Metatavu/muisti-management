@@ -1,4 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "../../theme";
 
 export default createStyles({
@@ -22,14 +22,14 @@ export default createStyles({
     border: "1px solid #ccc",
     padding: theme.spacing(1),
     backgroundColor: "#eee",
-    borderRadius: 4,
+    borderRadius: 4
   },
   marginInnerContainer: {
     border: "1px solid",
     borderColor: theme.palette.secondary.main,
     padding: theme.spacing(1),
     backgroundColor: "#eee",
-    borderRadius: 4,
+    borderRadius: 4
   },
   topRow: {
     display: "flex",

@@ -21,10 +21,10 @@ import {
   Tab,
   Box,
   MenuItem,
-  SelectChangeEvent,
+  SelectChangeEvent
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
 import {
   AccessToken,
@@ -76,8 +76,14 @@ import TransitionsEditor from "../content-editor/transitions-editor";
 import { DropResult } from "react-beautiful-dnd";
 import EventTriggerEditor from "../content-editor/event-trigger-editor";
 import { v4 as uuid } from "uuid";
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { allowedWidgetTypes, TabStructure, ExhibitionPageTab, ExhibitionPageTabProperty, ExhibitionPageTabHolder } from "../content-editor/constants";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import {
+  allowedWidgetTypes,
+  TabStructure,
+  ExhibitionPageTab,
+  ExhibitionPageTabProperty,
+  ExhibitionPageTabHolder
+} from "../content-editor/constants";
 import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 import LanguageUtils from "../../utils/language-utils";
@@ -142,7 +148,6 @@ interface State {
  * Component for content editor screen
  */
 class ContentEditorScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -190,7 +195,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
     await this.fetchComponentData();
-  }
+  };
 
   /**
    * Component did update life cycle handler
@@ -215,8 +220,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (currentPage && (pageChanged || layoutChanged)) {
       this.updateResources(layouts, currentPage);
     }
-
-  }
+  };
 
   /**
    * Component render method
@@ -235,41 +239,39 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <BasicLayout
-          keycloak={ keycloak }
-          history={ history }
-          title={ "" }
-          breadcrumbs={ [] }
-          actionBarButtons={ [] }
+          keycloak={keycloak}
+          history={history}
+          title={""}
+          breadcrumbs={[]}
+          actionBarButtons={[]}
           noBackButton
         >
-          <div className={ classes.loader }>
-            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <div className={classes.loader}>
+            <CircularProgress size={50} color="secondary"></CircularProgress>
           </div>
         </BasicLayout>
       );
     }
 
-    const propertiesTitle = selectedResource ?
-      strings.contentEditor.editor.resourceProperties :
-      selectedTriggerIndex !== undefined ?
-        strings.contentEditor.editor.eventTriggers.title :
-        strings.contentEditor.editor.tabs.title;
+    const propertiesTitle = selectedResource
+      ? strings.contentEditor.editor.resourceProperties
+      : selectedTriggerIndex !== undefined
+      ? strings.contentEditor.editor.eventTriggers.title
+      : strings.contentEditor.editor.tabs.title;
 
     return (
       <BasicLayout
-        keycloak={ keycloak }
-        history={ history }
-        title={ groupContentVersion?.name || "" }
-        breadcrumbs={ [] }
-        actionBarButtons={ this.getActionButtons() }
+        keycloak={keycloak}
+        history={history}
+        title={groupContentVersion?.name || ""}
+        breadcrumbs={[]}
+        actionBarButtons={this.getActionButtons()}
         noBackButton
-        dataChanged={ dataChanged }
-        openDataChangedPrompt={ true }
+        dataChanged={dataChanged}
+        openDataChangedPrompt={true}
       >
-        <div className={ classes.editorLayout }>
-          <EditorView>
-            { this.renderEditor() }
-          </EditorView>
+        <div className={classes.editorLayout}>
+          <EditorView>{this.renderEditor()}</EditorView>
 
           <ElementTimelinePane>
             <Tabs
@@ -277,32 +279,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
                 root: classes.contentTabs,
                 indicator: classes.tabIndicator
               }}
-              onChange= { this.setTabIndex }
-              value={ timelineTabIndex }
+              onChange={this.setTabIndex}
+              value={timelineTabIndex}
             >
-              <Tab
-                value={ 0 }
-                label={ strings.contentEditor.editor.editorTabs.noVisitor }
-              />
-              <Tab
-                value={ 1 }
-                label={ strings.contentEditor.editor.editorTabs.visitorPresent }
-              />
+              <Tab value={0} label={strings.contentEditor.editor.editorTabs.noVisitor} />
+              <Tab value={1} label={strings.contentEditor.editor.editorTabs.visitorPresent} />
             </Tabs>
-            <div className={ classes.timelineContent }>
-              { timelineTabIndex === 0 &&
-                this.renderIdlePageEditor()
-              }
-              { timelineTabIndex === 1 &&
-                this.renderTimeline()
-              }
+            <div className={classes.timelineContent}>
+              {timelineTabIndex === 0 && this.renderIdlePageEditor()}
+              {timelineTabIndex === 1 && this.renderTimeline()}
             </div>
-
           </ElementTimelinePane>
 
-          <ElementContentsPane>
-            { this.renderElementContentsPaneContent() }
-          </ElementContentsPane>
+          <ElementContentsPane>{this.renderElementContentsPaneContent()}</ElementContentsPane>
 
           <ElementPropertiesPane
             open={
@@ -310,17 +299,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
               selectedTriggerIndex !== undefined ||
               selectedTabIndex !== undefined
             }
-            title={ propertiesTitle }
-            onCloseClick={ this.onPropertiesClose }
+            title={propertiesTitle}
+            onCloseClick={this.onPropertiesClose}
           >
-            { this.renderProperties() }
+            {this.renderProperties()}
           </ElementPropertiesPane>
         </div>
-        { this.renderAddContentVersionDialog() }
-        { this.renderConfirmDeleteDialog() }
+        {this.renderAddContentVersionDialog()}
+        {this.renderConfirmDeleteDialog()}
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Render add new content language version dialog
@@ -329,35 +318,35 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { addLanguageDialogOpen, newContentVersion } = this.state;
     const languageOptions = this.getAvailableLanguages();
 
-    return(
+    return (
       <GenericDialog
-        cancelButtonText={ strings.genericDialog.cancel }
-        positiveButtonText={ strings.genericDialog.add }
-        title={ strings.contentEditor.editor.addLanguageDialog.title }
-        onConfirm={ this.addContentVersion }
-        onCancel={ this.onCloseOrCancelClick }
-        open={ addLanguageDialogOpen }
-        error={ false }
-        onClose={ this.onCloseOrCancelClick }
+        cancelButtonText={strings.genericDialog.cancel}
+        positiveButtonText={strings.genericDialog.add}
+        title={strings.contentEditor.editor.addLanguageDialog.title}
+        onConfirm={this.addContentVersion}
+        onCancel={this.onCloseOrCancelClick}
+        open={addLanguageDialogOpen}
+        error={false}
+        onClose={this.onCloseOrCancelClick}
       >
-        <Box width={ 320 }>
+        <Box width={320}>
           <TextField
             select
             name="language"
-            label={ strings.contentVersion.language }
-            value={ newContentVersion?.language || "" }
-            onChange={ this.onNewContentVersionLanguageChange }
+            label={strings.contentVersion.language}
+            value={newContentVersion?.language || ""}
+            onChange={this.onNewContentVersionLanguageChange}
           >
-            { languageOptions.map(option =>
-              <MenuItem key={ option } value={ option }>
-                { option }
+            {languageOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
-            )}
+            ))}
           </TextField>
         </Box>
       </GenericDialog>
     );
-  }
+  };
 
   /**
    * Render confirmation dialog
@@ -365,13 +354,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private renderConfirmDeleteDialog = () => {
     const { confirmDialogData, deleteDialogOpen } = this.state;
 
-    return (
-      <ConfirmDialog
-        open={ deleteDialogOpen }
-        confirmDialogData={ confirmDialogData }
-      />
-    );
-  }
+    return <ConfirmDialog open={deleteDialogOpen} confirmDialogData={confirmDialogData} />;
+  };
 
   /**
    * Sets tab index
@@ -379,7 +363,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param event event object
    * @param newIndex new tab index value
    */
-  private setTabIndex = (event: React.ChangeEvent<{ }>, newIndex: number) => {
+  private setTabIndex = (event: React.ChangeEvent<{}>, newIndex: number) => {
     this.setState({
       timelineTabIndex: newIndex,
       selectedContentVersion: this.state.contentVersions[0],
@@ -390,7 +374,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedResource: undefined,
       selectedTabIndex: undefined
     });
-  }
+  };
 
   /**
    * Renders editor
@@ -404,7 +388,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       default:
         return null;
     }
-  }
+  };
 
   /**
    * Renders code editor
@@ -417,11 +401,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     return (
       <CodeEditor
-        json={ this.toJsonCode(selectedPage) }
-        onChange={ (json: string) => this.applyCodeEditorChanges(json) }
+        json={this.toJsonCode(selectedPage)}
+        onChange={(json: string) => this.applyCodeEditorChanges(json)}
       />
     );
-  }
+  };
 
   /**
    * Renders visual editor
@@ -441,21 +425,24 @@ class ContentEditorScreen extends React.Component<Props, State> {
     let totalContentHeight = 0;
 
     const previews = previewDevicesData.map((previewData, index, array) => {
-      const devicePages = pages.filter(page =>
-        page.deviceId === previewData.device.id &&
-        page.contentVersionId === selectedContentVersion?.id
+      const devicePages = pages.filter(
+        (page) =>
+          page.deviceId === previewData.device.id &&
+          page.contentVersionId === selectedContentVersion?.id
       );
 
-      const previewPage = devicePages.find(page => page.id === previewData.page?.id);
-      const previewLayout = layouts.find(layout => layout.id === previewPage?.layoutId);
+      const previewPage = devicePages.find((page) => page.id === previewData.page?.id);
+      const previewLayout = layouts.find((layout) => layout.id === previewPage?.layoutId);
       if (!previewPage || !previewLayout) {
         return null;
       }
 
       const view = previewLayout.data;
       const resources = previewPage.resources;
-      const deviceModel = deviceModels.find(model => model.id === previewLayout.modelId);
-      const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel ? deviceModel : deviceModels[0]);
+      const deviceModel = deviceModels.find((model) => model.id === previewLayout.modelId);
+      const displayMetrics = AndroidUtils.getDisplayMetrics(
+        deviceModel ? deviceModel : deviceModels[0]
+      );
       const scale = 1;
 
       totalContentWidth += displayMetrics.widthPixels;
@@ -468,45 +455,43 @@ class ContentEditorScreen extends React.Component<Props, State> {
       }
 
       return (
-        <div key={ previewData.device.id } className={ classes.previewDeviceContainer }>
+        <div key={previewData.device.id} className={classes.previewDeviceContainer}>
           <Typography variant="h1" style={{ fontSize: 72 }}>
-            { `${previewData.device?.name} - ${previewPage.name}` }
+            {`${previewData.device?.name} - ${previewPage.name}`}
           </Typography>
-          { previewLayout.layoutType === LayoutType.Android ? (
-              <PagePreview
-              screenOrientation={ previewLayout.screenOrientation }
-              deviceOrientation={ deviceModel?.screenOrientation }
-              device={ previewData.device }
-              page={ previewPage }
-              view={ view }
-              selectedView={ selectedLayoutView }
-              resources={ resources }
-              displayMetrics={ displayMetrics }
-              scale={ scale }
-              onViewClick={ this.onLayoutViewClick }
-              onTabClick={ this.onPreviewTabClick }
-              tabMap={ tabMap }
+          {previewLayout.layoutType === LayoutType.Android ? (
+            <PagePreview
+              screenOrientation={previewLayout.screenOrientation}
+              deviceOrientation={deviceModel?.screenOrientation}
+              device={previewData.device}
+              page={previewPage}
+              view={view}
+              selectedView={selectedLayoutView}
+              resources={resources}
+              displayMetrics={displayMetrics}
+              scale={scale}
+              onViewClick={this.onLayoutViewClick}
+              onTabClick={this.onPreviewTabClick}
+              tabMap={tabMap}
             />
-          ) : (
-            null
-          )}
+          ) : null}
         </div>
       );
     });
 
     return (
-      <div className={ classes.visualEditorContainer }>
+      <div className={classes.visualEditorContainer}>
         <PanZoom
-          minScale={ 0.1 }
-          fitContent={ true }
-          contentWidth={ totalContentWidth }
-          contentHeight={ totalContentHeight }
+          minScale={0.1}
+          fitContent={true}
+          contentWidth={totalContentWidth}
+          contentHeight={totalContentHeight}
         >
-          { previews }
+          {previews}
         </PanZoom>
       </div>
     );
-  }
+  };
 
   /**
    * Renders timeline content
@@ -523,87 +508,78 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedPage
     } = this.state;
 
-    return contentVersions.map(contentVersion => {
+    return contentVersions.map((contentVersion) => {
       const selected = contentVersion.id === selectedContentVersion?.id;
       return (
         <Accordion
-          key={ `ContentVersionAccordion-${contentVersion.id}` }
-          className={ classes.timelineContentVersion }
-          expanded={ selected }
-          onChange={ this.onExpandContentVersion(contentVersion) }
+          key={`ContentVersionAccordion-${contentVersion.id}`}
+          className={classes.timelineContentVersion}
+          expanded={selected}
+          onChange={this.onExpandContentVersion(contentVersion)}
         >
           <AccordionSummary
-            expandIcon={ <ExpandMoreIcon/> }
-            className={ classes.timelineContentVersionTitle }
+            expandIcon={<ExpandMoreIcon />}
+            className={classes.timelineContentVersionTitle}
           >
-            <Typography
-              variant="body2"
-              className={ selected ? classes.selected : undefined }
-            >
-              { contentVersion.language }
+            <Typography variant="body2" className={selected ? classes.selected : undefined}>
+              {contentVersion.language}
             </Typography>
           </AccordionSummary>
-          <AccordionDetails className={ classes.timelineContentVersionContent }>
+          <AccordionDetails className={classes.timelineContentVersionContent}>
             <TimelineDevicesList
-              contentVersion={ contentVersion }
-              selectedContentVersion={ selectedContentVersion }
-              devices={ devices }
-              selectedDevice={ selectedDevice }
-              onClick={ this.onDeviceClick }
+              contentVersion={contentVersion}
+              selectedContentVersion={selectedContentVersion}
+              devices={devices}
+              selectedDevice={selectedDevice}
+              onClick={this.onDeviceClick}
             />
-            <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
+            <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
             <TimelineEditor
-              contentVersion={ contentVersion }
-              devices={ devices }
-              previewDevicesData={ previewDevicesData }
-              pages={ pages }
+              contentVersion={contentVersion}
+              devices={devices}
+              previewDevicesData={previewDevicesData}
+              pages={pages}
               pageType="active"
-              selectedContentVersion={ selectedContentVersion }
-              selectedDevice={ selectedDevice }
-              selectedPage={ selectedPage }
-              onClick={ this.onPageClick }
-              onDragEnd={ this.onPageDragEnd }
+              selectedContentVersion={selectedContentVersion}
+              selectedDevice={selectedDevice}
+              selectedPage={selectedPage}
+              onClick={this.onPageClick}
+              onDragEnd={this.onPageDragEnd}
             />
           </AccordionDetails>
         </Accordion>
       );
     });
-  }
+  };
 
   /**
    * Renders idle page editor
    */
   private renderIdlePageEditor = () => {
     const { classes } = this.props;
-    const {
-      devices,
-      pages,
-      previewDevicesData,
-      selectedDevice,
-      selectedPage
-    } = this.state;
+    const { devices, pages, previewDevicesData, selectedDevice, selectedPage } = this.state;
 
     return (
-      <div className={ classes.idlePageEditor }>
+      <div className={classes.idlePageEditor}>
         <TimelineDevicesList
-          selectedDevice={ selectedDevice }
-          onClick={ this.onDeviceClick }
-          devices={ devices }
+          selectedDevice={selectedDevice}
+          onClick={this.onDeviceClick}
+          devices={devices}
         />
-        <Divider orientation="vertical" flexItem className={ classes.timelineDivider } />
+        <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
         <TimelineEditor
-          devices={ devices }
-          previewDevicesData={ previewDevicesData }
-          pages={ pages }
+          devices={devices}
+          previewDevicesData={previewDevicesData}
+          pages={pages}
           pageType="idle"
-          selectedDevice={ selectedDevice }
-          selectedPage={ selectedPage }
-          onClick={ this.onPageClick }
-          onDragEnd={ this.onPageDragEnd }
+          selectedDevice={selectedDevice}
+          selectedPage={selectedPage}
+          onClick={this.onPageClick}
+          onDragEnd={this.onPageDragEnd}
         />
       </div>
     );
-  }
+  };
 
   /**
    * Renders element contents pane content
@@ -613,8 +589,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedPage) {
       return (
         <>
-          { this.renderContentAccordion() }
-          { this.renderTransitionAccordion() }
+          {this.renderContentAccordion()}
+          {this.renderTransitionAccordion()}
         </>
       );
     }
@@ -623,27 +599,22 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return (
         <div style={{ padding: theme.spacing(2) }}>
           <TextField
-            label={ strings.generic.name }
+            label={strings.generic.name}
             name="name"
-            value={ selectedDevice.name }
-            onChange={ this.onDeviceDataChange }
+            value={selectedDevice.name}
+            onChange={this.onDeviceDataChange}
             style={{ marginTop: theme.spacing(1) }}
           />
         </div>
       );
     }
-  }
+  };
 
   /**
    * Render content accordion
    */
   private renderContentAccordion = () => {
-    const {
-      devices,
-      layouts,
-      selectedPage,
-      propertiesExpanded
-    } = this.state;
+    const { devices, layouts, selectedPage, propertiesExpanded } = this.state;
 
     if (!selectedPage) {
       return null;
@@ -651,28 +622,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const pageElements = this.constructPageElements();
 
-    return(
+    return (
       <Accordion
-        expanded={ propertiesExpanded }
-        onChange={ (_e, expanded) => this.setState({ propertiesExpanded: expanded }) }
+        expanded={propertiesExpanded}
+        onChange={(_e, expanded) => this.setState({ propertiesExpanded: expanded })}
       >
-        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
-          <Typography variant="h3">{ strings.contentEditor.editor.properties }</Typography>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h3">{strings.contentEditor.editor.properties}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <CommonSettingsEditor
-            devices={ devices }
-            layouts={ layouts }
-            pageData={ selectedPage }
-            onChange={ this.onPageDataChange }
-            onChangeText={ this.onPageDataTextChange }
-            onLayoutChange={ this.onLayoutChange }
+            devices={devices}
+            layouts={layouts}
+            pageData={selectedPage}
+            onChange={this.onPageDataChange}
+            onChangeText={this.onPageDataTextChange}
+            onLayoutChange={this.onLayoutChange}
           />
         </AccordionDetails>
-          { pageElements }
+        {pageElements}
       </Accordion>
     );
-  }
+  };
 
   /**
    * Construct page elements
@@ -686,8 +657,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const elementList: JSX.Element[] = [];
     return this.constructSingleElement(elementList, [pageLayout.data]);
-
-  }
+  };
 
   /**
    * Construct single page layout view element for accordion listing
@@ -695,13 +665,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param elementList JSX element list
    * @param pageLayoutViews list of page layout views
    */
-  private constructSingleElement = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
+  private constructSingleElement = (
+    elementList: JSX.Element[],
+    pageLayoutViews: PageLayoutView[]
+  ) => {
     const { selectedPage, resourceWidgetIdList } = this.state;
     if (!selectedPage || !resourceWidgetIdList) {
       return;
     }
 
-    pageLayoutViews.forEach(pageLayoutView => {
+    pageLayoutViews.forEach((pageLayoutView) => {
       if (allowedWidgetTypes.includes(pageLayoutView.widget)) {
         if (pageLayoutView.widget === PageLayoutWidgetType.TouchableOpacity) {
           elementList.push(this.renderResources(selectedPage, pageLayoutView, []));
@@ -724,7 +697,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     });
 
     return elementList;
-  }
+  };
 
   /**
    * Render individual resources inside accordion element
@@ -733,7 +706,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    * @param idList list resource ids
    */
-  private renderResources = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView, idList: string[]) => {
+  private renderResources = (
+    selectedPage: ExhibitionPage,
+    pageLayoutView: PageLayoutView,
+    idList: string[]
+  ) => {
     const { classes } = this.props;
     const { selectedLayoutView, selectedResource } = this.state;
     const resources = this.getResources(idList, selectedPage);
@@ -741,43 +718,35 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     return (
       <Accordion
-        key={ pageLayoutView.id }
-        className={ classes.resource }
-        expanded={ selectedLayoutView?.id === pageLayoutView.id }
-        onChange={ this.onExpandElement(pageLayoutView) }
+        key={pageLayoutView.id}
+        className={classes.resource}
+        expanded={selectedLayoutView?.id === pageLayoutView.id}
+        onChange={this.onExpandElement(pageLayoutView)}
       >
-        <AccordionSummary
-          expandIcon={ <ExpandMoreIcon/> }
-          className={ classes.resourceItem }
-        >
-          <Typography variant="h5">
-            { pageLayoutView.name || "" }
-          </Typography>
-          <Button
-            variant="text"
-            onClick={ this.onAddEventTrigger(pageLayoutView.id) }
-          >
-            { strings.contentEditor.editor.eventTriggers.add }
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={classes.resourceItem}>
+          <Typography variant="h5">{pageLayoutView.name || ""}</Typography>
+          <Button variant="text" onClick={this.onAddEventTrigger(pageLayoutView.id)}>
+            {strings.contentEditor.editor.eventTriggers.add}
           </Button>
         </AccordionSummary>
         <AccordionDetails>
           <LayoutViewResourcesList
-            resources={ resources }
-            selectedResource={ selectedResource }
-            onClick={ this.onResourceClick }
+            resources={resources}
+            selectedResource={selectedResource}
+            onClick={this.onResourceClick}
           />
-          { eventTriggerItems &&
+          {eventTriggerItems && (
             <div style={{ marginLeft: theme.spacing(4) }}>
               <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-                { strings.contentEditor.editor.eventTriggers.title }
+                {strings.contentEditor.editor.eventTriggers.title}
               </Typography>
-              { eventTriggerItems }
+              {eventTriggerItems}
             </div>
-          }
+          )}
         </AccordionDetails>
       </Accordion>
     );
-  }
+  };
 
   /**
    * Render tabs
@@ -792,39 +761,32 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     return (
       <Accordion
-        key={ pageLayoutView.name }
-        className={ classes.resource }
-        expanded={ selectedLayoutView?.id === pageLayoutView.id }
-        onChange={ this.onExpandElement(pageLayoutView) }
+        key={pageLayoutView.name}
+        className={classes.resource}
+        expanded={selectedLayoutView?.id === pageLayoutView.id}
+        onChange={this.onExpandElement(pageLayoutView)}
       >
-        <AccordionSummary expandIcon={ <ExpandMoreIcon/> } className={ classes.resourceItem }>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={classes.resourceItem}>
           <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-            { pageLayoutView.name || "" }
+            {pageLayoutView.name || ""}
           </Typography>
-          <Button
-            variant="text"
-            onClick={ this.onAddTab() }
-          >
-            { strings.contentEditor.editor.tabs.add }
+          <Button variant="text" onClick={this.onAddTab()}>
+            {strings.contentEditor.editor.tabs.add}
           </Button>
         </AccordionSummary>
         <AccordionDetails>
           <div style={{ marginLeft: theme.spacing(4) }}>
             <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-              {
-                !tabStructure ||
-                !tabStructure.tabs ||
-                tabStructure.tabs.length === 0 ?
-                  strings.contentEditor.editor.tabs.noTabs :
-                  strings.contentEditor.editor.tabs.title
-              }
+              {!tabStructure || !tabStructure.tabs || tabStructure.tabs.length === 0
+                ? strings.contentEditor.editor.tabs.noTabs
+                : strings.contentEditor.editor.tabs.title}
             </Typography>
-            { tabItems }
+            {tabItems}
           </div>
         </AccordionDetails>
       </Accordion>
     );
-  }
+  };
 
   /**
    * Render transition accordion
@@ -835,22 +797,22 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return null;
     }
 
-    return(
+    return (
       <Accordion>
-        <AccordionSummary expandIcon={ <ExpandMoreIcon /> }>
-          <Typography variant="h3">{ strings.contentEditor.editor.transitions.title }</Typography>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h3">{strings.contentEditor.editor.transitions.title}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TransitionsEditor
-            selectedPage={ selectedPage }
-            devices={ devices }
-            pages={ pages }
-            onPageTransitionChange={ this.onTransitionChange }
+            selectedPage={selectedPage}
+            devices={devices}
+            pages={pages}
+            onPageTransitionChange={this.onTransitionChange}
           />
         </AccordionDetails>
       </Accordion>
     );
-  }
+  };
 
   /**
    * Render properties
@@ -876,9 +838,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedResource) {
       return (
         <ResourceEditor
-          resource={ selectedResource }
-          onUpdate={ this.onUpdateResource }
-          visitorVariables={ visitorVariables }
+          resource={selectedResource}
+          onUpdate={this.onUpdateResource}
+          visitorVariables={visitorVariables}
         />
       );
     }
@@ -887,19 +849,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
       const foundTrigger = selectedPage.eventTriggers[selectedTriggerIndex];
       const availableLanguages = LanguageUtils.getAvailableLanguages(contentVersions);
 
-      return(
+      return (
         <EventTriggerEditor
-          selectedEventTrigger={ foundTrigger }
-          view={ pageLayout?.data }
-          pages={ pages }
-          availableLanguages={ availableLanguages }
-          visitorVariables={ visitorVariables }
-          onSave={ this.updateEventTrigger }
+          selectedEventTrigger={foundTrigger}
+          view={pageLayout?.data}
+          pages={pages}
+          availableLanguages={availableLanguages}
+          visitorVariables={visitorVariables}
+          onSave={this.updateEventTrigger}
         />
       );
     }
 
-    if (tabResourceIndex !== undefined &&
+    if (
+      tabResourceIndex !== undefined &&
       selectedTabIndex !== undefined &&
       selectedPage.resources[tabResourceIndex] !== undefined
     ) {
@@ -911,16 +874,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       const foundTab = parsed.tabs[selectedTabIndex];
 
-      return(
-        <TabEditor
-          accessToken={ accessToken }
-          selectedTab={ foundTab }
-          onSave={ this.updateTab }
-        />
-      );
+      return <TabEditor accessToken={accessToken} selectedTab={foundTab} onSave={this.updateTab} />;
     }
-
-  }
+  };
 
   /**
    * Get element resources
@@ -930,7 +886,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private getResources = (idList: string[], selectedPage: ExhibitionPage) => {
     const resources = idList.reduce((filtered: ExhibitionPageResource[], elementId: string) => {
-      const resourceIndex = selectedPage.resources.findIndex(resource => resource.id === elementId);
+      const resourceIndex = selectedPage.resources.findIndex(
+        (resource) => resource.id === elementId
+      );
 
       if (resourceIndex > -1) {
         filtered.push(selectedPage.resources[resourceIndex]);
@@ -940,19 +898,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }, []);
 
     return resources;
-  }
+  };
 
   /**
    * Get tabs JSX items
    */
   private getTabs = () => {
     const tabs = this.renderTabList();
-    return (
-      <AccordionDetails>
-        { tabs }
-      </AccordionDetails>
-    );
-  }
+    return <AccordionDetails>{tabs}</AccordionDetails>;
+  };
 
   /**
    * Render tab list
@@ -970,22 +924,18 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const tabItems = tabs.map((tab, tabIndex) => {
       return (
         <ListItem
-          className={ classes.borderedListItem }
-          key={ tabIndex }
+          className={classes.borderedListItem}
+          key={tabIndex}
           button
-          onClick={ this.onTabClick(tabIndex) }
-          selected={ selectedTabIndex === tabIndex }
+          onClick={this.onTabClick(tabIndex)}
+          selected={selectedTabIndex === tabIndex}
         >
           <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
-            { tab.label }
+            {tab.label}
           </Typography>
           <ListItemSecondaryAction>
-            <Button
-              size="small"
-              aria-label="delete"
-              onClick={ this.onDeleteTabClick(tabIndex) }
-            >
-              { strings.generic.delete }
+            <Button size="small" aria-label="delete" onClick={this.onDeleteTabClick(tabIndex)}>
+              {strings.generic.delete}
             </Button>
           </ListItemSecondaryAction>
           <ChevronRightIcon htmlColor="#888" />
@@ -994,14 +944,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
     });
 
     return (
-      <List
-        disablePadding
-        style={{ marginBottom: theme.spacing(1) }}
-      >
-        { tabItems }
+      <List disablePadding style={{ marginBottom: theme.spacing(1) }}>
+        {tabItems}
       </List>
     );
-  }
+  };
 
   /**
    * Get event trigger items
@@ -1010,48 +957,48 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutView page layout view
    */
   private getEventTriggerItems = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView) => {
-      const { classes } = this.props;
+    const { classes } = this.props;
 
-      const triggerList = selectedPage.eventTriggers.filter(trigger => trigger.clickViewId === pageLayoutView.id);
+    const triggerList = selectedPage.eventTriggers.filter(
+      (trigger) => trigger.clickViewId === pageLayoutView.id
+    );
 
-      if (triggerList.length < 1) {
-        return;
-      }
+    if (triggerList.length < 1) {
+      return;
+    }
 
-      return triggerList.map((trigger, index) => {
-        const pageEventTriggerIndex = selectedPage.eventTriggers.findIndex(pageTrigger => pageTrigger.id === trigger.id);
+    return triggerList.map((trigger, index) => {
+      const pageEventTriggerIndex = selectedPage.eventTriggers.findIndex(
+        (pageTrigger) => pageTrigger.id === trigger.id
+      );
 
-        return (
-          <List
-            key={ trigger.id }
-            disablePadding
-            style={{ marginBottom: theme.spacing(1) }}
+      return (
+        <List key={trigger.id} disablePadding style={{ marginBottom: theme.spacing(1) }}>
+          <ListItem
+            className={classes.borderedListItem}
+            key={index}
+            button
+            onClick={this.onTriggerClick(pageEventTriggerIndex)}
           >
-            <ListItem
-              className={ classes.borderedListItem }
-              key={ index }
-              button
-              onClick={ this.onTriggerClick(pageEventTriggerIndex) }
-            >
-              <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
-                { trigger.name }
-              </Typography>
-              <ListItemSecondaryAction className={ classes.borderedListItemSecondaryAction }>
-                <Button
-                  variant="text"
-                  size="small"
-                  aria-label="delete"
-                  onClick={ this.onDeleteTriggerClick(pageEventTriggerIndex) }
-                >
-                  { strings.generic.delete }
-                </Button>
-                <ChevronRightIcon htmlColor="#888" />
-              </ListItemSecondaryAction>
-            </ListItem>
-          </List>
-        );
-      });
-  }
+            <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+              {trigger.name}
+            </Typography>
+            <ListItemSecondaryAction className={classes.borderedListItemSecondaryAction}>
+              <Button
+                variant="text"
+                size="small"
+                aria-label="delete"
+                onClick={this.onDeleteTriggerClick(pageEventTriggerIndex)}
+              >
+                {strings.generic.delete}
+              </Button>
+              <ChevronRightIcon htmlColor="#888" />
+            </ListItemSecondaryAction>
+          </ListItem>
+        </List>
+      );
+    });
+  };
 
   /**
    * Updates event trigger
@@ -1062,10 +1009,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState(
       produce((draft: State) => {
         const { selectedTriggerIndex } = draft;
-        if (selectedTriggerIndex === undefined ||
+        if (
+          selectedTriggerIndex === undefined ||
           !draft.selectedPage ||
-          draft.selectedPage.eventTriggers.length < selectedTriggerIndex)
-        {
+          draft.selectedPage.eventTriggers.length < selectedTriggerIndex
+        ) {
           return;
         }
 
@@ -1073,7 +1021,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    * Updates tab
@@ -1083,8 +1031,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private updateTab = (updatedTab: ExhibitionPageTab) => {
     this.setState(
       produce((draft: State) => {
-        const { tabResourceIndex, selectedTabIndex, selectedPage, selectedLayoutView, tabMap } = draft;
-        if (tabResourceIndex === undefined ||
+        const { tabResourceIndex, selectedTabIndex, selectedPage, selectedLayoutView, tabMap } =
+          draft;
+        if (
+          tabResourceIndex === undefined ||
           selectedTabIndex === undefined ||
           !selectedLayoutView ||
           !tabMap ||
@@ -1092,7 +1042,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
         ) {
           return;
         }
-
 
         const tabHolder = tabMap.get(selectedLayoutView.id);
         const tabData = this.getTabStructure(tabHolder?.tabComponent.contentContainerId);
@@ -1107,7 +1056,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    * Event handler for page data change
@@ -1127,12 +1076,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    *
    */
-  private onPageDataTextChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  private onPageDataTextChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { selectedPage } = this.state;
     const { name, value } = event.target;
     if (!selectedPage || !name) {
@@ -1159,12 +1110,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     const layoutId = event.target.value;
-    const selectedLayout = layouts.find(layout => layout.id === layoutId);
+    const selectedLayout = layouts.find((layout) => layout.id === layoutId);
     if (!selectedLayout) {
       return;
     }
 
-    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(selectedLayout.data as PageLayoutView);
+    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(
+      selectedLayout.data as PageLayoutView
+    );
 
     this.setState(
       produce((draft: State) => {
@@ -1174,7 +1127,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    * On update resource handler
@@ -1188,7 +1141,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           return;
         }
 
-        const resourceIndex = draft.selectedPage.resources.findIndex(resource => resource.id === updatedResource.id);
+        const resourceIndex = draft.selectedPage.resources.findIndex(
+          (resource) => resource.id === updatedResource.id
+        );
         if (resourceIndex > -1) {
           draft.selectedPage.resources[resourceIndex] = updatedResource;
           draft.selectedResource = updatedResource;
@@ -1196,7 +1151,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         }
       })
     );
-  }
+  };
 
   /**
    * Event handler for transition change
@@ -1204,7 +1159,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param transitions transition list to be updated
    * @param transitionType transition type to update
    */
-  private onTransitionChange = (transitions: ExhibitionPageTransition[], transitionType: string) => {
+  private onTransitionChange = (
+    transitions: ExhibitionPageTransition[],
+    transitionType: string
+  ) => {
     const { selectedPage } = this.state;
     if (!selectedPage) {
       return;
@@ -1225,19 +1183,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
         })
       );
     }
-  }
+  };
 
   /**
    * Fetches component data
    */
   private fetchComponentData = async () => {
-    const {
-      accessToken,
-      exhibitionId,
-      roomId,
-      contentVersionId,
-      groupContentVersionId
-    } = this.props;
+    const { accessToken, exhibitionId, roomId, contentVersionId, groupContentVersionId } =
+      this.props;
 
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
@@ -1246,11 +1199,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
 
-    const [ initialContentVersion, contentVersionsInRoom, groupContentVersion, layouts, visitorVariables ] = await Promise.all([
+    const [
+      initialContentVersion,
+      contentVersionsInRoom,
+      groupContentVersion,
+      layouts,
+      visitorVariables
+    ] = await Promise.all([
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
       contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
       groupContentVersionsApi.findGroupContentVersion({ exhibitionId, groupContentVersionId }),
-      layoutsApi.listPageLayouts({ }),
+      layoutsApi.listPageLayouts({}),
       visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
 
@@ -1258,7 +1217,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
      * Devices from device group
      */
     const deviceGroupId = groupContentVersion.deviceGroupId;
-    const devices = await exhibitionDevicesApi.listExhibitionDevices({ exhibitionId, exhibitionGroupId: deviceGroupId });
+    const devices = await exhibitionDevicesApi.listExhibitionDevices({
+      exhibitionId,
+      exhibitionGroupId: deviceGroupId
+    });
 
     /**
      * Content versions for different languages.
@@ -1266,9 +1228,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
      * initial content version selected before navigating to content editor.
      */
     const contentVersions: ContentVersion[] = [];
-    contentVersionsInRoom.forEach(contentVersionInRoom => {
+    contentVersionsInRoom.forEach((contentVersionInRoom) => {
       const sameName = contentVersionInRoom.name === initialContentVersion.name;
-      const newLanguage = contentVersions.every(version => version.language !== contentVersionInRoom.language);
+      const newLanguage = contentVersions.every(
+        (version) => version.language !== contentVersionInRoom.language
+      );
       if (sameName && newLanguage) {
         contentVersions.push(contentVersionInRoom);
       }
@@ -1301,7 +1265,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
         groupContentVersions.push(newGroupContentVersion);
       } else {
         if (foundGroupContentVersions.length > 1) {
-          console.error("More than one group content version with same device group found under one content version. This should not be possible!");
+          console.error(
+            "More than one group content version with same device group found under one content version. This should not be possible!"
+          );
         }
 
         groupContentVersions.push(foundGroupContentVersions[0]);
@@ -1313,7 +1279,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     });
 
     const devicePages = await Promise.all(
-      devices.map(device =>
+      devices.map((device) =>
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId,
           exhibitionDeviceId: device.id
@@ -1326,9 +1292,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const selectedDevice = devices[0];
     const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
     const selectedPage = pages.find(
-      page => page.deviceId === selectedDevice.id &&
-      page.contentVersionId === selectedContentVersion.id &&
-      page.orderNumber === 0
+      (page) =>
+        page.deviceId === selectedDevice.id &&
+        page.contentVersionId === selectedContentVersion.id &&
+        page.orderNumber === 0
     );
 
     if (selectedPage) {
@@ -1347,8 +1314,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedContentVersion,
       selectedDevice
     });
-
-  }
+  };
 
   /**
    * Get preview devices data for given content version
@@ -1358,17 +1324,22 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pages pages
    * @returns preview devices
    */
-  private getPreviewDevicesData = (contentVersion: ContentVersion, devices: ExhibitionDevice[], pages: ExhibitionPage[]): PreviewDeviceData[] => {
+  private getPreviewDevicesData = (
+    contentVersion: ContentVersion,
+    devices: ExhibitionDevice[],
+    pages: ExhibitionPage[]
+  ): PreviewDeviceData[] => {
     return devices.map((device): PreviewDeviceData => {
-      const page = pages.find(page =>
-        page.contentVersionId === contentVersion.id &&
-        page.deviceId === device.id &&
-        page.orderNumber === 0
+      const page = pages.find(
+        (page) =>
+          page.contentVersionId === contentVersion.id &&
+          page.deviceId === device.id &&
+          page.orderNumber === 0
       );
 
       return { device, page };
     });
-  }
+  };
 
   /**
    * Gets action buttons
@@ -1376,27 +1347,24 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @returns action buttons as array
    */
   private getActionButtons = (): ActionButton[] => {
-    const {
-      selectedContentVersion,
-      selectedDevice,
-      selectedPage,
-      view,
-      dataChanged
-    } = this.state;
+    const { selectedContentVersion, selectedDevice, selectedPage, view, dataChanged } = this.state;
 
-    const actionButtons: ActionButton[] = [{
-      name: view === "CODE" ?
-        strings.exhibitionLayouts.editView.switchToVisualButton :
-        strings.exhibitionLayouts.editView.switchToCodeButton,
-      action: this.onSwitchViewClick
-    }];
+    const actionButtons: ActionButton[] = [
+      {
+        name:
+          view === "CODE"
+            ? strings.exhibitionLayouts.editView.switchToVisualButton
+            : strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: this.onSwitchViewClick
+      }
+    ];
 
     if (!selectedContentVersion && !this.idlePageEditorActive()) {
       actionButtons.push({
         name: strings.exhibition.addLanguageVersion,
         action: this.onAddContentVersionClick,
         disabled: this.getAvailableLanguages().length < 1
-      })
+      });
     }
 
     if (selectedDevice && !selectedPage) {
@@ -1416,29 +1384,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
     }
 
     if (selectedPage) {
-      actionButtons.push({
-        name: strings.contentEditor.editor.savePage,
-        action: this.onPageSave,
-        disabled: !dataChanged
-      }, {
-        name: strings.contentEditor.delete.deleteTitle,
-        action: this.onDeletePageClick
-      });
+      actionButtons.push(
+        {
+          name: strings.contentEditor.editor.savePage,
+          action: this.onPageSave,
+          disabled: !dataChanged
+        },
+        {
+          name: strings.contentEditor.delete.deleteTitle,
+          action: this.onDeletePageClick
+        }
+      );
     }
     return actionButtons;
-  }
+  };
 
   /**
    * Adds new content version
    */
   private addContentVersion = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const {
-      newContentVersion,
-      groupContentVersion,
-      contentVersions,
-      groupContentVersions
-    } = this.state;
+    const { newContentVersion, groupContentVersion, contentVersions, groupContentVersions } =
+      this.state;
 
     if (!newContentVersion || !groupContentVersion) {
       return;
@@ -1463,24 +1430,26 @@ class ContentEditorScreen extends React.Component<Props, State> {
       });
 
       this.setState({
-        contentVersions: [ ...contentVersions, createdContentVersion ],
-        groupContentVersions: [ ...groupContentVersions, createdGroupContentVersion ]
+        contentVersions: [...contentVersions, createdContentVersion],
+        groupContentVersions: [...groupContentVersions, createdGroupContentVersion]
       });
     } catch (error) {
-      console.error(`Could not add new language.\nError: ${error}`)
+      console.error(`Could not add new language.\nError: ${error}`);
     }
 
     this.setState({
       addLanguageDialogOpen: false
     });
-  }
+  };
 
   /**
    * Event handler for device change
    *
    * @param event event
    */
-  private onDeviceDataChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onDeviceDataChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>
+  ) => {
     const { selectedDevice } = this.state;
     const { name, value } = event.target;
     if (!selectedDevice || !name) {
@@ -1496,7 +1465,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    * Serializes exhibition page into JSON code
@@ -1507,7 +1476,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private toJsonCode = (page: Partial<ExhibitionPage>): string => {
     const { resources, eventTriggers } = page;
     return JSON.stringify({ resources, eventTriggers }, null, 2);
-  }
+  };
 
   /**
    * Applies changes from code editor to page object
@@ -1532,7 +1501,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.dataChanged = true;
       })
     );
-  }
+  };
 
   /**
    * Parses exhibition page json to object
@@ -1547,14 +1516,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     try {
       const parsedCode = JSON.parse(json);
-      result.eventTriggers = (parsedCode.eventTriggers || []).map(ExhibitionPageEventTriggerFromJSON);
-      result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
+      result.eventTriggers = (parsedCode.eventTriggers || []).map(
+        ExhibitionPageEventTriggerFromJSON
+      );
+      result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
     } catch (error) {
       this.setState({ error });
     }
 
     return result;
-  }
+  };
 
   /**
    * Event handler for add event trigger
@@ -1562,28 +1533,29 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param pageLayoutViewId page layout view id
    * @param event react mouse event
    */
-  private onAddEventTrigger = (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const { selectedPage } = this.state;
+  private onAddEventTrigger =
+    (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const { selectedPage } = this.state;
 
-    if (!selectedPage) {
-      return;
-    }
+      if (!selectedPage) {
+        return;
+      }
 
-    event.stopPropagation();
-    const newTrigger: ExhibitionPageEventTrigger = {
-      clickViewId: pageLayoutViewId,
-      id: uuid(),
-      name: "New trigger"
+      event.stopPropagation();
+      const newTrigger: ExhibitionPageEventTrigger = {
+        clickViewId: pageLayoutViewId,
+        id: uuid(),
+        name: "New trigger"
+      };
+
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage = selectedPage;
+          draft.selectedPage.eventTriggers.push(newTrigger);
+          draft.selectedTriggerIndex = draft.selectedPage.eventTriggers.length - 1;
+        })
+      );
     };
-
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedPage = selectedPage;
-        draft.selectedPage.eventTriggers.push(newTrigger);
-        draft.selectedTriggerIndex = draft.selectedPage.eventTriggers.length - 1;
-      })
-    );
-  }
 
   /**
    * Event handler for add tab
@@ -1610,9 +1582,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const newTab: ExhibitionPageTab = {
       label: "New tab",
-      properties: [
-        newProperty
-      ],
+      properties: [newProperty],
       resources: []
     };
 
@@ -1622,16 +1592,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    const newTabStructure = produce(currentTabStructure, draft => {
+    const newTabStructure = produce(currentTabStructure, (draft) => {
       if (!draft.tabs) {
         draft.tabs = [];
       }
       draft.tabs.push(newTab);
       if (!draft.contentContainerId && selectedLayoutView) {
-        draft.contentContainerId = tabMap.get(selectedLayoutView.id)?.tabComponent.contentContainerId;
+        draft.contentContainerId = tabMap.get(
+          selectedLayoutView.id
+        )?.tabComponent.contentContainerId;
       }
     });
-
 
     this.setState(
       produce((draft: State) => {
@@ -1639,7 +1610,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(newTabStructure);
       })
     );
-  }
+  };
 
   /**
    * Event handler for trigger click
@@ -1652,7 +1623,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedResource: undefined,
       selectedTabIndex: undefined
     });
-  }
+  };
 
   /**
    * Event handler for delete trigger click
@@ -1673,7 +1644,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedTriggerIndex = undefined;
       })
     );
-  }
+  };
 
   /**
    * Event handler for tab resource click
@@ -1686,48 +1657,46 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedTriggerIndex: undefined,
       selectedTabIndex: tabIndex
     });
-  }
+  };
 
   /**
    * Event handler for delete tab click
    *
    * @param tabIndex tab index to be deleted
    */
-  private onDeleteTabClick = (tabIndex: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const { selectedPage, tabResourceIndex, selectedLayoutView, tabMap } = this.state;
-    event.stopPropagation();
+  private onDeleteTabClick =
+    (tabIndex: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const { selectedPage, tabResourceIndex, selectedLayoutView, tabMap } = this.state;
+      event.stopPropagation();
 
-    if (tabResourceIndex === undefined ||
-      !selectedLayoutView ||
-      !tabMap ||
-      !selectedPage
-    ) {
-      return;
-    }
+      if (tabResourceIndex === undefined || !selectedLayoutView || !tabMap || !selectedPage) {
+        return;
+      }
 
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedPage = selectedPage;
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage = selectedPage;
 
-        const tabData = this.getTabStructure();
+          const tabData = this.getTabStructure();
 
-        if (tabData && tabData.tabs) {
+          if (tabData && tabData.tabs) {
+            const tabHolder = tabMap.get(selectedLayoutView.id);
 
-          const tabHolder = tabMap.get(selectedLayoutView.id);
+            if (tabHolder) {
+              const updateTabHolder = produce(tabHolder, (draft) => {
+                draft.tabComponent.tabs.splice(tabIndex, 1);
+              });
 
-          if (tabHolder) {
-            const updateTabHolder = produce(tabHolder, draft => {
-              draft.tabComponent.tabs.splice(tabIndex, 1);
-            });
-
-            draft.tabMap.set(selectedLayoutView.id, updateTabHolder);
-            draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(updateTabHolder.tabComponent);
+              draft.tabMap.set(selectedLayoutView.id, updateTabHolder);
+              draft.selectedPage.resources[tabResourceIndex].data = JSON.stringify(
+                updateTabHolder.tabComponent
+              );
+            }
           }
-        }
-        draft.selectedTabIndex = undefined;
-      })
-    );
-  }
+          draft.selectedTabIndex = undefined;
+        })
+      );
+    };
 
   /**
    * Event handler for switch view button click
@@ -1738,7 +1707,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.view = draft.view === "CODE" ? "VISUAL" : "CODE";
       })
     );
-  }
+  };
 
   /**
    * Event handler for device click
@@ -1746,65 +1715,71 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param selectedContentVersion selected content version
    * @param selectedDevice selected device
    */
-  private onDeviceClick = (selectedDevice: ExhibitionDevice, selectedContentVersion?: ContentVersion) => () => {
-    if (selectedContentVersion) {
-      this.setState({ selectedContentVersion });
-    }
+  private onDeviceClick =
+    (selectedDevice: ExhibitionDevice, selectedContentVersion?: ContentVersion) => () => {
+      if (selectedContentVersion) {
+        this.setState({ selectedContentVersion });
+      }
 
-    this.setState({
-      selectedDevice,
-      selectedPage: undefined,
-      selectedLayoutView: undefined,
-      selectedResource: undefined,
-      selectedTabIndex: undefined,
-      selectedTriggerIndex: undefined
-    });
-  }
+      this.setState({
+        selectedDevice,
+        selectedPage: undefined,
+        selectedLayoutView: undefined,
+        selectedResource: undefined,
+        selectedTabIndex: undefined,
+        selectedTriggerIndex: undefined
+      });
+    };
 
   /**
    * Event handler for page click
    * @param selectedPage selected page
    * @param selectedContentVersion possible selected content version
    */
-  private onPageClick = (selectedPage: ExhibitionPage, selectedContentVersion?: ContentVersion) => () => {
-    const { devices, previewDevicesData, timelineTabIndex, contentVersions } = this.state;
-    const isIdlePage = timelineTabIndex === 0;
-    const selectedDevice = devices.find(device => device.id === selectedPage.deviceId);
-    const previewDeviceIndex = previewDevicesData.findIndex(previewData => previewData.device.id === selectedDevice?.id);
-    if (previewDeviceIndex > -1) {
-      this.setState(
-        produce((draft: State) => {
-          draft.previewDevicesData[previewDeviceIndex].page = selectedPage;
-        })
-      )
-    }
+  private onPageClick =
+    (selectedPage: ExhibitionPage, selectedContentVersion?: ContentVersion) => () => {
+      const { devices, previewDevicesData, timelineTabIndex, contentVersions } = this.state;
+      const isIdlePage = timelineTabIndex === 0;
+      const selectedDevice = devices.find((device) => device.id === selectedPage.deviceId);
+      const previewDeviceIndex = previewDevicesData.findIndex(
+        (previewData) => previewData.device.id === selectedDevice?.id
+      );
+      if (previewDeviceIndex > -1) {
+        this.setState(
+          produce((draft: State) => {
+            draft.previewDevicesData[previewDeviceIndex].page = selectedPage;
+          })
+        );
+      }
 
-    this.setState({
-      selectedContentVersion: isIdlePage ?
-        contentVersions[0] :
-        selectedContentVersion,
-      selectedDevice,
-      selectedPage,
-      selectedResource: undefined,
-      selectedTriggerIndex: undefined,
-      tabResourceIndex: undefined,
-      selectedTabIndex: undefined
-    });
-  }
+      this.setState({
+        selectedContentVersion: isIdlePage ? contentVersions[0] : selectedContentVersion,
+        selectedDevice,
+        selectedPage,
+        selectedResource: undefined,
+        selectedTriggerIndex: undefined,
+        tabResourceIndex: undefined,
+        selectedTabIndex: undefined
+      });
+    };
 
   /**
    * Event handler for layout view click
    *
    * @param view page layout view
    */
-  private onLayoutViewClick = (device: ExhibitionDevice, page: ExhibitionPage, view: PageLayoutView) => {
+  private onLayoutViewClick = (
+    device: ExhibitionDevice,
+    page: ExhibitionPage,
+    view: PageLayoutView
+  ) => {
     this.setState({
       selectedDevice: device,
       selectedPage: page,
       selectedLayoutView: view,
       propertiesExpanded: true
     });
-  }
+  };
 
   /**
    * Event handler for resource click
@@ -1835,11 +1810,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
           return;
         }
 
-        const newTabHolder = { ...tabToUpdate, "activeTabIndex": newIndex };
+        const newTabHolder = { ...tabToUpdate, activeTabIndex: newIndex };
         draft.tabMap.set(viewId, newTabHolder);
       })
     );
-  }
+  };
 
   /**
    * Event handler for expand element
@@ -1848,11 +1823,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param event React change event
    * @param expanded is element expanded
    */
-  private onExpandElement = (view: PageLayoutView) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
-    this.setState({
-      selectedLayoutView: expanded ? view : undefined
-    });
-  }
+  private onExpandElement =
+    (view: PageLayoutView) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
+      this.setState({
+        selectedLayoutView: expanded ? view : undefined
+      });
+    };
 
   /**
    * Event handler for expand content version
@@ -1861,13 +1837,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param event React change event
    * @param expanded is content version expanded
    */
-  private onExpandContentVersion = (contentVersion: ContentVersion) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
-    this.setState({
-      selectedContentVersion: expanded ? contentVersion : undefined,
-      selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined,
-      previewDevicesData: expanded ? this.getPreviewDevicesData(contentVersion, this.state.devices, this.state.pages) : []
-    });
-  }
+  private onExpandContentVersion =
+    (contentVersion: ContentVersion) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
+      this.setState({
+        selectedContentVersion: expanded ? contentVersion : undefined,
+        selectedPage: expanded ? this.getCorrespondingSelectedPage(contentVersion) : undefined,
+        previewDevicesData: expanded
+          ? this.getPreviewDevicesData(contentVersion, this.state.devices, this.state.pages)
+          : []
+      });
+    };
 
   /**
    * Get corresponding selected page from given content version.
@@ -1879,14 +1858,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param contentVersion new content version
    * @returns corresponding selected page if one is found, otherwise undefined
    */
-  private getCorrespondingSelectedPage = (contentVersion: ContentVersion): ExhibitionPage | undefined => {
+  private getCorrespondingSelectedPage = (
+    contentVersion: ContentVersion
+  ): ExhibitionPage | undefined => {
     const { selectedDevice, selectedPage, pages } = this.state;
-    return pages.find(page =>
-      page.contentVersionId === contentVersion.id &&
-      page.deviceId === selectedDevice?.id &&
-      page.orderNumber === selectedPage?.orderNumber
+    return pages.find(
+      (page) =>
+        page.contentVersionId === contentVersion.id &&
+        page.deviceId === selectedDevice?.id &&
+        page.orderNumber === selectedPage?.orderNumber
     );
-  }
+  };
 
   /**
    * Event handler for page drag end
@@ -1895,21 +1877,22 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param contentVersionId possible content version id
    * @param result drop result
    */
-  private onPageDragEnd = (device: ExhibitionDevice, contentVersionId?: string) => (result: DropResult) => {
-    if (!result.destination) {
-      return;
-    }
+  private onPageDragEnd =
+    (device: ExhibitionDevice, contentVersionId?: string) => (result: DropResult) => {
+      if (!result.destination) {
+        return;
+      }
 
-    const movedPageId = result.draggableId;
-    const oldIndex = result.source.index;
-    const newIndex = result.destination.index;
+      const movedPageId = result.draggableId;
+      const oldIndex = result.source.index;
+      const newIndex = result.destination.index;
 
-    if (oldIndex === newIndex) {
-      return;
-    }
+      if (oldIndex === newIndex) {
+        return;
+      }
 
-    this.updateOrderNumbers(newIndex, movedPageId, device, contentVersionId);
-  }
+      this.updateOrderNumbers(newIndex, movedPageId, device, contentVersionId);
+    };
 
   /**
    * Updates page order numbers
@@ -1919,10 +1902,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param device device where page belongs to
    * @param contentVersionId possible id of content version where page belongs to
    */
-  private updateOrderNumbers = (newIndex: number, movedPageId: string, device: ExhibitionDevice, contentVersionId?: string) => {
+  private updateOrderNumbers = (
+    newIndex: number,
+    movedPageId: string,
+    device: ExhibitionDevice,
+    contentVersionId?: string
+  ) => {
     const { pages } = this.state;
 
-    const movedPage = pages.find(page => page.id === movedPageId);
+    const movedPage = pages.find((page) => page.id === movedPageId);
     if (!movedPage) {
       return;
     }
@@ -1931,7 +1919,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const updatedPages = this.getUpdatedDevicePagesOrder(devicePages, movedPageId, newIndex);
 
     this.doPageOrderUpdate(updatedPages);
-  }
+  };
 
   /**
    * Filters device pages from all pages and sorts them by order number
@@ -1941,14 +1929,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param contentVersionId possible content version ID
    * @returns filtered and sorted device pages
    */
-  private getDevicePages = (pages: ExhibitionPage[], device: ExhibitionDevice, contentVersionId?: string) => {
+  private getDevicePages = (
+    pages: ExhibitionPage[],
+    device: ExhibitionDevice,
+    contentVersionId?: string
+  ) => {
     return pages
-      .filter(page =>
-        page.deviceId === device.id &&
-        (page.contentVersionId === contentVersionId || page.id === device.idlePageId)
+      .filter(
+        (page) =>
+          page.deviceId === device.id &&
+          (page.contentVersionId === contentVersionId || page.id === device.idlePageId)
       )
       .sort((a, b) => a.orderNumber - b.orderNumber);
-  }
+  };
 
   /**
    * Get list of device pages in updated order
@@ -1963,7 +1956,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     movedPageId: string,
     newIndex?: number
   ): ExhibitionPage[] => {
-    const pageIndex = devicePages.findIndex(page => page.id === movedPageId);
+    const pageIndex = devicePages.findIndex((page) => page.id === movedPageId);
     if (pageIndex > -1) {
       const [page] = devicePages.splice(pageIndex, 1);
       if (newIndex !== undefined) {
@@ -1974,8 +1967,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return devicePages.map((devicePage, index) => ({
       ...devicePage,
       orderNumber: index
-    }));;
-  }
+    }));
+  };
 
   /**
    * Do page order update to API and state
@@ -1984,7 +1977,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private doPageOrderUpdate = async (pagesToUpdate: ExhibitionPage[]) => {
     const { accessToken, exhibitionId } = this.props;
-    const originalPages = [ ...this.state.pages ];
+    const originalPages = [...this.state.pages];
 
     this.setState({
       loading: true
@@ -1992,13 +1985,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: State) => {
-        pagesToUpdate.forEach(pageToUpdate => {
-          const pageIndex = draft.pages.findIndex(page => page.id === pageToUpdate.id);
+        pagesToUpdate.forEach((pageToUpdate) => {
+          const pageIndex = draft.pages.findIndex((page) => page.id === pageToUpdate.id);
           if (pageIndex > -1) {
             draft.pages[pageIndex] = pageToUpdate;
           }
 
-          const previewDeviceIndex = draft.previewDevicesData.findIndex(data => data.page?.id === pageToUpdate.id);
+          const previewDeviceIndex = draft.previewDevicesData.findIndex(
+            (data) => data.page?.id === pageToUpdate.id
+          );
           if (previewDeviceIndex > -1) {
             draft.previewDevicesData[previewDeviceIndex].page = pageToUpdate;
           }
@@ -2012,7 +2007,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return;
       }
 
-      const originalPage = originalPages.find(page => page.id === pageToUpdate.id);
+      const originalPage = originalPages.find((page) => page.id === pageToUpdate.id);
       const originalPageOrder = originalPage?.orderNumber;
 
       if (originalPageOrder !== pageToUpdate.orderNumber) {
@@ -2027,7 +2022,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     this.setState({
       loading: false
     });
-  }
+  };
 
   /**
    * Update page resources and id mappings
@@ -2036,7 +2031,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param selectedPage selected page
    */
   private updateResources = (layouts: PageLayout[], selectedPage: ExhibitionPage) => {
-    const pageLayout = layouts.find(layout => layout.id === selectedPage.layoutId);
+    const pageLayout = layouts.find((layout) => layout.id === selectedPage.layoutId);
     if (!pageLayout) {
       return;
     }
@@ -2049,13 +2044,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.selectedLayoutView = undefined;
 
         resourceHolder.resources
-          .filter(layoutResource => !selectedPage.resources.find(pageResource => pageResource.id === layoutResource.id))
-          .forEach(missingLayoutResource => {
+          .filter(
+            (layoutResource) =>
+              !selectedPage.resources.find((pageResource) => pageResource.id === layoutResource.id)
+          )
+          .forEach((missingLayoutResource) => {
             selectedPage.resources.push(missingLayoutResource);
           });
 
-        const tempTriggers = [ ...draft.selectedPage.eventTriggers ] as ExhibitionPageEventTrigger[];
-        tempTriggers.forEach(trigger => {
+        const tempTriggers = [...draft.selectedPage.eventTriggers] as ExhibitionPageEventTrigger[];
+        tempTriggers.forEach((trigger) => {
           if (!trigger.id) {
             trigger.id = uuid();
           }
@@ -2073,9 +2071,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
         });
 
         resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
-          const tabIndex = draft.selectedPage?.resources.findIndex(resource => resource.id === value.tabResourceId);
+          const tabIndex = draft.selectedPage?.resources.findIndex(
+            (resource) => resource.id === value.tabResourceId
+          );
           if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
-            const tabComponent = ResourceUtils.getResourcesForTabComponent(draft.selectedPage.resources, tabIndex, value.tabContentContainerId);
+            const tabComponent = ResourceUtils.getResourcesForTabComponent(
+              draft.selectedPage.resources,
+              tabIndex,
+              value.tabContentContainerId
+            );
             draft.tabMap.set(key, {
               activeTabIndex: 0,
               tabComponent: tabComponent
@@ -2088,7 +2092,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         draft.pageLayout = pageLayout;
       })
     );
-  }
+  };
 
   /**
    * Event handler for save device click
@@ -2109,7 +2113,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       this.setState(
         produce((draft: State) => {
-          const deviceIndex = draft.devices.findIndex(device => device.id === selectedDevice.id);
+          const deviceIndex = draft.devices.findIndex((device) => device.id === selectedDevice.id);
           if (deviceIndex > -1) {
             draft.devices[deviceIndex] = updatedDevice;
           }
@@ -2123,7 +2127,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         error: e
       });
     }
-  }
+  };
 
   /**
    * Event handler for add content version click
@@ -2145,7 +2149,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         language: availableLanguages[0]
       }
     });
-  }
+  };
 
   /**
    * Event handler for new content version language change
@@ -2159,21 +2163,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
         language: event.target.value
       } as ContentVersion
     });
-  }
+  };
 
   /**
    * Event handler for add page click
    */
   private onAddPageClick = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const {
-      layouts,
-      selectedContentVersion,
-      selectedDevice,
-      devices,
-      pages,
-      timelineTabIndex
-    } = this.state;
+    const { layouts, selectedContentVersion, selectedDevice, devices, pages, timelineTabIndex } =
+      this.state;
 
     if (!selectedDevice) {
       return;
@@ -2184,13 +2182,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const deviceId = selectedDevice.id;
     const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
-    if (!layoutId || !deviceId || !selectedContentVersion) {
+    if (!layoutId || !deviceId || !selectedContentVersion) {
       return;
     }
 
-    const filteredPages = pages.filter(page =>
-      page.deviceId === deviceId &&
-      page.contentVersionId === selectedContentVersion.id!
+    const filteredPages = pages.filter(
+      (page) => page.deviceId === deviceId && page.contentVersionId === selectedContentVersion.id!
     );
 
     const newPage: ExhibitionPage = {
@@ -2200,9 +2197,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       name: strings.exhibition.newPage,
       eventTriggers: [],
       resources: temp.resources,
-      orderNumber: isIdlePage ?
-        0 :
-        filteredPages.length,
+      orderNumber: isIdlePage ? 0 : filteredPages.length,
       enterTransitions: [],
       exitTransitions: []
     };
@@ -2223,7 +2218,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
 
     if (isIdlePage) {
-      const deviceIndex = devices.findIndex(device => device.id === selectedDevice.id);
+      const deviceIndex = devices.findIndex((device) => device.id === selectedDevice.id);
 
       if (deviceIndex < 0) {
         return;
@@ -2244,7 +2239,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         })
       );
     }
-  }
+  };
 
   /**
    * Event handler for page save
@@ -2264,17 +2259,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
         exhibitionPage: selectedPage
       });
 
-      const newPages = produce(pages, draft => {
-        const pageIndex = draft.findIndex(page => page.id === updatedPage.id);
+      const newPages = produce(pages, (draft) => {
+        const pageIndex = draft.findIndex((page) => page.id === updatedPage.id);
         if (pageIndex > -1) {
           draft[pageIndex] = updatedPage;
         }
       });
 
-        this.setState({
-          pages: newPages,
-          dataChanged: false
-        });
+      this.setState({
+        pages: newPages,
+        dataChanged: false
+      });
     } catch (e) {
       console.error(e);
 
@@ -2282,7 +2277,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         error: e
       });
     }
-  }
+  };
 
   /**
    * Event handler for page delete
@@ -2290,13 +2285,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onDeletePageClick = async () => {
     try {
       const { accessToken, exhibitionId } = this.props;
-      const {
-        selectedPage,
-        selectedContentVersion,
-        selectedDevice,
-        pages,
-        timelineTabIndex
-      } = this.state;
+      const { selectedPage, selectedContentVersion, selectedDevice, pages, timelineTabIndex } =
+        this.state;
 
       if (!selectedContentVersion || !selectedPage || !selectedPage.id || !selectedDevice) {
         return;
@@ -2311,7 +2301,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           exhibitionDevice: {
             ...selectedDevice,
             idlePageId: undefined
-          },
+          }
         });
       }
 
@@ -2319,13 +2309,15 @@ class ContentEditorScreen extends React.Component<Props, State> {
       await exhibitionPagesApi.deleteExhibitionPage({ exhibitionId, pageId: selectedPage.id });
 
       if (isIdlePage) {
-        this.setState({ pages: pages.filter(page => page.id !== selectedPage.id) });
+        this.setState({ pages: pages.filter((page) => page.id !== selectedPage.id) });
       } else {
         const devicePages = this.getDevicePages(pages, selectedDevice, selectedContentVersion.id);
         const updatedDevicePages = this.getUpdatedDevicePagesOrder(devicePages, selectedPage.id);
         const updatedPages = pages
-          .filter(page => page.id !== selectedPage.id)
-          .map(page => updatedDevicePages.find(devicePage => devicePage.id === page.id) ?? page);
+          .filter((page) => page.id !== selectedPage.id)
+          .map(
+            (page) => updatedDevicePages.find((devicePage) => devicePage.id === page.id) ?? page
+          );
 
         this.setState({ pages: updatedPages });
       }
@@ -2338,7 +2330,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       console.error(e);
       this.setState({ error: e });
     }
-  }
+  };
 
   /**
    * On properties panel close
@@ -2348,7 +2340,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedTabIndex: undefined,
       selectedTriggerIndex: undefined
     });
-  }
+  };
 
   /**
    * Event handler for close or cancel click in dialog
@@ -2358,7 +2350,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       addLanguageDialogOpen: false,
       deleteDialogOpen: false
     });
-  }
+  };
 
   /**
    * Get tab structure from resources
@@ -2371,18 +2363,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
       return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
-
     }
-  }
+  };
 
   /**
    * Returns available languages based on languages used in content versions
    */
   private getAvailableLanguages = () => {
-    return Object.values(LanguageOptions).filter(option =>
-      this.state.contentVersions.every(contentVersion => contentVersion.language !== option)
+    return Object.values(LanguageOptions).filter((option) =>
+      this.state.contentVersions.every((contentVersion) => contentVersion.language !== option)
     );
-  }
+  };
 
   /**
    * Checks if selected page has changed
@@ -2391,9 +2382,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param currentPage current selected page
    * @returns true if selected page has changed, otherwise false
    */
-  private isPageChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage): boolean => {
+  private isPageChanged = (
+    previousPage?: ExhibitionPage,
+    currentPage?: ExhibitionPage
+  ): boolean => {
     return previousPage?.id !== currentPage?.id;
-  }
+  };
 
   /**
    * Checks if page layout has changed
@@ -2404,14 +2398,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private isLayoutChanged = (previousPage?: ExhibitionPage, currentPage?: ExhibitionPage) => {
     return previousPage?.layoutId !== currentPage?.layoutId;
-  }
+  };
 
   /**
    * Returns whether idle page editor is active or not
    */
   private idlePageEditorActive = (): boolean => {
     return this.state.selectedTabIndex === 0;
-  }
+  };
 }
 
 /**
@@ -2424,7 +2418,7 @@ function mapStateToProps(state: ReduxState) {
     keycloak: state.auth.keycloak as KeycloakInstance,
     accessToken: state.auth.accessToken as AccessToken,
     exhibition: state.exhibitions.selectedExhibition as Exhibition,
-    deviceModels: state.devices.deviceModels,
+    deviceModels: state.devices.deviceModels
   };
 }
 
@@ -2439,5 +2433,7 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   };
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ContentEditorScreen));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ContentEditorScreen));

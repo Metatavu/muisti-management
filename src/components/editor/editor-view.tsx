@@ -1,28 +1,27 @@
 import * as React from "react";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/editor-view";
 
 /**
  * Interface representing component properties
  */
-interface Props extends WithStyles<typeof styles> {
-}
+interface Props extends WithStyles<typeof styles> {}
 
 /**
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
 }
 
 /**
  * Component for editor view
  */
 class EditorView extends React.Component<Props, State> {
-
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -35,21 +34,15 @@ class EditorView extends React.Component<Props, State> {
   /**
    * Component did mount life cycle handler
    */
-  public componentDidMount = () => {
-
-  }
+  public componentDidMount = () => {};
 
   /**
    * Render basic layout
    */
   public render() {
     const { classes } = this.props;
-    
-    return (
-      <div className={ classes.root }>
-        { this.props.children }
-      </div>
-    );
+
+    return <div className={classes.root}>{this.props.children}</div>;
   }
 }
 

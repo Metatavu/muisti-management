@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "./theme";
 
 export default createStyles({
-
   title: {
     marginBottom: theme.spacing(2)
   },
@@ -10,5 +9,4 @@ export default createStyles({
   inputGrid: {
     marginBottom: theme.spacing(1)
   }
-
 });

@@ -1,5 +1,4 @@
 {
-
   "header": {
     "navigation": {
       "exhibitionsButton": "Exhibitions",
@@ -104,7 +103,6 @@
   },
 
   "exhibitionLayouts": {
-
     "editView": {
       "xml": "XML",
       "json": "JSON",
@@ -119,7 +117,6 @@
       "deleteConfirmDelete": "Delete",
       "deleteConfirmCancel": "Cancel"
     }
-
   },
 
   "dashboard": {
@@ -173,7 +170,6 @@
     "floorPlans": {
       "title": "Floor Plans"
     }
-
   },
 
   "exhibition": {
@@ -239,8 +235,7 @@
       "pageDeviceLabel": "Page device"
     },
 
-    "deviceSettingsEditor": {
-    },
+    "deviceSettingsEditor": {},
 
     "addDeviceEditor": {
       "title": "Add new device",
@@ -377,14 +372,14 @@
       "properties": "Device group properties",
       "copy": "Copy device group"
     },
-    "device" : {
+    "device": {
       "add": "Add new device",
       "new": "New device",
       "edit": "Edit device",
       "move": "Move device",
       "properties": "Device properties"
     },
-    "antenna" : {
+    "antenna": {
       "add": "Add new antenna",
       "new": "New antenna",
       "newReaderId": "123456",
@@ -448,7 +443,7 @@
         "xdpi": "Pixels per inch in X-axis",
         "ydpi": "Pixels per inch in y-axis"
       },
-      "dimensions" : {
+      "dimensions": {
         "physicalSize": "Device physical size",
         "width": "Width",
         "height": "Height",
@@ -489,8 +484,8 @@
 
   "map": {
     "properties": {
-      "roomName" : "Room name",
-      "dialogTitle" : "Type room name"
+      "roomName": "Room name",
+      "dialogTitle": "Type room name"
     }
   },
   "layoutEditorV2": {
@@ -725,7 +720,7 @@
       "resources": "Resources",
       "resource": "Resource",
       "resourceProperties": "Resource properties",
-      "transitions" :{
+      "transitions": {
         "title": "Page change effects",
         "enterTransitions": "Enter effect",
         "enterTransitionsDescription": "Transition effect when entering this page.",
@@ -775,7 +770,7 @@
         "selectLanguage": "Select language"
       },
 
-      "tabs" : {
+      "tabs": {
         "title": "Tabs",
         "noTabs": "No tabs",
         "add": "Add tab",
@@ -784,7 +779,7 @@
         "resources": "Resources",
         "edit": "Edit content",
         "contentType": "Select tab content type",
-        "textContentHelp":  "Add a single text content"
+        "textContentHelp": "Add a single text content"
       },
 
       "dialog": {
@@ -796,7 +791,7 @@
         "viewPairs": "Element pairs",
         "addViewPair": "Add element pair",
         "startOfTransition": "From element",
-        "endOfTransition" : "To element"
+        "endOfTransition": "To element"
       }
     },
     "delete": {
@@ -843,7 +838,7 @@
     "selectLanguageTitle": "Select exhibition language",
     "selectLanguage": "Select language",
     "checkEmail": "Give email address",
-    "registerTag" : "Register RFID-tag",
+    "registerTag": "Register RFID-tag",
     "visitor": {
       "visitorInfoFormTitle": "Visitor information",
       "tag": "RFID-tag",

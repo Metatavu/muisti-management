@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "../../theme";
 
 export default createStyles({
-
   tabs: {
     display: "flex",
     height: "100%",
@@ -20,5 +19,4 @@ export default createStyles({
       }
     }
   }
-  
 });

@@ -1,5 +1,4 @@
 {
-
   "header": {
     "navigation": {
       "exhibitionsButton": "Näyttelyt",
@@ -105,7 +104,6 @@
   },
 
   "exhibitionLayouts": {
-
     "editView": {
       "xml": "XML",
       "json": "JSON",
@@ -120,7 +118,6 @@
       "deleteConfirmDelte": "Poista",
       "deleteConfirmCancel": "Peruuta"
     }
-
   },
 
   "dashboard": {
@@ -174,7 +171,6 @@
     "floorPlans": {
       "title": "Pohjapiirrokset"
     }
-
   },
 
   "exhibition": {
@@ -241,8 +237,7 @@
       "pageDeviceLabel": "Sivun laite"
     },
 
-    "deviceSettingsEditor": {
-    },
+    "deviceSettingsEditor": {},
 
     "addDeviceEditor": {
       "title": "Lisää uusi laite",
@@ -380,14 +375,14 @@
       "properties": "Laiteryhmän ominaisuudet",
       "copy": "Kopioi laiteryhmä"
     },
-    "device" : {
+    "device": {
       "add": "Lisää uusi laite",
       "new": "Uusi laite",
       "edit": "Muokkaa laitetta",
       "move": "Siirrä laitetta",
       "properties": "Laitteen ominaisuudet"
     },
-    "antenna" : {
+    "antenna": {
       "add": "Lisää uusi antenni",
       "new": "Uusi antenni",
       "newReaderId": "123456",
@@ -431,7 +426,6 @@
   },
 
   "device": {
-
     "title": "Laitteet",
     "capabilities": "Ominaisuudet",
     "newDevice": "Uusi laite",
@@ -451,7 +445,7 @@
         "xdpi": "Pikseliä tuumalle X-akselilla",
         "ydpi": "Pikseliä tuumalle y-akselilla"
       },
-      "dimensions" : {
+      "dimensions": {
         "physicalSize": "Laitteen fyysinen koko",
         "width": "Leveys",
         "height": "Korkeus",
@@ -492,8 +486,8 @@
 
   "map": {
     "properties": {
-      "roomName" : "Huoneen nimi",
-      "dialogTitle" : "Anna huoneen nimi"
+      "roomName": "Huoneen nimi",
+      "dialogTitle": "Anna huoneen nimi"
     }
   },
   "layoutEditorV2": {
@@ -731,7 +725,7 @@
       "resources": "Resurssit",
       "resource": "Resurssi",
       "resourceProperties": "Resurssin ominaisuudet",
-      "transitions" : {
+      "transitions": {
         "title": "Sivunvaihtoefektit",
         "enterTransitions": "Efekti saapuessa",
         "enterTransitionsDescription": "Sivunvaihdon efekti kun tälle sivulle saavutaan.",
@@ -781,7 +775,7 @@
         "selectLanguage": "Valitse kieli"
       },
 
-      "tabs" : {
+      "tabs": {
         "title": "Välilehdet",
         "noTabs": "Ei välilehtiä",
         "add": "Lisää välilehti",
@@ -802,7 +796,7 @@
         "viewPairs": "Elementtiparit",
         "addViewPair": "Lisää elementtipari",
         "startOfTransition": "Elementistä",
-        "endOfTransition" : "Elementille",
+        "endOfTransition": "Elementille",
         "interpolations": {
           "accelerateDecelerate": "Kiihtyvä ja hidastuva",
           "accelerate": "Kiihtyvä",
@@ -856,7 +850,7 @@
     "selectLanguageTitle": "Valitse kieli",
     "selectLanguage": "Valitse",
     "checkEmail": "Syötä sähköpostiosoite",
-    "registerTag" : "Rekisteröi RFID-tagi",
+    "registerTag": "Rekisteröi RFID-tagi",
     "visitor": {
       "visitorInfoFormTitle": "Vierailijan tiedot",
       "tag": "RFID-tagi",

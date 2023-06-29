@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "./theme";
 
 export default createStyles({
-
   root: {
     position: "relative",
     borderRadius: 15,

@@ -1,7 +1,6 @@
 import * as React from "react";
-
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/components/generic/basic-layout";
 import TopBar from "../generic/top-bar";
 import { KeycloakInstance } from "keycloak-js";
@@ -36,14 +35,12 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Interface representing component state
  */
-interface State {
-}
+interface State {}
 
 /**
  * Component for basic application layout
  */
 class BasicLayout extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -74,29 +71,20 @@ class BasicLayout extends React.Component<Props, State> {
       children
     } = this.props;
     return (
-      <div className={ classes.root }>
+      <div className={classes.root}>
         <TopBar
-          history={ history }
-          keycloak={ keycloak }
-          breadcrumbs={ breadcrumbs }
-          actionBarButtons={ actionBarButtons }
-          noBackButton={ noBackButton }
-          title={ title }
-          hideHeader={ hideHeader }
+          history={history}
+          keycloak={keycloak}
+          breadcrumbs={breadcrumbs}
+          actionBarButtons={actionBarButtons}
+          noBackButton={noBackButton}
+          title={title}
+          hideHeader={hideHeader}
         />
-        <div className={ classes.content }>
-          { this.props.children }
-        </div>
-        { this.renderErrorDialog() }
-        { dataChanged &&
-          <Prompt
-            when={ dataChanged }
-            message={ strings.generic.unsaved }
-          />
-        }
-        { openDataChangedPrompt &&
-          <Beforeunload onBeforeunload={ () => "" }/>
-        }
+        <div className={classes.content}>{this.props.children}</div>
+        {this.renderErrorDialog()}
+        {dataChanged && <Prompt when={dataChanged} message={strings.generic.unsaved} />}
+        {openDataChangedPrompt && <Beforeunload onBeforeunload={() => ""} />}
       </div>
     );
   }
@@ -106,12 +94,11 @@ class BasicLayout extends React.Component<Props, State> {
    */
   private renderErrorDialog = () => {
     if (this.props.error && this.props.clearError) {
-      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />;
+      return <ErrorDialog error={this.props.error} onClose={this.props.clearError} />;
     }
 
     return null;
-  }
-
+  };
 }
 
 export default withStyles(styles)(BasicLayout);

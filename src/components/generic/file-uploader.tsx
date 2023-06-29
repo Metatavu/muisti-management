@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button, CircularProgress } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/dialog";
 import { DropzoneDialog } from "material-ui-dropzone";
 import strings from "../../localization/strings";
@@ -63,7 +63,7 @@ class FileUploader extends React.Component<Props, State> {
     if (!controlled) {
       this.setState({ dialogOpen: false });
     }
-  }
+  };
 
   /**
    * Component render method
@@ -73,7 +73,7 @@ class FileUploader extends React.Component<Props, State> {
 
     if (this.state.uploading) {
       return (
-        <div className={ classes.imageUploadLoaderContainer }>
+        <div className={classes.imageUploadLoaderContainer}>
           <CircularProgress color="secondary" style={{ alignSelf: "center" }}></CircularProgress>
         </div>
       );
@@ -81,13 +81,13 @@ class FileUploader extends React.Component<Props, State> {
 
     return (
       <>
-        { !controlled &&
-          <Button disableElevation variant="contained" color="secondary" onClick={ this.onOpenClick }>
-            { buttonText || strings.generic.loadNew }
+        {!controlled && (
+          <Button disableElevation variant="contained" color="secondary" onClick={this.onOpenClick}>
+            {buttonText || strings.generic.loadNew}
           </Button>
-        }
+        )}
 
-        { this.renderUploadDialog() }
+        {this.renderUploadDialog()}
       </>
     );
   }
@@ -101,18 +101,18 @@ class FileUploader extends React.Component<Props, State> {
 
     return (
       <DropzoneDialog
-        acceptedFiles={ allowedFileTypes }
-        open={ controlled ? this.props.open : this.state.dialogOpen }
-        onClose={ controlled ? this.props.onClose : this.onClose }
-        onSave={ this.onSave }
-        cancelButtonText={ strings.fileUpload.cancel }
-        submitButtonText={ strings.fileUpload.upload }
-        showPreviewsInDropzone={ false }
-        maxFileSize={ bytes }
-        filesLimit={ filesLimit || 1 }
+        acceptedFiles={allowedFileTypes}
+        open={controlled ? this.props.open : this.state.dialogOpen}
+        onClose={controlled ? this.props.onClose : this.onClose}
+        onSave={this.onSave}
+        cancelButtonText={strings.fileUpload.cancel}
+        submitButtonText={strings.fileUpload.upload}
+        showPreviewsInDropzone={false}
+        maxFileSize={bytes}
+        filesLimit={filesLimit || 1}
       />
     );
-  }
+  };
 
   /**
    * Open upload image dialog
@@ -121,7 +121,7 @@ class FileUploader extends React.Component<Props, State> {
     this.setState({
       dialogOpen: true
     });
-  }
+  };
 
   /**
    * Close upload image dialog
@@ -130,7 +130,7 @@ class FileUploader extends React.Component<Props, State> {
     this.setState({
       dialogOpen: false
     });
-  }
+  };
 
   /**
    * Event handler for dialog open button click
@@ -139,7 +139,7 @@ class FileUploader extends React.Component<Props, State> {
     if (!this.props.controlled) {
       this.openDialog();
     }
-  }
+  };
 
   /**
    * Event handler for dialog close click
@@ -148,7 +148,7 @@ class FileUploader extends React.Component<Props, State> {
     if (!this.props.controlled) {
       this.closeDialog();
     }
-  }
+  };
 
   /**
    * Event handler for dialog save click
@@ -164,7 +164,7 @@ class FileUploader extends React.Component<Props, State> {
 
     this.props.onSave(files, this.props.uploadKey);
     this.setState({ uploading: false });
-  }
+  };
 }
 
 export default withStyles(styles)(FileUploader);

@@ -30,7 +30,6 @@ const env = cleanEnv(import.meta.env, {
  * Class for software configuration
  */
 export class Config {
-
   /**
    * Get static application configuration
    *
@@ -64,5 +63,5 @@ export class Config {
         tagRemoveDelay: env.VITE_DIAGNOSTICS_TAG_REMOVE_DELAY
       }
     };
-  }
+  };
 }

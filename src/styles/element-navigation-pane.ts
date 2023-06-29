@@ -1,4 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "./theme";
 
 export default createStyles({
@@ -38,5 +38,5 @@ export default createStyles({
   content: {
     padding: theme.spacing(2),
     overflowY: "auto"
-  },
+  }
 });

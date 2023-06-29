@@ -4,7 +4,6 @@ import { ContentSpecificDeleteMessage, DeleteDataHolder } from "../types";
  * Utility class for displaying delete data
  */
 export default class DeleteUtils {
-
   /**
    * Constructs content error message list
    *
@@ -13,14 +12,16 @@ export default class DeleteUtils {
    */
   public static constructContentDeleteMessages = (dataHolder: DeleteDataHolder[]) => {
     const deleteMessages: ContentSpecificDeleteMessage[] = [];
-    dataHolder.forEach(data => {
+    dataHolder.forEach((data) => {
       if (data.objects.length > 0) {
-        deleteMessages.push(DeleteUtils.constructDeleteMessage(data.objects, data.localizedMessage));
+        deleteMessages.push(
+          DeleteUtils.constructDeleteMessage(data.objects, data.localizedMessage)
+        );
       }
     });
 
     return deleteMessages;
-  }
+  };
 
   /**
    * Constructs single error message
@@ -29,7 +30,10 @@ export default class DeleteUtils {
    * @param contentDeleteMessage localized content error message
    * @returns single error message
    */
-  private static constructDeleteMessage = (list: any, contentDeleteMessage: string): ContentSpecificDeleteMessage => {
+  private static constructDeleteMessage = (
+    list: any,
+    contentDeleteMessage: string
+  ): ContentSpecificDeleteMessage => {
     const errorMessage: string = contentDeleteMessage;
     const names: string[] = [];
 
@@ -38,5 +42,5 @@ export default class DeleteUtils {
     });
 
     return { localizedMessage: errorMessage, names: names };
-  }
+  };
 }

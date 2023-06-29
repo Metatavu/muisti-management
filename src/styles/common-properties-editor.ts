@@ -1,5 +1,3 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
-export default createStyles({
-
-});
+export default createStyles({});

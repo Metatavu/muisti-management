@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Switch, Typography, styled } from "@mui/material";
+import { FormControlLabel, Switch, Typography, styled } from "@mui/material";
 import PanZoom from "../generic/pan-zoom";
 import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
 import Fraction from "fraction.js";
@@ -60,22 +60,19 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
 /**
  * HTML Layouts Page Preview Component
  */
-const PagePreviewHtml = ({
-  deviceModels,
-  layout,
-  treeObjects,
-  selectedComponentId
-}: Props) => {
-  const [ showElementBorders, setShowElementBorders ] = useState(false);
-  
+const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentId }: Props) => {
+  const [showElementBorders, setShowElementBorders] = useState(false);
+
   if (deviceModels.length === 0) return null;
-  
-  const deviceModel = deviceModels.find(model => model.id === layout.modelId);
+
+  const deviceModel = deviceModels.find((model) => model.id === layout.modelId);
 
   if (!deviceModel) return null;
-  
-  const { dimensions: { screenHeight, screenWidth } } = deviceModel;
-  
+
+  const {
+    dimensions: { screenHeight, screenWidth }
+  } = deviceModel;
+
   /**
    * Gets preview dimensions
    */
@@ -83,24 +80,29 @@ const PagePreviewHtml = ({
     const scale = 1;
     const { screenOrientation } = layout;
     const { screenOrientation: deviceOrientation } = deviceModel;
-  
+
     let height = screenHeight ?? 1 * scale;
     let width = screenWidth ?? 1 * scale;
-  
+
     if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
       height = width;
       width = height;
     }
-    
+
     return {
       height,
       width
     };
   };
-  
+
   return (
     <PreviewContainer>
-      <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
+      <PanZoom
+        minScale={0.1}
+        fitContent={true}
+        contentWidth={screenWidth}
+        contentHeight={screenHeight}
+      >
         <Typography
           sx={{
             position: "absolute",
@@ -108,23 +110,33 @@ const PagePreviewHtml = ({
             opacity: 0.6
           }}
         >
-          { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
+          {deviceModel.model} / {screenHeight}x{screenWidth} /{" "}
+          {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <Preview
-          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources, showElementBorders))[0]?.outerHTML) }
-          { ...getPreviewDimensions() }
-          />
+          srcDoc={wrapTemplate(
+            treeObjects?.map((treeObject) =>
+              treeObjectToHtmlElement(
+                treeObject,
+                selectedComponentId,
+                layout.defaultResources,
+                showElementBorders
+              )
+            )[0]?.outerHTML
+          )}
+          {...getPreviewDimensions()}
+        />
       </PanZoom>
-          <FormControlLabel
-            sx={{
-              position: "absolute",
-              bottom: 10,
-            }}
-            label={ strings.layoutEditorV2.preview.showElementBorders }
-            onChange={ () => setShowElementBorders(!showElementBorders) }
-            value={ showElementBorders }
-            control={ <Switch checked={ showElementBorders } color="secondary"/> }
-          />
+      <FormControlLabel
+        sx={{
+          position: "absolute",
+          bottom: 10
+        }}
+        label={strings.layoutEditorV2.preview.showElementBorders}
+        onChange={() => setShowElementBorders(!showElementBorders)}
+        value={showElementBorders}
+        control={<Switch checked={showElementBorders} color="secondary" />}
+      />
     </PreviewContainer>
   );
 };

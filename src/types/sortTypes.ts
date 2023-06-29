@@ -2,8 +2,8 @@
  * Enum listing different sort parameters for exhibitions
  */
 export enum ExhibitionRecentSortBy {
-  "MODIFIED_AT",
-  "CREATED_AT"
+  MODIFIED_AT = "MODIFIED_AT",
+  CREATED_AT = "CREATED_AT"
 }
 
 /**

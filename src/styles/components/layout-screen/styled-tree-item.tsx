@@ -3,7 +3,6 @@ import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, Typography } from "@mui/material";
 import theme from "../../theme";
 import ParentTreeIcon from "./parent-tree-icon";
-import { TreeObject } from "../../../types";
 
 /**
  * Styled Tree Item Props type
@@ -26,25 +25,24 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     color: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightMedium,
     "&.Mui-expanded": {
-      fontWeight: theme.typography.fontWeightRegular,
+      fontWeight: theme.typography.fontWeightRegular
     },
     "&:hover": {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette.action.hover
     },
     "&.Mui-focused": {
       backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: "var(--tree-view-color)",
+      color: "var(--tree-view-color)"
     },
     "&.Mui-selected": {
       backgroundColor: theme.palette.background.default
     },
     [`& .${treeItemClasses.label}`]: {
       fontWeight: "inherit",
-      color: "inherit",
-    },
+      color: "inherit"
+    }
   }
-}
-));
+}));
 
 /**
  * Styled Tree Item Component
@@ -52,7 +50,6 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 export const StyledTreeItem = ({
   itemType,
   itemName,
-  isLayoutComponent,
   isRoot,
   isRootSubdirectory,
   hasChildren,
@@ -63,18 +60,16 @@ export const StyledTreeItem = ({
       <>
         <Stack direction="row" justifyContent="space-between">
           <div style={{ display: "flex", flexDirection: "row" }}>
-            { (isRootSubdirectory) &&
+            {isRootSubdirectory && (
               <SubdirectoryArrowRightRounded
                 sx={{
                   color: "#BDBDBD",
                   alignSelf: "center",
-                  marginRight: theme.spacing(2),
+                  marginRight: theme.spacing(2)
                 }}
               />
-            }
-            { (!isRoot && !isRootSubdirectory) &&
-              <div style={{ marginRight: theme.spacing(5) }}/>
-            }
+            )}
+            {!isRoot && !isRootSubdirectory && <div style={{ marginRight: theme.spacing(5) }} />}
             <Stack direction="column">
               <Typography
                 variant="body2"
@@ -84,14 +79,12 @@ export const StyledTreeItem = ({
                   color: "#2196F3"
                 }}
               >
-                { itemName }
+                {itemName}
               </Typography>
-              <Typography>
-                { itemType }
-              </Typography>
+              <Typography>{itemType}</Typography>
             </Stack>
           </div>
-          { hasChildren && <ParentTreeIcon/> }
+          {hasChildren && <ParentTreeIcon />}
         </Stack>
       </>
     }

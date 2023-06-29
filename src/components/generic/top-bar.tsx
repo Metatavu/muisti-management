@@ -1,12 +1,11 @@
 import * as React from "react";
-
-import { IconButton, Typography, List, ListItem } from '@mui/material';
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import { Link as RouterLink } from 'react-router-dom';
+import { IconButton, Typography, List, ListItem } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { Link as RouterLink } from "react-router-dom";
 import { History } from "history";
 import styles from "../../styles/components/generic/top-bar";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { KeycloakInstance } from "keycloak-js";
 import strings from "../../localization/strings";
 import Breadcrumbs from "./breadcrumbs";
@@ -18,20 +17,15 @@ import ActionBar from "./action-bar";
  */
 interface Props extends WithStyles<typeof styles> {
   history: History;
+  xs;
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
   keycloak: KeycloakInstance;
   title: string;
-  error?: string | Error;
+  error?: string | Error;
   clearError?: () => void;
   hideHeader?: boolean;
-}
-
-/**
- * Interface representing component state
- */
-interface State {
 }
 
 /**
@@ -45,8 +39,7 @@ interface NavigationButton {
 /**
  * Component for top bar
  */
-class TopBar extends React.Component<Props, State> {
-
+class TopBar extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -54,8 +47,7 @@ class TopBar extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -75,49 +67,47 @@ class TopBar extends React.Component<Props, State> {
 
     const firstName = (keycloak.profile && keycloak.profile.firstName) ?? "";
     const lastName = (keycloak.profile && keycloak.profile.lastName) ?? "";
-    const initials = `${ firstName.charAt(0).toUpperCase() }`;
+    const initials = `${firstName.charAt(0).toUpperCase()}`;
 
     return (
-      <header className={ classes.root } style={ hideHeader ? { display: "none" } : {} }>
-
-        <div className={ classes.topRow }>
-          <div className={ classes.breadcrumbs }>
-            <Breadcrumbs
-              history={ history }
-              breadcrumbs={ breadcrumbs }
-            />
+      <header className={classes.root} style={hideHeader ? { display: "none" } : {}}>
+        <div className={classes.topRow}>
+          <div className={classes.breadcrumbs}>
+            <Breadcrumbs history={history} breadcrumbs={breadcrumbs} />
           </div>
 
-          <nav className={ classes.nav }>
-            { this.renderNavigation() }
-          </nav>
+          <nav className={classes.nav}>{this.renderNavigation()}</nav>
 
-          <div className={ classes.user }>
-            <Typography variant="body1">{ firstName } { lastName }</Typography>
-            <div className={ classes.userAvatar } onClick={ this.onLogOutClick }>
-              <p>{ initials }</p>
+          <div className={classes.user}>
+            <Typography variant="body1">
+              {firstName} {lastName}
+            </Typography>
+            <div className={classes.userAvatar} onClick={this.onLogOutClick}>
+              <p>{initials}</p>
             </div>
           </div>
         </div>
 
-        <div className={ classes.middleRow }>
-          { this.props.history.length > 1 && !noBackButton &&
+        <div className={classes.middleRow}>
+          {this.props.history.length > 1 && !noBackButton && (
             <IconButton
               size="small"
-              className={ classes.backBtn }
+              className={classes.backBtn}
               edge="start"
-              onClick={ () => this.props.history.goBack() }
+              onClick={() => this.props.history.goBack()}
             >
               <ArrowBackIcon />
             </IconButton>
-          }
+          )}
 
-          <Typography variant="h1" className={ classes.title }>{ title }</Typography>
+          <Typography variant="h1" className={classes.title}>
+            {title}
+          </Typography>
         </div>
 
-        <div className={ classes.bottomRow }>
-          <div className={ classes.toolbar }>
-            <ActionBar buttons={ actionBarButtons || [] } />
+        <div className={classes.bottomRow}>
+          <div className={classes.toolbar}>
+            <ActionBar buttons={actionBarButtons || []} />
           </div>
         </div>
       </header>
@@ -129,28 +119,33 @@ class TopBar extends React.Component<Props, State> {
    */
   private renderNavigation = () => {
     const { classes } = this.props;
-    const exhibitionsButton = { postfix: "exhibitions", text: strings.header.navigation.exhibitionsButton };
+    const exhibitionsButton = {
+      postfix: "exhibitions",
+      text: strings.header.navigation.exhibitionsButton
+    };
     // Remove commenting when users view is done
     //const usersButton = { postfix: "users", text: strings.header.navigation.usersButton };
-    const deviceModelsButton = { postfix: "deviceModels", text: strings.header.navigation.devicesButton };
+    const deviceModelsButton = {
+      postfix: "deviceModels",
+      text: strings.header.navigation.devicesButton
+    };
     const layoutsButton = { postfix: "layouts", text: strings.header.navigation.layoutsButton };
-    const floorPlansButton = { postfix: "floorPlans", text: strings.header.navigation.spacesButton };
+    const floorPlansButton = {
+      postfix: "floorPlans",
+      text: strings.header.navigation.spacesButton
+    };
 
     return (
-      <List
-        disablePadding
-        dense
-        className={ classes.navList }
-      >
-        { this.renderNavigationButton(exhibitionsButton) }
-        { this.renderNavigationButton(layoutsButton) }
-        { this.renderNavigationButton(floorPlansButton) }
+      <List disablePadding dense className={classes.navList}>
+        {this.renderNavigationButton(exhibitionsButton)}
+        {this.renderNavigationButton(layoutsButton)}
+        {this.renderNavigationButton(floorPlansButton)}
         {/* Remove commenting when users view is done */}
         {/* { this.renderNavigationButton(usersButton) } */}
-        { this.renderNavigationButton(deviceModelsButton) }
+        {this.renderNavigationButton(deviceModelsButton)}
       </List>
     );
-  }
+  };
 
   /**
    * Renders navigation button
@@ -164,16 +159,11 @@ class TopBar extends React.Component<Props, State> {
     const selected = history.location.pathname.includes(targetUrl);
 
     return (
-      <ListItem
-        button
-        selected={ selected }
-        component={ RouterLink }
-        to={ targetUrl }
-      >
-        <Typography>{ navigationButton.text }</Typography>
+      <ListItem button selected={selected} component={RouterLink} to={targetUrl}>
+        <Typography>{navigationButton.text}</Typography>
       </ListItem>
     );
-  }
+  };
 
   /**
    * Handle logout
@@ -184,9 +174,7 @@ class TopBar extends React.Component<Props, State> {
     if (keycloak) {
       keycloak.logout();
     }
-  }
-
+  };
 }
-
 
 export default withStyles(styles)(TopBar);

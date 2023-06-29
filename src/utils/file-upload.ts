@@ -32,7 +32,6 @@ export interface PresignedPostData {
  * Utility class for uploading files
  */
 export default class FileUpload {
-
   /**
    * Retrieve pre-signed POST data from a dedicated API endpoint.
    *
@@ -40,8 +39,11 @@ export default class FileUpload {
    * @param file file
    * @returns presigned post response
    */
-  public static getPresignedPostData = (folder: string, file: File): Promise<PresignedPostResponse> => {
-    return new Promise(resolve => {
+  public static getPresignedPostData = (
+    folder: string,
+    file: File
+  ): Promise<PresignedPostResponse> => {
+    return new Promise((resolve) => {
       const xhr = new XMLHttpRequest();
       const url = Config.getConfig().userContentUploadUrl;
 
@@ -53,11 +55,11 @@ export default class FileUpload {
           type: file.type
         })
       );
-      xhr.onload = function() {
+      xhr.onload = function () {
         resolve(JSON.parse(this.responseText));
       };
     });
-  }
+  };
 
   /**
    * Upload file to S3 with previously received pre-signed POST data.
@@ -68,7 +70,7 @@ export default class FileUpload {
   public static uploadFileToS3 = (presignedPostData: PresignedPostData, file: File) => {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
-      Object.keys(presignedPostData.fields).forEach(key => {
+      Object.keys(presignedPostData.fields).forEach((key) => {
         formData.append(key, presignedPostData.fields[key]);
       });
 
@@ -76,11 +78,11 @@ export default class FileUpload {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", presignedPostData.url, true);
       xhr.send(formData);
-      xhr.onload = function() {
+      xhr.onload = function () {
         this.status === 204 ? resolve() : reject(this.responseText);
       };
     });
-  }
+  };
 
   /**
    * Uploads a file into the server
@@ -89,7 +91,7 @@ export default class FileUpload {
    * @param folder folder
    * @returns promise of created file
    */
-  public static async uploadFile(file: File | Blob, folder: string): Promise<OutputFile> {
+  public static async uploadFile(file: File | Blob, folder: string): Promise<OutputFile> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
@@ -111,6 +113,5 @@ export default class FileUpload {
     const apiUrl = new URL(Config.getConfig().apiBasePath);
     apiUrl.pathname = "/files";
     return apiUrl;
-  }
-
+  };
 }

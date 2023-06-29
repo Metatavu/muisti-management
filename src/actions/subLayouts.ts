@@ -35,7 +35,9 @@ export const setSubLayouts: ActionCreator<SetSubLayoutsAction> = (subLayouts: Su
  *
  * @param selectedLayout Selected layout being dispatched
  */
-export const setSelectedSubLayout: ActionCreator<SetSelectedSubLayoutAction> = (subLayout: SubLayout) => {
+export const setSelectedSubLayout: ActionCreator<SetSelectedSubLayoutAction> = (
+  subLayout: SubLayout
+) => {
   return {
     type: actionTypes.SET_SELECTED_SUB_LAYOUT,
     subLayout: subLayout

@@ -4,6 +4,7 @@ import App from "./components/app";
 import * as serviceWorker from "./serviceWorker";
 
 const container = document.getElementById("root");
+
 const root = createRoot(container!);
 
 root.render(<App />);

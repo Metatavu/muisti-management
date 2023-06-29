@@ -1,8 +1,7 @@
 import * as React from "react";
-
 import { List, ListItem } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/components/content-editor/timeline-devices-list";
 import { ExhibitionDevice, ContentVersion } from "../../generated/client/models";
 
@@ -33,24 +32,22 @@ const TimelineDevicesList: React.FC<Props> = ({
   const contentVersionSelected = selectedContentVersion?.id === contentVersion?.id;
 
   return (
-    <List className={ classes.list }>
-      {
-        devices.map(device => {
-          const deviceSelected = selectedDevice?.id === device.id;
-          return (
-            <ListItem
-              button
-              divider
-              key={ device.id }
-              selected={ deviceSelected && (!selectedContentVersion || contentVersionSelected) }
-              onClick={ onClick && onClick(device, contentVersion) }
-              className={ classes.listItem }
-            >
-              { device.name || "" }
-            </ListItem>
-          );
-        })
-      }
+    <List className={classes.list}>
+      {devices.map((device) => {
+        const deviceSelected = selectedDevice?.id === device.id;
+        return (
+          <ListItem
+            button
+            divider
+            key={device.id}
+            selected={deviceSelected && (!selectedContentVersion || contentVersionSelected)}
+            onClick={onClick && onClick(device, contentVersion)}
+            className={classes.listItem}
+          >
+            {device.name || ""}
+          </ListItem>
+        );
+      })}
     </List>
   );
 };

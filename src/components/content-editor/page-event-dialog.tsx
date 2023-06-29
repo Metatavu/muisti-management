@@ -1,10 +1,19 @@
 import * as React from "react";
 import styles from "../../styles/exhibition-view";
 import { MenuItem, Select, TextField, Typography, Box, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-// eslint-disable-next-line max-len
-import { ExhibitionPage, ExhibitionPageEventActionType, ExhibitionPageEventPropertyType, ExhibitionPageEvent, ExhibitionPageEventProperty, PageLayoutView, PageLayoutWidgetType, VisitorVariable, VisitorVariableType } from "../../generated/client";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import {
+  ExhibitionPage,
+  ExhibitionPageEventActionType,
+  ExhibitionPageEventPropertyType,
+  ExhibitionPageEvent,
+  ExhibitionPageEventProperty,
+  PageLayoutView,
+  PageLayoutWidgetType,
+  VisitorVariable,
+  VisitorVariableType
+} from "../../generated/client";
 import strings from "../../localization/strings";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
@@ -43,7 +52,6 @@ interface State {
  * Component for page event dialog
  */
 class PageEventDialog extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -51,8 +59,7 @@ class PageEventDialog extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -60,7 +67,7 @@ class PageEventDialog extends React.Component<Props, State> {
    */
   public componentDidMount = () => {
     this.setState({ pageEvent: this.props.selectedEvent });
-  }
+  };
 
   /**
    * Component did update life cycle handler
@@ -71,14 +78,14 @@ class PageEventDialog extends React.Component<Props, State> {
     if (JSON.stringify(prevProps.selectedEvent) !== JSON.stringify(this.props.selectedEvent)) {
       this.setState({ pageEvent: this.props.selectedEvent });
     }
-  }
+  };
 
   /**
    * Component render
    */
   public render = () => {
     return this.renderPageEventDialog();
-  }
+  };
 
   /**
    * Renders page event dialog
@@ -86,66 +93,64 @@ class PageEventDialog extends React.Component<Props, State> {
   private renderPageEventDialog = () => {
     const { dialogOpen, creatingNew, onCloseOrCancel } = this.props;
 
-    const saveButtonAction = creatingNew ? this.createPageEventHandler : this.updatePageEventHandler;
+    const saveButtonAction = creatingNew
+      ? this.createPageEventHandler
+      : this.updatePageEventHandler;
 
     return (
       <GenericDialog
         fullWidth
-        title={ strings.contentEditor.editor.eventTriggers.options }
-        open={ dialogOpen }
-        cancelButtonText={ strings.generic.cancel }
-        positiveButtonText={ strings.generic.save }
-        onCancel={ onCloseOrCancel }
-        onConfirm={ saveButtonAction }
-        onClose={ onCloseOrCancel }
-        error={ false }
+        title={strings.contentEditor.editor.eventTriggers.options}
+        open={dialogOpen}
+        cancelButtonText={strings.generic.cancel}
+        positiveButtonText={strings.generic.save}
+        onCancel={onCloseOrCancel}
+        onConfirm={saveButtonAction}
+        onClose={onCloseOrCancel}
+        error={false}
       >
-        <Typography>
-          { strings.contentEditor.editor.eventTriggers.optionsInstructions }
-        </Typography>
-        { this.renderEventActionTypeSelect() }
-        { this.renderEventActionSettings() }
+        <Typography>{strings.contentEditor.editor.eventTriggers.optionsInstructions}</Typography>
+        {this.renderEventActionTypeSelect()}
+        {this.renderEventActionSettings()}
       </GenericDialog>
     );
-  }
+  };
 
   /**
    * Renders event action type select
    */
   private renderEventActionTypeSelect = () => {
     const selectedActionType = this.state.pageEvent?.action;
-    const eventActionTypeList = Object.values(ExhibitionPageEventActionType).map((actionType, index) => {
+    const eventActionTypeList = Object.values(ExhibitionPageEventActionType).map(
+      (actionType, index) => {
+        /**
+         * TODO: Remove these when all page event action types have been implemented
+         */
+        if (
+          actionType === ExhibitionPageEventActionType.Setuservalue ||
+          actionType === ExhibitionPageEventActionType.Navigate ||
+          actionType === ExhibitionPageEventActionType.ExecuteWebScript ||
+          actionType === ExhibitionPageEventActionType.StartVisitorSession
+        ) {
+          return (
+            <MenuItem key={`eventActionType-${index}`} value={actionType}>
+              {strings.contentEditor.editor.eventTriggers.actionTypes[actionType]}
+            </MenuItem>
+          );
+        }
 
-      /**
-       * TODO: Remove these when all page event action types have been implemented
-       */
-      if (
-        actionType === ExhibitionPageEventActionType.Setuservalue ||
-        actionType === ExhibitionPageEventActionType.Navigate ||
-        actionType === ExhibitionPageEventActionType.ExecuteWebScript ||
-        actionType === ExhibitionPageEventActionType.StartVisitorSession
-      ) {
-        return (
-          <MenuItem key={ `eventActionType-${ index }` } value={ actionType }>
-            { strings.contentEditor.editor.eventTriggers.actionTypes[actionType] }
-          </MenuItem>
-        );
+        return null;
       }
-
-      return null;
-    });
+    );
 
     return (
-      <Box mt={ 2 }>
-        <Select
-          value={ selectedActionType || "" }
-          onChange={ this.onSelectEventActionType }
-        >
-          { eventActionTypeList }
+      <Box mt={2}>
+        <Select value={selectedActionType || ""} onChange={this.onSelectEventActionType}>
+          {eventActionTypeList}
         </Select>
       </Box>
     );
-  }
+  };
 
   /**
    * Render event action settings based on the selected event action type
@@ -175,11 +180,11 @@ class PageEventDialog extends React.Component<Props, State> {
       case ExhibitionPageEventActionType.Show:
       case ExhibitionPageEventActionType.Setsrc:
       case ExhibitionPageEventActionType.Settext:
-        return <h5>{ strings.comingSoon }</h5>;
+        return <h5>{strings.comingSoon}</h5>;
       default:
         return <></>;
     }
-  }
+  };
 
   /**
    * Render set user value settings
@@ -188,38 +193,41 @@ class PageEventDialog extends React.Component<Props, State> {
     const { classes, visitorVariables } = this.props;
 
     const event = this.state.pageEvent;
-    const userValuePropertyName = event ? event.properties.find(property => property.name === "name") : undefined;
-    const userValuePropertyValue = event ? event.properties.find(property => property.name === "value") : undefined;
+    const userValuePropertyName = event
+      ? event.properties.find((property) => property.name === "name")
+      : undefined;
+    const userValuePropertyValue = event
+      ? event.properties.find((property) => property.name === "value")
+      : undefined;
     const variableName = userValuePropertyName?.value || "";
     const variableValue = userValuePropertyValue?.value || "";
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.variableName }
+          {strings.contentEditor.editor.eventTriggers.variableName}
         </Typography>
 
         <Select
-          fullWidth={ false }
+          fullWidth={false}
           name="name"
-          value={ variableName }
-          onChange={ this.onEventTriggerEventPropertyChange }
-          className={ classes.selectResourceEditor } >
-          {
-            visitorVariables.map(visitorVariable => {
-              return <MenuItem value={ visitorVariable.name }>{ visitorVariable.name }</MenuItem>
-            })
-          }
+          value={variableName}
+          onChange={this.onEventTriggerEventPropertyChange}
+          className={classes.selectResourceEditor}
+        >
+          {visitorVariables.map((visitorVariable) => {
+            return <MenuItem value={visitorVariable.name}>{visitorVariable.name}</MenuItem>;
+          })}
         </Select>
 
         <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.variableValue }
+          {strings.contentEditor.editor.eventTriggers.variableValue}
         </Typography>
 
-        { this.renderSetUserValueSettingValueInput(variableName, variableValue) }
+        {this.renderSetUserValueSettingValueInput(variableName, variableValue)}
       </div>
     );
-  }
+  };
 
   /**
    * Renders input for set user variable trigger
@@ -230,23 +238,22 @@ class PageEventDialog extends React.Component<Props, State> {
   private renderSetUserValueSettingValueInput = (variableName: string, variableValue: string) => {
     const { classes, visitorVariables } = this.props;
 
-    const visitorVariable = visitorVariables.find(item => item.name === variableName);
+    const visitorVariable = visitorVariables.find((item) => item.name === variableName);
     const visitorVariableType = visitorVariable?.type || VisitorVariableType.Text;
 
     if (visitorVariableType === VisitorVariableType.Enumerated) {
-      const values = visitorVariable?._enum || [];
+      const values = visitorVariable?._enum || [];
       return (
         <Select
-          fullWidth={ false }
+          fullWidth={false}
           name="value"
-          value={ variableValue }
-          onChange={ this.onEventTriggerEventPropertyChange }
-          className={ classes.selectResourceEditor } >
-          {
-            values.map(value => {
-              return <MenuItem value={ value }>{ value }</MenuItem>
-            })
-          }
+          value={variableValue}
+          onChange={this.onEventTriggerEventPropertyChange}
+          className={classes.selectResourceEditor}
+        >
+          {values.map((value) => {
+            return <MenuItem value={value}>{value}</MenuItem>;
+          })}
         </Select>
       );
     }
@@ -254,29 +261,33 @@ class PageEventDialog extends React.Component<Props, State> {
     if (visitorVariableType === VisitorVariableType.Boolean) {
       return (
         <Select
-          fullWidth={ false }
+          fullWidth={false}
           name="value"
-          value={ variableValue }
-          onChange={ this.onEventTriggerEventPropertyChange }
-          className={ classes.selectResourceEditor } 
+          value={variableValue}
+          onChange={this.onEventTriggerEventPropertyChange}
+          className={classes.selectResourceEditor}
         >
-          <MenuItem value={ "true" }>{ strings.contentEditor.editor.eventTriggers.variableBooleanTrue }</MenuItem>
-          <MenuItem value={ "false" }>{ strings.contentEditor.editor.eventTriggers.variableBooleanFalse }</MenuItem>
+          <MenuItem value={"true"}>
+            {strings.contentEditor.editor.eventTriggers.variableBooleanTrue}
+          </MenuItem>
+          <MenuItem value={"false"}>
+            {strings.contentEditor.editor.eventTriggers.variableBooleanFalse}
+          </MenuItem>
         </Select>
       );
     }
 
     return (
       <TextField
-        fullWidth={ false }
+        fullWidth={false}
         name="value"
-        type={ visitorVariableType === VisitorVariableType.Number ? "number" : "text" }
-        className={ classes.textResourceEditor }
-        value={ variableValue }
-        onChange={ this.onEventTriggerEventPropertyChange }
+        type={visitorVariableType === VisitorVariableType.Number ? "number" : "text"}
+        className={classes.textResourceEditor}
+        value={variableValue}
+        onChange={this.onEventTriggerEventPropertyChange}
       />
     );
-  }
+  };
 
   /**
    * Render navigation settings
@@ -288,22 +299,22 @@ class PageEventDialog extends React.Component<Props, State> {
       return null;
     }
 
-    const property = event.properties.find(prop => prop.name === "pageId");
+    const property = event.properties.find((prop) => prop.name === "pageId");
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.selectPage }
+          {strings.contentEditor.editor.eventTriggers.selectPage}
         </Typography>
         <Select
-          name={ "pageId" }
-          value={ property ? property.value : "" }
-          onChange={ this.onEventTriggerEventPropertyChange }
+          name={"pageId"}
+          value={property ? property.value : ""}
+          onChange={this.onEventTriggerEventPropertyChange}
         >
-          { this.renderPagesInExhibition() }
+          {this.renderPagesInExhibition()}
         </Select>
       </div>
     );
-  }
+  };
 
   /**
    * Render pages in exhibition
@@ -311,12 +322,12 @@ class PageEventDialog extends React.Component<Props, State> {
   private renderPagesInExhibition = () => {
     return this.props.pages
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map(page =>
-        <MenuItem key={ `event-trigger-navigation-${page.id}` } value={ page.id }>
-          { page.name }
+      .map((page) => (
+        <MenuItem key={`event-trigger-navigation-${page.id}`} value={page.id}>
+          {page.name}
         </MenuItem>
-      );
-  }
+      ));
+  };
 
   /**
    * Render device group event settings
@@ -330,23 +341,25 @@ class PageEventDialog extends React.Component<Props, State> {
       return null;
     }
 
-    const deviceGroupEventNameProperty = event ? event.properties.find(property => property.name === "name") : undefined;
+    const deviceGroupEventNameProperty = event
+      ? event.properties.find((property) => property.name === "name")
+      : undefined;
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
+          {strings.contentEditor.editor.eventTriggers.deviceGroupEvent}
         </Typography>
         <TextField
-          fullWidth={ false }
+          fullWidth={false}
           name="name"
-          className={ classes.textResourceEditor }
-          value={ deviceGroupEventNameProperty?.value || "" }
-          onChange={ this.onEventTriggerEventPropertyChange }
+          className={classes.textResourceEditor}
+          value={deviceGroupEventNameProperty?.value || ""}
+          onChange={this.onEventTriggerEventPropertyChange}
         />
       </div>
     );
-  }
+  };
 
   /**
    * Renders execute web script settings
@@ -363,42 +376,40 @@ class PageEventDialog extends React.Component<Props, State> {
     if (webViewOptions.length < 1) {
       return (
         <div style={{ marginTop: theme.spacing(2) }}>
-          <Typography>
-            { strings.contentEditor.editor.eventTriggers.noWebViews }
-          </Typography>
+          <Typography>{strings.contentEditor.editor.eventTriggers.noWebViews}</Typography>
         </div>
       );
     }
 
-    const webViewProperty = event.properties.find(prop => prop.name === "webViewId");
-    const scriptProperty = event.properties.find(prop => prop.name === "script");
+    const webViewProperty = event.properties.find((prop) => prop.name === "webViewId");
+    const scriptProperty = event.properties.find((prop) => prop.name === "script");
 
     return (
       <>
         <div style={{ marginTop: theme.spacing(2) }}>
           <Typography variant="h6">
-            { strings.contentEditor.editor.eventTriggers.selectPage }
+            {strings.contentEditor.editor.eventTriggers.selectPage}
           </Typography>
           <Select
-            name={ "webViewId" }
-            value={ webViewProperty?.value ?? "" }
-            onChange={ this.onEventTriggerEventPropertyChange }
+            name={"webViewId"}
+            value={webViewProperty?.value ?? ""}
+            onChange={this.onEventTriggerEventPropertyChange}
           >
-            { this.renderWebViewOptions(webViewOptions) }
+            {this.renderWebViewOptions(webViewOptions)}
           </Select>
         </div>
         <div style={{ marginTop: theme.spacing(2) }}>
           <TextField
-            fullWidth={ false }
+            fullWidth={false}
             name="script"
-            className={ classes.textResourceEditor }
-            value={ scriptProperty?.value ?? "" }
-            onChange={ this.onEventTriggerEventPropertyChange }
+            className={classes.textResourceEditor}
+            value={scriptProperty?.value ?? ""}
+            onChange={this.onEventTriggerEventPropertyChange}
           />
         </div>
       </>
     );
-  }
+  };
 
   /**
    * Renders web view options
@@ -407,40 +418,39 @@ class PageEventDialog extends React.Component<Props, State> {
    * @returns options as JSX Elements or undefined if no options found
    */
   private renderWebViewOptions = (webViewOptions: PageLayoutView[]): JSX.Element[] | undefined => {
-    return webViewOptions.map(view =>
-      <MenuItem key={ view.id } value={ view.id }>
-        { view.name ?? view.id }
+    return webViewOptions.map((view) => (
+      <MenuItem key={view.id} value={view.id}>
+        {view.name ?? view.id}
       </MenuItem>
-    );
-  }
+    ));
+  };
 
   /**
    * Renders start visitor session action settings
    */
   private renderStartVisitorSessionSettings = () => {
-
     const event = this.state.pageEvent;
     if (!event) {
       return null;
     }
 
-    const language = event.properties.find(prop => prop.name === "language")?.value;
+    const language = event.properties.find((prop) => prop.name === "language")?.value;
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <Typography variant="h6">
-          { strings.contentEditor.editor.eventTriggers.selectLanguage }
+          {strings.contentEditor.editor.eventTriggers.selectLanguage}
         </Typography>
         <Select
-          name={ "language" }
-          value={ language }
-          onChange={ this.onEventTriggerEventPropertyChange }
+          name={"language"}
+          value={language}
+          onChange={this.onEventTriggerEventPropertyChange}
         >
-          { this.renderLanguageOptions() }
+          {this.renderLanguageOptions()}
         </Select>
       </div>
     );
-  }
+  };
 
   /**
    * Renders language options
@@ -450,12 +460,12 @@ class PageEventDialog extends React.Component<Props, State> {
   private renderLanguageOptions = (): JSX.Element[] | undefined => {
     const { availableLanguages } = this.props;
 
-    return availableLanguages.map(language =>
-      <MenuItem key={ language } value={ language }>
-        { language }
+    return availableLanguages.map((language) => (
+      <MenuItem key={language} value={language}>
+        {language}
       </MenuItem>
-    );
-  }
+    ));
+  };
 
   /**
    * Event handler for create page event
@@ -469,7 +479,7 @@ class PageEventDialog extends React.Component<Props, State> {
     }
 
     onCreate(pageEvent);
-  }
+  };
 
   /**
    * Event handler for update page event
@@ -483,7 +493,7 @@ class PageEventDialog extends React.Component<Props, State> {
     }
 
     onUpdate(pageEvent);
-  }
+  };
 
   /**
    * On select event action handler
@@ -493,7 +503,7 @@ class PageEventDialog extends React.Component<Props, State> {
   private onSelectEventActionType = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as ExhibitionPageEventActionType;
     this.setState({ pageEvent: this.createPageEvent(value) });
-  }
+  };
 
   /**
    * Create event based on the given values
@@ -502,14 +512,15 @@ class PageEventDialog extends React.Component<Props, State> {
    * @returns exhibition page event
    */
   private createPageEvent = (actionType: ExhibitionPageEventActionType): ExhibitionPageEvent => {
-    const eventProperties: ExhibitionPageEventProperty[] = this.getEventPropertiesByType(actionType);
+    const eventProperties: ExhibitionPageEventProperty[] =
+      this.getEventPropertiesByType(actionType);
     const pageEvent: ExhibitionPageEvent = {
       action: actionType,
       properties: eventProperties
     };
 
     return pageEvent;
-  }
+  };
 
   /**
    * Get event properties based on action type
@@ -517,26 +528,18 @@ class PageEventDialog extends React.Component<Props, State> {
    * @param actionType ExhibitionPageEventActionType
    * @returns list of exhibition page event properties
    */
-  private getEventPropertiesByType = (actionType: ExhibitionPageEventActionType): ExhibitionPageEventProperty[] => {
+  private getEventPropertiesByType = (
+    actionType: ExhibitionPageEventActionType
+  ): ExhibitionPageEventProperty[] => {
     switch (actionType) {
       case ExhibitionPageEventActionType.Navigate:
-        return [
-          this.getStringProperty("pageId")
-        ];
+        return [this.getStringProperty("pageId")];
       case ExhibitionPageEventActionType.Setuservalue:
-        return [
-          this.getStringProperty("name"),
-          this.getStringProperty("value")
-        ];
+        return [this.getStringProperty("name"), this.getStringProperty("value")];
       case ExhibitionPageEventActionType.Triggerdevicegroupevent:
-        return [
-          this.getStringProperty("name")
-        ];
+        return [this.getStringProperty("name")];
       case ExhibitionPageEventActionType.ExecuteWebScript:
-        return [
-          this.getStringProperty("webViewId"),
-          this.getStringProperty("script")
-        ];
+        return [this.getStringProperty("webViewId"), this.getStringProperty("script")];
       case ExhibitionPageEventActionType.Hide:
       case ExhibitionPageEventActionType.Show:
       case ExhibitionPageEventActionType.Setsrc:
@@ -544,7 +547,7 @@ class PageEventDialog extends React.Component<Props, State> {
       default:
         return [];
     }
-  }
+  };
 
   /**
    * Get string type property
@@ -559,7 +562,7 @@ class PageEventDialog extends React.Component<Props, State> {
       value: value || "",
       type: ExhibitionPageEventPropertyType.String
     };
-  }
+  };
 
   /**
    * Get web views in page layout
@@ -575,21 +578,23 @@ class PageEventDialog extends React.Component<Props, State> {
       }
 
       if (view.children) {
-        view.children.forEach(childView => {
+        view.children.forEach((childView) => {
           webViews.push(...this.getWebViewsInLayout(childView));
         });
       }
     }
 
     return webViews;
-  }
+  };
 
   /**
    * Event handler for event trigger event property change
    *
    * @param event react change event
    */
-  private onEventTriggerEventPropertyChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onEventTriggerEventPropertyChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>
+  ) => {
     const { pageEvent } = this.state;
 
     const propertyName = event.target.name;
@@ -599,8 +604,10 @@ class PageEventDialog extends React.Component<Props, State> {
       return;
     }
 
-    const tempEvent = produce(pageEvent, draft => {
-      const propertyIndex = draft.properties.findIndex(property => property.name === propertyName);
+    const tempEvent = produce(pageEvent, (draft) => {
+      const propertyIndex = draft.properties.findIndex(
+        (property) => property.name === propertyName
+      );
       if (propertyIndex === -1) {
         draft.properties.push({
           name: propertyName,
@@ -615,7 +622,7 @@ class PageEventDialog extends React.Component<Props, State> {
     this.setState({
       pageEvent: tempEvent
     });
-  }
+  };
 }
 
 export default withStyles(styles)(PageEventDialog);

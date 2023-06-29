@@ -1,17 +1,14 @@
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { ReduxActions, ReduxState } from "../../store";
-
 import styles from "../../styles/exhibition-view";
 import { Grid, Typography, TextField } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
 import { GroupContentVersion } from "../../generated/client";
-import { AccessToken } from '../../types';
+import { AccessToken } from "../../types";
 import strings from "../../localization/strings";
 import { ContentVersion } from "../../generated/client/models/ContentVersion";
 import theme from "../../styles/theme";
@@ -41,7 +38,6 @@ interface State {
  * Component for group content versions info view
  */
 class GroupContentVersionsInfo extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -58,12 +54,8 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-    return (
-      <>
-        { this.renderFields() }
-      </>
-    );
-  }
+    return <>{this.renderFields()}</>;
+  };
 
   /**
    * Render data fields
@@ -77,15 +69,17 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
     // );
 
     return (
-      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={ 12 }>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">{ strings.groupContentVersion.name }</Typography>
+      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={12}>
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">
+            {strings.groupContentVersion.name}
+          </Typography>
           <TextField
             fullWidth
             type="text"
             name="name"
-            value={ groupContentVersion.name }
-            onChange={ this.onValueChange }
+            value={groupContentVersion.name}
+            onChange={this.onValueChange}
           />
         </Grid>
         {/* TODO: add the status functionality below when feature is implemented */}
@@ -108,14 +102,16 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
         </Grid> */}
       </Grid>
     );
-  }
+  };
 
   /**
    * Event handler for value change
-   * 
+   *
    * @param event react change event
    */
-  private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
+  private onValueChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>
+  ) => {
     const { onValueChange } = this.props;
     const key = event.target.name;
     const value = event.target.value;
@@ -123,9 +119,9 @@ class GroupContentVersionsInfo extends React.Component<Props, State> {
       return;
     }
 
-    const groupContentVersionToUpdate = { ...this.props.groupContentVersion, [key] : value }
+    const groupContentVersionToUpdate = { ...this.props.groupContentVersion, [key]: value };
     onValueChange(groupContentVersionToUpdate);
-  }
+  };
 }
 
 /**
@@ -146,9 +142,10 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
+  return {};
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GroupContentVersionsInfo));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(GroupContentVersionsInfo));

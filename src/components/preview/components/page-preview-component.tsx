@@ -1,7 +1,11 @@
 import * as React from "react";
-import { ContentRect } from 'react-measure';
-import { Typography } from '@mui/material';
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
+import { ContentRect } from "react-measure";
+import { Typography } from "@mui/material";
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
 import PagePreviewFrameLayout from "./page-preview-frame-layout";
 import PagePreviewTextView from "./page-preview-text-view";
 import PagePreviewFlowTextView from "./page-preview-flow-text-view";
@@ -15,7 +19,7 @@ import PagePreviewLinearLayout from "./page-preview-linear-layout";
 import PagePreviewMaterialTab from "./page-preview-material-tab";
 
 import DisplayMetrics from "../../../types/display-metrics";
-import { CSSProperties } from '@mui/material/styles';
+import { CSSProperties } from "@mui/material/styles";
 import { ResourceMap } from "../../../types";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 
@@ -33,7 +37,10 @@ interface Props {
   displayMetrics: DisplayMetrics;
   tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
   onTabClick?: (viewId: string, newIndex: number) => void;
 }
@@ -41,7 +48,7 @@ interface Props {
 /**
  * Wrapper component for all page layout components
  */
-const PagePreviewComponent: React.FC<Props> = props => {
+const PagePreviewComponent: React.FC<Props> = (props) => {
   const { view, layer } = props;
   if (!view) {
     return null;
@@ -57,30 +64,30 @@ const PagePreviewComponent: React.FC<Props> = props => {
   switch (view.widget) {
     case PageLayoutWidgetType.FrameLayout:
     case PageLayoutWidgetType.VisitorsView:
-      return <PagePreviewFrameLayout { ...pagePreviewProps }/>;
+      return <PagePreviewFrameLayout {...pagePreviewProps} />;
     case PageLayoutWidgetType.LinearLayout:
-      return <PagePreviewLinearLayout { ...pagePreviewProps }/>;
+      return <PagePreviewLinearLayout {...pagePreviewProps} />;
     case PageLayoutWidgetType.TextView:
-      return <PagePreviewTextView { ...pagePreviewProps }/>;
+      return <PagePreviewTextView {...pagePreviewProps} />;
     case PageLayoutWidgetType.FlowTextView:
-      return <PagePreviewFlowTextView { ...pagePreviewProps }/>;
+      return <PagePreviewFlowTextView {...pagePreviewProps} />;
     case PageLayoutWidgetType.Button:
-      return <PagePreviewButton { ...pagePreviewProps }/>;
+      return <PagePreviewButton {...pagePreviewProps} />;
     case PageLayoutWidgetType.TouchableOpacity:
-      return <PagePreviewTouchableOpacity { ...pagePreviewProps }/>;
+      return <PagePreviewTouchableOpacity {...pagePreviewProps} />;
     case PageLayoutWidgetType.ImageView:
-      return <PagePreviewImageView { ...pagePreviewProps }/>;
+      return <PagePreviewImageView {...pagePreviewProps} />;
     case PageLayoutWidgetType.PlayerView:
-      return <PagePreviewPlayerView { ...pagePreviewProps }/>;
+      return <PagePreviewPlayerView {...pagePreviewProps} />;
     case PageLayoutWidgetType.MediaView:
-      return <PagePreviewMediaView { ...pagePreviewProps }/>;
+      return <PagePreviewMediaView {...pagePreviewProps} />;
     case PageLayoutWidgetType.RelativeLayout:
-      return <PagePreviewRelativeLayout { ...pagePreviewProps }/>;
+      return <PagePreviewRelativeLayout {...pagePreviewProps} />;
     case PageLayoutWidgetType.MaterialTabLayout:
-      return <PagePreviewMaterialTab { ...pagePreviewProps }/>;
+      return <PagePreviewMaterialTab {...pagePreviewProps} />;
     default:
-      return <Typography>Unsupported widget { view.widget }</Typography>;
+      return <Typography>Unsupported widget {view.widget}</Typography>;
   }
-}
+};
 
 export default PagePreviewComponent;

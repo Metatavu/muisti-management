@@ -1,9 +1,16 @@
 import * as React from "react";
 import { ExhibitionPage, PageLayout, ExhibitionDevice } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, MenuItem, InputLabel, Select, FormControl, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import {
+  TextField,
+  MenuItem,
+  InputLabel,
+  Select,
+  FormControl,
+  SelectChangeEvent
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/page-settings-editor";
 import theme from "../../styles/theme";
 
@@ -23,13 +30,13 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
 }
 
 /**
  * Component for common exhibition page settings editor
  */
 class CommonSettingsEditor extends React.Component<Props, State> {
-
   /**
    * Constructor
    * @param props component properties
@@ -50,14 +57,14 @@ class CommonSettingsEditor extends React.Component<Props, State> {
     return (
       <>
         <TextField
-          label={ strings.contentEditor.editor.pageName }
+          label={strings.contentEditor.editor.pageName}
           name="name"
-          value={ pageData.name }
-          onChange={ onChangeText }
+          value={pageData.name}
+          onChange={onChangeText}
         />
-        <div className={ classes.selectFields }>
-          { this.renderDeviceSelect(pageData) }
-          { this.renderLayoutSelect(pageData) }
+        <div className={classes.selectFields}>
+          {this.renderDeviceSelect(pageData)}
+          {this.renderLayoutSelect(pageData)}
         </div>
       </>
     );
@@ -72,30 +79,28 @@ class CommonSettingsEditor extends React.Component<Props, State> {
     const { layouts, onLayoutChange } = this.props;
     const layoutSelectItems = [...layouts]
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map(layout =>
-        <MenuItem key={ layout.id } value={ layout.id }>
-          { layout.name }
+      .map((layout) => (
+        <MenuItem key={layout.id} value={layout.id}>
+          {layout.name}
         </MenuItem>
-      );
+      ));
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
         <FormControl>
-          <InputLabel id="pageLayoutId">
-            { strings.contentEditor.editor.layout }
-          </InputLabel>
+          <InputLabel id="pageLayoutId">{strings.contentEditor.editor.layout}</InputLabel>
           <Select
-            label={ strings.contentEditor.editor.layout }
+            label={strings.contentEditor.editor.layout}
             labelId="pageLayoutId"
-            value={ page.layoutId }
-            onChange={ onLayoutChange }
+            value={page.layoutId}
+            onChange={onLayoutChange}
           >
-            { layoutSelectItems }
+            {layoutSelectItems}
           </Select>
         </FormControl>
       </div>
     );
-  }
+  };
 
   /**
    * Renders device select
@@ -104,31 +109,29 @@ class CommonSettingsEditor extends React.Component<Props, State> {
    */
   private renderDeviceSelect = (page: ExhibitionPage) => {
     const { devices, onChange } = this.props;
-    const selectItems = devices.map(device => {
+    const selectItems = devices.map((device) => {
       return (
-        <MenuItem key={ device.id! } value={ device.id }>
-          { device.name }
+        <MenuItem key={device.id!} value={device.id}>
+          {device.name}
         </MenuItem>
       );
     });
 
     return (
       <FormControl>
-        <InputLabel id="pageDeviceId">
-          { strings.contentEditor.editor.device }
-        </InputLabel>
+        <InputLabel id="pageDeviceId">{strings.contentEditor.editor.device}</InputLabel>
         <Select
-          label={ strings.contentEditor.editor.device }
+          label={strings.contentEditor.editor.device}
           labelId="pageDeviceId"
           name="deviceId"
-          value={ page.deviceId }
-          onChange={ onChange }
+          value={page.deviceId}
+          onChange={onChange}
         >
-          { selectItems }
+          {selectItems}
         </Select>
       </FormControl>
     );
-  }
+  };
 }
 
-export default (withStyles(styles)(CommonSettingsEditor));
+export default withStyles(styles)(CommonSettingsEditor);

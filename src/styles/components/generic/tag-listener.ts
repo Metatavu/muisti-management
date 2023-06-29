@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 import theme from "../../theme";
 
 export default createStyles({
-
   container: {
     display: "flex",
     alignItems: "center",
@@ -33,5 +32,4 @@ export default createStyles({
   },
 
   text: {}
-
 });

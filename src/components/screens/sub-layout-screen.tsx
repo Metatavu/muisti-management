@@ -5,18 +5,16 @@ import { ReduxActions, ReduxState } from "../../store";
 import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-// eslint-disable-next-line max-len
 import { CircularProgress, TextField, Typography, Divider } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
 import { PageLayoutView, SubLayout } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import strings from "../../localization/strings";
 import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 // TODO: Code mirror related imports.
@@ -29,18 +27,21 @@ import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-com
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";
 import { TreeNodeInArray } from "react-simple-tree-menu";
-import { constructTreeDeleteData, pushNewPageLayoutViewToTree } from "../layout/utils/tree-data-utils";
+import {
+  constructTreeDeleteData,
+  pushNewPageLayoutViewToTree
+} from "../layout/utils/tree-data-utils";
 import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import PanZoom from "../generic/pan-zoom";
 import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
-import { ResizableBox, ResizeCallbackData } from 'react-resizable';
+import { ResizableBox, ResizeCallbackData } from "react-resizable";
 import "react-resizable/css/styles.css";
 import PagePreview from "../preview/page-preview";
 import DisplayMetrics from "../../types/display-metrics";
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
 
-type View = "CODE" | "VISUAL";
+type View = "CODE" | "VISUAL";
 
 /**
  * Component props
@@ -84,7 +85,6 @@ interface State {
  * Component for sub layout screen
  */
 export class SubLayoutScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -125,7 +125,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     this.setState({ loading: true });
     await this.fetchEditorData();
     this.setState({ loading: false });
-  }
+  };
 
   /**
    * Component did update life cycle handler
@@ -137,80 +137,79 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     if (subLayout && subLayout !== prevProps.subLayout) {
       this.setState({ jsonCode: JSON.stringify(subLayout.data, null, 2) });
     }
-  }
+  };
 
   /**
    * Component render method
    */
   public render() {
     const { classes, history, subLayout, keycloak } = this.props;
-    const {
-      loading,
-      error,
-      name,
-      width,
-      height,
-      dataChanged
-    } = this.state;
+    const { loading, error, name, width, height, dataChanged } = this.state;
 
     if (!subLayout || !subLayout.id || loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        <div className={classes.loader}>
+          <CircularProgress size={50} color="secondary"></CircularProgress>
         </div>
       );
     }
 
     return (
       <BasicLayout
-        history={ history }
-        title={ subLayout.name }
-        breadcrumbs={ [] }
-        actionBarButtons={ this.getActionButtons() }
-        keycloak={ keycloak }
-        error={ error }
-        clearError={ () => this.setState({ error: undefined }) }
-        dataChanged={ dataChanged }
-        openDataChangedPrompt={ true }
+        history={history}
+        title={subLayout.name}
+        breadcrumbs={[]}
+        actionBarButtons={this.getActionButtons()}
+        keycloak={keycloak}
+        error={error}
+        clearError={() => this.setState({ error: undefined })}
+        dataChanged={dataChanged}
+        openDataChangedPrompt={true}
       >
-        <div className={ classes.editorLayout }>
-          <ElementNavigationPane title={ strings.layout.title }>
+        <div className={classes.editorLayout}>
+          <ElementNavigationPane title={strings.layout.title}>
             <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
               <TextField
                 variant="filled"
                 type="number"
                 fullWidth
-                label={ strings.subLayout.preview.width }
-                value={ width }
-                onChange={ this.onWidthChange }
+                label={strings.subLayout.preview.width}
+                value={width}
+                onChange={this.onWidthChange}
               />
-              <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+              <Divider
+                variant="fullWidth"
+                color="rgba(0,0,0,0.1)"
+                style={{ marginTop: 19, width: "100%" }}
+              />
 
               <TextField
                 variant="filled"
                 type="number"
                 fullWidth
-                label={ strings.subLayout.preview.height }
-                value={ height }
-                onChange={ this.onHeightChange }
+                label={strings.subLayout.preview.height}
+                value={height}
+                onChange={this.onHeightChange}
               />
-              <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+              <Divider
+                variant="fullWidth"
+                color="rgba(0,0,0,0.1)"
+                style={{ marginTop: 19, width: "100%" }}
+              />
 
               <TextField
                 variant="filled"
                 fullWidth
-                label={ strings.layout.toolbar.name }
-                value={ name }
-                onChange={ this.onNameChange }
+                label={strings.layout.toolbar.name}
+                value={name}
+                onChange={this.onNameChange}
               />
-              { this.renderSubLayoutComponentStructure() }
+              {this.renderSubLayoutComponentStructure()}
             </div>
           </ElementNavigationPane>
-          <EditorView>
-            { this.renderEditor() }
-          </EditorView>
-          { this.renderElementSettingsPane() }
-          { this.renderConfirmationDialog() }
+          <EditorView>{this.renderEditor()}</EditorView>
+          {this.renderElementSettingsPane()}
+          {this.renderConfirmationDialog()}
         </div>
       </BasicLayout>
     );
@@ -228,14 +227,14 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
     return (
       <LayoutTreeMenu
-        editingSubLayout={ true }
-        subLayouts={ [] }
-        onSelect={ this.onLayoutPageViewSelect }
-        onAdd={ this.onSubLayoutViewAdd }
-        treeData={ this.constructTreeData(subLayout) }
+        editingSubLayout={true}
+        subLayouts={[]}
+        onSelect={this.onLayoutPageViewSelect}
+        onAdd={this.onSubLayoutViewAdd}
+        treeData={this.constructTreeData(subLayout)}
       />
     );
-  }
+  };
 
   /**
    * Renders editor view
@@ -249,20 +248,14 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       default:
         return null;
     }
-  }
+  };
 
   /**
    * Renders element settings pane
    */
   private renderElementSettingsPane = () => {
-    const {
-      pageLayoutView,
-      selectedPropertyPath,
-      selectedWidgetType,
-      panelOpen,
-      width,
-      height,
-    } = this.state;
+    const { pageLayoutView, selectedPropertyPath, selectedWidgetType, panelOpen, width, height } =
+      this.state;
 
     /**
      * Easiest way for now is to fake display metrics for preview.
@@ -279,40 +272,38 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
     return (
       <ElementSettingsPane
-        open={ panelOpen }
-        width={ 420 }
-        title={ `${ pageLayoutView?.widget } ${ strings.layout.properties.title }` }
-        menuOptions={
-          [
-            {
-              name: strings.genericDialog.delete,
-              action: () => this.onLayoutViewDeleteClick(selectedPropertyPath || "")
-            }
-          ]
-        }
+        open={panelOpen}
+        width={420}
+        title={`${pageLayoutView?.widget} ${strings.layout.properties.title}`}
+        menuOptions={[
+          {
+            name: strings.genericDialog.delete,
+            action: () => this.onLayoutViewDeleteClick(selectedPropertyPath || "")
+          }
+        ]}
       >
-        { pageLayoutView && selectedPropertyPath &&
+        {pageLayoutView && selectedPropertyPath && (
           <CommonLayoutPropertiesEditor
-            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-            editingSubLayout={ true }
-            displayMetrics={ displayMetrics }
-            pageLayoutView={ pageLayoutView }
-            selectedElementPath={ selectedPropertyPath }
+            onPageLayoutViewUpdate={this.onPageLayoutViewUpdate}
+            editingSubLayout={true}
+            displayMetrics={displayMetrics}
+            pageLayoutView={pageLayoutView}
+            selectedElementPath={selectedPropertyPath}
           />
-        }
-        { pageLayoutView && selectedPropertyPath && selectedWidgetType &&
+        )}
+        {pageLayoutView && selectedPropertyPath && selectedWidgetType && (
           <LayoutWidgetSpecificPropertiesEditor
-            onPageLayoutViewUpdate={ this.onPageLayoutViewUpdate }
-            editingSubLayout={ true }
-            displayMetrics={ displayMetrics }
-            pageLayoutView={ pageLayoutView }
-            selectedElementPath={ selectedPropertyPath }
-            selectedWidgetType={ selectedWidgetType }
+            onPageLayoutViewUpdate={this.onPageLayoutViewUpdate}
+            editingSubLayout={true}
+            displayMetrics={displayMetrics}
+            pageLayoutView={pageLayoutView}
+            selectedElementPath={selectedPropertyPath}
+            selectedWidgetType={selectedWidgetType}
           />
-        }
+        )}
       </ElementSettingsPane>
     );
-  }
+  };
 
   /**
    * Renders code editor view
@@ -327,19 +318,19 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     };
 
     return (
-      <div className={ classes.editors }>
-        <div className={ classes.editorContainer }>
-          <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.json }</Typography>
+      <div className={classes.editors}>
+        <div className={classes.editorContainer}>
+          <Typography style={{ margin: 8 }}>{strings.exhibitionLayouts.editView.json}</Typography>
           <CodeMirror
-            className={ classes.editor }
-            value={ this.state.jsonCode }
-            options={ jsonEditorOptions }
-            onBeforeChange={ this.onBeforeJsonCodeChange }
+            className={classes.editor}
+            value={this.state.jsonCode}
+            options={jsonEditorOptions}
+            onBeforeChange={this.onBeforeJsonCodeChange}
           />
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders a visual editor view
@@ -365,32 +356,27 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const scale = 1;
 
     return (
-      <div className={ classes.editors }>
+      <div className={classes.editors}>
         <PanZoom
-          minScale={ 0.1 }
-          fitContent={ false }
-          contentWidth={ width }
-          contentHeight={ height }
-          disabled={ resizing }
+          minScale={0.1}
+          fitContent={false}
+          contentWidth={width}
+          contentHeight={height}
+          disabled={resizing}
         >
-
           <ResizableBox
-            width={ width }
-            height={ height }
-            resizeHandles={ [ 's', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }
-            onResizeStart={ this.onResizeStart }
-            onResizeStop={ this.onResizeStop }
+            width={width}
+            height={height}
+            resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
+            onResizeStart={this.onResizeStart}
+            onResizeStop={this.onResizeStop}
           >
-            <PagePreview
-              view={ view }
-              displayMetrics={ displayMetrics }
-              scale={ scale }
-            />
+            <PagePreview view={view} displayMetrics={displayMetrics} scale={scale} />
           </ResizableBox>
         </PanZoom>
       </div>
     );
-  }
+  };
 
   /**
    * Renders confirmation dialog
@@ -398,13 +384,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   private renderConfirmationDialog = () => {
     const { confirmDialogOpen, confirmDialogData } = this.state;
 
-    return (
-      <ConfirmDialog
-        open={ confirmDialogOpen }
-        confirmDialogData={ confirmDialogData }
-      />
-    );
-  }
+    return <ConfirmDialog open={confirmDialogOpen} confirmDialogData={confirmDialogData} />;
+  };
 
   /**
    * Gets action buttons
@@ -415,9 +396,10 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const { dataChanged } = this.state;
     return [
       {
-        name: this.state.view === "CODE" ?
-        strings.exhibitionLayouts.editView.switchToVisualButton :
-        strings.exhibitionLayouts.editView.switchToCodeButton,
+        name:
+          this.state.view === "CODE"
+            ? strings.exhibitionLayouts.editView.switchToVisualButton
+            : strings.exhibitionLayouts.editView.switchToCodeButton,
         action: this.onSwitchViewClick
       },
       {
@@ -428,9 +410,9 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         name: strings.exhibitionLayouts.editView.saveButton,
         action: this.onSaveClick,
         disabled: !dataChanged
-      },
+      }
     ];
-  }
+  };
 
   /**
    * On resize start handler
@@ -439,7 +421,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     this.setState({
       resizing: true
     });
-  }
+  };
 
   /**
    * On resize stop handler
@@ -447,13 +429,16 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @param event react event
    * @param data resize callback data
    */
-  private onResizeStop = (event: React.SyntheticEvent<Element, Event>, data: ResizeCallbackData) => {
+  private onResizeStop = (
+    event: React.SyntheticEvent<Element, Event>,
+    data: ResizeCallbackData
+  ) => {
     this.setState({
       width: data.size.width,
       height: data.size.height,
       resizing: false
     });
-  }
+  };
 
   /**
    * Fetches editor data
@@ -467,15 +452,15 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       this.props.setSelectedSubLayout(foundSubLayout);
       this.setState({
         name: foundSubLayout.name,
-        jsonCode: JSON.stringify(foundSubLayout.data, null, 2),
+        jsonCode: JSON.stringify(foundSubLayout.data, null, 2)
       });
     } else {
       this.setState({
         name: subLayout.name,
-        jsonCode: JSON.stringify(subLayout.data, null, 2),
+        jsonCode: JSON.stringify(subLayout.data, null, 2)
       });
     }
-  }
+  };
 
   /**
    * Constructs tree data
@@ -486,20 +471,22 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   private constructTreeData = (subLayout: SubLayout): TreeNodeInArray[] => {
     const path = (subLayout.data as PageLayoutView).id;
     const type = (subLayout.data as PageLayoutView).widget;
-    const treeData = [{
-      key: (subLayout.data as PageLayoutView).id,
-      path: path,
-      label: (subLayout.data as PageLayoutView).widget,
-      element: subLayout.data,
-      type: type,
-      onSelect: () => this.onLayoutPageViewSelect(subLayout.data as PageLayoutView, type, path),
-      parents: [ ],
-      nodes: (subLayout.data as PageLayoutView).children.map(child => {
-        return this.getNode(path, subLayout.data as PageLayoutView, child);
-      })
-    }];
+    const treeData = [
+      {
+        key: (subLayout.data as PageLayoutView).id,
+        path: path,
+        label: (subLayout.data as PageLayoutView).widget,
+        element: subLayout.data,
+        type: type,
+        onSelect: () => this.onLayoutPageViewSelect(subLayout.data as PageLayoutView, type, path),
+        parents: [],
+        nodes: (subLayout.data as PageLayoutView).children.map((child) => {
+          return this.getNode(path, subLayout.data as PageLayoutView, child);
+        })
+      }
+    ];
     return treeData;
-  }
+  };
 
   /**
    * Gets single tree node
@@ -509,7 +496,11 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @param layoutView node
    * @returns tree node in array object
    */
-  private getNode = (basePath: string, parentPageLayoutView: PageLayoutView, layoutView: PageLayoutView): TreeNodeInArray => {
+  private getNode = (
+    basePath: string,
+    parentPageLayoutView: PageLayoutView,
+    layoutView: PageLayoutView
+  ): TreeNodeInArray => {
     const path = `${basePath}/${layoutView.id}`;
     const type = layoutView.widget;
 
@@ -520,12 +511,12 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       element: layoutView,
       type: type,
       onSelect: () => this.onLayoutPageViewSelect(layoutView, type, path),
-      parents: [ parentPageLayoutView ],
-      nodes: layoutView.children.map(child => {
+      parents: [parentPageLayoutView],
+      nodes: layoutView.children.map((child) => {
         return this.getNode(path, layoutView, child);
       })
     };
-  }
+  };
 
   /**
    * Handles element selected from layout navigation tree
@@ -534,21 +525,25 @@ export class SubLayoutScreen extends React.Component<Props, State> {
    * @param type type of the element
    * @param path path to the selected element inside the tree structure
    */
-  private onLayoutPageViewSelect = (element: PageLayoutView, type: PageLayoutWidgetType, path: string) => {
+  private onLayoutPageViewSelect = (
+    element: PageLayoutView,
+    type: PageLayoutWidgetType,
+    path: string
+  ) => {
     this.setState({
       pageLayoutView: element,
       selectedPropertyPath: path,
       selectedWidgetType: type,
       panelOpen: true
     });
-  }
+  };
 
   /**
    * Event handler for import click event
    */
   private onImportClick = () => {
     alert("Coming soon");
-  }
+  };
 
   /**
    * Event handler for name input change
@@ -560,7 +555,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       name: event.target.value,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for width input change
@@ -572,7 +567,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       width: Number(event.target.value),
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for height input change
@@ -584,7 +579,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       height: Number(event.target.value),
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for before JSON code change event
@@ -598,7 +593,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       jsonCode: value,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * On page layout view update handler
@@ -610,7 +605,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
       pageLayoutView,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for save button click
@@ -623,7 +618,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     };
 
     this.onSubLayoutSave(subLayout);
-  }
+  };
 
   /**
    * Event handler for sub layout save
@@ -642,8 +637,8 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         subLayout: subLayout
       });
 
-      subLayouts.filter(layout => layout.id !== updatedSubLayout.id);
-      setSubLayouts([ ...subLayouts, updatedSubLayout ]);
+      subLayouts.filter((layout) => layout.id !== updatedSubLayout.id);
+      setSubLayouts([...subLayouts, updatedSubLayout]);
 
       this.setState({
         jsonCode: JSON.stringify(updatedSubLayout.data, null, 2),
@@ -656,7 +651,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
         error: e
       });
     }
-  }
+  };
 
   /**
    * Event handler for sub layout view add
@@ -673,7 +668,7 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     const updatedSubLayout = pushNewPageLayoutViewToTree(subLayout, layoutView, path);
     this.props.setSelectedSubLayout(updatedSubLayout);
     this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2) });
-  }
+  };
 
   /**
    * Event handler for layout view delete click
@@ -683,9 +678,12 @@ export class SubLayoutScreen extends React.Component<Props, State> {
   private onLayoutViewDeleteClick = (path: string) => {
     this.setState({
       confirmDialogOpen: true,
-      confirmDialogData: { ...this.state.confirmDialogData, onConfirm: () => this.deleteLayoutView(path) }
+      confirmDialogData: {
+        ...this.state.confirmDialogData,
+        onConfirm: () => this.deleteLayoutView(path)
+      }
     });
-  }
+  };
 
   /**
    * Deletes layout view
@@ -701,8 +699,11 @@ export class SubLayoutScreen extends React.Component<Props, State> {
 
     const updatedSubLayout = constructTreeDeleteData(subLayout, path);
     this.props.setSelectedSubLayout(updatedSubLayout);
-    this.setState({ jsonCode: JSON.stringify(updatedSubLayout.data, null, 2), confirmDialogOpen: false });
-  }
+    this.setState({
+      jsonCode: JSON.stringify(updatedSubLayout.data, null, 2),
+      confirmDialogOpen: false
+    });
+  };
 
   /**
    * Event listener for switch view button click
@@ -711,14 +712,14 @@ export class SubLayoutScreen extends React.Component<Props, State> {
     this.setState({
       view: this.state.view === "CODE" ? "VISUAL" : "CODE"
     });
-  }
+  };
 
   /**
    * Event handler for confirm dialog close
    */
   private onConfirmDialogClose = () => {
     this.setState({ confirmDialogOpen: false });
-  }
+  };
 }
 
 /**

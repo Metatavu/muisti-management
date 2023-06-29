@@ -43,7 +43,9 @@ export const setDevices: ActionCreator<SetDevicesAction> = (devices: ExhibitionD
  *
  * @param devices device groups being dispatched
  */
-export const setDeviceGroups: ActionCreator<SetDeviceGroupsAction> = (deviceGroups: ExhibitionDeviceGroup[]) => {
+export const setDeviceGroups: ActionCreator<SetDeviceGroupsAction> = (
+  deviceGroups: ExhibitionDeviceGroup[]
+) => {
   return {
     type: actionTypes.SET_DEVICE_GROUPS,
     deviceGroups: deviceGroups
@@ -55,11 +57,13 @@ export const setDeviceGroups: ActionCreator<SetDeviceGroupsAction> = (deviceGrou
  *
  * @param deviceModels device models being dispatched
  */
-export const setDeviceModels: ActionCreator<SetDeviceModelsAction> = (deviceModels: DeviceModel[]) => {
+export const setDeviceModels: ActionCreator<SetDeviceModelsAction> = (
+  deviceModels: DeviceModel[]
+) => {
   return {
     type: actionTypes.SET_DEVICE_MODELS,
     deviceModels: deviceModels
   };
 };
 
-export type DevicesAction =  SetDevicesAction | SetDeviceGroupsAction | SetDeviceModelsAction;
+export type DevicesAction = SetDevicesAction | SetDeviceGroupsAction | SetDeviceModelsAction;

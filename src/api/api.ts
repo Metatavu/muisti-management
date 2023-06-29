@@ -1,13 +1,29 @@
 import { Config } from "../constants/configuration";
-// eslint-disable-next-line max-len
-import { Configuration, ExhibitionsApi, ContentVersionsApi, ExhibitionRoomsApi, PageLayoutsApi, ExhibitionPagesApi, DeviceModelsApi, ExhibitionDevicesApi, ExhibitionDeviceGroupsApi, ExhibitionFloorsApi, GroupContentVersionsApi, RfidAntennasApi, StoredFilesApi, SubLayoutsApi, VisitorsApi, VisitorVariablesApi, VisitorSessionsApi } from "../generated/client";
+import {
+  Configuration,
+  ExhibitionsApi,
+  ContentVersionsApi,
+  ExhibitionRoomsApi,
+  PageLayoutsApi,
+  ExhibitionPagesApi,
+  DeviceModelsApi,
+  ExhibitionDevicesApi,
+  ExhibitionDeviceGroupsApi,
+  ExhibitionFloorsApi,
+  GroupContentVersionsApi,
+  RfidAntennasApi,
+  StoredFilesApi,
+  SubLayoutsApi,
+  VisitorsApi,
+  VisitorVariablesApi,
+  VisitorSessionsApi
+} from "../generated/client";
 import { AccessToken } from "../types";
 
 /**
  * Utility class for loading api with predefined configuration
  */
 export default class Api {
-
   /**
    * Gets initialized exhibitions api
    *
@@ -145,7 +161,7 @@ export default class Api {
 
   /**
    * Gets initialized visitor sessions api
-   * 
+   *
    * @param accessToken access token
    */
   public static getVisitorSessionsApi(accessToken: AccessToken) {
@@ -163,5 +179,4 @@ export default class Api {
       accessToken: accessToken.token
     });
   }
-
 }

@@ -14,13 +14,18 @@ import { SubLayoutsAction } from "../actions/subLayouts";
  * Root reducer that wraps all Redux reducers
  */
 export const rootReducer = combineReducers({
-    auth: authReducer,
-    exhibitions: exhibitionsReducer,
-    devices: devicesReducer,
-    layouts: layoutsReducer,
-    subLayouts: subLayoutsReducer
+  auth: authReducer,
+  exhibitions: exhibitionsReducer,
+  devices: devicesReducer,
+  layouts: layoutsReducer,
+  subLayouts: subLayoutsReducer
 });
 
 export type ReduxState = ReturnType<typeof rootReducer>;
 
-export type ReduxActions = ExhibitionsAction | AuthAction | DevicesAction | LayoutsAction | SubLayoutsAction;
+export type ReduxActions =
+  | ExhibitionsAction
+  | AuthAction
+  | DevicesAction
+  | LayoutsAction
+  | SubLayoutsAction;

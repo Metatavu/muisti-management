@@ -5,16 +5,27 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
-import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-html-data-utils";
-import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
-  CircularProgress,
-  SelectChangeEvent,
-} from "@mui/material";
+  addNewHtmlComponent,
+  updateHtmlComponent,
+  constructTree,
+  createTreeObject,
+  deserializeElement,
+  treeObjectToHtmlElement
+} from "../layout/utils/tree-html-data-utils";
+import styles from "../../styles/components/layout-screen/layout-editor-view";
+import { CircularProgress, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
+import {
+  PageLayout,
+  Exhibition,
+  DeviceModel,
+  ScreenOrientation,
+  SubLayout,
+  PageLayoutViewHtml
+} from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
@@ -56,16 +67,16 @@ const LayoutScreenHTML: FC<Props> = ({
   classes,
   subLayouts
 }) => {
-  const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
-  const [ dataChanged, setDataChanged ] = useState(false);
-  const [ foundLayout, setFoundLayout ] = useState<PageLayout>();
-  const [ error, setError ] = useState<Error>();
-  const [ loading, setLoading ] = useState(false);
-  const [ selectedComponent, setSelectedComponent ] = useState<TreeObject>();
-  const [ treeObjects, setTreeObjects ] = useState<TreeObject[]>([]);
-  const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
-  const [ newComponentPath, setNewComponentPath ] = useState<string>();
-  const [ isNewComponentSibling, setIsNewComponentSibling ] = useState<boolean>();
+  const [view, setView] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
+  const [dataChanged, setDataChanged] = useState(false);
+  const [foundLayout, setFoundLayout] = useState<PageLayout>();
+  const [error, setError] = useState<Error>();
+  const [loading, setLoading] = useState(false);
+  const [selectedComponent, setSelectedComponent] = useState<TreeObject>();
+  const [treeObjects, setTreeObjects] = useState<TreeObject[]>([]);
+  const [addComponentDialogOpen, setAddComponentDialogOpen] = useState(false);
+  const [newComponentPath, setNewComponentPath] = useState<string>();
+  const [isNewComponentSibling, setIsNewComponentSibling] = useState<boolean>();
 
   useEffect(() => {
     fetchLayout();
@@ -97,14 +108,14 @@ const LayoutScreenHTML: FC<Props> = ({
   if (!foundLayout) {
     return (
       <BasicLayout
-        history={ history }
-        title={ "" }
-        breadcrumbs={ [] }
-        keycloak={ keycloak }
-        error={ error }
-        clearError={ () => history.goBack() }
+        history={history}
+        title={""}
+        breadcrumbs={[]}
+        keycloak={keycloak}
+        error={error}
+        clearError={() => history.goBack()}
       />
-    )
+    );
   }
 
   /**
@@ -125,7 +136,9 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @param event event
    */
-  const onScreenOrientationChange = ({ target: { value } }: SelectChangeEvent<ScreenOrientation>) => {
+  const onScreenOrientationChange = ({
+    target: { value }
+  }: SelectChangeEvent<ScreenOrientation>) => {
     setFoundLayout({
       ...foundLayout,
       screenOrientation: value as ScreenOrientation
@@ -138,7 +151,7 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @param event event
    */
-  const onDeviceModelChange = ({ target: { value } } : SelectChangeEvent<string>) => {
+  const onDeviceModelChange = ({ target: { value } }: SelectChangeEvent<string>) => {
     setFoundLayout({
       ...foundLayout,
       modelId: value
@@ -151,19 +164,23 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @returns action buttons as array
    */
-  const getActionButtons = (): ActionButton[] => ([
+  const getActionButtons = (): ActionButton[] => [
     {
-      name: view === LayoutEditorView.CODE ?
-        strings.exhibitionLayouts.editView.switchToVisualButton :
-        strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
+      name:
+        view === LayoutEditorView.CODE
+          ? strings.exhibitionLayouts.editView.switchToVisualButton
+          : strings.exhibitionLayouts.editView.switchToCodeButton,
+      action: () =>
+        view === LayoutEditorView.CODE
+          ? setView(LayoutEditorView.VISUAL)
+          : setView(LayoutEditorView.CODE)
     },
     {
       name: strings.exhibitionLayouts.editView.saveButton,
       action: onLayoutSave,
-      disabled : !dataChanged
-    },
-  ]);
+      disabled: !dataChanged
+    }
+  ];
 
   /**
    * Event handler for layout save
@@ -177,8 +194,8 @@ const LayoutScreenHTML: FC<Props> = ({
         pageLayout: foundLayout
       });
 
-      const updatedLayouts = layouts.filter(item => item.id !== updatedLayout.id);
-      setLayouts([ ...updatedLayouts, layout ]);
+      const updatedLayouts = layouts.filter((item) => item.id !== updatedLayout.id);
+      setLayouts([...updatedLayouts, layout]);
       setDataChanged(false);
     } catch (e) {
       console.error(e);
@@ -202,21 +219,21 @@ const LayoutScreenHTML: FC<Props> = ({
       case LayoutEditorView.CODE:
         return (
           <CodeEditorHTML
-            htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
-            onCodeChange={ onCodeChange }
+            htmlString={(foundLayout.data as PageLayoutViewHtml).html}
+            onCodeChange={onCodeChange}
           />
         );
       case LayoutEditorView.VISUAL:
         return (
           <PagePreviewHtml
-            deviceModels={ deviceModels }
-            layout={ foundLayout }
-            treeObjects={ treeObjects }
-            selectedComponentId={ selectedComponent?.id }
+            deviceModels={deviceModels}
+            layout={foundLayout}
+            treeObjects={treeObjects}
+            selectedComponentId={selectedComponent?.id}
           />
         );
     }
-  }
+  };
 
   /**
    * Handles element selected from layout navigation tree
@@ -237,7 +254,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setAddComponentDialogOpen(true);
     setNewComponentPath(path);
     setIsNewComponentSibling(asChildren);
-  }
+  };
 
   /**
    * Create new component and add it to the layout
@@ -260,7 +277,9 @@ const LayoutScreenHTML: FC<Props> = ({
       !!isNewComponentSibling
     );
 
-    const updatedHtmlElements = updatedLayout.map(treeObject => treeObjectToHtmlElement(treeObject));
+    const updatedHtmlElements = updatedLayout.map((treeObject) =>
+      treeObjectToHtmlElement(treeObject)
+    );
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -273,7 +292,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(newComponent);
     setDataChanged(true);
   };
-  
+
   /**
    * Update component and add it to the layout
    *
@@ -287,7 +306,9 @@ const LayoutScreenHTML: FC<Props> = ({
       updatedComponent,
       selectedComponent.path
     );
-    const updatedHtmlElements = updatedTreeObjects.map(treeObject => treeObjectToHtmlElement(treeObject));
+    const updatedHtmlElements = updatedTreeObjects.map((treeObject) =>
+      treeObjectToHtmlElement(treeObject)
+    );
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -303,58 +324,56 @@ const LayoutScreenHTML: FC<Props> = ({
 
   if (loading) {
     return (
-      <div className={ classes.loader }>
-        <CircularProgress size={ 50 } color="secondary"/>
+      <div className={classes.loader}>
+        <CircularProgress size={50} color="secondary" />
       </div>
     );
   }
 
   return (
     <BasicLayout
-      history={ history }
-      title={ foundLayout.name }
-      breadcrumbs={ [] }
-      actionBarButtons={ getActionButtons() }
-      keycloak={ keycloak }
-      error={ error }
-      clearError={ () => setError(undefined) }
-      openDataChangedPrompt={ true }
+      history={history}
+      title={foundLayout.name}
+      breadcrumbs={[]}
+      actionBarButtons={getActionButtons()}
+      keycloak={keycloak}
+      error={error}
+      clearError={() => setError(undefined)}
+      openDataChangedPrompt={true}
     >
-        <div className={ classes.editorLayout }>
-          <LayoutLeftPanel
-            layout={ foundLayout }
-            treeObjects={ treeObjects }
-            selectedComponent={ selectedComponent }
-            deviceModels={ deviceModels }
-            onTreeComponentSelect={ onTreeComponentSelect }
-            onAddComponentClick={ onAddComponentClick }
-            onLayoutNameChange={ onLayoutNameChange }
-            onDeviceModelChange={ onDeviceModelChange }
-            onScreenOrientationChange={ onScreenOrientationChange }
-          />
-          <EditorView>
-            { renderEditor() }
-          </EditorView>
-          { selectedComponent && 
-              <LayoutRightPanel
-                component={ selectedComponent }
-                layout={ foundLayout }
-                setLayout={ setFoundLayout }
-                updateComponent={ updateComponent }
-                onClose={ () => setSelectedComponent(undefined) }
-              /> 
-          }
-        </div>
-        <AddNewElementDialog
-          open={ addComponentDialogOpen }
-          subLayouts={ subLayouts }
-          siblingPath={ newComponentPath }
-          onConfirm={ createComponent }
-          onClose={ () => setAddComponentDialogOpen(false) }
+      <div className={classes.editorLayout}>
+        <LayoutLeftPanel
+          layout={foundLayout}
+          treeObjects={treeObjects}
+          selectedComponent={selectedComponent}
+          deviceModels={deviceModels}
+          onTreeComponentSelect={onTreeComponentSelect}
+          onAddComponentClick={onAddComponentClick}
+          onLayoutNameChange={onLayoutNameChange}
+          onDeviceModelChange={onDeviceModelChange}
+          onScreenOrientationChange={onScreenOrientationChange}
         />
+        <EditorView>{renderEditor()}</EditorView>
+        {selectedComponent && (
+          <LayoutRightPanel
+            component={selectedComponent}
+            layout={foundLayout}
+            setLayout={setFoundLayout}
+            updateComponent={updateComponent}
+            onClose={() => setSelectedComponent(undefined)}
+          />
+        )}
+      </div>
+      <AddNewElementDialog
+        open={addComponentDialogOpen}
+        subLayouts={subLayouts}
+        siblingPath={newComponentPath}
+        onConfirm={createComponent}
+        onClose={() => setAddComponentDialogOpen(false)}
+      />
     </BasicLayout>
   );
-}
+};
 
 /**
  * Redux mapper for mapping store state to component props
@@ -371,7 +390,7 @@ const mapStateToProps = (state: ReduxState) => {
     exhibitions: state.exhibitions.exhibitions,
     deviceModels: state.devices.deviceModels
   };
-}
+};
 
 /**
  * Redux mapper for mapping component dispatches
@@ -383,6 +402,6 @@ const mapDispatchToProps = (dispatch: Dispatch<ReduxActions>) => {
     setSelectedLayout: (layout: PageLayout) => dispatch(setSelectedLayout(layout)),
     setLayouts: (layouts: PageLayout[]) => dispatch(setLayouts(layouts))
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreenHTML));

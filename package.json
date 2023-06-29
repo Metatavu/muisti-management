@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "build-client": "openapi-generator-cli generate -i noheva-api-spec/swagger.yaml -o src/generated/client -c generator-config.json -g typescript-fetch",
-    "postinstall": "npm run build-client"
+    "postinstall": "npm run build-client",
+    "lint:check": "rome ci src/",
+    "lint:fix": "rome check src/ --apply-suggested && rome format src/ --write"
   },
   "dependencies": {
     "@codemirror/lang-html": "6.4.3",
@@ -80,6 +82,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/uuid": "9.0.1",
     "@vitejs/plugin-react": "3.1.0",
+    "rome": "12.1.3",
     "typescript": "4.9.3",
     "vite": "4.2.0"
   }

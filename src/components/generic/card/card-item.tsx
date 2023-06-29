@@ -1,8 +1,7 @@
 import * as React from "react";
-
 import { Typography, Card, CardHeader, CardContent, Button } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/components/generic/card/card-item";
 import MenuButton from "../menu-button";
 import { ActionButton } from "../../../types";
@@ -14,7 +13,6 @@ import strings from "../../../localization/strings";
  * Component props
  */
 interface Props extends WithStyles<typeof styles> {
-
   /**
    * Card title
    */
@@ -65,17 +63,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Component state
- */
-interface State {
-
-}
-
-/**
  * Generic card item component
  */
-class CardItem extends React.Component<Props, State> {
-
+class CardItem extends React.Component<Props, {}> {
   /**
    * Component render method
    */
@@ -83,36 +73,33 @@ class CardItem extends React.Component<Props, State> {
     const { classes, menuOptions, title, subtitle, context, status, size, selected } = this.props;
 
     return (
-      <div className={ classes.cardWrapper }>
+      <div className={classes.cardWrapper}>
         <Card
-          elevation={ 5 }
+          elevation={5}
           variant="elevation"
-          className={ classNames(`${ size === "large" ? classes.largeCard : classes.card } ${ selected ? "selected" : "" }`) }
-          onClick={ this.props.onClick }
-          >
+          className={classNames(
+            `${size === "large" ? classes.largeCard : classes.card} ${selected ? "selected" : ""}`
+          )}
+          onClick={this.props.onClick}
+        >
           <CardHeader
             titleTypographyProps={{ variant: "h3" }}
-            action={
-              menuOptions &&
-                <MenuButton
-                  menuOptions={ menuOptions }
-                />
-            }
-            title={ title }
-            subheader={ subtitle }
-            />
+            action={menuOptions && <MenuButton menuOptions={menuOptions} />}
+            title={title}
+            subheader={subtitle}
+          />
           <CardContent>
-            { context }
-            { status &&
-              <Typography variant="h5" className={ classes.status }>
-                { status }
+            {context}
+            {status && (
+              <Typography variant="h5" className={classes.status}>
+                {status}
               </Typography>
-            }
+            )}
           </CardContent>
         </Card>
-        <div className={ classNames(`${ classes.cardActionArea } ${ selected ? "visible" : "" }`) }>
-          <Button onClick={ this.props.onActionClick } variant="outlined">
-            { strings.contentEditor.open }
+        <div className={classNames(`${classes.cardActionArea} ${selected ? "visible" : ""}`)}>
+          <Button onClick={this.props.onActionClick} variant="outlined">
+            {strings.contentEditor.open}
           </Button>
         </div>
       </div>
