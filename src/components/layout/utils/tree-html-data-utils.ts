@@ -258,7 +258,8 @@ export const wrapTemplate = (bodyContent: string) => `<!DOCTYPE html>
           margin: 0;
           padding: 0;
           pointer-events: none;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
         }
       </style>
     </head>
