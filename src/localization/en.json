@@ -273,42 +273,6 @@
     "properties": {
       "title": "properties"
     },
-    "htmlProperties": {
-      "elementSettings": "Element settings",
-      "genericProperties": {
-        "element": "Element",
-        "elementName": "Element name",
-        "proportions": "Proportions",
-        "width": "Width",
-        "height": "Height",
-        "elevation": "Elevation",
-        "color": {
-          "label": "Background color",
-          "button": "Choose color"
-        },
-        "alignment": {
-          "northwest": "Top left",
-          "north": "Top",
-          "northeast": "Top right",
-          "west": "Left",
-          "center": "Center",
-          "east": "Right",
-          "southwest": "Bottom left",
-          "south": "Bottom",
-          "southeast": "Bottom right"
-        },
-        "margin": "Margin",
-        "padding": "Padding"
-      },
-      "layoutProperties": {
-        "contentEmphasis": "Content emphasis"
-      },
-      "textProperties": {
-        "elementType": "Text element type",
-        "fontColor": "Font color",
-        "defaultResources": "Default resources"
-      }
-    },
     "delete": {
       "deleteTitle": "Delete page layout",
       "deleteText": "Are you sure you want to delete selected page layout?",
@@ -435,7 +399,6 @@
       "upload": "Upload image"
     },
     "properties": {
-
       "title": "Properties",
       "imageHeight": "Image Height",
       "imageWidth": "Image Width",
@@ -530,7 +493,61 @@
       "dialogTitle" : "Type room name"
     }
   },
-
+  "layoutEditorV2": {
+    "drawerTitle": "Element settings",
+    "genericProperties": {
+      "element": "Element",
+      "elementName": "Element name",
+      "proportions": "Proportions",
+      "width": "Width",
+      "height": "Height",
+      "elevation": "Elevation",
+      "color": {
+        "label": "Background color",
+        "button": "Choose color"
+      },
+      "margin": "Margin",
+      "padding": "Padding"
+    },
+    "layoutProperties": {
+      "contentEmphasis": "Content emphasis",
+      "contentDirection": {
+        "label": "Content direction",
+        "row": "Horizontal",
+        "column": "Vertical"
+      },
+      "contentGap": "Content gap (px)",
+      "alignment": {
+        "northwest": "Top left",
+        "north": "Top",
+        "northeast": "Top right",
+        "west": "Left",
+        "center": "Center",
+        "east": "Right",
+        "southwest": "Bottom left",
+        "south": "Bottom",
+        "southeast": "Bottom right"
+      }
+    },
+    "textProperties": {
+      "elementType": "Text element type",
+      "fontColor": "Font color",
+      "defaultResource": "Default text"
+    },
+    "buttonProperties": {
+      "fontColor": "Font color",
+      "defaultResource": "Default text"
+    },
+    "imageProperties": {
+      "defaultResource": "Default image"
+    },
+    "videoProperties": {
+      "loop": "Loop",
+      "autoPlay": "Automatic playback",
+      "controls": "Show controls",
+      "defaultResource": "Default video"
+    }
+  },
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
@@ -808,7 +825,8 @@
     "unsaved": "You have unsaved changes, are you sure you want to leave?",
     "properties": "Properties",
     "noSelection": "No selection",
-    "clear": "Clear"
+    "clear": "Clear",
+    "notYetImplemented": "Not yet implemented"
   },
 
   "spaces": {

@@ -91,7 +91,7 @@ const TextComponentProperties = ({
     <Stack>
       <Divider sx={{ color: "#F5F5F5" }}/>
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.elementType }/>
+        <PanelSubtitle subtitle={ strings.layoutEditorV2.textProperties.elementType }/>
         <SelectBox value={ component.element.tagName } onChange={ handleElementChange }>
           { Object.values(HtmlTextComponentType).map(type => (
             <MenuItem
@@ -110,11 +110,11 @@ const TextComponentProperties = ({
         updateComponent={ updateComponent }
       />
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
+        <PanelSubtitle subtitle={ strings.layoutEditorV2.textProperties.defaultResource }/>
         <TextField
           value={ getElementsDefaultResource() || "" }
           onChange={ handleDefaultResourceChange }
-          placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
+          placeholder={ strings.layoutEditorV2.textProperties.defaultResource }
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }}/>

@@ -85,11 +85,11 @@ const ImageComponentProperties = ({
     <Stack>
     <Divider sx={{ color: "#F5F5F5" }}/>
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
+        <PanelSubtitle subtitle={ strings.layoutEditorV2.imageProperties.defaultResource }/>
         <TextField
           value={ getElementsDefaultResource() || "" }
           onChange={ handleDefaultResourceChange }
-          placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
+          placeholder={ strings.layoutEditorV2.textProperties.defaultResource }
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }}/>

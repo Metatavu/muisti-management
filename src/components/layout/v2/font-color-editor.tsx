@@ -43,7 +43,7 @@ const FontColorEditor = ({
   return (
     <>
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.fontColor }/>
+        <PanelSubtitle subtitle={ strings.layoutEditorV2.textProperties.fontColor }/>
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -53,7 +53,7 @@ const FontColorEditor = ({
             sx={{ color: "#2196F3" }}
             onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
           >
-            { strings.layout.htmlProperties.genericProperties.color.button }
+            { strings.layoutEditorV2.genericProperties.color.button }
           </Button>
         </Stack>
       </PropertyBox>

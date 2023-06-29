@@ -17,20 +17,13 @@ import { KeycloakInstance } from "keycloak-js";
 import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
+import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
 import strings from "../../localization/strings";
-import GenericComponentProperties from "../layout/v2/generic-component-properties";
-import { Close } from "@mui/icons-material";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import LayoutComponentProperties from "../layout/v2/layout-component-properties";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import PagePreviewHtml from "../preview/page-preview-html";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
-import TextComponentProperties from "../layout/v2/text-component-properties";
-import ButtonComponentProperties from "../layout/v2/button-component-properties";
-import ImageComponentProperties from "../layout/v2/image-component-properties";
-import VideoComponentProperties from "../layout/v2/video-component-properties";
+import LayoutRightPanel from "../layout/v2/layout-right-panel";
 
 /**
  * Component props
@@ -68,7 +61,6 @@ const LayoutScreenHTML: FC<Props> = ({
   const [ foundLayout, setFoundLayout ] = useState<PageLayout>();
   const [ error, setError ] = useState<Error>();
   const [ loading, setLoading ] = useState(false);
-  const [ drawerOpen, setDrawerOpen ] = useState(false);
   const [ selectedComponent, setSelectedComponent ] = useState<TreeObject>();
   const [ treeObjects, setTreeObjects ] = useState<TreeObject[]>([]);
   const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
@@ -78,10 +70,6 @@ const LayoutScreenHTML: FC<Props> = ({
   useEffect(() => {
     fetchLayout();
   }, []);
-
-  useEffect(() => {
-    setDrawerOpen(!!selectedComponent);
-  }, [selectedComponent]);
 
   useEffect(() => {
     if (!foundLayout) return;
@@ -284,8 +272,8 @@ const LayoutScreenHTML: FC<Props> = ({
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(newComponent);
     setDataChanged(true);
-  }
-
+  };
+  
   /**
    * Update component and add it to the layout
    *
@@ -312,88 +300,6 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
   };
-
-  /**
-   * Renders component specific properties
-   */
-  const renderComponentSpecificProperties = () => {
-    switch (selectedComponent?.type) {
-      case HtmlComponentType.LAYOUT:
-        return (
-          <LayoutComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-          />
-        );
-      case HtmlComponentType.TEXT:
-        return (
-          <TextComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-            pageLayout={ foundLayout }
-            setPageLayout={ setFoundLayout }
-          />
-        );
-      case HtmlComponentType.BUTTON:
-        return (
-          <ButtonComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-            pageLayout={ foundLayout }
-            setPageLayout={ setFoundLayout }
-          />
-        );
-      case HtmlComponentType.IMAGE:
-        return (
-          <ImageComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-            pageLayout={ foundLayout }
-            setPageLayout={ setFoundLayout }
-          />
-        );
-      case HtmlComponentType.VIDEO:
-        return (
-          <VideoComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-            pageLayout={ foundLayout }
-            setPageLayout={ setFoundLayout }
-          />
-        );
-    }
-  };
-
-  /**
-   * Renders element settings pane
-   */
-  const renderElementSettingsPane = () => {
-    if (!selectedComponent) return;
-
-    const elementPaneMenuOptions = [{
-      name: strings.genericDialog.close,
-      action: () => {
-        setDrawerOpen(!drawerOpen);
-        setSelectedComponent(undefined);
-      }
-    }];
-
-    return (
-      <ElementSettingsPane
-        width={ 250 }
-        open={ drawerOpen }
-        title={ strings.layout.htmlProperties.elementSettings }
-        actionIcon={ <Close sx={{ color:"#2196F3" }}/> }
-        menuOptions={ elementPaneMenuOptions }
-      >
-        <GenericComponentProperties
-          component={ selectedComponent }
-          updateComponent={ updateComponent }
-        />
-        { renderComponentSpecificProperties() }
-    </ElementSettingsPane>
-    )
-  }
 
   if (loading) {
     return (
@@ -429,7 +335,15 @@ const LayoutScreenHTML: FC<Props> = ({
           <EditorView>
             { renderEditor() }
           </EditorView>
-          { selectedComponent && renderElementSettingsPane() }
+          { selectedComponent && 
+              <LayoutRightPanel
+                component={ selectedComponent }
+                layout={ foundLayout }
+                setLayout={ setFoundLayout }
+                updateComponent={ updateComponent }
+                onClose={ () => setSelectedComponent(undefined) }
+              /> 
+          }
         </div>
         <AddNewElementDialog
           open={ addComponentDialogOpen }
