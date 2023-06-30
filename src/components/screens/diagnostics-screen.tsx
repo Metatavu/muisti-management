@@ -4,7 +4,6 @@ import { ReduxState } from "../../store";
 import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/floor-plan-editor-view";
-¨
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
