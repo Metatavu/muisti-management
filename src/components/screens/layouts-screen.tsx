@@ -1,22 +1,19 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { Badge, CircularProgress, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
+import { setLayouts, setSelectedLayout } from "../../actions/layouts";
+import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
+import Api from "../../api/api";
 import {
+  DeviceModel,
+  Exhibition,
+  ExhibitionPage,
+  LayoutType,
   PageLayout,
   ScreenOrientation,
-  DeviceModel,
-  SubLayout,
-  ExhibitionPage,
-  Exhibition,
-  LayoutType
+  SubLayout
 } from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
 import {
   AccessToken,
   ActionButton,
@@ -24,20 +21,23 @@ import {
   DeleteDataHolder,
   HtmlComponentType
 } from "../../types";
-import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
-import Api from "../../api/api";
-import { setLayouts, setSelectedLayout } from "../../actions/layouts";
-import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
-import produce from "immer";
-import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
-import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import ConfirmDialog from "../generic/confirm-dialog";
+import BasicLayout from "../layouts/basic-layout";
 import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
-import theme from "../../styles/theme";
+import { Badge, CircularProgress, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

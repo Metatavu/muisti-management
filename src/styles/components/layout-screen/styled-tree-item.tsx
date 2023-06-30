@@ -1,8 +1,8 @@
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
-import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
-import { Stack, styled, Typography } from "@mui/material";
 import theme from "../../theme";
 import ParentTreeIcon from "./parent-tree-icon";
+import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/lab";
+import { Stack, Typography, styled } from "@mui/material";
 
 /**
  * Styled Tree Item Props type

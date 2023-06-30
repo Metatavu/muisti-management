@@ -1,9 +1,9 @@
 import { DeviceModelDataProperty } from ".";
+import { DeviceModelCapabilities } from "../generated/client";
 import {
   DeviceModelDimensionsData,
   DeviceModelDisplayMetricsData
 } from "./device-model-string-data";
-import { DeviceModelCapabilities } from "../generated/client";
 
 /**
  * Checks if DeviceModelData property is type of DeviceModelDimensionsData

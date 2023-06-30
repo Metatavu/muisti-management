@@ -1,35 +1,35 @@
-import * as React from "react";
 import strings from "../../localization/strings";
+import styles from "../../styles/components/right-panel-editors/media-library";
+import theme from "../../styles/theme";
 import {
-  Typography,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
+  Button,
   Table,
+  TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TableCell,
   TableSortLabel,
-  TableBody,
-  Button
+  Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/right-panel-editors/media-library";
-import theme from "../../styles/theme";
+import * as React from "react";
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import FolderClosedIcon from "@mui/icons-material/FolderOutlined";
-import FolderOpenIcon from "@mui/icons-material/FolderOpenOutlined";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import PostAddIcon from "@mui/icons-material/PostAdd";
-import { AccessToken, MediaType } from "../../types";
 import Api from "../../api/api";
-import { StoredFile, ExhibitionPageResource } from "../../generated/client";
-import FileUploader from "../generic/file-uploader";
-import FileUpload from "../../utils/file-upload";
 import { Config } from "../../constants/configuration";
+import { ExhibitionPageResource, StoredFile } from "../../generated/client";
+import { AccessToken, MediaType } from "../../types";
+import FileUpload from "../../utils/file-upload";
+import FileUploader from "../generic/file-uploader";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FolderOpenIcon from "@mui/icons-material/FolderOpenOutlined";
+import FolderClosedIcon from "@mui/icons-material/FolderOutlined";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 /**
  * Interface representing component properties

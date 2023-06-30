@@ -1,5 +1,5 @@
-import { cleanEnv, bool, str, url, num } from "envalid";
 import { StaticConfig } from "../types";
+import { bool, cleanEnv, num, str, url } from "envalid";
 
 /**
  * Validates that environment variables are in place and have correct form

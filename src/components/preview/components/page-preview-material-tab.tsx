@@ -1,20 +1,20 @@
-import * as React from "react";
-import Measure, { ContentRect } from "react-measure";
-import { Tabs, Tab } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/page-preview";
 import {
   PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutWidgetType
 } from "../../../generated/client";
-import { CSSProperties } from "@mui/material/styles";
+import styles from "../../../styles/page-preview";
+import { CSSPropertyValuePairs, ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
-import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
-import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import AndroidUtils from "../../../utils/android-utils";
+import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import { SelectedTabIndicatorGravityValues } from "../../layout/editor-constants/values";
+import { Tab, Tabs } from "@mui/material";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import Measure, { ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties

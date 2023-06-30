@@ -1,21 +1,21 @@
-import * as React from "react";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/page-preview";
-import PagePreviewComponentEditor from "./components/page-preview-component";
 import {
+  ExhibitionDevice,
+  ExhibitionPage,
+  ExhibitionPageResource,
   PageLayoutView,
   PageLayoutViewProperty,
-  ExhibitionPageResource,
-  ScreenOrientation,
-  ExhibitionDevice,
-  ExhibitionPage
+  ScreenOrientation
 } from "../../generated/client";
-import DisplayMetrics from "../../types/display-metrics";
-import { CSSProperties } from "@mui/material/styles";
-import AndroidUtils from "../../utils/android-utils";
+import styles from "../../styles/page-preview";
 import { ResourceMap } from "../../types";
+import DisplayMetrics from "../../types/display-metrics";
+import AndroidUtils from "../../utils/android-utils";
 import { ExhibitionPageTabHolder } from "../content-editor/constants";
+import PagePreviewComponentEditor from "./components/page-preview-component";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties

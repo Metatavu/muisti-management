@@ -1,13 +1,13 @@
-import * as React from "react";
-import { Typography, Card, CardHeader, CardContent, Button } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/components/generic/card/card-item";
-import MenuButton from "../menu-button";
-import { ActionButton } from "../../../types";
-import classNames from "classnames";
 import { GroupContentVersionStatus } from "../../../generated/client";
 import strings from "../../../localization/strings";
+import styles from "../../../styles/components/generic/card/card-item";
+import { ActionButton } from "../../../types";
+import MenuButton from "../menu-button";
+import { Button, Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import classNames from "classnames";
+import * as React from "react";
 
 /**
  * Component props

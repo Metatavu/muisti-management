@@ -1,34 +1,34 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { ReduxState } from "../../store";
 import Api from "../../api/api";
-import { History } from "history";
+import {
+  DeviceModel,
+  Exhibition,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
+  RfidAntenna
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxState } from "../../store";
 import styles from "../../styles/floor-plan-editor-view";
+import { AccessToken, ActionButton } from "../../types";
+import DiagnosticsProperties from "../diagnostics/diagnostics-properties";
+import TagMonitoringView from "../diagnostics/tag-monitoring-view";
+import EditorView from "../editor/editor-view";
+import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
+import { MqttListener } from "../generic/mqtt-listener";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import {
-  Exhibition,
-  ExhibitionFloor,
-  ExhibitionRoom,
-  ExhibitionDevice,
-  ExhibitionDeviceGroup,
-  DeviceModel,
-  RfidAntenna
-} from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton } from "../../types";
-import strings from "../../localization/strings";
-import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
-import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
+import * as React from "react";
 import { createRef } from "react";
-import DiagnosticsProperties from "../diagnostics/diagnostics-properties";
-import TagMonitoringView from "../diagnostics/tag-monitoring-view";
-import { MqttListener } from "../generic/mqtt-listener";
+import { connect } from "react-redux";
+import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
 
 /**
  * Component props

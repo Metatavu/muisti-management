@@ -1,6 +1,6 @@
 import {
-  PageLayoutWidgetType,
   ExhibitionPageResourceType,
+  PageLayoutWidgetType,
   PageResourceMode
 } from "../../generated/client";
 

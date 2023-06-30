@@ -1,11 +1,11 @@
-import * as React from "react";
-import ReactHtmlParser from "react-html-parser";
-import { ExhibitionPageTabResource } from "../content-editor/constants";
+import { ExhibitionPageResourceType } from "../../generated/client";
 import styles from "../../styles/components/generic/tab-item";
+import { ExhibitionPageTabResource } from "../content-editor/constants";
 import { Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { ExhibitionPageResourceType } from "../../generated/client";
+import * as React from "react";
+import ReactHtmlParser from "react-html-parser";
 
 /**
  * Interface representing component properties

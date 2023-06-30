@@ -1,12 +1,12 @@
-import * as React from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TextField
 } from "@mui/material";
+import * as React from "react";
 
 /**
  * Interface representing component properties

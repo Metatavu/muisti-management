@@ -1,12 +1,12 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { TextField, Button } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import styles from "../../../styles/components/layout-screen/margin-padding-editor";
+import { LayoutMarginPropKeys, LayoutPaddingPropKeys } from "../editor-constants/keys";
 import LinkIcon from "@mui/icons-material/Link";
 import UnLinkIcon from "@mui/icons-material/LinkOff";
-import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { Button, TextField } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties

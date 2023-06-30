@@ -1,3 +1,5 @@
+import { LayoutAlignment } from "../../../types";
+import LocalizationUtils from "../../../utils/localization-utils";
 import { Icon } from "@material-ui/core";
 import {
   EastOutlined,
@@ -12,8 +14,6 @@ import {
 } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { ElementType, useState } from "react";
-import LocalizationUtils from "../../../utils/localization-utils";
-import { LayoutAlignment } from "../../../types";
 
 /**
  * Alignment icon row type

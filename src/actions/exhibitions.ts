@@ -1,6 +1,6 @@
-import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
 import { Exhibition } from "../generated/client";
+import { ActionCreator } from "redux";
 
 /**
  * Interface for set selected exhibition action type

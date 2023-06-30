@@ -1,7 +1,7 @@
 import { SubLayoutsAction } from "../actions/subLayouts";
-import { SET_SUB_LAYOUTS, SET_SELECTED_SUB_LAYOUT } from "../constants/actionTypes";
-import { Reducer } from "redux";
+import { SET_SELECTED_SUB_LAYOUT, SET_SUB_LAYOUTS } from "../constants/actionTypes";
 import { SubLayout } from "../generated/client";
+import { Reducer } from "redux";
 
 /**
  * Sub layouts state
@@ -25,7 +25,6 @@ const initialState: SubLayoutsState = {
  * @param storeState store state of layouts
  * @param action action of layouts
  */
-// eslint-disable-next-line max-len
 export const subLayoutsReducer: Reducer<SubLayoutsState, SubLayoutsAction> = (
   state: SubLayoutsState = initialState,
   action: SubLayoutsAction

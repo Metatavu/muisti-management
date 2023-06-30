@@ -1,20 +1,20 @@
-import * as React from "react";
 import {
+  PageLayoutView,
   PageLayoutViewProperty,
-  PageLayoutViewPropertyType,
-  PageLayoutView
+  PageLayoutViewPropertyType
 } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { Typography, Divider, Box } from "@mui/material";
+import styles from "../../../../styles/common-properties-editor";
+import theme from "../../../../styles/theme";
+import HelpDialog from "../../../generic/help-dialog";
+import { LayoutLinearLayoutPropKeys } from "../../editor-constants/keys";
+import { LinearLayoutOrientationValues } from "../../editor-constants/values";
+import { getProperty } from "../../utils/tree-data-utils";
+import GenericPropertySelect from "../generic-property-select";
+import { Box, Divider, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../../styles/common-properties-editor";
-import GenericPropertySelect from "../generic-property-select";
-import { LinearLayoutOrientationValues } from "../../editor-constants/values";
-import { LayoutLinearLayoutPropKeys } from "../../editor-constants/keys";
-import theme from "../../../../styles/theme";
-import { getProperty } from "../../utils/tree-data-utils";
-import HelpDialog from "../../../generic/help-dialog";
+import * as React from "react";
 
 /**
  * Interface representing component properties

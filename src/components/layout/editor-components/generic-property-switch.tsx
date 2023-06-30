@@ -1,9 +1,9 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { Switch, Grid } from "@mui/material";
+import styles from "../../../styles/add-device-editor";
+import { Grid, Switch } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/add-device-editor";
+import * as React from "react";
 
 /**
  * Interface representing component properties

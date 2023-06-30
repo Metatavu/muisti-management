@@ -1,34 +1,34 @@
-import * as React from "react";
 import {
+  DynamicPageResource,
+  DynamicPageResourceDataSource,
+  DynamicPageResourceType,
   ExhibitionPageResource,
   ExhibitionPageResourceType,
   PageResourceMode,
-  DynamicPageResource,
-  DynamicPageResourceType,
-  DynamicPageResourceDataSource,
   VisitorVariable
 } from "../../generated/client";
 import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/content-editor/resource-editor";
+import { AccessToken } from "../../types";
+import ResourceUtils from "../../utils/resource-utils";
+import MediaLibrary from "../right-panel-editors/media-library";
+import { resourceModes } from "./constants";
+import DynamicResourceEditor from "./dynamic-resource-editor";
 import {
-  TextField,
-  Select,
-  MenuItem,
   FormControl,
   InputLabel,
-  SelectChangeEvent
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/content-editor/resource-editor";
-import { ReduxActions, ReduxState } from "../../store";
+import produce from "immer";
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import MediaLibrary from "../right-panel-editors/media-library";
-import produce from "immer";
-import { AccessToken } from "../../types";
-import ResourceUtils from "../../utils/resource-utils";
-import DynamicResourceEditor from "./dynamic-resource-editor";
-import { resourceModes } from "./constants";
 
 /**
  * Interface representing component properties

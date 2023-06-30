@@ -1,14 +1,14 @@
-import * as React from "react";
+import strings from "../../localization/strings";
+import HelpIcon from "@mui/icons-material/Help";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton
 } from "@mui/material";
-import HelpIcon from "@mui/icons-material/Help";
-import strings from "../../localization/strings";
+import * as React from "react";
 
 /**
  * Interface representing component properties

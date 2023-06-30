@@ -1,40 +1,40 @@
-import { ChangeEvent, FC, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { setSelectedLayout, setLayouts } from "../../actions/layouts";
+import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import Api from "../../api/api";
-import { History } from "history";
+import {
+  DeviceModel,
+  Exhibition,
+  PageLayout,
+  PageLayoutViewHtml,
+  ScreenOrientation,
+  SubLayout
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/layout-screen/layout-editor-view";
+import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
+import AddNewElementDialog from "../dialogs/add-new-element-dialog";
+import EditorView from "../editor/editor-view";
 import {
   addNewHtmlComponent,
-  updateHtmlComponent,
   constructTree,
   createTreeObject,
   deserializeElement,
-  treeObjectToHtmlElement
+  treeObjectToHtmlElement,
+  updateHtmlComponent
 } from "../layout/utils/tree-html-data-utils";
-import styles from "../../styles/components/layout-screen/layout-editor-view";
-import { CircularProgress, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
-import {
-  PageLayout,
-  Exhibition,
-  DeviceModel,
-  ScreenOrientation,
-  SubLayout,
-  PageLayoutViewHtml
-} from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
-import strings from "../../localization/strings";
-import AddNewElementDialog from "../dialogs/add-new-element-dialog";
-import PagePreviewHtml from "../preview/page-preview-html";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import LayoutRightPanel from "../layout/v2/layout-right-panel";
+import BasicLayout from "../layouts/basic-layout";
+import PagePreviewHtml from "../preview/page-preview-html";
+import { CircularProgress, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

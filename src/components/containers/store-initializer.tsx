@@ -1,16 +1,16 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { ReduxState, ReduxActions } from "../../store";
-import { Dispatch } from "redux";
+import { setDeviceModels } from "../../actions/devices";
 import { setExhibitions } from "../../actions/exhibitions";
 import { setLayouts } from "../../actions/layouts";
-import { setDeviceModels } from "../../actions/devices";
+import { setSubLayouts } from "../../actions/subLayouts";
+import Api from "../../api/api";
+import { DeviceModel, Exhibition, PageLayout, SubLayout } from "../../generated/client";
+import { ReduxActions, ReduxState } from "../../store";
 import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, DeviceModel, SubLayout } from "../../generated/client";
-import Api from "../../api/api";
-import { setSubLayouts } from "../../actions/subLayouts";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

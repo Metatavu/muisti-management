@@ -1,18 +1,18 @@
-import * as React from "react";
-import { ContentRect } from "react-measure";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/page-preview";
 import {
+  ExhibitionPageResourceType,
   PageLayoutView,
-  PageLayoutViewProperty,
-  ExhibitionPageResourceType
+  PageLayoutViewProperty
 } from "../../../generated/client";
-import { CSSProperties } from "@mui/material/styles";
+import styles from "../../../styles/page-preview";
+import { ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
 import PagePreviewImageView from "./page-preview-image-view";
 import PagePreviewPlayerView from "./page-preview-player-view";
-import { ResourceMap } from "../../../types";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties

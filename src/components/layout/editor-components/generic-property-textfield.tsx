@@ -1,11 +1,11 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
+import styles from "../../../styles/add-device-editor";
+import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
 import { TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/add-device-editor";
-import AndroidUtils from "../../../utils/android-utils";
-import DisplayMetrics from "../../../types/display-metrics";
+import * as React from "react";
 
 /**
  * Interface representing component properties

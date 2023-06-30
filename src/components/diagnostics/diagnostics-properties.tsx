@@ -1,15 +1,15 @@
-import * as React from "react";
-import { Typography } from "@mui/material";
 import {
-  ScreenOrientation,
+  DeviceImageLoadStrategy,
   DeviceModel,
-  ExhibitionRoom,
-  ExhibitionDeviceGroup,
   ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionRoom,
   RfidAntenna,
-  DeviceImageLoadStrategy
+  ScreenOrientation
 } from "../../generated/client";
 import strings from "../../localization/strings";
+import { Typography } from "@mui/material";
+import * as React from "react";
 
 /**
  * Component properties

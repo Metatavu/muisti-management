@@ -1,18 +1,18 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import Api from "../../api/api";
+import { DeviceModel } from "../../generated/client";
+import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
 import styles from "../../styles/exhibition-view";
+import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
+import BasicLayout from "../layouts/basic-layout";
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { DeviceModel } from "../../generated/client";
-import { AccessToken, BreadcrumbData, ActionButton } from "../../types";
-import strings from "../../localization/strings";
-import BasicLayout from "../layouts/basic-layout";
-import Api from "../../api/api";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

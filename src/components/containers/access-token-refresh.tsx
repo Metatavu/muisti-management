@@ -1,12 +1,12 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { ReduxState, ReduxActions } from "../../store";
 import { login } from "../../actions/auth";
+import { Config } from "../../constants/configuration";
+import { ReduxActions, ReduxState } from "../../store";
 import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
-import { Config } from "../../constants/configuration";
+import * as React from "react";
+import { connect } from "react-redux";
 
 /**
  * Component props

@@ -1,5 +1,5 @@
-import * as React from "react";
 import mqtt, { Mqtt } from "../../mqtt";
+import * as React from "react";
 
 /**
  * Interface representing component properties

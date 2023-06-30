@@ -1,14 +1,14 @@
+import { TabStructure } from "../components/content-editor/constants";
 import {
   ExhibitionPageResource,
+  ExhibitionPageResourceType,
   PageLayoutView,
   PageLayoutViewProperty,
-  ExhibitionPageResourceType,
   PageLayoutWidgetType,
   PageResourceMode
 } from "../generated/client";
 import strings from "../localization/strings";
 import { MediaType } from "../types";
-import { TabStructure } from "../components/content-editor/constants";
 import { parseStringToJsonObject } from "./content-editor-utils";
 
 /**

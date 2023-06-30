@@ -1,19 +1,19 @@
-import * as React from "react";
-import { ExhibitionDevice, ScreenOrientation, DeviceModel } from "../../generated/client";
+import { DeviceModel, ExhibitionDevice, ScreenOrientation } from "../../generated/client";
 import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/add-device-editor";
 import {
-  TextField,
-  MenuItem,
-  InputLabel,
-  Select,
-  Typography,
   Grid,
-  SelectChangeEvent
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/add-device-editor";
-import { ReduxActions, ReduxState } from "../../store";
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 

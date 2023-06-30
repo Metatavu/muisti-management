@@ -3,12 +3,12 @@ import {
   PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutViewPropertyType,
-  SubLayout,
-  PageLayoutWidgetType
+  PageLayoutWidgetType,
+  SubLayout
 } from "../../../generated/client";
 import {
-  LayoutPaddingPropKeys,
   LayoutMarginPropKeys,
+  LayoutPaddingPropKeys,
   LayoutPropKeys
 } from "../editor-constants/keys";
 import { v4 as uuid } from "uuid";

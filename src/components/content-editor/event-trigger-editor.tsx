@@ -1,41 +1,45 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
-import styles from "../../styles/exhibition-view";
-import {
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Divider,
-  Paper,
-  Box,
-  ListItemText,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
 import {
   Exhibition,
   ExhibitionPage,
-  ExhibitionPageEventTrigger,
   ExhibitionPageEvent,
+  ExhibitionPageEventTrigger,
   PageLayoutView,
   VisitorVariable
 } from "../../generated/client";
-import { PhysicalButton, PhysicalButtonData } from "../../types";
 import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { PhysicalButton, PhysicalButtonData } from "../../types";
+import HelpDialog from "../generic/help-dialog";
+import PageEventDialog from "./page-event-dialog";
+import AddIcon from "@mui/icons-material/Add";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -43,13 +47,9 @@ import strings from "../../localization/strings";
 // import "codemirror/addon/lint/lint.css";
 // import "codemirror/addon/lint/lint";
 import _ from "lodash";
-import theme from "../../styles/theme";
-import produce from "immer";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import HelpDialog from "../generic/help-dialog";
-import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
-import PageEventDialog from "./page-event-dialog";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

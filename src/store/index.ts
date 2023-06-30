@@ -1,14 +1,14 @@
-import { combineReducers } from "redux";
-import { exhibitionsReducer } from "../reducers/exhibitions";
-import { ExhibitionsAction } from "../actions/exhibitions";
-import { authReducer } from "../reducers/auth";
 import { AuthAction } from "../actions/auth";
-import { devicesReducer } from "../reducers/devices";
 import { DevicesAction } from "../actions/devices";
-import { layoutsReducer } from "../reducers/layouts";
+import { ExhibitionsAction } from "../actions/exhibitions";
 import { LayoutsAction } from "../actions/layouts";
-import { subLayoutsReducer } from "../reducers/subLayouts";
 import { SubLayoutsAction } from "../actions/subLayouts";
+import { authReducer } from "../reducers/auth";
+import { devicesReducer } from "../reducers/devices";
+import { exhibitionsReducer } from "../reducers/exhibitions";
+import { layoutsReducer } from "../reducers/layouts";
+import { subLayoutsReducer } from "../reducers/subLayouts";
+import { combineReducers } from "redux";
 
 /**
  * Root reducer that wraps all Redux reducers

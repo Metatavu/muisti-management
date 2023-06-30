@@ -1,19 +1,19 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Exhibition } from "../../generated/client";
+import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
 import styles from "../../styles/exhibition-view";
+import { AccessToken, ActionButton } from "../../types";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import BasicLayout from "../layouts/basic-layout";
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition } from "../../generated/client";
-import { AccessToken, ActionButton } from "../../types";
-import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

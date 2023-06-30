@@ -1,18 +1,18 @@
-import * as React from "react";
 import { Exhibition } from "../../generated/client";
 import strings from "../../localization/strings";
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/floor-plan/floor-plan-tree-view";
+import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
+import ChevronRightIcon from "@mui/icons-material/ArrowRight";
 import { FilledInput, InputAdornment, List, ListItem } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/floor-plan/floor-plan-tree-view";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
-import SearchIcon from "../../resources/gfx/svg-paths/hae";
 import classNames from "classnames";
-import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
-import ChevronRightIcon from "@mui/icons-material/ArrowRight";
+import * as React from "react";
+import { connect } from "react-redux";
+import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties

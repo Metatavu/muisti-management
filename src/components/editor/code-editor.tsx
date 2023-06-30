@@ -1,12 +1,12 @@
-import * as React from "react";
+import { ExhibitionPage, ExhibitionPageEventActionType } from "../../generated/client";
+import strings from "../../localization/strings";
+import styles from "../../styles/code-editor";
+import { json } from "@codemirror/lang-json";
 import { Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/code-editor";
 import CodeMirror from "@uiw/react-codemirror";
-import strings from "../../localization/strings";
-import { ExhibitionPage, ExhibitionPageEventActionType } from "../../generated/client";
-import { json } from "@codemirror/lang-json";
+import * as React from "react";
 
 /**
  * Interface representing component properties

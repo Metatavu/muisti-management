@@ -1,22 +1,22 @@
-import React from "react";
-import { BarChart, Bar, YAxis, XAxis, Cell, ResponsiveContainer } from "recharts";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/diagnostics/tag-monitoring-view";
-import { Mqtt } from "../../mqtt";
+import Api from "../../api/api";
+import { useInterval } from "../../app/hooks";
+import { Config } from "../../constants/configuration";
 import {
   MqttProximityUpdate,
   RfidAntenna,
   VisitorSession,
   VisitorSessionState
 } from "../../generated/client";
-import { Config } from "../../constants/configuration";
-import { useInterval } from "../../app/hooks";
-import Api from "../../api/api";
-import { ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { AccessToken } from "../../types";
 import strings from "../../localization/strings";
+import { Mqtt } from "../../mqtt";
+import { ReduxState } from "../../store";
+import styles from "../../styles/components/diagnostics/tag-monitoring-view";
+import { AccessToken } from "../../types";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import React from "react";
+import { connect } from "react-redux";
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 /**
  * Visible tag data

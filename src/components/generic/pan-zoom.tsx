@@ -1,16 +1,16 @@
-import * as React from "react";
-import {
-  TransformWrapper,
-  TransformComponent,
-  ReactZoomPanPinchContentRef
-} from "react-zoom-pan-pinch";
-import Measure, { ContentRect } from "react-measure";
+import styles from "../../styles/components/generic/pan-zoom";
+import ZoomInIcon from "@mui/icons-material/Add";
+import ZoomOutIcon from "@mui/icons-material/Remove";
 import { Button } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import ZoomInIcon from "@mui/icons-material/Add";
-import ZoomOutIcon from "@mui/icons-material/Remove";
-import styles from "../../styles/components/generic/pan-zoom";
+import * as React from "react";
+import Measure, { ContentRect } from "react-measure";
+import {
+  ReactZoomPanPinchContentRef,
+  TransformComponent,
+  TransformWrapper
+} from "react-zoom-pan-pinch";
 
 /**
  * Interface representing component properties

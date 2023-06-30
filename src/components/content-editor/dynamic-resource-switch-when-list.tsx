@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   DynamicPageResourceSwitchWhen,
   ExhibitionPageResourceType,
@@ -6,16 +5,17 @@ import {
   VisitorVariableType
 } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, IconButton, Button, Typography, TextFieldProps, MenuItem } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import styles from "../../styles/components/content-editor/resource-editor";
+import { AccessToken, MediaType } from "../../types";
+import ResourceUtils from "../../utils/resource-utils";
 import MediaLibraryButton from "./media-library-button";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { Button, IconButton, MenuItem, TextField, TextFieldProps, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import produce from "immer";
-import { AccessToken, MediaType } from "../../types";
-import ResourceUtils from "../../utils/resource-utils";
+import * as React from "react";
 
 /**
  * Interface representing component properties

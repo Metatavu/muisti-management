@@ -1,14 +1,14 @@
-import { MenuItem, Stack } from "@mui/material";
-import strings from "../../../localization/strings";
-import ElementNavigationPane from "../../layouts/element-navigation-pane";
-import LayoutTreeMenuHtml from "./layout-tree-menu-html";
-import { TreeObject } from "../../../types";
 import { DeviceModel, PageLayout } from "../../../generated/client";
-import { ChangeEvent } from "react";
 import { ScreenOrientation } from "../../../generated/client";
-import PanelSubtitle from "./panel-subtitle";
+import strings from "../../../localization/strings";
+import { TreeObject } from "../../../types";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import ElementNavigationPane from "../../layouts/element-navigation-pane";
+import LayoutTreeMenuHtml from "./layout-tree-menu-html";
+import PanelSubtitle from "./panel-subtitle";
+import { MenuItem, Stack } from "@mui/material";
+import { ChangeEvent } from "react";
 
 /**
  * Components properties

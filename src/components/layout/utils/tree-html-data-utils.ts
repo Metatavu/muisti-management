@@ -1,5 +1,5 @@
 import { ExhibitionPageResource } from "../../../generated/client";
-import { TreeObject, HtmlComponentType } from "../../../types";
+import { HtmlComponentType, TreeObject } from "../../../types";
 
 /**
  * Update item within tree structure

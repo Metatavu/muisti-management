@@ -1,20 +1,20 @@
-import React, { useState, FC, ChangeEvent } from "react";
-import { Button, Divider, MenuItem, Stack } from "@mui/material";
-import { ColorResult } from "react-color";
 import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
+import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
+import SelectBox from "../../generic/v2/select-box";
+import TextField from "../../generic/v2/text-field";
+import ColorPicker from "./color-picker";
+import MarginPaddingEditorHtml from "./margin-padding-editor-html";
+import PanelSubtitle from "./panel-subtitle";
+import PropertyBox from "./property-box";
+import ProportionsEditorHtml from "./proportions-editor-html";
 import {
   FormatColorFillOutlined as FormatColorFillOutlinedIcon,
   PaletteOutlined as PaletteOutlinedIcon
 } from "@mui/icons-material";
-import MarginPaddingEditorHtml from "./margin-padding-editor-html";
-import ProportionsEditorHtml from "./proportions-editor-html";
-import PropertyBox from "./property-box";
-import PanelSubtitle from "./panel-subtitle";
-import SelectBox from "../../generic/v2/select-box";
-import TextField from "../../generic/v2/text-field";
-import ColorPicker from "./color-picker";
-import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
+import { Button, Divider, MenuItem, Stack } from "@mui/material";
+import React, { ChangeEvent, FC, useState } from "react";
+import { ColorResult } from "react-color";
 
 /**
  * Component props

@@ -1,16 +1,16 @@
-import * as React from "react";
+import { ExhibitionDevice } from "../../generated/client";
+import strings from "../../localization/strings";
+import styles from "../../styles/components/generic/basic-layout";
+import { ActionButton, BreadcrumbData } from "../../types";
+import ErrorDialog from "../generic/error-dialog";
+import TopBar from "../generic/top-bar";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/basic-layout";
-import TopBar from "../generic/top-bar";
-import { KeycloakInstance } from "keycloak-js";
-import ErrorDialog from "../generic/error-dialog";
 import { History } from "history";
-import { BreadcrumbData, ActionButton } from "../../types";
-import { ExhibitionDevice } from "../../generated/client";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
 import { Beforeunload } from "react-beforeunload";
 import { Prompt } from "react-router-dom";
-import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -35,7 +35,9 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Interface representing component state
  */
-interface State {}
+interface State {
+  loading: boolean;
+}
 
 /**
  * Component for basic application layout

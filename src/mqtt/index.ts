@@ -1,6 +1,5 @@
-/* eslint-disable new-parens */
-import * as Paho from "paho-mqtt";
 import { Config } from "../constants/configuration";
+import Paho from "paho-mqtt";
 
 /**
  * Message subscribe callback handler

@@ -1,20 +1,20 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
+import strings from "../../../localization/strings";
+import styles from "../../../styles/components/layout-screen/gravity-editor";
+import ArrowIcon from "@mui/icons-material/ArrowBack";
+import GravityIcon from "@mui/icons-material/OpenWith";
+import CenterIcon from "@mui/icons-material/VerticalAlignCenter";
 import { Button } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/components/layout-screen/gravity-editor";
 import classNames from "classnames";
-import strings from "../../../localization/strings";
-import ArrowIcon from "@mui/icons-material/ArrowBack";
-import CenterIcon from "@mui/icons-material/VerticalAlignCenter";
-import GravityIcon from "@mui/icons-material/OpenWith";
+import * as React from "react";
 
 import theme from "../../../styles/theme";
 import {
   LayoutGravityValuePairs,
-  TabGravityValues,
-  SelectedTabIndicatorGravityValues
+  SelectedTabIndicatorGravityValues,
+  TabGravityValues
 } from "../editor-constants/values";
 import GenericPropertySelect from "./generic-property-select";
 

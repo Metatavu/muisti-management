@@ -1,20 +1,16 @@
-import * as React from "react";
-import styles from "../../styles/exhibition-view";
-import { MenuItem, Select, TextField, Typography, Box, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import {
   ExhibitionPage,
-  ExhibitionPageEventActionType,
-  ExhibitionPageEventPropertyType,
   ExhibitionPageEvent,
+  ExhibitionPageEventActionType,
   ExhibitionPageEventProperty,
+  ExhibitionPageEventPropertyType,
   PageLayoutView,
   PageLayoutWidgetType,
   VisitorVariable,
   VisitorVariableType
 } from "../../generated/client";
 import strings from "../../localization/strings";
+import styles from "../../styles/exhibition-view";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -22,8 +18,12 @@ import strings from "../../localization/strings";
 // import "codemirror/addon/lint/lint.css";
 // import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
-import produce from "immer";
 import GenericDialog from "../generic/generic-dialog";
+import { Box, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import produce from "immer";
+import * as React from "react";
 
 /**
  * Interface describing component props

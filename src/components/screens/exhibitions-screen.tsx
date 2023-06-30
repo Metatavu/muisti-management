@@ -1,23 +1,3 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  LinearProgress,
-  TextField,
-  Typography
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { History } from "history";
-import produce from "immer";
-import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { setExhibitions } from "../../actions/exhibitions";
 import Api from "../../api/api";
 import {
@@ -44,6 +24,26 @@ import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
 import GenericDialog from "../generic/generic-dialog";
 import BasicLayout from "../layouts/basic-layout";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

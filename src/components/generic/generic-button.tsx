@@ -1,8 +1,8 @@
-import * as React from "react";
+import styles from "../../styles/components/generic/generic-button";
 import { Button, PropTypes } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/generic-button";
+import * as React from "react";
 
 /**
  * Interface representing component properties

@@ -1,56 +1,56 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { setSelectedLayout, setLayouts } from "../../actions/layouts";
+import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import Api from "../../api/api";
-import { History } from "history";
-import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
-  CircularProgress,
-  TextField,
-  Select,
-  MenuItem,
-  Typography,
-  InputLabel,
-  FormControl,
-  Box,
-  SelectChangeEvent
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
-import {
+  DeviceModel,
+  Exhibition,
+  LayoutType,
   PageLayout,
   PageLayoutView,
-  Exhibition,
-  DeviceModel,
   ScreenOrientation,
-  SubLayout,
-  LayoutType
+  SubLayout
 } from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import PagePreview from "../preview/page-preview";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import strings from "../../localization/strings";
-import CodeMirror from "@uiw/react-codemirror";
-import { json } from "@codemirror/lang-json";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/layout-screen/layout-editor-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import AndroidUtils from "../../utils/android-utils";
+import EditorView from "../editor/editor-view";
+import ConfirmDialog from "../generic/confirm-dialog";
+import PanZoom from "../generic/pan-zoom";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";
-import { TreeNodeInArray } from "react-simple-tree-menu";
 import {
   constructTreeDeleteData,
   pushNewPageLayoutViewToTree
 } from "../layout/utils/tree-data-utils";
-import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
-import PanZoom from "../generic/pan-zoom";
-import theme from "../../styles/theme";
-import ConfirmDialog from "../generic/confirm-dialog";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import PagePreview from "../preview/page-preview";
+import { json } from "@codemirror/lang-json";
+import {
+  Box,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import CodeMirror from "@uiw/react-codemirror";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { TreeNodeInArray } from "react-simple-tree-menu";
+import { Dispatch } from "redux";
 
 type View = "CODE" | "VISUAL";
 

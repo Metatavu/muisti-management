@@ -1,14 +1,14 @@
-import * as React from "react";
 import strings from "../../localization/strings";
-import * as moment from "moment";
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button
+  DialogTitle
 } from "@mui/material";
+import * as moment from "moment";
+import * as React from "react";
 
 /**
  * Interface representing component properties

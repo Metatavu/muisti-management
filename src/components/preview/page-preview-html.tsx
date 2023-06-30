@@ -1,11 +1,11 @@
-import { FormControlLabel, Switch, Typography, styled } from "@mui/material";
+import { DeviceModel, PageLayout } from "../../generated/client";
+import strings from "../../localization/strings";
+import { TreeObject } from "../../types";
 import PanZoom from "../generic/pan-zoom";
 import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
+import { FormControlLabel, Switch, Typography, styled } from "@mui/material";
 import Fraction from "fraction.js";
-import { DeviceModel, PageLayout } from "../../generated/client";
-import { TreeObject } from "../../types";
 import { useState } from "react";
-import strings from "../../localization/strings";
 
 /**
  * Components properties

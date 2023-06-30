@@ -1,19 +1,19 @@
-import * as React from "react";
+import styles from "../../styles/components/generic/menu-button";
+import theme from "../../styles/theme";
+import { ActionButton } from "../../types";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
-  MenuItem,
-  IconButton,
-  Popper,
-  Grow,
-  Paper,
   ClickAwayListener,
-  MenuList
+  Grow,
+  IconButton,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/menu-button";
-import MenuIcon from "@mui/icons-material/Menu";
-import { ActionButton } from "../../types";
-import theme from "../../styles/theme";
+import * as React from "react";
 
 /**
  * Component props

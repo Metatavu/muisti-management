@@ -1,5 +1,5 @@
-import { v4 as uuid } from "uuid";
 import { HtmlComponentType } from "../types";
+import { v4 as uuid } from "uuid";
 
 namespace HtmlComponentsUtils {
   /**

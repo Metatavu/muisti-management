@@ -1,40 +1,40 @@
-import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import strings from "../../localization/strings";
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import styles from "../../styles/exhibition-tree-menu";
+import theme from "../../styles/theme";
+import GenericDialog from "../generic/generic-dialog";
+import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
+import AddIcon from "@mui/icons-material/AddCircle";
+import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
+import ChevronRightIcon from "@mui/icons-material/ArrowRight";
 import {
+  Box,
+  Divider,
   FilledInput,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
   InputAdornment,
+  InputLabel,
   List,
   ListItem,
   ListItemSecondaryAction,
-  IconButton,
-  Grid,
-  Divider,
-  Select,
-  MenuItem,
-  InputLabel,
-  TextField,
   ListItemText,
-  FormControl,
-  Typography,
-  Box,
-  FormHelperText,
-  SelectChangeEvent
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/exhibition-tree-menu";
-import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
-import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import AddIcon from "@mui/icons-material/AddCircle";
 import classNames from "classnames";
-import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
-import ChevronRightIcon from "@mui/icons-material/ArrowRight";
-import GenericDialog from "../generic/generic-dialog";
-import theme from "../../styles/theme";
+import * as React from "react";
+import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import { v4 as uuid } from "uuid";
-import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
-import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
 
 /**
  * Interface representing component properties

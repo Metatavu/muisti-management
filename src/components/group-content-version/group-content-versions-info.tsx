@@ -1,17 +1,17 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { GroupContentVersion } from "../../generated/client";
+import { ContentVersion } from "../../generated/client/models/ContentVersion";
+import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
-import { Grid, Typography, TextField } from "@mui/material";
+import theme from "../../styles/theme";
+import { AccessToken } from "../../types";
+import { Grid, TextField, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import { GroupContentVersion } from "../../generated/client";
-import { AccessToken } from "../../types";
-import strings from "../../localization/strings";
-import { ContentVersion } from "../../generated/client/models/ContentVersion";
-import theme from "../../styles/theme";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

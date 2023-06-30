@@ -1,9 +1,9 @@
-import * as React from "react";
+import { ContentVersion, ExhibitionDevice } from "../../generated/client/models";
+import styles from "../../styles/components/content-editor/timeline-devices-list";
 import { List, ListItem } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/content-editor/timeline-devices-list";
-import { ExhibitionDevice, ContentVersion } from "../../generated/client/models";
+import * as React from "react";
 
 /**
  * Interface representing component properties

@@ -1,7 +1,7 @@
 import { AuthAction } from "../actions/auth";
 import { LOGIN, LOGOUT } from "../constants/actionTypes";
-import { KeycloakInstance } from "keycloak-js";
 import { AccessToken } from "../types";
+import { KeycloakInstance } from "keycloak-js";
 
 /**
  * Redux auth state

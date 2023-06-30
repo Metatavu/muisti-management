@@ -1,30 +1,30 @@
-import * as React from "react";
 import {
-  PageLayoutViewProperty,
-  PageLayoutViewPropertyType,
+  PageLayout,
   PageLayoutView,
-  PageLayout
+  PageLayoutViewProperty,
+  PageLayoutViewPropertyType
 } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { Typography, Divider, MenuItem, Select, Box, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import styles from "../../../../styles/common-properties-editor";
-import { LayoutTabPropKeys } from "../../editor-constants/keys";
-import ColorPicker from "../color-picker";
 import theme from "../../../../styles/theme";
-import { getProperty } from "../../utils/tree-data-utils";
-import GenericPropertyTextField from "../generic-property-textfield";
-import GravityEditor from "../gravity-editor";
-import GenericPropertySwitch from "../generic-property-switch";
-import {
-  TabModeValues,
-  TabGravityValues,
-  SelectedTabIndicatorGravityValues
-} from "../../editor-constants/values";
-import GenericPropertyCheckbox from "../generic-property-checkbox";
 import DisplayMetrics from "../../../../types/display-metrics";
 import { allowedContainerTypes } from "../../editor-constants/constants";
+import { LayoutTabPropKeys } from "../../editor-constants/keys";
+import {
+  SelectedTabIndicatorGravityValues,
+  TabGravityValues,
+  TabModeValues
+} from "../../editor-constants/values";
+import { getProperty } from "../../utils/tree-data-utils";
+import ColorPicker from "../color-picker";
+import GenericPropertyCheckbox from "../generic-property-checkbox";
+import GenericPropertySwitch from "../generic-property-switch";
+import GenericPropertyTextField from "../generic-property-textfield";
+import GravityEditor from "../gravity-editor";
+import { Box, Divider, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties

@@ -1,20 +1,20 @@
-import * as React from "react";
 import {
+  PageLayoutView,
   PageLayoutViewProperty,
-  PageLayoutViewPropertyType,
-  PageLayoutView
+  PageLayoutViewPropertyType
 } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { Typography, Divider } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import styles from "../../../../styles/common-properties-editor";
-import { LayoutButtonPropKeys } from "../../editor-constants/keys";
 import theme from "../../../../styles/theme";
-import { getProperty } from "../../utils/tree-data-utils";
-import GenericPropertyTextField from "../generic-property-textfield";
 import DisplayMetrics from "../../../../types/display-metrics";
 import HelpDialog from "../../../generic/help-dialog";
+import { LayoutButtonPropKeys } from "../../editor-constants/keys";
+import { getProperty } from "../../utils/tree-data-utils";
+import GenericPropertyTextField from "../generic-property-textfield";
+import { Divider, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties

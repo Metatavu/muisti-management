@@ -1,22 +1,22 @@
 import { Config } from "../constants/configuration";
 import {
   Configuration,
-  ExhibitionsApi,
   ContentVersionsApi,
-  ExhibitionRoomsApi,
-  PageLayoutsApi,
-  ExhibitionPagesApi,
   DeviceModelsApi,
-  ExhibitionDevicesApi,
   ExhibitionDeviceGroupsApi,
+  ExhibitionDevicesApi,
   ExhibitionFloorsApi,
+  ExhibitionPagesApi,
+  ExhibitionRoomsApi,
+  ExhibitionsApi,
   GroupContentVersionsApi,
+  PageLayoutsApi,
   RfidAntennasApi,
   StoredFilesApi,
   SubLayoutsApi,
-  VisitorsApi,
+  VisitorSessionsApi,
   VisitorVariablesApi,
-  VisitorSessionsApi
+  VisitorsApi
 } from "../generated/client";
 import { AccessToken } from "../types";
 

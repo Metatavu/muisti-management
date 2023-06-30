@@ -1,20 +1,20 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
+import strings from "../../../localization/strings";
+import styles from "../../../styles/add-device-editor";
+import {
+  LayoutGravityValuePairs,
+  LayoutHeightValues,
+  LayoutWidthValues,
+  LinearLayoutOrientationValues,
+  SelectedTabIndicatorGravityValues,
+  TabGravityValues,
+  TextViewTextAlignValues,
+  TextViewTextStyleValues
+} from "../editor-constants/values";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/add-device-editor";
-import {
-  LayoutWidthValues,
-  LayoutHeightValues,
-  LayoutGravityValuePairs,
-  TextViewTextStyleValues,
-  TextViewTextAlignValues,
-  LinearLayoutOrientationValues,
-  TabGravityValues,
-  SelectedTabIndicatorGravityValues
-} from "../editor-constants/values";
-import strings from "../../../localization/strings";
+import * as React from "react";
 
 /**
  * Interface representing component properties

@@ -1,9 +1,9 @@
-import * as React from "react";
+import styles from "../../styles/selection-group";
 import { Button, Grid } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import classNames from "classnames";
-import styles from "../../styles/selection-group";
+import * as React from "react";
 
 /**
  * Interface representing component properties

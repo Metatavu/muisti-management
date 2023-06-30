@@ -28,5 +28,9 @@
     "indentStyle": "space",
     "formatWithErrors": true,
     "ignore": ["/generated"]
+  },
+  "organizeImports": {
+    "enabled": true,
+    "ignore": ["/generated"]
   }
 }

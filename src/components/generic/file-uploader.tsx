@@ -1,10 +1,10 @@
-import * as React from "react";
+import strings from "../../localization/strings";
+import styles from "../../styles/dialog";
 import { Button, CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/dialog";
 import { DropzoneDialog } from "material-ui-dropzone";
-import strings from "../../localization/strings";
+import * as React from "react";
 
 /**
  * Component props

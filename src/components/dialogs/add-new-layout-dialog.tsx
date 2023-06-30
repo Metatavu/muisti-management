@@ -1,3 +1,6 @@
+import { DeviceModel } from "../../generated/client";
+import strings from "../../localization/strings";
+import theme from "../../styles/theme";
 import {
   Button,
   Dialog,
@@ -17,9 +20,6 @@ import {
   TextField
 } from "@mui/material";
 import { useState } from "react";
-import { DeviceModel } from "../../generated/client";
-import strings from "../../localization/strings";
-import theme from "../../styles/theme";
 
 /**
  * Components properties

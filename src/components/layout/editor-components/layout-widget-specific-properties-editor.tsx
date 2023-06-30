@@ -1,29 +1,29 @@
-import * as React from "react";
+import { setSelectedLayout } from "../../../actions/layouts";
+import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import {
-  PageLayoutViewProperty,
-  PageLayoutView,
   PageLayout,
+  PageLayoutView,
+  PageLayoutViewProperty,
   PageLayoutWidgetType,
   SubLayout
 } from "../../../generated/client";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/common-properties-editor";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
+import styles from "../../../styles/common-properties-editor";
+import DisplayMetrics from "../../../types/display-metrics";
 import { constructTreeUpdateData, updateLayoutViewProperty } from "../utils/tree-data-utils";
-import TextViewEditor from "./widget-editors/text-view-editor";
+import ButtonEditor from "./widget-editors/button-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
 import ImageViewEditor from "./widget-editors/image-view-editor";
-import PlayerViewEditor from "./widget-editors/player-view-editor";
-import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
+import PlayerViewEditor from "./widget-editors/player-view-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
-import { setSelectedSubLayout } from "../../../actions/subLayouts";
-import DisplayMetrics from "../../../types/display-metrics";
+import TextViewEditor from "./widget-editors/text-view-editor";
 import TouchableOpacityEditor from "./widget-editors/touchable-opacity-editor";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties

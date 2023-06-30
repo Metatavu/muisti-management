@@ -1,27 +1,27 @@
-import * as React from "react";
-import { ContentRect } from "react-measure";
-import { Typography } from "@mui/material";
 import {
   PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutWidgetType
 } from "../../../generated/client";
-import PagePreviewFrameLayout from "./page-preview-frame-layout";
-import PagePreviewTextView from "./page-preview-text-view";
-import PagePreviewFlowTextView from "./page-preview-flow-text-view";
 import PagePreviewButton from "./page-preview-button";
-import PagePreviewTouchableOpacity from "./page-preview-touchable-opacity";
+import PagePreviewFlowTextView from "./page-preview-flow-text-view";
+import PagePreviewFrameLayout from "./page-preview-frame-layout";
 import PagePreviewImageView from "./page-preview-image-view";
-import PagePreviewRelativeLayout from "./page-preview-relative-layout";
-import PagePreviewPlayerView from "./page-preview-player-view";
-import PagePreviewMediaView from "./page-preview-media-view";
 import PagePreviewLinearLayout from "./page-preview-linear-layout";
 import PagePreviewMaterialTab from "./page-preview-material-tab";
+import PagePreviewMediaView from "./page-preview-media-view";
+import PagePreviewPlayerView from "./page-preview-player-view";
+import PagePreviewRelativeLayout from "./page-preview-relative-layout";
+import PagePreviewTextView from "./page-preview-text-view";
+import PagePreviewTouchableOpacity from "./page-preview-touchable-opacity";
+import { Typography } from "@mui/material";
+import * as React from "react";
+import { ContentRect } from "react-measure";
 
-import DisplayMetrics from "../../../types/display-metrics";
-import { CSSProperties } from "@mui/material/styles";
 import { ResourceMap } from "../../../types";
+import DisplayMetrics from "../../../types/display-metrics";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";
+import { CSSProperties } from "@mui/material/styles";
 
 /**
  * Interface representing component properties

@@ -1,11 +1,10 @@
-import * as React from "react";
-
-import { Typography, IconButton } from "@mui/material";
+import styles from "../../styles/element-properties-pane";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { IconButton, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/element-properties-pane";
 import classNames from "classnames";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import * as React from "react";
 
 /**
  * Interface representing component properties

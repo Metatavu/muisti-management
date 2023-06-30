@@ -1,22 +1,22 @@
-import * as React from "react";
-import Measure, { ContentRect, BoundingRect } from "react-measure";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/page-preview";
 import {
   PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutWidgetType
 } from "../../../generated/client";
-import { CSSProperties } from "@mui/material/styles";
-import PagePreviewComponentEditor from "./page-preview-component";
+import styles from "../../../styles/page-preview";
+import { CSSPropertyValuePairs, ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
-import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
-import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import PreviewUtils from "../../../utils/preview-utils";
+import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import TabItem from "../../generic/tab-item";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
+import PagePreviewComponentEditor from "./page-preview-component";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import Measure, { BoundingRect, ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties

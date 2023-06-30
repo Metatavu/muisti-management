@@ -1,40 +1,40 @@
-import * as React from "react";
-import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
-import {
-  Map as MapInstance,
-  LatLngBounds,
-  CRS,
-  LatLng,
-  LeafletMouseEvent,
-  Layer,
-  FeatureGroup,
-  MarkerOptions,
-  DrawMap,
-  LatLngExpression,
-  LatLngTuple
-} from "leaflet";
-// TODO: Leaflets related imports.
-// import 'leaflet/dist/leaflet.css';
-import L from "leaflet";
 // import "leaflet-draw";
 // import "leaflet-draw/dist/leaflet.draw.css";
 // tslint:disable-next-line: max-line-length
 import {
-  ExhibitionRoom,
-  Polygon as ApiPolygon,
-  ExhibitionFloor,
-  ExhibitionDeviceGroup,
-  ExhibitionDevice,
+  DeviceImageLoadStrategy,
   DeviceModel,
-  ScreenOrientation,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
   Point,
+  Polygon as ApiPolygon,
   RfidAntenna,
-  DeviceImageLoadStrategy
+  ScreenOrientation
 } from "../../generated/client";
-import { FeatureCollection, Polygon } from "geojson";
 import strings from "../../localization/strings";
-import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
 import antennaIcon from "../../resources/gfx/svg/antennaIcon.svg";
+import deviceIcon from "../../resources/gfx/svg/deviceIcon.svg";
+import { FeatureCollection, Polygon } from "geojson";
+import {
+  CRS,
+  DrawMap,
+  FeatureGroup,
+  LatLng,
+  LatLngBounds,
+  LatLngExpression,
+  LatLngTuple,
+  Layer,
+  LeafletMouseEvent,
+  Map as MapInstance,
+  MarkerOptions
+} from "leaflet";
+// TODO: Leaflets related imports.
+// import 'leaflet/dist/leaflet.css';
+import L from "leaflet";
+import * as React from "react";
+import { ImageOverlay, Map as LeafletMap, ScaleControl } from "react-leaflet";
 
 /**
  * Component props

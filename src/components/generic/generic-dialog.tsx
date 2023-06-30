@@ -1,5 +1,5 @@
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import * as React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 
 /**
  * Interface representing component properties

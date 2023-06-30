@@ -1,9 +1,9 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
-import { Stack, Typography, MenuItem } from "@mui/material";
-import TextField from "../../generic/v2/text-field";
-import SelectBox from "../../generic/v2/select-box";
 import { TreeObject } from "../../../types";
+import SelectBox from "../../generic/v2/select-box";
+import TextField from "../../generic/v2/text-field";
+import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
+import { MenuItem, Stack, Typography } from "@mui/material";
+import { ChangeEvent, useEffect, useState } from "react";
 
 /**
  * Components properties

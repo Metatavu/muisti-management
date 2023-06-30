@@ -1,6 +1,6 @@
-import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
 import { SubLayout } from "../generated/client";
+import { ActionCreator } from "redux";
 
 /**
  * Interface for set sub layouts action type

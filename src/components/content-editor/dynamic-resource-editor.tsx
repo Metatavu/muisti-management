@@ -1,23 +1,23 @@
-import * as React from "react";
 import {
   DynamicPageResource,
-  DynamicPageResourceType,
+  DynamicPageResourceDataSource,
+  DynamicPageResourceSubstitute,
   DynamicPageResourceSwitch,
   DynamicPageResourceSwitchWhen,
-  DynamicPageResourceSubstitute,
+  DynamicPageResourceType,
   ExhibitionPageResourceType,
-  DynamicPageResourceDataSource,
   VisitorVariable
 } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, Typography, Box, MenuItem } from "@mui/material";
+import styles from "../../styles/components/content-editor/resource-editor";
+import { AccessToken } from "../../types";
+import HelpDialog from "../generic/help-dialog";
+import DynamicResourceSwitchWhenList from "./dynamic-resource-switch-when-list";
+import { Box, MenuItem, TextField, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/content-editor/resource-editor";
 import produce from "immer";
-import { AccessToken } from "../../types";
-import DynamicResourceSwitchWhenList from "./dynamic-resource-switch-when-list";
-import HelpDialog from "../generic/help-dialog";
+import * as React from "react";
 
 /**
  * Interface representing component properties

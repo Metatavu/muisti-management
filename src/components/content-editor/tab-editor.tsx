@@ -1,9 +1,6 @@
-import * as React from "react";
-import styles from "../../styles/exhibition-view";
-import { TextField, Typography, MenuItem, Select, Button, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
+import { ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
+import styles from "../../styles/exhibition-view";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -11,14 +8,17 @@ import strings from "../../localization/strings";
 // import "codemirror/addon/lint/lint.css";
 // import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
-import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
-import { ExhibitionPageResourceType } from "../../generated/client";
-import CKEditor from "ckeditor4-react";
-import GenericDialog from "../generic/generic-dialog";
-import GenericUtils from "../../utils/generic-utils";
-import MediaLibrary from "../right-panel-editors/media-library";
 import { AccessToken } from "../../types";
+import GenericUtils from "../../utils/generic-utils";
 import ResourceUtils from "../../utils/resource-utils";
+import GenericDialog from "../generic/generic-dialog";
+import MediaLibrary from "../right-panel-editors/media-library";
+import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
+import { Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import CKEditor from "ckeditor4-react";
+import * as React from "react";
 
 (CKEditor as any).editorUrl = "/ckeditor/ckeditor.js";
 

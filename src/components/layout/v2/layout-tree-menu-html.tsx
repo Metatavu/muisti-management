@@ -1,9 +1,9 @@
+import strings from "../../../localization/strings";
+import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
+import { HtmlComponentType, TreeObject } from "../../../types";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
-import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
-import { HtmlComponentType, TreeObject } from "../../../types";
-import strings from "../../../localization/strings";
 
 /**
  * Components properties

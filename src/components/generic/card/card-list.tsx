@@ -1,9 +1,9 @@
-import * as React from "react";
+import styles from "../../../styles/components/generic/card/card-list";
+import theme from "../../../styles/theme";
 import { Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/components/generic/card/card-list";
-import theme from "../../../styles/theme";
+import * as React from "react";
 
 /**
  * Component props

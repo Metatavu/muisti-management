@@ -1,41 +1,41 @@
-import * as React from "react";
 import {
-  ExhibitionPage,
-  ExhibitionDevice,
   Animation,
   AnimationTimeInterpolation,
+  ExhibitionDevice,
+  ExhibitionPage,
   ExhibitionPageTransition
 } from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/page-settings-editor";
+import theme from "../../styles/theme";
+import GenericButton from "../generic/generic-button";
+import GenericDialog from "../generic/generic-dialog";
+import PageTransitionViewsEditor from "./page-transition-elements-editor";
+import AddIcon from "@mui/icons-material/AddSharp";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  TextField,
-  MenuItem,
-  Select,
-  Typography,
-  List,
-  ListItem,
-  Grid,
+  Box,
   Divider,
-  ListItemSecondaryAction,
-  IconButton,
-  InputLabel,
   FormControl,
   FormHelperText,
+  Grid,
+  IconButton,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
   ListItemText,
-  Box
+  MenuItem,
+  Select,
+  TextField,
+  Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/page-settings-editor";
-import { ReduxActions, ReduxState } from "../../store";
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import strings from "../../localization/strings";
-import GenericButton from "../generic/generic-button";
-import AddIcon from "@mui/icons-material/AddSharp";
-import DeleteIcon from "@mui/icons-material/Delete";
-import GenericDialog from "../generic/generic-dialog";
-import theme from "../../styles/theme";
-import PageTransitionViewsEditor from "./page-transition-elements-editor";
 
 /**
  * Interface representing component properties

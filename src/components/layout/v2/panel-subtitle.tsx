@@ -1,5 +1,5 @@
-import { Typography, TypographyProps } from "@mui/material";
 import theme from "../../../styles/theme";
+import { Typography, TypographyProps } from "@mui/material";
 
 /**
  * Components properties

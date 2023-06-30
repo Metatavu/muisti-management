@@ -1,35 +1,35 @@
-import * as React from "react";
-import { connect } from "react-redux";
+import {
+  DeviceImageLoadStrategy,
+  DeviceModel,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
+  RfidAntenna,
+  ScreenOrientation
+} from "../../generated/client";
+import strings from "../../localization/strings";
 import { ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { AccessToken } from "../../types";
+import HelpDialog from "../generic/help-dialog";
 import {
-  TextField,
+  Box,
+  FormControlLabel,
+  InputLabel,
   MenuItem,
   Select,
-  FormControlLabel,
   Switch,
-  InputLabel,
-  Box,
+  TextField,
   Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
-import {
-  ScreenOrientation,
-  DeviceModel,
-  ExhibitionFloor,
-  ExhibitionRoom,
-  ExhibitionDeviceGroup,
-  ExhibitionDevice,
-  RfidAntenna,
-  DeviceImageLoadStrategy
-} from "../../generated/client";
-import { AccessToken } from "../../types";
-import strings from "../../localization/strings";
-import theme from "../../styles/theme";
-import { SketchPicker, ColorResult } from "react-color";
-import HelpDialog from "../generic/help-dialog";
+import * as React from "react";
+import { ColorResult, SketchPicker } from "react-color";
+import { connect } from "react-redux";
 
 /**
  * Component props

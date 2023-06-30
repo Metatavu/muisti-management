@@ -1,20 +1,4 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import {
-  CircularProgress,
-  TextField,
-  Box,
-  Typography,
-  MenuItem,
-  TextFieldProps
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
+import Api from "../../api/api";
 import {
   ContentVersionActiveCondition,
   Exhibition,
@@ -24,26 +8,42 @@ import {
   VisitorVariable,
   VisitorVariableType
 } from "../../generated/client";
+import { ContentVersion } from "../../generated/client/models/ContentVersion";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
 import {
   AccessToken,
   ActionButton,
   BreadcrumbData,
   ConfirmDialogData,
+  DeleteDataHolder,
   LanguageOptions,
-  MultiLingualContentVersion,
-  DeleteDataHolder
+  MultiLingualContentVersion
 } from "../../types";
-import Api from "../../api/api";
-import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
-import { ContentVersion } from "../../generated/client/models/ContentVersion";
-import GenericDialog from "../generic/generic-dialog";
-import ConfirmDialog from "../generic/confirm-dialog";
-import produce from "immer";
-import WithDebounce from "../generic/with-debounce";
 import DeleteUtils from "../../utils/delete-utils";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import WithDebounce from "../generic/with-debounce";
+import BasicLayout from "../layouts/basic-layout";
+import {
+  Box,
+  CircularProgress,
+  MenuItem,
+  TextField,
+  TextFieldProps,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

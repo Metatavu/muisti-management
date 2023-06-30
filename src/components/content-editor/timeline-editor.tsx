@@ -1,24 +1,24 @@
-import * as React from "react";
+import { ContentVersion, ExhibitionDevice, ExhibitionPage } from "../../generated/client/models";
+import strings from "../../localization/strings";
+import styles from "../../styles/components/content-editor/timeline-editor";
+import theme from "../../styles/theme";
+import { PreviewDeviceData } from "../../types";
 import { List, ListItem, Paper, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/content-editor/timeline-editor";
-import { ExhibitionDevice, ExhibitionPage, ContentVersion } from "../../generated/client/models";
 import classNames from "classnames";
-import theme from "../../styles/theme";
-import strings from "../../localization/strings";
+import * as React from "react";
 import {
   DragDropContext,
-  Droppable,
   Draggable,
-  DropResult,
-  ResponderProvided,
   DraggableProvided,
   DraggableStateSnapshot,
+  DropResult,
+  Droppable,
   DroppableProvided,
-  DroppableStateSnapshot
+  DroppableStateSnapshot,
+  ResponderProvided
 } from "react-beautiful-dnd";
-import { PreviewDeviceData } from "../../types";
 
 /**
  * Interface representing component properties

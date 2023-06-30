@@ -1,11 +1,11 @@
-import DisplayMetrics from "../types/display-metrics";
-import { DeviceModel } from "../generated/client";
-import tinycolor from "tinycolor2";
 import {
   LayoutGravityValuePairs,
   SelectedTabIndicatorGravityValues
 } from "../components/layout/editor-constants/values";
+import { DeviceModel } from "../generated/client";
 import { CSSPropertyValuePairs } from "../types";
+import DisplayMetrics from "../types/display-metrics";
+import tinycolor from "tinycolor2";
 
 /**
  * Utilities for Android

@@ -1,16 +1,16 @@
-import * as React from "react";
-import { IconButton, Typography, List, ListItem } from "@mui/material";
+import strings from "../../localization/strings";
+import styles from "../../styles/components/generic/top-bar";
+import { ActionButton, BreadcrumbData } from "../../types";
+import ActionBar from "./action-bar";
+import Breadcrumbs from "./breadcrumbs";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconButton, List, ListItem, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { Link as RouterLink } from "react-router-dom";
 import { History } from "history";
-import styles from "../../styles/components/generic/top-bar";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { KeycloakInstance } from "keycloak-js";
-import strings from "../../localization/strings";
-import Breadcrumbs from "./breadcrumbs";
-import { BreadcrumbData, ActionButton } from "../../types";
-import ActionBar from "./action-bar";
+import * as React from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 /**
  * Interface representing component properties

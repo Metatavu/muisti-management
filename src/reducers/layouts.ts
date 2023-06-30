@@ -1,7 +1,7 @@
 import { LayoutsAction } from "../actions/layouts";
 import { SET_LAYOUTS, SET_SELECTED_LAYOUT } from "../constants/actionTypes";
-import { Reducer } from "redux";
 import { PageLayout } from "../generated/client";
+import { Reducer } from "redux";
 
 /**
  * Layouts state
@@ -25,7 +25,6 @@ const initialState: LayoutsState = {
  * @param storeState store state of layouts
  * @param action action of layouts
  */
-// eslint-disable-next-line max-len
 export const layoutsReducer: Reducer<LayoutsState, LayoutsAction> = (
   state: LayoutsState = initialState,
   action: LayoutsAction

@@ -1,5 +1,5 @@
-import * as React from "react";
 import { CSSProperties } from "@mui/material/styles";
+import * as React from "react";
 
 /**
  * Interface representing component properties

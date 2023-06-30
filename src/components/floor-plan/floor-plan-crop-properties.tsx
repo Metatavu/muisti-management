@@ -1,7 +1,7 @@
-import * as React from "react";
 import strings from "../../localization/strings";
 import { TextField } from "@mui/material";
 import { CSSProperties } from "@mui/material/styles";
+import * as React from "react";
 
 /**
  * Component props

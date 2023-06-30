@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { Typography, Box, IconButton } from "@mui/material";
+import styles from "../../styles/element-navigation-pane";
+import { Box, IconButton, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/element-navigation-pane";
 
 /**
  * Interface representing component properties

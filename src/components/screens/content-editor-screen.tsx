@@ -1,31 +1,28 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
-import { History } from "history";
-import styles from "../../styles/content-editor-screen";
+import Api from "../../api/api";
 import {
-  CircularProgress,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  Typography,
-  AccordionDetails,
-  Button,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  TextField,
-  Tabs,
-  Tab,
-  Box,
-  MenuItem,
-  SelectChangeEvent
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
+  ContentVersion,
+  DeviceModel,
+  Exhibition,
+  ExhibitionDevice,
+  ExhibitionPage,
+  ExhibitionPageEventTrigger,
+  ExhibitionPageEventTriggerFromJSON,
+  ExhibitionPageResource,
+  ExhibitionPageResourceFromJSON,
+  ExhibitionPageTransition,
+  GroupContentVersion,
+  GroupContentVersionStatus,
+  LayoutType,
+  PageLayout,
+  PageLayoutView,
+  PageLayoutWidgetType,
+  VisitorVariable
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/content-editor-screen";
+import theme from "../../styles/theme";
 import {
   AccessToken,
   ActionButton,
@@ -33,62 +30,65 @@ import {
   LanguageOptions,
   PreviewDeviceData
 } from "../../types";
-import BasicLayout from "../layouts/basic-layout";
-import Api from "../../api/api";
-import {
-  GroupContentVersion,
-  ExhibitionDevice,
-  ExhibitionPage,
-  Exhibition,
-  ExhibitionPageEventTriggerFromJSON,
-  ExhibitionPageResourceFromJSON,
-  DeviceModel,
-  PageLayout,
-  PageLayoutView,
-  ExhibitionPageResource,
-  ExhibitionPageTransition,
-  ExhibitionPageEventTrigger,
-  PageLayoutWidgetType,
-  ContentVersion,
-  VisitorVariable,
-  GroupContentVersionStatus,
-  LayoutType
-} from "../../generated/client";
-import EditorView from "../editor/editor-view";
-import ElementTimelinePane from "../layouts/element-timeline-pane";
-import ElementContentsPane from "../layouts/element-contents-pane";
-import ElementPropertiesPane from "../layouts/element-properties-pane";
-import TimelineDevicesList from "../content-editor/timeline-devices-list";
-import TimelineEditor from "../content-editor/timeline-editor";
-import LayoutViewResourcesList from "../content-editor/layout-view-resources-list";
-import PagePreview from "../preview/page-preview";
-import produce from "immer";
-import CodeEditor from "../editor/code-editor";
 import AndroidUtils from "../../utils/android-utils";
-import PanZoom from "../generic/pan-zoom";
-import strings from "../../localization/strings";
-import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
-import theme from "../../styles/theme";
-import ResourceUtils from "../../utils/resource-utils";
-import ResourceEditor from "../content-editor/resource-editor";
-import CommonSettingsEditor from "../content-editor/common-settings-editor";
-import TransitionsEditor from "../content-editor/transitions-editor";
-import { DropResult } from "react-beautiful-dnd";
-import EventTriggerEditor from "../content-editor/event-trigger-editor";
-import { v4 as uuid } from "uuid";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {
-  allowedWidgetTypes,
-  TabStructure,
-  ExhibitionPageTab,
-  ExhibitionPageTabProperty,
-  ExhibitionPageTabHolder
-} from "../content-editor/constants";
-import TabEditor from "../content-editor/tab-editor";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
 import LanguageUtils from "../../utils/language-utils";
-import GenericDialog from "../generic/generic-dialog";
+import ResourceUtils from "../../utils/resource-utils";
+import CommonSettingsEditor from "../content-editor/common-settings-editor";
+import {
+  ExhibitionPageTab,
+  ExhibitionPageTabHolder,
+  ExhibitionPageTabProperty,
+  TabStructure,
+  allowedWidgetTypes
+} from "../content-editor/constants";
+import EventTriggerEditor from "../content-editor/event-trigger-editor";
+import LayoutViewResourcesList from "../content-editor/layout-view-resources-list";
+import ResourceEditor from "../content-editor/resource-editor";
+import TabEditor from "../content-editor/tab-editor";
+import TimelineDevicesList from "../content-editor/timeline-devices-list";
+import TimelineEditor from "../content-editor/timeline-editor";
+import TransitionsEditor from "../content-editor/transitions-editor";
+import CodeEditor from "../editor/code-editor";
+import EditorView from "../editor/editor-view";
 import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import PanZoom from "../generic/pan-zoom";
+import BasicLayout from "../layouts/basic-layout";
+import ElementContentsPane from "../layouts/element-contents-pane";
+import ElementPropertiesPane from "../layouts/element-properties-pane";
+import ElementTimelinePane from "../layouts/element-timeline-pane";
+import PagePreview from "../preview/page-preview";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  MenuItem,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { DropResult } from "react-beautiful-dnd";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { v4 as uuid } from "uuid";
 
 type View = "CODE" | "VISUAL";
 

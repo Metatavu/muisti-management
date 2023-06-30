@@ -1,12 +1,12 @@
-import * as React from "react";
+import { ExhibitionPageResource } from "../../generated/client/models";
+import strings from "../../localization/strings";
+import styles from "../../styles/components/content-editor/layout-view-resources-list";
+import ResourceUtils from "../../utils/resource-utils";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/content-editor/layout-view-resources-list";
-import { ExhibitionPageResource } from "../../generated/client/models";
-import ResourceUtils from "../../utils/resource-utils";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import strings from "../../localization/strings";
+import * as React from "react";
 
 /**
  * Interface representing component properties

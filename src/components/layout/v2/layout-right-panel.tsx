@@ -1,14 +1,14 @@
-import { Close as CloseIcon } from "@mui/icons-material";
+import { PageLayout } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { ActionButton, HtmlComponentType, TreeObject } from "../../../types";
 import ElementSettingsPane from "../../layouts/element-settings-pane";
+import ButtonComponentProperties from "./button-component-properties";
 import GenericComponentProperties from "./generic-component-properties";
+import ImageComponentProperties from "./image-component-properties";
 import LayoutComponentProperties from "./layout-component-properties";
 import TextComponentProperties from "./text-component-properties";
-import ButtonComponentProperties from "./button-component-properties";
-import ImageComponentProperties from "./image-component-properties";
 import VideoComponentProperties from "./video-component-properties";
-import { PageLayout } from "../../../generated/client";
+import { Close as CloseIcon } from "@mui/icons-material";
 
 /**
  * Components properties

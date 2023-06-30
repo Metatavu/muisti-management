@@ -1,7 +1,7 @@
 import { DevicesAction } from "../actions/devices";
 import { SET_DEVICES, SET_DEVICE_GROUPS, SET_DEVICE_MODELS } from "../constants/actionTypes";
+import { DeviceModel, ExhibitionDevice, ExhibitionDeviceGroup } from "../generated/client";
 import { Reducer } from "redux";
-import { ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from "../generated/client";
 
 /**
  * Devices state

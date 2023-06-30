@@ -1,6 +1,6 @@
-import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
 import * as en from "./en.json";
 import * as fi from "./fi.json";
+import LocalizedStrings, { LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Interface describing localized strings

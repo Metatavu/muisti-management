@@ -1,6 +1,6 @@
 import { PageLayoutViewProperty, PageLayoutViewPropertyType } from "../../../generated/client";
-import AndroidUtils from "../../../utils/android-utils";
 import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
 
 /**
  * Utility class for page preview

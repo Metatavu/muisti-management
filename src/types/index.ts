@@ -1,20 +1,19 @@
-// eslint-disable-next-line max-len
 import {
-  ExhibitionPageResource,
-  DeviceModelCapabilities,
-  ExhibitionPage,
-  Exhibition,
   ContentVersion,
-  ExhibitionFloor,
-  ExhibitionRoom,
+  DeviceModelCapabilities,
+  Exhibition,
   ExhibitionDevice,
   ExhibitionDeviceGroup,
-  RfidAntenna,
+  ExhibitionFloor,
+  ExhibitionPage,
+  ExhibitionPageResource,
+  ExhibitionRoom,
   GroupContentVersion,
   PageLayout,
-  VisitorVariable,
+  RfidAntenna,
   Visitor,
-  VisitorSession
+  VisitorSession,
+  VisitorVariable
 } from "../generated/client";
 import {
   DeviceModelDimensionsData,

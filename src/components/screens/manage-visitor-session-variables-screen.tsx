@@ -1,23 +1,6 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/screens/manage-visitor-session-variables-screen";
-import {
-  CircularProgress,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  MenuItem
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
+import { setDeviceModels } from "../../actions/devices";
+import Api from "../../api/api";
+import { Config } from "../../constants/configuration";
 import {
   DeviceModel,
   Visitor,
@@ -26,19 +9,36 @@ import {
   VisitorVariable,
   VisitorVariableType
 } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import strings from "../../localization/strings";
-import BasicLayout from "../layouts/basic-layout";
-import { setDeviceModels } from "../../actions/devices";
-import TagListener from "../generic/tag-listener";
-import { MqttListener } from "../generic/mqtt-listener";
-import Api from "../../api/api";
-import moment from "moment";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import produce from "immer";
-import WithDebounce from "../generic/with-debounce";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/screens/manage-visitor-session-variables-screen";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
 import ConfirmDialog from "../generic/confirm-dialog";
-import { Config } from "../../constants/configuration";
+import { MqttListener } from "../generic/mqtt-listener";
+import TagListener from "../generic/tag-listener";
+import WithDebounce from "../generic/with-debounce";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import {
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import moment from "moment";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 const config = Config.getConfig();
 

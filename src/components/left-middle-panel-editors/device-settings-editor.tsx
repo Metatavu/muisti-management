@@ -1,11 +1,11 @@
-import * as React from "react";
-import { ExhibitionPage, ExhibitionDevice } from "../../generated/client";
+import { ExhibitionDevice, ExhibitionPage } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, MenuItem } from "@mui/material";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/device-settings-editor";
+import { MenuItem, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/device-settings-editor";
-import { ReduxActions, ReduxState } from "../../store";
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 

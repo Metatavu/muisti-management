@@ -1,7 +1,7 @@
-import * as React from "react";
+import styles from "../../styles/element-timeline-pane";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/element-timeline-pane";
+import * as React from "react";
 
 /**
  * Interface representing component properties

@@ -1,9 +1,9 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
+import styles from "../../../styles/components/generic/color-picker";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/components/generic/color-picker";
-import { SketchPicker, ColorResult } from "react-color";
+import * as React from "react";
+import { ColorResult, SketchPicker } from "react-color";
 
 /**
  * Interface representing component properties

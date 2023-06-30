@@ -1,6 +1,6 @@
-import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
-import { ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from "../generated/client";
+import { DeviceModel, ExhibitionDevice, ExhibitionDeviceGroup } from "../generated/client";
+import { ActionCreator } from "redux";
 
 /**
  * Interface for set devices action type

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { ColorResult } from "react-color";
+import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
 import ColorPicker from "./color-picker";
-import PropertyBox from "./property-box";
 import PanelSubtitle from "./panel-subtitle";
-import strings from "../../../localization/strings";
+import PropertyBox from "./property-box";
 import { Button, Divider, Stack } from "@mui/material";
+import { useState } from "react";
+import { ColorResult } from "react-color";
 
 /**
  * Components properties

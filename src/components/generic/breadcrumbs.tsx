@@ -1,12 +1,12 @@
-import * as React from "react";
-import { History } from "history";
-import { Link as RouterLink } from "react-router-dom";
+import styles from "../../styles/components/generic/breadcrumbs";
 import { BreadcrumbData } from "../../types";
-import { Link, Breadcrumbs as MaterialBreadcrumbs } from "@mui/material";
+import ChevronRight from "@mui/icons-material/ChevronRight";
+import { Breadcrumbs as MaterialBreadcrumbs, Link } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import ChevronRight from "@mui/icons-material/ChevronRight";
-import styles from "../../styles/components/generic/breadcrumbs";
+import { History } from "history";
+import * as React from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 /**
  * Interface representing component properties

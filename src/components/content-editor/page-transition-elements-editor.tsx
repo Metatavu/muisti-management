@@ -1,31 +1,31 @@
-import * as React from "react";
 import {
   ExhibitionPage,
-  PageLayout,
   ExhibitionPageTransition,
-  ExhibitionPageTransitionOptionsMorphView
+  ExhibitionPageTransitionOptionsMorphView,
+  PageLayout
 } from "../../generated/client";
-import {
-  MenuItem,
-  Select,
-  Typography,
-  Grid,
-  IconButton,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/page-settings-editor";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/page-settings-editor";
+import theme from "../../styles/theme";
 import GenericButton from "../generic/generic-button";
 import AddIcon from "@mui/icons-material/AddSharp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import theme from "../../styles/theme";
+import {
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties

@@ -1,14 +1,40 @@
-import { History } from "history";
-import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import Api from "../../api/api";
+import { Config } from "../../constants/configuration";
+import {
+  ContentVersion,
+  Exhibition,
+  Visitor,
+  VisitorSession,
+  VisitorSessionState,
+  VisitorVariable
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/screens/visitors-management-screen";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import LanguageUtils from "../../utils/language-utils";
+import VisitorUtils from "../../utils/visitor-utils";
+import ConfirmDialog from "../generic/confirm-dialog";
+import { MqttListener } from "../generic/mqtt-listener";
+import TagListener from "../generic/tag-listener";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementPropertiesPane from "../layouts/element-properties-pane";
+import VisitorInformation from "./visitors/visitor-info";
+import VisitorVariables from "./visitors/visitor-variables";
+import AddIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import TagIcon from "@mui/icons-material/NfcOutlined";
 import {
   Box,
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControl,
   FormControlLabel,
@@ -20,43 +46,17 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import {
-  ContentVersion,
-  Exhibition,
-  Visitor,
-  VisitorSession,
-  VisitorSessionState,
-  VisitorVariable
-} from "../../generated/client";
-import strings from "../../localization/strings";
-import BasicLayout from "../layouts/basic-layout";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import ConfirmDialog from "../generic/confirm-dialog";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
-import { ReduxActions, ReduxState } from "../../store";
-import styles from "../../styles/screens/visitors-management-screen";
-import theme from "../../styles/theme";
-import AddIcon from "@mui/icons-material/AddCircle";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import TagIcon from "@mui/icons-material/NfcOutlined";
-import ElementPropertiesPane from "../layouts/element-properties-pane";
-import { MqttListener } from "../generic/mqtt-listener";
-import TagListener from "../generic/tag-listener";
-import VisitorInformation from "./visitors/visitor-info";
-import VisitorUtils from "../../utils/visitor-utils";
+import { History } from "history";
 import produce from "immer";
-import LanguageUtils from "../../utils/language-utils";
-import { Config } from "../../constants/configuration";
-import VisitorVariables from "./visitors/visitor-variables";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

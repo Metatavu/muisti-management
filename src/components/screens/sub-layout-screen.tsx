@@ -1,22 +1,16 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
+import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
 import Api from "../../api/api";
-import { History } from "history";
-import styles from "../../styles/components/layout-screen/layout-editor-view";
-import { CircularProgress, TextField, Typography, Divider } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
 import { PageLayoutView, SubLayout } from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import strings from "../../localization/strings";
-import { Controlled as CodeMirror } from "react-codemirror2-nibas";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/layout-screen/layout-editor-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import DisplayMetrics from "../../types/display-metrics";
+import EditorView from "../editor/editor-view";
+import ConfirmDialog from "../generic/confirm-dialog";
+import PanZoom from "../generic/pan-zoom";
 // TODO: Code mirror related imports.
 // import codemirror from "codemirror";
 // import "codemirror/lib/codemirror.css";
@@ -26,20 +20,26 @@ import { Controlled as CodeMirror } from "react-codemirror2-nibas";
 import CommonLayoutPropertiesEditor from "../layout/editor-components/layout-common-properties-editor";
 import LayoutWidgetSpecificPropertiesEditor from "../layout/editor-components/layout-widget-specific-properties-editor";
 import LayoutTreeMenu from "../layout/layout-tree-menu";
-import { TreeNodeInArray } from "react-simple-tree-menu";
 import {
   constructTreeDeleteData,
   pushNewPageLayoutViewToTree
 } from "../layout/utils/tree-data-utils";
-import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
-import PanZoom from "../generic/pan-zoom";
-import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
+import PagePreview from "../preview/page-preview";
+import { CircularProgress, Divider, TextField, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { Controlled as CodeMirror } from "react-codemirror2-nibas";
+import { connect } from "react-redux";
 import { ResizableBox, ResizeCallbackData } from "react-resizable";
 import "react-resizable/css/styles.css";
-import PagePreview from "../preview/page-preview";
-import DisplayMetrics from "../../types/display-metrics";
-import theme from "../../styles/theme";
-import ConfirmDialog from "../generic/confirm-dialog";
+import { TreeNodeInArray } from "react-simple-tree-menu";
+import { Dispatch } from "redux";
 
 type View = "CODE" | "VISUAL";
 

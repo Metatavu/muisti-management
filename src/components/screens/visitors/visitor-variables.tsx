@@ -1,8 +1,8 @@
+import { VisitorSession, VisitorVariable, VisitorVariableType } from "../../../generated/client";
+import strings from "../../../localization/strings";
 import { Box, MenuItem, TextField, Typography } from "@mui/material";
 import produce from "immer";
 import * as React from "react";
-import { VisitorSession, VisitorVariable, VisitorVariableType } from "../../../generated/client";
-import strings from "../../../localization/strings";
 
 /**
  * Interface representing component properties

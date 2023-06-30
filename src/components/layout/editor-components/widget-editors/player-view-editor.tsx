@@ -1,20 +1,20 @@
-import * as React from "react";
 import {
+  PageLayoutView,
   PageLayoutViewProperty,
-  PageLayoutViewPropertyType,
-  PageLayoutView
+  PageLayoutViewPropertyType
 } from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { Typography, Divider, Box } from "@mui/material";
+import styles from "../../../../styles/common-properties-editor";
+import theme from "../../../../styles/theme";
+import DisplayMetrics from "../../../../types/display-metrics";
+import { LayoutPlayerViewPropKeys } from "../../editor-constants/keys";
+import { getProperty } from "../../utils/tree-data-utils";
+import GenericPropertyCheckbox from "../generic-property-checkbox";
+import GenericPropertyTextField from "../generic-property-textfield";
+import { Box, Divider, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../../styles/common-properties-editor";
-import { LayoutPlayerViewPropKeys } from "../../editor-constants/keys";
-import theme from "../../../../styles/theme";
-import { getProperty } from "../../utils/tree-data-utils";
-import GenericPropertyTextField from "../generic-property-textfield";
-import GenericPropertyCheckbox from "../generic-property-checkbox";
-import DisplayMetrics from "../../../../types/display-metrics";
+import * as React from "react";
 
 /**
  * Interface representing component properties

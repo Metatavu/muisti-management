@@ -1,7 +1,7 @@
 import { ExhibitionsAction } from "../actions/exhibitions";
-import { SET_SELECTED_EXHIBITION, SET_EXHIBITIONS } from "../constants/actionTypes";
-import { Reducer } from "redux";
+import { SET_EXHIBITIONS, SET_SELECTED_EXHIBITION } from "../constants/actionTypes";
 import { Exhibition } from "../generated/client";
+import { Reducer } from "redux";
 
 /**
  * Exhibitions state
@@ -25,7 +25,6 @@ const initialState: ExhibitionsState = {
  * @param storeState store state of exhibitions
  * @param action action of exhibitions
  */
-// eslint-disable-next-line max-len
 export const exhibitionsReducer: Reducer<ExhibitionsState, ExhibitionsAction> = (
   state: ExhibitionsState = initialState,
   action: ExhibitionsAction

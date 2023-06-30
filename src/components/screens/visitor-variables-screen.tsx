@@ -1,3 +1,14 @@
+import Api from "../../api/api";
+import { Exhibition, VisitorVariable, VisitorVariableType } from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/visitor-variables-screen/visitor-variables-editor-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import ConfirmDialog from "../generic/confirm-dialog";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Checkbox,
@@ -17,22 +28,11 @@ import {
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import Api from "../../api/api";
-import { Exhibition, VisitorVariable, VisitorVariableType } from "../../generated/client";
-import strings from "../../localization/strings";
-import { ReduxActions, ReduxState } from "../../store";
-import styles from "../../styles/components/visitor-variables-screen/visitor-variables-editor-view";
-import theme from "../../styles/theme";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
-import ConfirmDialog from "../generic/confirm-dialog";
-import BasicLayout from "../layouts/basic-layout";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
 
 /**
  * Component props

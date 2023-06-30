@@ -1,9 +1,9 @@
-import React from "react";
+import styles from "../../styles/components/generic/tab-list";
 import { List, ListItem, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/tab-list";
 import { History } from "history";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 /**

@@ -1,20 +1,20 @@
-import * as React from "react";
-import Measure, { ContentRect } from "react-measure";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/page-preview";
 import {
   PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutWidgetType,
   PageResourceMode
 } from "../../../generated/client";
-import { CSSProperties } from "@mui/material/styles";
+import strings from "../../../localization/strings";
+import styles from "../../../styles/page-preview";
+import { CSSPropertyValuePairs, ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
-import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
-import strings from "../../../localization/strings";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import Measure, { ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties

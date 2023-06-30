@@ -1,9 +1,9 @@
-import * as React from "react";
+import styles from "../../../styles/add-device-editor";
+import { LayoutPropKeys } from "../editor-constants/keys";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/add-device-editor";
-import { LayoutPropKeys } from "../editor-constants/keys";
+import * as React from "react";
 
 /**
  * Interface representing component properties

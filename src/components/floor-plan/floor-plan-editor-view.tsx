@@ -1,33 +1,33 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
 import Api from "../../api/api";
-import { History } from "history";
+import {
+  ContentVersion,
+  Exhibition,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
+  GroupContentVersion,
+  RfidAntenna
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/floor-plan-editor-view";
+import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
+import EditorView from "../editor/editor-view";
+import ContentMap from "../generic/content-map";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
-import {
-  Exhibition,
-  ExhibitionFloor,
-  ExhibitionRoom,
-  ContentVersion,
-  ExhibitionDeviceGroup,
-  ExhibitionDevice,
-  RfidAntenna,
-  GroupContentVersion
-} from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, BreadcrumbData } from "../../types";
-import strings from "../../localization/strings";
 import "cropperjs/dist/cropper.css";
-import { LatLngExpression, LatLngBounds } from "leaflet";
-import ContentMap from "../generic/content-map";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import { LatLngBounds, LatLngExpression } from "leaflet";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

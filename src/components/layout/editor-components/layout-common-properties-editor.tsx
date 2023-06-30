@@ -1,45 +1,45 @@
-import * as React from "react";
+import { setSelectedLayout } from "../../../actions/layouts";
+import { setSelectedSubLayout } from "../../../actions/subLayouts";
 import {
+  PageLayout,
+  PageLayoutView,
   PageLayoutViewProperty,
   PageLayoutViewPropertyType,
-  PageLayoutView,
-  PageLayout,
   SubLayout
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
-import { Typography, Divider, TextField, Box, Link } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import styles from "../../../styles/common-properties-editor";
-import GenericPropertySelect from "./generic-property-select";
-import MarginPaddingEditor from "./margin-padding-editor";
-import GravityEditor from "./gravity-editor";
-import { LayoutWidthValues, LayoutHeightValues } from "../editor-constants/values";
-import {
-  LayoutPropKeys,
-  LayoutPaddingPropKeys,
-  LayoutMarginPropKeys
-} from "../editor-constants/keys";
-import ColorPicker from "./color-picker";
-import theme from "../../../styles/theme";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { setSelectedLayout } from "../../../actions/layouts";
 import { ReduxActions, ReduxState } from "../../../store";
-import {
-  constructTreeUpdateData,
-  updateLayoutViewProperty,
-  removeLayoutViewProperty,
-  hasProperty,
-  getProperty,
-  getPaddingOrMarginProperties
-} from "../utils/tree-data-utils";
-import GenericPropertyTextField from "./generic-property-textfield";
-import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox";
-import { setSelectedSubLayout } from "../../../actions/subLayouts";
-import { v4 as uuid } from "uuid";
+import styles from "../../../styles/common-properties-editor";
+import theme from "../../../styles/theme";
 import DisplayMetrics from "../../../types/display-metrics";
 import HelpDialog from "../../generic/help-dialog";
+import {
+  LayoutMarginPropKeys,
+  LayoutPaddingPropKeys,
+  LayoutPropKeys
+} from "../editor-constants/keys";
+import { LayoutHeightValues, LayoutWidthValues } from "../editor-constants/values";
+import {
+  constructTreeUpdateData,
+  getPaddingOrMarginProperties,
+  getProperty,
+  hasProperty,
+  removeLayoutViewProperty,
+  updateLayoutViewProperty
+} from "../utils/tree-data-utils";
+import ColorPicker from "./color-picker";
+import GenericPropertyEnabledCheckbox from "./generic-property-enabled-checkbox";
+import GenericPropertySelect from "./generic-property-select";
+import GenericPropertyTextField from "./generic-property-textfield";
+import GravityEditor from "./gravity-editor";
+import MarginPaddingEditor from "./margin-padding-editor";
+import { Box, Divider, Link, TextField, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { v4 as uuid } from "uuid";
 
 /**
  * Interface representing component properties

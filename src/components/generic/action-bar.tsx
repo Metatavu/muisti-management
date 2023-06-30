@@ -1,9 +1,9 @@
-import * as React from "react";
+import styles from "../../styles/components/generic/toolbar";
 import { ActionButton } from "../../types";
 import { Button } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/toolbar";
+import * as React from "react";
 
 /**
  * Interface representing component properties

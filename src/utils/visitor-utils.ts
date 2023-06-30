@@ -1,7 +1,7 @@
-import moment from "moment";
 import { Config } from "../constants/configuration";
 import { Visitor, VisitorSession } from "../generated/client";
 import strings from "../localization/strings";
+import moment from "moment";
 import { v4 as uuid } from "uuid";
 
 /**

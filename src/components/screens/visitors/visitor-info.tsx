@@ -1,8 +1,8 @@
-import { Box, TextField } from "@mui/material";
-import * as React from "react";
 import { Visitor } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import WithDebounce from "../../generic/with-debounce";
+import { Box, TextField } from "@mui/material";
+import * as React from "react";
 
 /**
  * Interface representing component properties

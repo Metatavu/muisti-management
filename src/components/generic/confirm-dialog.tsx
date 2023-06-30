@@ -1,15 +1,15 @@
-import * as React from "react";
+import { ConfirmDialogData } from "../../types";
 import {
+  Box,
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button,
-  Typography,
-  Box
+  DialogTitle,
+  Typography
 } from "@mui/material";
-import { ConfirmDialogData } from "../../types";
+import * as React from "react";
 
 /**
  * Interface representing component properties

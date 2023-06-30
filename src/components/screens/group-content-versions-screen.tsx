@@ -1,23 +1,3 @@
-import {
-  CircularProgress,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { History } from "history";
-import produce from "immer";
-import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import Api from "../../api/api";
 import {
   Exhibition,
@@ -39,6 +19,26 @@ import GenericDialog from "../generic/generic-dialog";
 import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
+import {
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

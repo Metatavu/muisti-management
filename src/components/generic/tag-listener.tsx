@@ -1,12 +1,12 @@
+import { Config } from "../../constants/configuration";
+import strings from "../../localization/strings";
+import { Mqtt } from "../../mqtt";
+import logo from "../../resources/gfx/muisti-logo.png";
+import styles from "../../styles/components/generic/tag-listener";
 import { Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import * as React from "react";
-import strings from "../../localization/strings";
-import { Mqtt } from "../../mqtt";
-import styles from "../../styles/components/generic/tag-listener";
-import logo from "../../resources/gfx/muisti-logo.png";
-import { Config } from "../../constants/configuration";
 
 /**
  * Interface representing component properties

@@ -1,8 +1,8 @@
-import * as React from "react";
-import Cropper from "react-cropper";
+import PanZoom from "../generic/pan-zoom";
 import * as cropperjs from "cropperjs";
 import "cropperjs/dist/cropper.css";
-import PanZoom from "../generic/pan-zoom";
+import * as React from "react";
+import Cropper from "react-cropper";
 
 /**
  * Component props

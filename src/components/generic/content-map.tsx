@@ -1,29 +1,29 @@
-import * as React from "react";
-import { Map as LeafletMap, ImageOverlay, ScaleControl } from "react-leaflet";
 import {
-  Map as MapInstance,
-  LatLngBounds,
-  CRS,
-  LatLng,
-  LeafletMouseEvent,
-  Layer,
-  MarkerOptions,
-  LatLngExpression,
-  LatLngTuple
-} from "leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import "leaflet-draw";
-import "leaflet-draw/dist/leaflet.draw.css";
-import {
-  ExhibitionRoom,
-  ExhibitionFloor,
-  ExhibitionDeviceGroup,
-  ExhibitionDevice,
   DeviceModel,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
   RfidAntenna
 } from "../../generated/client";
 import { Polygon } from "geojson";
+import {
+  CRS,
+  LatLng,
+  LatLngBounds,
+  LatLngExpression,
+  LatLngTuple,
+  Layer,
+  LeafletMouseEvent,
+  Map as MapInstance,
+  MarkerOptions
+} from "leaflet";
+import L from "leaflet";
+import "leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
+import "leaflet/dist/leaflet.css";
+import * as React from "react";
+import { ImageOverlay, Map as LeafletMap, ScaleControl } from "react-leaflet";
 
 /**
  * Component props

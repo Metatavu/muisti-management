@@ -1,12 +1,12 @@
-import { Divider, MenuItem, Stack } from "@mui/material";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
-import PropertyBox from "./property-box";
-import PanelSubtitle from "./panel-subtitle";
-import AlignmentEditorHtml from "./alignment-editor-html";
-import { ChangeEvent, FC } from "react";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import AlignmentEditorHtml from "./alignment-editor-html";
+import PanelSubtitle from "./panel-subtitle";
+import PropertyBox from "./property-box";
+import { Divider, MenuItem, Stack } from "@mui/material";
+import { ChangeEvent, FC } from "react";
 
 /**
  * Component props

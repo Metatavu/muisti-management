@@ -1,5 +1,5 @@
-import createStyles from "@mui/styles/createStyles";
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 /**
  * Dashboard layout styles

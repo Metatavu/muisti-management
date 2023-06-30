@@ -1,5 +1,5 @@
-import { PageLayoutView } from "../generated/client";
 import { ExhibitionPageTabHolder } from "../components/content-editor/constants";
+import { PageLayoutView } from "../generated/client";
 
 /**
  * Utility class for previews

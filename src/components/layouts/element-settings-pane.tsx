@@ -1,12 +1,12 @@
-import * as React from "react";
+import styles from "../../styles/components/generic/element-settings-pane";
+import { ActionButton } from "../../types";
+import MenuButton from "../generic/menu-button";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import styles from "../../styles/components/generic/element-settings-pane";
-import MenuIcon from "@mui/icons-material/Menu";
 import classNames from "classnames";
-import MenuButton from "../generic/menu-button";
-import { ActionButton } from "../../types";
+import * as React from "react";
 
 /**
  * Interface representing component properties

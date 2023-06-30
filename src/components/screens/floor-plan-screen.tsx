@@ -1,48 +1,48 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { produce, Draft } from "immer";
 import Api from "../../api/api";
-import { History } from "history";
+import {
+  Bounds,
+  Coordinates,
+  DeviceGroupVisitorSessionStartStrategy,
+  DeviceModel,
+  Exhibition,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionFloor,
+  ExhibitionRoom,
+  RfidAntenna
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/floor-plan-editor-view";
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
+import DeleteUtils from "../../utils/delete-utils";
+import FileUpload from "../../utils/file-upload";
+import EditorView from "../editor/editor-view";
+import FloorPlanCrop from "../floor-plan/floor-plan-crop";
+import FloorPlanCropProperties from "../floor-plan/floor-plan-crop-properties";
+import FloorPlanInfo from "../floor-plan/floor-plan-info";
+import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
+import ConfirmDialog from "../generic/confirm-dialog";
+import FileUploader from "../generic/file-uploader";
+import SpacesMap from "../generic/spaces-map";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementSettingsPane from "../layouts/element-settings-pane";
 import { CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
-import {
-  Exhibition,
-  ExhibitionFloor,
-  Coordinates,
-  Bounds,
-  ExhibitionRoom,
-  ExhibitionDevice,
-  ExhibitionDeviceGroup,
-  DeviceModel,
-  RfidAntenna,
-  DeviceGroupVisitorSessionStartStrategy
-} from "../../generated/client";
-import BasicLayout from "../layouts/basic-layout";
-import FileUploader from "../generic/file-uploader";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from "../../types";
-import strings from "../../localization/strings";
-import "cropperjs/dist/cropper.css";
-import FloorPlanCrop from "../floor-plan/floor-plan-crop";
-import FloorPlanCropProperties from "../floor-plan/floor-plan-crop-properties";
 import * as cropperjs from "cropperjs";
-import FileUpload from "../../utils/file-upload";
-import { LatLngExpression, LatLngBounds } from "leaflet";
-import SpacesMap from "../generic/spaces-map";
-import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
-import FloorPlanTreeMenu from "../floor-plan/floor-plan-tree-menu";
-import FloorPlanInfo from "../floor-plan/floor-plan-info";
+import "cropperjs/dist/cropper.css";
+import { History } from "history";
+import { Draft, produce } from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import { LatLngBounds, LatLngExpression } from "leaflet";
+import * as React from "react";
 import { createRef } from "react";
 import { ColorResult } from "react-color";
-import ConfirmDialog from "../generic/confirm-dialog";
-import DeleteUtils from "../../utils/delete-utils";
+import { connect } from "react-redux";
+import TreeMenu, { TreeNodeInArray } from "react-simple-tree-menu";
+import { Dispatch } from "redux";
 
 /**
  * Component props

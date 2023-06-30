@@ -1,64 +1,64 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import {
-  CircularProgress,
-  Typography,
-  Grid,
-  TextField,
-  InputAdornment,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Switch,
-  SelectChangeEvent
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { KeycloakInstance } from "keycloak-js";
+import { setDeviceModels } from "../../actions/devices";
+import Api from "../../api/api";
 import {
   DeviceModel,
   DeviceModelCapabilities,
-  DeviceModelDisplayMetrics,
   DeviceModelDimensions,
-  ScreenOrientation,
+  DeviceModelDisplayMetrics,
+  Exhibition,
   ExhibitionDevice,
   PageLayout,
-  Exhibition
+  ScreenOrientation
 } from "../../generated/client";
-import Api from "../../api/api";
+import strings from "../../localization/strings";
+import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
 import {
   AccessToken,
   ActionButton,
   ConfirmDialogData,
+  DeleteDataHolder,
   DeviceModelDataProperty,
-  DeviceModelDataSubPropertyKey,
-  DeleteDataHolder
+  DeviceModelDataSubPropertyKey
 } from "../../types";
-import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
-import { setDeviceModels } from "../../actions/devices";
-import ArrowDownIcon from "../../resources/gfx/svg-paths/nuoli-alas";
-import GenericDialog from "../generic/generic-dialog";
-import theme from "../../styles/theme";
-import ConfirmDialog from "../generic/confirm-dialog";
 import {
   DeviceModelData,
-  DeviceModelDisplayMetricsData,
-  DeviceModelDimensionsData
+  DeviceModelDimensionsData,
+  DeviceModelDisplayMetricsData
 } from "../../types/device-model-string-data";
 import {
+  isTypeOfDeviceModelCapabilitiesData,
   isTypeOfDeviceModelDimensionsData,
-  isTypeOfDeviceModelDisplayMetricsData,
-  isTypeOfDeviceModelCapabilitiesData
+  isTypeOfDeviceModelDisplayMetricsData
 } from "../../types/type-guards";
-import produce, { Draft } from "immer";
 import DeleteUtils from "../../utils/delete-utils";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import BasicLayout from "../layouts/basic-layout";
+import {
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Switch,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce, { Draft } from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props

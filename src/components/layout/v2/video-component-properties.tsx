@@ -1,15 +1,15 @@
-import { Divider, FormControlLabel, Checkbox, Stack } from "@mui/material";
-import { TreeObject } from "../../../types";
-import PropertyBox from "./property-box";
-import { ChangeEvent } from "react";
-import strings from "../../../localization/strings";
 import {
   ExhibitionPageResourceType,
   PageLayout,
   PageResourceMode
 } from "../../../generated/client";
-import PanelSubtitle from "./panel-subtitle";
+import strings from "../../../localization/strings";
+import { TreeObject } from "../../../types";
 import TextField from "../../generic/v2/text-field";
+import PanelSubtitle from "./panel-subtitle";
+import PropertyBox from "./property-box";
+import { Checkbox, Divider, FormControlLabel, Stack } from "@mui/material";
+import { ChangeEvent } from "react";
 
 /**
  * Component props
