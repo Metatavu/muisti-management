@@ -39,7 +39,11 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
    * @param value value
    */
   const onPropertyChange = (name: string, value: string) => {
-    component.element.style[name as any] = value;
+    if (!value) {
+      component.element.style.removeProperty(name);
+    } else {
+      component.element.style[name as any] = value;
+    }
     updateComponent(component);
   };
 

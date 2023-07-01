@@ -102,6 +102,8 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
         fitContent={true}
         contentWidth={screenWidth}
         contentHeight={screenHeight}
+        defaultPositionX={100}
+        defaultPositionY={100}
       >
         <Typography
           sx={{

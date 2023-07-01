@@ -101,7 +101,7 @@ const PanZoom = withStyles(styles)(
      * @param opts transform wrapper options
      */
     private renderContents = (opts: ReactZoomPanPinchContentRef) => {
-      const { classes, children } = this.props;
+      const { classes } = this.props;
       const { containerWidth, containerHeight } = this.state;
 
       return (
