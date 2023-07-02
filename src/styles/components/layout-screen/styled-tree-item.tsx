@@ -5,12 +5,14 @@ import {
 } from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, Typography } from "@mui/material";
+import LanguageUtils from "../../../utils/language-utils";
+import { HtmlComponentType } from "../../../types";
 
 /**
  * Styled Tree Item Props type
  */
 type StyledTreeItemProps = TreeItemProps & {
-  itemType: string;
+  itemType: HtmlComponentType;
   itemName: string;
   isLayoutComponent: boolean;
   expanded: boolean;
@@ -73,26 +75,28 @@ export const StyledTreeItem = ({
   return (
     <StyledTreeItemRoot
       icon={ isRootSubdirectory && <SubdirectoryArrowRightRoundedIcon htmlColor="#BDBDBD"/> }
-      {...other}
+      { ...other }
       label={
-        <Stack direction="row" justifyContent="space-between">
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <Stack direction="column">
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: "inherit",
-                  flexGrow: 1,
-                  color: "#2196F3"
-                }}
-              >
-                { itemName }
-              </Typography>
-              <Typography>
-                { itemType }
-              </Typography>
-            </Stack>
-          </div>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Stack direction="column">
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: "inherit",
+                flexGrow: 1,
+                color: "#2196F3"
+              }}
+            >
+              { itemName }
+            </Typography>
+            <Typography>
+              { LanguageUtils.getLocalizedComponentType(itemType) }
+            </Typography>
+          </Stack>
           { renderExpandIcon() }
         </Stack>
       }

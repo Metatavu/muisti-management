@@ -11,6 +11,7 @@ import MarginPaddingEditorHtml from "./margin-padding-editor-html";
 import ProportionsEditorHtml from "./proportions-editor-html";
 import PropertyBox from "./generic/property-box";
 import PanelSubtitle from "./generic/panel-subtitle";
+import LanguageUtils from "../../../../utils/language-utils";
 
 /**
  * Component props
@@ -97,7 +98,7 @@ const GenericComponentProperties: FC<Props> = ({
                 value={ type }
                 sx={{ color: "#2196F3" }}
               >
-                { type }
+                { LanguageUtils.getLocalizedComponentType(type) }
               </MenuItem>
             )) }
           </TextField>
