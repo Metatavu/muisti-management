@@ -90,7 +90,6 @@ const LayoutScreenHTML: FC<Props> = ({
 
   useEffect(() => {
     if (!foundLayout) return;
-    console.log(foundLayout);
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
   }, [foundLayout]);
 
