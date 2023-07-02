@@ -66,8 +66,8 @@ export const StyledTreeItem = ({
    */
   const renderExpandIcon = () => {
     if (!isLayoutComponent) return;
-    if (expanded) return <UnfoldLessIcon htmlColor="#2196F3"/>;
-    return <UnfoldMoreIcon htmlColor="#2196F3"/>;
+    
+    return expanded ? <UnfoldLessIcon htmlColor="#2196F3"/> : <UnfoldMoreIcon htmlColor="#2196F3"/>
   };
   
   return (
