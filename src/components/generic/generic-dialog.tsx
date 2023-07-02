@@ -26,11 +26,11 @@ interface Props {
   onConfirm: () => void | Promise<void>;
   open: boolean;
   error: boolean;
-
   fullScreen?: boolean;
   fullWidth?: boolean;
   disableEnforceFocus?: boolean;
   children: React.ReactNode;
+  confirmDisabled?: boolean;
 }
 
 /**
@@ -70,7 +70,8 @@ export default class GenericDialog extends React.Component<Props, State> {
       fullScreen,
       fullWidth,
       disableEnforceFocus,
-      children
+      children,
+      confirmDisabled
     } = this.props;
 
     return (
@@ -87,7 +88,7 @@ export default class GenericDialog extends React.Component<Props, State> {
           { title }
         </DialogTitle>
         <DialogContent>
-          { this.props.children }
+          { children }
         </DialogContent>
         <DialogActions>
           <Button onClick={ onCancel } color="primary">
@@ -96,7 +97,7 @@ export default class GenericDialog extends React.Component<Props, State> {
           <Button
             disableElevation
             variant="contained"
-            disabled={ error }
+            disabled={ error || confirmDisabled }
             onClick={ onConfirm }
             color="secondary"
             autoFocus
