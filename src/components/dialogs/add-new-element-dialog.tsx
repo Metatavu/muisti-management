@@ -19,8 +19,13 @@ interface Props {
   onClose: () => void;
 }
 
+// TODO: Implement disabled component types
+const DISABLED_COMPONENT_TYPES = [ HtmlComponentType.TAB, HtmlComponentType.TABS];
+
 /**
  * Add New Element Dialog component
+ * 
+ * TODO: Implement support for sub-layouts  
  */
 const AddNewElementDialog = ({
   open,
@@ -68,12 +73,6 @@ const AddNewElementDialog = ({
    * @param event event
    */
   const onComponentTypeChange = ({ target: { value } }: SelectChangeEvent<HtmlComponentType>) => setNewComponentType(value as HtmlComponentType);
-
-  /**
-   * TODO: Will be implemented later
-   * Event handler for sublayout select change event
-   */
-  const onSubLayoutChange = ({ target: { value } }: SelectChangeEvent<string>) => setSelectedSubLayoutId(value);
   
   /**
    * Event handler for component name text field change event
@@ -101,26 +100,10 @@ const AddNewElementDialog = ({
       return (
         <MenuItem
           key={ type }
+          disabled={ DISABLED_COMPONENT_TYPES.includes(type) }
           value={ type }
         >
           { LanguageUtils.getLocalizedComponentType(type) }
-        </MenuItem>
-      );
-    })
-  );
-  
-  /**
-   * TODO: Will be implemented later
-   * Renders sublayouts menu items
-   */
-  const renderSubLayoutsMenuItems = () => (
-    subLayouts.map(subLayout => {
-      return (
-        <MenuItem
-          key={ subLayout.id }
-          value={ subLayout.id }
-        >
-          { subLayout.name }
         </MenuItem>
       );
     })

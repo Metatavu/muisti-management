@@ -40,10 +40,16 @@ const LayoutTreeMenuHtml = ({
           color: "#2196F3",
           display: selectedComponent?.id === item.id ? "block" : "none"
         }}
-        startIcon={ <AddBoxOutlined sx={{ color: "#2196F3" }}/> }
         onClick={ () => onAddComponentClick(item.path, asChildren) }
       >
-        { strings.layoutEditor.addLayoutViewDialog.title }
+        <Stack
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Stack>
       </Button>
     );
     
@@ -61,9 +67,7 @@ const LayoutTreeMenuHtml = ({
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
-      <Stack
-        key={ item.id }
-      >
+      <Stack key={ item.id }>
         <StyledTreeItem
           nodeId={ item.id }
           itemType={ item.type }
@@ -72,6 +76,7 @@ const LayoutTreeMenuHtml = ({
           isRoot={ isRoot }
           isRootSubdirectory={ isRootSubdirectory }
           hasChildren={ hasChildren }
+          expanded={ getParentIds().includes(item.id) }
           onClick={ () => onTreeComponentSelect(item) }
         >
           { (item.children ?? []).map((child, i) => {
@@ -85,9 +90,44 @@ const LayoutTreeMenuHtml = ({
       </Stack>
     );
   };
+  
+ /**
+  * Gets parent ids, based on selected path.
+  * This is being used to expand the tree view automatically after adding a new element.
+  * In case of the root element we return the path as is.
+  *
+  * @param path path
+  * @retuns IDs of parent elements
+  */
+ const getParentIds = (): string[] => {
+   if (!selectedComponent) {
+     return [];
+   }
+
+   const { path, type } = selectedComponent;
+
+   if (!path || !type) {
+     return [];
+   }
+
+   const slashes = path?.match(/\//g)?.length ?? 0;
+
+   if (!slashes) {
+     return [ path ];
+   }
+
+   let parentIds: string[] = [];
+   for (let i = 0; i <= slashes; i++) {
+     if (path?.split("/")[i]) {
+       parentIds.push(path?.split("/")[i]);
+     }
+   }
+
+   return parentIds;
+ };
 
   return (
-    <TreeView>
+    <TreeView expanded={ getParentIds() }>
       { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );
