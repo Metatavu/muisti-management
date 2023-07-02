@@ -96,23 +96,27 @@ const PagePreviewHtml = ({
   
   return (
     <PreviewContainer>
-    <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
-        <Typography
-          sx={{
-            position: "absolute",
-            top: -20,
-            opacity: 0.6
-          }}
-        >
-          { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
-        </Typography>
-        <Preview
-          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
-          width={ getPreviewDimensions().width }
-          height={ getPreviewDimensions().height }
-          />
-    </PanZoom>
-      
+      <PanZoom
+        minScale={ 0.1 }
+        contentWidth={ screenWidth }
+        contentHeight={ screenHeight }
+        defaultPositionX={ 100 }
+        defaultPositionY={ 100 }
+      >
+          <Typography
+            sx={{
+              position: "absolute",
+              top: -20,
+              opacity: 0.6
+            }}
+          >
+            { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
+          </Typography>
+          <Preview
+            srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
+            { ...getPreviewDimensions() }
+            />
+      </PanZoom>
     </PreviewContainer>
   );
 };
