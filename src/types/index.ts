@@ -244,7 +244,7 @@ export interface DiagnosticsConfig {
  * Tree Object type
  */
 export type TreeObject = {
-  type: ComponentType;
+  type: HtmlComponentType;
   path: string;
   name?: string;
   id: string;
@@ -256,7 +256,7 @@ export type TreeObject = {
 /**
  * Component Type enum
  */
-export enum ComponentType {
+export enum HtmlComponentType {
   LAYOUT = "layout",
   BUTTON = "button",
   IMAGE = "image",

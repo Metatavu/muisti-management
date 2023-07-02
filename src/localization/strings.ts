@@ -320,6 +320,16 @@ export interface IStrings extends LocalizedStringsMethods {
         deleteText: string;
       };
     };
+    html: {
+      types: {
+        layout: string;
+        button: string;
+        text: string;
+        image: string;
+        tabs: string;
+        tab: string;
+      };
+    };
   };
 
   subLayout: {
@@ -966,6 +976,14 @@ export interface IStrings extends LocalizedStringsMethods {
       materialTabViewDescription: string;
       visitorsViewDescription: string;
       webViewDescription: string;
+    };
+    layoutEditorHtml: {
+      buttonDescription: string;
+      textViewDescription: string;
+      imageViewDescription: string;
+      layoutDescription: string;
+      tabViewDescription: string;
+      tabsViewDescription: string;
     };
     contentManager: {
       animationInterpolations: {

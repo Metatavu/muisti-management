@@ -1,6 +1,6 @@
 import { ContentVersion } from "../generated/client";
 import strings from "../localization/strings";
-import { LayoutAlignment } from "../types";
+import { HtmlComponentType, LayoutAlignment } from "../types";
 
 /**
  * Utility class for handling languages
@@ -31,16 +31,43 @@ export default class LanguageUtils {
    * 
    * @param alignment alignment
    */
-  public static getLocalizedLayoutAlignment = (alignment: LayoutAlignment): string => ({
-    "nw": strings.layout.htmlProperties.genericProperties.alignment.northwest,
-    "n": strings.layout.htmlProperties.genericProperties.alignment.north,
-    "ne": strings.layout.htmlProperties.genericProperties.alignment.northeast,
-    "w": strings.layout.htmlProperties.genericProperties.alignment.west,
-    "c": strings.layout.htmlProperties.genericProperties.alignment.center,
-    "e": strings.layout.htmlProperties.genericProperties.alignment.east,
-    "sw": strings.layout.htmlProperties.genericProperties.alignment.southwest,
-    "s": strings.layout.htmlProperties.genericProperties.alignment.south,
-    "se": strings.layout.htmlProperties.genericProperties.alignment.southeast
-  }[alignment])
+  public static getLocalizedLayoutAlignment = (alignment: LayoutAlignment) => ({
+    [LayoutAlignment.NORTH_WEST]: strings.layout.htmlProperties.genericProperties.alignment.northwest,
+    [LayoutAlignment.NORTH]: strings.layout.htmlProperties.genericProperties.alignment.north,
+    [LayoutAlignment.NORTH_EAST]: strings.layout.htmlProperties.genericProperties.alignment.northeast,
+    [LayoutAlignment.WEST]: strings.layout.htmlProperties.genericProperties.alignment.west,
+    [LayoutAlignment.CENTER]: strings.layout.htmlProperties.genericProperties.alignment.center,
+    [LayoutAlignment.EAST]: strings.layout.htmlProperties.genericProperties.alignment.east,
+    [LayoutAlignment.SOUTH_WEST]: strings.layout.htmlProperties.genericProperties.alignment.southwest,
+    [LayoutAlignment.SOUTH]: strings.layout.htmlProperties.genericProperties.alignment.south,
+    [LayoutAlignment.SOUTH_EAST]: strings.layout.htmlProperties.genericProperties.alignment.southeast
+  })[alignment]
+  
+  /**
+   * Returns localized component type
+   * 
+   * @param componentType component type
+   */
+  public static getLocalizedComponentType = (componentType: HtmlComponentType) => ({
+    [HtmlComponentType.LAYOUT]: strings.layout.html.types.layout,
+    [HtmlComponentType.BUTTON]: strings.layout.html.types.button,
+    [HtmlComponentType.IMAGE]: strings.layout.html.types.image,
+    [HtmlComponentType.TEXT]: strings.layout.html.types.text,
+    [HtmlComponentType.TABS]: strings.layout.html.types.tabs,
+    [HtmlComponentType.TAB]: strings.layout.html.types.tab
+  })[componentType]
 
+  /**
+   * Return localized help text according to selected component
+   * 
+   * @param componentType component type
+   */
+  public static getLocalizedNewComponentHelpText = (componentType: HtmlComponentType) => ({
+    [HtmlComponentType.LAYOUT]: strings.helpTexts.layoutEditorHtml.layoutDescription,
+    [HtmlComponentType.BUTTON]: strings.helpTexts.layoutEditorHtml.buttonDescription,
+    [HtmlComponentType.IMAGE]: strings.helpTexts.layoutEditorHtml.imageViewDescription,
+    [HtmlComponentType.TEXT]: strings.helpTexts.layoutEditorHtml.textViewDescription,
+    [HtmlComponentType.TABS]: strings.helpTexts.layoutEditorHtml.tabsViewDescription,
+    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription
+  })[componentType]
 }

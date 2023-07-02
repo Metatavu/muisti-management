@@ -1,18 +1,27 @@
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import {
+  UnfoldLess as UnfoldLessIcon,
+  UnfoldMore as UnfoldMoreIcon,
+  SubdirectoryArrowRightRounded as SubdirectoryArrowRightRoundedIcon
+} from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
-import { Stack, styled, SvgIcon, Typography } from "@mui/material";
-import theme from "../../theme";
-import ParentTreeIcon from "./parent-tree-icon";
+import { Stack, styled, Typography } from "@mui/material";
 
+/**
+ * Styled Tree Item Props type
+ */
 type StyledTreeItemProps = TreeItemProps & {
   itemType: string;
   itemName: string;
   isLayoutComponent: boolean;
+  expanded: boolean;
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
 };
 
+/**
+ * Styled Tree Item Root styled component
+ */
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
@@ -39,33 +48,35 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 }
 ));
 
+/**
+ * Styled Tree Item Component
+ */
 export const StyledTreeItem = ({
   itemType,
   itemName,
   isLayoutComponent,
+  expanded,
   isRoot,
   isRootSubdirectory,
   hasChildren,
   ...other
 }: StyledTreeItemProps) => {
-
+  /**
+   * Renders expand icon
+   */
+  const renderExpandIcon = () => {
+    if (!isLayoutComponent) return;
+    
+    return expanded ? <UnfoldLessIcon htmlColor="#2196F3"/> : <UnfoldMoreIcon htmlColor="#2196F3"/>
+  };
+  
   return (
     <StyledTreeItemRoot
+      icon={ isRootSubdirectory && <SubdirectoryArrowRightRoundedIcon htmlColor="#BDBDBD"/> }
+      {...other}
       label={
-        <Stack direction="row" justifyContent="space-between" >
+        <Stack direction="row" justifyContent="space-between">
           <div style={{ display: "flex", flexDirection: "row" }}>
-            { (isRootSubdirectory) &&
-              <SubdirectoryArrowRightRounded
-                sx={{
-                  color: "#BDBDBD",
-                  alignSelf: "center",
-                  marginRight: theme.spacing(2),
-                }}
-              />
-            }
-            { (!isRoot && !isRootSubdirectory) &&
-              <div style={{ marginRight: theme.spacing(5) }}/>
-            }
             <Stack direction="column">
               <Typography
                 variant="body2"
@@ -81,13 +92,10 @@ export const StyledTreeItem = ({
                 { itemType }
               </Typography>
             </Stack>
-            { hasChildren &&
-            <ParentTreeIcon /> }
           </div>
-
+          { renderExpandIcon() }
         </Stack>
       }
-      {...other}
     />
   );
-}
+};

@@ -12,12 +12,6 @@
     "tabs": {
       "floorPlanTab": "Pohjapiirros",
       "exhibitionContentsTab": "Näyttelysisällöt"
-    },
-
-    "inProduction": "Tuotannossa",
-    "inDraft": "Luonnokset",
-    "status": {
-      "ready": "Valmis"
     }
   },
 
@@ -68,6 +62,11 @@
       "cancelButton": "Peruuta",
       "createButton": "Luo"
     },
+    "inProduction": "Tuotannossa",
+    "inDraft": "Luonnoksissa",
+    "status": {
+      "ready": "Valmis"
+    },
     "cardMenu": {
       "addExhibition": "Lisää näyttely",
       "moveToProduction": "Siirrä tuotantoon",
@@ -105,7 +104,6 @@
   },
 
   "exhibitionLayouts": {
-
     "editView": {
       "xml": "XML",
       "json": "JSON",
@@ -117,10 +115,9 @@
       "deleteButton": "Poista",
       "deleteConfirmTitle": "Oletko varma?",
       "deleteConfirmText": "Oletko varma, että haluat poistaa asettelun?",
-      "deleteConfirmDelte": "Poista",
+      "deleteConfirmDelete": "Poista",
       "deleteConfirmCancel": "Peruuta"
     }
-
   },
 
   "dashboard": {
@@ -140,15 +137,15 @@
     "overview": {
       "onProduction": "Tuotannossa",
       "lastModified": "Viimeksi muokattu",
+      "visitors": "Kävijöitä",
+      "longTour": "Pitkä kierto",
+      "shortTour": "Lyhyt kierto",
       "statistics": {
         "title": "Tilastot",
         "day": "Päivä",
         "week": "Viikko",
         "month": "Kuukausi",
-        "year": "Vuosi",
-        "visitors": "Kävijöitä",
-        "longTour": "Pitkä kierto",
-        "shortTour": "Lyhyt kierto"
+        "year": "Vuosi"
       }
     },
     "recent": {
@@ -242,6 +239,7 @@
     },
 
     "deviceSettingsEditor": {
+      "indexPageId": "TODO"
     },
 
     "addDeviceEditor": {
@@ -315,6 +313,16 @@
       "delete": {
         "deleteTitle": "Poista valittu asettelun elementti",
         "deleteText": "Poistetaanko valittu asettelun elementti?"
+      }
+    },
+    "html": {
+      "types": {
+        "layout": "FlexContainer",
+        "button": "Nappi",
+        "text": "Teksti",
+        "image": "Kuva",
+        "tabs": "Välilehdet",
+        "tab": "Välilehti"
       }
     }
   },
@@ -434,7 +442,8 @@
       "readerId": "Antennin lukijan Id",
       "deviceGroup": "Laiteryhmä johon antenni kuuluu",
       "room": "Huone johon antenni kuuluu",
-      "antennaNumber": "Antennin numero"
+      "antennaNumber": "Antennin numero",
+      "name": "Nimi"
     },
 
     "hasChildElements": "Valitulla elementillä on alaelementtejä. Poistoa ei voida tehdä!",
@@ -579,8 +588,7 @@
     },
 
     "linearLayout": {
-      "orientation": "Orientaatio",
-      "orientationTooltip": "Elementin sisältämät elementit jäsentyvät joko pysty tai vaakasuuntaan"
+      "orientation": "Orientaatio"
     },
 
     "tab": {
@@ -630,7 +638,6 @@
     "language": "Kieli",
     "rooms": "Näyttelykohteet",
     "room": "Näyttelykohde",
-
     "delete": {
       "deleteTitle": "Poista sisältökokonaisuus",
       "deleteText": "Oletko varma että haluat poistaa tämän sisältökokonaisuuden?",
@@ -640,6 +647,7 @@
     "nameAlreadyTaken": "Nimi on käytössä jo olemassa olevalla sisältökokonaisuudella",
     "nameIsMandatory": "Nimi on pakollinen tieto",
     "contentIsActiveWhen": "Aseta sisältö aktiiviseksi kun:",
+    "userVariable": "Käyttäjämuuttuja",
     "equals": "Arvo on:"
   },
 
@@ -647,6 +655,7 @@
     "title": "Sisällöt",
     "add": "Lisää uusi sisältö",
     "addDialogTitle": "Lisää sisältö",
+    "addDialogDescription": "Lisää sisältö",
     "name": "Nimi",
     "deviceGroup": "Laiteryhmä",
     "status": "Sisältöjen tila",
@@ -866,6 +875,10 @@
     "confirmEmptyText": "Muuttuja poistuu session muuttujalistasta.",
     "errorMessages": {
       "sessionNotFound": "Vierailijan sessiota ei löytynyt"
+    },
+    "delete": {
+      "deleteTitle": "Poista",
+      "deleteText": "Poista"
     }
   },
 
@@ -950,6 +963,14 @@
       "materialTabViewDescription": "Välilehtiasettelu. HUOM! esikatselu ei täysin vastaa oikealle laitteelle tulostuvaa näkymää.",
       "visitorsViewDescription": "Ryhmämuodostuspisteen kävijöitä esittävä lista.",
       "webViewDescription": "Internetsisältö. Tällä voidaan esittää esim. haluttu internet-sivu tai jokin muu internet-sisältö, mikä ei ole Noheva Alustan sisällönhallinnan kautta hallittavissa."
+    },
+    "layoutEditorHtml": {
+      "buttonDescription": "Painike-elementti esimerkiksi valintojen ja navigoinnin luomiseen sivujen välillä.",
+      "textViewDescription": "Tekstielementti tekstin esittämistä varten.",
+      "imageViewDescription": "Elementti kuvien esittämistä varten",
+      "layoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
+      "tabViewDescription": "Välilehtiasettelu.",
+      "tabsViewDescription": "Välilehtien asettelu."
     },
     "contentManager": {
       "animationInterpolations": {

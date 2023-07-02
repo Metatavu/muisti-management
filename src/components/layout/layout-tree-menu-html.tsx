@@ -1,8 +1,8 @@
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
-import { ComponentType, TreeObject } from "../../types";
+import { HtmlComponentType, TreeObject } from "../../types";
 import strings from "../../localization/strings";
 
 /**
@@ -10,7 +10,9 @@ import strings from "../../localization/strings";
  */
 interface Props {
   treeObjects: TreeObject[];
+  selectedComponent?: TreeObject;
   onTreeComponentSelect: (selectedComponent: TreeObject) => void;
+  onAddComponentClick: (path: string, asChildren: boolean) => void;
 }
 
 /**
@@ -18,8 +20,39 @@ interface Props {
  */
 const LayoutTreeMenuHtml = ({
   treeObjects,
-  onTreeComponentSelect
+  selectedComponent,
+  onTreeComponentSelect,
+  onAddComponentClick
 }: Props) => {
+  
+  /**
+   * Renders Add New Element button
+   */
+    const renderAddNewElementButton = (item: TreeObject, asChildren: boolean) => (
+      <Button
+        variant="text"
+        size="small"
+        sx={{
+          textTransform: "uppercase",
+          fontWeight: 400,
+          
+          fontSize: "0.65rem",
+          color: "#2196F3",
+          display: selectedComponent?.id === item.id ? "block" : "none"
+        }}
+        onClick={ () => onAddComponentClick(item.path, asChildren) }
+      >
+        <Stack
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Stack>
+      </Button>
+    );
+    
   /**
    * Renders Tree Item
    *
@@ -29,39 +62,72 @@ const LayoutTreeMenuHtml = ({
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
+    
     const hasChildren = !!item.children?.length;
+    const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
-      <StyledTreeItem
-        key={ item.id }
-        nodeId={ item.id }
-        itemType={ item.type }
-        itemName={ item.name || "Nimetön" }
-        isLayoutComponent={ item.type === ComponentType.LAYOUT }
-        isRoot={ isRoot }
-        isRootSubdirectory={ isRootSubdirectory }
-        hasChildren={ hasChildren }
-        onClick={ () => onTreeComponentSelect(item) }
-      >
-        { (item.children ?? []).map((child, i) => {
-            const isRootSubDirectory = i === 0;
-            return renderTreeItem(child, false , isRootSubDirectory)
-          })
-        }
-        { item.type === ComponentType.LAYOUT &&
-            <Stack direction="row" alignItems="center">
-              <AddBoxOutlined/>
-              <Typography variant="caption" textTransform="uppercase">
-                { strings.layoutEditor.addLayoutViewDialog.title }
-              </Typography>
-            </Stack>
-        }
-      </StyledTreeItem>
+      <Stack key={ item.id }>
+        <StyledTreeItem
+          nodeId={ item.id }
+          itemType={ item.type }
+          itemName={ item.name || strings.generic.name }
+          isLayoutComponent={ isLayoutComponent }
+          isRoot={ isRoot }
+          isRootSubdirectory={ isRootSubdirectory }
+          hasChildren={ hasChildren }
+          expanded={ getParentIds().includes(item.id) }
+          onClick={ () => onTreeComponentSelect(item) }
+        >
+          { (item.children ?? []).map((child, i) => {
+              const isRootSubDirectory = i === 0;
+              return renderTreeItem(child, false , isRootSubDirectory)
+            })
+          }
+          { (item.children?.length === 0 && item.type === HtmlComponentType.LAYOUT) && renderAddNewElementButton(item, true) }
+        </StyledTreeItem>
+        { renderAddNewElementButton(item, false) }
+      </Stack>
     );
   };
+  
+ /**
+  * Gets parent ids, based on selected path.
+  * This is being used to expand the tree view automatically after adding a new element.
+  * In case of the root element we return the path as is.
+  *
+  * @param path path
+  * @retuns IDs of parent elements
+  */
+ const getParentIds = (): string[] => {
+   if (!selectedComponent) {
+     return [];
+   }
+
+   const { path, type } = selectedComponent;
+
+   if (!path || !type) {
+     return [];
+   }
+
+   const slashes = path?.match(/\//g)?.length ?? 0;
+
+   if (!slashes) {
+     return [ path ];
+   }
+
+   let parentIds: string[] = [];
+   for (let i = 0; i <= slashes; i++) {
+     if (path?.split("/")[i]) {
+       parentIds.push(path?.split("/")[i]);
+     }
+   }
+
+   return parentIds;
+ };
 
   return (
-    <TreeView>
+    <TreeView expanded={ getParentIds() }>
       { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );

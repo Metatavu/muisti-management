@@ -12,7 +12,7 @@ import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
 import { PageLayout, ScreenOrientation, DeviceModel, SubLayout, ExhibitionPage, Exhibition, LayoutType } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder } from '../../types';
+import { AccessToken, ActionButton, ConfirmDialogData, DeleteDataHolder, HtmlComponentType } from '../../types';
 import strings from "../../localization/strings";
 import CardList from "../generic/card/card-list";
 import CardItem from "../generic/card/card-item";
@@ -23,8 +23,8 @@ import { setSubLayouts, setSelectedSubLayout } from "../../actions/subLayouts";
 import produce from "immer";
 import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
-import { HTML_LAYOUT_ROOT } from "../../constants/html-layout-root";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
+import HtmlComponentsUtils from "../../utils/html-components-utils";
 
 /**
  * Component props
@@ -355,7 +355,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       modelId: deviceModelId,
       layoutType: LayoutType.Html,
       data: {
-        html: HTML_LAYOUT_ROOT()
+        html: HtmlComponentsUtils.getSerializedHtmlElement(HtmlComponentType.LAYOUT)
       }
     };
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
@@ -381,7 +381,7 @@ class LayoutsScreen extends React.Component<Props, State> {
       name: name,
       layoutType: LayoutType.Html,
       data: {
-        html: HTML_LAYOUT_ROOT()
+        html: HtmlComponentsUtils.getSerializedHtmlElement(HtmlComponentType.LAYOUT)
       }
     };
 

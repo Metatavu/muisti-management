@@ -2,7 +2,7 @@ import React, { useState, FC, ChangeEvent } from "react";
 import { Button, Divider, MenuItem, Popover, Stack, TextField } from "@mui/material";
 import { ColorResult, SketchPicker } from "react-color";
 import strings from "../../../../localization/strings";
-import { ComponentType, TreeObject } from "../../../../types";
+import { HtmlComponentType, TreeObject } from "../../../../types";
 import { FormatColorFillOutlined, PaletteOutlined } from "@mui/icons-material";
 import MarginPaddingEditorHtml from "./margin-padding-editor-html";
 import ProportionsEditorHtml from "./proportions-editor-html";
@@ -76,7 +76,7 @@ const GenericComponentProperties: FC<Props> = ({
               }
             }}
           >
-            { Object.values(ComponentType).map(type => (
+            { Object.values(HtmlComponentType).map(type => (
               <MenuItem
                 key={ type }
                 value={ type }

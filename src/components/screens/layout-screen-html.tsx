@@ -5,6 +5,7 @@ import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
+import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObject, deserializeElement, treeObjectToHtmlElement } from "../layout/utils/tree-html-data-utils";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
@@ -23,7 +24,7 @@ import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, Page
 import BasicLayout from "../layouts/basic-layout";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
-import { AccessToken, ActionButton, ComponentType, LayoutEditorView, TreeObject } from "../../types";
+import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
@@ -34,6 +35,7 @@ import GenericComponentDrawProperties from "../layout/editor-components/html/gen
 import { Close } from "@mui/icons-material";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import LayoutComponentProperties from "../layout/editor-components/html/layout-component-properties";
+import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 
 /**
  * Component props
@@ -63,16 +65,20 @@ const LayoutScreenHTML: FC<Props> = ({
   layouts,
   layoutId,
   accessToken,
-  classes
+  classes,
+  subLayouts
 }) => {
   const [ view, setView ] = useState<LayoutEditorView>(LayoutEditorView.VISUAL);
   const [ dataChanged, setDataChanged ] = useState(false);
-  const [ foundLayout, setFoundLayout ] = useState(layout);
-  const [ error, setError ] = useState<Error | undefined>(undefined);
+  const [ foundLayout, setFoundLayout ] = useState<PageLayout>();
+  const [ error, setError ] = useState<Error>();
   const [ loading, setLoading ] = useState(false);
   const [ drawerOpen, setDrawerOpen ] = useState(false);
-  const [ selectedComponent, setSelectedComponent ] = useState<TreeObject | undefined>(undefined);
+  const [ selectedComponent, setSelectedComponent ] = useState<TreeObject>();
   const [ treeObjects, setTreeObjects ] = useState<TreeObject[]>([]);
+  const [ addComponentDialogOpen, setAddComponentDialogOpen ] = useState(false);
+  const [ newComponentPath, setNewComponentPath ] = useState<string>();
+  const [ isNewComponentSibling, setIsNewComponentSibling ] = useState<boolean>();
 
   useEffect(() => {
     fetchLayout();
@@ -84,58 +90,8 @@ const LayoutScreenHTML: FC<Props> = ({
 
   useEffect(() => {
     if (!foundLayout) return;
-
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
   }, [foundLayout]);
-
-  /**
-   * Constructs an array of tree objects from given html
-   *
-   * @param html html
-   * @returns Array of Tree Objects
-   */
-  const constructTree = (html: string) => {
-    const dom = new DOMParser().parseFromString(html, "text/html").body;
-    const domArray = Array.from(dom.children);
-
-    return domArray.map(domElement => createTreeObject(domElement) as TreeObject);
-  };
-
-  /**
-   * Creates Tree Object from HTML Element
-   *
-   * @param element element
-   * @param basePath base path
-   * @returns TreeObject
-   */
-  const createTreeObject = (element: Element, basePath?: string): TreeObject | undefined => {
-    const componentType = element.attributes.getNamedItem("data-component-type")?.nodeValue;
-
-    const id = element.id ?? "";
-
-    if (!componentType) return;
-
-    if (!Object.values(ComponentType).includes(componentType as ComponentType)) return;
-
-    const children: TreeObject[] = [];
-
-    const path = basePath ? `${basePath}/${id}` : id;
-
-    for (const child of element.children) {
-      const treeObject = createTreeObject(child, path);
-
-      if (treeObject) children.push(treeObject);
-    }
-
-    return {
-      type: componentType as ComponentType,
-      path: path,
-      name: element.attributes.getNamedItem("name")?.nodeValue ?? "",
-      id: id,
-      children: children,
-      element: element as HTMLElement
-    }
-  };
 
   /**
    * Fetches PageLayout
@@ -256,6 +212,7 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const onCodeChange = (value: string) => {
     setFoundLayout({ ...foundLayout, data: { html: value } });
+    setDataChanged(true);
   };
 
   /**
@@ -282,94 +239,68 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * Update item within tree structure
+   * Event handler for add component click
    *
-   * @param treeData list of TreeObject
-   * @param updatedComponent updated TreeObject
-   * @param destinationPath path of the element to be updated within tree
-   * @returns updatedTree list of TreeObjects
+   * @param path path to the parent element where the new child item will be added
+   * @param asChildren whether to add as children or sibling
    */
-  const constructTreeUpdateData = (treeData: TreeObject[], updatedComponent: TreeObject, destinationPath: string): TreeObject[] => {
-    const updatedTree: TreeObject[] = [treeData[0]];
-    if (treeData[0].id === destinationPath) {
-      updatedTree[0] = updatedComponent;
-    } else {
-      updatedTree[0].children = updateFromTree(updatedTree[0].children, destinationPath, treeData[0].id, updatedComponent);
-    }
-
-    return updatedTree;
-  };
+  const onAddComponentClick = (path: string, asChildren: boolean) => {
+    setAddComponentDialogOpen(true);
+    setNewComponentPath(path);
+    setIsNewComponentSibling(asChildren);
+  }
 
   /**
-   * Recursive function that checks the updatedComponent children and to find item to be updated.
-   *
-   * @param treeData list of TreeObject
-   * @param destinationPath path to the item to be updated within tree
-   * @param currentPath current path inside the recursion
-   * @param updatedComponent updated TreeObject
-   * @returns list of TreeObjects
+   * Create new component and add it to the layout
+   * 
+   * @param componentData component data
+   * @param targetPath sibling path
    */
-  const updateFromTree = (treeData: TreeObject[], destinationPath: string, currentPath: string, updatedComponent: TreeObject): TreeObject[] => {
-    const cleanNodes: TreeObject[] = [];
-    let found = false;
-    for (let i = 0; i < treeData.length; i++) {
-      const node = treeData[i];
-      const fullPath = `${currentPath}/${node.id}`;
-      if (fullPath !== destinationPath) {
-        cleanNodes.push(node);
-      } else {
-        cleanNodes.push(updatedComponent);
-        found = true
+  const createComponent = (componentData: string, targetPath: string) => {
+    if (!newComponentPath) return;
+    
+    const newElement = deserializeElement(componentData);
+    const newComponent = createTreeObject(newElement, targetPath);
+    
+    if (!newComponent) return;
+    
+    const updatedLayout = addNewHtmlComponent(
+      treeObjects,
+      newComponent,
+      targetPath,
+      !!isNewComponentSibling
+    );
+
+    const updatedHtmlElements = updatedLayout.map(treeObjectToHtmlElement);
+    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+    
+    setFoundLayout({
+      ...foundLayout,
+      data: {
+        html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       }
-    }
-
-    if (found) {
-      return cleanNodes;
-    } else {
-      for (let i = 0; i < treeData.length; i++) {
-        const child = treeData[i];
-        const updatedPath = `${currentPath}/${child.id}`;
-        child.children = updateFromTree(child.children ?? [], destinationPath, updatedPath, updatedComponent);
-      }
-    }
-
-    return treeData;
-  };
-
+    });
+    setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
+    setSelectedComponent(newComponent);
+    setDataChanged(true);
+  }
+  
   /**
-   * Convert tree object to html element
-   *
-   * @param treeObject
-   * @returns HTMLElement
-   */
-  const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
-    const element = treeObject.element;
-    element.replaceChildren();
-    if (treeObject.children) {
-      for (let i = 0; i < treeObject.children.length; i++) {
-        element.appendChild(treeObjectToHtmlElement(treeObject.children[i]));
-      }
-    }
-
-    return element;
-  };
-
-  /**
-   * Update html element and tree data
+   * Update component and add it to the layout
    *
    * @param updatedComponent TreeObject
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-
-    const updatedTreeObjects = constructTreeUpdateData(
+  
+    const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
       selectedComponent.path
     );
     const updatedHtmlElements = updatedTreeObjects.map(treeObjectToHtmlElement);
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
-
+  
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -379,7 +310,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
-  };
+  };  
 
   /**
    * Renders device model select
@@ -465,7 +396,10 @@ const LayoutScreenHTML: FC<Props> = ({
   const elementPaneMenuOptions = [
     {
       name: strings.genericDialog.close,
-      action: () => setDrawerOpen(!drawerOpen)
+      action: () => {
+        setDrawerOpen(!drawerOpen);
+        setSelectedComponent(undefined);
+      }
     }
   ];
 
@@ -487,7 +421,7 @@ const LayoutScreenHTML: FC<Props> = ({
           component={ selectedComponent }
           updateComponent={ updateComponent }
         />
-        { selectedComponent?.type === ComponentType.LAYOUT &&
+        { selectedComponent?.type === HtmlComponentType.LAYOUT &&
           <LayoutComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
@@ -528,7 +462,9 @@ const LayoutScreenHTML: FC<Props> = ({
               { renderScreenOrientationSelect() }
               <LayoutTreeMenuHtml
                 treeObjects={ treeObjects }
+                selectedComponent={ selectedComponent }
                 onTreeComponentSelect={ onTreeComponentSelect }
+                onAddComponentClick={ onAddComponentClick }
               />
             </div>
           </ElementNavigationPane>
@@ -537,6 +473,13 @@ const LayoutScreenHTML: FC<Props> = ({
           </EditorView>
           { selectedComponent && renderElementSettingsPane() }
         </div>
+        <AddNewElementDialog
+          open={ addComponentDialogOpen }
+          subLayouts={ subLayouts }
+          siblingPath={ newComponentPath }
+          onConfirm={ createComponent }
+          onClose={ () => setAddComponentDialogOpen(false) }
+        />
     </BasicLayout>
   );
 }
