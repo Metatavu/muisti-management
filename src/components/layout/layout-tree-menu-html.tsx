@@ -4,7 +4,6 @@ import { Button, Stack } from "@mui/material";
 import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
 import { HtmlComponentType, TreeObject } from "../../types";
 import strings from "../../localization/strings";
-import { CONTAINER_ELEMENTS } from "./utils/tree-html-data-utils";
 
 /**
  * Components properties
@@ -36,15 +35,20 @@ const LayoutTreeMenuHtml = ({
         sx={{
           textTransform: "uppercase",
           fontWeight: 400,
-          
           fontSize: "0.65rem",
           color: "#2196F3",
           display: selectedComponent?.id === item.id ? "block" : "none"
         }}
-        startIcon={ <AddBoxOutlined sx={{ color: "#2196F3" }}/> }
         onClick={ () => onAddComponentClick(item.path, asChildren) }
       >
-        { strings.layoutEditor.addLayoutViewDialog.title }
+        <Stack
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <AddBoxOutlined sx={{ color: "#2196F3" }}/>
+          { strings.layoutEditor.addLayoutViewDialog.title }
+        </Stack>
       </Button>
     );
     
@@ -62,9 +66,7 @@ const LayoutTreeMenuHtml = ({
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
-      <Stack
-        key={ item.id }
-      >
+      <Stack key={ item.id }>
         <StyledTreeItem
           nodeId={ item.id }
           itemType={ item.type }
@@ -73,6 +75,7 @@ const LayoutTreeMenuHtml = ({
           isRoot={ isRoot }
           isRootSubdirectory={ isRootSubdirectory }
           hasChildren={ hasChildren }
+          expanded={ getParentIds().includes(item.id) }
           onClick={ () => onTreeComponentSelect(item) }
           onDoubleClick={ () => {
             if (selectedComponent?.id === item.id) {
@@ -91,46 +94,44 @@ const LayoutTreeMenuHtml = ({
       </Stack>
     );
   };
+  
+ /**
+  * Gets parent ids, based on selected path.
+  * This is being used to expand the tree view automatically after adding a new element.
+  * In case of the root element we return the path as is.
+  *
+  * @param path path
+  * @retuns IDs of parent elements
+  */
+ const getParentIds = (): string[] => {
+   if (!selectedComponent) {
+     return [];
+   }
 
-  /**
-   * Gets parent ids, based on selected path.
-   * This is being used to expand the tree view automatically after adding a new element.
-   * In case of the root element we return the path as is.
-   *
-   * @param path path
-   * @retuns IDs of parent elements
-   */
-  const getParentIds = (): string[] => {
-    if (!selectedComponent) {
-      return [];
-    }
+   const { path, type } = selectedComponent;
 
-    const { path, type } = selectedComponent;
+   if (!path || !type) {
+     return [];
+   }
 
-    if (!path || !type) {
-      return [];
-    }
+   const slashes = path?.match(/\//g)?.length ?? 0;
 
-    const slashes = path?.match(/\//g)?.length ?? 0;
+   if (!slashes) {
+     return [ path ];
+   }
 
-    if (!slashes) {
-      return [ path ];
-    }
+   let parentIds: string[] = [];
+   for (let i = 0; i <= slashes; i++) {
+     if (path?.split("/")[i]) {
+       parentIds.push(path?.split("/")[i]);
+     }
+   }
 
-    let parentIds: string[] = [];
-    for (let i = 0; i <= slashes; i++) {
-      if (path?.split("/")[i]) {
-        parentIds.push(path?.split("/")[i]);
-      }
-    }
-
-    return parentIds;
-  };
+   return parentIds;
+ };
 
   return (
-    <TreeView
-      expanded={ getParentIds() }
-    >
+    <TreeView expanded={ getParentIds() }>
       { treeObjects.map(item => renderTreeItem(item, true)) }
     </TreeView>
   );
