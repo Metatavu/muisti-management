@@ -1,11 +1,11 @@
 import { Badge } from "@mui/material";
 import { ReactNode } from "react";
-import theme from "../../../../../styles/theme";
+import theme from "../../../styles/theme";
 import {
   Android as AndroidIcon,
   Html as HtmlIcon
 } from "@mui/icons-material/";
-import { LayoutType } from "../../../../../generated/client";
+import { LayoutType } from "../../../generated/client";
 
 /**
  * Components properties
