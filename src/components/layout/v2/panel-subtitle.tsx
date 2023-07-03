@@ -10,8 +10,6 @@ interface Props {
 
 /**
  * HTML Layout Drawer Panel subtitle
- *
- * @param subtitle subtitle
  */
 const PanelSubtitle = ({ subtitle }: Props) => (
 	<Typography

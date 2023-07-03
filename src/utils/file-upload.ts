@@ -66,7 +66,7 @@ export default class FileUpload {
    * @param file
    */
   public static uploadFileToS3 = (presignedPostData: PresignedPostData, file: File) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const formData = new FormData();
       Object.keys(presignedPostData.fields).forEach(key => {
         formData.append(key, presignedPostData.fields[key]);
