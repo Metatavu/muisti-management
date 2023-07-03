@@ -1,12 +1,8 @@
 import { HtmlComponentType } from "../../../types";
 import LocalizationUtils from "../../../utils/localization-utils";
-import {
-  SubdirectoryArrowRightRounded as SubdirectoryArrowRightRoundedIcon,
-  UnfoldLess as UnfoldLessIcon,
-  UnfoldMore as UnfoldMoreIcon
-} from "@mui/icons-material";
 import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/lab";
 import { Stack, Typography, styled } from "@mui/material";
+import { ReactNode } from "react";
 
 /**
  * Styled Tree Item Props type
@@ -14,9 +10,8 @@ import { Stack, Typography, styled } from "@mui/material";
 type StyledTreeItemProps = TreeItemProps & {
   itemType: HtmlComponentType;
   itemName: string;
-  isLayoutComponent: boolean;
-  expanded: boolean;
-  isRootSubdirectory?: boolean;
+  startIcon: ReactNode;
+  endIcon?: ReactNode;
 };
 
 /**
@@ -53,46 +48,30 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 export const StyledTreeItem = ({
   itemType,
   itemName,
-  isLayoutComponent,
-  expanded,
-  isRootSubdirectory,
+  startIcon,
+  endIcon,
   ...other
-}: StyledTreeItemProps) => {
-  /**
-   * Renders expand icon
-   */
-  const renderExpandIcon = () => {
-    if (!isLayoutComponent) return;
-
-    return expanded ? (
-      <UnfoldLessIcon htmlColor="#2196F3" />
-    ) : (
-      <UnfoldMoreIcon htmlColor="#2196F3" />
-    );
-  };
-
-  return (
-    <StyledTreeItemRoot
-      icon={isRootSubdirectory && <SubdirectoryArrowRightRoundedIcon htmlColor="#BDBDBD" />}
-      {...other}
-      label={
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Stack direction="column">
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: "inherit",
-                flexGrow: 1,
-                color: "#2196F3"
-              }}
-            >
-              {itemName}
-            </Typography>
-            <Typography>{LocalizationUtils.getLocalizedComponentType(itemType)}</Typography>
-          </Stack>
-          {renderExpandIcon()}
+}: StyledTreeItemProps) => (
+  <StyledTreeItemRoot
+    icon={startIcon}
+    {...other}
+    label={
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="column">
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: "inherit",
+              flexGrow: 1,
+              color: "#2196F3"
+            }}
+          >
+            {itemName}
+          </Typography>
+          <Typography>{LocalizationUtils.getLocalizedComponentType(itemType)}</Typography>
         </Stack>
-      }
-    />
-  );
-};
+        {endIcon}
+      </Stack>
+    }
+  />
+);

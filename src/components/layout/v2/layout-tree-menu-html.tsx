@@ -2,10 +2,15 @@ import strings from "../../../localization/strings";
 import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
 import theme from "../../../styles/theme";
 import { HtmlComponentType, TreeObject } from "../../../types";
-import { AddBoxOutlined } from "@mui/icons-material";
+import { CONTAINER_ELEMENTS } from "../utils/tree-html-data-utils";
+import {
+  AddBoxOutlined as AddBoxOutlinedIcon,
+  SubdirectoryArrowRightRounded as SubdirectoryArrowRightRoundedIcon,
+  UnfoldLess as UnfoldLessIcon,
+  UnfoldMore as UnfoldMoreIcon
+} from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
-
 /**
  * Components properties
  */
@@ -26,6 +31,18 @@ const LayoutTreeMenuHtml = ({
   onAddComponentClick
 }: Props) => {
   /**
+   * Gets unfolding icon
+   */
+  const getUnfoldingIcon = (item: TreeObject) => {
+    if (!CONTAINER_ELEMENTS.includes(item.type)) return;
+
+    if (getParentIds().includes(item.id)) {
+      return <UnfoldLessIcon htmlColor="#2196F3" />;
+    }
+
+    return <UnfoldMoreIcon htmlColor="#2196F3" />;
+  };
+  /**
    * Renders Add New Element button
    */
   const renderAddNewElementButton = (item: TreeObject, asChildren: boolean) => (
@@ -44,7 +61,7 @@ const LayoutTreeMenuHtml = ({
       onClick={() => onAddComponentClick(item.path, asChildren)}
     >
       <Stack direction="row" alignItems="center" justifyContent="space-evenly">
-        <AddBoxOutlined sx={{ color: "#2196F3" }} />
+        <AddBoxOutlinedIcon sx={{ color: "#2196F3" }} />
         {strings.layoutEditor.addLayoutViewDialog.title}
       </Stack>
     </Button>
@@ -54,7 +71,7 @@ const LayoutTreeMenuHtml = ({
    * Renders Tree Item
    *
    * @param item item
-   * @param isRoot is root element
+   * @param index index
    */
   const renderTreeItem = (item: TreeObject, index: number) => (
     <Stack key={item.id} spacing={theme.spacing(1)} marginY={theme.spacing(1)}>
@@ -62,9 +79,8 @@ const LayoutTreeMenuHtml = ({
         nodeId={item.id}
         itemType={item.type}
         itemName={item.name || strings.generic.name}
-        isLayoutComponent={item.type === HtmlComponentType.LAYOUT}
-        isRootSubdirectory={index === 0}
-        expanded={getParentIds().includes(item.id)}
+        startIcon={index === 0 && <SubdirectoryArrowRightRoundedIcon htmlColor="#BDBDBD" />}
+        endIcon={getUnfoldingIcon(item)}
         onClick={() => onTreeComponentSelect(item)}
         onDoubleClick={() => {
           if (selectedComponent?.id === item.id) {
