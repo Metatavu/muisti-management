@@ -107,19 +107,19 @@ const PagePreviewHtml = ({
         defaultPositionX={ 100 }
         defaultPositionY={ 100 }
       >
-          <Typography
-            sx={{
-              position: "absolute",
-              top: -20,
-              opacity: 0.6
-            }}
-          >
-            { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
-          </Typography>
-          <Preview
-            srcDoc={ wrapHtmlLayout(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
-            { ...getPreviewDimensions() }
-            />
+        <Typography
+          sx={{
+            position: "absolute",
+            top: -20,
+            opacity: 0.6
+          }}
+        >
+          { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
+        </Typography>
+        <Preview
+          srcDoc={ wrapHtmlLayout(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources, showElementBorders))[0]?.outerHTML) }
+          { ...getPreviewDimensions() }
+          />
       </PanZoom>
       <FormControlLabel
         sx={{
