@@ -5,7 +5,6 @@ import { ReduxActions, ReduxState } from "../../store";
 import { History } from "history";
 import styles from "../../styles/exhibition-view";
 import {
-  Badge,
   CircularProgress,
   SelectChangeEvent,
 } from "@mui/material";
@@ -26,7 +25,7 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
-import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
+import LayoutCardBadge from "../layout/editor-components/html/generic/layout-card-badge";
 
 /**
  * Component props
@@ -156,61 +155,51 @@ class LayoutsScreen extends React.Component<Props, State> {
     if (layouts.length < 1 && subLayouts.length < 1) {
       return null;
     }
-
-    // Sort layouts and sublayouts so that html layouts are first
-    layouts.sort((a, b) => a.layoutType === LayoutType.Html ? -1 : 1);
-    subLayouts.sort((a, b) => a.layoutType === LayoutType.Html ? -1 : 1);
     
-    const layoutCards = layouts.map(layout => {
-      const layoutId = layout.id;
-      if (!layoutId || !layout.layoutType) {
-        return null;
+    const layoutCards = [...layouts]
+      .sort((a, _) => a.layoutType === LayoutType.Html ? -1 : 1)
+      .map(layout => {
+        const layoutId = layout.id;
+        if (!layoutId || !layout.layoutType) {
+          return null;
+        }
+
+        const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
+
+        return (
+          <LayoutCardBadge key={ layout.id } type={ layout.layoutType }>
+            <CardItem
+              title={ layout.name }
+              onClick={ () => this.onLayoutCardClick(layoutId, layout.layoutType) }
+              menuOptions={ cardMenuOptions }
+            />
+          </LayoutCardBadge>
+        );
       }
+    );
 
-      const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
+    const subLayoutCards = [...subLayouts]
+      .sort((a, _) => a.layoutType === LayoutType.Html ? -1 : 1)
+      .map(subLayout => {
+        const subLayoutId = subLayout.id;
+        if (!subLayoutId || !subLayout.layoutType) {
+          return null;
+        }
 
-      return (
-        <Badge
-          key={ layout.id }
-          sx={{ position: "relative" }}
-          slotProps={{ badge: {style: {zIndex: 100000 }} }}
-          overlap="rectangular"
-          badgeContent={ layout.layoutType === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
-        >
-          <CardItem
-            title={ layout.name }
-            onClick={ () => this.onLayoutCardClick(layoutId, layout.layoutType) }
-            menuOptions={ cardMenuOptions }
-          />
-        </Badge>
-      );
-    });
+        const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
 
-    const subLayoutCards = subLayouts.map(subLayout => {
-      const subLayoutId = subLayout.id;
-      if (!subLayoutId || !subLayout.layoutType) {
-        return null;
+        return (
+          <LayoutCardBadge key={ subLayout.id } type={ subLayout.layoutType }>
+            <CardItem
+              key={ subLayout.id }
+              title={ `${strings.subLayout.name} - ${subLayout.name}` }
+              onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
+              menuOptions={ cardMenuOptions }
+            />
+          </LayoutCardBadge>
+        );
       }
-
-      const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
-
-      return (
-        <Badge
-          key={ subLayout.id }
-          sx={{ position: "relative" }}
-          slotProps={{ badge: {style: {zIndex: 100000 }} }}
-          overlap="rectangular"
-          badgeContent={ subLayout.layoutType === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
-        >
-          <CardItem
-            key={ subLayout.id }
-            title={ `${strings.subLayout.name} - ${subLayout.name}` }
-            onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
-            menuOptions={ cardMenuOptions }
-          />
-        </Badge>
-      );
-    });
+    );
 
     return (
       <div style={{ width: "100%", overflowY: "auto" }}>
