@@ -1,6 +1,6 @@
 import { Typography, styled } from "@mui/material";
 import PanZoom from "../generic/pan-zoom";
-import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
+import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import Fraction from "fraction.js";
 import { DeviceModel, PageLayout } from "../../generated/client";
 import { TreeObject } from "../../types";
@@ -113,7 +113,7 @@ const PagePreviewHtml = ({
             { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
           </Typography>
           <Preview
-            srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
+            srcDoc={ wrapHtmlLayout(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
             { ...getPreviewDimensions() }
             />
       </PanZoom>
