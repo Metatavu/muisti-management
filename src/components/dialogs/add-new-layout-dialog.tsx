@@ -7,15 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  SelectChangeEvent,
-  Stack
-} from "@mui/material";
-import {
   FormControl,
   FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
+  Stack,
   Switch,
   TextField
 } from "@mui/material";
@@ -34,6 +32,8 @@ interface Props {
 
 /**
  * Add New Layout Dialog component
+ *
+ * TODO: Implement support for sub-layouts
  */
 const AddNewLayoutDialog: React.FC<Props> = ({
   open,

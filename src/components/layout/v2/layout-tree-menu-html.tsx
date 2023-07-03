@@ -1,5 +1,6 @@
 import strings from "../../../localization/strings";
 import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
+import theme from "../../../styles/theme";
 import { HtmlComponentType, TreeObject } from "../../../types";
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
@@ -31,6 +32,7 @@ const LayoutTreeMenuHtml = ({
     <Button
       variant="text"
       size="small"
+      fullWidth
       sx={{
         textTransform: "uppercase",
         fontWeight: 400,
@@ -53,44 +55,31 @@ const LayoutTreeMenuHtml = ({
    *
    * @param item item
    * @param isRoot is root element
-   * @param isRootSubDirectory is root element of sub-directory in tree
    */
-  const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
-    if (!item) return;
-
-    const hasChildren = !!item.children?.length;
-    const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
-
-    return (
-      <Stack key={item.id}>
-        <StyledTreeItem
-          nodeId={item.id}
-          itemType={item.type}
-          itemName={item.name || strings.generic.name}
-          isLayoutComponent={isLayoutComponent}
-          isRoot={isRoot}
-          isRootSubdirectory={isRootSubdirectory}
-          hasChildren={hasChildren}
-          expanded={getParentIds().includes(item.id)}
-          onClick={() => onTreeComponentSelect(item)}
-          onDoubleClick={() => {
-            if (selectedComponent?.id === item.id) {
-              onTreeComponentSelect(undefined);
-            }
-          }}
-        >
-          {(item.children ?? []).map((child, i) => {
-            const isRootSubDirectory = i === 0;
-            return renderTreeItem(child, false, isRootSubDirectory);
-          })}
-          {item.children?.length === 0 &&
-            item.type === HtmlComponentType.LAYOUT &&
-            renderAddNewElementButton(item, true)}
-        </StyledTreeItem>
-        {renderAddNewElementButton(item, false)}
-      </Stack>
-    );
-  };
+  const renderTreeItem = (item: TreeObject, index: number) => (
+    <Stack key={item.id} spacing={theme.spacing(1)} marginY={theme.spacing(1)}>
+      <StyledTreeItem
+        nodeId={item.id}
+        itemType={item.type}
+        itemName={item.name || strings.generic.name}
+        isLayoutComponent={item.type === HtmlComponentType.LAYOUT}
+        isRootSubdirectory={index === 0}
+        expanded={getParentIds().includes(item.id)}
+        onClick={() => onTreeComponentSelect(item)}
+        onDoubleClick={() => {
+          if (selectedComponent?.id === item.id) {
+            onTreeComponentSelect(undefined);
+          }
+        }}
+      >
+        {(item.children ?? []).map(renderTreeItem)}
+        {item.children?.length === 0 &&
+          item.type === HtmlComponentType.LAYOUT &&
+          renderAddNewElementButton(item, true)}
+      </StyledTreeItem>
+      {renderAddNewElementButton(item, false)}
+    </Stack>
+  );
 
   /**
    * Gets parent ids, based on selected path.
@@ -117,7 +106,7 @@ const LayoutTreeMenuHtml = ({
       return [path];
     }
 
-    let parentIds: string[] = [];
+    const parentIds: string[] = [];
     for (let i = 0; i <= slashes; i++) {
       if (path?.split("/")[i]) {
         parentIds.push(path?.split("/")[i]);
@@ -127,11 +116,7 @@ const LayoutTreeMenuHtml = ({
     return parentIds;
   };
 
-  return (
-    <TreeView expanded={getParentIds()}>
-      {treeObjects.map((item) => renderTreeItem(item, true))}
-    </TreeView>
-  );
+  return <TreeView expanded={getParentIds()}>{treeObjects.map(renderTreeItem)}</TreeView>;
 };
 
 export default LayoutTreeMenuHtml;

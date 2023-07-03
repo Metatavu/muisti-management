@@ -1,35 +1,11 @@
-import { ChangeEvent, useState } from "react";
 import { SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
-import GenericDialog from "../generic/generic-dialog";
-import {
-  MenuItem,
-  Stack,
-  FormControl,
-  InputLabel,
-  Select,
-  FormHelperText,
-  Typography,
-  Box,
-  TextField,
-  SelectChangeEvent
-} from "@mui/material";
 import theme from "../../styles/theme";
 import { HtmlComponentType } from "../../types";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
 import LocalizationUtils from "../../utils/localization-utils";
 import GenericDialog from "../generic/generic-dialog";
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  TextField
-} from "@mui/material";
+import { FormHelperText, MenuItem, Stack, TextField } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 
 /**
@@ -51,7 +27,7 @@ const DISABLED_COMPONENT_TYPES = [HtmlComponentType.TAB, HtmlComponentType.TABS]
  *
  * TODO: Implement support for sub-layouts
  */
-const AddNewElementDialog = ({ open, subLayouts, siblingPath, onConfirm, onClose }: Props) => {
+const AddNewElementDialog = ({ open, siblingPath, onConfirm, onClose }: Props) => {
   const [newComponentName, setNewComponentName] = useState<string>();
   const [newComponentType, setNewComponentType] = useState<HtmlComponentType>();
 

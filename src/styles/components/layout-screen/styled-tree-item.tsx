@@ -1,5 +1,4 @@
 import { HtmlComponentType } from "../../../types";
-import LanguageUtils from "../../../utils/language-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import {
   SubdirectoryArrowRightRounded as SubdirectoryArrowRightRoundedIcon,
@@ -17,9 +16,7 @@ type StyledTreeItemProps = TreeItemProps & {
   itemName: string;
   isLayoutComponent: boolean;
   expanded: boolean;
-  isRoot?: boolean;
   isRootSubdirectory?: boolean;
-  hasChildren?: boolean;
 };
 
 /**
@@ -58,9 +55,7 @@ export const StyledTreeItem = ({
   itemName,
   isLayoutComponent,
   expanded,
-  isRoot,
   isRootSubdirectory,
-  hasChildren,
   ...other
 }: StyledTreeItemProps) => {
   /**

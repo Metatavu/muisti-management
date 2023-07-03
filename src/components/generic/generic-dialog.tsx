@@ -29,12 +29,8 @@ interface Props {
   fullWidth?: boolean;
   disableEnforceFocus?: boolean;
   children: React.ReactNode;
+  confirmDisabled?: boolean;
 }
-
-/**
- * Interface representing component state
- */
-interface State {}
 
 /**
  * React component displaying confirm dialogs

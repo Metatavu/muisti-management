@@ -3,6 +3,8 @@ import strings from "../../localization/strings";
 import { TreeObject } from "../../types";
 import PanZoom from "../generic/pan-zoom";
 import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
+import { FormControlLabel, Switch, Typography } from "@mui/material";
+import { styled } from "@mui/styles";
 import Fraction from "fraction.js";
 import { useState } from "react";
 
@@ -101,6 +103,8 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
         fitContent={true}
         contentWidth={screenWidth}
         contentHeight={screenHeight}
+        defaultPositionX={150}
+        defaultPositionY={150}
       >
         <Typography
           sx={{

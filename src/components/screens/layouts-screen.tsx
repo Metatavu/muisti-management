@@ -1,8 +1,5 @@
 import { setLayouts, setSelectedLayout } from "../../actions/layouts";
-import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
-import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
-import Api from "../../api/api";
 import Api from "../../api/api";
 import {
   DeviceModel,
@@ -13,20 +10,9 @@ import {
   ScreenOrientation,
   SubLayout
 } from "../../generated/client";
-import {
-  DeviceModel,
-  Exhibition,
-  ExhibitionPage,
-  LayoutType,
-  PageLayout,
-  ScreenOrientation,
-  SubLayout
-} from "../../generated/client";
-import strings from "../../localization/strings";
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
-import theme from "../../styles/theme";
 import {
   AccessToken,
   ActionButton,
@@ -36,6 +22,7 @@ import {
 } from "../../types";
 import DeleteUtils from "../../utils/delete-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import CardItem from "../generic/card/card-item";
 import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
@@ -46,6 +33,9 @@ import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";
+import { Component } from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props
@@ -79,7 +69,7 @@ interface State {
 /**
  * Component for layouts screen
  */
-class LayoutsScreen extends React.Component<Props, State> {
+class LayoutsScreen extends Component<Props, State> {
   /**
    * Constructor
    *
@@ -138,7 +128,7 @@ class LayoutsScreen extends React.Component<Props, State> {
           noBackButton
         >
           <div className={classes.loader}>
-            <CircularProgress size={50} color="secondary"></CircularProgress>
+            <CircularProgress size={50} color="secondary" />
           </div>
         </BasicLayout>
       );
