@@ -25,6 +25,7 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import LayoutCardBadge from "../layout/editor-components/html/generic/layout-card-badge";
 
 /**
  * Component props
@@ -154,44 +155,51 @@ class LayoutsScreen extends React.Component<Props, State> {
     if (layouts.length < 1 && subLayouts.length < 1) {
       return null;
     }
+    
+    const layoutCards = [...layouts]
+      .sort((a, _) => a.layoutType === LayoutType.Html ? -1 : 1)
+      .map(layout => {
+        const layoutId = layout.id;
+        if (!layoutId || !layout.layoutType) {
+          return null;
+        }
 
-    const layoutCards = layouts.map(layout => {
-      const layoutId = layout.id;
-      const layoutType = layout.layoutType;
+        const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
 
-      if (!layoutId || !layoutType) {
-        return null;
+        return (
+          <LayoutCardBadge key={ layout.id } type={ layout.layoutType }>
+            <CardItem
+              title={ layout.name }
+              onClick={ () => this.onLayoutCardClick(layoutId, layout.layoutType) }
+              menuOptions={ cardMenuOptions }
+            />
+          </LayoutCardBadge>
+        );
       }
+    );
 
-      const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
+    const subLayoutCards = [...subLayouts]
+      .sort((a, _) => a.layoutType === LayoutType.Html ? -1 : 1)
+      .map(subLayout => {
+        const subLayoutId = subLayout.id;
+        if (!subLayoutId || !subLayout.layoutType) {
+          return null;
+        }
 
-      return (
-        <CardItem
-          key={ layout.id }
-          title={ layout.name }
-          onClick={ () => this.onLayoutCardClick(layoutId, layoutType) }
-          menuOptions={ cardMenuOptions }
-        />
-      );
-    });
+        const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
 
-    const subLayoutCards = subLayouts.map(subLayout => {
-      const subLayoutId = subLayout.id;
-      if (!subLayoutId) {
-        return null;
+        return (
+          <LayoutCardBadge key={ subLayout.id } type={ subLayout.layoutType }>
+            <CardItem
+              key={ subLayout.id }
+              title={ `${strings.subLayout.name} - ${subLayout.name}` }
+              onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
+              menuOptions={ cardMenuOptions }
+            />
+          </LayoutCardBadge>
+        );
       }
-
-      const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
-
-      return (
-        <CardItem
-          key={ subLayout.id }
-          title={ `${strings.subLayout.name} - ${subLayout.name}` }
-          onClick={ () => this.onSubLayoutCardClick(subLayoutId) }
-          menuOptions={ cardMenuOptions }
-        />
-      );
-    });
+    );
 
     return (
       <div style={{ width: "100%", overflowY: "auto" }}>

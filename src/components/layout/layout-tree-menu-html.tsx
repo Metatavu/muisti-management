@@ -11,7 +11,7 @@ import strings from "../../localization/strings";
 interface Props {
   treeObjects: TreeObject[];
   selectedComponent?: TreeObject;
-  onTreeComponentSelect: (selectedComponent: TreeObject) => void;
+  onTreeComponentSelect: (selectedComponent?: TreeObject) => void;
   onAddComponentClick: (path: string, asChildren: boolean) => void;
 }
 
@@ -35,7 +35,6 @@ const LayoutTreeMenuHtml = ({
         sx={{
           textTransform: "uppercase",
           fontWeight: 400,
-          
           fontSize: "0.65rem",
           color: "#2196F3",
           display: selectedComponent?.id === item.id ? "block" : "none"
@@ -62,7 +61,7 @@ const LayoutTreeMenuHtml = ({
    */
   const renderTreeItem = (item?: TreeObject, isRoot?: boolean, isRootSubdirectory?: boolean) => {
     if (!item) return;
-    
+
     const hasChildren = !!item.children?.length;
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
@@ -78,6 +77,11 @@ const LayoutTreeMenuHtml = ({
           hasChildren={ hasChildren }
           expanded={ getParentIds().includes(item.id) }
           onClick={ () => onTreeComponentSelect(item) }
+          onDoubleClick={ () => {
+            if (selectedComponent?.id === item.id) {
+              onTreeComponentSelect(undefined);
+            }
+          }}
         >
           { (item.children ?? []).map((child, i) => {
               const isRootSubDirectory = i === 0;

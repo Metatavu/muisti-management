@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchContentRef } from "react-zoom-pan-pinch";
 import Measure, { ContentRect } from "react-measure";
 import { Button } from '@mui/material';
 import { WithStyles } from '@mui/styles';
@@ -73,24 +73,21 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
     const { containerHeight, containerWidth } = this.state;
     const { defaultPositionX, defaultPositionY, minScale, disabled } = this.props;
 
-    if (!containerHeight || !containerWidth) {
+    if (!containerHeight || !containerWidth) {
       return null;
     }
 
-    const options = {
-      minScale: minScale || 1,
-      limitToBounds: false,
-      disabled: disabled
-    };
-
     return (
       <TransformWrapper
-        options={ options }
-        defaultScale={ this.getDefaultScale() }
-        defaultPositionX={ defaultPositionX }
-        defaultPositionY={ defaultPositionY }
+        minScale={ minScale || 1 }
+        limitToBounds={ false }
+        disabled={ disabled }
+        initialScale={ this.getDefaultScale() }
+        initialPositionX={ defaultPositionX }
+        initialPositionY={ defaultPositionY }
+        onTransformed={ ({ state: { scale }}) => this.setState({ ...this.state, scale: scale })}
       >
-        { (opts: any) => this.renderContents(opts) }
+        { (opts: ReactZoomPanPinchContentRef) => this.renderContents(opts) }
       </TransformWrapper>
     );
   }
@@ -100,24 +97,24 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    *
    * @param opts transform wrapper options
    */
-  private renderContents = (opts: any) => {
+  private renderContents = (opts: ReactZoomPanPinchContentRef) => {
     const { classes, children } = this.props;
-    const { containerWidth, containerHeight } = this.state;
+    const { containerWidth, containerHeight, scale } = this.state;
 
     return (
       <div className={ classes.root }>
         <div className={ classes.controlContainer }>
-          <Button variant="contained" color="primary" onClick={ opts.zoomIn }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
-          <Button variant="contained" color="primary" onClick={ opts.zoomOut }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
-          <Button variant="contained" color="primary" onClick={ opts.resetTransform }>100%</Button>
-          <span>{ this.getScalePercentage(opts.scale || 0) }</span>
+          <Button variant="contained" color="primary" onClick={ () => opts.zoomIn() }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
+          <Button variant="contained" color="primary" onClick={ () => opts.zoomOut() }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
+          <Button variant="contained" color="primary" onClick={ () => opts.resetTransform() }>100%</Button>
+          <span>{ this.getScalePercentage(scale) }</span>
         </div>
         <TransformComponent>
           <div
             className={ classes.contentContainer }
             style={{ width: containerWidth, height: containerHeight }}
           >
-            { this.props.children }
+            { children }
           </div>
         </TransformComponent>
       </div>

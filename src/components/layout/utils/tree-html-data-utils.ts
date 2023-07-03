@@ -58,15 +58,24 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
 /**
  * Convert tree object to html element
  *
- * @param treeObject
+ * @param treeObject tree object
+ * @param selectedComponentId selected component id
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
+export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string): HTMLElement => {
   const element = treeObject.element;
+  
+  removeOutline(element);
+  
+  if (element.id === selectedComponentId) {
+    element.style["outline"] = "1px solid #2196F3";
+    element.style["outlineOffset"] = "-1px";
+  } 
+  
   element.replaceChildren();
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(treeObjectToHtmlElement(treeObject.children[i]));
+      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId));
     }
   }
 
@@ -75,7 +84,7 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => 
 
 /**
  * Adds new HTML component to tree
- * 
+ *
  * @param treeData tree data
  * @param newComponent new component to be added
  * @param targetPath path of the sibling component
@@ -89,13 +98,13 @@ export const addNewHtmlComponent = (treeData: TreeObject[], newComponent: TreeOb
   } else {
     updatedTree[0].children = pushToTree(updatedTree[0].children, newComponent, treeData[0].id, targetPath, asChildren);
   }
-  
+
   return updatedTree;
 };
 
 /**
  * Pushes new HTML Component to tree
- * 
+ *
  * @param treeData tree data
  * @param newComponent new component to be added
  * @param currentPath current path
@@ -119,7 +128,7 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
       found = true;
     }
   }
-  
+
   if (found) {
     return cleanNodes;
   } else {
@@ -129,13 +138,13 @@ const pushToTree = (treeData: TreeObject[], newComponent: TreeObject, currentPat
       child.children = pushToTree(child.children ?? [], newComponent, updatedPath, targetPath, asChildren);
     }
   }
-  
+
   return treeData;
 };
 
 /**
  * Deserializes HTML element from string
- * 
+ *
  * @param element serialized element
  * @returns deserialized element
  */
@@ -181,6 +190,8 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
 
     if (treeObject) children.push(treeObject);
   }
+  
+  removeOutline(element as HTMLElement);
 
   return {
     type: componentType as HtmlComponentType,
@@ -191,3 +202,45 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     element: element as HTMLElement
   }
 };
+
+/**
+ * Removes outline from given element
+ * 
+ * @param element element
+ */
+const removeOutline = (element: HTMLElement) => {
+  element.style.removeProperty("outline");
+  element.style.removeProperty("outline-offset");
+};
+
+/**
+ * Elements that are able to hold children
+ */
+export const CONTAINER_ELEMENTS = [ HtmlComponentType.LAYOUT, HtmlComponentType.TAB, HtmlComponentType.TABS ];
+
+/**
+ * Wrap HTML layout body content
+ *
+ * @param bodyContent body content
+ * @returns HTML string
+ */
+export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Preview</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          pointer-events: none;
+          min-height: 100vh;
+        }
+      </style>
+    </head>
+    <body>
+      ${bodyContent}
+    </body>
+  </html>`;

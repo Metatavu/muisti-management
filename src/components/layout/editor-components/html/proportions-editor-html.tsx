@@ -45,34 +45,33 @@ const ProportionsEditorHtml = ({
    * Renders icon
    */
   const renderIcon = () => {
-    if (name === "width") {
-      return (
-        <HeightOutlined
-          sx={{
-            transform: "rotate(90deg)",
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
-    }
-
-    if (name === "height") {
-      return (
-        <ExpandOutlined
-          sx={{
-            color: "#2196F3",
-            border: "1px solid #2196F3",
-            borderRadius: "5px"
-          }}
-        />
-      );
+    switch (name) {
+      case "width":
+        return (
+          <HeightOutlined
+            sx={{
+              transform: "rotate(90deg)",
+              color: "#2196F3",
+              border: "1px solid #2196F3",
+              borderRadius: "5px"
+            }}
+          />
+        );
+      case "height":
+        return (
+          <ExpandOutlined
+            sx={{
+              color: "#2196F3",
+              border: "1px solid #2196F3",
+              borderRadius: "5px"
+            }}
+          />
+        );
     }
   };
 
   return (
-    <Stack direction="row" spacing={ 1 }>
+    <Stack direction="row" spacing={ 1 } alignItems="center">
       <Typography
         variant="caption"
         fontWeight={ 500 }
@@ -87,16 +86,24 @@ const ProportionsEditorHtml = ({
         onChange={ onValueChange }
         inputProps={{
           pattern: "[0-9]",
-          sx:{ backgroundColor: "#fbfbfb" }
+          sx: { backgroundColor: "#fbfbfb" }
         }}
       />
       <Select
-        value={ settings.width }
+        value={ settings[name] }
         variant="standard"
         sx={{ backgroundColor: "#F5F5F5" }}
+        inputProps={{
+          sx: {
+            backgroundColor: "#fbfbfb",
+            ":active, :focus": {
+              backgroundColor: "#fbfbfb"
+            }
+          }
+        }}
         onChange={ ({ target: { value } }) => {
-          setSettings({ ...settings, width: value as "px" | "%"});
-        } }
+          setSettings({ ...settings, [name]: value as "px" | "%"});
+        }}
       >
         <MenuItem value="px" sx={{ color: "#2196F3" }}>px</MenuItem>
         <MenuItem value="%" sx={{ color: "#2196F3" }}>%</MenuItem>

@@ -15,7 +15,6 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -28,14 +27,13 @@ import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObj
 import strings from "../../localization/strings";
 import theme from "../../styles/theme";
 import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
-import CodeMirror from "@uiw/react-codemirror";
-import { html } from "@codemirror/lang-html";
-import { html_beautify } from "js-beautify";
 import GenericComponentDrawProperties from "../layout/editor-components/html/generic-component-properties";
 import { Close } from "@mui/icons-material";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import LayoutComponentProperties from "../layout/editor-components/html/layout-component-properties";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
+import PagePreviewHtml from "../preview/page-preview-html";
+import CodeEditorHTML from "../layout/code-editor-html";
 
 /**
  * Component props
@@ -112,15 +110,13 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   if (!foundLayout) {
-    const layoutError = new Error(strings.errorDialog.layoutFetchNotFound);
-
     return (
       <BasicLayout
         history={ history }
         title={ "" }
         breadcrumbs={ [] }
         keycloak={ keycloak }
-        error={ layoutError }
+        error={ error }
         clearError={ () => history.goBack() }
       />
     )
@@ -170,21 +166,19 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @returns action buttons as array
    */
-  const getActionButtons = (): ActionButton[] => (
-    [
-      {
-        name: view === LayoutEditorView.CODE ?
-          strings.exhibitionLayouts.editView.switchToVisualButton :
-          strings.exhibitionLayouts.editView.switchToCodeButton,
-          action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
-      },
-      {
-        name: strings.exhibitionLayouts.editView.saveButton,
-        action: onLayoutSave,
-        disabled : !dataChanged
-      },
-    ]
-  );
+  const getActionButtons = (): ActionButton[] => ([
+    {
+      name: view === LayoutEditorView.CODE ?
+        strings.exhibitionLayouts.editView.switchToVisualButton :
+        strings.exhibitionLayouts.editView.switchToCodeButton,
+        action: () => view === LayoutEditorView.CODE ? setView(LayoutEditorView.VISUAL) : setView(LayoutEditorView.CODE),
+    },
+    {
+      name: strings.exhibitionLayouts.editView.saveButton,
+      action: onLayoutSave,
+      disabled : !dataChanged
+    },
+  ]);
 
   /**
    * Event handler for layout save
@@ -220,12 +214,22 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const renderEditor = () => {
     switch (view) {
-      case "CODE":
-        return renderCodeEditor();
-      case "VISUAL":
-        // return renderVisualEditor();
-      default:
-        return null;
+      case LayoutEditorView.CODE:
+        return (
+          <CodeEditorHTML
+            htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+            onCodeChange={ onCodeChange }
+          />
+        );
+      case LayoutEditorView.VISUAL:
+        return (
+          <PagePreviewHtml
+            deviceModels={ deviceModels }
+            layout={ foundLayout }
+            treeObjects={ treeObjects }
+            selectedComponentId={ selectedComponent?.id }
+          />
+        );
     }
   }
 
@@ -234,7 +238,7 @@ const LayoutScreenHTML: FC<Props> = ({
    *
    * @param selectedComponent selected component
    */
-  const onTreeComponentSelect = (selectedComponent: TreeObject) => {
+  const onTreeComponentSelect = (selectedComponent?: TreeObject) => {
     setSelectedComponent(selectedComponent);
   };
 
@@ -252,7 +256,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Create new component and add it to the layout
-   * 
+   *
    * @param componentData component data
    * @param targetPath sibling path
    */
@@ -263,7 +267,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const newComponent = createTreeObject(newElement, targetPath);
     
     if (!newComponent) return;
-    
+
     const updatedLayout = addNewHtmlComponent(
       treeObjects,
       newComponent,
@@ -271,9 +275,9 @@ const LayoutScreenHTML: FC<Props> = ({
       !!isNewComponentSibling
     );
 
-    const updatedHtmlElements = updatedLayout.map(treeObjectToHtmlElement);
+    const updatedHtmlElements = updatedLayout.map(treeObject => treeObjectToHtmlElement(treeObject));
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
-    
+
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -292,15 +296,15 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-  
+
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
       selectedComponent.path
     );
-    const updatedHtmlElements = updatedTreeObjects.map(treeObjectToHtmlElement);
+    const updatedHtmlElements = updatedTreeObjects.map(treeObject => treeObjectToHtmlElement(treeObject));
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
-  
+
     setFoundLayout({
       ...foundLayout,
       data: {
@@ -310,7 +314,7 @@ const LayoutScreenHTML: FC<Props> = ({
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
-  };  
+  };
 
   /**
    * Renders device model select
@@ -364,50 +368,35 @@ const LayoutScreenHTML: FC<Props> = ({
       </div>
     );
   };
-
+  
   /**
-   * Options for html beautify
+   * Renders component specific properties
    */
-  const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
-    indent_size: 2,
-    inline: [],
-    indent_empty_lines: true,
-    end_with_newline: false
-  };
-
-  /**
-   * Renders code editor view
-   */
-  const renderCodeEditor = () => (
-    <div className={ classes.editors }>
-      <div className={ classes.editorContainer }>
-        <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
-          <CodeMirror
-            value={ html_beautify((foundLayout.data as PageLayoutViewHtml).html, htmlBeautifyOptions) }
-            height="500px"
-            style={{ overflow: "auto" }}
-            extensions={ [ html() ] }
-            onChange={ onCodeChange }
+  const renderComponentSpecificProperties = () => {
+    switch (selectedComponent?.type) {
+      case HtmlComponentType.LAYOUT:
+        return (
+          <LayoutComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
           />
-      </div>
-    </div>
-  );
-
-  const elementPaneMenuOptions = [
-    {
-      name: strings.genericDialog.close,
-      action: () => {
-        setDrawerOpen(!drawerOpen);
-        setSelectedComponent(undefined);
-      }
+        );
     }
-  ];
+  };
 
   /**
    * Renders element settings pane
    */
   const renderElementSettingsPane = () => {
     if (!selectedComponent) return;
+
+    const elementPaneMenuOptions = [{
+      name: strings.genericDialog.close,
+      action: () => {
+        setDrawerOpen(!drawerOpen);
+        setSelectedComponent(undefined);
+      }
+    }];
 
     return (
       <ElementSettingsPane
@@ -421,11 +410,7 @@ const LayoutScreenHTML: FC<Props> = ({
           component={ selectedComponent }
           updateComponent={ updateComponent }
         />
-        { selectedComponent?.type === HtmlComponentType.LAYOUT &&
-          <LayoutComponentProperties
-            component={ selectedComponent }
-            updateComponent={ updateComponent }
-          /> }
+        { renderComponentSpecificProperties() }
     </ElementSettingsPane>
     )
   }

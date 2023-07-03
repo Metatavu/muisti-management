@@ -46,7 +46,7 @@ const AddNewElementDialog = ({
     onConfirm(HtmlComponentsUtils.getSerializedHtmlElement(newComponentType, newComponentName), siblingPath); 
     onCloseOrCancelClick();
   };
-  
+
   /**
    * Event handler for dialog close click
    */
@@ -55,7 +55,7 @@ const AddNewElementDialog = ({
     setNewComponentType(undefined);
     onClose();
   };
-  
+
   /**
    * Event handler for component type select change event
    *
@@ -109,7 +109,7 @@ const AddNewElementDialog = ({
       />
     </Stack>
   );
-  
+
   return (
     <GenericDialog
       cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
