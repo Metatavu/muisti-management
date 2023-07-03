@@ -1,17 +1,22 @@
-import { SubdirectoryArrowRightRounded } from "@mui/icons-material";
+import {
+  UnfoldLess as UnfoldLessIcon,
+  UnfoldMore as UnfoldMoreIcon,
+  SubdirectoryArrowRightRounded as SubdirectoryArrowRightRoundedIcon
+} from "@mui/icons-material";
 import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, Typography } from "@mui/material";
-import theme from "../../theme";
-import ParentTreeIcon from "./parent-tree-icon";
-import { TreeObject } from "../../../types";
+import LanguageUtils from "../../../utils/language-utils";
+import { HtmlComponentType } from "../../../types";
+import LocalizationUtils from "../../../utils/localization-utils";
 
 /**
  * Styled Tree Item Props type
  */
 type StyledTreeItemProps = TreeItemProps & {
-  itemType: string;
+  itemType: HtmlComponentType;
   itemName: string;
   isLayoutComponent: boolean;
+  expanded: boolean;
   isRoot?: boolean;
   isRootSubdirectory?: boolean;
   hasChildren?: boolean;
@@ -53,48 +58,49 @@ export const StyledTreeItem = ({
   itemType,
   itemName,
   isLayoutComponent,
+  expanded,
   isRoot,
   isRootSubdirectory,
   hasChildren,
   ...other
-}: StyledTreeItemProps) => (
-  <StyledTreeItemRoot
-    label={
-      <>
-        <Stack direction="row" justifyContent="space-between">
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            { (isRootSubdirectory) &&
-              <SubdirectoryArrowRightRounded
-                sx={{
-                  color: "#BDBDBD",
-                  alignSelf: "center",
-                  marginRight: theme.spacing(2),
-                }}
-              />
-            }
-            { (!isRoot && !isRootSubdirectory) &&
-              <div style={{ marginRight: theme.spacing(5) }}/>
-            }
-            <Stack direction="column">
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: "inherit",
-                  flexGrow: 1,
-                  color: "#2196F3"
-                }}
-              >
-                { itemName }
-              </Typography>
-              <Typography>
-                { itemType }
-              </Typography>
-            </Stack>
-          </div>
-          { hasChildren && <ParentTreeIcon/> }
+}: StyledTreeItemProps) => {
+  /**
+   * Renders expand icon
+   */
+  const renderExpandIcon = () => {
+    if (!isLayoutComponent) return;
+    
+    return expanded ? <UnfoldLessIcon htmlColor="#2196F3"/> : <UnfoldMoreIcon htmlColor="#2196F3"/>
+  };
+  
+  return (
+    <StyledTreeItemRoot
+      icon={ isRootSubdirectory && <SubdirectoryArrowRightRoundedIcon htmlColor="#BDBDBD"/> }
+      { ...other }
+      label={
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Stack direction="column">
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: "inherit",
+                flexGrow: 1,
+                color: "#2196F3"
+              }}
+            >
+              { itemName }
+            </Typography>
+            <Typography>
+              { LocalizationUtils.getLocalizedComponentType(itemType) }
+            </Typography>
+          </Stack>
+          { renderExpandIcon() }
         </Stack>
-      </>
-    }
-    {...other}
-  />
-);
+      }
+    />
+  );
+};

@@ -85,6 +85,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
         initialScale={ this.getDefaultScale() }
         initialPositionX={ defaultPositionX }
         initialPositionY={ defaultPositionY }
+        onTransformed={ ({ state: { scale }}) => this.setState({ ...this.state, scale: scale })}
       >
         { (opts: ReactZoomPanPinchContentRef) => this.renderContents(opts) }
       </TransformWrapper>
@@ -98,7 +99,7 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
    */
   private renderContents = (opts: ReactZoomPanPinchContentRef) => {
     const { classes, children } = this.props;
-    const { containerWidth, containerHeight } = this.state;
+    const { containerWidth, containerHeight, scale } = this.state;
 
     return (
       <div className={ classes.root }>
@@ -106,14 +107,14 @@ const PanZoom = withStyles(styles)(class PanZoom extends React.Component<Props, 
           <Button variant="contained" color="primary" onClick={ () => opts.zoomIn() }><ZoomInIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ () => opts.zoomOut() }><ZoomOutIcon htmlColor="#f2f2f2" /></Button>
           <Button variant="contained" color="primary" onClick={ () => opts.resetTransform() }>100%</Button>
-          <span>{ this.getScalePercentage(opts.instance.transformState.scale || 0) }</span>
+          <span>{ this.getScalePercentage(scale) }</span>
         </div>
         <TransformComponent>
           <div
             className={ classes.contentContainer }
             style={{ width: containerWidth, height: containerHeight }}
           >
-            { this.props.children }
+            { children }
           </div>
         </TransformComponent>
       </div>

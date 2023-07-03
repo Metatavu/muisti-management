@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, Switch, Typography, styled } from "@mui/material";
 import PanZoom from "../generic/pan-zoom";
-import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
+import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import Fraction from "fraction.js";
 import { DeviceModel, PageLayout } from "../../generated/client";
 import { TreeObject } from "../../types";
@@ -100,31 +100,37 @@ const PagePreviewHtml = ({
   
   return (
     <PreviewContainer>
-      <PanZoom minScale={ 0.1 } fitContent={ true } contentWidth={ screenWidth } contentHeight={ screenHeight }>
-        <Typography
-          sx={{
-            position: "absolute",
-            top: -20,
-            opacity: 0.6
-          }}
-        >
-          { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
-        </Typography>
-        <Preview
-          srcDoc={ wrapTemplate(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId, layout.defaultResources, showElementBorders))[0]?.outerHTML) }
-          { ...getPreviewDimensions() }
-          />
-      </PanZoom>
-          <FormControlLabel
+      <PanZoom
+        minScale={ 0.1 }
+        contentWidth={ screenWidth }
+        contentHeight={ screenHeight }
+        defaultPositionX={ 100 }
+        defaultPositionY={ 100 }
+      >
+          <Typography
             sx={{
               position: "absolute",
-              bottom: 10,
+              top: -20,
+              opacity: 0.6
             }}
-            label={ strings.layoutEditorV2.preview.showElementBorders }
-            onChange={ () => setShowElementBorders(!showElementBorders) }
-            value={ showElementBorders }
-            control={ <Switch checked={ showElementBorders } color="secondary"/> }
-          />
+          >
+            { deviceModel.model } / { screenHeight }x{ screenWidth } / { new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":") }
+          </Typography>
+          <Preview
+            srcDoc={ wrapHtmlLayout(treeObjects?.map(treeObject => treeObjectToHtmlElement(treeObject, selectedComponentId))[0]?.outerHTML) }
+            { ...getPreviewDimensions() }
+            />
+      </PanZoom>
+      <FormControlLabel
+        sx={{
+          position: "absolute",
+          bottom: 10,
+        }}
+        label={ strings.layoutEditorV2.preview.showElementBorders }
+        onChange={ () => setShowElementBorders(!showElementBorders) }
+        value={ showElementBorders }
+        control={ <Switch checked={ showElementBorders } color="secondary"/> }
+      />
     </PreviewContainer>
   );
 };
