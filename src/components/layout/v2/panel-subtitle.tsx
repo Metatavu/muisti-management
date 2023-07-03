@@ -10,8 +10,6 @@ type Props = TypographyProps & {
 
 /**
  * HTML Layout Drawer Panel subtitle
- *
- * @param subtitle subtitle
  */
 const PanelSubtitle = ({ subtitle, ...rest }: Props) => (
   <Typography

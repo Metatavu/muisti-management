@@ -293,12 +293,12 @@ export const CONTAINER_ELEMENTS = [
 ];
 
 /**
- * Wrap template HTML body content
+ * Wrap HTML layout body content
  *
  * @param bodyContent body content
  * @returns HTML string
  */
-export const wrapTemplate = (bodyContent: string) => `<!DOCTYPE html>
+export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="UTF-8">

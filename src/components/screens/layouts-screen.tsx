@@ -1,5 +1,8 @@
 import { setLayouts, setSelectedLayout } from "../../actions/layouts";
+import { setLayouts, setSelectedLayout } from "../../actions/layouts";
 import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
+import { setSelectedSubLayout, setSubLayouts } from "../../actions/subLayouts";
+import Api from "../../api/api";
 import Api from "../../api/api";
 import {
   DeviceModel,
@@ -10,6 +13,16 @@ import {
   ScreenOrientation,
   SubLayout
 } from "../../generated/client";
+import {
+  DeviceModel,
+  Exhibition,
+  ExhibitionPage,
+  LayoutType,
+  PageLayout,
+  ScreenOrientation,
+  SubLayout
+} from "../../generated/client";
+import strings from "../../localization/strings";
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
@@ -23,21 +36,16 @@ import {
 } from "../../types";
 import DeleteUtils from "../../utils/delete-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
-import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import CardItem from "../generic/card/card-item";
 import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
+import LayoutCardBadge from "../layout/v2/layout-card-badge";
 import BasicLayout from "../layouts/basic-layout";
-import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
-import { Badge, CircularProgress, SelectChangeEvent } from "@mui/material";
+import { CircularProgress, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { History } from "history";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 /**
  * Component props
@@ -178,25 +186,13 @@ class LayoutsScreen extends React.Component<Props, State> {
         const cardMenuOptions = this.getLayoutCardMenuOptions(layout);
 
         return (
-          <Badge
-            key={layout.id}
-            sx={{ position: "relative" }}
-            slotProps={{ badge: { style: { zIndex: theme.zIndex.modal - 1 } } }}
-            overlap="rectangular"
-            badgeContent={
-              layout.layoutType === LayoutType.Android ? (
-                <AndroidIcon sx={{ color: "#3DDC84" }} />
-              ) : (
-                <HtmlIcon />
-              )
-            }
-          >
+          <LayoutCardBadge key={layout.id} type={layout.layoutType}>
             <CardItem
               title={layout.name}
               onClick={() => this.onLayoutCardClick(layoutId, layout.layoutType)}
               menuOptions={cardMenuOptions}
             />
-          </Badge>
+          </LayoutCardBadge>
         );
       });
 
@@ -211,26 +207,14 @@ class LayoutsScreen extends React.Component<Props, State> {
         const cardMenuOptions = this.getSubLayoutCardMenuOptions(subLayout);
 
         return (
-          <Badge
-            key={subLayout.id}
-            sx={{ position: "relative" }}
-            slotProps={{ badge: { style: { zIndex: 100000 } } }}
-            overlap="rectangular"
-            badgeContent={
-              subLayout.layoutType === LayoutType.Android ? (
-                <AndroidIcon sx={{ color: "#3DDC84" }} />
-              ) : (
-                <HtmlIcon />
-              )
-            }
-          >
+          <LayoutCardBadge key={subLayout.id} type={subLayout.layoutType}>
             <CardItem
               key={subLayout.id}
               title={`${strings.subLayout.name} - ${subLayout.name}`}
               onClick={() => this.onSubLayoutCardClick(subLayoutId)}
               menuOptions={cardMenuOptions}
             />
-          </Badge>
+          </LayoutCardBadge>
         );
       });
 

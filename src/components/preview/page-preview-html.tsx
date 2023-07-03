@@ -2,8 +2,7 @@ import { DeviceModel, PageLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 import { TreeObject } from "../../types";
 import PanZoom from "../generic/pan-zoom";
-import { treeObjectToHtmlElement, wrapTemplate } from "../layout/utils/tree-html-data-utils";
-import { FormControlLabel, Switch, Typography, styled } from "@mui/material";
+import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import Fraction from "fraction.js";
 import { useState } from "react";
 
@@ -102,8 +101,6 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
         fitContent={true}
         contentWidth={screenWidth}
         contentHeight={screenHeight}
-        defaultPositionX={100}
-        defaultPositionY={100}
       >
         <Typography
           sx={{
@@ -116,7 +113,7 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
           {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <Preview
-          srcDoc={wrapTemplate(
+          srcDoc={wrapHtmlLayout(
             treeObjects?.map((treeObject) =>
               treeObjectToHtmlElement(
                 treeObject,

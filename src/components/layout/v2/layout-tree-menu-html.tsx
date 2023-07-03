@@ -36,12 +36,12 @@ const LayoutTreeMenuHtml = ({
         fontWeight: 400,
         fontSize: "0.65rem",
         color: "#2196F3",
-        flexWrap: "wrap",
-        display: selectedComponent?.id === item.id ? "block" : "none"
+        display: selectedComponent?.id === item.id ? "block" : "none",
+        border: "1px dashed #2196F3"
       }}
       onClick={() => onAddComponentClick(item.path, asChildren)}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" justifyContent="space-evenly">
         <AddBoxOutlined sx={{ color: "#2196F3" }} />
         {strings.layoutEditor.addLayoutViewDialog.title}
       </Stack>
@@ -71,6 +71,7 @@ const LayoutTreeMenuHtml = ({
           isRoot={isRoot}
           isRootSubdirectory={isRootSubdirectory}
           hasChildren={hasChildren}
+          expanded={getParentIds().includes(item.id)}
           onClick={() => onTreeComponentSelect(item)}
           onDoubleClick={() => {
             if (selectedComponent?.id === item.id) {
