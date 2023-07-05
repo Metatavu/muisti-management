@@ -82,6 +82,8 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
       case HtmlComponentType.TEXT:
       case HtmlComponentType.BUTTON:
         element.innerText = foundResource.data;
+      case HtmlComponentType.IMAGE:
+        (element as HTMLImageElement).src = foundResource.data;
     }
   };
 

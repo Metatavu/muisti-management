@@ -1,14 +1,11 @@
-import { Divider, MenuItem, Stack } from "@mui/material";
-import { HtmlTextComponentType, TreeObject } from "../../../types";
+import { Divider, Stack } from "@mui/material";
+import { TreeObject } from "../../../types";
 import PropertyBox from "./property-box";
 import { ChangeEvent } from "react";
 import strings from "../../../localization/strings";
 import { ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../generated/client";
 import PanelSubtitle from "./panel-subtitle";
-import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
-import LocalizationUtils from "../../../utils/localization-utils";
-import FontColorEditor from "./font-color-editor";
 
 /**
  * Component props
@@ -21,32 +18,14 @@ interface Props {
 }
 
 /**
- * Text Component Properties component
+ * Image Component Properties component
  */
-const TextComponentProperties = ({
+const ImageComponentProperties = ({
   component,
   updateComponent,
   pageLayout,
   setPageLayout
 }: Props) => {
-  /**
-   * Event handler for element change events
-   *
-   * @param value value
-   */
-  const handleElementChange = ({ target: { value } } : ChangeEvent<HTMLInputElement>) => {
-    const updatedHTMLTag = document.createElement(value);
-
-    for (const attribute of component.element.attributes) {
-      updatedHTMLTag.setAttribute(attribute.name, attribute.value);
-    }
-
-    updateComponent({
-      ...component,
-      element: updatedHTMLTag
-    });
-  };
-
   /**
    * Get default resource associated with element
    *
@@ -61,11 +40,26 @@ const TextComponentProperties = ({
   }
 
   /**
+   * Validates that given string is a valid URL
+   * 
+   * @param url url to validate
+   * @returns whether url is valid
+   */
+  const validateUrl = (url: string) => {
+    try {
+      return !!new URL(url);
+    } catch (_) {
+      return false;
+    }
+  };
+  
+  /**
    * Event handler for default resource change event
    *
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    if (!validateUrl(value)) return;
     const foundResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
     if (foundResource) {
       setPageLayout({
@@ -89,26 +83,6 @@ const TextComponentProperties = ({
 
 	return (
     <Stack>
-      <Divider sx={{ color: "#F5F5F5" }}/>
-      <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.elementType }/>
-        <SelectBox value={ component.element.tagName } onChange={ handleElementChange }>
-          { Object.values(HtmlTextComponentType).map(type => (
-            <MenuItem
-              key={ type }
-              value={ type }
-              sx={{ color: "#2196F3" }}
-            >
-              { LocalizationUtils.getLocalizedTextComponentType(type) }
-            </MenuItem>
-          )) }
-        </SelectBox>
-      </PropertyBox>
-      <Divider sx={{ color: "#F5F5F5" }}/>
-      <FontColorEditor
-        component={ component }
-        updateComponent={ updateComponent }
-      />
       <PropertyBox>
         <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
         <TextField
@@ -122,4 +96,4 @@ const TextComponentProperties = ({
 	);
 };
 
-export default TextComponentProperties;
+export default ImageComponentProperties;

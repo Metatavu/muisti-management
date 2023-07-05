@@ -50,7 +50,7 @@ const ButtonComponentProperties = ({
     if (foundResource) {
       setPageLayout({
         ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map(resource => 
+        defaultResources: pageLayout.defaultResources?.map(resource =>
           resource.id === foundResource?.id ? { ...resource, data: value } : resource)
       });
     } else {
