@@ -1,21 +1,27 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { CircularProgress, ListItem, List, ListItemSecondaryAction, ListItemText } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, ExhibitionRoom } from "../../generated/client";
-import { AccessToken, BreadcrumbData } from '../../types';
 import Api from "../../api/api";
+import { Exhibition, ExhibitionRoom } from "../../generated/client";
 import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
+import { ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import { AccessToken, BreadcrumbData } from "../../types";
 import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ArrowIcon from "@mui/icons-material/ChevronRight";
+import {
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
 
 /**
  * Component properties
@@ -40,7 +46,6 @@ interface State {
  * Component for rooms screen
  */
 class RoomsScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -61,7 +66,7 @@ class RoomsScreen extends React.Component<Props, State> {
     this.setState({ loading: true });
     await this.fetchData();
     this.setState({ loading: false });
-  }
+  };
 
   /**
    * Component render method
@@ -78,13 +83,13 @@ class RoomsScreen extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <BasicLayout
-          keycloak={ keycloak }
-          history={ history }
-          title={ exhibition?.name || "" }
-          breadcrumbs={ breadcrumbs }
+          keycloak={keycloak}
+          history={history}
+          title={exhibition?.name || ""}
+          breadcrumbs={breadcrumbs}
         >
-          <div className={ classes.loader }>
-            <CircularProgress size={ 50 } color="secondary"/>
+          <div className={classes.loader}>
+            <CircularProgress size={50} color="secondary" />
           </div>
         </BasicLayout>
       );
@@ -92,28 +97,34 @@ class RoomsScreen extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        keycloak={ keycloak }
-        history={ history }
-        title={ exhibition?.name || "" }
-        breadcrumbs={ breadcrumbs }
+        keycloak={keycloak}
+        history={history}
+        title={exhibition?.name || ""}
+        breadcrumbs={breadcrumbs}
       >
-        { this.renderRoomCardsList() }
+        {this.renderRoomCardsList()}
         <ElementSettingsPane
-          open={ true }
-          title={ strings.exhibition.exhibitionManagement }
-          width={ 320 }
+          open={true}
+          title={strings.exhibition.exhibitionManagement}
+          width={320}
         >
           <List disablePadding>
-            { this.renderExhibitionManagementLink(strings.exhibition.visitors, "visitors", true) }
-            { this.renderExhibitionManagementLink(strings.exhibition.reception, "reception", true) }
-            { this.renderExhibitionManagementLink(strings.exhibition.visitorVariables, "visitorVariables") }
-            { this.renderExhibitionManagementLink(strings.exhibition.resetVisitorVariables, "resetVisitorVariables") }
-            { this.renderExhibitionManagementLink(strings.exhibition.diagnostics, "diagnostics") }
+            {this.renderExhibitionManagementLink(strings.exhibition.visitors, "visitors", true)}
+            {this.renderExhibitionManagementLink(strings.exhibition.reception, "reception", true)}
+            {this.renderExhibitionManagementLink(
+              strings.exhibition.visitorVariables,
+              "visitorVariables"
+            )}
+            {this.renderExhibitionManagementLink(
+              strings.exhibition.resetVisitorVariables,
+              "resetVisitorVariables"
+            )}
+            {this.renderExhibitionManagementLink(strings.exhibition.diagnostics, "diagnostics")}
           </List>
         </ElementSettingsPane>
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Renders exhibition management link
@@ -122,27 +133,23 @@ class RoomsScreen extends React.Component<Props, State> {
    * @param path path
    * @param resetPath should path reset
    */
-  private renderExhibitionManagementLink = (
-    title: string,
-    path: string,
-    resetPath?: boolean
-  ) => {
+  private renderExhibitionManagementLink = (title: string, path: string, resetPath?: boolean) => {
     return (
-      <ListItem button onClick={ this.navigateTo(path, resetPath) }>
-        <ListItemText primary={ title }/>
+      <ListItem button onClick={this.navigateTo(path, resetPath)}>
+        <ListItemText primary={title} />
         <ListItemSecondaryAction>
-          <ArrowIcon/>
+          <ArrowIcon />
         </ListItemSecondaryAction>
       </ListItem>
     );
-  }
+  };
 
   /**
    * Renders rooms as card list
    */
   private renderRoomCardsList = () => {
     const { rooms, exhibition } = this.state;
-    const cards = rooms.map(room => {
+    const cards = rooms.map((room) => {
       const roomId = room.id;
       const floorId = room.floorId;
       if (!roomId || !exhibition || !floorId) {
@@ -151,20 +158,16 @@ class RoomsScreen extends React.Component<Props, State> {
 
       return (
         <CardItem
-          key={ roomId }
-          title={ room.name }
-          subtitle={ exhibition.name }
-          onClick={ () => this.onCardClick(roomId, floorId) }
+          key={roomId}
+          title={room.name}
+          subtitle={exhibition.name}
+          onClick={() => this.onCardClick(roomId, floorId)}
         />
       );
     });
 
-    return (
-      <CardList title={ strings.contentVersion.rooms }>
-        { cards }
-      </CardList>
-    );
-  }
+    return <CardList title={strings.contentVersion.rooms}>{cards}</CardList>;
+  };
 
   /**
    * Fetches component data
@@ -178,13 +181,13 @@ class RoomsScreen extends React.Component<Props, State> {
 
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const [ exhibition, rooms ] = await Promise.all<Exhibition, ExhibitionRoom[]>([
+    const [exhibition, rooms] = await Promise.all<Exhibition, ExhibitionRoom[]>([
       exhibitionsApi.findExhibition({ exhibitionId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId })
     ]);
 
     this.setState({ exhibition, rooms });
-  }
+  };
 
   /**
    * Get breadcrumbs data
@@ -197,7 +200,7 @@ class RoomsScreen extends React.Component<Props, State> {
       { name: strings.exhibitions.listTitle, url: "/exhibitions" },
       { name: exhibition?.name || "" }
     ] as BreadcrumbData[];
-  }
+  };
 
   /**
    * Navigates to given exhibition management path
@@ -208,11 +211,11 @@ class RoomsScreen extends React.Component<Props, State> {
     const { pathname } = this.props.history.location;
     const exhibitionPath = pathname.split("/content")[0];
     if (resetPath) {
-      this.props.history.replace(`${ exhibitionPath }/${path}`);
+      this.props.history.replace(`${exhibitionPath}/${path}`);
     } else {
-      this.props.history.push(`${ exhibitionPath }/${path}`);
+      this.props.history.push(`${exhibitionPath}/${path}`);
     }
-  }
+  };
 
   /**
    * Event handler for card click
@@ -222,7 +225,7 @@ class RoomsScreen extends React.Component<Props, State> {
   private onCardClick = (roomId: string, floorId: string) => {
     const { pathname } = this.props.history.location;
     this.props.history.push(`${pathname}/floors/${floorId}/rooms/${roomId}`);
-  }
+  };
 }
 
 /**
@@ -231,9 +234,8 @@ class RoomsScreen extends React.Component<Props, State> {
  * @param state store state
  */
 const mapStateToProps = (state: ReduxState) => ({
-    keycloak: state.auth.keycloak,
-    accessToken: state.auth.accessToken
+  keycloak: state.auth.keycloak,
+  accessToken: state.auth.accessToken
 });
-
 
 export default connect(mapStateToProps)(withStyles(styles)(RoomsScreen));

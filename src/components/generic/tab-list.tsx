@@ -1,10 +1,10 @@
-import React from "react";
-import { List, ListItem, Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/tab-list";
+import { List, ListItem, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { History } from "history";
-import { Link as RouterLink } from 'react-router-dom';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 /**
  * Interface representing component properties
@@ -12,12 +12,6 @@ import { Link as RouterLink } from 'react-router-dom';
 interface Props extends WithStyles<typeof styles> {
   history: History;
   tabButtons: NavigationButton[];
-}
-
-/**
- * Interface representing component state
- */
-interface State {
 }
 
 /**
@@ -31,8 +25,7 @@ interface NavigationButton {
 /**
  * Component for tab list
  */
-class TabList extends React.Component<Props, State> {
-
+class TabList extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -40,19 +33,14 @@ class TabList extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
    * Component render method
    */
   public render() {
-    return (
-      <>
-        { this.renderTabs() }
-      </>
-    );
+    return <>{this.renderTabs()}</>;
   }
 
   /**
@@ -62,15 +50,11 @@ class TabList extends React.Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <List
-        disablePadding
-        dense
-        className={ classes.tabs }
-      >
-        { this.renderTabButtons() }
+      <List disablePadding dense className={classes.tabs}>
+        {this.renderTabButtons()}
       </List>
     );
-  }
+  };
 
   /**
    * Renders tab button
@@ -85,18 +69,18 @@ class TabList extends React.Component<Props, State> {
 
       return (
         <ListItem
-          key={ index }
+          key={index}
           button
-          selected={ history.location.pathname.includes(tabButton.postfix) }
-          component={ RouterLink }
-          to={ tabButtonPath }
-          disabled={ !history.location.pathname.includes("floors/") }
+          selected={history.location.pathname.includes(tabButton.postfix)}
+          component={RouterLink}
+          to={tabButtonPath}
+          disabled={!history.location.pathname.includes("floors/")}
         >
-          <Typography>{ tabButton.text }</Typography>
+          <Typography>{tabButton.text}</Typography>
         </ListItem>
       );
     });
-  }
+  };
 
   /**
    * Get new path.
@@ -117,8 +101,7 @@ class TabList extends React.Component<Props, State> {
       default:
         return currentPath;
     }
-  }
-
+  };
 }
 
 export default withStyles(styles)(TabList);

@@ -1,11 +1,8 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../styles/theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-  
-  root: {
-
-  },
+  root: {},
 
   dropzone: {
     padding: 30,
@@ -14,8 +11,8 @@ export default createStyles({
     borderRadius: theme.shape.borderRadius,
     borderColor: "rgba(0, 0, 0, 0.8)",
     transition: "border-color 0.2s ease-out",
-      "& .MuiGrid-container": {
-        justifyContent: "center"
+    "& .MuiGrid-container": {
+      justifyContent: "center"
     }
   },
 
@@ -35,6 +32,5 @@ export default createStyles({
     width: "100%",
     alignItems: "center",
     justifyContent: "center"
-  },
-
+  }
 });

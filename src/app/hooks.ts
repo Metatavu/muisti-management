@@ -24,8 +24,8 @@ export const useInterval = (callback: () => any, delay: number) => {
     return () => {
       clearInterval(timeout);
       stopInterval.current = undefined;
-    }
-  }, [ delay ]);
+    };
+  }, [delay]);
 
   return stopInterval.current;
-}
+};

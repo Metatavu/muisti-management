@@ -1,3 +1,0 @@
-eslint:
-  enabled: false
-  ignore_file: .eslintignore

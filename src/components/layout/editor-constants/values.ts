@@ -83,5 +83,5 @@ export enum SelectedTabIndicatorGravityValues {
   Bottom = "bottom",
   Center = "center",
   Top = "top",
-  Stretch = "stretch",
+  Stretch = "stretch"
 }

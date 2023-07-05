@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   paper: {
     marginTop: "80px",
     maxWidth: "720px",
@@ -22,10 +21,10 @@ export default createStyles({
     opacity: 0.5,
     transition: "opacity 0.2s ease-out",
     "&:hover": {
-      opacity: 0.9,
+      opacity: 0.9
     },
     "&:active": {
-      opacity: 1,
+      opacity: 1
     }
   },
 
@@ -40,7 +39,7 @@ export default createStyles({
   imageContainer: {
     height: "100%"
   },
-  
+
   media: {
     display: "flex",
     justifyContent: "center",

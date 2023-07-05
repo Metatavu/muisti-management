@@ -1,5 +1,16 @@
-import { PageLayout, PageLayoutView, PageLayoutViewProperty, PageLayoutViewPropertyType, SubLayout, PageLayoutWidgetType } from "../../../generated/client";
-import { LayoutPaddingPropKeys, LayoutMarginPropKeys, LayoutPropKeys } from "../editor-constants/keys";
+import {
+  PageLayout,
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutViewPropertyType,
+  PageLayoutWidgetType,
+  SubLayout
+} from "../../../generated/client";
+import {
+  LayoutMarginPropKeys,
+  LayoutPaddingPropKeys,
+  LayoutPropKeys
+} from "../editor-constants/keys";
 import { v4 as uuid } from "uuid";
 
 /**
@@ -9,11 +20,18 @@ import { v4 as uuid } from "uuid";
  * @param layoutViewPath path of the item to be deleted inside the tree
  * @returns updated page layout
  */
-export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layoutViewPath: string): PageLayout | SubLayout => {
+export const constructTreeDeleteData = (
+  pageLayout: PageLayout | SubLayout,
+  layoutViewPath: string
+): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data = { ...pageLayout.data, children: [] };
   } else {
-    pageLayout.data.children = deleteViewFromLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id);
+    pageLayout.data.children = deleteViewFromLayoutTree(
+      pageLayout.data.children,
+      layoutViewPath,
+      pageLayout.data.id
+    );
   }
   return pageLayout;
 };
@@ -26,7 +44,11 @@ export const constructTreeDeleteData = (pageLayout: PageLayout | SubLayout, layo
  * @param currentPath current path inside the recursion
  * @returns list of page layout views
  */
-const deleteViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: string, currentPath: string): PageLayoutView[] => {
+const deleteViewFromLayoutTree = (
+  treeData: PageLayoutView[],
+  layoutViewPath: string,
+  currentPath: string
+): PageLayoutView[] => {
   const cleanNodes: PageLayoutView[] = [];
   let found = false;
 
@@ -60,11 +82,20 @@ const deleteViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
  * @param layoutViewPath path of the item to be updated inside the tree
  * @returns updated page layout
  */
-export const constructTreeUpdateData = (layout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
+export const constructTreeUpdateData = (
+  layout: PageLayout | SubLayout,
+  pageLayoutView: PageLayoutView,
+  layoutViewPath: string
+): PageLayout | SubLayout => {
   if (layout.data.id === layoutViewPath) {
     layout.data = pageLayoutView;
   } else {
-    layout.data.children = updateViewFromLayoutTree(layout.data.children, layoutViewPath, layout.data.id, pageLayoutView);
+    layout.data.children = updateViewFromLayoutTree(
+      layout.data.children,
+      layoutViewPath,
+      layout.data.id,
+      pageLayoutView
+    );
   }
   return layout;
 };
@@ -79,7 +110,12 @@ export const constructTreeUpdateData = (layout: PageLayout | SubLayout, pageLayo
  * @returns list of page layout views
  */
 // eslint-disable-next-line max-len
-const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: string, currentPath: string, pageLayoutView: PageLayoutView): PageLayoutView[] => {
+const updateViewFromLayoutTree = (
+  treeData: PageLayoutView[],
+  layoutViewPath: string,
+  currentPath: string,
+  pageLayoutView: PageLayoutView
+): PageLayoutView[] => {
   const cleanNodes: PageLayoutView[] = [];
   let found = false;
   for (let i = 0; i < treeData.length; i++) {
@@ -99,7 +135,12 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
     for (let i = 0; i < treeData.length; i++) {
       const child = treeData[i];
       const updatedPath = `${currentPath}/${child.id}`;
-      child.children = updateViewFromLayoutTree(child.children, layoutViewPath, updatedPath, pageLayoutView);
+      child.children = updateViewFromLayoutTree(
+        child.children,
+        layoutViewPath,
+        updatedPath,
+        pageLayoutView
+      );
     }
   }
   return treeData;
@@ -113,11 +154,20 @@ const updateViewFromLayoutTree = (treeData: PageLayoutView[], layoutViewPath: st
  * @param layoutViewPath path of the parent item where the new child item will be added inside the tree
  * @returns updated page layout
  */
-export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout | SubLayout, pageLayoutView: PageLayoutView, layoutViewPath: string): PageLayout | SubLayout => {
+export const pushNewPageLayoutViewToTree = (
+  pageLayout: PageLayout | SubLayout,
+  pageLayoutView: PageLayoutView,
+  layoutViewPath: string
+): PageLayout | SubLayout => {
   if (pageLayout.data.id === layoutViewPath) {
     pageLayout.data.children.push(pageLayoutView);
   } else {
-    pageLayout.data.children = pushNewViewToLayoutTree(pageLayout.data.children, layoutViewPath, pageLayout.data.id, pageLayoutView);
+    pageLayout.data.children = pushNewViewToLayoutTree(
+      pageLayout.data.children,
+      layoutViewPath,
+      pageLayout.data.id,
+      pageLayoutView
+    );
   }
   return pageLayout;
 };
@@ -133,7 +183,12 @@ export const pushNewPageLayoutViewToTree = (pageLayout: PageLayout | SubLayout, 
  * @returns list of page layout views
  */
 // eslint-disable-next-line max-len
-const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: string, currentPath: string, pageLayoutView: PageLayoutView): PageLayoutView[] => {
+const pushNewViewToLayoutTree = (
+  treeData: PageLayoutView[],
+  layoutViewPath: string,
+  currentPath: string,
+  pageLayoutView: PageLayoutView
+): PageLayoutView[] => {
   const cleanNodes: PageLayoutView[] = [];
   let found = false;
   for (let i = 0; i < treeData.length; i++) {
@@ -154,7 +209,12 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
     for (let i = 0; i < treeData.length; i++) {
       const child = treeData[i];
       const updatedPath = `${currentPath}/${child.id}`;
-      child.children = pushNewViewToLayoutTree(child.children, layoutViewPath, updatedPath, pageLayoutView);
+      child.children = pushNewViewToLayoutTree(
+        child.children,
+        layoutViewPath,
+        updatedPath,
+        pageLayoutView
+      );
     }
   }
   return treeData;
@@ -167,13 +227,16 @@ const pushNewViewToLayoutTree = (treeData: PageLayoutView[], layoutViewPath: str
  * @param layoutViewToUpdate layout view to update
  * @returns updated page layout view
  */
-export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayoutViewProperty, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
+export const updateLayoutViewProperty = (
+  updatedPageLayoutViewProperty: PageLayoutViewProperty,
+  layoutViewToUpdate: PageLayoutView
+): PageLayoutView => {
   const name = updatedPageLayoutViewProperty.name;
   const value = updatedPageLayoutViewProperty.value;
   const type = updatedPageLayoutViewProperty.type;
 
   const valueNotEmpty = value !== undefined && value !== "";
-  const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === name);
+  const foundIndex = layoutViewToUpdate.properties.findIndex((data) => data.name === name);
   if (foundIndex < 0 && valueNotEmpty) {
     const propertyToCreate: PageLayoutViewProperty = {
       name: name,
@@ -181,8 +244,7 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
       type: type
     };
     layoutViewToUpdate.properties.push(propertyToCreate);
-  }
-  else {
+  } else {
     const propToUpdate = { ...layoutViewToUpdate.properties[foundIndex] };
     if (valueNotEmpty) {
       propToUpdate.value = value;
@@ -196,31 +258,42 @@ export const updateLayoutViewProperty = (updatedPageLayoutViewProperty: PageLayo
 
 /**
  * Remove property from layout view
- * 
+ *
  * @param layoutPropertyToRemove layout view property to remove
  * @param layoutViewToUpdate layout vie to update
  * @returns page layout view without removed property
  */
-export const removeLayoutViewProperty = (layoutPropertyToRemove: LayoutPropKeys, layoutViewToUpdate: PageLayoutView): PageLayoutView => {
-  const foundIndex = layoutViewToUpdate.properties.findIndex(data => data.name === layoutPropertyToRemove);
+export const removeLayoutViewProperty = (
+  layoutPropertyToRemove: LayoutPropKeys,
+  layoutViewToUpdate: PageLayoutView
+): PageLayoutView => {
+  const foundIndex = layoutViewToUpdate.properties.findIndex(
+    (data) => data.name === layoutPropertyToRemove
+  );
   if (foundIndex < 0) {
     return layoutViewToUpdate;
   }
 
   layoutViewToUpdate.properties.splice(foundIndex, 1);
   return layoutViewToUpdate;
-}
+};
 
 /**
  * Checks if page layout view has property with given key and type
- * 
+ *
  * @param pageLayoutView page layout vie
  * @param key property key
  * @param type property type
  */
-export const hasProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): boolean => {
-  return !!pageLayoutView.properties.find(property => property.name === key && property.type === type);
-}
+export const hasProperty = (
+  pageLayoutView: PageLayoutView,
+  key: string,
+  type: PageLayoutViewPropertyType
+): boolean => {
+  return !!pageLayoutView.properties.find(
+    (property) => property.name === key && property.type === type
+  );
+};
 
 /**
  * Find property from given page layout view with given key
@@ -231,9 +304,13 @@ export const hasProperty = (pageLayoutView: PageLayoutView, key: string, type: P
  * @returns Found property or new property to be modified
  */
 // tslint:disable-next-line: max-line-length
-export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: PageLayoutViewPropertyType): PageLayoutViewProperty => {
+export const getProperty = (
+  pageLayoutView: PageLayoutView,
+  key: string,
+  type: PageLayoutViewPropertyType
+): PageLayoutViewProperty => {
   const layoutProps = pageLayoutView.properties;
-  const foundIndex = layoutProps.findIndex(prop => prop.name === key);
+  const foundIndex = layoutProps.findIndex((prop) => prop.name === key);
   if (foundIndex < 0) {
     const createdSingleProperty: PageLayoutViewProperty = {
       name: key,
@@ -253,12 +330,15 @@ export const getProperty = (pageLayoutView: PageLayoutView, key: string, type: P
  * @returns list of page layout view properties
  */
 // eslint-disable-next-line max-len
-export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enumObject: typeof LayoutPaddingPropKeys | typeof LayoutMarginPropKeys): PageLayoutViewProperty[] => {
+export const getPaddingOrMarginProperties = (
+  pageLayoutView: PageLayoutView,
+  enumObject: typeof LayoutPaddingPropKeys | typeof LayoutMarginPropKeys
+): PageLayoutViewProperty[] => {
   const propertyList: PageLayoutViewProperty[] = [];
   const values = Object.values(enumObject);
 
-  values.forEach(valueKey => {
-    const foundProp = pageLayoutView.properties.find(prop => prop.name === valueKey);
+  values.forEach((valueKey) => {
+    const foundProp = pageLayoutView.properties.find((prop) => prop.name === valueKey);
     if (foundProp) {
       propertyList.push(foundProp);
     } else {
@@ -288,8 +368,9 @@ export const getPaddingOrMarginProperties = (pageLayoutView: PageLayoutView, enu
  * @param widget widget type
  * @returns initialized page layout view
  */
-export const getInitializedPageLayoutViewByWidgetType = (widget: PageLayoutWidgetType): PageLayoutView => {
-
+export const getInitializedPageLayoutViewByWidgetType = (
+  widget: PageLayoutWidgetType
+): PageLayoutView => {
   const layoutView: PageLayoutView = {
     id: uuid(),
     widget: widget,

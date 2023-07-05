@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   timeLineRowList: {
     padding: 0,
     width: "100%",
@@ -10,7 +9,7 @@ export default createStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
-    overflowX: "scroll",
+    overflowX: "scroll"
   },
 
   timelineRow: {
@@ -56,5 +55,4 @@ export default createStyles({
     boxShadow: `0 0 0 2px ${theme.palette.secondary.main}`,
     zIndex: 1
   }
-
 });

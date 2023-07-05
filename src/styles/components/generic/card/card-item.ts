@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   cardWrapper: {
     position: "relative"
   },
@@ -18,7 +17,7 @@ export default createStyles({
     borderRadius: 0,
     transition: "background 0.2s ease-out, box-shadow 0.2s ease-out ",
     "&:hover": {
-      background: "#F1EFE8",
+      background: "#F1EFE8"
     },
     "&:active": {
       background: "#F1EFE8",
@@ -27,7 +26,7 @@ export default createStyles({
     "& .MuiCardContent-root": {
       display: "flex",
       flexGrow: 1,
-      flexDirection: "column",
+      flexDirection: "column"
     }
   },
 
@@ -44,7 +43,7 @@ export default createStyles({
     border: "1px solid transparent",
     transition: "background 0.2s ease-out, box-shadow 0.2s ease-out ",
     "&:hover": {
-      background: "#dedede",
+      background: "#dedede"
     },
     "&:active": {
       background: "#dedede",
@@ -57,7 +56,7 @@ export default createStyles({
     "& .MuiCardContent-root": {
       display: "flex",
       flexGrow: 1,
-      flexDirection: "column",
+      flexDirection: "column"
     }
   },
 
@@ -75,7 +74,7 @@ export default createStyles({
       border: "1px solid #000",
       borderTopWidth: 0,
       borderRadius: 0,
-      background: "#ebebeb",
+      background: "#ebebeb"
     }
   },
 
@@ -86,5 +85,4 @@ export default createStyles({
   status: {
     marginTop: "auto"
   }
-
 });

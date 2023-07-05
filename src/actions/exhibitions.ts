@@ -1,6 +1,6 @@
-import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
 import { Exhibition } from "../generated/client";
+import { ActionCreator } from "redux";
 
 /**
  * Interface for set selected exhibition action type
@@ -23,7 +23,9 @@ export interface SetExhibitionsAction {
  *
  * @param exhibition exhibition being dispatched
  */
-export const setSelectedExhibition: ActionCreator<SetSelectedExhibitionAction> = (exhibition: Exhibition) => {
+export const setSelectedExhibition: ActionCreator<SetSelectedExhibitionAction> = (
+  exhibition: Exhibition
+) => {
   return {
     type: actionTypes.SET_SELECTED_EXHIBITION,
     exhibition: exhibition

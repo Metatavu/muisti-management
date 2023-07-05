@@ -1,9 +1,9 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { Checkbox, FormControlLabel } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -21,16 +21,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for layout checkbox
  */
-class GenericPropertyCheckbox extends React.Component<Props, State> {
-
+class GenericPropertyCheckbox extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -38,8 +31,7 @@ class GenericPropertyCheckbox extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -50,17 +42,17 @@ class GenericPropertyCheckbox extends React.Component<Props, State> {
 
     return (
       <FormControlLabel
-        label={ label }
+        label={label}
         control={
           <Checkbox
-            checked={ property.value === "true" }
-            onChange={ this.onCheckboxChange }
-            name={ property.name }
+            checked={property.value === "true"}
+            onChange={this.onCheckboxChange}
+            name={property.name}
           />
         }
       />
     );
-  }
+  };
 
   /**
    * Handle checkbox value change
@@ -74,9 +66,7 @@ class GenericPropertyCheckbox extends React.Component<Props, State> {
     const propertyToUpdate = { ...property } as PageLayoutViewProperty;
     propertyToUpdate.value = String(checked);
     onCheckboxChange(propertyToUpdate);
-  }
-
+  };
 }
 
-
-export default (withStyles(styles)(GenericPropertyCheckbox));
+export default withStyles(styles)(GenericPropertyCheckbox);

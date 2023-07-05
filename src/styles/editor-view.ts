@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   root: {
     height: "100%",
     display: "grid",
@@ -22,5 +21,4 @@ export default createStyles({
       border: "3px solid #222"
     }
   }
-
 });

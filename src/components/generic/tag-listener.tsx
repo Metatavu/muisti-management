@@ -1,12 +1,12 @@
-import { Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import * as React from "react";
+import { Config } from "../../constants/configuration";
 import strings from "../../localization/strings";
 import { Mqtt } from "../../mqtt";
-import styles from "../../styles/components/generic/tag-listener";
 import logo from "../../resources/gfx/muisti-logo.png";
-import { Config } from "../../constants/configuration";
+import styles from "../../styles/components/generic/tag-listener";
+import { Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -30,7 +30,6 @@ const config = Config.getConfig();
  * React component for listening RFID tags
  */
 class TagListener extends React.Component<Props> {
-
   /**
    * Component did mount life cycle event
    */
@@ -40,7 +39,7 @@ class TagListener extends React.Component<Props> {
     const basePath = `${config.mqttConfig.prefix}${antenna}`;
     mqtt.subscribe(basePath, this.onMqttProximityUpdate);
     mqtt.subscribe(`${basePath}/`, this.onMqttProximityUpdate);
-  }
+  };
 
   /**
    * Component will unmount life cycle event
@@ -51,7 +50,7 @@ class TagListener extends React.Component<Props> {
     const basePath = `${config.mqttConfig.prefix}${antenna}`;
     mqtt.unsubscribe(basePath, this.onMqttProximityUpdate);
     mqtt.unsubscribe(`${basePath}/`, this.onMqttProximityUpdate);
-  }
+  };
 
   /**
    * Component render method
@@ -64,21 +63,18 @@ class TagListener extends React.Component<Props> {
     }
 
     return (
-      <div className={ classes.container }>
-        <div className={ classes.logoContainer }>
-          <img alt="Muisti logo" src={ logo } />
+      <div className={classes.container}>
+        <div className={classes.logoContainer}>
+          <img alt="Muisti logo" src={logo} />
         </div>
-        <div className={ classes.formContainer }>
-          <Typography
-            className={ classes.text }
-            variant="h3"
-          >
-            { strings.reception.registerTag }
+        <div className={classes.formContainer}>
+          <Typography className={classes.text} variant="h3">
+            {strings.reception.registerTag}
           </Typography>
         </div>
       </div>
-  );
-  }
+    );
+  };
 
   /**
    * Handler for MQTT proximity updates
@@ -91,7 +87,7 @@ class TagListener extends React.Component<Props> {
     if (message.strength > threshold) {
       onTagRegister(message.tag);
     }
-  }
+  };
 }
 
 export default withStyles(styles)(TagListener);

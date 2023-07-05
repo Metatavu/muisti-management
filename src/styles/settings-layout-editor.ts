@@ -1,14 +1,13 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   root: {
     height: "100%",
     display: "grid",
     gridAutoColumns: "auto 1fr",
     gridTemplateRows: "1fr",
-    gridTemplateAreas: "'panel content' 'panel content'",
+    gridTemplateAreas: "'panel content' 'panel content'"
   },
   panel: {
     position: "relative",
@@ -24,7 +23,7 @@ export default createStyles({
     justifyContent: "flex-end",
     height: 58,
     padding: "0 16px",
-    alignItems: "center",
+    alignItems: "center"
   },
   toolbarContent: {
     padding: theme.spacing(2)

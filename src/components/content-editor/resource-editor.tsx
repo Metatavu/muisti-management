@@ -1,20 +1,34 @@
-import * as React from "react";
-// tslint:disable-next-line: max-line-length
-import { ExhibitionPageResource, ExhibitionPageResourceType, PageResourceMode, DynamicPageResource, DynamicPageResourceType, DynamicPageResourceDataSource, VisitorVariable } from "../../generated/client";
+import {
+  DynamicPageResource,
+  DynamicPageResourceDataSource,
+  DynamicPageResourceType,
+  ExhibitionPageResource,
+  ExhibitionPageResourceType,
+  PageResourceMode,
+  VisitorVariable
+} from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/components/content-editor/resource-editor";
 import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import MediaLibrary from "../right-panel-editors/media-library";
-import produce from "immer";
+import styles from "../../styles/components/content-editor/resource-editor";
 import { AccessToken } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
-import DynamicResourceEditor from "./dynamic-resource-editor";
+import MediaLibrary from "../right-panel-editors/media-library";
 import { resourceModes } from "./constants";
+import DynamicResourceEditor from "./dynamic-resource-editor";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import produce from "immer";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties
@@ -27,16 +41,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for resource editor
  */
-class ResourceEditor extends React.Component<Props, State> {
-
+class ResourceEditor extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -55,11 +62,11 @@ class ResourceEditor extends React.Component<Props, State> {
   public render = () => {
     return (
       <>
-        { this.renderModeSelect() }
-        { this.renderEditor() }
+        {this.renderModeSelect()}
+        {this.renderEditor()}
       </>
     );
-  }
+  };
 
   /**
    * Renders mode select
@@ -67,33 +74,33 @@ class ResourceEditor extends React.Component<Props, State> {
   private renderModeSelect = () => {
     const { classes, resource } = this.props;
 
-    const selectOptions = resourceModes.map(option => {
+    const selectOptions = resourceModes.map((option) => {
       return (
-        <MenuItem key={ option } value={ option }>
-          { ResourceUtils.getModeDisplayName(option) }
+        <MenuItem key={option} value={option}>
+          {ResourceUtils.getModeDisplayName(option)}
         </MenuItem>
       );
     });
 
     return (
-        <FormControl variant="outlined">
-          <InputLabel id="modeLabel">{ strings.exhibition.resources.mode }</InputLabel>
-          <Select
-            label={ strings.exhibition.resources.mode }
-            labelId="modeLabel"
-            variant="outlined"
-            className={ classes.field }
-            fullWidth
-            id={ resource.id }
-            onChange={ this.onModeChange }
-            name={ "mode" }
-            value={ resource.mode }
-            >
-            { selectOptions }
+      <FormControl variant="outlined">
+        <InputLabel id="modeLabel">{strings.exhibition.resources.mode}</InputLabel>
+        <Select
+          label={strings.exhibition.resources.mode}
+          labelId="modeLabel"
+          variant="outlined"
+          className={classes.field}
+          fullWidth
+          id={resource.id}
+          onChange={this.onModeChange}
+          name={"mode"}
+          value={resource.mode}
+        >
+          {selectOptions}
         </Select>
       </FormControl>
     );
-  }
+  };
 
   /**
    * Renders corresponding editor based on resource mode
@@ -107,7 +114,7 @@ class ResourceEditor extends React.Component<Props, State> {
       default:
         return this.renderStaticEditor();
     }
-  }
+  };
 
   /**
    * Renders dynamic editor
@@ -117,28 +124,28 @@ class ResourceEditor extends React.Component<Props, State> {
 
     return (
       <DynamicResourceEditor
-        accessToken={ accessToken }
-        data={ JSON.parse(resource.data) as DynamicPageResource }
-        visitorVariables={ visitorVariables }
-        resourceType={ resource.type }
-        onUpdate={ this.onUpdateDynamicResource }
+        accessToken={accessToken}
+        data={JSON.parse(resource.data) as DynamicPageResource}
+        visitorVariables={visitorVariables}
+        resourceType={resource.type}
+        onUpdate={this.onUpdateDynamicResource}
       />
     );
-  }
+  };
 
   /**
    * Renders scripted editor
    */
   private renderScriptedEditor = () => {
     return this.renderResourceField();
-  }
+  };
 
   /**
    * Renders static editor
    */
   private renderStaticEditor = () => {
     return this.renderResourceField();
-  }
+  };
 
   /**
    * Renders resource field based on resource type
@@ -151,10 +158,10 @@ class ResourceEditor extends React.Component<Props, State> {
       case ExhibitionPageResourceType.Video:
         return (
           <MediaLibrary
-            accessToken={ accessToken }
-            mediaType={ ResourceUtils.getResourceMediaType(resource.type)! }
-            resource={ resource }
-            onUrlChange={ this.updateResourceData }
+            accessToken={accessToken}
+            mediaType={ResourceUtils.getResourceMediaType(resource.type)!}
+            resource={resource}
+            onUrlChange={this.updateResourceData}
           />
         );
       case ExhibitionPageResourceType.Text:
@@ -162,17 +169,17 @@ class ResourceEditor extends React.Component<Props, State> {
           <TextField
             variant="outlined"
             multiline
-            className={ classes.field }
-            label={ strings.exhibition.resources.textView.properties.text }
+            className={classes.field}
+            label={strings.exhibition.resources.textView.properties.text}
             name="data"
-            value={ resource.data }
-            onChange={ this.onResourceDataChange }
+            value={resource.data}
+            onChange={this.onResourceDataChange}
           />
         );
       default:
-      break;
+        break;
     }
-  }
+  };
 
   /**
    * Event handler for mode change
@@ -189,21 +196,21 @@ class ResourceEditor extends React.Component<Props, State> {
     }
 
     onUpdate(
-      produce(resource, draft => {
+      produce(resource, (draft) => {
         switch (mode || PageResourceMode.Static) {
           case PageResourceMode.Dynamic:
             const dynamicData = this.createDynamicResourceDataStructure();
             draft.data = JSON.stringify(dynamicData);
-          break;
+            break;
           default:
             draft.data = "";
-          break;
+            break;
         }
 
         draft.mode = mode;
       })
     );
-  }
+  };
 
   /**
    * Creates data structure for dynamic resource
@@ -217,12 +224,12 @@ class ResourceEditor extends React.Component<Props, State> {
         dataSource: DynamicPageResourceDataSource.UserValue,
         key: "",
         when: [
-          { equals: "", value:  "", default: true },
-          { equals: "", value:  "" }
+          { equals: "", value: "", default: true },
+          { equals: "", value: "" }
         ]
       }
     };
-  }
+  };
 
   /**
    * Event handler for resource data change
@@ -231,7 +238,7 @@ class ResourceEditor extends React.Component<Props, State> {
    */
   private onResourceDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.updateResourceData(event.target.value);
-  }
+  };
 
   /**
    * Event handler for updating dynamic resource
@@ -241,7 +248,7 @@ class ResourceEditor extends React.Component<Props, State> {
   private onUpdateDynamicResource = (resourceData: DynamicPageResource) => {
     const dataString = JSON.stringify(resourceData);
     this.updateResourceData(dataString);
-  }
+  };
 
   /**
    * Updates default resource
@@ -252,11 +259,11 @@ class ResourceEditor extends React.Component<Props, State> {
     const { resource, onUpdate } = this.props;
 
     onUpdate(
-      produce(resource, draft => {
+      produce(resource, (draft) => {
         draft.data = value;
       })
     );
-  }
+  };
 }
 
 /**
@@ -276,7 +283,7 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
+  return {};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ResourceEditor));

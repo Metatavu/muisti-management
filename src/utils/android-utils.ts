@@ -1,14 +1,16 @@
-import DisplayMetrics from "../types/display-metrics";
+import {
+  LayoutGravityValuePairs,
+  SelectedTabIndicatorGravityValues
+} from "../components/layout/editor-constants/values";
 import { DeviceModel } from "../generated/client";
-import tinycolor from "tinycolor2";
-import { LayoutGravityValuePairs, SelectedTabIndicatorGravityValues } from "../components/layout/editor-constants/values";
 import { CSSPropertyValuePairs } from "../types";
+import DisplayMetrics from "../types/display-metrics";
+import tinycolor from "tinycolor2";
 
 /**
  * Utilities for Android
  */
 export default class AndroidUtils {
-
   private static DENSITY_DEFAULT = 160;
 
   /**
@@ -20,12 +22,12 @@ export default class AndroidUtils {
     const displayMetrics = deviceModel.displayMetrics;
 
     const result: DisplayMetrics = {
-      density: displayMetrics.density || 0,
-      heightPixels: displayMetrics.heightPixels || 0,
-      widthPixels: displayMetrics.widthPixels || 0,
-      xdpi: displayMetrics.xdpi || 0,
-      ydpi: displayMetrics.ydpi || 0,
-      densityDpi: ((displayMetrics.density || 0) * AndroidUtils.DENSITY_DEFAULT)
+      density: displayMetrics.density || 0,
+      heightPixels: displayMetrics.heightPixels || 0,
+      widthPixels: displayMetrics.widthPixels || 0,
+      xdpi: displayMetrics.xdpi || 0,
+      ydpi: displayMetrics.ydpi || 0,
+      densityDpi: (displayMetrics.density || 0) * AndroidUtils.DENSITY_DEFAULT
     };
 
     return result;
@@ -33,7 +35,7 @@ export default class AndroidUtils {
 
   /**
    * Converts Android color into CSS color
-   * 
+   *
    * @param androidColor Android color
    * @returns CSS color
    */
@@ -53,7 +55,9 @@ export default class AndroidUtils {
    * @param gravity gravity
    * @returns array of CSS property value pairs
    */
-  public static layoutGravityToCSSPositioning(gravity: LayoutGravityValuePairs): CSSPropertyValuePairs[] {
+  public static layoutGravityToCSSPositioning(
+    gravity: LayoutGravityValuePairs
+  ): CSSPropertyValuePairs[] {
     switch (gravity) {
       case LayoutGravityValuePairs.Top:
         return [
@@ -116,7 +120,9 @@ export default class AndroidUtils {
    * @param gravity indicator gravity value
    * @returns array of CSS property value pairs
    */
-  public static tabIndicatorGravityToCSSPositioning(gravity: SelectedTabIndicatorGravityValues): CSSPropertyValuePairs[] {
+  public static tabIndicatorGravityToCSSPositioning(
+    gravity: SelectedTabIndicatorGravityValues
+  ): CSSPropertyValuePairs[] {
     switch (gravity) {
       case SelectedTabIndicatorGravityValues.Top:
         return [
@@ -130,9 +136,7 @@ export default class AndroidUtils {
         ];
 
       case SelectedTabIndicatorGravityValues.Stretch:
-        return [
-          { key: "height", value: "100%" },
-        ];
+        return [{ key: "height", value: "100%" }];
       default:
         return [];
     }
@@ -184,7 +188,11 @@ export default class AndroidUtils {
    * @param value string
    * @returns parsed number of pixels or null if string could not be parsed
    */
-  public static stringToPx(displayMetrics: DisplayMetrics, value: string, scale: number): number | null {
+  public static stringToPx(
+    displayMetrics: DisplayMetrics,
+    value: string,
+    scale: number
+  ): number | null {
     const dp = AndroidUtils.dpToNumber(value);
     if (dp) {
       return AndroidUtils.convertDpToPixel(displayMetrics, dp, scale);
@@ -204,7 +212,7 @@ export default class AndroidUtils {
    * @param value string
    * @returns parsed number or null if is not a DP string
    */
-  public static dpToNumber(value: string): number | null {
+  public static dpToNumber(value: string): number | null {
     const match = /([0-9.]+)dp/.exec(value);
     return match && match.length > 1 ? parseFloat(match[1]) : null;
   }
@@ -215,7 +223,7 @@ export default class AndroidUtils {
    * @param value string
    * @returns parsed number or null if is not a SP string
    */
-  public static spToNumber(value: string): number | null {
+  public static spToNumber(value: string): number | null {
     const match = /([0-9.]+)sp/.exec(value);
     return match && match.length > 1 ? parseFloat(match[1]) : null;
   }
@@ -228,7 +236,11 @@ export default class AndroidUtils {
    * @param scale scale factor
    * @returns pixels
    */
-  public static convertSpToPixel(displayMetrics: DisplayMetrics, sp: number, scale: number): number | null {
+  public static convertSpToPixel(
+    displayMetrics: DisplayMetrics,
+    sp: number,
+    scale: number
+  ): number | null {
     return sp * displayMetrics.density * scale;
   }
 
@@ -240,8 +252,12 @@ export default class AndroidUtils {
    * @param scale scale factor
    * @returns pixels
    */
-  public static convertDpToPixel(displayMetrics: DisplayMetrics, dp: number, scale: number): number  {
-    return (dp * (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT)) * scale;
+  public static convertDpToPixel(
+    displayMetrics: DisplayMetrics,
+    dp: number,
+    scale: number
+  ): number {
+    return dp * (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT) * scale;
   }
 
   /**
@@ -252,8 +268,11 @@ export default class AndroidUtils {
    * @param scale scale factor
    * @returns pixels
    */
-  public static convertPixelsToDp(displayMetrics: DisplayMetrics, px: number, scale: number): number {
-    return (px / scale) / (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT);
+  public static convertPixelsToDp(
+    displayMetrics: DisplayMetrics,
+    px: number,
+    scale: number
+  ): number {
+    return px / scale / (displayMetrics.densityDpi / AndroidUtils.DENSITY_DEFAULT);
   }
-
 }

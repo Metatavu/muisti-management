@@ -1,4 +1,8 @@
-import { PageLayoutWidgetType, ExhibitionPageResourceType, PageResourceMode } from "../../generated/client";
+import {
+  ExhibitionPageResourceType,
+  PageLayoutWidgetType,
+  PageResourceMode
+} from "../../generated/client";
 
 /**
  * File containing all constants/filters for content editor.
@@ -26,7 +30,7 @@ export const resourceModes = [
   PageResourceMode.Static,
   PageResourceMode.Dynamic,
   PageResourceMode.Scripted
-]
+];
 
 /**
  * Custom tab structure

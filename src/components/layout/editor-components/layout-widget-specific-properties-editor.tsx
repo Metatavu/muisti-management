@@ -1,25 +1,29 @@
-import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutView, PageLayout, PageLayoutWidgetType, SubLayout } from "../../../generated/client";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../../styles/common-properties-editor";
-
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { setSelectedLayout } from "../../../actions/layouts";
+import { setSelectedSubLayout } from "../../../actions/subLayouts";
+import {
+  PageLayout,
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType,
+  SubLayout
+} from "../../../generated/client";
 import { ReduxActions, ReduxState } from "../../../store";
+import styles from "../../../styles/common-properties-editor";
+import DisplayMetrics from "../../../types/display-metrics";
 import { constructTreeUpdateData, updateLayoutViewProperty } from "../utils/tree-data-utils";
-
-import TextViewEditor from "./widget-editors/text-view-editor";
+import ButtonEditor from "./widget-editors/button-editor";
 import FlowTextViewEditor from "./widget-editors/flow-text-view-editor";
 import ImageViewEditor from "./widget-editors/image-view-editor";
-import PlayerViewEditor from "./widget-editors/player-view-editor";
-import ButtonEditor from "./widget-editors/button-editor";
 import LinearLayoutEditor from "./widget-editors/linear-layout-editor";
+import PlayerViewEditor from "./widget-editors/player-view-editor";
 import TabLayoutEditor from "./widget-editors/tab-layout-editor";
-import { setSelectedSubLayout } from "../../../actions/subLayouts";
-import DisplayMetrics from "../../../types/display-metrics";
+import TextViewEditor from "./widget-editors/text-view-editor";
 import TouchableOpacityEditor from "./widget-editors/touchable-opacity-editor";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties
@@ -48,7 +52,6 @@ interface State {
  * Component for editing layout properties
  */
 class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -56,8 +59,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -69,7 +71,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     this.setState({
       layout: editingSubLayout ? subLayout : pageLayout
     });
-  }
+  };
 
   /**
    * Component did mount life cycle handler
@@ -80,13 +82,13 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
     const { pageLayout, subLayout, editingSubLayout } = this.props;
     if (
       JSON.stringify(prevProps.pageLayout) !== JSON.stringify(pageLayout) ||
-      JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout))
-    {
+      JSON.stringify(prevProps.subLayout) !== JSON.stringify(subLayout)
+    ) {
       this.setState({
         layout: editingSubLayout ? subLayout : pageLayout
       });
     }
-  }
+  };
 
   /**
    * Component render method
@@ -111,7 +113,7 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       case PageLayoutWidgetType.MaterialTabLayout:
         return this.renderTabLayoutEditor();
       default:
-        return (<div/>);
+        return <div />;
     }
   }
 
@@ -123,12 +125,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <TextViewEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render flow text view editor
@@ -138,12 +140,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <FlowTextViewEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render image view editor
@@ -153,12 +155,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <ImageViewEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render player view editor
@@ -168,12 +170,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <PlayerViewEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render button editor
@@ -183,12 +185,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <ButtonEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render touchable opacity editor
@@ -198,12 +200,12 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <TouchableOpacityEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render linear layout editor
@@ -213,11 +215,11 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <LinearLayoutEditor
-        pageLayoutView={ pageLayoutView }
-        onValueChange={ this.onSinglePropertyValueChange }
+        pageLayoutView={pageLayoutView}
+        onValueChange={this.onSinglePropertyValueChange}
       />
     );
-  }
+  };
 
   /**
    * Render button editor
@@ -227,14 +229,14 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     return (
       <TabLayoutEditor
-        pageLayoutView={ pageLayoutView }
-        displayMetrics={ displayMetrics }
-        onValueChange={ this.onSinglePropertyValueChange }
-        onPageLayoutViewMetadataChange={ this.onSingleMetadataValueChange }
-        pageLayout={ pageLayout }
+        pageLayoutView={pageLayoutView}
+        displayMetrics={displayMetrics}
+        onValueChange={this.onSinglePropertyValueChange}
+        onPageLayoutViewMetadataChange={this.onSingleMetadataValueChange}
+        pageLayout={pageLayout}
       />
     );
-  }
+  };
 
   /**
    * Generic handler for single page layout property value changes
@@ -250,14 +252,20 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
 
     const layoutViewToUpdate = { ...this.props.pageLayoutView } as PageLayoutView;
     const updatedLayoutView = updateLayoutViewProperty(pageLayoutViewProperty, layoutViewToUpdate);
-    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedLayoutView, selectedElementPath);
-    editingSubLayout ? this.props.setSelectedSubLayout(layoutToUpdate) : this.props.setSelectedLayout(layoutToUpdate);
+    const layoutToUpdate = constructTreeUpdateData(
+      currentLayout,
+      updatedLayoutView,
+      selectedElementPath
+    );
+    editingSubLayout
+      ? this.props.setSelectedSubLayout(layoutToUpdate)
+      : this.props.setSelectedLayout(layoutToUpdate);
     this.setState({
-      layout : layoutToUpdate
+      layout: layoutToUpdate
     });
 
     onPageLayoutViewUpdate(updatedLayoutView);
-  }
+  };
 
   /**
    * Generic handler for single page layout metadata value changes
@@ -271,14 +279,18 @@ class LayoutWidgetSpecificPropertiesEditor extends React.Component<Props, State>
       return;
     }
 
-    const layoutToUpdate = constructTreeUpdateData(currentLayout, updatedPageLayoutView, selectedElementPath);
-    editingSubLayout ?
-      this.props.setSelectedSubLayout(layoutToUpdate) :
-      this.props.setSelectedLayout(layoutToUpdate);
+    const layoutToUpdate = constructTreeUpdateData(
+      currentLayout,
+      updatedPageLayoutView,
+      selectedElementPath
+    );
+    editingSubLayout
+      ? this.props.setSelectedSubLayout(layoutToUpdate)
+      : this.props.setSelectedLayout(layoutToUpdate);
 
-    this.setState({ layout : layoutToUpdate });
+    this.setState({ layout: layoutToUpdate });
     onPageLayoutViewUpdate(updatedPageLayoutView);
-  }
+  };
 }
 
 /**
@@ -305,4 +317,7 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutWidgetSpecificPropertiesEditor));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(LayoutWidgetSpecificPropertiesEditor));

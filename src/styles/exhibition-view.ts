@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   loader: {
     height: "100%",
     position: "absolute",
@@ -12,7 +11,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   navigationTabs: {
@@ -26,7 +25,7 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto auto 1fr auto",
-    gridTemplateAreas: ` "navigation contents editor-view properties" `,
+    gridTemplateAreas: ` "navigation contents editor-view properties" `
   },
 
   visualEditorContainer: {
@@ -55,7 +54,7 @@ export default createStyles({
     justifyContent: "flex-end",
     height: 55,
     padding: "0 16px",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   toolbarContent: {
@@ -95,5 +94,5 @@ export default createStyles({
     "&:last-child": {
       marginRight: 0
     }
-  },
+  }
 });

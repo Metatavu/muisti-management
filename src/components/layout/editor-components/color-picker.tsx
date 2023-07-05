@@ -1,9 +1,9 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/components/generic/color-picker";
-import { SketchPicker, ColorResult } from 'react-color';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import { ColorResult, SketchPicker } from "react-color";
 
 /**
  * Interface representing component properties
@@ -29,7 +29,6 @@ interface State {
  * Component for add generic layout property select
  */
 class GenericPropertySelect extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -51,19 +50,16 @@ class GenericPropertySelect extends React.Component<Props, State> {
     return (
       <>
         <div
-          className={ classes.color }
+          className={classes.color}
           style={{ backgroundColor: property.value }}
-          onClick={ this.onColorBoxClick }
+          onClick={this.onColorBoxClick}
         />
-        { showColorPicker &&
-          <div className={ classes.popover }>
-            <div className={ classes.overlay } onClick={ this.onColorBoxClick } />
-            <SketchPicker
-              color={ property.value }
-              onChangeComplete={ this.handleChangeComplete }
-            />
+        {showColorPicker && (
+          <div className={classes.popover}>
+            <div className={classes.overlay} onClick={this.onColorBoxClick} />
+            <SketchPicker color={property.value} onChangeComplete={this.handleChangeComplete} />
           </div>
-        }
+        )}
       </>
     );
   }
@@ -86,8 +82,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
     this.setState({
       showColorPicker: !this.state.showColorPicker
     });
-  }
-
+  };
 }
 
-export default (withStyles(styles)(GenericPropertySelect));
+export default withStyles(styles)(GenericPropertySelect);

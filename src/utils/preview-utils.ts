@@ -1,11 +1,10 @@
-import { PageLayoutView } from "../generated/client";
 import { ExhibitionPageTabHolder } from "../components/content-editor/constants";
+import { PageLayoutView } from "../generated/client";
 
 /**
  * Utility class for previews
  */
 export default class PreviewUtils {
-
   /**
    * Get tab content from tab map
    *
@@ -13,7 +12,10 @@ export default class PreviewUtils {
    * @param tabMap tab map
    * @returns list of tab holders
    */
-  public static getTabContent = (view: PageLayoutView, tabMap?: Map<string, ExhibitionPageTabHolder>): ExhibitionPageTabHolder[] => {
+  public static getTabContent = (
+    view: PageLayoutView,
+    tabMap?: Map<string, ExhibitionPageTabHolder>
+  ): ExhibitionPageTabHolder[] => {
     const tabData: ExhibitionPageTabHolder[] = [];
 
     if (tabMap) {
@@ -24,5 +26,5 @@ export default class PreviewUtils {
       });
     }
     return tabData;
-  }
+  };
 }

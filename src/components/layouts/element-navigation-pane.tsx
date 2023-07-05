@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { Typography, Box, IconButton } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/element-navigation-pane";
+import { Box, IconButton, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 
 /**
  * Interface representing component properties
@@ -40,33 +40,27 @@ const ElementNavigationPane: React.FC<Props> = ({
   actionButtonClick
 }) => {
   return (
-    <Box
-      className={ classes.root }
-      style={{ width: width ?? 400 }}
-    >
-      <Box className={ classes.container }>
-        { title &&
-          <Box className={ classes.header }>
-            <Typography variant="h3">
-              { title }
-            </Typography>
-            { actionButtonClick &&
+    <Box className={classes.root} style={{ width: width ?? 400 }}>
+      <Box className={classes.container}>
+        {title && (
+          <Box className={classes.header}>
+            <Typography variant="h3">{title}</Typography>
+            {actionButtonClick && (
               <IconButton
                 color="primary"
-                title={ actionButtonTitle }
-                onClick={ actionButtonClick }
-                size="large">
-                { actionButtonIcon }
+                title={actionButtonTitle}
+                onClick={actionButtonClick}
+                size="large"
+              >
+                {actionButtonIcon}
               </IconButton>
-            }
+            )}
           </Box>
-        }
-        <Box className={ classes.content }>
-          { children }
-        </Box>
+        )}
+        <Box className={classes.content}>{children}</Box>
       </Box>
     </Box>
   );
-}
+};
 
 export default withStyles(styles)(ElementNavigationPane);

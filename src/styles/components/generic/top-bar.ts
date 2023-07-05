@@ -1,10 +1,9 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 const leftPadding = 30;
 
 export default createStyles({
-
   root: {
     position: "relative",
     gridArea: "header",
@@ -33,7 +32,7 @@ export default createStyles({
     display: "flex",
     paddingTop: theme.spacing(1),
     alignItems: "center",
-    width: "100%",
+    width: "100%"
   },
 
   bottomRow: {
@@ -42,10 +41,10 @@ export default createStyles({
     alignItems: "center",
     justifyContent: "flex-end",
     height: 45,
-    width: "100%",
+    width: "100%"
   },
 
-  breadcrumbs: { },
+  breadcrumbs: {},
 
   nav: {
     justifySelf: "center",
@@ -107,7 +106,7 @@ export default createStyles({
     }
   },
 
-  logoutBtn: { },
+  logoutBtn: {},
 
   toolbar: {
     display: "flex",
@@ -117,5 +116,4 @@ export default createStyles({
       marginRight: theme.spacing(1)
     }
   }
-
-})
+});

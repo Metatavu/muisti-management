@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   loader: {
     height: "100%",
     position: "absolute",
@@ -12,7 +11,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   editorLayout: {
@@ -21,7 +20,7 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto 1fr auto",
-    gridTemplateAreas: ' "navigation editor-view properties" ',
+    gridTemplateAreas: ' "navigation editor-view properties" '
   },
 
   root: {
@@ -29,7 +28,7 @@ export default createStyles({
     display: "grid",
     gridAutoColumns: "auto 1fr",
     gridTemplateRows: "1fr",
-    gridTemplateAreas: "'panel content' 'panel content'",
+    gridTemplateAreas: "'panel content' 'panel content'"
   },
 
   panel: {
@@ -42,7 +41,7 @@ export default createStyles({
 
   select: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
 
   toolBar: {
@@ -52,7 +51,7 @@ export default createStyles({
     justifyContent: "space-between",
     height: 55,
     padding: "0 16px",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   btnContainer: {
@@ -113,7 +112,7 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "auto 1fr",
     height: "100%",
-    width: "100%",
+    width: "100%"
   },
 
   editor: {

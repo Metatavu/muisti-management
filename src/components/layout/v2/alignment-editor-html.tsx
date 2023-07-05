@@ -1,9 +1,19 @@
+import { LayoutAlignment } from "../../../types";
+import LocalizationUtils from "../../../utils/localization-utils";
 import { Icon } from "@material-ui/core";
-import { EastOutlined, FilterCenterFocusRounded, NorthEastOutlined, NorthOutlined, NorthWestOutlined, SouthEastOutlined, SouthOutlined, SouthWestOutlined, WestOutlined } from "@mui/icons-material";
+import {
+  EastOutlined,
+  FilterCenterFocusRounded,
+  NorthEastOutlined,
+  NorthOutlined,
+  NorthWestOutlined,
+  SouthEastOutlined,
+  SouthOutlined,
+  SouthWestOutlined,
+  WestOutlined
+} from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { ElementType, useState } from "react";
-import LocalizationUtils from "../../../utils/localization-utils";
-import { LayoutAlignment } from "../../../types";
 
 /**
  * Alignment icon row type
@@ -24,49 +34,57 @@ interface Props {
 /**
  * HTML Component Alignment editor component
  */
-const AlignmentEditorHtml = ({
-  onChange
-}: Props) => {
-  const [ selected, setSelected ] = useState<LayoutAlignment>();
+const AlignmentEditorHtml = ({ onChange }: Props) => {
+  const [selected, setSelected] = useState<LayoutAlignment>();
 
-  const topRowIcons: AlignmentIconRow[] = [{
-    icon: NorthWestOutlined,
-    name: LayoutAlignment.NORTH_WEST
-  }, {
-    icon: NorthOutlined,
-    name: LayoutAlignment.NORTH
-  }, {
-    icon: NorthEastOutlined,
-    name: LayoutAlignment.NORTH_EAST
-  }];
+  const topRowIcons: AlignmentIconRow[] = [
+    {
+      icon: NorthWestOutlined,
+      name: LayoutAlignment.NORTH_WEST
+    },
+    {
+      icon: NorthOutlined,
+      name: LayoutAlignment.NORTH
+    },
+    {
+      icon: NorthEastOutlined,
+      name: LayoutAlignment.NORTH_EAST
+    }
+  ];
 
-  const middleRowIcons: AlignmentIconRow[] = [{
-    icon: WestOutlined,
-    name: LayoutAlignment.WEST
-  }, {
-    icon: FilterCenterFocusRounded,
-    name: LayoutAlignment.CENTER
-  }, {
-    icon: EastOutlined,
-    name: LayoutAlignment.EAST
-  }];
+  const middleRowIcons: AlignmentIconRow[] = [
+    {
+      icon: WestOutlined,
+      name: LayoutAlignment.WEST
+    },
+    {
+      icon: FilterCenterFocusRounded,
+      name: LayoutAlignment.CENTER
+    },
+    {
+      icon: EastOutlined,
+      name: LayoutAlignment.EAST
+    }
+  ];
 
-  const bottomRowIcons: AlignmentIconRow[] = [ {
-    icon: SouthWestOutlined,
-    name: LayoutAlignment.SOUTH_WEST
-  }, {
-    icon: SouthOutlined,
-    name: LayoutAlignment.SOUTH
-  }, {
-    icon: SouthEastOutlined,
-    name: LayoutAlignment.SOUTH_EAST
-  }];
+  const bottomRowIcons: AlignmentIconRow[] = [
+    {
+      icon: SouthWestOutlined,
+      name: LayoutAlignment.SOUTH_WEST
+    },
+    {
+      icon: SouthOutlined,
+      name: LayoutAlignment.SOUTH
+    },
+    {
+      icon: SouthEastOutlined,
+      name: LayoutAlignment.SOUTH_EAST
+    }
+  ];
 
   const renderIconRow = (row: AlignmentIconRow[]) => (
-    <Stack direction="row" spacing={ 0.5 }>
-      { row.map(icon => (
-          renderIcon(icon)
-      )) }
+    <Stack direction="row" spacing={0.5}>
+      {row.map((icon) => renderIcon(icon))}
     </Stack>
   );
 
@@ -135,18 +153,18 @@ const AlignmentEditorHtml = ({
 
     return (
       <IconButton
-        key={ icon.name }
-        name={ icon.name }
+        key={icon.name}
+        name={icon.name}
         sx={{
           margin: 0,
           padding: 0,
           border: "1px solid #2196F3",
           borderRadius: "3px"
         }}
-        onClick={ onAlignmentChange }
+        onClick={onAlignmentChange}
       >
         <Icon
-          component={ icon.icon }
+          component={icon.icon}
           fontSize="small"
           sx={{
             color: color,
@@ -158,22 +176,22 @@ const AlignmentEditorHtml = ({
   };
 
   return (
-    <Stack direction="row" justifyContent="space-between" paddingRight={ 2 }>
-      <Stack spacing={ 0.5 }>
-        { renderIconRow(topRowIcons) }
-        { renderIconRow(middleRowIcons) }
-        { renderIconRow(bottomRowIcons)}
+    <Stack direction="row" justifyContent="space-between" paddingRight={2}>
+      <Stack spacing={0.5}>
+        {renderIconRow(topRowIcons)}
+        {renderIconRow(middleRowIcons)}
+        {renderIconRow(bottomRowIcons)}
       </Stack>
       <Typography
         variant="caption"
-        fontWeight={ 500 }
+        fontWeight={500}
         fontSize="14px"
         justifySelf="flex-start"
         alignSelf="center"
         color="#2196F3"
-        >
-          { LocalizationUtils.getLocalizedLayoutAlignment(selected as LayoutAlignment)}
-        </Typography>
+      >
+        {LocalizationUtils.getLocalizedLayoutAlignment(selected as LayoutAlignment)}
+      </Typography>
     </Stack>
   );
 };

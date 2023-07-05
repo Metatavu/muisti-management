@@ -1,12 +1,12 @@
-import { ChangeEvent, useState } from "react";
 import { SubLayout } from "../../generated/client";
 import strings from "../../localization/strings";
-import GenericDialog from "../generic/generic-dialog";
-import { MenuItem, Stack, FormHelperText, TextField } from "@mui/material";
 import theme from "../../styles/theme";
 import { HtmlComponentType } from "../../types";
-import LocalizationUtils from "../../utils/localization-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import LocalizationUtils from "../../utils/localization-utils";
+import GenericDialog from "../generic/generic-dialog";
+import { FormHelperText, MenuItem, Stack, TextField } from "@mui/material";
+import { ChangeEvent, useState } from "react";
 
 /**
  * Components properties
@@ -20,30 +20,27 @@ interface Props {
 }
 
 // TODO: Implement disabled component types
-const DISABLED_COMPONENT_TYPES = [ HtmlComponentType.TAB, HtmlComponentType.TABS];
+const DISABLED_COMPONENT_TYPES = [HtmlComponentType.TAB, HtmlComponentType.TABS];
 
 /**
  * Add New Element Dialog component
- * 
- * TODO: Implement support for sub-layouts  
+ *
+ * TODO: Implement support for sub-layouts
  */
-const AddNewElementDialog = ({
-  open,
-  subLayouts,
-  siblingPath,
-  onConfirm,
-  onClose
-}: Props) => {
-  const [ newComponentName, setNewComponentName ] = useState<string>();
-  const [ newComponentType, setNewComponentType ] = useState<HtmlComponentType>();
-  
+const AddNewElementDialog = ({ open, siblingPath, onConfirm, onClose }: Props) => {
+  const [newComponentName, setNewComponentName] = useState<string>();
+  const [newComponentType, setNewComponentType] = useState<HtmlComponentType>();
+
   /**
    * Event handler for dialog confirm click
    */
   const onConfirmClick = () => {
     if (!(siblingPath && newComponentType)) return;
-    
-    onConfirm(HtmlComponentsUtils.getSerializedHtmlElement(newComponentType, newComponentName), siblingPath); 
+
+    onConfirm(
+      HtmlComponentsUtils.getSerializedHtmlElement(newComponentType, newComponentName),
+      siblingPath
+    );
     onCloseOrCancelClick();
   };
 
@@ -61,68 +58,66 @@ const AddNewElementDialog = ({
    *
    * @param event event
    */
-  const onComponentTypeChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setNewComponentType(value as HtmlComponentType);
-  
+  const onComponentTypeChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
+    setNewComponentType(value as HtmlComponentType);
+
   /**
    * Event handler for component name text field change event
    *
    * @param event event
    */
-  const onNewLayoutNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setNewComponentName(value);
-  
+  const onNewLayoutNameChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
+    setNewComponentName(value);
+
   /**
    * Renders Component types menu items
-   * 
+   *
    * @param type type
    */
   const renderComponentTypesMenuItems = (type: HtmlComponentType) => (
-    <MenuItem
-      key={ type }
-      disabled={ DISABLED_COMPONENT_TYPES.includes(type) }
-      value={ type }
-    >
-      { LocalizationUtils.getLocalizedComponentType(type) }
+    <MenuItem key={type} disabled={DISABLED_COMPONENT_TYPES.includes(type)} value={type}>
+      {LocalizationUtils.getLocalizedComponentType(type)}
     </MenuItem>
   );
-  
+
   /**
    * Render add layout component dialog
    */
   const renderDialogContent = () => (
-    <Stack padding={ theme.spacing(1) } sx={{ minWidth: 300 }}>
+    <Stack padding={theme.spacing(1)} sx={{ minWidth: 300 }}>
       <TextField
         select
-        label={ strings.layoutEditor.addLayoutViewDialog.widget }
-        value={ newComponentType ?? "" }
-        onChange={ onComponentTypeChange }
+        label={strings.layoutEditor.addLayoutViewDialog.widget}
+        value={newComponentType ?? ""}
+        onChange={onComponentTypeChange}
       >
-        { Object.values(HtmlComponentType).map(renderComponentTypesMenuItems) }
+        {Object.values(HtmlComponentType).map(renderComponentTypesMenuItems)}
       </TextField>
       <FormHelperText>
-        { newComponentType && LocalizationUtils.getLocalizedNewComponentHelpText(newComponentType) }
+        {newComponentType && LocalizationUtils.getLocalizedNewComponentHelpText(newComponentType)}
       </FormHelperText>
       <TextField
         sx={{ marginTop: theme.spacing(2) }}
-        label={ strings.layoutEditor.addLayoutViewDialog.name }
-        value={ newComponentName }
-        onChange={ onNewLayoutNameChange }
+        label={strings.layoutEditor.addLayoutViewDialog.name}
+        value={newComponentName}
+        onChange={onNewLayoutNameChange}
       />
     </Stack>
   );
 
   return (
     <GenericDialog
-      cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
-      positiveButtonText={ strings.layoutEditor.addLayoutViewDialog.confirm }
-      title={ strings.layoutEditor.addLayoutViewDialog.title }
-      error={ false }
-      onConfirm={ onConfirmClick }
-      onCancel={ onClose }
-      open={ open }
-      onClose={ onCloseOrCancelClick }
-      confirmDisabled={ !newComponentType}
+      cancelButtonText={strings.layoutEditor.addLayoutViewDialog.cancel}
+      positiveButtonText={strings.layoutEditor.addLayoutViewDialog.confirm}
+      title={strings.layoutEditor.addLayoutViewDialog.title}
+      error={false}
+      onConfirm={onConfirmClick}
+      onCancel={onClose}
+      open={open}
+      onClose={onCloseOrCancelClick}
+      confirmDisabled={!newComponentType}
     >
-      { renderDialogContent() }
+      {renderDialogContent()}
     </GenericDialog>
   );
 };

@@ -17,7 +17,7 @@ export enum LayoutMarginPropKeys {
   LayoutMarginTop = "layout_marginTop",
   LayoutMarginLeft = "layout_marginLeft",
   LayoutMarginRight = "layout_marginRight",
-  LayoutMarginBottom = "layout_marginBottom",
+  LayoutMarginBottom = "layout_marginBottom"
 }
 
 /**
@@ -27,7 +27,7 @@ export enum LayoutPaddingPropKeys {
   LayoutPaddingTop = "paddingTop",
   LayoutPaddingLeft = "paddingLeft",
   LayoutPaddingRight = "paddingRight",
-  LayoutPaddingBottom = "paddingBottom",
+  LayoutPaddingBottom = "paddingBottom"
 }
 
 /**
@@ -49,7 +49,7 @@ export enum LayoutTextViewPropKeys {
  * Image view property keys
  */
 export enum LayoutImageViewPropKeys {
-  Src = "src",
+  Src = "src"
 }
 
 /**
@@ -85,7 +85,7 @@ export enum LayoutButtonPropKeys {
  * Linear layout property keys
  */
 export enum LayoutLinearLayoutPropKeys {
-  Orientation = "orientation",
+  Orientation = "orientation"
 }
 
 /**
@@ -101,5 +101,5 @@ export enum LayoutTabPropKeys {
   TabTextColorSelected = "tabTextColorSelected",
   UnboundedRipple = "unboundedRipple",
   TabIndicatorFullWidth = "tabIndicatorFullWidth",
-  Data = "data",
+  Data = "data"
 }

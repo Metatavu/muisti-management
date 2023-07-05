@@ -1,5 +1,4 @@
 export default class GenericUtils {
-
   /**
    * Get any enum keys
    *

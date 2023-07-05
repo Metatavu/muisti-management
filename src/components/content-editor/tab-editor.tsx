@@ -1,10 +1,6 @@
-import * as React from "react";
-
-import styles from "../../styles/exhibition-view";
-import { TextField, Typography, MenuItem, Select, Button, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { ExhibitionPageResourceType } from "../../generated/client";
 import strings from "../../localization/strings";
+import styles from "../../styles/exhibition-view";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -12,16 +8,19 @@ import strings from "../../localization/strings";
 // import "codemirror/addon/lint/lint.css";
 // import "codemirror/addon/lint/lint";
 import theme from "../../styles/theme";
-import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
-import { ExhibitionPageResourceType } from "../../generated/client";
-import CKEditor from 'ckeditor4-react';
-import GenericDialog from "../generic/generic-dialog";
-import GenericUtils from "../../utils/generic-utils";
-import MediaLibrary from "../right-panel-editors/media-library";
 import { AccessToken } from "../../types";
+import GenericUtils from "../../utils/generic-utils";
 import ResourceUtils from "../../utils/resource-utils";
+import GenericDialog from "../generic/generic-dialog";
+import MediaLibrary from "../right-panel-editors/media-library";
+import { ExhibitionPageTab, ExhibitionPageTabResource } from "./constants";
+import { Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import CKEditor from "ckeditor4-react";
+import * as React from "react";
 
-(CKEditor as any).editorUrl = '/ckeditor/ckeditor.js';
+(CKEditor as any).editorUrl = "/ckeditor/ckeditor.js";
 
 /**
  * Component props
@@ -46,21 +45,54 @@ interface State {
  * Component for tab editor
  */
 class TabEditor extends React.Component<Props, State> {
-
   /**
    * CKEditor configurations
    */
   private CKEditorConfig = {
     toolbar: [
-      { name: 'document', items: [ 'Source', 'DocProps' ] },
-      { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
-      { name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
-      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
-      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
-      { name: 'insert', items: [ 'Table', 'SpecialChar', 'PageBreak' ] },
-      { name: 'styles', items: [ 'Styles', 'Format' ] },
-      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-      { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
+      { name: "document", items: ["Source", "DocProps"] },
+      { name: "clipboard", items: ["Undo", "Redo"] },
+      {
+        name: "forms",
+        items: [
+          "Form",
+          "Checkbox",
+          "Radio",
+          "TextField",
+          "Textarea",
+          "Select",
+          "Button",
+          "ImageButton",
+          "HiddenField"
+        ]
+      },
+      { name: "basicstyles", items: ["Bold", "Italic", "Underline"] },
+      {
+        name: "paragraph",
+        items: [
+          "NumberedList",
+          "BulletedList",
+          "-",
+          "Outdent",
+          "Indent",
+          "-",
+          "Blockquote",
+          "CreateDiv",
+          "-",
+          "JustifyLeft",
+          "JustifyCenter",
+          "JustifyRight",
+          "JustifyBlock",
+          "-",
+          "BidiLtr",
+          "BidiRtl",
+          "Language"
+        ]
+      },
+      { name: "insert", items: ["Table", "SpecialChar", "PageBreak"] },
+      { name: "styles", items: ["Styles", "Format"] },
+      { name: "colors", items: ["TextColor", "BGColor"] },
+      { name: "tools", items: ["Maximize", "ShowBlocks"] }
     ],
     fullPage: true,
     allowedContent: true
@@ -90,7 +122,7 @@ class TabEditor extends React.Component<Props, State> {
         selectedResourceType: selectedTab.resources[0].type
       });
     }
-  }
+  };
 
   /**
    * Component did update life cycle method
@@ -105,7 +137,7 @@ class TabEditor extends React.Component<Props, State> {
         });
       }
     }
-  }
+  };
 
   /**
    * Component render method
@@ -113,9 +145,9 @@ class TabEditor extends React.Component<Props, State> {
   public render() {
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        { this.renderTabLabel() }
-        { this.renderTabResources() }
-        { this.renderModifyButton() }
+        {this.renderTabLabel()}
+        {this.renderTabResources()}
+        {this.renderModifyButton()}
       </div>
     );
   }
@@ -127,16 +159,16 @@ class TabEditor extends React.Component<Props, State> {
     const { selectedTab, classes } = this.props;
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-      <TextField
-        label={ strings.contentEditor.editor.tabs.label }
-        name="name"
-        className={ classes.textResourceEditor }
-        value={ selectedTab?.label ?? "" }
-        onChange={ this.onLabelChange }
-      />
-    </div>
+        <TextField
+          label={strings.contentEditor.editor.tabs.label}
+          name="name"
+          className={classes.textResourceEditor}
+          value={selectedTab?.label ?? ""}
+          onChange={this.onLabelChange}
+        />
+      </div>
     );
-  }
+  };
 
   /**
    * Render tab resources
@@ -147,16 +179,12 @@ class TabEditor extends React.Component<Props, State> {
 
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        <Typography variant="h6">
-          { strings.contentEditor.editor.tabs.contentType }
-        </Typography>
-        { resourceSelectItems }
-        <div key={ "resourceContainer" }>
-          { resourceItems }
-        </div>
+        <Typography variant="h6">{strings.contentEditor.editor.tabs.contentType}</Typography>
+        {resourceSelectItems}
+        <div key={"resourceContainer"}>{resourceItems}</div>
       </div>
     );
-  }
+  };
 
   /**
    * Render modify button
@@ -169,20 +197,20 @@ class TabEditor extends React.Component<Props, State> {
 
     return (
       <GenericDialog
-        open={ showCKEditorModal }
-        error={ false }
-        title={ strings.contentEditor.editor.tabs.edit }
-        onClose={ this.onEditModalClose }
-        onCancel={ this.onEditModalClose }
-        onConfirm={ this.onEditModalClose }
-        positiveButtonText={ strings.errorDialog.close }
-        fullScreen={ true }
-        disableEnforceFocus={ true }
+        open={showCKEditorModal}
+        error={false}
+        title={strings.contentEditor.editor.tabs.edit}
+        onClose={this.onEditModalClose}
+        onCancel={this.onEditModalClose}
+        onConfirm={this.onEditModalClose}
+        positiveButtonText={strings.errorDialog.close}
+        fullScreen={true}
+        disableEnforceFocus={true}
       >
-        { this.renderDialogContent() }
+        {this.renderDialogContent()}
       </GenericDialog>
     );
-  }
+  };
 
   /**
    * Render dialog content
@@ -197,14 +225,14 @@ class TabEditor extends React.Component<Props, State> {
 
     return (
       <CKEditor
-        data={ resources[0].data }
-        config={ this.CKEditorConfig }
-        onChange={ this.onCKEditorChange }
+        data={resources[0].data}
+        config={this.CKEditorConfig}
+        onChange={this.onCKEditorChange}
         type="classic"
-        readOnly={ false }
+        readOnly={false}
       />
     );
-  }
+  };
 
   /**
    * Get resource select options
@@ -216,7 +244,11 @@ class TabEditor extends React.Component<Props, State> {
     const keys = GenericUtils.enumKeys(ExhibitionPageResourceType);
 
     const items = keys.map((key, index) => {
-      return <MenuItem key={ key } value={ values[index] as ExhibitionPageResourceType[] }>{ key }</MenuItem>;
+      return (
+        <MenuItem key={key} value={values[index] as ExhibitionPageResourceType[]}>
+          {key}
+        </MenuItem>
+      );
     });
 
     const currentValue = selectedTab.resources ? selectedTab.resources[0] : undefined;
@@ -224,15 +256,14 @@ class TabEditor extends React.Component<Props, State> {
     return (
       <Select
         fullWidth
-        onChange={ this.handleSelectChange }
+        onChange={this.handleSelectChange}
         name="type"
-        value={ currentValue?.type || "" }
+        value={currentValue?.type || ""}
       >
-      { items }
-    </Select>
+        {items}
+      </Select>
     );
-
-  }
+  };
 
   /**
    * Get resource items
@@ -244,18 +275,15 @@ class TabEditor extends React.Component<Props, State> {
       return null;
     }
 
-    return selectedTab.resources.map(resource => {
+    return selectedTab.resources.map((resource) => {
       switch (resource.type) {
         case ExhibitionPageResourceType.Text:
           return (
             <div style={{ marginTop: theme.spacing(2) }}>
               <Typography variant="h6">
-                { strings.contentEditor.editor.tabs.textContentHelp }
+                {strings.contentEditor.editor.tabs.textContentHelp}
               </Typography>
-              <TextField
-                onChange={ this.onDataChange }
-                value={ resource.data }
-              />
+              <TextField onChange={this.onDataChange} value={resource.data} />
             </div>
           );
         case ExhibitionPageResourceType.Image:
@@ -263,10 +291,10 @@ class TabEditor extends React.Component<Props, State> {
         case ExhibitionPageResourceType.Svg:
           return (
             <MediaLibrary
-              accessToken={ accessToken }
-              mediaType={ ResourceUtils.getResourceMediaType(resource.type)! }
-              resource={ resource }
-              onUrlChange={ this.onMediaUrlChange }
+              accessToken={accessToken}
+              mediaType={ResourceUtils.getResourceMediaType(resource.type)!}
+              resource={resource}
+              onUrlChange={this.onMediaUrlChange}
             />
           );
         case ExhibitionPageResourceType.Html:
@@ -275,23 +303,25 @@ class TabEditor extends React.Component<Props, State> {
               color="primary"
               style={{ marginTop: theme.spacing(2) }}
               variant="contained"
-              onClick={ this.openEditModalClick }
+              onClick={this.openEditModalClick}
             >
-              { strings.contentEditor.editor.tabs.edit }
+              {strings.contentEditor.editor.tabs.edit}
             </Button>
           );
         default:
           return null;
       }
     });
-  }
+  };
 
   /**
    * Event handler for tab label change
    *
    * @param event react change event
    */
-  private onLabelChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onLabelChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>
+  ) => {
     const { onSave } = this.props;
 
     const tab: ExhibitionPageTab = { ...this.props.selectedTab };
@@ -303,7 +333,7 @@ class TabEditor extends React.Component<Props, State> {
 
     tab.label = value;
     onSave(tab);
-  }
+  };
 
   /**
    * Event handler for select change
@@ -339,7 +369,7 @@ class TabEditor extends React.Component<Props, State> {
     });
 
     onSave(tabToUpdate);
-  }
+  };
 
   /**
    * Event handler for open edit modal click
@@ -348,7 +378,7 @@ class TabEditor extends React.Component<Props, State> {
     this.setState({
       showCKEditorModal: true
     });
-  }
+  };
 
   /**
    * Event handler for edit modal close
@@ -357,7 +387,7 @@ class TabEditor extends React.Component<Props, State> {
     this.setState({
       showCKEditorModal: false
     });
-  }
+  };
 
   /**
    * Event handler for CKEditor change
@@ -372,7 +402,7 @@ class TabEditor extends React.Component<Props, State> {
     const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
     tabToUpdate.resources[0].data = data;
     onSave(tabToUpdate);
-  }
+  };
 
   /**
    * Event handler for media library value change
@@ -385,7 +415,7 @@ class TabEditor extends React.Component<Props, State> {
     const tabToUpdate = { ...this.props.selectedTab } as ExhibitionPageTab;
     tabToUpdate.resources[0].data = newUrl;
     onSave(tabToUpdate);
-  }
+  };
 
   /**
    * Event handler for data change
@@ -399,7 +429,7 @@ class TabEditor extends React.Component<Props, State> {
 
     tabToUpdate.resources[0].data = value;
     onSave(tabToUpdate);
-  }
+  };
 }
 
 export default withStyles(styles)(TabEditor);

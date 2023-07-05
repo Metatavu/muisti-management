@@ -1,6 +1,5 @@
-
+import { CSSProperties } from "@mui/material/styles";
 import * as React from "react";
-import { CSSProperties } from '@mui/material/styles';
 
 /**
  * Interface representing component properties
@@ -53,7 +52,6 @@ interface DebounceProps {
  * Component for applying debounce to any text input
  */
 class WithDebounce extends React.Component<Props, State> {
-
   /**
    * Debounce timer
    */
@@ -77,7 +75,7 @@ class WithDebounce extends React.Component<Props, State> {
 
   /**
    * Component did update life cycle method
-   * 
+   *
    * @param prevProps previous component properties
    */
   public componentDidUpdate = (prevProps: Props) => {
@@ -86,21 +84,13 @@ class WithDebounce extends React.Component<Props, State> {
     if (previousValue !== currentValue) {
       this.setState({ inputValue: currentValue });
     }
-  }
+  };
 
   /**
    * Component render method
    */
   public render = () => {
-    const {
-      key,
-      disabled,
-      name,
-      label,
-      component,
-      className,
-      style
-    } = this.props;
+    const { key, disabled, name, label, component, className, style } = this.props;
 
     const { inputValue } = this.state;
 
@@ -114,7 +104,7 @@ class WithDebounce extends React.Component<Props, State> {
       label: label,
       style: style
     });
-  }
+  };
 
   /**
    * Event handler for text field value change
@@ -148,7 +138,7 @@ class WithDebounce extends React.Component<Props, State> {
     const { onChange } = this.props;
     onChange && this.event && onChange(this.event);
     this.event = undefined;
-  }
+  };
 }
 
 export default WithDebounce;

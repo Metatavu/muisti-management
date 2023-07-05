@@ -1,12 +1,12 @@
-import * as React from "react";
-import { Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/components/generic/element-settings-pane";
-import MenuIcon from "@mui/icons-material/Menu";
-import classNames from "classnames";
-import MenuButton from "../generic/menu-button";
 import { ActionButton } from "../../types";
+import MenuButton from "../generic/menu-button";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import classNames from "classnames";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -52,33 +52,18 @@ const ElementSettingsPane: React.FC<Props> = ({
   menuOptions
 }) => {
   return (
-    <div
-      className={ classes.root }
-      style={{ width: open ? width : minimizedWidth }}
-    >
-      <div className={ classes.btnContainer }>
-        { menuOptions &&
-          <MenuButton
-            icon={ actionIcon ?? <MenuIcon /> }
-            menuOptions={ menuOptions }
-          />
-        }
+    <div className={classes.root} style={{ width: open ? width : minimizedWidth }}>
+      <div className={classes.btnContainer}>
+        {menuOptions && <MenuButton icon={actionIcon ?? <MenuIcon />} menuOptions={menuOptions} />}
       </div>
-      <div
-        style={{ minWidth: width }}
-        className={ classNames(classes.container, { "closed": !open }) }
-      >
-        <div className={ classes.header }>
-          <Typography variant="h3">
-            { title }
-          </Typography>
+      <div style={{ minWidth: width }} className={classNames(classes.container, { closed: !open })}>
+        <div className={classes.header}>
+          <Typography variant="h3">{title}</Typography>
         </div>
-        <div className={ classes.content }>
-          { children }
-        </div>
+        <div className={classes.content}>{children}</div>
       </div>
     </div>
   );
-}
+};
 
 export default withStyles(styles)(ElementSettingsPane);

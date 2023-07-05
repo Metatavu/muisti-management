@@ -1,12 +1,12 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { TextField, Button } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/components/layout-screen/margin-padding-editor";
-import LinkIcon from '@mui/icons-material/Link';
-import UnLinkIcon from '@mui/icons-material/LinkOff';
-import { LayoutPaddingPropKeys, LayoutMarginPropKeys } from "../editor-constants/keys";
+import { LayoutMarginPropKeys, LayoutPaddingPropKeys } from "../editor-constants/keys";
+import LinkIcon from "@mui/icons-material/Link";
+import UnLinkIcon from "@mui/icons-material/LinkOff";
+import { Button, TextField } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -40,7 +40,6 @@ interface State {
  * Component for editing layout margins and paddings
  */
 class MarginPaddingEditor extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -50,7 +49,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       valuesLinked: false,
-      controllingType: (props.itemKey === "layout_padding" ? "padding" : "margin")
+      controllingType: props.itemKey === "layout_padding" ? "padding" : "margin"
     };
   }
 
@@ -62,20 +61,53 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     const { valuesLinked, controllingType } = this.state;
 
     return (
-      <div className={ itemKey === "layout_padding" ? classes.paddingContainer : classes.marginContainer } key={ itemKey }>
-        <div className={ itemKey === "layout_padding" ? classes.paddingInnerContainer : classes.marginInnerContainer } >
-          <div className={ classes.topRow }>
-            { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingTop : LayoutMarginPropKeys.LayoutMarginTop) }
+      <div
+        className={
+          itemKey === "layout_padding" ? classes.paddingContainer : classes.marginContainer
+        }
+        key={itemKey}
+      >
+        <div
+          className={
+            itemKey === "layout_padding"
+              ? classes.paddingInnerContainer
+              : classes.marginInnerContainer
+          }
+        >
+          <div className={classes.topRow}>
+            {this.renderTextField(
+              controllingType === "padding"
+                ? LayoutPaddingPropKeys.LayoutPaddingTop
+                : LayoutMarginPropKeys.LayoutMarginTop
+            )}
           </div>
-          <div className={ classes.middleRow }>
-          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingLeft : LayoutMarginPropKeys.LayoutMarginLeft) }
-          <Button className={ classes.toggleLink } disableElevation variant="contained" color="inherit" onClick={ this.onLinkValuesClick }>
-            { valuesLinked ? <LinkIcon color="secondary" /> : <UnLinkIcon color="primary" /> }
-          </Button>
-          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingRight : LayoutMarginPropKeys.LayoutMarginRight) }
+          <div className={classes.middleRow}>
+            {this.renderTextField(
+              controllingType === "padding"
+                ? LayoutPaddingPropKeys.LayoutPaddingLeft
+                : LayoutMarginPropKeys.LayoutMarginLeft
+            )}
+            <Button
+              className={classes.toggleLink}
+              disableElevation
+              variant="contained"
+              color="inherit"
+              onClick={this.onLinkValuesClick}
+            >
+              {valuesLinked ? <LinkIcon color="secondary" /> : <UnLinkIcon color="primary" />}
+            </Button>
+            {this.renderTextField(
+              controllingType === "padding"
+                ? LayoutPaddingPropKeys.LayoutPaddingRight
+                : LayoutMarginPropKeys.LayoutMarginRight
+            )}
           </div>
-          <div className={ classes.bottomRow }>
-          { this.renderTextField(controllingType === "padding" ? LayoutPaddingPropKeys.LayoutPaddingBottom : LayoutMarginPropKeys.LayoutMarginBottom) }
+          <div className={classes.bottomRow}>
+            {this.renderTextField(
+              controllingType === "padding"
+                ? LayoutPaddingPropKeys.LayoutPaddingBottom
+                : LayoutMarginPropKeys.LayoutMarginBottom
+            )}
           </div>
         </div>
       </div>
@@ -93,24 +125,22 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     const foundProperty = this.getPropertyToDisplay(propertyName);
 
     if (!foundProperty) {
-      return (
-        <div/>
-      );
+      return <div />;
     }
 
     return (
       <TextField
-        className={ classes.input }
-        fullWidth={ false }
+        className={classes.input}
+        fullWidth={false}
         id="outlined-basic"
-        name={ foundProperty.name }
+        name={foundProperty.name}
         variant="standard"
         type="number"
-        value={ foundProperty.value.substring(0, foundProperty.value.length - 2) }
-        onChange={ valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange }
+        value={foundProperty.value.substring(0, foundProperty.value.length - 2)}
+        onChange={valuesLinked ? this.onLinkedTextFieldChange : this.onTextFieldChange}
       />
     );
-  }
+  };
 
   /**
    * Handler when linked value changed is enabled
@@ -125,14 +155,14 @@ class MarginPaddingEditor extends React.Component<Props, State> {
       return;
     }
     const propertiesToUpdate: PageLayoutViewProperty[] = [];
-    properties.forEach(prop => {
+    properties.forEach((prop) => {
       const propertyToUpdate = prop;
       propertyToUpdate.value = (value || 0) + "px";
       propertiesToUpdate.push(propertyToUpdate);
     });
 
     onMultipleValueChange(propertiesToUpdate);
-  }
+  };
 
   /**
    * Handler when linked value changed is disabled (single filed is updated)
@@ -148,13 +178,13 @@ class MarginPaddingEditor extends React.Component<Props, State> {
       return;
     }
 
-    const propertyToUpdate = properties.find(prop => prop.name === key);
+    const propertyToUpdate = properties.find((prop) => prop.name === key);
     if (!propertyToUpdate) {
       return;
     }
     propertyToUpdate.value = (value || 0) + "px";
     onSingleValueChange(propertyToUpdate);
-  }
+  };
 
   /**
    * On link values click handler
@@ -163,7 +193,7 @@ class MarginPaddingEditor extends React.Component<Props, State> {
     this.setState({
       valuesLinked: !this.state.valuesLinked
     });
-  }
+  };
 
   /**
    * Get property to display handler
@@ -173,8 +203,8 @@ class MarginPaddingEditor extends React.Component<Props, State> {
    */
   private getPropertyToDisplay = (propertyName: string): PageLayoutViewProperty | undefined => {
     const { properties } = this.props;
-    return properties.find(property => property.name === propertyName);
-  }
+    return properties.find((property) => property.name === propertyName);
+  };
 }
 
-export default (withStyles(styles)(MarginPaddingEditor));
+export default withStyles(styles)(MarginPaddingEditor);

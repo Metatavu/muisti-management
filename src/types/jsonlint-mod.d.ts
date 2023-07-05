@@ -1,1 +1,1 @@
-declare module 'jsonlint-mod';
+declare module "jsonlint-mod";

@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   color: {
     border: "1px solid rgba(0,0,0,0.2)",
     cursor: "pointer",
@@ -30,6 +29,5 @@ export default createStyles({
     left: 0,
     bottom: 0,
     right: 0
-  },
-
+  }
 });

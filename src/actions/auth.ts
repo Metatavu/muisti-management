@@ -1,5 +1,5 @@
-import { KeycloakInstance } from 'keycloak-js';
-import * as actionTypes from '../constants/actionTypes';
+import * as actionTypes from "../constants/actionTypes";
+import { KeycloakInstance } from "keycloak-js";
 
 /**
  * Interface for login action type

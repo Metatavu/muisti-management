@@ -1,5 +1,5 @@
-import * as React from "react";
 import mqtt, { Mqtt } from "../../mqtt";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -13,8 +13,7 @@ interface Props {
  * React component handling MQTT client connection
  */
 export const MqttListener: React.FC<Props> = ({ onError, children }) => {
-
-  const [ connected, setConnected ] = React.useState(false);
+  const [connected, setConnected] = React.useState(false);
 
   React.useEffect(() => {
     (async () => {
@@ -26,7 +25,7 @@ export const MqttListener: React.FC<Props> = ({ onError, children }) => {
 
       setConnected(true);
     })();
-  }, [ onError ]);
+  }, [onError]);
 
   /**
    * Component render

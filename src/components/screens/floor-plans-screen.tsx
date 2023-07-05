@@ -1,21 +1,19 @@
+import { Exhibition } from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import { AccessToken, ActionButton } from "../../types";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import BasicLayout from "../layouts/basic-layout";
+import { CircularProgress } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-
-import { History } from "history";
-import styles from "../../styles/exhibition-view";
-import { CircularProgress } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import { KeycloakInstance } from "keycloak-js";
-import { Exhibition } from "../../generated/client";
-import { AccessToken, ActionButton } from '../../types';
-import strings from "../../localization/strings";
-import CardList from "../generic/card/card-list";
-import CardItem from "../generic/card/card-item";
-import BasicLayout from "../layouts/basic-layout";
 
 /**
  * Component props
@@ -38,7 +36,6 @@ interface State {
  * Component for floorplans screen
  */
 class FloorPlansScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -61,15 +58,15 @@ class FloorPlansScreen extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <BasicLayout
-          keycloak={ keycloak }
-          history={ history }
-          title={ strings.spaces.title }
-          breadcrumbs={ [] }
-          actionBarButtons={ actionBarButtons }
+          keycloak={keycloak}
+          history={history}
+          title={strings.spaces.title}
+          breadcrumbs={[]}
+          actionBarButtons={actionBarButtons}
           noBackButton
         >
-          <div className={ classes.loader }>
-            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <div className={classes.loader}>
+            <CircularProgress size={50} color="secondary"></CircularProgress>
           </div>
         </BasicLayout>
       );
@@ -77,24 +74,24 @@ class FloorPlansScreen extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        keycloak={ keycloak }
-        history={ history }
-        title={ strings.spaces.title }
-        breadcrumbs={ [] }
-        actionBarButtons={ actionBarButtons }
+        keycloak={keycloak}
+        history={history}
+        title={strings.spaces.title}
+        breadcrumbs={[]}
+        actionBarButtons={actionBarButtons}
         noBackButton
       >
-        { this.renderExhibitionCardsList() }
+        {this.renderExhibitionCardsList()}
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Renders exhibitions as card list
    */
   private renderExhibitionCardsList = () => {
     const { exhibitions } = this.props;
-    const cards = exhibitions.map(exhibition => {
+    const cards = exhibitions.map((exhibition) => {
       const exhibitionId = exhibition.id;
       if (!exhibitionId) {
         return null;
@@ -102,22 +99,22 @@ class FloorPlansScreen extends React.Component<Props, State> {
 
       return (
         <CardItem
-          key={ exhibition.id }
-          title={ exhibition.name }
-          onClick={ () => this.onCardClick(exhibitionId) }
+          key={exhibition.id}
+          title={exhibition.name}
+          onClick={() => this.onCardClick(exhibitionId)}
         />
       );
     });
 
     return (
       <CardList
-        title={ strings.floorPlan.exhibitions }
-        subtitle={ strings.floorPlan.exhibitionsDescription }
+        title={strings.floorPlan.exhibitions}
+        subtitle={strings.floorPlan.exhibitionsDescription}
       >
-        { cards }
+        {cards}
       </CardList>
     );
-  }
+  };
 
   /**
    * Gets card menu options
@@ -125,11 +122,13 @@ class FloorPlansScreen extends React.Component<Props, State> {
    * @returns card menu options as action button array
    */
   private getCardMenuOptions = (): ActionButton[] => {
-    return [{
-      name: strings.exhibitions.cardMenu.setStatus,
-      action: this.setStatus
-    }];
-  }
+    return [
+      {
+        name: strings.exhibitions.cardMenu.setStatus,
+        action: this.setStatus
+      }
+    ];
+  };
 
   /**
    * Gets action buttons
@@ -138,7 +137,7 @@ class FloorPlansScreen extends React.Component<Props, State> {
    */
   private getActionButtons = () => {
     return [];
-  }
+  };
 
   /**
    * Event handler for card click
@@ -146,7 +145,7 @@ class FloorPlansScreen extends React.Component<Props, State> {
   private onCardClick = (exhibitionId: string) => {
     const { pathname } = this.props.history.location;
     this.props.history.push(`${pathname}/${exhibitionId}`);
-  }
+  };
 
   /**
    * Event handler for set status
@@ -154,7 +153,7 @@ class FloorPlansScreen extends React.Component<Props, State> {
   private setStatus = () => {
     alert(strings.comingSoon);
     return;
-  }
+  };
 }
 
 /**
@@ -176,9 +175,7 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
+  return {};
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FloorPlansScreen));

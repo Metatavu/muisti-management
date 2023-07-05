@@ -1,18 +1,18 @@
-import * as React from "react";
 import { Exhibition } from "../../generated/client";
 import strings from "../../localization/strings";
-import { FilledInput, InputAdornment, List, ListItem } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/components/floor-plan/floor-plan-tree-view";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import classNames from "classnames"
-import ExpandMoreIcon from '@mui/icons-material/ArrowDropDown';
-import ChevronRightIcon from '@mui/icons-material/ArrowRight';
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/components/floor-plan/floor-plan-tree-view";
+import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
+import ChevronRightIcon from "@mui/icons-material/ArrowRight";
+import { FilledInput, InputAdornment, List, ListItem } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import classNames from "classnames";
+import * as React from "react";
+import { connect } from "react-redux";
+import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
+import { Dispatch } from "redux";
 
 /**
  * Interface representing component properties
@@ -46,7 +46,6 @@ interface TreeNode {
  * Component for floor plan tree menu
  */
 class FloorPlanTreeMenu extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -67,16 +66,16 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
     const { treeRef, treeNodes, classes, firstSelected } = this.props;
 
     return (
-      <div className={ classes.treeView }>
+      <div className={classes.treeView}>
         <TreeMenu
-          data={ treeNodes }
-          ref={ treeRef ?? undefined }
-          onClickItem={({ key, label, ...props }) => props.onClick(props.hasNodes) }
-          initialOpenNodes={[ firstSelected || "" ]}
-          initialActiveKey={ firstSelected || "" }
-          initialFocusKey={ firstSelected || "" }
+          data={treeNodes}
+          ref={treeRef ?? undefined}
+          onClickItem={({ key, label, ...props }) => props.onClick(props.hasNodes)}
+          initialOpenNodes={[firstSelected || ""]}
+          initialActiveKey={firstSelected || ""}
+          initialFocusKey={firstSelected || ""}
         >
-          { ({ items, search }) => this.renderTreeMenu(items, search) }
+          {({ items, search }) => this.renderTreeMenu(items, search)}
         </TreeMenu>
       </div>
     );
@@ -91,24 +90,22 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
   private renderTreeMenu = (items: TreeMenuItem[], search?: (term: string) => void) => {
     const { classes } = this.props;
     return (
-      <div className={ classes.treeMenu }>
+      <div className={classes.treeMenu}>
         <FilledInput
-          onChange={ e => search && search(e.target.value) }
-          placeholder={ strings.exhibition.navigation.search }
-          className={ classes.searchBar }
+          onChange={(e) => search && search(e.target.value)}
+          placeholder={strings.exhibition.navigation.search}
+          className={classes.searchBar}
           fullWidth
           endAdornment={
             <InputAdornment position="end">
-              <SearchIcon/>
+              <SearchIcon />
             </InputAdornment>
           }
         />
-        <List>
-          { items.map(item => this.renderTreeMenuItem(item)) }
-        </List>
+        <List>{items.map((item) => this.renderTreeMenuItem(item))}</List>
       </div>
     );
-  }
+  };
 
   /**
    * Renders tree menu item
@@ -131,26 +128,30 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
     ...otherProps
   }: TreeMenuItem) => {
     const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ?
-      <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
-      <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
+    const toggleIcon = (on: boolean) =>
+      on ? (
+        <ExpandMoreIcon htmlColor={focused ? "#fff" : "#888"} />
+      ) : (
+        <ChevronRightIcon htmlColor={focused ? "#fff" : "#888"} />
+      );
 
     return (
-      <ListItem { ...otherProps }
-        className={ classNames( classes.listItem, focused ? "focused" : "" ) }
+      <ListItem
+        {...otherProps}
+        className={classNames(classes.listItem, focused ? "focused" : "")}
         style={{ paddingLeft: level * 20 }}
       >
-        { hasNodes ?
-          <div style={{ display: "inline-block" }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
-            { toggleIcon(isOpen) }
+        {hasNodes ? (
+          <div style={{ display: "inline-block" }} onClick={this.onNodeClick(hasNodes, toggleNode)}>
+            {toggleIcon(isOpen)}
           </div>
-          :
+        ) : (
           <div style={{ display: "inline-block", marginLeft: 25 }} />
-        }
-        { label }
+        )}
+        {label}
       </ListItem>
     );
-  }
+  };
 
   /**
    * Maps tree data
@@ -158,15 +159,17 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * @param nodes tree nodes
    */
   private mapTreeData = (nodes: TreeNode[]): TreeNodeInArray[] => {
-    return nodes.length > 0 ? nodes.map(node => {
-      return {
-        key: node.id,
-        label: node.label,
-        onClick: node.onClick,
-        nodes: node.children ? this.mapTreeData(node.children) : []
-      };
-    }) : [];
-  }
+    return nodes.length > 0
+      ? nodes.map((node) => {
+          return {
+            key: node.id,
+            label: node.label,
+            onClick: node.onClick,
+            nodes: node.children ? this.mapTreeData(node.children) : []
+          };
+        })
+      : [];
+  };
 
   /**
    * Handler for on node click event
@@ -174,12 +177,14 @@ class FloorPlanTreeMenu extends React.Component<Props, State> {
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
    */
-  private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (hasNodes && toggleNode) {
-      toggleNode();
-    }
-    event.stopPropagation();
-  }
+  private onNodeClick =
+    (hasNodes: boolean, toggleNode: (() => void) | undefined) =>
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (hasNodes && toggleNode) {
+        toggleNode();
+      }
+      event.stopPropagation();
+    };
 }
 
 /**
@@ -199,7 +204,7 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
+  return {};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FloorPlanTreeMenu));

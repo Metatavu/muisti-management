@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   hidden: {
     display: "none"
   },
@@ -29,5 +28,4 @@ export default createStyles({
     width: "100%",
     height: "100%"
   }
-
 });

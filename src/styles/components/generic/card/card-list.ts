@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   cardView: {
     maxHeight: "100%",
     overflowY: "auto",
@@ -24,5 +23,4 @@ export default createStyles({
     gridTemplateColumns: "repeat( auto-fill, minmax(250px, 250px) )",
     gridGap: theme.spacing(5)
   }
-
 });

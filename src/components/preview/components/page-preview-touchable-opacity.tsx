@@ -1,13 +1,17 @@
-import * as React from "react";
-import Measure, { ContentRect } from 'react-measure'
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
+import { ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
 import AndroidUtils from "../../../utils/android-utils";
-import { ResourceMap } from "../../../types";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import Measure, { ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties
@@ -21,7 +25,10 @@ interface Props extends WithStyles<typeof styles> {
   scale: number;
   displayMetrics: DisplayMetrics;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
 }
 
@@ -36,7 +43,6 @@ interface State {
  * Component for rendering TouchableOpacity views
  */
 class PagePreviewTouchableOpacity extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -58,15 +64,15 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
     const selected = selectedView?.id === view.id;
 
     return (
-      <Measure onResize={ onResize } bounds={ true }>
+      <Measure onResize={onResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            style={ this.resolveStyles() }
-            className={ mouseOver || selected ? classes.highlighted : "" }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            style={this.resolveStyles()}
+            className={mouseOver || selected ? classes.highlighted : ""}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           />
         )}
       </Measure>
@@ -81,7 +87,8 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, parentView, layer, handleLayoutProperties } = this.props;
     const { properties } = view;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
 
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "inline-block",
@@ -92,9 +99,13 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
       outline: "2px dashed #000"
     });
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       if (property.name.startsWith("inset")) {
-        const margin = AndroidUtils.stringToPx(this.props.displayMetrics, property.value, this.props.scale);
+        const margin = AndroidUtils.stringToPx(
+          this.props.displayMetrics,
+          property.value,
+          this.props.scale
+        );
         if (!margin) {
           return;
         }
@@ -102,23 +113,23 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
         switch (property.name) {
           case "insetTop":
             result.marginTop = margin;
-          break;
+            break;
           case "insetRight":
             result.marginRight = margin;
-          break;
+            break;
           case "insetBottom":
             result.marginBottom = margin;
-          break;
+            break;
           case "insetLeft":
             result.marginLeft = margin;
-          break;
+            break;
           default:
         }
       }
     });
 
     return result;
-  }
+  };
 
   /**
    * Event handler for mouse over
@@ -128,7 +139,7 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: true });
-  }
+  };
 
   /**
    * Event handler for mouse out
@@ -138,7 +149,7 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
     this.setState({ mouseOver: false });
-  }
+  };
 
   /**
    * Event handler for mouse click
@@ -149,7 +160,7 @@ class PagePreviewTouchableOpacity extends React.Component<Props, State> {
     const { view, onViewClick } = this.props;
     event.stopPropagation();
     onViewClick && onViewClick(view);
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewTouchableOpacity);

@@ -1,11 +1,10 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 /**
  * Dashboard layout styles
  */
 export default createStyles({
-  
   root: {
     display: "grid",
     gridTemplateColumns: "auto 1fr",
@@ -27,9 +26,7 @@ export default createStyles({
     padding: 35
   },
 
-  navigationTopContent: {
-
-  },
+  navigationTopContent: {},
 
   btnContainer: {
     position: "absolute",
@@ -53,7 +50,7 @@ export default createStyles({
       overflow: "hidden",
       textOverflow: "ellipsis",
       margin: 0
-    },
+    }
   },
 
   userAvatar: {
@@ -101,5 +98,4 @@ export default createStyles({
     width: "100%",
     padding: 10
   }
-
 });

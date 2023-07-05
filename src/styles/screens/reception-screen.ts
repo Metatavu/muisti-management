@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   loader: {
     height: "100%",
     position: "absolute",
@@ -12,7 +11,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   container: {
@@ -38,23 +37,23 @@ export default createStyles({
   registerButton: {
     width: "80%",
     fontSize: 20,
-    maxWidth: 360,
+    maxWidth: 360
   },
 
   saveButton: {
     width: "80%",
     fontSize: 20,
     maxWidth: 360,
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(5)
   },
 
   select: {
     width: "80%",
-    maxWidth: 360,
+    maxWidth: 360
   },
 
   languageSelectControl: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(5)
   },
 
   formContainer: {
@@ -76,11 +75,10 @@ export default createStyles({
   },
 
   textField: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(5)
   },
 
   visitorTagContainer: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(5)
   }
-
 });

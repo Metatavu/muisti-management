@@ -1,14 +1,12 @@
-import * as React from "react";
-
-import { connect } from "react-redux";
-import { ReduxState, ReduxActions } from "../../store";
 import { login } from "../../actions/auth";
-
+import { Config } from "../../constants/configuration";
+import { ReduxActions, ReduxState } from "../../store";
 import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
 import Keycloak from "keycloak-js";
-import { Config } from "../../constants/configuration";
+import * as React from "react";
+import { connect } from "react-redux";
 
 /**
  * Component props
@@ -32,7 +30,6 @@ const config = Config.getConfig();
  * Component for keeping authentication token fresh
  */
 class AccessTokenRefresh extends React.Component<Props, State> {
-
   private keycloak: KeycloakInstance;
   private timer?: any;
 
@@ -50,9 +47,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
       clientId: config.keycloakConfig.clientId
     });
 
-    this.state = {
-
-    };
+    this.state = {};
   }
 
   /**
@@ -77,7 +72,7 @@ class AccessTokenRefresh extends React.Component<Props, State> {
         this.refreshAccessToken();
       }, 1000 * 60);
     }
-  }
+  };
 
   /**
    * Component will unmount life cycle event
@@ -93,7 +88,9 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    */
   public render() {
     if (this.state.error) {
-      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />;
+      return (
+        <ErrorDialog error={this.state.error} onClose={() => this.setState({ error: undefined })} />
+      );
     }
 
     return this.props.accessToken ? this.props.children : null;
@@ -123,10 +120,10 @@ class AccessTokenRefresh extends React.Component<Props, State> {
    * Initializes Keycloak client
    */
   private keycloakInit = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.keycloak.init({ onLoad: "login-required", checkLoginIframe: false }).success(resolve);
     });
-  }
+  };
 }
 
 /**

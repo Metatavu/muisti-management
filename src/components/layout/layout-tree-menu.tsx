@@ -1,41 +1,40 @@
-import * as React from "react";
 import { PageLayoutView, SubLayout } from "../../generated/client";
+import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
 import strings from "../../localization/strings";
-// eslint-disable-next-line max-len
+import SearchIcon from "../../resources/gfx/svg-paths/hae";
+import styles from "../../styles/exhibition-tree-menu";
+import theme from "../../styles/theme";
+import GenericDialog from "../generic/generic-dialog";
+import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
+import AddIcon from "@mui/icons-material/AddCircle";
+import ExpandMoreIcon from "@mui/icons-material/ArrowDropDown";
+import ChevronRightIcon from "@mui/icons-material/ArrowRight";
 import {
+  Box,
+  Divider,
   FilledInput,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
   InputAdornment,
+  InputLabel,
   List,
   ListItem,
   ListItemSecondaryAction,
-  IconButton,
-  Grid,
-  Divider,
-  Select,
-  MenuItem,
-  InputLabel,
-  TextField,
   ListItemText,
-  FormControl,
-  Typography,
-  Box,
-  FormHelperText,
+  MenuItem,
+  Select,
   SelectChangeEvent,
+  TextField,
+  Typography
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/exhibition-tree-menu";
-import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
-import SearchIcon from "../../resources/gfx/svg-paths/hae";
-import AddIcon from '@mui/icons-material/AddCircle';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import classNames from "classnames";
-import ExpandMoreIcon from '@mui/icons-material/ArrowDropDown';
-import ChevronRightIcon from '@mui/icons-material/ArrowRight';
-import GenericDialog from '../generic/generic-dialog';
-import theme from "../../styles/theme";
+import * as React from "react";
+import TreeMenu, { TreeMenuItem, TreeNodeInArray } from "react-simple-tree-menu";
 import { v4 as uuid } from "uuid";
-import { PageLayoutWidgetType } from "../../generated/client/models/PageLayoutWidgetType";
-import { getInitializedPageLayoutViewByWidgetType } from "./utils/tree-data-utils";
 
 /**
  * Interface representing component properties
@@ -62,7 +61,6 @@ interface State {
  * Component for exhibition tree menu
  */
 class LayoutTreeMenu extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -83,49 +81,46 @@ class LayoutTreeMenu extends React.Component<Props, State> {
 
     return (
       <>
-        <div className={ classes.treeView }>
+        <div className={classes.treeView}>
           <TreeMenu
-            data={ treeData }
-            onClickItem={ ({ key, label, ...props }) => {
+            data={treeData}
+            onClickItem={({ key, label, ...props }) => {
               props.onSelect(props.element, props.type, props.path);
             }}
           >
             {({ search, items }) => (
               <>
                 <FilledInput
-                  onChange={ e => search && search(e.target.value) }
-                  placeholder={ strings.exhibition.navigation.search }
-                  className={ classes.searchBar }
+                  onChange={(e) => search && search(e.target.value)}
+                  placeholder={strings.exhibition.navigation.search}
+                  className={classes.searchBar}
                   fullWidth
                   endAdornment={
                     <InputAdornment position="end">
-                      <SearchIcon/>
+                      <SearchIcon />
                     </InputAdornment>
                   }
                 />
-                <List>
-                  { items.map(item => this.renderTreeMenuItem(item)) }
-                </List>
+                <List>{items.map((item) => this.renderTreeMenuItem(item))}</List>
               </>
             )}
           </TreeMenu>
         </div>
         <GenericDialog
-          cancelButtonText={ strings.layoutEditor.addLayoutViewDialog.cancel }
-          positiveButtonText={ strings.layoutEditor.addLayoutViewDialog.confirm }
-          title={ strings.layoutEditor.addLayoutViewDialog.title }
-          error={ false }
-          onConfirm={ this.onConfirmClick }
-          onCancel={ this.onCloseOrCancelClick }
-          open={ this.state.addPropertyDialogOpen }
-          onClose={ this.onCloseOrCancelClick }
+          cancelButtonText={strings.layoutEditor.addLayoutViewDialog.cancel}
+          positiveButtonText={strings.layoutEditor.addLayoutViewDialog.confirm}
+          title={strings.layoutEditor.addLayoutViewDialog.title}
+          error={false}
+          onConfirm={this.onConfirmClick}
+          onCancel={this.onCloseOrCancelClick}
+          open={this.state.addPropertyDialogOpen}
+          onClose={this.onCloseOrCancelClick}
         >
-          { this.renderDialogContent() }
+          {this.renderDialogContent()}
         </GenericDialog>
       </>
     );
   }
-
 
   /**
    * Renders tree menu item
@@ -145,30 +140,39 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     ...otherProps
   }: TreeMenuItem) => {
     const { classes } = this.props;
-    const toggleIcon = (on: boolean) => on ?
-      <ExpandMoreIcon htmlColor={ focused ? "#fff" : "#888" } /> :
-      <ChevronRightIcon htmlColor={ focused ? "#fff" : "#888" }  />;
+    const toggleIcon = (on: boolean) =>
+      on ? (
+        <ExpandMoreIcon htmlColor={focused ? "#fff" : "#888"} />
+      ) : (
+        <ChevronRightIcon htmlColor={focused ? "#fff" : "#888"} />
+      );
     return (
-      <ListItem { ...otherProps }
-        className={ classNames(classes.listItem, focused ? "focused" : "") }
+      <ListItem
+        {...otherProps}
+        className={classNames(classes.listItem, focused ? "focused" : "")}
         style={{ paddingLeft: level * 10 }}
       >
-        { hasNodes ?
-          <div style={{ display: 'inline-block' }} onClick={ this.onNodeClick(hasNodes, toggleNode) }>
-            { toggleIcon(isOpen) }
+        {hasNodes ? (
+          <div style={{ display: "inline-block" }} onClick={this.onNodeClick(hasNodes, toggleNode)}>
+            {toggleIcon(isOpen)}
           </div>
-          :
-          <div style={{ display: 'inline-block', marginLeft: 25 }} />
-        }
-        <ListItemText primary={ name } secondary={ label } />
+        ) : (
+          <div style={{ display: "inline-block", marginLeft: 25 }} />
+        )}
+        <ListItemText primary={name} secondary={label} />
         <ListItemSecondaryAction>
-          <IconButton size="small" edge="end" aria-label="add" onClick={ () => this.onLayoutViewPropertyAddClick(path) }>
+          <IconButton
+            size="small"
+            edge="end"
+            aria-label="add"
+            onClick={() => this.onLayoutViewPropertyAddClick(path)}
+          >
             <AddIcon />
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
     );
-  }
+  };
 
   /**
    * Render dialog content based on editingSubLayout boolean
@@ -181,7 +185,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     } else {
       return this.renderLayoutDialog();
     }
-  }
+  };
 
   /**
    * Render layout view dialog
@@ -190,74 +194,75 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     const { subLayouts } = this.props;
     const { newPageLayoutView, selectedSubLayoutId } = this.state;
 
-    const subLayoutItems = subLayouts.map(layout => {
+    const subLayoutItems = subLayouts.map((layout) => {
       return (
-        <MenuItem key={ layout.id } value={ layout.id }>{ layout.name }</MenuItem>
+        <MenuItem key={layout.id} value={layout.id}>
+          {layout.name}
+        </MenuItem>
       );
     });
 
-    const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
+    const widgetItems = Object.keys(PageLayoutWidgetType).map((widget) => {
       return (
-        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+        <MenuItem key={widget} value={widget}>
+          {widget}
+        </MenuItem>
       );
     });
 
     return (
-      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={ 12 }>
+      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={12}>
           <FormControl variant="outlined">
             <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
-              { strings.layoutEditor.addLayoutViewDialog.widget }
+              {strings.layoutEditor.addLayoutViewDialog.widget}
             </InputLabel>
             <Select
               labelId="widget"
-              label={ strings.layoutEditor.addLayoutViewDialog.widget }
+              label={strings.layoutEditor.addLayoutViewDialog.widget}
               name="widget"
-              value={ (!selectedSubLayoutId && newPageLayoutView) ? newPageLayoutView.widget : "" }
-              onChange={ this.onWidgetChange }>
-              { widgetItems }
+              value={!selectedSubLayoutId && newPageLayoutView ? newPageLayoutView.widget : ""}
+              onChange={this.onWidgetChange}
+            >
+              {widgetItems}
             </Select>
-            <FormHelperText>
-              { this.helpTextBySelectedWidget() }
-            </FormHelperText>
+            <FormHelperText>{this.helpTextBySelectedWidget()}</FormHelperText>
           </FormControl>
         </Grid>
         <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
-          <Typography variant="h6">
-            { strings.layoutEditor.addLayoutViewDialog.or }
-          </Typography>
+          <Typography variant="h6">{strings.layoutEditor.addLayoutViewDialog.or}</Typography>
         </div>
-        <Grid item xs={ 12 }>
+        <Grid item xs={12}>
           <FormControl variant="outlined">
             <InputLabel id="subLayout" style={{ marginBottom: theme.spacing(2) }}>
-              { strings.layoutEditor.addLayoutViewDialog.subLayout }
+              {strings.layoutEditor.addLayoutViewDialog.subLayout}
             </InputLabel>
             <Select
               labelId="subLayout"
-              label={ strings.layoutEditor.addLayoutViewDialog.subLayout }
+              label={strings.layoutEditor.addLayoutViewDialog.subLayout}
               name="subLayout"
-              value={ (selectedSubLayoutId && newPageLayoutView) ? selectedSubLayoutId : "" }
-              onChange={ this.onSubLayoutChange }
+              value={selectedSubLayoutId && newPageLayoutView ? selectedSubLayoutId : ""}
+              onChange={this.onSubLayoutChange}
             >
-              { subLayoutItems }
+              {subLayoutItems}
             </Select>
           </FormControl>
-          <Box mt={ 2 }>
+          <Box mt={2}>
             <TextField
-              helperText={ strings.helpTexts.layoutEditor.giveElementName }
+              helperText={strings.helpTexts.layoutEditor.giveElementName}
               style={{ marginTop: theme.spacing(2) }}
-              label={ strings.layoutEditor.addLayoutViewDialog.name }
+              label={strings.layoutEditor.addLayoutViewDialog.name}
               type="text"
               name="name"
-              disabled={ newPageLayoutView ? false : true }
-              value={ newPageLayoutView ? newPageLayoutView.name : "" }
-              onChange={ this.onNameChange }
+              disabled={newPageLayoutView ? false : true}
+              value={newPageLayoutView ? newPageLayoutView.name : ""}
+              onChange={this.onNameChange}
             />
           </Box>
         </Grid>
       </Grid>
     );
-  }
+  };
 
   /**
    * Render help text according to selected widget
@@ -269,7 +274,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       return "";
     }
 
-    switch(newPageLayoutView.widget) {
+    switch (newPageLayoutView.widget) {
       case PageLayoutWidgetType.Button:
         return strings.helpTexts.layoutEditor.buttonDescription;
       case PageLayoutWidgetType.TextView:
@@ -299,7 +304,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       default:
         return "";
     }
-  }
+  };
 
   /**
    * Render sub layout view dialog
@@ -307,32 +312,39 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   private renderSubLayoutDialog = () => {
     const { newPageLayoutView } = this.state;
 
-    const widgetItems = Object.keys(PageLayoutWidgetType).map(widget => {
+    const widgetItems = Object.keys(PageLayoutWidgetType).map((widget) => {
       return (
-        <MenuItem key={ widget } value={ widget }>{ widget }</MenuItem>
+        <MenuItem key={widget} value={widget}>
+          {widget}
+        </MenuItem>
       );
     });
 
     return (
-      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={ 12 }>
+      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={12}>
           <InputLabel id="widget" style={{ marginBottom: theme.spacing(2) }}>
-            { strings.layoutEditor.addLayoutViewDialog.widget }
+            {strings.layoutEditor.addLayoutViewDialog.widget}
           </InputLabel>
           <Select
             variant="filled"
             labelId="widget"
             fullWidth
             name="widget"
-            value={ newPageLayoutView ? newPageLayoutView.widget : "" }
-            onChange={ this.onWidgetChange }>
-            { widgetItems }
+            value={newPageLayoutView ? newPageLayoutView.widget : ""}
+            onChange={this.onWidgetChange}
+          >
+            {widgetItems}
           </Select>
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <Divider
+            variant="fullWidth"
+            color="rgba(0,0,0,0.1)"
+            style={{ marginTop: 19, width: "100%" }}
+          />
         </Grid>
       </Grid>
     );
-  }
+  };
 
   /**
    * Event handler for node click event
@@ -340,12 +352,14 @@ class LayoutTreeMenu extends React.Component<Props, State> {
    * @param hasNodes has nodes
    * @param toggleNode handler method for toggle node
    */
-  private onNodeClick = (hasNodes: boolean, toggleNode: (() => void) | undefined) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (hasNodes && toggleNode) {
-      toggleNode();
-    }
-    event.stopPropagation();
-  }
+  private onNodeClick =
+    (hasNodes: boolean, toggleNode: (() => void) | undefined) =>
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (hasNodes && toggleNode) {
+        toggleNode();
+      }
+      event.stopPropagation();
+    };
 
   /**
    * Event handler for layout view property add click
@@ -355,9 +369,9 @@ class LayoutTreeMenu extends React.Component<Props, State> {
   private onLayoutViewPropertyAddClick = (path: string) => {
     this.setState({
       addPropertyDialogOpen: true,
-      newPageLayoutViewPath: path,
+      newPageLayoutViewPath: path
     });
-  }
+  };
 
   /**
    * Event handler for dialog confirm click
@@ -371,24 +385,23 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     this.props.onAdd(newPageLayoutView, newPageLayoutViewPath);
 
     this.setState({
-      addPropertyDialogOpen : false,
+      addPropertyDialogOpen: false,
       newPageLayoutView: undefined,
       newPageLayoutViewPath: ""
     });
-
-  }
+  };
 
   /**
    * Event handler for dialog close or cancel click
    */
   private onCloseOrCancelClick = () => {
     this.setState({
-      addPropertyDialogOpen : false,
+      addPropertyDialogOpen: false,
       newPageLayoutView: undefined,
       newPageLayoutViewPath: "",
       selectedSubLayoutId: undefined
     });
-  }
+  };
 
   /**
    * Event handler for widget change event
@@ -401,10 +414,10 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     const pageLayoutView = getInitializedPageLayoutViewByWidgetType(widget);
 
     this.setState({
-      newPageLayoutView : pageLayoutView,
+      newPageLayoutView: pageLayoutView,
       selectedSubLayoutId: undefined
     });
-  }
+  };
 
   /**
    * On name change handler
@@ -421,9 +434,9 @@ class LayoutTreeMenu extends React.Component<Props, State> {
     }
 
     this.setState({
-      newPageLayoutView : { ...newPageLayoutView, [key] : value }
+      newPageLayoutView: { ...newPageLayoutView, [key]: value }
     });
-  }
+  };
 
   /**
    * Event handler for sub layout change event
@@ -438,7 +451,7 @@ class LayoutTreeMenu extends React.Component<Props, State> {
       return;
     }
 
-    const subLayout = subLayouts.find(layout => layout.id === subLayoutId);
+    const subLayout = subLayouts.find((layout) => layout.id === subLayoutId);
 
     if (!subLayout) {
       return;
@@ -446,16 +459,15 @@ class LayoutTreeMenu extends React.Component<Props, State> {
 
     const pageLayoutView: PageLayoutView = {
       ...subLayout.data,
-      id : uuid(),
+      id: uuid(),
       sublayoutId: subLayoutId
     };
 
     this.setState({
-      newPageLayoutView : pageLayoutView,
+      newPageLayoutView: pageLayoutView,
       selectedSubLayoutId: subLayoutId
     });
-
-  }
+  };
 }
 
 export default withStyles(styles)(LayoutTreeMenu);

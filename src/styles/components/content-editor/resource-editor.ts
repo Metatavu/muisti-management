@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   fieldLabel: {
     marginLeft: theme.spacing(1)
   },
@@ -42,5 +41,4 @@ export default createStyles({
     justifyContent: "space-between",
     alignItems: "center"
   }
-
 });

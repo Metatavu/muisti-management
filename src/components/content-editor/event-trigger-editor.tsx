@@ -1,35 +1,45 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
 import { setSelectedExhibition } from "../../actions/exhibitions";
-
-import styles from "../../styles/exhibition-view";
 import {
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
+  Exhibition,
+  ExhibitionPage,
+  ExhibitionPageEvent,
+  ExhibitionPageEventTrigger,
+  PageLayoutView,
+  VisitorVariable
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { PhysicalButton, PhysicalButtonData } from "../../types";
+import HelpDialog from "../generic/help-dialog";
+import PageEventDialog from "./page-event-dialog";
+import AddIcon from "@mui/icons-material/Add";
+import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemSecondaryAction,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Divider,
-  Paper,
-  Box,
   ListItemText,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageEvent, PageLayoutView, VisitorVariable } from "../../generated/client";
-import { PhysicalButton, PhysicalButtonData } from '../../types';
-import strings from "../../localization/strings";
 // TODO: Code mirror related imports.
 // import "codemirror/lib/codemirror.css";
 // import "codemirror/theme/material.css";
@@ -37,13 +47,9 @@ import strings from "../../localization/strings";
 // import "codemirror/addon/lint/lint.css";
 // import "codemirror/addon/lint/lint";
 import _ from "lodash";
-import theme from "../../styles/theme";
-import produce from "immer";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import HelpDialog from "../generic/help-dialog";
-import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
-import PageEventDialog from "./page-event-dialog";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props
@@ -72,7 +78,6 @@ interface State {
  * Component for event trigger editor
  */
 class EventTriggerEditor extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -91,40 +96,32 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-
     return (
       <div style={{ marginTop: theme.spacing(2) }}>
-        { this.renderTriggerName() }
-        <Paper variant="outlined" square style={{ marginTop: theme.spacing(2) }} >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            p={ 1 }
-            pl={ 2 }
-            alignItems="center"
-          >
+        {this.renderTriggerName()}
+        <Paper variant="outlined" square style={{ marginTop: theme.spacing(2) }}>
+          <Box display="flex" justifyContent="space-between" p={1} pl={2} alignItems="center">
             <Typography variant="h5">
-              { strings.contentEditor.editor.eventTriggers.actions }
+              {strings.contentEditor.editor.eventTriggers.actions}
             </Typography>
             <IconButton
-              title={ strings.contentEditor.editor.eventTriggers.addEvent }
+              title={strings.contentEditor.editor.eventTriggers.addEvent}
               color="primary"
-              onClick={ this.onAddPageEventClick }
-              size="large">
+              onClick={this.onAddPageEventClick}
+              size="large"
+            >
               <AddIcon />
             </IconButton>
           </Box>
           <Divider />
-          { this.renderActionList() }
+          {this.renderActionList()}
           <Divider />
-          { this.renderEventOptions() }
+          {this.renderEventOptions()}
         </Paper>
-        <Box mt={ 2 }>
-          { this.renderAdvancedSettings() }
-        </Box>
+        <Box mt={2}>{this.renderAdvancedSettings()}</Box>
       </div>
     );
-  }
+  };
 
   /**
    * Render advanced settings
@@ -132,19 +129,17 @@ class EventTriggerEditor extends React.Component<Props, State> {
   private renderAdvancedSettings = () => {
     return (
       <Accordion>
-        <AccordionSummary expandIcon={ <ExpandMoreIcon/> }>
-          <Typography variant="body2">
-            { strings.contentEditor.advanced }
-          </Typography>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="body2">{strings.contentEditor.advanced}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          { this.renderPhysicalButtonSelects() }
-          { this.renderDeviceGroupEventNameField() }
-          { this.renderDelayField() }
+          {this.renderPhysicalButtonSelects()}
+          {this.renderDeviceGroupEventNameField()}
+          {this.renderDelayField()}
         </AccordionDetails>
       </Accordion>
     );
-  }
+  };
 
   /**
    * Render trigger name
@@ -157,27 +152,21 @@ class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     return (
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-      >
+      <Box display="flex" alignItems="center" justifyContent="space-between">
         <TextField
-          label={ strings.contentEditor.editor.eventTriggers.eventName }
-          fullWidth={ false }
+          label={strings.contentEditor.editor.eventTriggers.eventName}
+          fullWidth={false}
           name="name"
-          className={ classes.textResourceEditor }
-          value={ selectedEventTrigger.name }
-          onChange={ this.onEventTriggerNameChange }
+          className={classes.textResourceEditor}
+          value={selectedEventTrigger.name}
+          onChange={this.onEventTriggerNameChange}
         />
-        <HelpDialog title={ strings.contentEditor.editor.eventTriggers.eventName }>
-          <Typography>
-            { strings.helpDialogs.contentEditor.events.nameDescription }
-          </Typography>
+        <HelpDialog title={strings.contentEditor.editor.eventTriggers.eventName}>
+          <Typography>{strings.helpDialogs.contentEditor.events.nameDescription}</Typography>
         </HelpDialog>
       </Box>
     );
-  }
+  };
 
   /**
    * Render physical button selections
@@ -186,7 +175,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const trigger = this.props.selectedEventTrigger;
     const physicalButtons: PhysicalButtonData[] = [];
 
-    _.forIn(PhysicalButton, value => {
+    _.forIn(PhysicalButton, (value) => {
       physicalButtons.push({
         name: `${strings.contentEditor.editor.eventTriggers.physicalButton} ${value}`,
         value: value
@@ -195,79 +184,65 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     const menuItems = physicalButtons.map((button, index) => {
       return (
-        <MenuItem key={ `physicalButtonDown-${index}` } value={ button.value }>
-          { button.name }
+        <MenuItem key={`physicalButtonDown-${index}`} value={button.value}>
+          {button.name}
         </MenuItem>
       );
     });
 
     return (
       <Box>
-        <Box
-          mt={ 2 }
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h6">
-            { strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }
+            {strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle}
           </Typography>
-          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle }>
+          <HelpDialog title={strings.contentEditor.editor.eventTriggers.physicalButtonDownTitle}>
             <Typography>
-              { strings.helpDialogs.contentEditor.events.physicalButtonDownDescription }
+              {strings.helpDialogs.contentEditor.events.physicalButtonDownDescription}
             </Typography>
           </HelpDialog>
         </Box>
         <FormControl>
-          <InputLabel>
-            { strings.contentEditor.editor.eventTriggers.physicalButton }
-          </InputLabel>
+          <InputLabel>{strings.contentEditor.editor.eventTriggers.physicalButton}</InputLabel>
           <Select
-            label={ strings.contentEditor.editor.eventTriggers.physicalButton }
+            label={strings.contentEditor.editor.eventTriggers.physicalButton}
             name="keyDown"
-            value={ trigger?.keyDown || "" }
-            onChange={ this.onEventTriggerChange }
-            >
-            <MenuItem key={ `clickViewId-empty` } value="">
-              { strings.removeSelection }
+            value={trigger?.keyDown || ""}
+            onChange={this.onEventTriggerChange}
+          >
+            <MenuItem key={`clickViewId-empty`} value="">
+              {strings.removeSelection}
             </MenuItem>
-            { menuItems }
+            {menuItems}
           </Select>
         </FormControl>
-        <Box
-          mt={ 2 }
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h6">
-            { strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }
+            {strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle}
           </Typography>
-          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle }>
+          <HelpDialog title={strings.contentEditor.editor.eventTriggers.physicalButtonUpTitle}>
             <Typography>
-              { strings.helpDialogs.contentEditor.events.physicalButtonUpDescription }
+              {strings.helpDialogs.contentEditor.events.physicalButtonUpDescription}
             </Typography>
           </HelpDialog>
         </Box>
         <FormControl>
-          <InputLabel>
-            { strings.contentEditor.editor.eventTriggers.physicalButton }
-          </InputLabel>
+          <InputLabel>{strings.contentEditor.editor.eventTriggers.physicalButton}</InputLabel>
           <Select
-            label={ strings.contentEditor.editor.eventTriggers.physicalButton }
+            label={strings.contentEditor.editor.eventTriggers.physicalButton}
             name="keyUp"
-            value={ trigger?.keyUp || "" }
-            onChange={ this.onEventTriggerChange }
-            >
-            <MenuItem key={ `clickViewId-empty` } value="">
-              { strings.removeSelection }
+            value={trigger?.keyUp || ""}
+            onChange={this.onEventTriggerChange}
+          >
+            <MenuItem key={`clickViewId-empty`} value="">
+              {strings.removeSelection}
             </MenuItem>
-            { menuItems }
+            {menuItems}
           </Select>
         </FormControl>
       </Box>
     );
-  }
+  };
 
   /**
    * Renders device group event name field
@@ -276,35 +251,30 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <Box>
-        <Box
-          mt={ 2 }
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
           <Typography
             variant="h6"
             style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
           >
-            { strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }
+            {strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle}
           </Typography>
-          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle }>
+          <HelpDialog title={strings.contentEditor.editor.eventTriggers.deviceGroupEventTitle}>
             <Typography>
-              { strings.helpDialogs.contentEditor.events.deviceGroupEventDescription }
+              {strings.helpDialogs.contentEditor.events.deviceGroupEventDescription}
             </Typography>
           </HelpDialog>
         </Box>
         <TextField
           type="text"
-          className={ classes.textResourceEditor }
-          label={ strings.contentEditor.editor.eventTriggers.deviceGroupEvent }
+          className={classes.textResourceEditor}
+          label={strings.contentEditor.editor.eventTriggers.deviceGroupEvent}
           name="deviceGroupEvent"
-          value={ this.props.selectedEventTrigger?.deviceGroupEvent || "" }
-          onChange={ this.onEventTriggerChange }
+          value={this.props.selectedEventTrigger?.deviceGroupEvent || ""}
+          onChange={this.onEventTriggerChange}
         />
       </Box>
     );
-  }
+  };
 
   /**
    * Renders delay field
@@ -313,31 +283,26 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const { classes } = this.props;
     return (
       <Box>
-        <Box
-          mt={ 2 }
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h6">
-            { strings.contentEditor.editor.eventTriggers.delayTitle }
+            {strings.contentEditor.editor.eventTriggers.delayTitle}
           </Typography>
-          <HelpDialog title={ strings.contentEditor.editor.eventTriggers.delayTitle }>
+          <HelpDialog title={strings.contentEditor.editor.eventTriggers.delayTitle}>
             <Typography>
-              { strings.helpDialogs.contentEditor.events.delayEventDescription }
+              {strings.helpDialogs.contentEditor.events.delayEventDescription}
             </Typography>
           </HelpDialog>
         </Box>
         <TextField
-          className={ classes.textResourceEditor } 
-          label={ strings.contentEditor.editor.eventTriggers.delay }
+          className={classes.textResourceEditor}
+          label={strings.contentEditor.editor.eventTriggers.delay}
           name="delay"
-          value={ this.props.selectedEventTrigger?.delay || 0 }
-          onChange={ this.onEventTriggerChange }
+          value={this.props.selectedEventTrigger?.delay || 0}
+          onChange={this.onEventTriggerChange}
         />
       </Box>
     );
-  }
+  };
 
   /**
    * Render action list
@@ -348,20 +313,17 @@ class EventTriggerEditor extends React.Component<Props, State> {
     const events = selectedEventTrigger?.events || [];
     const eventItems = events.map((event, index) => {
       return (
-        <ListItem
-          key={ index }
-          button
-          onClick={ this.onPageEventClick(index) }
-        >
+        <ListItem key={index} button onClick={this.onPageEventClick(index)}>
           <ListItemText
-            primary={ strings.contentEditor.editor.eventTriggers.actionTypes[event.action] }
-            secondary={ event.action } />
+            primary={strings.contentEditor.editor.eventTriggers.actionTypes[event.action]}
+            secondary={event.action}
+          />
           <ListItemSecondaryAction>
             <IconButton
               size="small"
               edge="end"
               aria-label="delete"
-              onClick={ this.onPageEventDeleteClick(index) }
+              onClick={this.onPageEventDeleteClick(index)}
             >
               <DeleteIcon />
             </IconButton>
@@ -370,48 +332,36 @@ class EventTriggerEditor extends React.Component<Props, State> {
       );
     });
 
-    return (
-      <List disablePadding >
-        { eventItems }
-      </List>
-    );
-  }
+    return <List disablePadding>{eventItems}</List>;
+  };
 
   /**
    * Render event options
    */
   private renderEventOptions = () => {
-    const {
-      selectedEventTrigger,
-      visitorVariables,
-      pages,
-      view,
-      availableLanguages
-    } = this.props;
+    const { selectedEventTrigger, visitorVariables, pages, view, availableLanguages } = this.props;
 
-    const {
-      showPageEventDialog,
-      addingNewPageEvent,
-      selectedPageEventIndex
-    } = this.state;
+    const { showPageEventDialog, addingNewPageEvent, selectedPageEventIndex } = this.state;
 
-    const selectedEvent = selectedEventTrigger?.events?.find((event, index) => index === selectedPageEventIndex);
+    const selectedEvent = selectedEventTrigger?.events?.find(
+      (event, index) => index === selectedPageEventIndex
+    );
 
     return (
       <PageEventDialog
-        selectedEvent={ selectedEvent }
-        pages={ pages }
-        visitorVariables={ visitorVariables }
-        creatingNew={ addingNewPageEvent }
-        dialogOpen={ showPageEventDialog }
-        view={ view }
-        availableLanguages={ availableLanguages }
-        onCloseOrCancel={ () => this.setState({ showPageEventDialog: false }) }
-        onCreate={ this.onAddNewPageEventClick }
-        onUpdate={ this.updateEventInJson }
+        selectedEvent={selectedEvent}
+        pages={pages}
+        visitorVariables={visitorVariables}
+        creatingNew={addingNewPageEvent}
+        dialogOpen={showPageEventDialog}
+        view={view}
+        availableLanguages={availableLanguages}
+        onCloseOrCancel={() => this.setState({ showPageEventDialog: false })}
+        onCreate={this.onAddNewPageEventClick}
+        onUpdate={this.updateEventInJson}
       />
     );
-  }
+  };
 
   /**
    * Construct view id list handler
@@ -420,11 +370,10 @@ class EventTriggerEditor extends React.Component<Props, State> {
    * @param pageLayoutViews list of page layout views
    */
   private constructViewIdList = (items: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
-
     pageLayoutViews.forEach((pageLayoutView, index) => {
       items.push(
-        <MenuItem key={ `clickViewId-${ index }` } value={ pageLayoutView.id }>
-          { pageLayoutView.name ? pageLayoutView.name : pageLayoutView.id }
+        <MenuItem key={`clickViewId-${index}`} value={pageLayoutView.id}>
+          {pageLayoutView.name ? pageLayoutView.name : pageLayoutView.id}
         </MenuItem>
       );
 
@@ -434,14 +383,16 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     return items;
-  }
+  };
 
   /**
    * Event handler for event trigger event property change
    *
    * @param event react change event
    */
-  private onEventTriggerNameChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>) => {
+  private onEventTriggerNameChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>
+  ) => {
     const { selectedEventTrigger } = this.props;
     const key = event.target.name;
 
@@ -450,14 +401,16 @@ class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     this.props.onSave({ ...selectedEventTrigger, name: event.target.value as string });
-  }
+  };
 
   /**
    * Event handler for event trigger change
    *
    * @param event React change event
    */
-  private onEventTriggerChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  private onEventTriggerChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+  ) => {
     const { selectedEventTrigger, onSave } = this.props;
 
     if (!selectedEventTrigger) {
@@ -465,7 +418,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     }
 
     const propertyName = event.target.name as keyof ExhibitionPageEventTrigger;
-    const value = event.target.value as string === "" ? undefined : event.target.value;
+    const value = (event.target.value as string) === "" ? undefined : event.target.value;
 
     switch (propertyName) {
       case "delay":
@@ -474,20 +427,20 @@ class EventTriggerEditor extends React.Component<Props, State> {
           ...selectedEventTrigger,
           [propertyName]: isNumber(valueString) ? Number(valueString) : 0
         });
-      break;
+        break;
       case "clickViewId":
       case "deviceGroupEvent":
         onSave({ ...selectedEventTrigger, [propertyName]: value as string });
-      break;
+        break;
       case "keyUp":
       case "keyDown":
         onSave({ ...selectedEventTrigger, [propertyName]: value as PhysicalButton });
-      break;
+        break;
       default:
         console.warn("Error in onEventTriggerChange: Unknown or invalid property name");
-      break;
+        break;
     }
-  }
+  };
 
   /**
    * Event handler for add new page event click
@@ -498,7 +451,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
       addingNewPageEvent: true,
       selectedPageEventIndex: undefined
     });
-  }
+  };
 
   /**
    * Event handler for add page event click
@@ -514,17 +467,17 @@ class EventTriggerEditor extends React.Component<Props, State> {
 
     const updatedTrigger: ExhibitionPageEventTrigger = {
       ...selectedEventTrigger,
-      events: [ ...(selectedEventTrigger.events || []), newPageEvent ]
+      events: [...(selectedEventTrigger.events || []), newPageEvent]
     };
 
     this.setState({
       selectedPageEventIndex: updatedTrigger.events ? updatedTrigger.events.length - 1 : undefined,
       showPageEventDialog: false,
-      addingNewPageEvent: false,
+      addingNewPageEvent: false
     });
 
     onSave(updatedTrigger);
-  }
+  };
 
   /**
    * Event handler for page event click
@@ -537,7 +490,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
       showPageEventDialog: true,
       addingNewPageEvent: false
     });
-  }
+  };
 
   /**
    * Event handler for page event delete click
@@ -557,7 +510,7 @@ class EventTriggerEditor extends React.Component<Props, State> {
     });
 
     this.setState({ selectedPageEventIndex: undefined });
-  }
+  };
 
   /**
    * Event handler for updating page event in json
@@ -577,18 +530,18 @@ class EventTriggerEditor extends React.Component<Props, State> {
       trigger.events = [];
       trigger.events.push(updatedPageEvent);
     } else {
-      trigger.events = produce(trigger.events, draft => {
+      trigger.events = produce(trigger.events, (draft) => {
         draft.splice(selectedPageEventIndex, 1, updatedPageEvent);
       });
     }
 
     this.setState({
       showPageEventDialog: false,
-      addingNewPageEvent: false,
+      addingNewPageEvent: false
     });
 
     onSave(trigger);
-  }
+  };
 }
 
 /**

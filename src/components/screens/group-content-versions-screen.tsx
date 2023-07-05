@@ -1,3 +1,24 @@
+import Api from "../../api/api";
+import {
+  Exhibition,
+  ExhibitionDeviceGroup,
+  ExhibitionRoom,
+  GroupContentVersion,
+  GroupContentVersionStatus
+} from "../../generated/client";
+import { ContentVersion } from "../../generated/client/models/ContentVersion";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/exhibition-view";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, BreadcrumbData, ConfirmDialogData } from "../../types";
+import CardItem from "../generic/card/card-item";
+import CardList from "../generic/card/card-list";
+import ConfirmDialog from "../generic/confirm-dialog";
+import GenericDialog from "../generic/generic-dialog";
+import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
+import BasicLayout from "../layouts/basic-layout";
+import ElementSettingsPane from "../layouts/element-settings-pane";
 import {
   CircularProgress,
   Divider,
@@ -8,34 +29,16 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
 import { History } from "history";
 import produce from "immer";
 import { KeycloakInstance } from "keycloak-js";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import Api from "../../api/api";
-// eslint-disable-next-line max-len
-import { Exhibition, ExhibitionDeviceGroup, ExhibitionRoom, GroupContentVersion, GroupContentVersionStatus } from "../../generated/client";
-import { ContentVersion } from "../../generated/client/models/ContentVersion";
-import strings from "../../localization/strings";
-import { ReduxActions, ReduxState } from "../../store";
-import styles from "../../styles/exhibition-view";
-import theme from "../../styles/theme";
-import { AccessToken, ActionButton, BreadcrumbData, ConfirmDialogData } from '../../types';
-import CardItem from "../generic/card/card-item";
-import CardList from "../generic/card/card-list";
-import ConfirmDialog from "../generic/confirm-dialog";
-import GenericDialog from "../generic/generic-dialog";
-import GroupContentVersionsInfo from "../group-content-version/group-content-versions-info";
-import BasicLayout from "../layouts/basic-layout";
-import ElementSettingsPane from "../layouts/element-settings-pane";
-
-
 
 /**
  * Component props
@@ -71,7 +74,6 @@ interface State {
  * Component for group content versions screen
  */
 class GroupContentVersionsScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -94,7 +96,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         positiveButtonText: strings.confirmDialog.delete,
         deletePossible: true,
         onCancel: this.onCloseOrCancelClick,
-        onClose: this.onCloseOrCancelClick,
+        onClose: this.onCloseOrCancelClick
       }
     };
   }
@@ -106,7 +108,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     this.setState({ loading: true });
     await this.fetchData();
     this.setState({ loading: false });
-  }
+  };
 
   /**
    * Component render method
@@ -120,14 +122,14 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <BasicLayout
-          keycloak={ keycloak }
-          history={ history }
-          title={ contentVersion?.name || "" }
-          breadcrumbs={ breadcrumbs }
-          actionBarButtons={ actionBarButtons }
+          keycloak={keycloak}
+          history={history}
+          title={contentVersion?.name || ""}
+          breadcrumbs={breadcrumbs}
+          actionBarButtons={actionBarButtons}
         >
-          <div className={ classes.loader }>
-            <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+          <div className={classes.loader}>
+            <CircularProgress size={50} color="secondary"></CircularProgress>
           </div>
         </BasicLayout>
       );
@@ -135,90 +137,94 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
     return (
       <BasicLayout
-        keycloak={ keycloak }
-        history={ history }
-        title={ contentVersion?.name || "" }
-        breadcrumbs={ breadcrumbs }
-        actionBarButtons={ actionBarButtons }
+        keycloak={keycloak}
+        history={history}
+        title={contentVersion?.name || ""}
+        breadcrumbs={breadcrumbs}
+        actionBarButtons={actionBarButtons}
       >
-        { this.renderGroupContentVersionCardsList() }
-        { this.renderAddDialog() }
-        { this.renderConfirmDeleteDialog() }
+        {this.renderGroupContentVersionCardsList()}
+        {this.renderAddDialog()}
+        {this.renderConfirmDeleteDialog()}
         <ElementSettingsPane
-          open={ true }
-          title={ strings.generic.properties }
-          width={ selectedGroupContentVersion && contentVersion ? 320 : 0 }
+          open={true}
+          title={strings.generic.properties}
+          width={selectedGroupContentVersion && contentVersion ? 320 : 0}
         >
-          { selectedGroupContentVersion && contentVersion &&
+          {selectedGroupContentVersion && contentVersion && (
             <GroupContentVersionsInfo
-              contentVersion={ contentVersion }
-              groupContentVersion={ selectedGroupContentVersion }
-              onValueChange={ this.onGroupContentValueChange }
+              contentVersion={contentVersion}
+              groupContentVersion={selectedGroupContentVersion}
+              onValueChange={this.onGroupContentValueChange}
             />
-          }
+          )}
         </ElementSettingsPane>
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Renders group content versions as card list
    */
   private renderGroupContentVersionCardsList = () => {
-    const { groupContentVersions, exhibition, room, contentVersion, selectedGroupContentVersion, deviceGroups } = this.state;
-    const cards = groupContentVersions.map(groupContentVersion => {
+    const {
+      groupContentVersions,
+      exhibition,
+      room,
+      contentVersion,
+      selectedGroupContentVersion,
+      deviceGroups
+    } = this.state;
+    const cards = groupContentVersions.map((groupContentVersion) => {
       const groupContentVersionId = groupContentVersion.id;
       if (!groupContentVersionId || !exhibition || !room || !contentVersion) {
         return null;
       }
 
-      const deviceGroupName = deviceGroups.find(group => group.id === groupContentVersion.deviceGroupId)?.name || "";
+      const deviceGroupName =
+        deviceGroups.find((group) => group.id === groupContentVersion.deviceGroupId)?.name || "";
 
       return (
         <CardItem
-          key={ groupContentVersionId }
-          title={ groupContentVersion.name }
-          subtitle={ contentVersion?.name }
+          key={groupContentVersionId}
+          title={groupContentVersion.name}
+          subtitle={contentVersion?.name}
           context={
             <div>
-              <Typography variant="body1">{ `${room.name} /` }</Typography>
-              <Typography variant="body1">{ deviceGroupName }</Typography>
+              <Typography variant="body1">{`${room.name} /`}</Typography>
+              <Typography variant="body1">{deviceGroupName}</Typography>
             </div>
           }
-          onClick={ () => this.onCardClick(groupContentVersion) }
-          menuOptions={ this.getCardMenuOptions(groupContentVersion) }
-          selected={ selectedGroupContentVersion?.id === groupContentVersion.id }
-          onActionClick={ () => this.openTimeline(groupContentVersion) }
+          onClick={() => this.onCardClick(groupContentVersion)}
+          menuOptions={this.getCardMenuOptions(groupContentVersion)}
+          selected={selectedGroupContentVersion?.id === groupContentVersion.id}
+          onActionClick={() => this.openTimeline(groupContentVersion)}
         />
       );
     });
 
-    return (
-      <CardList title={ strings.groupContentVersion.title }>
-        { cards }
-      </CardList>
-    );
-  }
+    return <CardList title={strings.groupContentVersion.title}>{cards}</CardList>;
+  };
 
   /**
    * Renders add dialog
    */
   private renderAddDialog = () => {
-    return(
+    return (
       <GenericDialog
-        cancelButtonText={ strings.genericDialog.cancel }
-        positiveButtonText={ strings.genericDialog.add }
-        title={ strings.groupContentVersion.addDialogTitle }
-        error={ false }
-        onConfirm={ this.onDialogSaveClick }
-        onCancel={ this.onCloseOrCancelClick }
-        open={ this.state.addDialogOpen }
-        onClose={ this.onCloseOrCancelClick }
+        cancelButtonText={strings.genericDialog.cancel}
+        positiveButtonText={strings.genericDialog.add}
+        title={strings.groupContentVersion.addDialogTitle}
+        error={false}
+        onConfirm={this.onDialogSaveClick}
+        onCancel={this.onCloseOrCancelClick}
+        open={this.state.addDialogOpen}
+        onClose={this.onCloseOrCancelClick}
       >
-        { this.renderDialogContent() }
+        {this.renderDialogContent()}
       </GenericDialog>
     );
-  }
+  };
 
   /**
    * Renders delete confirmation dialog
@@ -226,13 +232,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
   private renderConfirmDeleteDialog = () => {
     const { deleteDialogOpen, confirmDialogData } = this.state;
 
-    return (
-      <ConfirmDialog
-        open={ deleteDialogOpen }
-        confirmDialogData={ confirmDialogData }
-      />
-    );
-  }
+    return <ConfirmDialog open={deleteDialogOpen} confirmDialogData={confirmDialogData} />;
+  };
 
   /**
    * Render dialog content
@@ -243,46 +244,52 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       return;
     }
 
-    const deviceGroupSelectItems = deviceGroups.filter(group => group.roomId === room.id).map(group =>
-      <MenuItem key={ group.id } value={ group.id }>{ group.name }</MenuItem>
-    );
+    const deviceGroupSelectItems = deviceGroups
+      .filter((group) => group.roomId === room.id)
+      .map((group) => (
+        <MenuItem key={group.id} value={group.id}>
+          {group.name}
+        </MenuItem>
+      ));
 
     return (
-      <Grid container spacing={ 2 } style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={ 12 }>
+      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
+        <Grid item xs={12}>
           <TextField
-            label={ strings.groupContentVersion.name }
+            label={strings.groupContentVersion.name}
             fullWidth
             type="text"
             name="name"
             variant="outlined"
-            value={ selectedGroupContentVersion ? selectedGroupContentVersion.name : "" }
-            onChange={ this.onValueChange }
+            value={selectedGroupContentVersion ? selectedGroupContentVersion.name : ""}
+            onChange={this.onValueChange}
           />
-          <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: 19, width: "100%" }} />
+          <Divider
+            variant="fullWidth"
+            color="rgba(0,0,0,0.1)"
+            style={{ marginTop: 19, width: "100%" }}
+          />
         </Grid>
-        <Grid item xs={ 12 }>
+        <Grid item xs={12}>
           <FormControl>
-            <InputLabel>
-              { strings.groupContentVersion.deviceGroup }
-            </InputLabel>
+            <InputLabel>{strings.groupContentVersion.deviceGroup}</InputLabel>
             <Select
               fullWidth
-              label={ strings.groupContentVersion.deviceGroup }
+              label={strings.groupContentVersion.deviceGroup}
               name="deviceGroupId"
-              value={ selectedGroupContentVersion ? selectedGroupContentVersion.deviceGroupId : "" }
-              onChange={ this.onValueChange }
+              value={selectedGroupContentVersion ? selectedGroupContentVersion.deviceGroupId : ""}
+              onChange={this.onValueChange}
             >
-              { deviceGroupSelectItems }
+              {deviceGroupSelectItems}
             </Select>
             <FormHelperText>
-              { strings.helpTexts.groupContentVersions.selectDeviceGroupDescription }
+              {strings.helpTexts.groupContentVersions.selectDeviceGroupDescription}
             </FormHelperText>
           </FormControl>
         </Grid>
       </Grid>
     );
-  }
+  };
 
   /**
    * Fetches component data
@@ -296,8 +303,14 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     const groupContentVersionApi = Api.getGroupContentVersionsApi(accessToken);
     const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
 
-    const [ exhibition, room, contentVersion, groupContentVersions, deviceGroups ] = 
-      await Promise.all<Exhibition, ExhibitionRoom, ContentVersion, GroupContentVersion[], ExhibitionDeviceGroup[]>([
+    const [exhibition, room, contentVersion, groupContentVersions, deviceGroups] =
+      await Promise.all<
+        Exhibition,
+        ExhibitionRoom,
+        ContentVersion,
+        GroupContentVersion[],
+        ExhibitionDeviceGroup[]
+      >([
         exhibitionsApi.findExhibition({ exhibitionId }),
         exhibitionRoomsApi.findExhibitionRoom({ exhibitionId, roomId }),
         contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
@@ -306,7 +319,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       ]);
 
     this.setState({ exhibition, room, contentVersion, groupContentVersions, deviceGroups });
-  }
+  };
 
   /**
    * Gets card menu options
@@ -315,11 +328,13 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    * @returns card menu options as action button array
    */
   private getCardMenuOptions = (groupContentVersion: GroupContentVersion): ActionButton[] => {
-    return [{
-      name: strings.exhibitions.cardMenu.delete,
-      action: () => this.onDeleteGroupContentVersionClick(groupContentVersion)
-    }];
-  }
+    return [
+      {
+        name: strings.exhibitions.cardMenu.delete,
+        action: () => this.onDeleteGroupContentVersionClick(groupContentVersion)
+      }
+    ];
+  };
 
   /**
    * Gets breadcrumbs data
@@ -332,10 +347,13 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     return [
       { name: strings.exhibitions.listTitle, url: "/exhibitions" },
       { name: exhibition?.name || "", url: `/exhibitions/${exhibitionId}/content` },
-      { name: room?.name || "", url: `/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}` },
+      {
+        name: room?.name || "",
+        url: `/exhibitions/${exhibitionId}/content/floors/${room?.floorId}/rooms/${roomId}`
+      },
       { name: contentVersion?.name || "" }
     ];
-  }
+  };
 
   /**
    * Gets action buttons
@@ -355,7 +373,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
         action: this.onAddGroupContentVersionClick
       }
     ];
-  }
+  };
 
   /**
    * Event handler for delete group content version click
@@ -369,8 +387,8 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       deleteDialogOpen: true,
       selectedGroupContentVersion: groupContentVersion,
       confirmDialogData: tempDeleteData
-    })
-  }
+    });
+  };
 
   /**
    * Deletes group content version
@@ -387,22 +405,26 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
 
     groupContentVersionApi.deleteGroupContentVersion({
       exhibitionId: exhibitionId,
-      groupContentVersionId: groupContentVersion.id,
+      groupContentVersionId: groupContentVersion.id
     });
 
     this.setState({
       deleteDialogOpen: false,
       selectedGroupContentVersion: undefined,
-      groupContentVersions: this.state.groupContentVersions.filter(version => version.id !== groupContentVersion.id)
+      groupContentVersions: this.state.groupContentVersions.filter(
+        (version) => version.id !== groupContentVersion.id
+      )
     });
-  }
+  };
 
   /**
    * Event handler for value change
    *
    * @param event react change event
    */
-  private onValueChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>) => {
+  private onValueChange = (
+    event: React.ChangeEvent<HTMLInputElement | { name?: string | undefined; value: any }>
+  ) => {
     const { selectedGroupContentVersion } = this.state;
     const key = event.target.name;
     const value = event.target.value;
@@ -411,9 +433,9 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedGroupContentVersion : { ...selectedGroupContentVersion, [key] : value },
+      selectedGroupContentVersion: { ...selectedGroupContentVersion, [key]: value }
     });
-  }
+  };
 
   /**
    * Event handler for card click
@@ -424,7 +446,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
     this.setState({
       selectedGroupContentVersion: groupContentVersion
     });
-  }
+  };
 
   /**
    * Opens timeline screen
@@ -433,8 +455,10 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    */
   private openTimeline = (groupContentVersion: GroupContentVersion) => {
     const { history } = this.props;
-    history.push(`${history.location.pathname}/groupContentVersions/${groupContentVersion.id}/timeline`);
-  }
+    history.push(
+      `${history.location.pathname}/groupContentVersions/${groupContentVersion.id}/timeline`
+    );
+  };
 
   /**
    * Event handler for group content value change
@@ -443,9 +467,11 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
    */
   private onGroupContentValueChange = (groupContentVersion: GroupContentVersion) => {
     const { groupContentVersions } = this.state;
-    const temp = [ ...groupContentVersions ];
+    const temp = [...groupContentVersions];
 
-    const index = groupContentVersions.findIndex(version => version.id === groupContentVersion.id);
+    const index = groupContentVersions.findIndex(
+      (version) => version.id === groupContentVersion.id
+    );
     if (index > -1) {
       temp.splice(index, 1, groupContentVersion);
     }
@@ -454,7 +480,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       selectedGroupContentVersion: groupContentVersion,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for dialog save click
@@ -473,7 +499,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       groupContentVersion: selectedGroupContentVersion
     });
 
-    const groupContentVersions = produce(this.state.groupContentVersions, draft => {
+    const groupContentVersions = produce(this.state.groupContentVersions, (draft) => {
       draft.push(createdContentVersion);
     });
 
@@ -483,7 +509,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       selectedGroupContentVersion: undefined,
       dataChanged: false
     });
-  }
+  };
 
   /**
    * Event handler for close of cancel click
@@ -494,7 +520,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       deleteDialogOpen: false,
       selectedGroupContentVersion: undefined
     });
-  }
+  };
 
   /**
    * Event handler for add group content version click
@@ -512,7 +538,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       addDialogOpen: true,
       selectedGroupContentVersion: selectedGroupContentVersion
     });
-  }
+  };
 
   /**
    * Event handler for save click
@@ -536,7 +562,7 @@ class GroupContentVersionsScreen extends React.Component<Props, State> {
       selectedGroupContentVersion: updatedGroupContentVersion,
       dataChanged: false
     });
-  }
+  };
 }
 
 /**
@@ -557,9 +583,10 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
+  return {};
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GroupContentVersionsScreen));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(GroupContentVersionsScreen));

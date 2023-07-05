@@ -1,7 +1,7 @@
-import * as React from "react";
 import strings from "../../localization/strings";
 import { TextField } from "@mui/material";
-import { CSSProperties } from '@mui/material/styles';
+import { CSSProperties } from "@mui/material/styles";
+import * as React from "react";
 
 /**
  * Component props
@@ -26,7 +26,6 @@ interface State {
  * Component for exhibition view
  */
 export default class FloorPlanCropProperties extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -45,7 +44,7 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
    */
   public componentDidMount = () => {
     this.updateMeasurements();
-  }
+  };
 
   /**
    * Component did update handler
@@ -54,7 +53,7 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
     if (prevProps !== this.props) {
       this.updateMeasurements();
     }
-  } 
+  };
 
   /**
    * Update measurements
@@ -87,32 +86,32 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
           fullWidth
           disabled
           type="number"
-          style={ textFieldStyle }
-          label={ strings.floorPlan.properties.imageWidth }
-          value={ Math.round(this.props.imageWidth || 0) }
-        />        
+          style={textFieldStyle}
+          label={strings.floorPlan.properties.imageWidth}
+          value={Math.round(this.props.imageWidth || 0)}
+        />
         <TextField
           fullWidth
           disabled
           type="number"
-          style={ textFieldStyle }
-          label={ strings.floorPlan.properties.imageHeight }
-          value={ Math.round(this.props.imageHeight || 0) }
+          style={textFieldStyle}
+          label={strings.floorPlan.properties.imageHeight}
+          value={Math.round(this.props.imageHeight || 0)}
         />
         <TextField
           fullWidth
           type="number"
-          style={ textFieldStyle }
-          label={ strings.floorPlan.properties.physicalWidth }
-          value={ this.state.physicalWidth }
-          onChange={ this.onPhysicalWidthChange }
+          style={textFieldStyle}
+          label={strings.floorPlan.properties.physicalWidth}
+          value={this.state.physicalWidth}
+          onChange={this.onPhysicalWidthChange}
         />
         <TextField
           fullWidth
           type="number"
-          label={ strings.floorPlan.properties.physicalHeight }
-          value={ this.state.physicalHeight }
-          onChange={ this.onPhysicalHeightChange }
+          label={strings.floorPlan.properties.physicalHeight}
+          value={this.state.physicalHeight}
+          onChange={this.onPhysicalHeightChange}
         />
       </div>
     );
@@ -120,24 +119,23 @@ export default class FloorPlanCropProperties extends React.Component<Props, Stat
 
   /**
    * Event handler for width changes
-   * 
+   *
    * @param event event
    */
   private onPhysicalWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const value = Number(target.value);
     this.props.onCropPropertyChange("naturalWidth", value);
-  }
-
+  };
 
   /**
    * Event handler for height changes
-   * 
+   *
    * @param event event
    */
   private onPhysicalHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const value = Number(target.value);
     this.props.onCropPropertyChange("naturalHeight", value);
-  }
+  };
 }

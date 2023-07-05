@@ -1,18 +1,22 @@
-import * as React from "react";
-import Measure, { ContentRect } from 'react-measure';
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType
+} from "../../../generated/client";
 import styles from "../../../styles/page-preview";
-import { PageLayoutView, PageLayoutViewProperty, PageLayoutWidgetType } from "../../../generated/client";
-import { CSSProperties } from '@mui/material/styles';
-import PagePreviewComponentEditor from "./page-preview-component";
+import { CSSPropertyValuePairs, ResourceMap } from "../../../types";
 import DisplayMetrics from "../../../types/display-metrics";
-import { ResourceMap, CSSPropertyValuePairs } from "../../../types";
 import AndroidUtils from "../../../utils/android-utils";
+import PreviewUtils from "../../../utils/preview-utils";
 import { ExhibitionPageTabHolder } from "../../content-editor/constants";
 import TabItem from "../../generic/tab-item";
-import PreviewUtils from "../../../utils/preview-utils";
 import { LayoutGravityValuePairs } from "../../layout/editor-constants/values";
+import PagePreviewComponentEditor from "./page-preview-component";
+import { CSSProperties } from "@mui/material/styles";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
+import Measure, { ContentRect } from "react-measure";
 
 /**
  * Interface representing component properties
@@ -27,7 +31,10 @@ interface Props extends WithStyles<typeof styles> {
   displayMetrics: DisplayMetrics;
   tabMap?: Map<string, ExhibitionPageTabHolder>;
   onResize?: (contentRect: ContentRect) => void;
-  handleLayoutProperties: (properties: PageLayoutViewProperty[], styles: CSSProperties) => CSSProperties;
+  handleLayoutProperties: (
+    properties: PageLayoutViewProperty[],
+    styles: CSSProperties
+  ) => CSSProperties;
   onViewClick?: (view: PageLayoutView) => void;
   onTabClick?: (viewId: string, newIndex: number) => void;
 }
@@ -35,14 +42,12 @@ interface Props extends WithStyles<typeof styles> {
 /**
  * Interface representing component state
  */
-interface State {
-}
+interface State {}
 
 /**
  * Component for rendering FrameLayout views
  */
 class PagePreviewFrameLayout extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -50,8 +55,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -61,24 +65,21 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
     const { onResize, tabMap, view } = this.props;
     const tabData = PreviewUtils.getTabContent(view, tabMap);
     return (
-      <Measure onResize={ onResize } bounds={ true }>
+      <Measure onResize={onResize} bounds={true}>
         {({ measureRef }) => (
           <div
-            ref={ measureRef }
-            style={ this.resolveStyles() }
-            onClick={ this.onClick }
-            onMouseOver={ this.onMouseOver }
-            onMouseOut={ this.onMouseOut }
+            ref={measureRef}
+            style={this.resolveStyles()}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
+            onMouseOut={this.onMouseOut}
           >
-            { tabData.length > 0 ?
-              this.renderTabContent(tabData) :
-              this.renderChildren()
-            }
+            {tabData.length > 0 ? this.renderTabContent(tabData) : this.renderChildren()}
           </div>
         )}
       </Measure>
     );
-  }
+  };
 
   /**
    * Renders layout child components
@@ -97,23 +98,23 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       handleLayoutProperties
     } = this.props;
 
-    return (view.children || []).map((child, index) =>
+    return (view.children || []).map((child, index) => (
       <PagePreviewComponentEditor
-        key={ index }
-        view={ child }
-        parentView={ view }
-        selectedView={ selectedView }
-        layer={ layer }
-        resourceMap={ resourceMap }
-        displayMetrics={ displayMetrics }
-        scale={ scale }
-        handleLayoutProperties={ handleLayoutProperties }
-        onViewClick={ onViewClick }
-        onTabClick={ onTabClick }
-        tabMap={ tabMap }
+        key={index}
+        view={child}
+        parentView={view}
+        selectedView={selectedView}
+        layer={layer}
+        resourceMap={resourceMap}
+        displayMetrics={displayMetrics}
+        scale={scale}
+        handleLayoutProperties={handleLayoutProperties}
+        onViewClick={onViewClick}
+        onTabClick={onTabClick}
+        tabMap={tabMap}
       />
-    );
-  }
+    ));
+  };
 
   /**
    * Renders tab contents
@@ -135,16 +136,16 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
 
       return (
         <TabItem
-          key={ `TabItem-${index}` }
-          index={ index }
-          resource={ tab.resources[0] }
-          visible={ index === activeIndex }
+          key={`TabItem-${index}`}
+          index={index}
+          resource={tab.resources[0]}
+          visible={index === activeIndex}
         />
       );
     });
 
     return tabItems;
-  }
+  };
 
   /**
    * Handles an unknown property logging
@@ -154,7 +155,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private handleUnknownProperty = (property: PageLayoutViewProperty, reason: string) => {
     // console.log(`PagePreviewFrameLayout: don't know how to handle layout property because ${reason}`, property.name, property.value);
-  }
+  };
 
   /**
    * Resolves component container styles
@@ -164,28 +165,32 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
   private resolveStyles = (): CSSProperties => {
     const { view, parentView, layer, handleLayoutProperties } = this.props;
     const properties = view.properties;
-    const parentIsFrameLayout = parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
+    const parentIsFrameLayout =
+      parentView && parentView.widget === PageLayoutWidgetType.FrameLayout;
     const result: CSSProperties = handleLayoutProperties(properties, {
       display: "flex",
       zIndex: layer,
       position: parentIsFrameLayout ? "absolute" : "relative"
     });
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       if (property.name.startsWith("layout_")) {
         switch (property.name) {
           case "layout_gravity":
             if (parentIsFrameLayout) {
-              const gravityProps: CSSPropertyValuePairs[] = AndroidUtils.layoutGravityToCSSPositioning(property.value as LayoutGravityValuePairs);
-              gravityProps.forEach(prop => {
+              const gravityProps: CSSPropertyValuePairs[] =
+                AndroidUtils.layoutGravityToCSSPositioning(
+                  property.value as LayoutGravityValuePairs
+                );
+              gravityProps.forEach((prop) => {
                 result[prop.key] = prop.value;
               });
             } else {
               result.alignSelf = AndroidUtils.gravityToAlignSelf(property.value);
             }
-          break;
+            break;
           default:
-          break;
+            break;
         }
 
         return;
@@ -194,16 +199,16 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
       switch (property.name) {
         case "background":
           result.backgroundColor = property.value;
-        break;
+          break;
         default:
           this.handleUnknownProperty(property, "unknown property");
-        break;
+          break;
       }
     });
     result.boxSizing = "border-box";
 
     return result;
-  }
+  };
 
   /**
    * Event handler for mouse over
@@ -212,7 +217,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private onMouseOver = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for mouse out
@@ -221,7 +226,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private onMouseOut = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 
   /**
    * Event handler for mouse click
@@ -230,7 +235,7 @@ class PagePreviewFrameLayout extends React.Component<Props, State> {
    */
   private onClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-  }
+  };
 }
 
 export default withStyles(styles)(PagePreviewFrameLayout);

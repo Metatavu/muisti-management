@@ -1,7 +1,14 @@
-import { ExhibitionPageResource, PageLayoutView, PageLayoutViewProperty, ExhibitionPageResourceType, PageLayoutWidgetType, PageResourceMode } from "../generated/client";
+import { TabStructure } from "../components/content-editor/constants";
+import {
+  ExhibitionPageResource,
+  ExhibitionPageResourceType,
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutWidgetType,
+  PageResourceMode
+} from "../generated/client";
 import strings from "../localization/strings";
 import { MediaType } from "../types";
-import { TabStructure } from "../components/content-editor/constants";
 import { parseStringToJsonObject } from "./content-editor-utils";
 
 /**
@@ -26,7 +33,6 @@ export interface PageResourceCache {
  * Utility class for resources
  */
 export default class ResourceUtils {
-
   /**
    * Returns a custom resource holder object that contains all page layout resources and
    * map of resource ID's mapped by widget UUID
@@ -40,8 +46,10 @@ export default class ResourceUtils {
     let resourceToWidgetType: Map<string, PageLayoutWidgetType> = new Map();
     let tabPropertyIdToTabResourceId: Map<string, TabResourceCache> = new Map();
 
-    const resourceProperties = layoutView.properties.filter(property => property.value.startsWith("@resources/"));
-    resourceProperties.forEach(property => {
+    const resourceProperties = layoutView.properties.filter((property) =>
+      property.value.startsWith("@resources/")
+    );
+    resourceProperties.forEach((property) => {
       const resource = translateLayoutPropertyToResource(property, layoutView);
       if (resource) {
         const splitPropertyValue = property.value.split("/");
@@ -57,10 +65,10 @@ export default class ResourceUtils {
           ids.set(layoutView.id, foundElement);
           resourceToWidgetType.set(propertyId, layoutView.widget);
           if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
-            tabPropertyIdToTabResourceId.set(
-              layoutView.id,
-              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
-            );
+            tabPropertyIdToTabResourceId.set(layoutView.id, {
+              tabResourceId: propertyId,
+              tabContentContainerId: layoutView.contentContainerId
+            });
           }
         } else {
           const newList = [];
@@ -68,10 +76,10 @@ export default class ResourceUtils {
           ids.set(layoutView.id, newList);
           resourceToWidgetType.set(propertyId, layoutView.widget);
           if (layoutView.widget === PageLayoutWidgetType.MaterialTabLayout) {
-            tabPropertyIdToTabResourceId.set(
-              layoutView.id,
-              { tabResourceId: propertyId, tabContentContainerId: layoutView.contentContainerId }
-            );
+            tabPropertyIdToTabResourceId.set(layoutView.id, {
+              tabResourceId: propertyId,
+              tabContentContainerId: layoutView.contentContainerId
+            });
           }
         }
         foundResources.push(resource);
@@ -80,11 +88,17 @@ export default class ResourceUtils {
 
     const { children } = layoutView;
     if (children && children.length) {
-      children.forEach(child => {
+      children.forEach((child) => {
         const childResources = ResourceUtils.getResourcesFromLayoutData(child);
         foundResources.push(...childResources.resources);
-        ids = new Map([...Array.from(ids.entries()), ...Array.from(childResources.widgetIds.entries())]);
-        resourceToWidgetType = new Map([...Array.from(resourceToWidgetType.entries()), ...Array.from(childResources.resourceToWidgetType.entries())]);
+        ids = new Map([
+          ...Array.from(ids.entries()),
+          ...Array.from(childResources.widgetIds.entries())
+        ]);
+        resourceToWidgetType = new Map([
+          ...Array.from(resourceToWidgetType.entries()),
+          ...Array.from(childResources.resourceToWidgetType.entries())
+        ]);
         tabPropertyIdToTabResourceId = new Map([
           ...Array.from(tabPropertyIdToTabResourceId.entries()),
           ...Array.from(childResources.tabPropertyIdToTabResourceId.entries())
@@ -98,7 +112,7 @@ export default class ResourceUtils {
       resourceToWidgetType: resourceToWidgetType,
       tabPropertyIdToTabResourceId
     } as PageResourceCache;
-  }
+  };
 
   /**
    * Get resource mode display name
@@ -115,7 +129,7 @@ export default class ResourceUtils {
       default:
         return strings.exhibition.resources.static.title;
     }
-  }
+  };
 
   /**
    * Get media type based on resource type
@@ -132,7 +146,7 @@ export default class ResourceUtils {
       default:
         return undefined;
     }
-  }
+  };
 
   /**
    * Get resources from tab component
@@ -142,12 +156,15 @@ export default class ResourceUtils {
    * @param contentContainerId content container id
    * @returns Tab structure object
    */
-  public static getResourcesForTabComponent = (resources: ExhibitionPageResource[], tabResourceIndex: number, contentContainerId?: string): TabStructure => {
+  public static getResourcesForTabComponent = (
+    resources: ExhibitionPageResource[],
+    tabResourceIndex: number,
+    contentContainerId?: string
+  ): TabStructure => {
     const data = resources[tabResourceIndex].data;
     const parsed = parseStringToJsonObject<typeof data, TabStructure>(data);
     return { contentContainerId: contentContainerId, ...parsed } as TabStructure;
-  }
-
+  };
 }
 
 /**
@@ -158,7 +175,10 @@ export default class ResourceUtils {
  *
  * @returns exhibition page resource
  */
-function translateLayoutPropertyToResource(property: PageLayoutViewProperty, layoutView: PageLayoutView): ExhibitionPageResource | undefined {
+function translateLayoutPropertyToResource(
+  property: PageLayoutViewProperty,
+  layoutView: PageLayoutView
+): ExhibitionPageResource | undefined {
   const splitPropertyValue = property.value.split("/");
   if (splitPropertyValue.length < 2) {
     return;
@@ -177,7 +197,10 @@ function translateLayoutPropertyToResource(property: PageLayoutViewProperty, lay
  * @param property page layout view property
  * @returns correct exhibition page resource type
  */
-function resolveResourceType(layoutView: PageLayoutView, property: PageLayoutViewProperty): ExhibitionPageResourceType {
+function resolveResourceType(
+  layoutView: PageLayoutView,
+  property: PageLayoutViewProperty
+): ExhibitionPageResourceType {
   switch (property.name) {
     case "backgroundImage":
       return ExhibitionPageResourceType.Image;

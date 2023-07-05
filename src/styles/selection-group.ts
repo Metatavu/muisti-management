@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-  
   root: {
     backgroundColor: "#f3f3f3",
     borderRadius: 4
@@ -16,7 +15,7 @@ export default createStyles({
     "&.no-text": {
       "& .MuiButton-startIcon": {
         margin: 0
-      },
+      }
     },
     "&.selected": {
       color: theme.palette.secondary.main,
@@ -24,5 +23,4 @@ export default createStyles({
       boxShadow: "1px 1px 2px rgba(0,0,0,0.2)"
     }
   }
-
 });

@@ -1,11 +1,11 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { TextField } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/add-device-editor";
-import AndroidUtils from "../../../utils/android-utils";
 import DisplayMetrics from "../../../types/display-metrics";
+import AndroidUtils from "../../../utils/android-utils";
+import { TextField } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -27,16 +27,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for generic layout editor select
  */
-class GenericPropertyTextField extends React.Component<Props, State> {
-
+class GenericPropertyTextField extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -44,25 +37,25 @@ class GenericPropertyTextField extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
    * Component render method
    */
   public render() {
-    const { property, textFieldType, textFieldId, disabled, textFieldUnit, tooltip, label } = this.props;
+    const { property, textFieldType, textFieldId, disabled, textFieldUnit, tooltip, label } =
+      this.props;
 
     return (
       <TextField
-        label={ label }
-        title={ tooltip }
-        disabled={ disabled }
-        type={ textFieldType }
-        name={ textFieldId }
-        value={ textFieldUnit ? this.convertTextFieldUnit(property.value) : property.value }
-        onChange={ this.handleTextFieldChange }
+        label={label}
+        title={tooltip}
+        disabled={disabled}
+        type={textFieldType}
+        name={textFieldId}
+        value={textFieldUnit ? this.convertTextFieldUnit(property.value) : property.value}
+        onChange={this.handleTextFieldChange}
       />
     );
   }
@@ -85,7 +78,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
     const propertyToUpdate = { ...property } as PageLayoutViewProperty;
     propertyToUpdate.value = value;
     onTextFieldChange(propertyToUpdate);
-  }
+  };
 
   /**
    * Converts textfield units to units used by the preview
@@ -98,9 +91,7 @@ class GenericPropertyTextField extends React.Component<Props, State> {
     const dp = parseFloat(value.substring(0, value.length - 2));
     const px = AndroidUtils.convertDpToPixel(displayMetrics, dp, 1);
     return px;
-  }
-
+  };
 }
 
-
-export default (withStyles(styles)(GenericPropertyTextField));
+export default withStyles(styles)(GenericPropertyTextField);

@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   list: {
     marginLeft: theme.spacing(4)
   },
@@ -14,7 +13,7 @@ export default createStyles({
     alignItems: "center",
     backgroundColor: "#fff"
   },
-  
+
   loader: {
     height: "100%",
     position: "absolute",
@@ -24,7 +23,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   editorLayout: {
@@ -33,12 +32,11 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto 1fr auto",
-    gridTemplateAreas: ' "navigation editor-view properties" ',
+    gridTemplateAreas: ' "navigation editor-view properties" '
   },
 
   enumEditorToolbar: {
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
     marginTop: theme.spacing(1)
   }
-
 });

@@ -1,11 +1,11 @@
-import * as React from "react";
-import { ExhibitionPage, ExhibitionDevice } from "../../generated/client";
+import { ExhibitionDevice, ExhibitionPage } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TextField, MenuItem } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/device-settings-editor";
 import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/device-settings-editor";
+import { MenuItem, TextField } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
@@ -19,19 +19,12 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for device settings editor
  */
-class DeviceSettingsEditor extends React.Component<Props, State> {
-
+class DeviceSettingsEditor extends React.Component<Props, {}> {
   /**
    * Constructor
-   * 
+   *
    * @param props component properties
    */
   constructor(props: Props) {
@@ -46,24 +39,30 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes, deviceData, devicePages } = this.props;
-    const selectIndexPageItems = devicePages.map(page => {
+    const selectIndexPageItems = devicePages.map((page) => {
       return (
-        <MenuItem key={ page.id } value={ page.id }>{ page.name }</MenuItem>
+        <MenuItem key={page.id} value={page.id}>
+          {page.name}
+        </MenuItem>
       );
     });
 
-    selectIndexPageItems.push(<MenuItem key={ "undefinedIndexPage" } value={ strings.generic.undefined }>{ strings.generic.undefined }</MenuItem>);
+    selectIndexPageItems.push(
+      <MenuItem key={"undefinedIndexPage"} value={strings.generic.undefined}>
+        {strings.generic.undefined}
+      </MenuItem>
+    );
 
     return (
       <>
         <TextField
-          className={ classes.nameInput }
+          className={classes.nameInput}
           variant="filled"
           fullWidth
-          label={ strings.generic.name }
+          label={strings.generic.name}
           name="name"
-          value={ deviceData.name }
-          onChange={ this.props.onChange }
+          value={deviceData.name}
+          onChange={this.props.onChange}
         />
       </>
     );
@@ -76,7 +75,7 @@ class DeviceSettingsEditor extends React.Component<Props, State> {
  * @param state store state
  */
 function mapStateToProps(state: ReduxState) {
-  return { };
+  return {};
 }
 
 /**
@@ -85,7 +84,10 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return { };
+  return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DeviceSettingsEditor));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(DeviceSettingsEditor));

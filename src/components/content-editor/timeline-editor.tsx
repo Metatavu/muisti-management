@@ -1,15 +1,24 @@
-import * as React from "react";
-
-import { List, ListItem, Paper, Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/components/content-editor/timeline-editor";
-import { ExhibitionDevice, ExhibitionPage, ContentVersion } from "../../generated/client/models";
-import classNames from "classnames";
-import theme from "../../styles/theme";
+import { ContentVersion, ExhibitionDevice, ExhibitionPage } from "../../generated/client/models";
 import strings from "../../localization/strings";
-import { DragDropContext, Droppable, Draggable, DropResult, ResponderProvided, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
+import styles from "../../styles/components/content-editor/timeline-editor";
+import theme from "../../styles/theme";
 import { PreviewDeviceData } from "../../types";
+import { List, ListItem, Paper, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import classNames from "classnames";
+import * as React from "react";
+import {
+  DragDropContext,
+  Draggable,
+  DraggableProvided,
+  DraggableStateSnapshot,
+  DropResult,
+  Droppable,
+  DroppableProvided,
+  DroppableStateSnapshot,
+  ResponderProvided
+} from "react-beautiful-dnd";
 
 /**
  * Interface representing component properties
@@ -24,7 +33,10 @@ interface Props extends WithStyles<typeof styles> {
   selectedDevice?: ExhibitionDevice;
   selectedPage?: ExhibitionPage;
   onClick: (page: ExhibitionPage, contentVersion?: ContentVersion) => () => void;
-  onDragEnd: (device: ExhibitionDevice, contentVersionId?: string) => (result: DropResult, provided: ResponderProvided) => void;
+  onDragEnd: (
+    device: ExhibitionDevice,
+    contentVersionId?: string
+  ) => (result: DropResult, provided: ResponderProvided) => void;
 }
 
 /**
@@ -35,8 +47,8 @@ interface Props extends WithStyles<typeof styles> {
 const TimelineEditor: React.FC<Props> = (props: Props) => {
   const { devices, classes } = props;
   return (
-    <List className={ classes.timeLineRowList }>
-      { devices.map(device => renderTimelineRow(device, props)) }
+    <List className={classes.timeLineRowList}>
+      {devices.map((device) => renderTimelineRow(device, props))}
     </List>
   );
 };
@@ -50,7 +62,7 @@ const TimelineEditor: React.FC<Props> = (props: Props) => {
 const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
   const { classes, onDragEnd, contentVersion, pages, pageType } = props;
   const devicePages: ExhibitionPage[] = pages
-    .filter(page => {
+    .filter((page) => {
       if (page.deviceId !== device.id) {
         return false;
       }
@@ -64,14 +76,14 @@ const renderTimelineRow = (device: ExhibitionDevice, props: Props) => {
     .sort((page1, page2) => page1.orderNumber - page2.orderNumber);
 
   return (
-    <ListItem divider key={ device.id } className={ classes.timelineRow }>
-      <DragDropContext onDragEnd={ onDragEnd(device, contentVersion?.id) }>
+    <ListItem divider key={device.id} className={classes.timelineRow}>
+      <DragDropContext onDragEnd={onDragEnd(device, contentVersion?.id)}>
         <Droppable
           droppableId="droppable"
           direction="horizontal"
-          isDropDisabled={ pageType === "idle" }
+          isDropDisabled={pageType === "idle"}
         >
-          { (provided, snapshot) => renderDroppableContent(devicePages, props, provided, snapshot) }
+          {(provided, snapshot) => renderDroppableContent(devicePages, props, provided, snapshot)}
         </Droppable>
       </DragDropContext>
     </ListItem>
@@ -96,17 +108,12 @@ const renderDroppableContent = (
   const { droppableProps, innerRef, placeholder } = provided;
   return (
     <List
-      ref={ innerRef }
-      className={
-        classNames(
-          classes.pageList,
-          snapshot.isDraggingOver && classes.isDraggedOver
-        )
-      }
-      { ...droppableProps }
+      ref={innerRef}
+      className={classNames(classes.pageList, snapshot.isDraggingOver && classes.isDraggedOver)}
+      {...droppableProps}
     >
-      { pages.map((page, index) => renderDraggablePage(index, page, props)) }
-      { placeholder }
+      {pages.map((page, index) => renderDraggablePage(index, page, props))}
+      {placeholder}
     </List>
   );
 };
@@ -120,12 +127,8 @@ const renderDroppableContent = (
  */
 const renderDraggablePage = (index: number, page: ExhibitionPage, props: Props) => {
   return (
-    <Draggable
-      key={ page.id }
-      draggableId={ page.id ?? "" }
-      index={ index }
-    >
-      { (provided, snapshot) => renderPageContent(index, page, props, provided, snapshot) }
+    <Draggable key={page.id} draggableId={page.id ?? ""} index={index}>
+      {(provided, snapshot) => renderPageContent(index, page, props, provided, snapshot)}
     </Draggable>
   );
 };
@@ -146,40 +149,34 @@ const renderPageContent = (
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot
 ) => {
-  const {
-    classes,
-    previewDevicesData,
-    contentVersion,
-    onClick,
-    pageType
-  } = props;
+  const { classes, previewDevicesData, contentVersion, onClick, pageType } = props;
 
   const { innerRef, draggableProps, dragHandleProps } = provided;
   const { isDragging } = snapshot;
   const { selectedPage } = props;
-  const deviceInPreview = previewDevicesData && previewDevicesData.find(previewData => previewData.device.id === page.deviceId);
+  const deviceInPreview =
+    previewDevicesData &&
+    previewDevicesData.find((previewData) => previewData.device.id === page.deviceId);
   const inPreview = page.id === deviceInPreview?.page?.id;
   const selected = selectedPage?.id === page.id;
   const isDeviceIndexPage = index === 0;
 
   return (
     <Paper
-      ref={ innerRef }
+      ref={innerRef}
       variant="outlined"
-      onClick={ onClick(page, contentVersion) }
-      className={
-        classNames(
-          classes.pageItemContent,
-          inPreview && classes.inPreview,
-          selected && classes.selected,
-          isDragging && classes.isDragged
-        )
-      }
-      { ...draggableProps }
-      { ...dragHandleProps }
+      onClick={onClick(page, contentVersion)}
+      className={classNames(
+        classes.pageItemContent,
+        inPreview && classes.inPreview,
+        selected && classes.selected,
+        isDragging && classes.isDragged
+      )}
+      {...draggableProps}
+      {...dragHandleProps}
     >
-      { page.name }
-      { isDeviceIndexPage && pageType !== "idle" &&
+      {page.name}
+      {isDeviceIndexPage && pageType !== "idle" && (
         <Typography
           variant="body1"
           style={{
@@ -187,9 +184,9 @@ const renderPageContent = (
             fontSize: 12
           }}
         >
-          { `(${strings.contentEditor.editor.indexPageId})` }
+          {`(${strings.contentEditor.editor.indexPageId})`}
         </Typography>
-      }
+      )}
     </Paper>
   );
 };

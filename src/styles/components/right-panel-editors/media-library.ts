@@ -1,5 +1,5 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
   root: {
@@ -14,7 +14,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   folder: {
     display: "flex",
@@ -27,17 +27,17 @@ export default createStyles({
     minWidth: "25px",
     width: "30px",
     right: "70px",
-    position: "absolute",
+    position: "absolute"
   },
   addButton: {
     minWidth: "25px",
     width: "30px",
     right: "40px",
-    position: "absolute",
+    position: "absolute"
   },
   tableItem: {
-    cursor: 'pointer',
-    position: 'relative',
+    cursor: "pointer",
+    position: "relative",
     transition: "background-color 0.2s ease-out, color 0.2s ease-out",
     "&:hover": {
       backgroundColor: "#f2f2f2"
@@ -45,8 +45,7 @@ export default createStyles({
     "&.focused": {
       backgroundColor: theme.palette.secondary.main,
       color: "#fff",
-      zIndex: 999,
+      zIndex: 999
     }
   }
-
 });

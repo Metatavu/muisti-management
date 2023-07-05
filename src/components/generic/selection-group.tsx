@@ -1,10 +1,10 @@
+import styles from "../../styles/selection-group";
+import { Button, Grid } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import classNames from "classnames";
 import * as React from "react";
 
-import { Button, Grid } from '@mui/material';
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import classNames from "classnames";
-import styles from "../../styles/selection-group";
 /**
  * Interface representing component properties
  */
@@ -45,29 +45,26 @@ export interface OptionData {
  */
 const SelectionGroup: React.FC<Props> = (props: Props) => {
   return (
-    <Grid
-      container
-      className={ props.classes.root }
-      spacing={ 1 }
-      justifyContent="space-between"
-    >
-      {
-        props.options.data.map((dataItem, index) => {
-          return (
-            <Grid item xs={ 6 }>
-              <Button
-                startIcon={ dataItem.icon }
-                className={ classNames( props.classes.button, !dataItem.text ? "no-text": "", props.selectedIndex === index ? "selected" : "" ) }
-                onClick={() => props.onChange(index) }
-              >
-                { dataItem.text }
-              </Button>
-            </Grid>
-          );
-        })
-      }
+    <Grid container className={props.classes.root} spacing={1} justifyContent="space-between">
+      {props.options.data.map((dataItem, index) => {
+        return (
+          <Grid item xs={6}>
+            <Button
+              startIcon={dataItem.icon}
+              className={classNames(
+                props.classes.button,
+                !dataItem.text ? "no-text" : "",
+                props.selectedIndex === index ? "selected" : ""
+              )}
+              onClick={() => props.onChange(index)}
+            >
+              {dataItem.text}
+            </Button>
+          </Grid>
+        );
+      })}
     </Grid>
   );
-}
+};
 
 export default withStyles(styles)(SelectionGroup);

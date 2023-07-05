@@ -1,6 +1,12 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField
+} from "@mui/material";
 import * as React from "react";
-
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 
 /**
  * Interface representing component properties
@@ -19,17 +25,9 @@ interface Props {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-
-}
-
-/**
  * React component displaying confirm dialogs
  */
-export default class PolygonDialog extends React.Component<Props, State> {
-
+export default class PolygonDialog extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -37,7 +35,7 @@ export default class PolygonDialog extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = { };
+    this.state = {};
   }
 
   /**
@@ -53,41 +51,43 @@ export default class PolygonDialog extends React.Component<Props, State> {
       onCancel,
       title,
       onConfirm,
-      roomName} = this.props;
+      roomName
+    } = this.props;
 
     return (
       <>
         <Dialog
-          open={ open }
-          onClose={ onClose }
+          open={open}
+          onClose={onClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="polygon-dialog-title">{ title }</DialogTitle>
+          <DialogTitle id="polygon-dialog-title">{title}</DialogTitle>
           <DialogContent>
             <TextField
-              fullWidth type="text"
-              label={ text }
-              value={ roomName || "" }
-              onChange={ this.props.onNameChange }
+              fullWidth
+              type="text"
+              label={text}
+              value={roomName || ""}
+              onChange={this.props.onNameChange}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={ onCancel } color="primary">
-              { cancelButtonText }
+            <Button onClick={onCancel} color="primary">
+              {cancelButtonText}
             </Button>
             <Button
               disableElevation
               variant="contained"
-              onClick={ onConfirm }
+              onClick={onConfirm}
               color="secondary"
               autoFocus
             >
-              { positiveButtonText }
+              {positiveButtonText}
             </Button>
           </DialogActions>
         </Dialog>
       </>
-    )
+    );
   }
 }

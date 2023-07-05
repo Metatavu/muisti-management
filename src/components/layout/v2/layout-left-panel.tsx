@@ -1,14 +1,14 @@
-import { MenuItem, Stack } from "@mui/material";
-import strings from "../../../localization/strings";
-import ElementNavigationPane from "../../layouts/element-navigation-pane";
-import LayoutTreeMenuHtml from "./layout-tree-menu-html";
-import { TreeObject } from "../../../types";
 import { DeviceModel, PageLayout } from "../../../generated/client";
-import { ChangeEvent } from "react";
 import { ScreenOrientation } from "../../../generated/client";
-import PanelSubtitle from "./panel-subtitle";
+import strings from "../../../localization/strings";
+import { TreeObject } from "../../../types";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import ElementNavigationPane from "../../layouts/element-navigation-pane";
+import LayoutTreeMenuHtml from "./layout-tree-menu-html";
+import PanelSubtitle from "./panel-subtitle";
+import { MenuItem, Stack } from "@mui/material";
+import { ChangeEvent } from "react";
 
 /**
  * Components properties
@@ -45,12 +45,8 @@ const LayoutLeftPanel = ({
    * @param model device model
    */
   const renderDeviceModelMenuItem = (model: DeviceModel) => (
-    <MenuItem
-      key={ model.id }
-      value={ model.id }
-      sx={{ color: "2196F3" }}
-    >
-      { `${ model.manufacturer } ${ model.model }` }
+    <MenuItem key={model.id} value={model.id} sx={{ color: "2196F3" }}>
+      {`${model.manufacturer} ${model.model}`}
     </MenuItem>
   );
 
@@ -59,9 +55,9 @@ const LayoutLeftPanel = ({
    */
   const renderDeviceModelSelect = () => (
     <>
-      <PanelSubtitle subtitle={ strings.layout.settings.deviceModelId }/>
-      <SelectBox value={ layout.modelId } onChange={ onDeviceModelChange }>
-        { deviceModels.map(renderDeviceModelMenuItem) }
+      <PanelSubtitle subtitle={strings.layout.settings.deviceModelId} />
+      <SelectBox value={layout.modelId} onChange={onDeviceModelChange}>
+        {deviceModels.map(renderDeviceModelMenuItem)}
       </SelectBox>
     </>
   );
@@ -71,10 +67,10 @@ const LayoutLeftPanel = ({
    */
   const renderScreenOrientationSelect = () => (
     <>
-      <PanelSubtitle subtitle={strings.layout.settings.screenOrientation }/>
-      <SelectBox value={ layout.screenOrientation } onChange={ onScreenOrientationChange }>
-        <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-        <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
+      <PanelSubtitle subtitle={strings.layout.settings.screenOrientation} />
+      <SelectBox value={layout.screenOrientation} onChange={onScreenOrientationChange}>
+        <MenuItem value={ScreenOrientation.Portrait}>{strings.layout.settings.portrait}</MenuItem>
+        <MenuItem value={ScreenOrientation.Landscape}>{strings.layout.settings.landscape}</MenuItem>
       </SelectBox>
     </>
   );
@@ -84,27 +80,26 @@ const LayoutLeftPanel = ({
    */
   const renderNameChange = () => (
     <>
-      <PanelSubtitle subtitle={ strings.layout.toolbar.name }/>
-      <TextField value={ layout.name } onChange={ onLayoutNameChange }/>
+      <PanelSubtitle subtitle={strings.layout.toolbar.name} />
+      <TextField value={layout.name} onChange={onLayoutNameChange} />
     </>
   );
 
   return (
-    <ElementNavigationPane width={ 250 } title={ strings.layout.title }>
-      <Stack spacing={ 2 }>
-        { renderNameChange() }
-        { renderDeviceModelSelect() }
-        { renderScreenOrientationSelect() }
-        <PanelSubtitle subtitle="Elementit"/>
+    <ElementNavigationPane width={250} title={strings.layout.title}>
+      <Stack spacing={2}>
+        {renderNameChange()}
+        {renderDeviceModelSelect()}
+        {renderScreenOrientationSelect()}
+        <PanelSubtitle subtitle="Elementit" />
         <LayoutTreeMenuHtml
-          treeObjects={ treeObjects }
-          selectedComponent={ selectedComponent }
-          onTreeComponentSelect={ onTreeComponentSelect }
-          onAddComponentClick={ onAddComponentClick }
+          treeObjects={treeObjects}
+          selectedComponent={selectedComponent}
+          onTreeComponentSelect={onTreeComponentSelect}
+          onAddComponentClick={onAddComponentClick}
         />
       </Stack>
     </ElementNavigationPane>
-
   );
 };
 

@@ -9,33 +9,27 @@ type Props = TextFieldProps & {
   number?: boolean;
   name?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
 /**
  * Text Field component
  */
-const TextField = ({
-  value,
-  placeholder,
-  number,
-  name,
-  onChange,
-  ...rest
-}: Props) => {
+const TextField = ({ value, placeholder, number, name, onChange, ...rest }: Props) => {
   return (
     <MuiTextField
       variant="standard"
-      name={ name }
+      name={name}
       fullWidth
-      placeholder={ placeholder }
-      value={ value }
-      { ...rest }
+      placeholder={placeholder}
+      value={value}
+      {...rest}
       inputProps={{
         pattern: number ? "[0-9]*" : undefined,
         sx: { backgroundColor: "#fbfbfb" }
       }}
-      onChange={ onChange }
-    />);
+      onChange={onChange}
+    />
+  );
 };
 
 export default TextField;

@@ -1,29 +1,27 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   treeView: {
     "& > div:focus": {
       outline: "none"
     },
     "& .MuiListItemSecondaryAction-root": {
       zIndex: 1000
-    },
+    }
   },
 
-  searchBar: {
-  },
+  searchBar: {},
 
   listItem: {
-    cursor: 'pointer',
-    position: 'relative',
+    cursor: "pointer",
+    position: "relative",
     paddingTop: 0,
     paddingBottom: 0,
     borderRadius: 0,
     transition: "background-color 0.2s ease-out, color 0.2s ease-out",
     "& p": {
-      fontSize: 12,
+      fontSize: 12
     },
     "&:hover": {
       backgroundColor: "#f2f2f2"
@@ -33,9 +31,8 @@ export default createStyles({
       color: "#fff",
       zIndex: 999,
       "& p": {
-        color: "#fff",
+        color: "#fff"
       }
     }
-  },
-
+  }
 });

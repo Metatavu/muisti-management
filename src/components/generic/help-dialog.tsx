@@ -1,8 +1,14 @@
-import * as React from "react";
-
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@mui/material";
-import HelpIcon from "@mui/icons-material/Help";
 import strings from "../../localization/strings";
+import HelpIcon from "@mui/icons-material/Help";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton
+} from "@mui/material";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -23,7 +29,6 @@ interface State {
  * React component displaying help dialogs
  */
 export default class HelpDialog extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -45,38 +50,27 @@ export default class HelpDialog extends React.Component<Props, State> {
 
     return (
       <>
-        <IconButton
-          onClick={ this.onHelpDialogOpenClick }
-          color="inherit"
-          size="large"
-        >
-          <HelpIcon htmlColor="#222"/>
+        <IconButton onClick={this.onHelpDialogOpenClick} color="inherit" size="large">
+          <HelpIcon htmlColor="#222" />
         </IconButton>
-        <Dialog
-          maxWidth="md"
-          open={ open }
-        >
-          <DialogTitle>
-            { title }
-          </DialogTitle>
-          <DialogContent>
-            { this.props.children }
-          </DialogContent>
+        <Dialog maxWidth="md" open={open}>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogContent>{this.props.children}</DialogContent>
           <DialogActions>
             <Button
-              onClick={ this.onHelpDialogCloseClick }
+              onClick={this.onHelpDialogCloseClick}
               disableElevation
               variant="contained"
               color="secondary"
               autoFocus
             >
-              { strings.genericDialog.close }
+              {strings.genericDialog.close}
             </Button>
           </DialogActions>
         </Dialog>
       </>
-    )
-  }
+    );
+  };
 
   /**
    * Click handler for Help dialog opening click
@@ -85,14 +79,14 @@ export default class HelpDialog extends React.Component<Props, State> {
     this.setState({
       open: true
     });
-  }
+  };
 
-    /**
+  /**
    * Click handler for Help dialog close click
    */
   private onHelpDialogCloseClick = () => {
     this.setState({
       open: false
     });
-  }
+  };
 }

@@ -1,12 +1,20 @@
-import * as React from "react";
 import { PageLayoutViewProperty } from "../../../generated/client";
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../../styles/add-device-editor";
-// tslint:disable-next-line: max-line-length
-import { LayoutWidthValues, LayoutHeightValues, LayoutGravityValuePairs, TextViewTextStyleValues, TextViewTextAlignValues, LinearLayoutOrientationValues, TabGravityValues, SelectedTabIndicatorGravityValues } from "../editor-constants/values";
 import strings from "../../../localization/strings";
+import styles from "../../../styles/add-device-editor";
+import {
+  LayoutGravityValuePairs,
+  LayoutHeightValues,
+  LayoutWidthValues,
+  LinearLayoutOrientationValues,
+  SelectedTabIndicatorGravityValues,
+  TabGravityValues,
+  TextViewTextAlignValues,
+  TextViewTextStyleValues
+} from "../editor-constants/values";
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -15,14 +23,14 @@ interface Props extends WithStyles<typeof styles> {
   tooltip?: string;
   property: PageLayoutViewProperty;
   selectItemType:
-    typeof LayoutWidthValues |
-    typeof LayoutHeightValues |
-    typeof LayoutGravityValuePairs |
-    typeof TextViewTextStyleValues |
-    typeof TextViewTextAlignValues |
-    typeof LinearLayoutOrientationValues |
-    typeof TabGravityValues |
-    typeof SelectedTabIndicatorGravityValues;
+    | typeof LayoutWidthValues
+    | typeof LayoutHeightValues
+    | typeof LayoutGravityValuePairs
+    | typeof TextViewTextStyleValues
+    | typeof TextViewTextAlignValues
+    | typeof LinearLayoutOrientationValues
+    | typeof TabGravityValues
+    | typeof SelectedTabIndicatorGravityValues;
 
   /**
    * On select change handler
@@ -42,7 +50,6 @@ interface State {
  * Component for generic layout editor select
  */
 class GenericPropertySelect extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -65,10 +72,10 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const keys = enumKeys(selectItemType);
 
     this.setState({
-      itemKeyList : keys,
+      itemKeyList: keys,
       itemValueList: values
     });
-  }
+  };
 
   /**
    * Component render method
@@ -77,14 +84,14 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const { property, tooltip } = this.props;
     return (
       <Select
-        title={ tooltip }
-        id={ property.name }
-        onChange={ this.handleSelectChange }
-        name={ property.name }
-        value={ property.value || "undefined" }
+        title={tooltip}
+        id={property.name}
+        onChange={this.handleSelectChange}
+        name={property.name}
+        value={property.value || "undefined"}
       >
-        { this.renderNoSelection() }
-        { this.getSelectItems() }
+        {this.renderNoSelection()}
+        {this.getSelectItems()}
       </Select>
     );
   }
@@ -93,8 +100,12 @@ class GenericPropertySelect extends React.Component<Props, State> {
    * Renders no selection item
    */
   private renderNoSelection = () => {
-    return <MenuItem key={ "undefined" } value={ "undefined" }>{ strings.generic.undefined }</MenuItem>;
-  }
+    return (
+      <MenuItem key={"undefined"} value={"undefined"}>
+        {strings.generic.undefined}
+      </MenuItem>
+    );
+  };
 
   /**
    * Handle select value change
@@ -107,7 +118,7 @@ class GenericPropertySelect extends React.Component<Props, State> {
     const propertyToUpdate = property;
     property.value = value !== "undefined" ? value : "";
     onSelectChange(propertyToUpdate);
-  }
+  };
 
   /**
    * Generate select items
@@ -115,9 +126,13 @@ class GenericPropertySelect extends React.Component<Props, State> {
   private getSelectItems = () => {
     const { itemKeyList, itemValueList } = this.state;
     return itemKeyList.map((key, index) => {
-      return <MenuItem key={ key } value={ itemValueList[index] }>{ key }</MenuItem>;
+      return (
+        <MenuItem key={key} value={itemValueList[index]}>
+          {key}
+        </MenuItem>
+      );
     });
-  }
+  };
 }
 
 /**
@@ -138,4 +153,4 @@ function enumValues<T>(enumObject: T) {
   return Object.values(enumObject);
 }
 
-export default (withStyles(styles)(GenericPropertySelect));
+export default withStyles(styles)(GenericPropertySelect);

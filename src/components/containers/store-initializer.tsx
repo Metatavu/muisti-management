@@ -1,19 +1,16 @@
-import * as React from "react";
-
-import { connect } from "react-redux";
-import { ReduxState, ReduxActions } from "../../store";
-import { Dispatch } from "redux";
+import { setDeviceModels } from "../../actions/devices";
 import { setExhibitions } from "../../actions/exhibitions";
 import { setLayouts } from "../../actions/layouts";
-import { setDeviceModels } from "../../actions/devices";
-
-import { AccessToken } from "../../types"
+import { setSubLayouts } from "../../actions/subLayouts";
+import Api from "../../api/api";
+import { DeviceModel, Exhibition, PageLayout, SubLayout } from "../../generated/client";
+import { ReduxActions, ReduxState } from "../../store";
+import { AccessToken } from "../../types";
 import ErrorDialog from "../generic/error-dialog";
 import { KeycloakInstance } from "keycloak-js";
-import { Exhibition, PageLayout, DeviceModel, SubLayout } from "../../generated/client";
-import Api from "../../api/api";
-import { setSubLayouts } from "../../actions/subLayouts";
-
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props
@@ -30,7 +27,7 @@ interface Props {
   setSubLayouts: typeof setSubLayouts;
   setDeviceModels: typeof setDeviceModels;
   children: React.ReactNode;
-};
+}
 
 /**
  * Component state
@@ -43,7 +40,6 @@ interface State {
  * Component for fetching initial data
  */
 class StoreInitializer extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -65,7 +61,7 @@ class StoreInitializer extends React.Component<Props, State> {
       const subLayoutsApi = Api.getSubLayoutsApi(accessToken);
       const deviceModelsApi = Api.getDeviceModelsApi(accessToken);
 
-      const [ exhibitions, layouts, subLayouts, deviceModels ] = await Promise.all([
+      const [exhibitions, layouts, subLayouts, deviceModels] = await Promise.all([
         exhibitionsApi.listExhibitions(),
         layoutsApi.listPageLayouts({}),
         subLayoutsApi.listSubLayouts(),
@@ -81,7 +77,7 @@ class StoreInitializer extends React.Component<Props, State> {
         error: e
       });
     }
-  }
+  };
 
   /**
    * Component render method
@@ -89,16 +85,12 @@ class StoreInitializer extends React.Component<Props, State> {
   public render() {
     const { exhibitions, layouts, subLayouts, deviceModels, children } = this.props;
     if (this.state.error) {
-      return <ErrorDialog error={ this.state.error } onClose={ () => this.setState({ error: undefined }) } />
+      return (
+        <ErrorDialog error={this.state.error} onClose={() => this.setState({ error: undefined })} />
+      );
     }
 
-    return (
-      exhibitions &&
-      layouts &&
-      subLayouts &&
-      deviceModels ?
-      children : null
-    );
+    return exhibitions && layouts && subLayouts && deviceModels ? children : null;
   }
 }
 

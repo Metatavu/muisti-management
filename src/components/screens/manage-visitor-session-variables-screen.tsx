@@ -1,37 +1,44 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ReduxActions, ReduxState } from "../../store";
-import { History } from "history";
-import styles from "../../styles/screens/manage-visitor-session-variables-screen";
+import { setDeviceModels } from "../../actions/devices";
+import Api from "../../api/api";
+import { Config } from "../../constants/configuration";
 import {
+  DeviceModel,
+  Visitor,
+  VisitorSession,
+  VisitorSessionVariable,
+  VisitorVariable,
+  VisitorVariableType
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/screens/manage-visitor-session-variables-screen";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import ConfirmDialog from "../generic/confirm-dialog";
+import { MqttListener } from "../generic/mqtt-listener";
+import TagListener from "../generic/tag-listener";
+import WithDebounce from "../generic/with-debounce";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import {
+  Checkbox,
   CircularProgress,
-  Typography,
+  FormControlLabel,
   List,
   ListItem,
   ListItemText,
-  TextField,
-  Checkbox,
-  FormControlLabel,
   MenuItem,
+  TextField,
+  Typography
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import { KeycloakInstance } from "keycloak-js";
-import { DeviceModel, Visitor, VisitorSession, VisitorSessionVariable, VisitorVariable, VisitorVariableType } from "../../generated/client";
-import { AccessToken, ActionButton, ConfirmDialogData } from '../../types';
-import strings from "../../localization/strings";
-import BasicLayout from "../layouts/basic-layout";
-import { setDeviceModels } from "../../actions/devices";
-import TagListener from "../generic/tag-listener";
-import { MqttListener } from "../generic/mqtt-listener";
-import Api from "../../api/api";
-import moment from "moment";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
 import produce from "immer";
-import WithDebounce from "../generic/with-debounce";
-import ConfirmDialog from "../generic/confirm-dialog";
-import { Config } from "../../constants/configuration";
+import { KeycloakInstance } from "keycloak-js";
+import moment from "moment";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 const config = Config.getConfig();
 
@@ -71,7 +78,6 @@ interface SessionVariableData {
  * Component for manage visitor session variables screen
  */
 export class ManageVisitorSessionVariablesScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -107,20 +113,20 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
     return (
       <BasicLayout
-        history={ history }
-        title={ strings.manageVisitorSessionVariables.title }
-        breadcrumbs={ [] }
-        actionBarButtons={ this.getActionButtons() }
-        keycloak={ keycloak }
-        error={ error }
-        clearError={ () => this.setState({ error: undefined }) }
-        dataChanged={ dataChanged }
+        history={history}
+        title={strings.manageVisitorSessionVariables.title}
+        breadcrumbs={[]}
+        actionBarButtons={this.getActionButtons()}
+        keycloak={keycloak}
+        error={error}
+        clearError={() => this.setState({ error: undefined })}
+        dataChanged={dataChanged}
         openDataChangedPrompt
       >
-        { this.resolveComponentToRender() }
+        {this.resolveComponentToRender()}
       </BasicLayout>
     );
-  }
+  };
 
   /**
    * Resolves what component to render inside basic layout
@@ -131,8 +137,8 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
     if (loading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"></CircularProgress>
+        <div className={classes.loader}>
+          <CircularProgress size={50} color="secondary"></CircularProgress>
         </div>
       );
     }
@@ -146,27 +152,26 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     }
 
     return this.renderSessionVariablesEditor();
-  }
+  };
 
   /**
    * Renders tag listener
    */
   private renderTagListener = () => {
-
     return (
-      <MqttListener onError={ this.onMqttError }>
-      { mqtt => (
-        <TagListener
-          threshold={ 75 }
-          mqtt={ mqtt }
-          antenna={ config.mqttConfig.resetVisitorVariableAntenna }
-          hide={ false }
-          onTagRegister={ this.onTagRegister }
-        />
-      )}
-    </MqttListener>
+      <MqttListener onError={this.onMqttError}>
+        {(mqtt) => (
+          <TagListener
+            threshold={75}
+            mqtt={mqtt}
+            antenna={config.mqttConfig.resetVisitorVariableAntenna}
+            hide={false}
+            onTagRegister={this.onTagRegister}
+          />
+        )}
+      </MqttListener>
     );
-  }
+  };
 
   /**
    * Renders session list
@@ -180,18 +185,17 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     }
 
     return (
-      <div className={ classes.sessionListContainer }>
-        <List className={ classes.sessionList }>
-          { foundSessions.length > 0 ?
-            foundSessions.map(this.renderSessionListItem) :
-            <Typography>
-              { strings.manageVisitorSessionVariables.noActiveSessionsFound }
-            </Typography>
-          }
+      <div className={classes.sessionListContainer}>
+        <List className={classes.sessionList}>
+          {foundSessions.length > 0 ? (
+            foundSessions.map(this.renderSessionListItem)
+          ) : (
+            <Typography>{strings.manageVisitorSessionVariables.noActiveSessionsFound}</Typography>
+          )}
         </List>
       </div>
     );
-  }
+  };
 
   /**
    * Renders session list item
@@ -200,17 +204,14 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    */
   private renderSessionListItem = (session: VisitorSession) => {
     return (
-      <ListItem
-        key={ session.id }
-        onClick={ this.setSelectedSession(session) }
-      >
+      <ListItem key={session.id} onClick={this.setSelectedSession(session)}>
         <ListItemText
-          primary={ this.displaySessionVisitors(session) }
-          secondary={ this.displaySessionLastModifiedAt(session) }
+          primary={this.displaySessionVisitors(session)}
+          secondary={this.displaySessionLastModifiedAt(session)}
         />
       </ListItem>
     );
-  }
+  };
 
   /**
    * Renders session variable editor
@@ -219,16 +220,14 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     const { classes } = this.props;
 
     return (
-      <div className={ classes.editorLayout }>
-        <ElementNavigationPane title={ strings.manageVisitorSessionVariables.title }>
-          { this.renderSessionVariablesList() }
+      <div className={classes.editorLayout}>
+        <ElementNavigationPane title={strings.manageVisitorSessionVariables.title}>
+          {this.renderSessionVariablesList()}
         </ElementNavigationPane>
-        <div className={ classes.editorContainer }>
-          { this.renderEditor() }
-        </div>
+        <div className={classes.editorContainer}>{this.renderEditor()}</div>
       </div>
     );
-  }
+  };
 
   /**
    * Renders session variable list
@@ -238,17 +237,16 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
     return (
       <List disablePadding>
-        { variableDataList && variableDataList.length > 0 ?
-          [ ...variableDataList ]
+        {variableDataList && variableDataList.length > 0 ? (
+          [...variableDataList]
             .sort(this.sortVariablesByName)
-            .map(this.renderSessionVariableListItem) :
-          <Typography>
-            { strings.manageVisitorSessionVariables.noVariables }
-          </Typography>
-        }
+            .map(this.renderSessionVariableListItem)
+        ) : (
+          <Typography>{strings.manageVisitorSessionVariables.noVariables}</Typography>
+        )}
       </List>
     );
-  }
+  };
 
   /**
    * Renders session variable
@@ -264,14 +262,14 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     return (
       <ListItem
         button
-        key={ visitorVariable.id || name }
-        selected={ selected }
-        onClick={ this.setSelectedSessionVariable(variableData) }
+        key={visitorVariable.id || name}
+        selected={selected}
+        onClick={this.setSelectedSessionVariable(variableData)}
       >
-        <ListItemText primary={ name } secondary={ value } />
+        <ListItemText primary={name} secondary={value} />
       </ListItem>
     );
-  }
+  };
 
   /**
    * Renders variable editor
@@ -283,18 +281,15 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     if (selectedVariableData) {
       return (
         <>
-          <Typography
-            variant="h3"
-            className={ classes.variableTitle }
-          >
-            { selectedVariableData.sessionVariable.name }
+          <Typography variant="h3" className={classes.variableTitle}>
+            {selectedVariableData.sessionVariable.name}
           </Typography>
-          { this.renderValueField() }
-          { this.renderConfirmDeleteDialog() }
+          {this.renderValueField()}
+          {this.renderConfirmDeleteDialog()}
         </>
       );
     }
-  }
+  };
 
   /**
    * Renders value field for variable editor
@@ -318,32 +313,29 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         return (
           <TextField
             select
-            className={ classes.variableValue }
-            label={ strings.manageVisitorSessionVariables.value }
-            name={ name }
-            value={ value ?? "" }
-            onChange={ this.onVariableValueChange(type) }
+            className={classes.variableValue}
+            label={strings.manageVisitorSessionVariables.value}
+            name={name}
+            value={value ?? ""}
+            onChange={this.onVariableValueChange(type)}
           >
-            { _enum.map(option =>
-              <MenuItem
-                key={ option }
-                value={ option }
-              >
-                { option }
+            {_enum.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
-            )}
+            ))}
           </TextField>
         );
       case VisitorVariableType.Boolean:
         return (
           <FormControlLabel
-            className={ classes.variableValue }
+            className={classes.variableValue}
             label=""
             control={
               <Checkbox
-                name={ name }
-                checked={ value === "true" }
-                onChange={ this.onVariableValueChange(type) }
+                name={name}
+                checked={value === "true"}
+                onChange={this.onVariableValueChange(type)}
                 color="primary"
               />
             }
@@ -352,32 +344,28 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       case VisitorVariableType.Number:
         return (
           <WithDebounce
-            className={ classes.variableValue }
-            label={ strings.manageVisitorSessionVariables.value }
-            name={ name }
-            value={ value ?? "" }
-            onChange={ this.onVariableValueChange(type) }
-            component={ props =>
-              <TextField type="number" { ...props } />
-            }
+            className={classes.variableValue}
+            label={strings.manageVisitorSessionVariables.value}
+            name={name}
+            value={value ?? ""}
+            onChange={this.onVariableValueChange(type)}
+            component={(props) => <TextField type="number" {...props} />}
           />
         );
       case VisitorVariableType.Text:
       default:
         return (
           <WithDebounce
-            className={ classes.variableValue }
-            label={ strings.manageVisitorSessionVariables.value }
-            name={ name }
-            value={ value ?? "" }
-            onChange={ this.onVariableValueChange(type) }
-            component={ props =>
-              <TextField { ...props } />
-            }
+            className={classes.variableValue}
+            label={strings.manageVisitorSessionVariables.value}
+            name={name}
+            value={value ?? ""}
+            onChange={this.onVariableValueChange(type)}
+            component={(props) => <TextField {...props} />}
           />
         );
     }
-  }
+  };
 
   /**
    * Render empty variable confirmation dialog
@@ -389,13 +377,8 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       return null;
     }
 
-    return (
-      <ConfirmDialog
-        open={ confirmEmptyOpen }
-        confirmDialogData={ confirmDialogData }
-      />
-    );
-  }
+    return <ConfirmDialog open={confirmEmptyOpen} confirmDialogData={confirmDialogData} />;
+  };
 
   /**
    * Display session visitors
@@ -408,8 +391,8 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       return;
     }
 
-    const sessionVisitors = foundVisitors.filter(visitor =>
-      session.visitorIds.some(visitorId => visitorId === visitor.id)
+    const sessionVisitors = foundVisitors.filter((visitor) =>
+      session.visitorIds.some((visitorId) => visitorId === visitor.id)
     );
 
     if (sessionVisitors.length < 1) {
@@ -421,7 +404,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     });
 
     return visitorNames.join(", ");
-  }
+  };
 
   /**
    * Displays session last modified
@@ -433,7 +416,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       strings.manageVisitorSessionVariables.lastModifiedAt,
       moment(session.modifiedAt).fromNow()
     );
-  }
+  };
 
   /**
    * Returns action buttons
@@ -451,14 +434,14 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       {
         name: strings.manageVisitorSessionVariables.saveButton,
         action: this.onSaveSession,
-        disabled : !dataChanged
+        disabled: !dataChanged
       },
       {
         name: strings.manageVisitorSessionVariables.emptyButton,
         action: this.onEmptyClick
       }
     ];
-  }
+  };
 
   /**
    * Event handler for tag register
@@ -481,19 +464,19 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       });
 
       const visitorIds: string[] = [];
-      foundSessions.forEach(session => {
-        const newVisitors = session.visitorIds.filter(visitorId =>
-          visitorIds.every(existingVisitorId => existingVisitorId !== visitorId)
+      foundSessions.forEach((session) => {
+        const newVisitors = session.visitorIds.filter((visitorId) =>
+          visitorIds.every((existingVisitorId) => existingVisitorId !== visitorId)
         );
 
         if (newVisitors.length > 0) {
-          newVisitors.forEach(visitor => visitorIds.push(visitor));
+          newVisitors.forEach((visitor) => visitorIds.push(visitor));
         }
       });
 
       const visitorsApi = Api.getVisitorsApi(accessToken);
       const foundVisitors = await Promise.all(
-        visitorIds.map(visitorId => visitorsApi.findVisitor({ exhibitionId, visitorId }))
+        visitorIds.map((visitorId) => visitorsApi.findVisitor({ exhibitionId, visitorId }))
       );
 
       this.setState({
@@ -506,7 +489,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
         error: error
       });
     }
-  }
+  };
 
   /**
    * Event handler for mqtt error
@@ -517,7 +500,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     this.setState({
       error: error
     });
-  }
+  };
 
   /**
    * Sets selected session
@@ -536,11 +519,13 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
 
       const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
       const visitorVariables = await visitorVariablesApi.listVisitorVariables({ exhibitionId });
-      const modifiableVariables = visitorVariables.filter(variable => variable.editableFromUI);
+      const modifiableVariables = visitorVariables.filter((variable) => variable.editableFromUI);
 
       const variableDataList: SessionVariableData[] = [];
       for (const sessionVariable of sessionVariables) {
-        const visitorVariable = modifiableVariables.find(variable => variable.name === sessionVariable.name);
+        const visitorVariable = modifiableVariables.find(
+          (variable) => variable.name === sessionVariable.name
+        );
         if (visitorVariable) {
           variableDataList.push({
             visitorVariable,
@@ -556,7 +541,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     }
 
     this.setState({ selectedSession });
-  }
+  };
 
   /**
    * Sets selected session variable
@@ -565,7 +550,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    */
   private setSelectedSessionVariable = (selectedVariableData: SessionVariableData) => () => {
     this.setState({ selectedVariableData });
-  }
+  };
 
   /**
    * Event handler for variable value change
@@ -573,28 +558,31 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    * @param type visitor variable type
    * @param event React change event
    */
-  private onVariableValueChange = (type: VisitorVariableType) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { selectedSession, selectedVariableData, variableDataList } = this.state;
-    if (!selectedSession || !selectedVariableData || !variableDataList) {
-      return;
-    }
+  private onVariableValueChange =
+    (type: VisitorVariableType) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { selectedSession, selectedVariableData, variableDataList } = this.state;
+      if (!selectedSession || !selectedVariableData || !variableDataList) {
+        return;
+      }
 
-    const updatedValue = this.getUpdatedVariableValue(type, event);
+      const updatedValue = this.getUpdatedVariableValue(type, event);
 
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedVariableData!.sessionVariable.value = updatedValue;
-        draft.dataChanged = true;
-        draft.variableDataList = variableDataList.map(variableData =>
-          variableData.visitorVariable.id === selectedVariableData.visitorVariable.id ?
-            draft.selectedVariableData! :
-            variableData
-        );
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedVariableData!.sessionVariable.value = updatedValue;
+          draft.dataChanged = true;
+          draft.variableDataList = variableDataList.map((variableData) =>
+            variableData.visitorVariable.id === selectedVariableData.visitorVariable.id
+              ? draft.selectedVariableData!
+              : variableData
+          );
 
-        draft.selectedSession!.variables = draft.variableDataList.map(variableData => variableData.sessionVariable);
-      })
-    );
-  }
+          draft.selectedSession!.variables = draft.variableDataList.map(
+            (variableData) => variableData.sessionVariable
+          );
+        })
+      );
+    };
 
   /**
    * Returns updated variable value based on given type and event data
@@ -602,7 +590,10 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
    * @param type visitor variable type
    * @param event React change event
    */
-  private getUpdatedVariableValue = (type: VisitorVariableType, event: React.ChangeEvent<HTMLInputElement>) => {
+  private getUpdatedVariableValue = (
+    type: VisitorVariableType,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { value, checked } = event.target;
     switch (type) {
       case VisitorVariableType.Boolean:
@@ -614,7 +605,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       default:
         return value;
     }
-  }
+  };
 
   /**
    * Event handler for save session
@@ -633,7 +624,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       dataChanged: false,
       loading: false
     });
-  }
+  };
 
   /**
    * Empties variable value
@@ -654,13 +645,13 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     const selectedSessionVariable = selectedVariableData.sessionVariable;
     const updatedSession = await this.updateVisitorSession({
       ...selectedSession,
-      variables: selectedSession.variables.filter(variable =>
-        variable.name !== selectedSessionVariable.name
+      variables: selectedSession.variables.filter(
+        (variable) => variable.name !== selectedSessionVariable.name
       )
     });
 
-    const updatedVariableDataList = variableDataList.filter(variableData =>
-      variableData.sessionVariable.name !== selectedSessionVariable.name
+    const updatedVariableDataList = variableDataList.filter(
+      (variableData) => variableData.sessionVariable.name !== selectedSessionVariable.name
     );
 
     this.setState({
@@ -671,7 +662,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       confirmEmptyOpen: false,
       loading: false
     });
-  }
+  };
 
   /**
    * Updates visitor session to API
@@ -689,21 +680,21 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
       visitorSessionId,
       visitorSession
     });
-  }
+  };
 
   /**
    * Event handler for empty click
    */
   private onEmptyClick = () => {
     this.setState({ confirmEmptyOpen: true });
-  }
+  };
 
   /**
    * Event handler for confirm empty dialog close
    */
   private onConfirmEmptyClose = () => {
     this.setState({ confirmEmptyOpen: false });
-  }
+  };
 
   /**
    * Sorts variables by name
@@ -719,7 +710,7 @@ export class ManageVisitorSessionVariablesScreen extends React.Component<Props, 
     }
 
     return nameA < nameB ? -1 : 1;
-  }
+  };
 }
 
 /**
@@ -741,4 +732,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ReduxActions>) => ({
   setDeviceModels: (deviceModels: DeviceModel[]) => dispatch(setDeviceModels(deviceModels))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ManageVisitorSessionVariablesScreen));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ManageVisitorSessionVariablesScreen));

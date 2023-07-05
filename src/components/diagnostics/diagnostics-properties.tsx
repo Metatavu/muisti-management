@@ -1,7 +1,15 @@
-import * as React from "react";
-import { Typography } from "@mui/material";
-import { ScreenOrientation, DeviceModel, ExhibitionRoom, ExhibitionDeviceGroup, ExhibitionDevice, RfidAntenna, DeviceImageLoadStrategy } from "../../generated/client";
+import {
+  DeviceImageLoadStrategy,
+  DeviceModel,
+  ExhibitionDevice,
+  ExhibitionDeviceGroup,
+  ExhibitionRoom,
+  RfidAntenna,
+  ScreenOrientation
+} from "../../generated/client";
 import strings from "../../localization/strings";
+import { Typography } from "@mui/material";
+import * as React from "react";
 
 /**
  * Component properties
@@ -25,7 +33,6 @@ const DiagnosticsProperties: React.FC<Props> = ({
   selectedAntenna,
   selectedDevice
 }) => {
-
   /**
    * Renders single property
    *
@@ -35,15 +42,13 @@ const DiagnosticsProperties: React.FC<Props> = ({
   const renderProperty = (label: string, value: string | number) => {
     return (
       <>
-        <Typography variant="h4">
-          { label }
-        </Typography>
+        <Typography variant="h4">{label}</Typography>
         <Typography paragraph style={{ fontSize: 16 }}>
-          { value }
+          {value}
         </Typography>
       </>
     );
-  }
+  };
 
   /**
    * Renders boolean as localized string
@@ -60,28 +65,32 @@ const DiagnosticsProperties: React.FC<Props> = ({
    *
    * @param orientation orientation
    */
-  const renderLocalizedOrientation = (orientation: ScreenOrientation) => ({
-    [ScreenOrientation.Portrait]: strings.floorPlan.properties.portrait,
-    [ScreenOrientation.ForcedPortrait]: strings.floorPlan.properties.forcedPortrait,
-    [ScreenOrientation.Landscape]: strings.floorPlan.properties.landscape
-  })[orientation];
+  const renderLocalizedOrientation = (orientation: ScreenOrientation) =>
+    ({
+      [ScreenOrientation.Portrait]: strings.floorPlan.properties.portrait,
+      [ScreenOrientation.ForcedPortrait]: strings.floorPlan.properties.forcedPortrait,
+      [ScreenOrientation.Landscape]: strings.floorPlan.properties.landscape
+    })[orientation];
 
   /**
    * Renders image load strategy as localized string
    *
    * @param imageLoadStrategy image load strategy
    */
-  const renderLocalizedImageLoadStrategy = (imageLoadStrategy: DeviceImageLoadStrategy) => ({
-    [DeviceImageLoadStrategy.DISK]: strings.floorPlan.properties.imageLoadStrategyDisk,
-    [DeviceImageLoadStrategy.MEMORY]: strings.floorPlan.properties.imageLoadStrategyMemory,
-    [DeviceImageLoadStrategy.DISKRAW]: strings.floorPlan.properties.imageLoadStrategyDiskRaw,
-  })[imageLoadStrategy];
+  const renderLocalizedImageLoadStrategy = (imageLoadStrategy: DeviceImageLoadStrategy) =>
+    ({
+      [DeviceImageLoadStrategy.DISK]: strings.floorPlan.properties.imageLoadStrategyDisk,
+      [DeviceImageLoadStrategy.MEMORY]: strings.floorPlan.properties.imageLoadStrategyMemory,
+      [DeviceImageLoadStrategy.DISKRAW]: strings.floorPlan.properties.imageLoadStrategyDiskRaw
+    })[imageLoadStrategy];
 
   /**
    * Renders device group values
    */
   const renderDeviceGroupValues = () => {
-    const selectedDeviceGroup = deviceGroups?.find(group => group.id === selectedAntenna?.groupId);
+    const selectedDeviceGroup = deviceGroups?.find(
+      (group) => group.id === selectedAntenna?.groupId
+    );
 
     if (!selectedDeviceGroup) {
       return null;
@@ -89,12 +98,18 @@ const DiagnosticsProperties: React.FC<Props> = ({
 
     return (
       <>
-        { renderProperty(strings.floorPlan.properties.deviceGroup, selectedDeviceGroup.name) }
-        { renderProperty(strings.floorPlan.properties.allowVisitorSessionCreation, renderLocalizedBoolean(selectedDeviceGroup.allowVisitorSessionCreation)) }
-        { renderProperty(strings.floorPlan.properties.visitorSessionEndTimeout, selectedDeviceGroup.visitorSessionEndTimeout) }
+        {renderProperty(strings.floorPlan.properties.deviceGroup, selectedDeviceGroup.name)}
+        {renderProperty(
+          strings.floorPlan.properties.allowVisitorSessionCreation,
+          renderLocalizedBoolean(selectedDeviceGroup.allowVisitorSessionCreation)
+        )}
+        {renderProperty(
+          strings.floorPlan.properties.visitorSessionEndTimeout,
+          selectedDeviceGroup.visitorSessionEndTimeout
+        )}
       </>
     );
-  }
+  };
 
   /**
    * Render antenna settings
@@ -104,15 +119,21 @@ const DiagnosticsProperties: React.FC<Props> = ({
   const renderAntennaProperties = (selectedAntenna: RfidAntenna) => {
     return (
       <>
-        { renderProperty(strings.generic.name, selectedAntenna.name) }
-        { renderProperty(strings.floorPlan.properties.readerId, selectedAntenna.readerId) }
-        { renderProperty(strings.floorPlan.properties.antennaNumber, selectedAntenna.antennaNumber) }
-        { renderProperty(strings.floorPlan.properties.visitorSessionStartThreshold, selectedAntenna.visitorSessionStartThreshold) }
-        { renderProperty(strings.floorPlan.properties.visitorSessionEndThreshold, selectedAntenna.visitorSessionEndThreshold) }
-        { renderDeviceGroupValues() }
+        {renderProperty(strings.generic.name, selectedAntenna.name)}
+        {renderProperty(strings.floorPlan.properties.readerId, selectedAntenna.readerId)}
+        {renderProperty(strings.floorPlan.properties.antennaNumber, selectedAntenna.antennaNumber)}
+        {renderProperty(
+          strings.floorPlan.properties.visitorSessionStartThreshold,
+          selectedAntenna.visitorSessionStartThreshold
+        )}
+        {renderProperty(
+          strings.floorPlan.properties.visitorSessionEndThreshold,
+          selectedAntenna.visitorSessionEndThreshold
+        )}
+        {renderDeviceGroupValues()}
       </>
     );
-  }
+  };
 
   /**
    * Renders device settings
@@ -120,17 +141,27 @@ const DiagnosticsProperties: React.FC<Props> = ({
    * @param selectedDevice selected device
    */
   const renderDeviceProperties = (selectedDevice: ExhibitionDevice) => {
-    const selectedDeviceModel = deviceModels?.find(model => model.id === selectedDevice.modelId);
+    const selectedDeviceModel = deviceModels?.find((model) => model.id === selectedDevice.modelId);
 
     return (
       <>
-        { renderProperty(strings.generic.name, selectedDevice.name) }
-        { selectedDeviceModel && renderProperty(strings.device.dialog.model, `${selectedDeviceModel.manufacturer} ${selectedDeviceModel.model}`) }
-        { renderProperty(strings.floorPlan.properties.screenOrientation, renderLocalizedOrientation(selectedDevice.screenOrientation)) }
-        { renderProperty(strings.floorPlan.properties.imageLoadStrategy, renderLocalizedImageLoadStrategy(selectedDevice.imageLoadStrategy)) }
+        {renderProperty(strings.generic.name, selectedDevice.name)}
+        {selectedDeviceModel &&
+          renderProperty(
+            strings.device.dialog.model,
+            `${selectedDeviceModel.manufacturer} ${selectedDeviceModel.model}`
+          )}
+        {renderProperty(
+          strings.floorPlan.properties.screenOrientation,
+          renderLocalizedOrientation(selectedDevice.screenOrientation)
+        )}
+        {renderProperty(
+          strings.floorPlan.properties.imageLoadStrategy,
+          renderLocalizedImageLoadStrategy(selectedDevice.imageLoadStrategy)
+        )}
       </>
     );
-  }
+  };
 
   if (selectedAntenna) {
     return renderAntennaProperties(selectedAntenna);
@@ -141,7 +172,6 @@ const DiagnosticsProperties: React.FC<Props> = ({
   }
 
   return null;
-
-}
+};
 
 export default DiagnosticsProperties;

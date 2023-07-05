@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   sectionTitle: {
     marginBottom: 50
   },
@@ -9,5 +8,4 @@ export default createStyles({
   exhibitionsGridList: {
     marginBottom: 50
   }
-
 });

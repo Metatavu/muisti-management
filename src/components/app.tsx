@@ -1,59 +1,40 @@
-import * as React from "react";
-
-import { Provider } from "react-redux";
-import { createStore } from "redux";
-import { ReduxState, ReduxActions, rootReducer } from "../store";
-import * as immer from "immer";
-
-import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material/styles";
-import muistiTheme from "../styles/theme";
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import { CssBaseline, responsiveFontSizes } from "@mui/material";
 import strings from "../localization/strings";
+import { ReduxActions, ReduxState, rootReducer } from "../store";
+import muistiTheme from "../styles/theme";
 import AccessTokenRefresh from "./containers/access-token-refresh";
 import StoreInitializer from "./containers/store-initializer";
 import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
-import moment from "moment";
-import "moment/locale/fi";
-import "moment/locale/en-gb";
-
-import ExhibitionsScreen from "./screens/exhibitions-screen";
-import RoomsScreen from "./screens/rooms-screen";
-import ContentVersionsScreen from "./screens/content-versions-screen";
-import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
-import LayoutsScreen from "./screens/layouts-screen";
-import LayoutScreenHTML from "./screens/layout-screen-html";
-import DeviceModelsScreen from "./screens/device-models-screen";
-import ReceptionScreen from "./screens/reception-screen";
-import FloorPlansScreen from "./screens/floor-plans-screen";
-import FloorPlanScreen from "./screens/floor-plan-screen";
-import SubLayoutScreen from "./screens/sub-layout-screen";
 import ContentEditorScreen from "./screens/content-editor-screen";
-import VisitorVariablesScreen from "./screens/visitor-variables-screen";
-import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
-import VisitorsManagementScreen from "./screens/visitors-management-screen";
+import ContentVersionsScreen from "./screens/content-versions-screen";
+import DeviceModelsScreen from "./screens/device-models-screen";
 import DiagnosticsScreen from "./screens/diagnostics-screen";
+import ExhibitionsScreen from "./screens/exhibitions-screen";
+import FloorPlanScreen from "./screens/floor-plan-screen";
+import FloorPlansScreen from "./screens/floor-plans-screen";
+import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
 import LayoutScreenAndroid from "./screens/layout-screen-android";
+import LayoutScreenHTML from "./screens/layout-screen-html";
+import LayoutsScreen from "./screens/layouts-screen";
+import ManageVisitorSessionVariablesScreen from "./screens/manage-visitor-session-variables-screen";
+import ReceptionScreen from "./screens/reception-screen";
+import RoomsScreen from "./screens/rooms-screen";
+import SubLayoutScreen from "./screens/sub-layout-screen";
+import VisitorVariablesScreen from "./screens/visitor-variables-screen";
+import VisitorsManagementScreen from "./screens/visitors-management-screen";
+import { CssBaseline, responsiveFontSizes } from "@mui/material";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import * as immer from "immer";
+import moment from "moment";
+import "moment/locale/en-gb";
+import "moment/locale/fi";
+import * as React from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { createStore } from "redux";
 
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
+declare module "@mui/styles/defaultTheme" {}
 
 const store = createStore<ReduxState, ReduxActions, any, any>(rootReducer);
-
-/**
- * Interface representing component properties
- */
-interface Props {
-}
-
-/**
- * Interface representing component state
- */
-interface State {
-}
 
 /**
  * Material UI's automated responsive font sizes
@@ -63,8 +44,7 @@ const theme = responsiveFontSizes(muistiTheme);
 /**
  * App component
  */
-class App extends React.Component<Props, State> {
-
+class App extends React.Component<{}, {}> {
   /**
    * Component did mount life cycle component
    */
@@ -72,7 +52,7 @@ class App extends React.Component<Props, State> {
     moment.locale(strings.getLanguage());
     immer.enableAllPlugins();
     strings.setLanguage("fi");
-  }
+  };
 
   /**
    * Component render method
@@ -80,36 +60,28 @@ class App extends React.Component<Props, State> {
   public render() {
     return (
       <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={ theme }>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Provider store={ store }>
+          <Provider store={store}>
             <AccessTokenRefresh>
               <StoreInitializer>
                 <BrowserRouter>
                   <div className="App">
                     <Switch>
-                      <Redirect
-                        exact
-                        from="/"
-                        to="/exhibitions"
-                      />
+                      <Redirect exact from="/" to="/exhibitions" />
                       <Route
                         path="/exhibitions"
                         exact
-                        render={({ history }) => (
-                          <ExhibitionsScreen
-                            history={ history }
-                          />
-                        )}
+                        render={({ history }) => <ExhibitionsScreen history={history} />}
                       />
                       <Route
                         path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
                         exact
                         render={({ history, match }) => (
                           <FloorPlanEditorView
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            exhibitionFloorId={ match.params.floorId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            exhibitionFloorId={match.params.floorId}
                             readOnly
                           />
                         )}
@@ -121,10 +93,7 @@ class App extends React.Component<Props, State> {
                         ]}
                         exact
                         render={({ history, match }) => (
-                          <RoomsScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                          />
+                          <RoomsScreen history={history} exhibitionId={match.params.exhibitionId} />
                         )}
                       />
                       <Route
@@ -132,9 +101,9 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <ContentVersionsScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            roomId={ match.params.roomId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            roomId={match.params.roomId}
                           />
                         )}
                       />
@@ -143,10 +112,10 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <FloorPlanEditorView
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            exhibitionFloorId={ match.params.floorId }
-                            roomId={ match.params.roomId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            exhibitionFloorId={match.params.floorId}
+                            roomId={match.params.roomId}
                             readOnly
                           />
                         )}
@@ -156,10 +125,10 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <GroupContentVersionsScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            roomId={ match.params.roomId }
-                            contentVersionId={ match.params.contentVersionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            roomId={match.params.roomId}
+                            contentVersionId={match.params.contentVersionId}
                           />
                         )}
                       />
@@ -168,11 +137,11 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <FloorPlanEditorView
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            exhibitionFloorId={ match.params.floorId }
-                            roomId={ match.params.roomId }
-                            contentVersionId={ match.params.contentVersionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            exhibitionFloorId={match.params.floorId}
+                            roomId={match.params.roomId}
+                            contentVersionId={match.params.contentVersionId}
                             readOnly
                           />
                         )}
@@ -185,42 +154,32 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <ContentEditorScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
-                            floorId={ match.params.floorId }
-                            roomId={ match.params.roomId }
-                            contentVersionId={ match.params.contentVersionId }
-                            groupContentVersionId={ match.params.groupContentVersionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
+                            floorId={match.params.floorId}
+                            roomId={match.params.roomId}
+                            contentVersionId={match.params.contentVersionId}
+                            groupContentVersionId={match.params.groupContentVersionId}
                           />
                         )}
                       />
                       <Route
                         path="/layouts"
                         exact
-                        render={({ history }) => (
-                          <LayoutsScreen
-                            history={ history }
-                          />
-                        )}
+                        render={({ history }) => <LayoutsScreen history={history} />}
                       />
                       <Route
                         path="/layouts/HTML/:layoutId"
                         exact
                         render={({ history, match }) => (
-                          <LayoutScreenHTML
-                            history={ history }
-                            layoutId={ match.params.layoutId }
-                          />
+                          <LayoutScreenHTML history={history} layoutId={match.params.layoutId} />
                         )}
                       />
                       <Route
                         path="/layouts/ANDROID/:layoutId"
                         exact
                         render={({ history, match }) => (
-                          <LayoutScreenAndroid
-                            history={ history }
-                            layoutId={ match.params.layoutId }
-                          />
+                          <LayoutScreenAndroid history={history} layoutId={match.params.layoutId} />
                         )}
                       />
                       <Route
@@ -228,27 +187,23 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <SubLayoutScreen
-                            history={ history }
-                            subLayoutId={ match.params.subLayoutId }
+                            history={history}
+                            subLayoutId={match.params.subLayoutId}
                           />
                         )}
                       />
                       <Route
                         path="/deviceModels"
                         exact
-                        render={({ history }) => (
-                          <DeviceModelsScreen
-                            history={ history }
-                          />
-                        )}
+                        render={({ history }) => <DeviceModelsScreen history={history} />}
                       />
                       <Route
                         path="/exhibitions/:exhibitionId/visitors"
                         exact
                         render={({ history, match }) => (
                           <VisitorsManagementScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />
@@ -257,8 +212,8 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <ReceptionScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />
@@ -267,8 +222,8 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <VisitorVariablesScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />
@@ -277,8 +232,8 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <ManageVisitorSessionVariablesScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />
@@ -287,27 +242,23 @@ class App extends React.Component<Props, State> {
                         exact
                         render={({ history, match }) => (
                           <DiagnosticsScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />
                       <Route
                         path="/floorPlans"
                         exact
-                        render={({ history }) => (
-                          <FloorPlansScreen
-                            history={ history }
-                          />
-                        )}
+                        render={({ history }) => <FloorPlansScreen history={history} />}
                       />
                       <Route
                         path="/floorPlans/:exhibitionId"
                         exact
                         render={({ history, match }) => (
                           <FloorPlanScreen
-                            history={ history }
-                            exhibitionId={ match.params.exhibitionId }
+                            history={history}
+                            exhibitionId={match.params.exhibitionId}
                           />
                         )}
                       />

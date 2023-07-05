@@ -1,8 +1,8 @@
-import { Typography, styled } from "@mui/material";
 import strings from "../../../localization/strings";
-import { html_beautify } from "js-beautify";
-import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
+import { Typography, styled } from "@mui/material";
+import CodeMirror from "@uiw/react-codemirror";
+import { html_beautify } from "js-beautify";
 
 /**
  * Components properties
@@ -27,10 +27,7 @@ const CodeEditorContainer = styled("div")(() => ({
 /**
  * Code Editor HTML component
  */
-const CodeEditorHTML = ({
-  htmlString,
-  onCodeChange
-}: Props) => {
+const CodeEditorHTML = ({ htmlString, onCodeChange }: Props) => {
   const htmlBeautifyOptions: js_beautify.HTMLBeautifyOptions = {
     indent_size: 2,
     inline: [],
@@ -40,13 +37,13 @@ const CodeEditorHTML = ({
 
   return (
     <CodeEditorContainer>
-    <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>
+      <Typography style={{ margin: 8 }}>{strings.exhibitionLayouts.editView.html}</Typography>
       <CodeMirror
-        value={ html_beautify(htmlString, htmlBeautifyOptions) }
+        value={html_beautify(htmlString, htmlBeautifyOptions)}
         height="500px"
         style={{ overflow: "auto" }}
-        extensions={ [ html() ] }
-        onChange={ onCodeChange }
+        extensions={[html()]}
+        onChange={onCodeChange}
       />
     </CodeEditorContainer>
   );

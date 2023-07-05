@@ -1,4 +1,4 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
   root: {
@@ -43,6 +43,6 @@ export default createStyles({
     }
   },
   content: {
-    borderBottom: "1px solid #ddd",
-  },
+    borderBottom: "1px solid #ddd"
+  }
 });

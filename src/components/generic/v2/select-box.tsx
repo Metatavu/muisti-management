@@ -10,30 +10,23 @@ type Props = TextFieldProps & {
   name?: string;
   disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
 /**
  * Select Box component
  */
-const SelectBox = ({
-  children,
-  value,
-  name,
-  disabled,
-  onChange,
-  ...rest
-}: Props) => {
+const SelectBox = ({ children, value, name, disabled, onChange, ...rest }: Props) => {
   return (
     <TextField
-      { ...rest }
-      name={ name }
-      value={ value }
+      {...rest}
+      name={name}
+      value={value}
       variant="standard"
-      disabled={ disabled }
+      disabled={disabled}
       select
       fullWidth
       InputProps={{ disableUnderline: true }}
-      onChange={ onChange }
+      onChange={onChange}
       SelectProps={{
         sx: {
           "& .MuiInputBase-input": {
@@ -42,13 +35,12 @@ const SelectBox = ({
             padding: 0,
             backgroundColor: "#fbfbfb"
           },
-          height: "20px",
+          height: "20px"
         }
       }}
     >
-    { children }
+      {children}
     </TextField>
-    
   );
 };
 

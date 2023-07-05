@@ -1,15 +1,40 @@
-import { History } from "history";
-import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import Api from "../../api/api";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
+import { Config } from "../../constants/configuration";
+import {
+  ContentVersion,
+  Exhibition,
+  Visitor,
+  VisitorSession,
+  VisitorSessionState,
+  VisitorVariable
+} from "../../generated/client";
+import strings from "../../localization/strings";
+import { ReduxActions, ReduxState } from "../../store";
+import styles from "../../styles/screens/visitors-management-screen";
+import theme from "../../styles/theme";
+import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
+import LanguageUtils from "../../utils/language-utils";
+import VisitorUtils from "../../utils/visitor-utils";
+import ConfirmDialog from "../generic/confirm-dialog";
+import { MqttListener } from "../generic/mqtt-listener";
+import TagListener from "../generic/tag-listener";
+import BasicLayout from "../layouts/basic-layout";
+import ElementNavigationPane from "../layouts/element-navigation-pane";
+import ElementPropertiesPane from "../layouts/element-properties-pane";
+import VisitorInformation from "./visitors/visitor-info";
+import VisitorVariables from "./visitors/visitor-variables";
+import AddIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import TagIcon from "@mui/icons-material/NfcOutlined";
 import {
   Box,
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControl,
   FormControlLabel,
@@ -21,36 +46,17 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
   SelectChangeEvent,
+  Typography
 } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import { ContentVersion, Exhibition, Visitor, VisitorSession, VisitorSessionState, VisitorVariable } from "../../generated/client";
-import strings from "../../localization/strings";
-import BasicLayout from "../layouts/basic-layout";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
-import ConfirmDialog from "../generic/confirm-dialog";
-import { AccessToken, ActionButton, ConfirmDialogData } from "../../types";
-import { ReduxActions, ReduxState } from "../../store";
-import styles from "../../styles/screens/visitors-management-screen";
-import theme from "../../styles/theme";
-import AddIcon from "@mui/icons-material/AddCircle";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import TagIcon from "@mui/icons-material/NfcOutlined";
-import ElementPropertiesPane from "../layouts/element-properties-pane";
-import { MqttListener } from "../generic/mqtt-listener";
-import TagListener from "../generic/tag-listener";
-import VisitorInformation from "./visitors/visitor-info";
-import VisitorUtils from "../../utils/visitor-utils";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
 import produce from "immer";
-import LanguageUtils from "../../utils/language-utils";
-import { Config } from "../../constants/configuration";
-import VisitorVariables from "./visitors/visitor-variables";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 /**
  * Component props
@@ -91,7 +97,6 @@ interface State {
  * Component for visitors management screen
  */
 export class VisitorsManagementScreen extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -132,7 +137,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     this.setState({ loading: true });
     await this.fetchData();
     this.setState({ loading: false });
-  }
+  };
 
   /**
    * Component render method
@@ -143,49 +148,47 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     if (loading || !keycloak) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"/>
+        <div className={classes.loader}>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
 
     return (
       <BasicLayout
-        history={ history }
-        title={ strings.visitorsManagement.title }
-        breadcrumbs={ [] }
-        actionBarButtons={ this.getActionButtons() }
-        keycloak={ keycloak }
-        error={ error }
-        clearError={ () => this.setState({ error: undefined }) }
-        dataChanged={ dataChanged }
-        openDataChangedPrompt={ true }
+        history={history}
+        title={strings.visitorsManagement.title}
+        breadcrumbs={[]}
+        actionBarButtons={this.getActionButtons()}
+        keycloak={keycloak}
+        error={error}
+        clearError={() => this.setState({ error: undefined })}
+        dataChanged={dataChanged}
+        openDataChangedPrompt={true}
       >
-        <Box className={ classes.editorLayout }>
+        <Box className={classes.editorLayout}>
           <ElementNavigationPane
-            width={ 320 }
-            title={ strings.visitorsManagement.activeVisitorSessions }
-            actionButtonClick={ this.clearValues }
-            actionButtonIcon={ <AddIcon /> }
-            actionButtonTitle={ strings.visitorsManagement.startNewSession }
+            width={320}
+            title={strings.visitorsManagement.activeVisitorSessions}
+            actionButtonClick={this.clearValues}
+            actionButtonIcon={<AddIcon />}
+            actionButtonTitle={strings.visitorsManagement.startNewSession}
           >
-            { this.renderActiveSessions() }
+            {this.renderActiveSessions()}
           </ElementNavigationPane>
-          { this.renderContent() }
-          <ElementPropertiesPane
-            open={ true }
-          >
-            { selectedSession &&
+          {this.renderContent()}
+          <ElementPropertiesPane open={true}>
+            {selectedSession && (
               <VisitorVariables
-                visitorVariables={ visitorVariables }
-                visitorSession={ selectedSession }
-                onSessionUpdate={ this.onSessionUpdate }
+                visitorVariables={visitorVariables}
+                visitorSession={selectedSession}
+                onSessionUpdate={this.onSessionUpdate}
               />
-            }
+            )}
           </ElementPropertiesPane>
         </Box>
-        { this.renderRFIDDialog() }
-        { this.renderConfirmDeleteDialog() }
+        {this.renderRFIDDialog()}
+        {this.renderConfirmDeleteDialog()}
       </BasicLayout>
     );
   };
@@ -196,29 +199,23 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderActiveSessions = () => {
     return (
       <Box>
-        <Box
-          pb={ 2 }
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography>{ strings.visitorsManagement.searchGroup }</Typography>
-          <Box ml={ 2 }>
+        <Box pb={2} display="flex" alignItems="center" justifyContent="space-between">
+          <Typography>{strings.visitorsManagement.searchGroup}</Typography>
+          <Box ml={2}>
             <IconButton
-              title={ strings.visitorsManagement.scanRFID }
-              onClick={ this.onScanTagClick }
-              size="large">
+              title={strings.visitorsManagement.scanRFID}
+              onClick={this.onScanTagClick}
+              size="large"
+            >
               <TagIcon />
             </IconButton>
           </Box>
         </Box>
         <Divider />
-        <List>
-          { this.renderSessionList() }
-        </List>
+        <List>{this.renderSessionList()}</List>
       </Box>
     );
-  }
+  };
 
   /**
    * Renders session list
@@ -226,96 +223,84 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderSessionList = () => {
     const { visitorSessions, selectedSession } = this.state;
 
-    return visitorSessions.map(session =>
+    return visitorSessions.map((session) => (
       <ListItem
-        key={ session.id }
+        key={session.id}
         button
-        selected={ selectedSession && session.id === selectedSession.id }
+        selected={selectedSession && session.id === selectedSession.id}
       >
         <ListItemText
-          onClick={ () => this.onSessionClick(session) }
-          primary={ VisitorUtils.getVisitorSessionInfoText(session) }
-          secondary={ VisitorUtils.getSessionExpiresTime(session) }
+          onClick={() => this.onSessionClick(session)}
+          primary={VisitorUtils.getVisitorSessionInfoText(session)}
+          secondary={VisitorUtils.getSessionExpiresTime(session)}
         />
         <ListItemSecondaryAction>
-          <IconButton onClick={ () => this.onSessionDeleteClick(session) } size="large">
-            <DeleteIcon/>
+          <IconButton onClick={() => this.onSessionDeleteClick(session)} size="large">
+            <DeleteIcon />
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
-    );
-
-  }
+    ));
+  };
 
   /**
    * Render content
    */
   private renderContent = () => {
     const { classes } = this.props;
-    const {
-      anonymousData,
-      selectedVisitor,
-      contentLoading,
-      selectedSession
-    } = this.state;
+    const { anonymousData, selectedVisitor, contentLoading, selectedSession } = this.state;
 
     if (contentLoading) {
       return (
-        <div className={ classes.loader }>
-          <CircularProgress size={ 50 } color="secondary"/>
+        <div className={classes.loader}>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
 
     return (
-      <Box p={ 4 }>
+      <Box p={4}>
         <Typography variant="h2">
-          { selectedSession ?
-            strings.visitorsManagement.editSession :
-            strings.visitorsManagement.startNewSession
-          }
+          {selectedSession
+            ? strings.visitorsManagement.editSession
+            : strings.visitorsManagement.startNewSession}
         </Typography>
-        <Box mt={ 2 } mb={ 2 }>
+        <Box mt={2} mb={2}>
           <Typography>
-            { selectedSession ?
-              strings.visitorsManagement.scanMoreTicketsHelp :
-              strings.visitorsManagement.scanTicketsHelp
-            }
+            {selectedSession
+              ? strings.visitorsManagement.scanMoreTicketsHelp
+              : strings.visitorsManagement.scanTicketsHelp}
           </Typography>
-          <Typography>
-            { strings.visitorsManagement.sessionDuration }
-          </Typography>
+          <Typography>{strings.visitorsManagement.sessionDuration}</Typography>
         </Box>
-        <Box display="flex" flex={ 1 }>
-          <Box flex={ 1 } mr={ 2 }>
-            <Box display="flex" mb={ 4 } alignItems="center">
-              <Box flex={ 6 }>
+        <Box display="flex" flex={1}>
+          <Box flex={1} mr={2}>
+            <Box display="flex" mb={4} alignItems="center">
+              <Box flex={6}>
                 <FormControlLabel
                   control={
                     <Checkbox
                       color="primary"
-                      checked={ anonymousData }
+                      checked={anonymousData}
                       name="anonymous"
-                      onChange={ () => this.setState({ anonymousData: !anonymousData })}
+                      onChange={() => this.setState({ anonymousData: !anonymousData })}
                     />
                   }
-                  label={ strings.visitorsManagement.fillWithAnonymousData }
+                  label={strings.visitorsManagement.fillWithAnonymousData}
                 />
               </Box>
-              <Box flex={ 2 }>
-                { this.renderLanguageSelect() }
-              </Box>
+              <Box flex={2}>{this.renderLanguageSelect()}</Box>
             </Box>
-            { this.renderTagList() }
+            {this.renderTagList()}
           </Box>
-          <Box flex={ 1 } ml={ 2 }>
-            { selectedVisitor && this.renderTagInformation() }
+          <Box flex={1} ml={2}>
+            {selectedVisitor && this.renderTagInformation()}
           </Box>
-          { this.renderTagListener() }
+          {this.renderTagListener()}
         </Box>
       </Box>
     );
-  }
+  };
 
   /**
    * Renders language select
@@ -327,30 +312,28 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return null;
     }
 
-    const selectOptions = languages.map(language =>
-      <MenuItem key={ language } value={ language }>
-        { language }
+    const selectOptions = languages.map((language) => (
+      <MenuItem key={language} value={language}>
+        {language}
       </MenuItem>
-    );
+    ));
 
     return (
-      <Box flex={ 2 }>
+      <Box flex={2}>
         <FormControl>
-          <InputLabel id="languageLabel">
-            { strings.reception.selectLanguageTitle }
-          </InputLabel>
+          <InputLabel id="languageLabel">{strings.reception.selectLanguageTitle}</InputLabel>
           <Select
-            label={ strings.reception.language }
+            label={strings.reception.language}
             labelId="languageLabel"
-            onChange={ this.onLanguageChange }
-            value={ selectedLanguage }
+            onChange={this.onLanguageChange}
+            value={selectedLanguage}
           >
-            { selectOptions }
+            {selectOptions}
           </Select>
         </FormControl>
       </Box>
     );
-  }
+  };
 
   /**
    * Render session visitor tags
@@ -358,14 +341,14 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderTagList = () => {
     const { visitors, selectedVisitor } = this.state;
 
-    const tags = visitors.map(visitor =>
+    const tags = visitors.map((visitor) => (
       <ListItem
-        key={ visitor.id }
+        key={visitor.id}
         button
-        selected={ visitor.tagId === selectedVisitor?.tagId }
-        onClick={ () => this.fetchTagUser(visitor.tagId) }
+        selected={visitor.tagId === selectedVisitor?.tagId}
+        onClick={() => this.fetchTagUser(visitor.tagId)}
       >
-        <ListItemText primary={ `${strings.visitorsManagement.tag} ${visitor.tagId}` } />
+        <ListItemText primary={`${strings.visitorsManagement.tag} ${visitor.tagId}`} />
         {/* This feature is not needed at the moment */}
         {/* <ListItemSecondaryAction>
           <IconButton
@@ -376,21 +359,18 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
           </IconButton>
         </ListItemSecondaryAction> */}
       </ListItem>
-    );
+    ));
 
     return (
-      <Box
-        flex={ 1 }
-        p={ 2 }
-        bgcolor={ theme.palette.background.default }
-      >
-        { visitors.length ?
-          <List>{ tags }</List> :
-          <Typography>{ strings.visitorsManagement.scanTicketsHelp }</Typography>
-        }
+      <Box flex={1} p={2} bgcolor={theme.palette.background.default}>
+        {visitors.length ? (
+          <List>{tags}</List>
+        ) : (
+          <Typography>{strings.visitorsManagement.scanTicketsHelp}</Typography>
+        )}
       </Box>
     );
-  }
+  };
 
   /**
    * Render session visitor tag information
@@ -405,21 +385,16 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     return (
       <Box
         display="flex"
-        flex={ 1 }
-        p={ 4 }
-        bgcolor={ theme.palette.background.default }
+        flex={1}
+        p={4}
+        bgcolor={theme.palette.background.default}
         flexDirection="column"
       >
-        <Typography variant="h3">
-          { strings.visitorsManagement.ticketContactInformation }
-        </Typography>
-        <VisitorInformation
-          visitor={ selectedVisitor }
-          updateVisitor={ this.onUpdateVisitor }
-        />
+        <Typography variant="h3">{strings.visitorsManagement.ticketContactInformation}</Typography>
+        <VisitorInformation visitor={selectedVisitor} updateVisitor={this.onUpdateVisitor} />
       </Box>
     );
-  }
+  };
 
   /**
    * Renders tag listener
@@ -430,25 +405,23 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const antennas = Config.getConfig().mqttConfig.visitorManagementAntennas;
 
     return (
-      <MqttListener onError={ error => this.setState({ error: error }) }>
-        { mqtt => (
+      <MqttListener onError={(error) => this.setState({ error: error })}>
+        {(mqtt) => (
           <>
-            {
-              antennas.map(antenna =>
-                <TagListener
-                  threshold={ 75 }
-                  mqtt={ mqtt }
-                  antenna={ antenna }
-                  hide={ true }
-                  onTagRegister={ mqttScannerOpen ? this.onTagSearch : this.onTagRegister }
-                />
-              )
-            }
+            {antennas.map((antenna) => (
+              <TagListener
+                threshold={75}
+                mqtt={mqtt}
+                antenna={antenna}
+                hide={true}
+                onTagRegister={mqttScannerOpen ? this.onTagSearch : this.onTagRegister}
+              />
+            ))}
           </>
         )}
       </MqttListener>
     );
-  }
+  };
 
   /**
    * Renders RFID dialog
@@ -458,36 +431,30 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     return (
       <Dialog
-        open={ mqttScannerOpen }
-        onClose={ () => this.setState({ mqttScannerOpen: false }) }
+        open={mqttScannerOpen}
+        onClose={() => this.setState({ mqttScannerOpen: false })}
         aria-labelledby="RFID-dialog-title"
         aria-describedby="RFID-dialog-description"
         fullWidth
       >
-        <DialogTitle id="RFID-dialog-title">
-          { strings.visitorsManagement.searchGroup }
-        </DialogTitle>
+        <DialogTitle id="RFID-dialog-title">{strings.visitorsManagement.searchGroup}</DialogTitle>
         <DialogContent>
-          <Box
-            flex={ 1 }
-            display="flex"
-            justifyContent="center"
-          >
-            <Typography>{ strings.visitorsManagement.scanRFID }</Typography>
+          <Box flex={1} display="flex" justifyContent="center">
+            <Typography>{strings.visitorsManagement.scanRFID}</Typography>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={ () => this.setState({ mqttScannerOpen: false }) }
+            onClick={() => this.setState({ mqttScannerOpen: false })}
             color="primary"
             variant="contained"
           >
-            { strings.generic.cancel }
+            {strings.generic.cancel}
           </Button>
         </DialogActions>
       </Dialog>
     );
-  }
+  };
 
   /**
    * Renders delete confirmation dialog
@@ -495,13 +462,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private renderConfirmDeleteDialog = () => {
     const { deleteDialogOpen, confirmDialogData } = this.state;
 
-    return (
-      <ConfirmDialog
-        open={ deleteDialogOpen }
-        confirmDialogData={ confirmDialogData }
-      />
-    );
-  }
+    return <ConfirmDialog open={deleteDialogOpen} confirmDialogData={confirmDialogData} />;
+  };
 
   /**
    * Returns action buttons
@@ -517,12 +479,14 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         action: this.clearValues
       },
       {
-        name: selectedSession ? strings.visitorsManagement.updateSession : strings.visitorsManagement.startSession,
+        name: selectedSession
+          ? strings.visitorsManagement.updateSession
+          : strings.visitorsManagement.startSession,
         action: selectedSession ? this.updateSession : this.onStartClick,
-        disabled : !dataChanged || !visitors.length
+        disabled: !dataChanged || !visitors.length
       }
     ];
-  }
+  };
 
   /**
    * Event handler for clear session button click
@@ -538,7 +502,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedLanguage: "FI",
       contentLoading: false
     });
-  }
+  };
 
   /**
    * Updates session
@@ -555,7 +519,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     const visitorsApi = Api.getVisitorsApi(accessToken);
     const createdVisitors: Visitor[] = [];
-    for (const visitorToCreate of visitors.filter(_visitor => !_visitor.id)) {
+    for (const visitorToCreate of visitors.filter((_visitor) => !_visitor.id)) {
       createdVisitors.push(
         await visitorsApi.createVisitor({
           exhibitionId: exhibitionId,
@@ -569,8 +533,10 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     }
 
     const sessionsApi = Api.getVisitorSessionsApi(accessToken);
-    const combinedVisitorList = [ ...createdVisitors, ...visitors ].filter(visitor => visitor.id !== undefined);
-    const visitorIdList = combinedVisitorList.map(visitor => visitor.id!);
+    const combinedVisitorList = [...createdVisitors, ...visitors].filter(
+      (visitor) => visitor.id !== undefined
+    );
+    const visitorIdList = combinedVisitorList.map((visitor) => visitor.id!);
     const updatedSession = await sessionsApi.updateVisitorSession({
       exhibitionId: exhibitionId,
       visitorSession: {
@@ -581,8 +547,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSessionId: selectedSession.id
     });
 
-    const updatedSessionList = produce(visitorSessions, draft => {
-      const index = visitorSessions.findIndex(session => session.id === selectedSession.id);
+    const updatedSessionList = produce(visitorSessions, (draft) => {
+      const index = visitorSessions.findIndex((session) => session.id === selectedSession.id);
       if (index > -1) {
         draft.splice(index, 1, updatedSession);
       }
@@ -594,7 +560,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       contentLoading: false,
       visitorSessions: updatedSessionList
     });
-  }
+  };
 
   /**
    * Event handler for start session button click
@@ -626,16 +592,16 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitorSession: {
         language: selectedLanguage,
         state: VisitorSessionState.ACTIVE,
-        visitorIds: createdVisitors.map(visitor => visitor.id || ""),
+        visitorIds: createdVisitors.map((visitor) => visitor.id || "")
       }
     });
 
     this.setState({
-      visitorSessions: [ ...visitorSessions, createdSession ]
+      visitorSessions: [...visitorSessions, createdSession]
     });
 
     this.clearValues();
-  }
+  };
 
   /**
    * Updates visitor
@@ -655,7 +621,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitor: visitor,
       visitorId: visitor.id
     });
-  }
+  };
 
   /**
    * Event handler for scan tag button click
@@ -664,7 +630,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     this.setState({
       mqttScannerOpen: !this.state.mqttScannerOpen
     });
-  }
+  };
 
   /**
    * Event handler for session click
@@ -685,7 +651,10 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     try {
       for (const visitor of session.visitorIds) {
-        const foundVisitor = await visitorsApi.findVisitor({ exhibitionId: exhibitionId, visitorId: visitor });
+        const foundVisitor = await visitorsApi.findVisitor({
+          exhibitionId: exhibitionId,
+          visitorId: visitor
+        });
         visitors.push(foundVisitor);
       }
     } catch (error) {
@@ -699,7 +668,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedSession: session,
       selectedLanguage: session.language
     });
-  }
+  };
 
   /**
    * Event handler for session delete click
@@ -711,7 +680,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedSession: sessionToDelete,
       deleteDialogOpen: true
     });
-  }
+  };
 
   /**
    * Event handler for language change
@@ -724,7 +693,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedLanguage: event.target.value,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for fetch tag user
@@ -735,9 +704,9 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const { visitors } = this.state;
 
     this.setState({
-      selectedVisitor: visitors.find(visitor => visitor.tagId === tag)
+      selectedVisitor: visitors.find((visitor) => visitor.tagId === tag)
     });
-  }
+  };
 
   /**
    * Event handler for tag click
@@ -754,7 +723,6 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     this.setState({ tagRead: true, contentLoading: true });
 
-
     try {
       await this.clearSessionsAndVisitors(tag);
 
@@ -762,7 +730,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
       this.setState({
         selectedVisitor: visitor,
-        visitors: [ ...visitors, visitor ],
+        visitors: [...visitors, visitor],
         dataChanged: true,
         contentLoading: false,
         tagRead: false
@@ -771,7 +739,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       console.error(error);
       this.setState({ tagRead: false, contentLoading: false });
     }
-  }
+  };
 
   /**
    * Clears all sessions and visitors from all exhibitions for read tag
@@ -793,7 +761,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
 
     const exhibitions = await exhibitionsApi.listExhibitions();
     for (const exhibition of exhibitions) {
-      const [ exhibitionVisitors, exhibitionSessions ] = await Promise.all([
+      const [exhibitionVisitors, exhibitionSessions] = await Promise.all([
         visitorsApi.listVisitors({ exhibitionId: exhibition.id!, tagId: tag }),
         sessionsApi.listVisitorSessions({ exhibitionId: exhibition.id!, tagId: tag })
       ]);
@@ -819,7 +787,9 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
           }
 
           this.setState({
-            visitorSessions: this.state.visitorSessions.filter(_session => _session.id !== session.id)
+            visitorSessions: this.state.visitorSessions.filter(
+              (_session) => _session.id !== session.id
+            )
           });
         }
       } catch (error) {
@@ -837,7 +807,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
         }
       }
     }
-  }
+  };
 
   /**
    * Event handler for remove tag click
@@ -847,18 +817,20 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
   private onRemoveTag = (clickedTag: string) => {
     const { visitors, selectedSession } = this.state;
 
-    const visitorToDelete = visitors.find(visitor => visitor.tagId === clickedTag);
+    const visitorToDelete = visitors.find((visitor) => visitor.tagId === clickedTag);
 
     this.setState({
-      visitors: visitors.filter(visitor => visitor.tagId !== clickedTag),
+      visitors: visitors.filter((visitor) => visitor.tagId !== clickedTag),
       selectedSession: selectedSession && {
         ...selectedSession,
-        visitorIds: selectedSession.visitorIds.filter(visitorId => visitorId !== visitorToDelete?.id)
+        visitorIds: selectedSession.visitorIds.filter(
+          (visitorId) => visitorId !== visitorToDelete?.id
+        )
       },
       selectedVisitor: undefined,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for tag search
@@ -888,8 +860,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return;
     }
 
-    const updatedSessionList = produce(visitorSessions, draft => {
-      const index = draft.findIndex(_session => _session.id === session.id);
+    const updatedSessionList = produce(visitorSessions, (draft) => {
+      const index = draft.findIndex((_session) => _session.id === session.id);
       if (index > -1) {
         draft.splice(index, 1, session);
       }
@@ -908,9 +880,9 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedSession: session,
       visitors: visitors,
       mqttScannerOpen: false,
-      selectedVisitor: visitors.find(visitor => visitor.tagId === tag)
+      selectedVisitor: visitors.find((visitor) => visitor.tagId === tag)
     });
-  }
+  };
 
   /**
    * Event handler for tag register
@@ -921,7 +893,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const { visitors, tagRead, selectedSession } = this.state;
 
     if (
-      !!visitors.filter(visitor => visitor.tagId === tag).length ||
+      !!visitors.filter((visitor) => visitor.tagId === tag).length ||
       tagRead ||
       selectedSession
     ) {
@@ -929,7 +901,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     }
 
     this.fetchTagInfo(tag);
-  }
+  };
 
   /**
    * Event handler for session update
@@ -941,7 +913,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       selectedSession: updatedSession,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Event handler for update visitor
@@ -955,8 +927,8 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       return;
     }
 
-    const updatedVisitorList = produce(visitors, draft => {
-      const index = draft.findIndex(visitor => visitor.id === updatedVisitor.id);
+    const updatedVisitorList = produce(visitors, (draft) => {
+      const index = draft.findIndex((visitor) => visitor.id === updatedVisitor.id);
       if (index > -1) {
         draft.splice(index, 1, updatedVisitor);
       }
@@ -967,7 +939,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       visitors: updatedVisitorList,
       dataChanged: true
     });
-  }
+  };
 
   /**
    * Fetches initial data
@@ -984,7 +956,7 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     const visitorsApi = Api.getVisitorsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
 
-    const [ visitorVariables, visitorSessions, adminVisitors, contentVersions ] = await Promise.all([
+    const [visitorVariables, visitorSessions, adminVisitors, contentVersions] = await Promise.all([
       visitorVariablesApi.listVisitorVariables({ exhibitionId }),
       visitorSessionsApi.listVisitorSessions({ exhibitionId }),
       visitorsApi.listVisitors({ exhibitionId, tagId: "adminoverride" }),
@@ -996,17 +968,17 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     /**
      * Admin visitors must be filtered out
      */
-    const adminVisitorIds = adminVisitors.map(admin => admin.id);
-    const filteredSessions = visitorSessions.filter(session => {
+    const adminVisitorIds = adminVisitors.map((admin) => admin.id);
+    const filteredSessions = visitorSessions.filter((session) => {
       const visitorIds = session.visitorIds;
-      return visitorIds.every(id => !adminVisitorIds.includes(id));
+      return visitorIds.every((id) => !adminVisitorIds.includes(id));
     });
 
     this.setState({
       visitorVariables: visitorVariables,
       visitorSessions: filteredSessions
     });
-  }
+  };
 
   /**
    * Construct available language options from content version
@@ -1020,21 +992,21 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
       languages: languages,
       selectedLanguage: languages[0]
     });
-  }
+  };
 
   /**
    * Event handler fo close or cancel click
    */
   private onCloseOrCancelClick = () => {
     this.setState({ deleteDialogOpen: false });
-  }
+  };
 
   /**
    * Event handler for session delete click
    */
   private onSessionConfirmDeleteClick = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { selectedSession,visitorSessions } = this.state;
+    const { selectedSession, visitorSessions } = this.state;
 
     if (!accessToken || !selectedSession || !selectedSession.id) {
       return;
@@ -1052,12 +1024,11 @@ export class VisitorsManagementScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      visitorSessions: visitorSessions.filter(session => session.id !== selectedSession.id),
+      visitorSessions: visitorSessions.filter((session) => session.id !== selectedSession.id)
     });
 
     this.clearValues();
-  }
-
+  };
 }
 
 /**
@@ -1079,8 +1050,10 @@ function mapStateToProps(state: ReduxState) {
  * @param dispatch dispatch method
  */
 function mapDispatchToProps(_dispatch: Dispatch<ReduxActions>) {
-  return {
-  };
+  return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(VisitorsManagementScreen));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(VisitorsManagementScreen));

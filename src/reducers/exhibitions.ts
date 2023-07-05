@@ -1,7 +1,7 @@
-import { ExhibitionsAction } from '../actions/exhibitions';
-import { SET_SELECTED_EXHIBITION, SET_EXHIBITIONS } from '../constants/actionTypes';
+import { ExhibitionsAction } from "../actions/exhibitions";
+import { SET_EXHIBITIONS, SET_SELECTED_EXHIBITION } from "../constants/actionTypes";
+import { Exhibition } from "../generated/client";
 import { Reducer } from "redux";
-import { Exhibition } from '../generated/client';
 
 /**
  * Exhibitions state
@@ -17,7 +17,7 @@ interface ExhibitionsState {
 const initialState: ExhibitionsState = {
   selectedExhibition: undefined,
   exhibitions: []
-}
+};
 
 /**
  * Redux reducer for exhibitions
@@ -25,8 +25,10 @@ const initialState: ExhibitionsState = {
  * @param storeState store state of exhibitions
  * @param action action of exhibitions
  */
-// eslint-disable-next-line max-len
-export const exhibitionsReducer: Reducer<ExhibitionsState, ExhibitionsAction> = (state: ExhibitionsState = initialState, action: ExhibitionsAction): ExhibitionsState => {
+export const exhibitionsReducer: Reducer<ExhibitionsState, ExhibitionsAction> = (
+  state: ExhibitionsState = initialState,
+  action: ExhibitionsAction
+): ExhibitionsState => {
   switch (action.type) {
     case SET_SELECTED_EXHIBITION:
       return {
@@ -37,8 +39,8 @@ export const exhibitionsReducer: Reducer<ExhibitionsState, ExhibitionsAction> = 
       return {
         ...state,
         exhibitions: action.exhibitions
-      }
+      };
     default:
       return state;
   }
-}
+};

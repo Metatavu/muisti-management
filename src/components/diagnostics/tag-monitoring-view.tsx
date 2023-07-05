@@ -1,17 +1,22 @@
-import React from "react";
-import { BarChart, Bar, YAxis, XAxis, Cell, ResponsiveContainer } from "recharts";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/components/diagnostics/tag-monitoring-view";
-import { Mqtt } from "../../mqtt";
-import { MqttProximityUpdate, RfidAntenna, VisitorSession, VisitorSessionState } from "../../generated/client";
-import { Config } from "../../constants/configuration";
-import { useInterval } from "../../app/hooks";
 import Api from "../../api/api";
-import { ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { AccessToken } from "../../types";
+import { useInterval } from "../../app/hooks";
+import { Config } from "../../constants/configuration";
+import {
+  MqttProximityUpdate,
+  RfidAntenna,
+  VisitorSession,
+  VisitorSessionState
+} from "../../generated/client";
 import strings from "../../localization/strings";
+import { Mqtt } from "../../mqtt";
+import { ReduxState } from "../../store";
+import styles from "../../styles/components/diagnostics/tag-monitoring-view";
+import { AccessToken } from "../../types";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import React from "react";
+import { connect } from "react-redux";
+import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 /**
  * Visible tag data
@@ -46,9 +51,9 @@ const TagMonitoringView: React.FC<Props> = ({
   exhibitionId
 }) => {
   const pendingMessages = React.useRef<MqttProximityUpdate[]>([]);
-  const [ visibleTags, setVisibleTags ] = React.useState<VisibleTag[]>([]);
-  const [ tagSessions, setTagSessions ] = React.useState<{ [tag: string]: VisitorSession }>({});
-  const [ loadingTagIds, setLoadingTagIds ] = React.useState<string[]>([]);
+  const [visibleTags, setVisibleTags] = React.useState<VisibleTag[]>([]);
+  const [tagSessions, setTagSessions] = React.useState<{ [tag: string]: VisitorSession }>({});
+  const [loadingTagIds, setLoadingTagIds] = React.useState<string[]>([]);
 
   /**
    * Adds sessions found from tag to the tag sessions list
@@ -60,15 +65,18 @@ const TagMonitoringView: React.FC<Props> = ({
       return;
     }
 
-    const visitorSessions = await Api
-      .getVisitorSessionsApi(accessToken)
-      .listVisitorSessions({ exhibitionId, tagId });
+    const visitorSessions = await Api.getVisitorSessionsApi(accessToken).listVisitorSessions({
+      exhibitionId,
+      tagId
+    });
 
-    const activeSession = visitorSessions.find(session => session.state === VisitorSessionState.ACTIVE);
+    const activeSession = visitorSessions.find(
+      (session) => session.state === VisitorSessionState.ACTIVE
+    );
 
     activeSession && setTagSessions({ ...tagSessions, [tagId]: activeSession });
-    setLoadingTagIds(loadingTagIds.filter(id => id !== tagId));
-  }
+    setLoadingTagIds(loadingTagIds.filter((id) => id !== tagId));
+  };
 
   /**
    * Event handler for proximity update
@@ -77,20 +85,20 @@ const TagMonitoringView: React.FC<Props> = ({
    */
   const onMqttProximityUpdate = (message: MqttProximityUpdate) => {
     message && pendingMessages.current.push(message);
-  }
+  };
 
   /**
    * Updates visible tags list from pending mqtt proximity messages
    */
   const updateVisibleTags = () => {
-    const messages = [ ...pendingMessages.current ];
+    const messages = [...pendingMessages.current];
     pendingMessages.current = [];
     const updatedTagsList = messages
-      .reduce(addOrUpdateTagFromMessage, [ ...visibleTags ])
+      .reduce(addOrUpdateTagFromMessage, [...visibleTags])
       .reduce(removeExpiredTag, []);
 
     setVisibleTags(updatedTagsList);
-  }
+  };
 
   /**
    * Adds or updates message to tags list
@@ -109,20 +117,16 @@ const TagMonitoringView: React.FC<Props> = ({
       removedAt: currentTime + Config.getConfig().diagnostics.tagRemoveDelay
     };
 
-    const existingIndex = list.findIndex(tag => tag.id === message.tag);
+    const existingIndex = list.findIndex((tag) => tag.id === message.tag);
 
     if (existingIndex === -1) {
       addTagSessions(tagFromMessage.id);
-      setLoadingTagIds([ ...loadingTagIds, tagFromMessage.id ]);
-      return [ ...list, tagFromMessage ];
+      setLoadingTagIds([...loadingTagIds, tagFromMessage.id]);
+      return [...list, tagFromMessage];
     }
 
-    return [
-      ...list.slice(0, existingIndex),
-      tagFromMessage,
-      ...list.slice(existingIndex + 1)
-    ];
-  }
+    return [...list.slice(0, existingIndex), tagFromMessage, ...list.slice(existingIndex + 1)];
+  };
 
   /**
    * Limits strength between 0 and 100
@@ -132,7 +136,7 @@ const TagMonitoringView: React.FC<Props> = ({
    */
   const limitStrength = (strength: number) => {
     return Math.min(Math.max(strength, 0), 100);
-  }
+  };
 
   /**
    * Reducer that removes tag from list if expired
@@ -149,11 +153,11 @@ const TagMonitoringView: React.FC<Props> = ({
     }
 
     if (tag.zeroedAt < currentTime) {
-      return [ ...list, { ...tag, strength: 0 } ];
+      return [...list, { ...tag, strength: 0 }];
     }
 
-    return [ ...list, tag ];
-  }
+    return [...list, tag];
+  };
 
   /**
    * Returns color based on signal strength
@@ -162,8 +166,8 @@ const TagMonitoringView: React.FC<Props> = ({
    * @returns color value
    */
   const getColor = (strength: number) => {
-    return `rgb(${0}, ${ strength * 2.5 }, ${ 0 })`;
-  }
+    return `rgb(${0}, ${strength * 2.5}, ${0})`;
+  };
 
   /**
    * Formats tag to label
@@ -180,7 +184,7 @@ const TagMonitoringView: React.FC<Props> = ({
     const sessionId = tagSession ? tagSession.id : undefined;
 
     return sessionId ? abbreviate(sessionId) : strings.diagnostics.noSession;
-  }
+  };
 
   /**
    * Returns last four characters with ellipsis prefix from given string
@@ -190,7 +194,7 @@ const TagMonitoringView: React.FC<Props> = ({
    */
   const abbreviate = (value: string) => {
     return `...${value.slice(-4)}`;
-  }
+  };
 
   /**
    * Stop function for started update visible tags interval
@@ -201,50 +205,50 @@ const TagMonitoringView: React.FC<Props> = ({
    * Effect that subscribes and unsubscribes to antenna's mqtt channel
    */
   React.useEffect(() => {
-    const mqttChannel = `${Config.getConfig().mqttConfig.prefix}${antenna.readerId}/${antenna.antennaNumber}`;
+    const mqttChannel = `${Config.getConfig().mqttConfig.prefix}${antenna.readerId}/${
+      antenna.antennaNumber
+    }`;
 
     mqtt.subscribe(mqttChannel, onMqttProximityUpdate);
 
     return () => {
       mqtt.unsubscribe(mqttChannel, onMqttProximityUpdate);
-    }
+    };
     // eslint-disable-next-line
   }, []);
 
   /**
    * Effect that stops update visible tags interval when component will unmount
    */
-  React.useEffect(() => () => stopInterval && stopInterval(), [ stopInterval ]);
+  React.useEffect(() => () => stopInterval && stopInterval(), [stopInterval]);
 
   /**
    * Component render
    */
   return (
-    <div className={ classes.chartContainer }>
+    <div className={classes.chartContainer}>
       <ResponsiveContainer width="97%" height="95%">
-        <BarChart data={ visibleTags }>
-          <YAxis
-            domain={[ 0, 100 ]}
-            width={ 30 }
-          />
+        <BarChart data={visibleTags}>
+          <YAxis domain={[0, 100]} width={30} />
           <XAxis
-            domain={ !visibleTags.length ? [] : undefined }
+            domain={!visibleTags.length ? [] : undefined}
             dataKey="id"
-            interval={ 0 }
-            height={ 20 }
-            tickFormatter={ formatLabel }
+            interval={0}
+            height={20}
+            tickFormatter={formatLabel}
           />
           <Bar dataKey="strength">
-            { visibleTags
+            {visibleTags
               .sort((a, b) => a.id.localeCompare(b.id))
-              .map(tag => <Cell key={ tag.id } fill={ getColor(tag.strength) }/>)
-            }
+              .map((tag) => (
+                <Cell key={tag.id} fill={getColor(tag.strength)} />
+              ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
-}
+};
 
 /**
  * Redux mapper for mapping store state to component props

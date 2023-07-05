@@ -1,5 +1,5 @@
-import { cleanEnv, bool, str, url, num } from "envalid";
 import { StaticConfig } from "../types";
+import { bool, cleanEnv, num, str, url } from "envalid";
 
 /**
  * Validates that environment variables are in place and have correct form
@@ -30,7 +30,6 @@ const env = cleanEnv(import.meta.env, {
  * Class for software configuration
  */
 export class Config {
-
   /**
    * Get static application configuration
    *
@@ -64,5 +63,5 @@ export class Config {
         tagRemoveDelay: env.VITE_DIAGNOSTICS_TAG_REMOVE_DELAY
       }
     };
-  }
+  };
 }

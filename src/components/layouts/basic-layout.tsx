@@ -1,17 +1,16 @@
-import * as React from "react";
-
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import styles from "../../styles/components/generic/basic-layout";
-import TopBar from "../generic/top-bar";
-import { KeycloakInstance } from "keycloak-js";
-import ErrorDialog from "../generic/error-dialog";
-import { History } from "history";
-import { BreadcrumbData, ActionButton } from "../../types";
 import { ExhibitionDevice } from "../../generated/client";
+import strings from "../../localization/strings";
+import styles from "../../styles/components/generic/basic-layout";
+import { ActionButton, BreadcrumbData } from "../../types";
+import ErrorDialog from "../generic/error-dialog";
+import TopBar from "../generic/top-bar";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
 import { Beforeunload } from "react-beforeunload";
 import { Prompt } from "react-router-dom";
-import strings from "../../localization/strings";
 
 /**
  * Interface representing component properties
@@ -37,13 +36,13 @@ interface Props extends WithStyles<typeof styles> {
  * Interface representing component state
  */
 interface State {
+  loading: boolean;
 }
 
 /**
  * Component for basic application layout
  */
 class BasicLayout extends React.Component<Props, State> {
-
   /**
    * Constructor
    *
@@ -74,29 +73,20 @@ class BasicLayout extends React.Component<Props, State> {
       children
     } = this.props;
     return (
-      <div className={ classes.root }>
+      <div className={classes.root}>
         <TopBar
-          history={ history }
-          keycloak={ keycloak }
-          breadcrumbs={ breadcrumbs }
-          actionBarButtons={ actionBarButtons }
-          noBackButton={ noBackButton }
-          title={ title }
-          hideHeader={ hideHeader }
+          history={history}
+          keycloak={keycloak}
+          breadcrumbs={breadcrumbs}
+          actionBarButtons={actionBarButtons}
+          noBackButton={noBackButton}
+          title={title}
+          hideHeader={hideHeader}
         />
-        <div className={ classes.content }>
-          { this.props.children }
-        </div>
-        { this.renderErrorDialog() }
-        { dataChanged &&
-          <Prompt
-            when={ dataChanged }
-            message={ strings.generic.unsaved }
-          />
-        }
-        { openDataChangedPrompt &&
-          <Beforeunload onBeforeunload={ () => "" }/>
-        }
+        <div className={classes.content}>{this.props.children}</div>
+        {this.renderErrorDialog()}
+        {dataChanged && <Prompt when={dataChanged} message={strings.generic.unsaved} />}
+        {openDataChangedPrompt && <Beforeunload onBeforeunload={() => ""} />}
       </div>
     );
   }
@@ -106,12 +96,11 @@ class BasicLayout extends React.Component<Props, State> {
    */
   private renderErrorDialog = () => {
     if (this.props.error && this.props.clearError) {
-      return <ErrorDialog error={ this.props.error } onClose={ this.props.clearError } />;
+      return <ErrorDialog error={this.props.error} onClose={this.props.clearError} />;
     }
 
     return null;
-  }
-
+  };
 }
 
 export default withStyles(styles)(BasicLayout);

@@ -1,6 +1,5 @@
-/* eslint-disable new-parens */
-import * as Paho from "paho-mqtt";
 import { Config } from "../constants/configuration";
+import Paho from "paho-mqtt";
 
 /**
  * Message subscribe callback handler
@@ -13,7 +12,6 @@ const config = Config.getConfig();
  * Class that handles MQTT connection
  */
 export class Mqtt {
-
   private client: Paho.Client | null;
   private subscribers: Map<string, OnMessageCallback[]>;
   private connecting: boolean;
@@ -22,7 +20,7 @@ export class Mqtt {
   /**
    * Constructor
    */
-  constructor () {
+  constructor() {
     this.client = null;
     this.connecting = false;
     this.connected = false;
@@ -73,9 +71,12 @@ export class Mqtt {
     if (client) {
       client.unsubscribe(topic);
       const topicSubscribers = this.subscribers.get(topic) || [];
-      this.subscribers.set(topic, topicSubscribers.filter(topicSubscriber => {
-        return topicSubscriber !== onMessage;
-      }));
+      this.subscribers.set(
+        topic,
+        topicSubscribers.filter((topicSubscriber) => {
+          return topicSubscriber !== onMessage;
+        })
+      );
     }
   }
 
@@ -92,12 +93,12 @@ export class Mqtt {
    * Waits for connecting status
    */
   public async waitConnecting(): Promise<null> {
-    const timeout = (new Date().getTime() + 60000);
+    const timeout = new Date().getTime() + 60000;
     do {
       if (await this.waitConnectingDelayed()) {
         return null;
       }
-    } while (timeout > (new Date().getTime()));
+    } while (timeout > new Date().getTime());
 
     throw new Error(`Timeout`);
   }
@@ -116,7 +117,7 @@ export class Mqtt {
    * @returns promise for connection not connecting
    */
   private waitConnectingDelayed(): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(!this.connecting);
       }, 100);
@@ -129,28 +130,26 @@ export class Mqtt {
    * @returns promise for connection
    */
   private doConnect(): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (this.client && this.connected) {
         return resolve();
       }
 
       const secure = config.mqttConfig.secure !== false;
       const host = config.mqttConfig.host;
-      const port = config.mqttConfig.port || undefined;
-      const path = config.mqttConfig.path || "";
+      const port = config.mqttConfig.port || undefined;
+      const path = config.mqttConfig.path || "";
       const protocol = secure ? "wss://" : "ws://";
       const username = config.mqttConfig.userName;
       const password = config.mqttConfig.password;
 
       this.client?.connect({
-        hosts: [ host! ],
-        ports: [ port! ],
+        hosts: [host!],
+        ports: [port!],
         keepAliveInterval: 30,
         userName: username,
         password: password,
-        onSuccess: () => {
-
-        }
+        onSuccess: () => {}
       });
     });
   }
@@ -193,7 +192,6 @@ export class Mqtt {
       topicSubscriber(message);
     });
   }
-
 }
 
 export default new Mqtt();

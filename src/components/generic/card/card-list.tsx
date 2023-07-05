@@ -1,10 +1,9 @@
-import * as React from "react";
-
-import { Typography } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../styles/components/generic/card/card-list";
 import theme from "../../../styles/theme";
+import { Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Component props
@@ -22,17 +21,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Component state
- */
-interface State {
-
-}
-
-/**
  * Generic card list component
  */
-class CardList extends React.Component<Props, State> {
-
+class CardList extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -40,8 +31,7 @@ class CardList extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -51,26 +41,18 @@ class CardList extends React.Component<Props, State> {
     const { classes, title, subtitle, autoHeight, children } = this.props;
 
     return (
-      <div className={ autoHeight ? classes.cardViewAutoHeight : classes.cardView }>
-        { title &&
-          <Typography
-            style={{ marginBottom: theme.spacing(subtitle ? 1 : 2) }}
-            variant="h2"
-          >
-            { title }
+      <div className={autoHeight ? classes.cardViewAutoHeight : classes.cardView}>
+        {title && (
+          <Typography style={{ marginBottom: theme.spacing(subtitle ? 1 : 2) }} variant="h2">
+            {title}
           </Typography>
-        }
-        { subtitle &&
-          <Typography
-            style={{ marginBottom: theme.spacing(2) }}
-            variant="body1"
-          >
-            { subtitle }
+        )}
+        {subtitle && (
+          <Typography style={{ marginBottom: theme.spacing(2) }} variant="body1">
+            {subtitle}
           </Typography>
-        }
-        <div className={ classes.cardList }>
-          { this.props.children }
-        </div>
+        )}
+        <div className={classes.cardList}>{this.props.children}</div>
       </div>
     );
   }

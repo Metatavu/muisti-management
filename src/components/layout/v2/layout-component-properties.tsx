@@ -1,12 +1,12 @@
-import { Divider, MenuItem, Stack } from "@mui/material";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
-import PropertyBox from "./property-box";
-import PanelSubtitle from "./panel-subtitle";
-import AlignmentEditorHtml from "./alignment-editor-html";
-import { ChangeEvent, FC } from "react";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import AlignmentEditorHtml from "./alignment-editor-html";
+import PanelSubtitle from "./panel-subtitle";
+import PropertyBox from "./property-box";
+import { Divider, MenuItem, Stack } from "@mui/material";
+import { ChangeEvent, FC } from "react";
 
 /**
  * Component props
@@ -19,10 +19,7 @@ interface Props {
 /**
  * Renders layout component properties
  */
-const LayoutComponentProperties: FC<Props> = ({
-  component,
-  updateComponent
-}) => {
+const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) => {
   /**
    * Event handler for layout alignment change events
    *
@@ -40,7 +37,7 @@ const LayoutComponentProperties: FC<Props> = ({
    * @param event event
    */
   const onPropertyChange = ({ target: { value, name } }: ChangeEvent<HTMLInputElement>) => {
-    if (!value)  {
+    if (!value) {
       component.element.style.removeProperty(name);
     } else {
       if (name === "gap") {
@@ -53,57 +50,53 @@ const LayoutComponentProperties: FC<Props> = ({
     updateComponent(component);
   };
 
-	return (
-		<Stack>
-      <Divider sx={{ color: "#F5F5F5" }}/>
+  return (
+    <Stack>
+      <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
-        <PanelSubtitle subtitle={ strings.layoutEditorV2.layoutProperties.contentEmphasis }/>
-        <AlignmentEditorHtml
-          onChange={ onAlignmentChange }
-        />
+        <PanelSubtitle subtitle={strings.layoutEditorV2.layoutProperties.contentEmphasis} />
+        <AlignmentEditorHtml onChange={onAlignmentChange} />
       </PropertyBox>
-      <Divider sx={{ color: "#F5F5F5" }}/>
+      <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <PanelSubtitle sx={{ flex: 1 }} subtitle={ strings.layoutEditorV2.layoutProperties.contentDirection.label }/>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <PanelSubtitle
+            sx={{ flex: 1 }}
+            subtitle={strings.layoutEditorV2.layoutProperties.contentDirection.label}
+          />
           <SelectBox
             name="flexDirection"
             sx={{ flex: 1 }}
-            value={ component.element.style.flexDirection ?? "row" }
-            onChange={ onPropertyChange }
+            value={component.element.style.flexDirection ?? "row"}
+            onChange={onPropertyChange}
           >
-            <MenuItem value={ "row" }>
-              { strings.layoutEditorV2.layoutProperties.contentDirection.row }
+            <MenuItem value={"row"}>
+              {strings.layoutEditorV2.layoutProperties.contentDirection.row}
             </MenuItem>
-            <MenuItem value={ "column" }>
-              { strings.layoutEditorV2.layoutProperties.contentDirection.column }
+            <MenuItem value={"column"}>
+              {strings.layoutEditorV2.layoutProperties.contentDirection.column}
             </MenuItem>
-            </SelectBox>
+          </SelectBox>
         </Stack>
       </PropertyBox>
-      <Divider sx={{ color: "#F5F5F5" }}/>
+      <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <PanelSubtitle sx={{ flex: 1 }} subtitle={ strings.layoutEditorV2.layoutProperties.contentGap }/>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <PanelSubtitle
+            sx={{ flex: 1 }}
+            subtitle={strings.layoutEditorV2.layoutProperties.contentGap}
+          />
           <TextField
             name="gap"
             number
             sx={{ flex: 0.5 }}
-            value={ parseInt(component.element?.style.gap || "0").toString() }
-            onChange={ onPropertyChange }
+            value={parseInt(component.element?.style.gap || "0").toString()}
+            onChange={onPropertyChange}
           />
-          </Stack>
+        </Stack>
       </PropertyBox>
-		</Stack>
-	);
+    </Stack>
+  );
 };
 
 export default LayoutComponentProperties;

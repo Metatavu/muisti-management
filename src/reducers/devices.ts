@@ -1,7 +1,7 @@
-import { DevicesAction } from '../actions/devices';
-import { SET_DEVICES, SET_DEVICE_GROUPS, SET_DEVICE_MODELS } from '../constants/actionTypes';
+import { DevicesAction } from "../actions/devices";
+import { SET_DEVICES, SET_DEVICE_GROUPS, SET_DEVICE_MODELS } from "../constants/actionTypes";
+import { DeviceModel, ExhibitionDevice, ExhibitionDeviceGroup } from "../generated/client";
 import { Reducer } from "redux";
-import { ExhibitionDevice, ExhibitionDeviceGroup, DeviceModel } from '../generated/client';
 
 /**
  * Devices state
@@ -19,7 +19,7 @@ const initialState: DevicesState = {
   devices: [],
   deviceGroups: [],
   deviceModels: []
-}
+};
 
 /**
  * Redux reducer for devices
@@ -28,7 +28,10 @@ const initialState: DevicesState = {
  * @param action action of devices
  */
 // eslint-disable-next-line max-len
-export const devicesReducer: Reducer<DevicesState, DevicesAction> = (state: DevicesState = initialState, action: DevicesAction): DevicesState => {
+export const devicesReducer: Reducer<DevicesState, DevicesAction> = (
+  state: DevicesState = initialState,
+  action: DevicesAction
+): DevicesState => {
   switch (action.type) {
     case SET_DEVICES:
       return {
@@ -48,4 +51,4 @@ export const devicesReducer: Reducer<DevicesState, DevicesAction> = (state: Devi
     default:
       return state;
   }
-}
+};

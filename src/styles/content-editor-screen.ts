@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   loader: {
     height: "100%",
     position: "absolute",
@@ -12,7 +11,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   navigationTabs: {
@@ -37,7 +36,7 @@ export default createStyles({
     gridTemplateAreas: `
     "editor-view editor-view contents properties"
     "timeline timeline contents properties"
-    `,
+    `
   },
 
   previewDeviceContainer: {
@@ -120,7 +119,7 @@ export default createStyles({
     justifyContent: "flex-end",
     height: 55,
     padding: "0 16px",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   toolbarContent: {

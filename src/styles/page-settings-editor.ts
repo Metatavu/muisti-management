@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "./theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   selectFields: {
     paddingTop: theme.spacing(2)
   },
@@ -18,5 +17,4 @@ export default createStyles({
     justifyContent: "flex-start",
     alignItems: "center"
   }
-
 });

@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   list: {
     marginLeft: theme.spacing(4)
   },
@@ -17,5 +16,4 @@ export default createStyles({
 
   listItemTitle: {},
   listItemSubtitle: {}
-
 });

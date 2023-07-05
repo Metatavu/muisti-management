@@ -1,7 +1,6 @@
-import createStyles from '@mui/styles/createStyles';
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   root: {
     gridArea: "content-selection",
     backgroundColor: "#FBFBFB",
@@ -12,5 +11,4 @@ export default createStyles({
     display: "flex",
     flexDirection: "column"
   }
-
 });

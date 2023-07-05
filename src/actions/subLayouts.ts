@@ -1,6 +1,6 @@
-import { ActionCreator } from "redux";
 import * as actionTypes from "../constants/actionTypes";
 import { SubLayout } from "../generated/client";
+import { ActionCreator } from "redux";
 
 /**
  * Interface for set sub layouts action type
@@ -35,7 +35,9 @@ export const setSubLayouts: ActionCreator<SetSubLayoutsAction> = (subLayouts: Su
  *
  * @param selectedLayout Selected layout being dispatched
  */
-export const setSelectedSubLayout: ActionCreator<SetSelectedSubLayoutAction> = (subLayout: SubLayout) => {
+export const setSelectedSubLayout: ActionCreator<SetSelectedSubLayoutAction> = (
+  subLayout: SubLayout
+) => {
   return {
     type: actionTypes.SET_SELECTED_SUB_LAYOUT,
     subLayout: subLayout

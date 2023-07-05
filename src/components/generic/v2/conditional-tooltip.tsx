@@ -7,18 +7,18 @@ import { ReactNode } from "react";
 type Props = TooltipProps & {
   children: ReactNode;
   enabled: boolean;
-}
+};
 
 /**
  * Conditional Tooltip component
  */
 const ConditionalTooltip = ({ children, enabled, ...rest }: Props) => {
   if (!enabled) return children;
-  
+
   return (
     <Tooltip {...rest}>
-      <span>{ children }</span>
-    </Tooltip>  
+      <span>{children}</span>
+    </Tooltip>
   );
 };
 

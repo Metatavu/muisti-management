@@ -1,8 +1,7 @@
-import createStyles from '@mui/styles/createStyles';
 import theme from "../theme";
+import createStyles from "@mui/styles/createStyles";
 
 export default createStyles({
-
   loader: {
     height: "100%",
     position: "absolute",
@@ -12,7 +11,7 @@ export default createStyles({
     right: 0,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   container: {
@@ -41,7 +40,7 @@ export default createStyles({
     display: "grid",
     gridTemplateRows: "1fr",
     gridTemplateColumns: "auto 1fr auto",
-    gridTemplateAreas: ' "navigation editor-view properties" ',
+    gridTemplateAreas: ' "navigation editor-view properties" '
   },
 
   sessionListContainer: {
@@ -69,5 +68,4 @@ export default createStyles({
   variableValue: {
     marginBottom: theme.spacing(2)
   }
-
 });

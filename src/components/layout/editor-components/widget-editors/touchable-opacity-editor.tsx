@@ -1,16 +1,20 @@
-import * as React from "react";
-import { PageLayoutViewProperty, PageLayoutViewPropertyType, PageLayoutView } from "../../../../generated/client";
+import {
+  PageLayoutView,
+  PageLayoutViewProperty,
+  PageLayoutViewPropertyType
+} from "../../../../generated/client";
 import strings from "../../../../localization/strings";
-import { Typography, Divider } from "@mui/material";
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
 import styles from "../../../../styles/common-properties-editor";
-import { LayoutButtonPropKeys } from "../../editor-constants/keys";
 import theme from "../../../../styles/theme";
-import { getProperty } from "../../utils/tree-data-utils";
-import GenericPropertyTextField from "../generic-property-textfield";
 import DisplayMetrics from "../../../../types/display-metrics";
 import HelpDialog from "../../../generic/help-dialog";
+import { LayoutButtonPropKeys } from "../../editor-constants/keys";
+import { getProperty } from "../../utils/tree-data-utils";
+import GenericPropertyTextField from "../generic-property-textfield";
+import { Divider, Typography } from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import * as React from "react";
 
 /**
  * Interface representing component properties
@@ -28,16 +32,9 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing component state
- */
-interface State {
-}
-
-/**
  * Component for editing touchable opacity properties
  */
-class TouchableOpacityEditor extends React.Component<Props, State> {
-
+class TouchableOpacityEditor extends React.Component<Props, {}> {
   /**
    * Constructor
    *
@@ -45,8 +42,7 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   /**
@@ -55,8 +51,8 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        { this.renderWidth() }
-        { this.renderHeight() }
+        {this.renderWidth()}
+        {this.renderHeight()}
       </>
     );
   }
@@ -70,30 +66,33 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.button.width }:
+          <Typography style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }} variant="h4">
+            {strings.layoutEditor.button.width}:
           </Typography>
           <GenericPropertyTextField
-            textFieldId={ LayoutButtonPropKeys.Width }
+            textFieldId={LayoutButtonPropKeys.Width}
             textFieldType="number"
             textFieldUnit="px"
-            displayMetrics={ displayMetrics }
-            property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Width, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
+            displayMetrics={displayMetrics}
+            property={getProperty(
+              this.props.pageLayoutView,
+              LayoutButtonPropKeys.Width,
+              PageLayoutViewPropertyType.String
+            )}
+            onTextFieldChange={this.props.onValueChange}
           />
-          <HelpDialog title={ strings.layoutEditor.button.width }>
-            <Typography>
-              { strings.helpDialogs.layoutEditor.button.width }
-            </Typography>
+          <HelpDialog title={strings.layoutEditor.button.width}>
+            <Typography>{strings.helpDialogs.layoutEditor.button.width}</Typography>
           </HelpDialog>
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+        />
       </>
     );
-  }
+  };
 
   /**
    * Render touchable opacity height editor
@@ -104,30 +103,33 @@ class TouchableOpacityEditor extends React.Component<Props, State> {
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography
-            style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }}
-            variant="h4"
-          >
-            { strings.layoutEditor.button.height }:
+          <Typography style={{ marginRight: theme.spacing(2), whiteSpace: "nowrap" }} variant="h4">
+            {strings.layoutEditor.button.height}:
           </Typography>
           <GenericPropertyTextField
-            textFieldId={ LayoutButtonPropKeys.Height }
+            textFieldId={LayoutButtonPropKeys.Height}
             textFieldType="number"
             textFieldUnit="px"
-            displayMetrics={ displayMetrics }
-            property={ getProperty(this.props.pageLayoutView, LayoutButtonPropKeys.Height, PageLayoutViewPropertyType.String) }
-            onTextFieldChange={ this.props.onValueChange }
+            displayMetrics={displayMetrics}
+            property={getProperty(
+              this.props.pageLayoutView,
+              LayoutButtonPropKeys.Height,
+              PageLayoutViewPropertyType.String
+            )}
+            onTextFieldChange={this.props.onValueChange}
           />
-          <HelpDialog title={ strings.layoutEditor.button.height }>
-            <Typography>
-              { strings.helpDialogs.layoutEditor.button.height }
-            </Typography>
+          <HelpDialog title={strings.layoutEditor.button.height}>
+            <Typography>{strings.helpDialogs.layoutEditor.button.height}</Typography>
           </HelpDialog>
         </div>
-        <Divider variant="fullWidth" color="rgba(0,0,0,0.1)" style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+        />
       </>
     );
-  }
+  };
 }
 
-export default (withStyles(styles)(TouchableOpacityEditor));
+export default withStyles(styles)(TouchableOpacityEditor);
