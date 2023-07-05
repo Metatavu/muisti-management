@@ -1,15 +1,14 @@
-import { Button, Divider, MenuItem, Stack } from "@mui/material";
+import { Divider, MenuItem, Stack } from "@mui/material";
 import { HtmlTextComponentType, TreeObject } from "../../../types";
 import PropertyBox from "./property-box";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import strings from "../../../localization/strings";
-import { ExhibitionPageResource, ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../generated/client";
+import { ExhibitionPageResourceType, PageLayout, PageResourceMode } from "../../../generated/client";
 import PanelSubtitle from "./panel-subtitle";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import LocalizationUtils from "../../../utils/localization-utils";
-import { ColorResult } from "react-color";
-import ColorPicker from "./color-picker";
+import FontColorEditor from "./font-color-editor";
 
 /**
  * Component props
@@ -22,7 +21,7 @@ interface Props {
 }
 
 /**
- * Renders text component properties
+ * Text Component Properties component
  */
 const TextComponentProperties = ({
   component,
@@ -30,8 +29,6 @@ const TextComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
-  const [ popoverAnchorElement, setPopoverAnchorElement ] = useState<HTMLButtonElement>();
-
   /**
    * Event handler for element change events
    *
@@ -69,51 +66,25 @@ const TextComponentProperties = ({
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const hasResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
-
-    if (hasResource) {
+    const foundResource = pageLayout.defaultResources?.find(resource => resource.id === component.element.id);
+    if (foundResource) {
       setPageLayout({
         ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map(resource => {
-          if (resource.id === hasResource.id) {
-            resource = {
-              ...resource,
-              data: value
-            };
-          }
-          
-          return resource;
-        })
+        defaultResources: pageLayout.defaultResources?.map(resource => 
+          resource.id === foundResource?.id ? { ...resource, data: value } : resource)
       });
     } else {
-      const newResource: ExhibitionPageResource = {
-        id: component.element.id,
-        data: value,
-        type: ExhibitionPageResourceType.Text,
-        mode: PageResourceMode.Static
-      };
-
       setPageLayout({
         ...pageLayout,
-        defaultResources: [ ...pageLayout.defaultResources ?? [], newResource ]
+        defaultResources: [
+          ...pageLayout.defaultResources ?? [], {
+            id: component.element.id,
+            data: value,
+            type: ExhibitionPageResourceType.Text,
+            mode: PageResourceMode.Static
+          }]
       });
     }
-  };
-
-  /**
-   * Event handler for font color change events
-   *
-   * @param event event
-   */
-  const handleFontColorChange = ({ hex }: ColorResult) => {
-    const element = component.element;
-
-    element.style.color = hex;
-
-    updateComponent({
-      ...component,
-      element: element
-    });
   };
 
 	return (
@@ -135,22 +106,10 @@ const TextComponentProperties = ({
           </SelectBox>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
-        <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.fontColor }/>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Button
-              sx={{ color: "#2196F3" }}
-              onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
-            >
-              { strings.layout.htmlProperties.genericProperties.color.button }
-            </Button>
-          </Stack>
-        </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
+        <FontColorEditor
+          component={ component }
+          updateComponent={ updateComponent }
+        />
         <PropertyBox>
           <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
           <TextField
@@ -161,12 +120,6 @@ const TextComponentProperties = ({
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
       </Stack>
-      <ColorPicker
-        color={ component.element.style.color }
-        anchorEl={ popoverAnchorElement }
-        onClose={ () => setPopoverAnchorElement(undefined) }
-        onChangeComplete={ handleFontColorChange }
-      />
     </>
 	);
 };

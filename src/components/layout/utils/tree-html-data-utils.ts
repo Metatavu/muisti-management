@@ -78,8 +78,10 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
   }
 
   if (foundResource) {
-    if (treeObject.type === HtmlComponentType.TEXT) {
-      element.innerText = foundResource.data;
+    switch (treeObject.type) {
+      case HtmlComponentType.TEXT:
+      case HtmlComponentType.BUTTON:
+        element.innerText = foundResource.data;
     }
   };
 
