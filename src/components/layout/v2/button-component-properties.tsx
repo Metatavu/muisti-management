@@ -68,24 +68,22 @@ const ButtonComponentProperties = ({
   };
 
 	return (
-    <>
-      <Stack>
-        <Divider sx={{ color: "#F5F5F5" }}/>
-        <FontColorEditor
-          component={ component }
-          updateComponent={ updateComponent }
+    <Stack>
+      <Divider sx={{ color: "#F5F5F5" }}/>
+      <FontColorEditor
+        component={ component }
+        updateComponent={ updateComponent }
+      />
+      <PropertyBox>
+        <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
+        <TextField
+          value={ getElementsDefaultResource() || "" }
+          onChange={ handleDefaultResourceChange }
+          placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
         />
-        <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.textProperties.defaultResources }/>
-          <TextField
-            value={ getElementsDefaultResource() || "" }
-            onChange={ handleDefaultResourceChange }
-            placeholder={ strings.layout.htmlProperties.textProperties.defaultResources }
-          />
-        </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }}/>
-      </Stack>
-    </>
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }}/>
+    </Stack>
 	);
 };
 
