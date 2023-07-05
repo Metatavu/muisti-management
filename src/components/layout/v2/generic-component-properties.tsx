@@ -14,6 +14,7 @@ import PanelSubtitle from "./panel-subtitle";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import ColorPicker from "./color-picker";
+import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 
 /**
  * Component props
@@ -71,8 +72,9 @@ const GenericComponentProperties: FC<Props> = ({
     <>
       <Stack spacing={ 2 } paddingLeft={ 0 } paddingRight={ 0 }>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.element }/>
-          <SelectBox value={ component.type }>
+          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.element }/>
+          <ConditionalTooltip enabled title={ strings.generic.notYetImplemented }>
+          <SelectBox value={ component.type } disabled>
             { Object.values(HtmlComponentType).map(type => (
               <MenuItem
                 key={ type }
@@ -83,35 +85,38 @@ const GenericComponentProperties: FC<Props> = ({
               </MenuItem>
             )) }
           </SelectBox>
+          </ConditionalTooltip>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.elementName }/>
+          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.elementName }/>
           <TextField
             value={ component.element.attributes.getNamedItem("name")?.nodeValue || "" }
             onChange={ onNameChange }
-            placeholder={ strings.layout.htmlProperties.genericProperties.elementName }
+            placeholder={ strings.layoutEditorV2.genericProperties.elementName }
           />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.proportions}/>
+          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.proportions}/>
           <ProportionsEditorHtml
+            component={ component }
             value={ parseInt(component.element?.style?.width || "0").toString() }
             name="width"
-            label={ strings.layout.htmlProperties.genericProperties.width }
+            label={ strings.layoutEditorV2.genericProperties.width }
             onChange={ onPropertyChange }
           />
           <ProportionsEditorHtml
+            component={ component }
             value={ parseInt(component.element?.style?.height || "0").toString() }
             name="height"
-            label={ strings.layout.htmlProperties.genericProperties.height }
+            label={ strings.layoutEditorV2.genericProperties.height }
             onChange={ onPropertyChange }
           />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.margin }/>
+          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.margin }/>
           <MarginPaddingEditorHtml
             styles={ component.element.style }
             type="margin"
@@ -120,7 +125,7 @@ const GenericComponentProperties: FC<Props> = ({
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }}/>
         <PropertyBox>
-          <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.padding }/>
+          <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.padding }/>
           <MarginPaddingEditorHtml
             styles={ component.element.style }
             type="padding"
@@ -135,7 +140,7 @@ const GenericComponentProperties: FC<Props> = ({
             spacing={ 1 }
           >
             <PaletteOutlinedIcon sx={{ opacity: 0.54 }}/>
-            <PanelSubtitle subtitle={ strings.layout.htmlProperties.genericProperties.color.label }/>
+            <PanelSubtitle subtitle={ strings.layoutEditorV2.genericProperties.color.label }/>
           </Stack>
           <Stack
             direction="row"
@@ -154,7 +159,7 @@ const GenericComponentProperties: FC<Props> = ({
               sx={{ color: "#2196F3" }}
               onClick={ ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => setPopoverAnchorElement(currentTarget) }
             >
-              { strings.layout.htmlProperties.genericProperties.color.button }
+              { strings.layoutEditorV2.genericProperties.color.button }
             </Button>
             <FormatColorFillOutlinedIcon sx={{ color: "#2196F3" }}/>
           </Stack>

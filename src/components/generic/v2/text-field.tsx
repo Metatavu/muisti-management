@@ -1,9 +1,9 @@
-import { TextField as MuiTextField } from "@mui/material";
+import { TextField as MuiTextField, TextFieldProps } from "@mui/material";
 
 /**
  * Components properties
  */
-interface Props {
+type Props = TextFieldProps & {
   value: unknown;
   placeholder?: string;
   number?: boolean;
@@ -19,7 +19,8 @@ const TextField = ({
   placeholder,
   number,
   name,
-  onChange
+  onChange,
+  ...rest
 }: Props) => {
   return (
     <MuiTextField
@@ -28,6 +29,7 @@ const TextField = ({
       fullWidth
       placeholder={ placeholder }
       value={ value }
+      { ...rest }
       inputProps={{
         pattern: number ? "[0-9]*" : undefined,
         sx: { backgroundColor: "#fbfbfb" }

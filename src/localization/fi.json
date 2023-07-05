@@ -273,42 +273,6 @@
     "properties": {
       "title": "Ominaisuudet"
     },
-    "htmlProperties": {
-      "elementSettings": "Elementin asetukset",
-      "genericProperties": {
-        "element": "Elementti",
-        "elementName": "Elementin nimi",
-        "proportions": "Mittasuhteet",
-        "width": "Leveys",
-        "height": "Korkeus",
-        "elevation": "Varjostus",
-        "color": {
-          "label": "Taustaväri",
-          "button": "Valitse väri"
-        },
-        "alignment": {
-          "northwest": "Vasen ylälaita",
-          "north": "Ylälaita",
-          "northeast": "Oikea ylälaita",
-          "west": "Vasen",
-          "center": "Keskellä",
-          "east": "Oikea",
-          "southwest": "Vasen alalaita",
-          "south": "Alalaita",
-          "southeast": "Oikea alalaita"
-        },
-        "margin": "Marginaalit",
-        "padding": "Täyttö"
-      },
-      "layoutProperties": {
-        "contentEmphasis": "Sisällön painotus"
-      },
-      "textProperties": {
-        "elementType": "Tekstielementin tyyppi",
-        "fontColor": "Fontin väri",
-        "defaultResources": "Oletusresurssit"
-      }
-    },
     "delete": {
       "deleteTitle": "Poista asettelu",
       "deleteText": "Haluatko varmasti poistaa asettelun?",
@@ -327,7 +291,8 @@
         "text": "Teksti",
         "image": "Kuva",
         "tabs": "Välilehdet",
-        "tab": "Välilehti"
+        "tab": "Välilehti",
+        "video": "Video"
       },
       "textTypes": {
         "heading1": "Otsikko 1",
@@ -530,7 +495,64 @@
       "dialogTitle" : "Anna huoneen nimi"
     }
   },
-
+  "layoutEditorV2": {
+    "drawerTitle": "Elementin asetukset",
+    "genericProperties": {
+      "element": "Elementti",
+      "elementName": "Elementin nimi",
+      "proportions": "Mittasuhteet",
+      "width": "Leveys",
+      "height": "Korkeus",
+      "elevation": "Varjostus",
+      "color": {
+        "label": "Taustaväri",
+        "button": "Valitse väri"
+      },
+      "margin": "Marginaalit",
+      "padding": "Täyttö"
+    },
+    "layoutProperties": {
+      "contentEmphasis": "Sisällön painotus",
+      "contentDirection": {
+        "label": "Sisällön suunta",
+        "row": "Vaaka",
+        "column": "Pysty"
+      },
+      "contentGap": "Sisällön välistys (px)",
+      "alignment": {
+        "northwest": "Vasen ylälaita",
+        "north": "Ylälaita",
+        "northeast": "Oikea ylälaita",
+        "west": "Vasen",
+        "center": "Keskellä",
+        "east": "Oikea",
+        "southwest": "Vasen alalaita",
+        "south": "Alalaita",
+        "southeast": "Oikea alalaita"
+      }
+    },
+    "textProperties": {
+      "elementType": "Tekstielementin tyyppi",
+      "fontColor": "Fontin väri",
+      "defaultResource": "Oletusteksti"
+    },
+    "buttonProperties": {
+      "fontColor": "Fontin väri",
+      "defaultResource": "Oletusteksti"
+    },
+    "imageProperties": {
+      "defaultResource": "Oletuskuva"
+    },
+    "videoProperties": {
+      "loop": "Jatkuva toisto",
+      "autoPlay": "Automaattinen toisto",
+      "controls": "Näytä allintapainikkeet",
+      "defaultResource": "Oletusvideo"
+    },
+    "preview": {
+      "showElementBorders": "Näytä elementtien reunat"
+    }
+  },
   "layoutEditor": {
     "commonComponents": {
       "id": "ID",
@@ -818,7 +840,8 @@
     "unsaved": "Sivulla on tallentamattomia muutoksia. Haluatko varmasti siirtyä toiselle sivulle?",
     "properties": "Ominaisuudet",
     "noSelection": "Ei valintaa",
-    "clear": "Tyhjennä"
+    "clear": "Tyhjennä",
+    "notYetImplemented": "Ei vielä toteutettu"
   },
 
   "spaces": {
@@ -984,7 +1007,8 @@
       "imageViewDescription": "Elementti kuvien esittämistä varten",
       "layoutDescription": "Elementti sisällön jäsentämistä varten. Voit määrittää asettuvatko tämän sisälle lisätyt elementit rinnakkain vai päällekkäin.",
       "tabViewDescription": "Välilehtiasettelu.",
-      "tabsViewDescription": "Välilehtien asettelu."
+      "tabsViewDescription": "Välilehtien asettelu.",
+      "videoViewDescription": "Elementti videoiden esittämistä varten"
     },
     "contentManager": {
       "animationInterpolations": {

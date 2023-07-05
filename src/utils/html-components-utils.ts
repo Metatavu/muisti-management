@@ -23,15 +23,18 @@ namespace HtmlComponentsUtils {
         return getHtmlTabsElement(name);
       case HtmlComponentType.TAB:
         return getHtmlTabElement(name);
+      case HtmlComponentType.VIDEO:
+        return getHtmlVideoElement(name);
     }
   };
   
-  const getHtmlLayoutElement = (name?: string) => `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row;"></div>`
-  const getHtmlButtonElement = (name?: string) => `<button id="${uuid()}" data-component-type="button" name="${name}"></button>`
-  const getHtmlTextElement = (name?: string) => `<p id="${uuid()}" data-component-type="text" name="${name}"></p>`
-  const getHtmlImageElement = (name?: string) => `<img id="${uuid()}" data-component-type="image" name="${name}"/>`
-  const getHtmlTabsElement = (name?: string) => `div id="${uuid()}" data-component-type="tabs" name="${name}"></div>`
-  const getHtmlTabElement = (name?: string) => `<div id="${uuid()}" data-component-type="tab" name="${name}"></div>`
+  const getHtmlLayoutElement = (name?: string) => `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row;"></div>`;
+  const getHtmlButtonElement = (name?: string) => `<button id="${uuid()}" data-component-type="button" name="${name}"></button>`;
+  const getHtmlTextElement = (name?: string) => `<p id="${uuid()}" data-component-type="text" name="${name}"></p>`;
+  const getHtmlImageElement = (name?: string) => `<img id="${uuid()}" data-component-type="image" name="${name}"/>`;
+  const getHtmlTabsElement = (name?: string) => `div id="${uuid()}" data-component-type="tabs" name="${name}"></div>`;
+  const getHtmlTabElement = (name?: string) => `<div id="${uuid()}" data-component-type="tab" name="${name}"></div>`;
+  const getHtmlVideoElement = (name?: string) => `<video id="${uuid()}" data-component-type="video" name="${name}"></video>`;
 };
 
 export default HtmlComponentsUtils;

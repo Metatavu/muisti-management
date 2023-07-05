@@ -11,15 +11,15 @@ namespace LocalizationUtils {
    * @param alignment alignment
    */
   export const getLocalizedLayoutAlignment = (alignment: LayoutAlignment) => ({
-    [LayoutAlignment.NORTH_WEST]: strings.layout.htmlProperties.genericProperties.alignment.northwest,
-    [LayoutAlignment.NORTH]: strings.layout.htmlProperties.genericProperties.alignment.north,
-    [LayoutAlignment.NORTH_EAST]: strings.layout.htmlProperties.genericProperties.alignment.northeast,
-    [LayoutAlignment.WEST]: strings.layout.htmlProperties.genericProperties.alignment.west,
-    [LayoutAlignment.CENTER]: strings.layout.htmlProperties.genericProperties.alignment.center,
-    [LayoutAlignment.EAST]: strings.layout.htmlProperties.genericProperties.alignment.east,
-    [LayoutAlignment.SOUTH_WEST]: strings.layout.htmlProperties.genericProperties.alignment.southwest,
-    [LayoutAlignment.SOUTH]: strings.layout.htmlProperties.genericProperties.alignment.south,
-    [LayoutAlignment.SOUTH_EAST]: strings.layout.htmlProperties.genericProperties.alignment.southeast
+    [LayoutAlignment.NORTH_WEST]: strings.layoutEditorV2.layoutProperties.alignment.northwest,
+    [LayoutAlignment.NORTH]: strings.layoutEditorV2.layoutProperties.alignment.north,
+    [LayoutAlignment.NORTH_EAST]: strings.layoutEditorV2.layoutProperties.alignment.northeast,
+    [LayoutAlignment.WEST]: strings.layoutEditorV2.layoutProperties.alignment.west,
+    [LayoutAlignment.CENTER]: strings.layoutEditorV2.layoutProperties.alignment.center,
+    [LayoutAlignment.EAST]: strings.layoutEditorV2.layoutProperties.alignment.east,
+    [LayoutAlignment.SOUTH_WEST]: strings.layoutEditorV2.layoutProperties.alignment.southwest,
+    [LayoutAlignment.SOUTH]: strings.layoutEditorV2.layoutProperties.alignment.south,
+    [LayoutAlignment.SOUTH_EAST]: strings.layoutEditorV2.layoutProperties.alignment.southeast
   })[alignment]
   
   /**
@@ -33,7 +33,8 @@ namespace LocalizationUtils {
     [HtmlComponentType.IMAGE]: strings.layout.html.types.image,
     [HtmlComponentType.TEXT]: strings.layout.html.types.text,
     [HtmlComponentType.TABS]: strings.layout.html.types.tabs,
-    [HtmlComponentType.TAB]: strings.layout.html.types.tab
+    [HtmlComponentType.TAB]: strings.layout.html.types.tab,
+    [HtmlComponentType.VIDEO]: strings.layout.html.types.video
   })[componentType]
 
   /**
@@ -47,7 +48,8 @@ namespace LocalizationUtils {
     [HtmlComponentType.IMAGE]: strings.helpTexts.layoutEditorHtml.imageViewDescription,
     [HtmlComponentType.TEXT]: strings.helpTexts.layoutEditorHtml.textViewDescription,
     [HtmlComponentType.TABS]: strings.helpTexts.layoutEditorHtml.tabsViewDescription,
-    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription
+    [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription,
+    [HtmlComponentType.VIDEO]: strings.helpTexts.layoutEditorHtml.videoViewDescription
   })[componentType]
   
   /**

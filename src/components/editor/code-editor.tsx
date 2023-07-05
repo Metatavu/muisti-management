@@ -1,23 +1,12 @@
 import * as React from "react";
-import { ReduxActions, ReduxState } from "../../store";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { Typography } from "@mui/material";
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import styles from "../../styles/code-editor";
-import { Controlled as CodeMirror } from "react-codemirror2-nibas";
-import * as codemirror from "codemirror";
-// TODO: Code mirror related imports.
-// import "codemirror/lib/codemirror.css";
-// import "codemirror/theme/material.css";
-// import "codemirror/mode/javascript/javascript";
-// import "codemirror/addon/lint/lint.css";
-// import 'codemirror/addon/lint/lint';
+import CodeMirror from "@uiw/react-codemirror";
 import strings from "../../localization/strings";
-import { JsonLintParseErrorHash } from "../../types";
-import * as jsonlint from "jsonlint-mod";
-import { ExhibitionPage, ExhibitionPageEventTriggerFromJSON, ExhibitionPageResourceFromJSON, ExhibitionPageEventActionType } from "../../generated/client";
+import { ExhibitionPage, ExhibitionPageEventActionType } from "../../generated/client";
+import { json } from "@codemirror/lang-json";
 
 /**
  * Interface representing component properties
@@ -55,18 +44,7 @@ class CodeEditor extends React.Component<Props, State> {
    */
   public render() {
     const { classes } = this.props;
-    const jsonEditorOptions: codemirror.EditorConfiguration = {
-      mode: { name: "javascript", json: true },
-      theme: "material",
-      lineNumbers: true,
-      lint: {
-        getAnnotations: this.jsonEditorGetAnnotations
-      },
-      gutters: [
-        'CodeMirror-lint-markers',
-      ]
-    };
-
+    
     return (
       <div className={ classes.codeEditorContainer }>
         <Typography style={{ margin: 8 }}>
@@ -75,92 +53,10 @@ class CodeEditor extends React.Component<Props, State> {
         <CodeMirror
           className={ classes.editor }
           value={ this.props.json }
-          options={ jsonEditorOptions }
-          onBeforeChange={ this.onBeforeJsonCodeChange } />
+          extensions={ [ json() ] }
+          onChange={ this.props.onChange } />
       </div>
     );
-  }
-
-  /**
-   * Event handler for before JSON code change event
-   *
-   * @param _editor editor instance
-   * @param _data editor data
-   * @param value code
-   */
-  private onBeforeJsonCodeChange = (_editor: codemirror.Editor, _data: codemirror.EditorChange, value: string) => {
-    this.props.onChange(value);
-  }
-
-  /**
-   * Code mirror lint method
-   *
-   * @param content editor content
-   * @param _options options
-   * @param _codeMirror editor instance
-   * @returns annotations
-   */
-  private jsonEditorGetAnnotations = (content: string, _options: codemirror.LintStateOptions, _codeMirror: codemirror.Editor): codemirror.Annotation[] => {
-    const found: codemirror.Annotation[] = [];
-    const parser = jsonlint.parser;
-
-    parser.parseError = (message: string, hash: JsonLintParseErrorHash) => {
-      const loc = hash.loc;
-      found.push({
-        from: codemirror.Pos(loc.first_line - 1, loc.first_column),
-        to: codemirror.Pos(loc.last_line - 1, loc.last_column),
-        message: message
-      });
-    };
-
-    try {
-      parser.parse(content);
-      // eslint-disable-next-line no-empty
-    } catch (e) {
-
-    }
-
-    if (found.length === 0) {
-      this.parseJson((message: string, _e?: SyntaxError) => {
-        found.push({
-          from: codemirror.Pos(0, 0),
-          to: codemirror.Pos(0, 0),
-          message: message
-        });
-      });
-    }
-
-    return found;
-  }
-
-  /**
-   * Parses JSON code from the editor
-   *
-   * @param errorHandler error handler for the parsing errors
-   * @returns parsed JSON code from the editor
-   */
-  private parseJson = (errorHandler?: (message: string, e?: SyntaxError) => void) => {
-    const result: Partial<ExhibitionPage> = {
-      eventTriggers: [],
-      resources: []
-    };
-
-    try {
-      const parsedCode = JSON.parse(this.props.json);
-      result.eventTriggers = (parsedCode.eventTriggers || []).map(ExhibitionPageEventTriggerFromJSON);
-      result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
-
-      if (errorHandler) {
-        this.validateParsedPage(result, errorHandler);
-      }
-
-    } catch (e) {
-      if (errorHandler) {
-        errorHandler(e.message, e);
-      }
-    }
-
-    return result;
   }
 
   /**
@@ -212,22 +108,4 @@ class CodeEditor extends React.Component<Props, State> {
   }
 }
 
-/**
- * Redux mapper for mapping store state to component props
- *
- * @param state store state
- */
-function mapStateToProps(state: ReduxState) {
-  return {};
-}
-
-/**
- * Redux mapper for mapping component dispatches
- *
- * @param dispatch dispatch method
- */
-function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodeEditor));
+export default withStyles(styles)(CodeEditor);

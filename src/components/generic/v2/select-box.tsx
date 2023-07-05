@@ -1,13 +1,14 @@
-import { TextField } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import { ReactNode } from "react";
 
 /**
  * Components properties
  */
-interface Props {
+type Props = TextFieldProps & {
   children: ReactNode;
   value: unknown;
   name?: string;
+  disabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,13 +19,17 @@ const SelectBox = ({
   children,
   value,
   name,
-  onChange
+  disabled,
+  onChange,
+  ...rest
 }: Props) => {
   return (
     <TextField
+      { ...rest }
       name={ name }
       value={ value }
       variant="standard"
+      disabled={ disabled }
       select
       fullWidth
       InputProps={{ disableUnderline: true }}

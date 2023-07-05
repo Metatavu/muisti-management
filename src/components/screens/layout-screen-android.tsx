@@ -6,7 +6,6 @@ import { setSelectedLayout, setLayouts } from "../../actions/layouts";
 import Api from "../../api/api";
 import { History } from "history";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-// eslint-disable-next-line max-len
 import {
   CircularProgress,
   TextField,
@@ -21,8 +20,15 @@ import {
 import { WithStyles } from '@mui/styles';
 import withStyles from '@mui/styles/withStyles';
 import { KeycloakInstance } from "keycloak-js";
-// eslint-disable-next-line max-len
-import { PageLayout, PageLayoutView, Exhibition, DeviceModel, ScreenOrientation, SubLayout } from "../../generated/client";
+import {
+  PageLayout,
+  PageLayoutView,
+  Exhibition,
+  DeviceModel,
+  ScreenOrientation,
+  SubLayout,
+  LayoutType
+} from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
 import ElementSettingsPane from "../layouts/element-settings-pane";
 import ElementNavigationPane from "../layouts/element-navigation-pane";
@@ -43,7 +49,7 @@ import PanZoom from "../generic/pan-zoom";
 import theme from "../../styles/theme";
 import ConfirmDialog from "../generic/confirm-dialog";
 
-type View = "CODE" | "VISUAL";
+type View = "CODE" | "VISUAL";
 
 /**
  * Component props
@@ -469,19 +475,20 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
    * @returns array of tree nodes in array
    */
   private constructTreeData = (pageLayout: PageLayout): TreeNodeInArray[] => {
-    const path = pageLayout.data.id;
-    const type = pageLayout.data.widget;
+    const data = pageLayout.data as PageLayoutView;
+    const path = data.id;
+    const type = data.widget;
     const treeData = [{
-      key: pageLayout.data.id,
+      key: data.id,
       path: path,
-      label: pageLayout.data.widget,
-      name: pageLayout.data.name,
-      element: pageLayout.data,
+      label: data.widget,
+      name: data.name,
+      element: data,
       type: type,
-      onSelect: () => this.onLayoutPageViewSelect(pageLayout.data, type, path),
+      onSelect: () => this.onLayoutPageViewSelect(data, type, path),
       parents: [ ],
-      nodes: pageLayout.data.children.map(child => {
-        return this.getNode(path, pageLayout.data, child);
+      nodes: data.children.map(child => {
+        return this.getNode(path, data, child);
       })
     }];
     return treeData;
@@ -594,7 +601,8 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
       name: this.state.name,
       data: JSON.parse(this.state.jsonCode),
       modelId: this.state.deviceModelId,
-      screenOrientation: this.state.screenOrientation
+      screenOrientation: this.state.screenOrientation,
+      layoutType: LayoutType.Android
     };
 
     this.onLayoutSave(layout);
@@ -622,7 +630,7 @@ export class LayoutScreenAndroid extends React.Component<Props, State> {
         jsonCode: JSON.stringify(layout.data, null, 2),
         dataChanged: false
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
 
       this.setState({

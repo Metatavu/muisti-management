@@ -62,9 +62,10 @@ const updateInTree = (treeData: TreeObject[], destinationPath: string, currentPa
  * @param treeObject tree object
  * @param selectedComponentId selected component id
  * @param resources resources
+ * @param showBorders whether to show borders or not
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string, resources?: ExhibitionPageResource[]): HTMLElement => {
+export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponentId?: string, resources?: ExhibitionPageResource[], showBorders?: boolean): HTMLElement => {
   const element = treeObject.element;
   const foundResource = resources?.find(resource => resource.id === treeObject.id);
 
@@ -72,9 +73,9 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
 
   element.replaceChildren();
 
-  if (element.id === selectedComponentId) {
-    element.style["outline"] = "1px solid #2196F3";
-    element.style["outlineOffset"] = "-1px";
+  if (showBorders && element.id === selectedComponentId) {
+    element.style["outline"] = "2px dashed #2196F3";
+    element.style["outlineOffset"] = "-2px";
   }
 
   if (foundResource) {
@@ -82,14 +83,21 @@ export const treeObjectToHtmlElement = (treeObject: TreeObject, selectedComponen
       case HtmlComponentType.TEXT:
       case HtmlComponentType.BUTTON:
         element.innerText = foundResource.data;
+        break;
       case HtmlComponentType.IMAGE:
         (element as HTMLImageElement).src = foundResource.data;
+        break;
+      case HtmlComponentType.VIDEO:
+        const sourceElement = document.createElement("source");
+        sourceElement.src = foundResource.data;
+        (element as HTMLVideoElement).appendChild(sourceElement);
+        break;
     }
   };
 
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources));
+      element.appendChild(treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources, showBorders));
     }
   }
 
@@ -250,7 +258,8 @@ export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
           margin: 0;
           padding: 0;
           pointer-events: none;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
         }
       </style>
     </head>
