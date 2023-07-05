@@ -1,11 +1,8 @@
+import { LayoutType } from "../../../generated/client";
+import theme from "../../../styles/theme";
+import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
 import { Badge } from "@mui/material";
 import { ReactNode } from "react";
-import theme from "../../../styles/theme";
-import {
-  Android as AndroidIcon,
-  Html as HtmlIcon
-} from "@mui/icons-material/";
-import { LayoutType } from "../../../generated/client";
 
 /**
  * Components properties
@@ -22,10 +19,12 @@ const LayoutCardBadge = ({ type, children }: Props) => {
   return (
     <Badge
       sx={{ position: "relative" }}
-      slotProps={{ badge: { style: {zIndex: theme.zIndex.modal - 1 } } }}
-      badgeContent={ type === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }}/> : <HtmlIcon/> }
+      slotProps={{ badge: { style: { zIndex: theme.zIndex.modal - 1 } } }}
+      badgeContent={
+        type === LayoutType.Android ? <AndroidIcon sx={{ color: "#3DDC84" }} /> : <HtmlIcon />
+      }
     >
-    { children }
+      {children}
     </Badge>
   );
 };
