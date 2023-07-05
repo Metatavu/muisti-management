@@ -9,11 +9,6 @@ import { addNewHtmlComponent, updateHtmlComponent, constructTree, createTreeObje
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import {
   CircularProgress,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   SelectChangeEvent,
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
@@ -21,19 +16,18 @@ import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
 import { PageLayout, Exhibition, DeviceModel, ScreenOrientation, SubLayout, PageLayoutViewHtml } from "../../generated/client";
 import BasicLayout from "../layouts/basic-layout";
-import ElementNavigationPane from "../layouts/element-navigation-pane";
 import EditorView from "../editor/editor-view";
 import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
 import strings from "../../localization/strings";
-import theme from "../../styles/theme";
-import LayoutTreeMenuHtml from "../layout/layout-tree-menu-html";
-import GenericComponentDrawProperties from "../layout/editor-components/html/generic-component-properties";
+import GenericComponentProperties from "../layout/v2/generic-component-properties";
 import { Close } from "@mui/icons-material";
 import ElementSettingsPane from "../layouts/element-settings-pane";
-import LayoutComponentProperties from "../layout/editor-components/html/layout-component-properties";
+import LayoutComponentProperties from "../layout/v2/layout-component-properties";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import PagePreviewHtml from "../preview/page-preview-html";
-import CodeEditorHTML from "../layout/code-editor-html";
+import CodeEditorHTML from "../layout/v2/code-editor-html";
+import LayoutLeftPanel from "../layout/v2/layout-left-panel";
+import TextComponentProperties from "../layout/v2/text-component-properties";
 
 /**
  * Component props
@@ -315,59 +309,6 @@ const LayoutScreenHTML: FC<Props> = ({
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
   };
-
-  /**
-   * Renders device model select
-   */
-  const renderDeviceModelSelect = () => {
-    const deviceModelSelectItems = deviceModels.map(model =>
-      <MenuItem key={ model.id } value={ model.id }>{ `${ model.manufacturer } ${ model.model }` }</MenuItem>
-    );
-
-    return (
-      <div className={ classes.select }>
-        <FormControl variant="outlined">
-          <InputLabel id="deviceModelId">
-            { strings.layout.settings.deviceModelId }
-          </InputLabel>
-          <Select
-            style={{ width: 200 }}
-            title={ strings.helpTexts.layoutEditor.selectDevice }
-            label={ strings.layout.settings.deviceModelId }
-            labelId="deviceModelId"
-            value={ foundLayout.modelId }
-            onChange={ onDeviceModelChange }
-            >
-          { deviceModelSelectItems }
-          </Select>
-        </FormControl>
-      </div>
-    );
-  }
-
-  /**
-   * Renders screen orientation select
-   */
-  const renderScreenOrientationSelect = () => {
-    return (
-      <div className={ classes.select }>
-        <FormControl variant="outlined">
-          <InputLabel id="screenOrientation">{ strings.layout.settings.screenOrientation }</InputLabel>
-          <Select
-            style={{ width: 200 }}
-            title={ strings.helpTexts.layoutEditor.selectOrientation }
-            label={ strings.layout.settings.screenOrientation }
-            labelId="screenOrientation"
-            value={ foundLayout.screenOrientation }
-            onChange={ onScreenOrientationChange }
-            >
-            <MenuItem value={ ScreenOrientation.Portrait }>{ strings.layout.settings.portrait }</MenuItem>
-            <MenuItem value={ ScreenOrientation.Landscape }>{ strings.layout.settings.landscape }</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
-    );
-  };
   
   /**
    * Renders component specific properties
@@ -379,6 +320,15 @@ const LayoutScreenHTML: FC<Props> = ({
           <LayoutComponentProperties
             component={ selectedComponent }
             updateComponent={ updateComponent }
+          />
+        );
+      case HtmlComponentType.TEXT:
+        return (
+          <TextComponentProperties
+            component={ selectedComponent }
+            updateComponent={ updateComponent }
+            pageLayout={ foundLayout }
+            setPageLayout={ setFoundLayout }
           />
         );
     }
@@ -406,7 +356,7 @@ const LayoutScreenHTML: FC<Props> = ({
         actionIcon={ <Close sx={{ color:"#2196F3" }}/> }
         menuOptions={ elementPaneMenuOptions }
       >
-        <GenericComponentDrawProperties
+        <GenericComponentProperties
           component={ selectedComponent }
           updateComponent={ updateComponent }
         />
@@ -435,24 +385,17 @@ const LayoutScreenHTML: FC<Props> = ({
       openDataChangedPrompt={ true }
     >
         <div className={ classes.editorLayout }>
-          <ElementNavigationPane width={ 250 } title={ strings.layout.title }>
-            <div style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}>
-              <TextField
-                style={{ width: 200 }}
-                label={ strings.layout.toolbar.name }
-                value={ foundLayout.name }
-                onChange={ onLayoutNameChange }
-              />
-              { renderDeviceModelSelect() }
-              { renderScreenOrientationSelect() }
-              <LayoutTreeMenuHtml
-                treeObjects={ treeObjects }
-                selectedComponent={ selectedComponent }
-                onTreeComponentSelect={ onTreeComponentSelect }
-                onAddComponentClick={ onAddComponentClick }
-              />
-            </div>
-          </ElementNavigationPane>
+          <LayoutLeftPanel
+            layout={ foundLayout }
+            treeObjects={ treeObjects }
+            selectedComponent={ selectedComponent }
+            deviceModels={ deviceModels }
+            onTreeComponentSelect={ onTreeComponentSelect }
+            onAddComponentClick={ onAddComponentClick }
+            onLayoutNameChange={ onLayoutNameChange }
+            onDeviceModelChange={ onDeviceModelChange }
+            onScreenOrientationChange={ onScreenOrientationChange }
+          />
           <EditorView>
             { renderEditor() }
           </EditorView>

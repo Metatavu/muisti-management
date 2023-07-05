@@ -1,9 +1,9 @@
 import { AddBoxOutlined } from "@mui/icons-material";
 import { TreeView } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
-import { StyledTreeItem } from "../../styles/components/layout-screen/styled-tree-item";
-import { HtmlComponentType, TreeObject } from "../../types";
-import strings from "../../localization/strings";
+import { StyledTreeItem } from "../../../styles/components/layout-screen/styled-tree-item";
+import { HtmlComponentType, TreeObject } from "../../../types";
+import strings from "../../../localization/strings";
 
 /**
  * Components properties
@@ -24,7 +24,7 @@ const LayoutTreeMenuHtml = ({
   onTreeComponentSelect,
   onAddComponentClick
 }: Props) => {
-  
+
   /**
    * Renders Add New Element button
    */
@@ -37,21 +37,22 @@ const LayoutTreeMenuHtml = ({
           fontWeight: 400,
           fontSize: "0.65rem",
           color: "#2196F3",
-          display: selectedComponent?.id === item.id ? "block" : "none"
+          display: selectedComponent?.id === item.id ? "block" : "none",
+          border: "1px dashed #2196F3",
         }}
         onClick={ () => onAddComponentClick(item.path, asChildren) }
       >
         <Stack
           direction="row"
-          justifyContent="space-evenly"
           alignItems="center"
+          justifyContent="space-evenly"
         >
           <AddBoxOutlined sx={{ color: "#2196F3" }}/>
           { strings.layoutEditor.addLayoutViewDialog.title }
         </Stack>
       </Button>
     );
-    
+
   /**
    * Renders Tree Item
    *
@@ -66,7 +67,9 @@ const LayoutTreeMenuHtml = ({
     const isLayoutComponent = item.type === HtmlComponentType.LAYOUT;
 
     return (
-      <Stack key={ item.id }>
+      <Stack
+        key={ item.id }
+      >
         <StyledTreeItem
           nodeId={ item.id }
           itemType={ item.type }
@@ -94,41 +97,41 @@ const LayoutTreeMenuHtml = ({
       </Stack>
     );
   };
-  
- /**
-  * Gets parent ids, based on selected path.
-  * This is being used to expand the tree view automatically after adding a new element.
-  * In case of the root element we return the path as is.
-  *
-  * @param path path
-  * @retuns IDs of parent elements
-  */
- const getParentIds = (): string[] => {
-   if (!selectedComponent) {
-     return [];
-   }
 
-   const { path, type } = selectedComponent;
+  /**
+   * Gets parent ids, based on selected path.
+   * This is being used to expand the tree view automatically after adding a new element.
+   * In case of the root element we return the path as is.
+   *
+   * @param path path
+   * @retuns IDs of parent elements
+   */
+  const getParentIds = (): string[] => {
+    if (!selectedComponent) {
+      return [];
+    }
 
-   if (!path || !type) {
-     return [];
-   }
+    const { path, type } = selectedComponent;
 
-   const slashes = path?.match(/\//g)?.length ?? 0;
+    if (!path || !type) {
+      return [];
+    }
 
-   if (!slashes) {
-     return [ path ];
-   }
+    const slashes = path?.match(/\//g)?.length ?? 0;
 
-   let parentIds: string[] = [];
-   for (let i = 0; i <= slashes; i++) {
-     if (path?.split("/")[i]) {
-       parentIds.push(path?.split("/")[i]);
-     }
-   }
+    if (!slashes) {
+      return [ path ];
+    }
 
-   return parentIds;
- };
+    let parentIds: string[] = [];
+    for (let i = 0; i <= slashes; i++) {
+      if (path?.split("/")[i]) {
+        parentIds.push(path?.split("/")[i]);
+      }
+    }
+
+    return parentIds;
+  };
 
   return (
     <TreeView expanded={ getParentIds() }>

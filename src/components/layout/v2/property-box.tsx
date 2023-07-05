@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Box } from "@mui/material";
-import theme from "../../../../../styles/theme";
+import theme from "../../../styles/theme";
 
 /**
  * Component for editor panel Property Box

@@ -1,5 +1,5 @@
 import { Typography, styled } from "@mui/material";
-import strings from "../../localization/strings";
+import strings from "../../../localization/strings";
 import { html_beautify } from "js-beautify";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
@@ -37,7 +37,7 @@ const CodeEditorHTML = ({
     indent_empty_lines: true,
     end_with_newline: false
   };
-    
+
   return (
     <CodeEditorContainer>
     <Typography style={{ margin: 8 }}>{ strings.exhibitionLayouts.editView.html }</Typography>

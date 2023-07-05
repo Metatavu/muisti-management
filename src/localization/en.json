@@ -302,6 +302,11 @@
       },
       "layoutProperties": {
         "contentEmphasis": "Content emphasis"
+      },
+      "textProperties": {
+        "elementType": "Text element type",
+        "fontColor": "Font color",
+        "defaultResources": "Default resources"
       }
     },
     "delete": {
@@ -323,6 +328,15 @@
         "image": "Image",
         "tabs": "Tabs",
         "tab": "Tab"
+      },
+      "textTypes": {
+        "heading1": "Heading 1",
+        "heading2": "Heading 2",
+        "heading3": "Heading 3",
+        "heading4": "Heading 4",
+        "heading5": "Heading 5",
+        "heading6": "Heading 6",
+        "body": "Body"
       }
     }
   },

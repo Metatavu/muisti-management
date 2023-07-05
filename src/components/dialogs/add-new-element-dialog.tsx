@@ -5,7 +5,7 @@ import GenericDialog from "../generic/generic-dialog";
 import { MenuItem, Stack, FormHelperText, TextField } from "@mui/material";
 import theme from "../../styles/theme";
 import { HtmlComponentType } from "../../types";
-import LanguageUtils from "../../utils/language-utils";
+import LocalizationUtils from "../../utils/localization-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
 
 /**
@@ -81,7 +81,7 @@ const AddNewElementDialog = ({
       disabled={ DISABLED_COMPONENT_TYPES.includes(type) }
       value={ type }
     >
-      { LanguageUtils.getLocalizedComponentType(type) }
+      { LocalizationUtils.getLocalizedComponentType(type) }
     </MenuItem>
   );
   
@@ -99,7 +99,7 @@ const AddNewElementDialog = ({
         { Object.values(HtmlComponentType).map(renderComponentTypesMenuItems) }
       </TextField>
       <FormHelperText>
-        { newComponentType && LanguageUtils.getLocalizedNewComponentHelpText(newComponentType) }
+        { newComponentType && LocalizationUtils.getLocalizedNewComponentHelpText(newComponentType) }
       </FormHelperText>
       <TextField
         sx={{ marginTop: theme.spacing(2) }}

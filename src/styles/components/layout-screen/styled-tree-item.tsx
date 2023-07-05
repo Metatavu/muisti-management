@@ -7,6 +7,7 @@ import { TreeItem, treeItemClasses, TreeItemProps } from "@mui/lab";
 import { Stack, styled, Typography } from "@mui/material";
 import LanguageUtils from "../../../utils/language-utils";
 import { HtmlComponentType } from "../../../types";
+import LocalizationUtils from "../../../utils/localization-utils";
 
 /**
  * Styled Tree Item Props type
@@ -94,7 +95,7 @@ export const StyledTreeItem = ({
               { itemName }
             </Typography>
             <Typography>
-              { LanguageUtils.getLocalizedComponentType(itemType) }
+              { LocalizationUtils.getLocalizedComponentType(itemType) }
             </Typography>
           </Stack>
           { renderExpandIcon() }

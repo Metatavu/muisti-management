@@ -1,8 +1,8 @@
 import { Divider, Stack } from "@mui/material";
-import strings from "../../../../localization/strings";
-import { TreeObject } from "../../../../types";
-import PropertyBox from "./generic/property-box";
-import PanelSubtitle from "./generic/panel-subtitle";
+import strings from "../../../localization/strings";
+import { TreeObject } from "../../../types";
+import PropertyBox from "./property-box";
+import PanelSubtitle from "./panel-subtitle";
 import AlignmentEditorHtml from "./alignment-editor-html";
 import { FC } from "react";
 

@@ -25,7 +25,7 @@ import ConfirmDialog from "../generic/confirm-dialog";
 import DeleteUtils from "../../utils/delete-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
-import LayoutCardBadge from "../layout/editor-components/html/generic/layout-card-badge";
+import LayoutCardBadge from "../layout/v2/layout-card-badge";
 
 /**
  * Component props

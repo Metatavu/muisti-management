@@ -279,3 +279,16 @@ export enum LayoutAlignment {
   SOUTH = "s",
   SOUTH_EAST = "se"
 }
+
+/**
+ * Text component HTML element types enum
+ */
+export enum HtmlTextComponentType {
+  H1 = "H1",
+  H2 = "H2",
+  H3 = "H3",
+  H4 = "H4",
+  H5 = "H5",
+  H6 = "H6",
+  P = "P"
+}
