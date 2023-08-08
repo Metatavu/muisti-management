@@ -2,9 +2,8 @@ import Api from "../../api/api";
 import {
   ContentVersionActiveCondition,
   Exhibition,
-  ExhibitionPage,
+  ExhibitionDeviceGroup,
   ExhibitionRoom,
-  GroupContentVersion,
   VisitorVariable,
   VisitorVariableType
 } from "../../generated/client";
@@ -17,11 +16,9 @@ import {
   ActionButton,
   BreadcrumbData,
   ConfirmDialogData,
-  DeleteDataHolder,
   LanguageOptions,
   MultiLingualContentVersion
 } from "../../types";
-import DeleteUtils from "../../utils/delete-utils";
 import CardItem from "../generic/card/card-item";
 import CardList from "../generic/card/card-list";
 import ConfirmDialog from "../generic/confirm-dialog";
@@ -64,6 +61,8 @@ interface State {
   error?: Error;
   exhibition?: Exhibition;
   room?: ExhibitionRoom;
+  contentVersions: ContentVersion[];
+  deviceGroups: ExhibitionDeviceGroup[];
   multiLingualContentVersions: MultiLingualContentVersion[];
   selectedMultiLingualContentVersion?: MultiLingualContentVersion;
   dialogOpen: boolean;
@@ -72,6 +71,7 @@ interface State {
   formError?: string;
   visitorVariables?: VisitorVariable[];
   confirmDialogData: ConfirmDialogData;
+  selectedContentVersion?: ContentVersion;
 }
 
 /**
@@ -88,6 +88,8 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     this.state = {
       loading: false,
       multiLingualContentVersions: [],
+      contentVersions: [],
+      deviceGroups: [],
       dialogOpen: false,
       deleteDialogOpen: false,
       addNewContentVersion: false,
@@ -133,7 +135,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           clearError={() => this.setState({ error: undefined })}
         >
           <div className={classes.loader}>
-            <CircularProgress size={50} color="secondary"></CircularProgress>
+            <CircularProgress size={50} color="secondary" />
           </div>
         </BasicLayout>
       );
@@ -154,44 +156,83 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     );
   };
 
+  // TODO: Still need some of the multiLingualContentVersion info?
+  // /**
+  //  * Renders content versions as card list
+  //  */
+  // private renderContentVersionCardsList = () => {
+  //   const { multiLingualContentVersions, exhibition, room } = this.state;
+
+  //   if (!exhibition) {
+  //     return null;
+  //   }
+
+  //   const cards = multiLingualContentVersions.map((multiLingualContentVersion) => {
+  //     const languageVersions = this.sortLanguageVersions(
+  //       multiLingualContentVersion.languageVersions
+  //     );
+  //     const primaryVersion =
+  //       languageVersions.find(
+  //         (languageVersion) => languageVersion.language === LanguageOptions.FI
+  //       ) ?? languageVersions[0];
+
+  //     const languages = (
+  //       <Typography variant="body1">
+  //         {languageVersions.map((languageVersion) => languageVersion.language).join(" / ")}
+  //       </Typography>
+  //     );
+
+  //     return (
+  //       <CardItem
+  //         key={primaryVersion.id}
+  //         title={primaryVersion.name}
+  //         subtitle={room?.name}
+  //         context={languages}
+  //         onClick={() => this.onCardClick(primaryVersion.id!)}
+  //         menuOptions={this.getCardMenuOptions(multiLingualContentVersion)}
+  //       />
+  //     );
+  //   });
+
+  //   return <CardList title={strings.contentVersion.contentMaterials}>{cards}</CardList>;
+  // };
+
+  // TODO: Should multiLingual versions be represented in here?
   /**
    * Renders content versions as card list
    */
   private renderContentVersionCardsList = () => {
-    const { multiLingualContentVersions, exhibition, room } = this.state;
+    const { contentVersions, exhibition, room, selectedContentVersion, deviceGroups } = this.state;
+    const cards = contentVersions.map((contentVersion) => {
+      const contentVersionId = contentVersion.id;
+      if (!contentVersionId || !exhibition || !room || !contentVersion) {
+        return null;
+      }
 
-    if (!exhibition) {
-      return null;
-    }
-
-    const cards = multiLingualContentVersions.map((multiLingualContentVersion) => {
-      const languageVersions = this.sortLanguageVersions(
-        multiLingualContentVersion.languageVersions
-      );
-      const primaryVersion =
-        languageVersions.find(
-          (languageVersion) => languageVersion.language === LanguageOptions.FI
-        ) ?? languageVersions[0];
-
-      const languages = (
-        <Typography variant="body1">
-          {languageVersions.map((languageVersion) => languageVersion.language).join(" / ")}
-        </Typography>
-      );
+      const deviceGroupName =
+        deviceGroups.find((group) => group.id === contentVersion.deviceGroupId)?.name || "";
 
       return (
         <CardItem
-          key={primaryVersion.id}
-          title={primaryVersion.name}
-          subtitle={room?.name}
-          context={languages}
-          onClick={() => this.onCardClick(primaryVersion.id!)}
-          menuOptions={this.getCardMenuOptions(multiLingualContentVersion)}
+          key={contentVersionId}
+          title={contentVersion.name}
+          subtitle={room.name}
+          context={
+            <div>
+              <div>
+                <Typography variant="body1">{deviceGroupName}</Typography>
+              </div>
+            </div>
+          }
+          onClick={() => this.onCardClick(contentVersion)}
+          menuOptions={this.getCardMenuOptions(contentVersion)}
+          selected={selectedContentVersion?.id === contentVersion.id}
+          onActionClick={() => this.openTimeline(contentVersion)}
         />
       );
     });
 
-    return <CardList title={strings.contentVersion.contentMaterials}>{cards}</CardList>;
+    return <CardList title={strings.contentVersion.title}>{cards}</CardList>;
   };
 
   /**
@@ -258,12 +299,11 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           value={activeCondition?.userVariable || ""}
           onChange={this.onActiveConditionSelectChange}
         >
-          {visitorVariables &&
-            visitorVariables.map((variable) => (
-              <MenuItem key={variable.id} value={variable.name}>
-                {variable.name}
-              </MenuItem>
-            ))}
+          {visitorVariables?.map((variable) => (
+            <MenuItem key={variable.id} value={variable.name}>
+              {variable.name}
+            </MenuItem>
+          ))}
           {
             <MenuItem key={"no-value"} value={""}>
               {strings.generic.noSelection}
@@ -275,12 +315,11 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             <Box mt={2} mb={2}>
               <Typography variant="body1">{strings.contentVersion.equals}</Typography>
             </Box>
-            {visitorVariables &&
-              visitorVariables
-                .filter((variable) => variable.name === activeCondition?.userVariable)
-                .map((variable) => {
-                  return this.renderVariables(variable, activeCondition?.equals);
-                })}
+            {visitorVariables
+              ?.filter((variable) => variable.name === activeCondition?.userVariable)
+              .map((variable) => {
+                return this.renderVariables(variable, activeCondition?.equals);
+              })}
           </>
         )}
       </>
@@ -329,7 +368,6 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         );
       case VisitorVariableType.Number:
         return <TextField {...textFieldProps} type="number" />;
-      case VisitorVariableType.Text:
       default:
         return <TextField {...textFieldProps} />;
     }
@@ -339,9 +377,9 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    * Render content version confirmation dialog
    */
   private renderConfirmDeleteDialog = () => {
-    const { selectedMultiLingualContentVersion, deleteDialogOpen, confirmDialogData } = this.state;
+    const { selectedContentVersion, deleteDialogOpen, confirmDialogData } = this.state;
 
-    if (selectedMultiLingualContentVersion) {
+    if (selectedContentVersion) {
       return <ConfirmDialog open={deleteDialogOpen} confirmDialogData={confirmDialogData} />;
     }
   };
@@ -410,150 +448,226 @@ class ContentVersionsScreen extends React.Component<Props, State> {
       exhibition,
       room,
       multiLingualContentVersions,
-      visitorVariables
+      visitorVariables,
+      contentVersions
     });
   };
 
+  // TODO: Do we need to represent multiLingual content if using? See above comments
+  // /**
+  //  * Get card menu options
+  //  *
+  //  * @param multiLingualContentVersion multilingual content version
+  //  * @returns card menu options as action button array
+  //  */
+  // private getCardMenuOptions = (
+  //   multiLingualContentVersion: MultiLingualContentVersion
+  // ): ActionButton[] => {
+  //   return [
+  //     {
+  //       name: strings.exhibitions.cardMenu.delete,
+  //       action: () => this.onDeleteClick(multiLingualContentVersion)
+  //     },
+  //     {
+  //       name: strings.exhibitions.cardMenu.edit,
+  //       action: () => this.editMultiLingualContentVersion(multiLingualContentVersion)
+  //     }
+  //   ];
+  // };
+
+  // /**
+  //  * Gets card menu options
+  //  *
+  //  * @param groupContentVersion selected group content version
+  //  * @returns card menu options as action button array
+  //  */
+  // private getCardMenuOptions = (groupContentVersion: GroupContentVersion): ActionButton[] => {
+  //   return [
+  //     {
+  //       name: strings.exhibitions.cardMenu.delete,
+  //       action: () => this.onDeleteGroupContentVersionClick(groupContentVersion)
+  //     }
+  //   ];
+  // };
+
   /**
-   * Get card menu options
+   * Gets card menu options
    *
-   * @param multiLingualContentVersion multilingual content version
+   * @param contentVersion selected content version
    * @returns card menu options as action button array
    */
-  private getCardMenuOptions = (
-    multiLingualContentVersion: MultiLingualContentVersion
-  ): ActionButton[] => {
+  private getCardMenuOptions = (contentVersion: ContentVersion): ActionButton[] => {
     return [
       {
         name: strings.exhibitions.cardMenu.delete,
-        action: () => this.onDeleteClick(multiLingualContentVersion)
-      },
-      {
-        name: strings.exhibitions.cardMenu.edit,
-        action: () => this.editMultiLingualContentVersion(multiLingualContentVersion)
+        action: () => this.onDeleteContentVersionClick(contentVersion)
       }
     ];
   };
 
+  // TODO: using multilingual content?
+  // /**
+  //  * Deletes multilingual content version
+  //  *
+  //  * @param multiLingualContentVersion multilingual content version to delete
+  //  */
+  // private deleteMultiLingualContentVersion = async (
+  //   multiLingualContentVersion: MultiLingualContentVersion
+  // ) => {
+  //   const { accessToken, exhibitionId } = this.props;
+  //   const { languageVersions } = multiLingualContentVersion;
+
+  //   if (languageVersions.some((languageVersion) => !languageVersion.id)) {
+  //     return;
+  //   }
+
+  //   const contentVersionApi = Api.getContentVersionsApi(accessToken);
+  //   try {
+  //     await Promise.all(
+  //       languageVersions.map((languageVersion) =>
+  //         contentVersionApi.deleteContentVersion({
+  //           exhibitionId: exhibitionId,
+  //           contentVersionId: languageVersion.id!
+  //         })
+  //       )
+  //     );
+  //   } catch (error) {
+  //     this.setState({ error: new Error(error) });
+  //     return;
+  //   }
+
+  //   this.setState(
+  //     produce((draft: State) => {
+  //       const foundIndex = this.findMultiLingualContentVersionIndex(
+  //         multiLingualContentVersion,
+  //         draft.multiLingualContentVersions
+  //       );
+
+  //       if (foundIndex > -1) {
+  //         draft.multiLingualContentVersions.splice(foundIndex, 1);
+  //       }
+
+  //       draft.deleteDialogOpen = false;
+  //       draft.selectedMultiLingualContentVersion = undefined;
+  //     })
+  //   );
+  // };
+
+  // /**
+  //  * Event handler for card delete click
+  //  *
+  //  * @param multiLingualContentVersion clicked multi lingual content version
+  //  */
+  // private onDeleteClick = async (multiLingualContentVersion: MultiLingualContentVersion) => {
+  //   const { accessToken, exhibitionId } = this.props;
+  //   const { confirmDialogData } = this.state;
+
+  //   const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
+  //   const pagesApi = Api.getExhibitionPagesApi(accessToken);
+
+  //   const tempDeleteData = { ...confirmDialogData } as ConfirmDialogData;
+  //   const allGroupContentVersions: GroupContentVersion[] = [];
+  //   const allPages: ExhibitionPage[] = [];
+
+  //   for (const contentVersion of multiLingualContentVersion.languageVersions) {
+  //     const [groupContentVersions, pages] = await Promise.all<
+  //       GroupContentVersion[],
+  //       ExhibitionPage[]
+  //     >([
+  //       groupContentVersionsApi.listGroupContentVersions({
+  //         exhibitionId: exhibitionId,
+  //         contentVersionId: contentVersion.id
+  //       }),
+  //       pagesApi.listExhibitionPages({
+  //         exhibitionId: exhibitionId,
+  //         contentVersionId: contentVersion.id
+  //       })
+  //     ]);
+  //     allGroupContentVersions.push(...groupContentVersions);
+  //     allPages.push(...pages);
+  //   }
+
+  //   if (allGroupContentVersions.length > 0 || allPages.length > 0) {
+  //     confirmDialogData.deletePossible = false;
+  //     confirmDialogData.contentTitle = strings.contentVersion.delete.contentTitle;
+
+  //     const holder: DeleteDataHolder[] = [];
+  //     holder.push({
+  //       objects: allGroupContentVersions,
+  //       localizedMessage: strings.deleteContent.groupContentVersions
+  //     });
+  //     holder.push({ objects: allPages, localizedMessage: strings.deleteContent.pages });
+  //     confirmDialogData.contentSpecificMessages =
+  //       DeleteUtils.constructContentDeleteMessages(holder);
+  //   }
+
+  //   tempDeleteData.onConfirm = () =>
+  //     this.deleteMultiLingualContentVersion(multiLingualContentVersion);
+
+  //   this.setState({
+  //     deleteDialogOpen: true,
+  //     selectedMultiLingualContentVersion: multiLingualContentVersion,
+  //     confirmDialogData: tempDeleteData
+  //   });
+  // };
+
   /**
-   * Deletes multilingual content version
+   * Event handler for delete content version click
    *
-   * @param multiLingualContentVersion multilingual content version to delete
+   * @param contentVersion content version to delete
    */
-  private deleteMultiLingualContentVersion = async (
-    multiLingualContentVersion: MultiLingualContentVersion
-  ) => {
-    const { accessToken, exhibitionId } = this.props;
-    const { languageVersions } = multiLingualContentVersion;
+  private onDeleteContentVersionClick = (contentVersion: ContentVersion) => {
+    const tempDeleteData = { ...this.state.confirmDialogData } as ConfirmDialogData;
 
-    if (languageVersions.some((languageVersion) => !languageVersion.id)) {
-      return;
-    }
-
-    const contentVersionApi = Api.getContentVersionsApi(accessToken);
-    try {
-      await Promise.all(
-        languageVersions.map((languageVersion) =>
-          contentVersionApi.deleteContentVersion({
-            exhibitionId: exhibitionId,
-            contentVersionId: languageVersion.id!
-          })
-        )
-      );
-    } catch (error) {
-      this.setState({ error: new Error(error) });
-      return;
-    }
-
-    this.setState(
-      produce((draft: State) => {
-        const foundIndex = this.findMultiLingualContentVersionIndex(
-          multiLingualContentVersion,
-          draft.multiLingualContentVersions
-        );
-
-        if (foundIndex > -1) {
-          draft.multiLingualContentVersions.splice(foundIndex, 1);
-        }
-
-        draft.deleteDialogOpen = false;
-        draft.selectedMultiLingualContentVersion = undefined;
-      })
-    );
-  };
-
-  /**
-   * Event handler for card delete click
-   *
-   * @param multiLingualContentVersion clicked multi lingual content version
-   */
-  private onDeleteClick = async (multiLingualContentVersion: MultiLingualContentVersion) => {
-    const { accessToken, exhibitionId } = this.props;
-    const { confirmDialogData } = this.state;
-
-    const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
-    const pagesApi = Api.getExhibitionPagesApi(accessToken);
-
-    const tempDeleteData = { ...confirmDialogData } as ConfirmDialogData;
-    const allGroupContentVersions: GroupContentVersion[] = [];
-    const allPages: ExhibitionPage[] = [];
-
-    for (const contentVersion of multiLingualContentVersion.languageVersions) {
-      const [groupContentVersions, pages] = await Promise.all<
-        GroupContentVersion[],
-        ExhibitionPage[]
-      >([
-        groupContentVersionsApi.listGroupContentVersions({
-          exhibitionId: exhibitionId,
-          contentVersionId: contentVersion.id
-        }),
-        pagesApi.listExhibitionPages({
-          exhibitionId: exhibitionId,
-          contentVersionId: contentVersion.id
-        })
-      ]);
-      allGroupContentVersions.push(...groupContentVersions);
-      allPages.push(...pages);
-    }
-
-    if (allGroupContentVersions.length > 0 || allPages.length > 0) {
-      confirmDialogData.deletePossible = false;
-      confirmDialogData.contentTitle = strings.contentVersion.delete.contentTitle;
-
-      const holder: DeleteDataHolder[] = [];
-      holder.push({
-        objects: allGroupContentVersions,
-        localizedMessage: strings.deleteContent.groupContentVersions
-      });
-      holder.push({ objects: allPages, localizedMessage: strings.deleteContent.pages });
-      confirmDialogData.contentSpecificMessages =
-        DeleteUtils.constructContentDeleteMessages(holder);
-    }
-
-    tempDeleteData.onConfirm = () =>
-      this.deleteMultiLingualContentVersion(multiLingualContentVersion);
-
+    tempDeleteData.onConfirm = () => this.deleteContentVersion(contentVersion);
     this.setState({
       deleteDialogOpen: true,
-      selectedMultiLingualContentVersion: multiLingualContentVersion,
+      selectedContentVersion: contentVersion,
       confirmDialogData: tempDeleteData
     });
   };
 
   /**
-   * Edit multilingual content version
+   * Deletes content version
    *
-   * @param multiLingualContentVersion multilingual content version to edit
+   * @param contentVersion selected content version
    */
-  private editMultiLingualContentVersion = (
-    multiLingualContentVersion: MultiLingualContentVersion
-  ) => {
+  private deleteContentVersion = (contentVersion: ContentVersion) => {
+    const { accessToken, exhibitionId } = this.props;
+    const contentVersionApi = Api.getContentVersionsApi(accessToken);
+
+    if (!contentVersion.id) {
+      return;
+    }
+
+    contentVersionApi.deleteContentVersion({
+      exhibitionId: exhibitionId,
+      contentVersionId: contentVersion.id
+    });
+
     this.setState({
-      dialogOpen: true,
-      selectedMultiLingualContentVersion: multiLingualContentVersion,
-      addNewContentVersion: false
+      deleteDialogOpen: false,
+      selectedContentVersion: undefined,
+      contentVersions: this.state.contentVersions.filter(
+        (version) => version.id !== contentVersion.id
+      )
     });
   };
+
+  // /**
+  //  * Edit multilingual content version
+  //  *
+  //  * @param multiLingualContentVersion multilingual content version to edit
+  //  */
+  // private editMultiLingualContentVersion = (
+  //   multiLingualContentVersion: MultiLingualContentVersion
+  // ) => {
+  //   this.setState({
+  //     dialogOpen: true,
+  //     selectedMultiLingualContentVersion: multiLingualContentVersion,
+  //     addNewContentVersion: false
+  //   });
+  // };
 
   /**
    * Get breadcrumbs data
@@ -575,9 +689,20 @@ class ContentVersionsScreen extends React.Component<Props, State> {
    *
    * @param contentVersionId content version id
    */
-  private onCardClick = (contentVersionId: string) => {
-    const { pathname } = this.props.history.location;
-    this.props.history.push(`${pathname}/contentVersions/${contentVersionId}`);
+  private onCardClick = (contentVersion: ContentVersion) => {
+    this.setState({
+      selectedContentVersion: contentVersion
+    });
+  };
+
+  /**
+   * Opens timeline screen
+   *
+   * @param contentVersion selected content version
+   */
+  private openTimeline = (contentVersion: ContentVersion) => {
+    const { history } = this.props;
+    history.push(`${history.location.pathname}/contentVersions/${contentVersion.id}/timeline`);
   };
 
   /**

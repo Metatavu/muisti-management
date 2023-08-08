@@ -11,7 +11,6 @@ import DiagnosticsScreen from "./screens/diagnostics-screen";
 import ExhibitionsScreen from "./screens/exhibitions-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
-import GroupContentVersionsScreen from "./screens/group-content-versions-screen";
 import LayoutScreenAndroid from "./screens/layout-screen-android";
 import LayoutScreenHTML from "./screens/layout-screen-html";
 import LayoutsScreen from "./screens/layouts-screen";
@@ -121,18 +120,6 @@ class App extends React.Component<{}, {}> {
                         )}
                       />
                       <Route
-                        path="/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                        exact
-                        render={({ history, match }) => (
-                          <GroupContentVersionsScreen
-                            history={history}
-                            exhibitionId={match.params.exhibitionId}
-                            roomId={match.params.roomId}
-                            contentVersionId={match.params.contentVersionId}
-                          />
-                        )}
-                      />
-                      <Route
                         path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
                         exact
                         render={({ history, match }) => (
@@ -147,9 +134,11 @@ class App extends React.Component<{}, {}> {
                         )}
                       />
                       <Route
+                        // TODO: Top two paths are now redundant?
                         path={[
                           "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
-                          "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline"
+                          "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
+                          "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/timeline"
                         ]}
                         exact
                         render={({ history, match }) => (
@@ -159,7 +148,7 @@ class App extends React.Component<{}, {}> {
                             floorId={match.params.floorId}
                             roomId={match.params.roomId}
                             contentVersionId={match.params.contentVersionId}
-                            groupContentVersionId={match.params.groupContentVersionId}
+                            // groupContentVersionId={match.params.groupContentVersionId}
                           />
                         )}
                       />
