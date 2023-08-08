@@ -1,4 +1,3 @@
-import { GroupContentVersionStatus } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import styles from "../../../styles/components/generic/card/card-item";
 import { ActionButton } from "../../../types";
@@ -31,7 +30,7 @@ interface Props extends WithStyles<typeof styles> {
   /**
    * Card item status
    */
-  status?: string | GroupContentVersionStatus;
+  status?: string;
 
   /**
    * Card item size

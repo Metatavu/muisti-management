@@ -73,6 +73,7 @@ class App extends React.Component<{}, {}> {
                         exact
                         render={({ history }) => <ExhibitionsScreen history={history} />}
                       />
+                      {/* TODO: Is this route actually used? */}
                       <Route
                         path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
                         exact

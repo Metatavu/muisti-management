@@ -1,3 +1,4 @@
+// TODO: Where is this component used, if used, remove groupContentVersion
 import Api from "../../api/api";
 import {
   ContentVersion,
@@ -118,7 +119,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
         <div className={classes.loader}>
-          <CircularProgress size={50} color="secondary"></CircularProgress>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
@@ -135,13 +136,9 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         clearError={() => this.setState({ error: undefined })}
       >
         <div className={classes.editorLayout}>
-          <ElementNavigationPane title={strings.floorPlan.title}></ElementNavigationPane>
+          <ElementNavigationPane title={strings.floorPlan.title} />
           <EditorView>{this.renderEditor()}</EditorView>
-          <ElementSettingsPane
-            open={true}
-            width={320}
-            title={strings.floorPlan.properties.title}
-          ></ElementSettingsPane>
+          <ElementSettingsPane open={true} width={320} title={strings.floorPlan.properties.title} />
         </div>
       </BasicLayout>
     );
