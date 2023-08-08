@@ -148,7 +148,6 @@ class App extends React.Component<{}, {}> {
                             floorId={match.params.floorId}
                             roomId={match.params.roomId}
                             contentVersionId={match.params.contentVersionId}
-                            // groupContentVersionId={match.params.groupContentVersionId}
                           />
                         )}
                       />
