@@ -445,17 +445,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       antennas,
       visitors,
       visitorSessions
-    ] = await Promise.all<
-      ExhibitionPage[],
-      ContentVersion[],
-      ExhibitionDevice[],
-      ExhibitionDeviceGroup[],
-      ExhibitionFloor[],
-      ExhibitionRoom[],
-      RfidAntenna[],
-      Visitor[],
-      VisitorSession[]
-    >([
+    ] = (await Promise.all([
       pagesApi.listExhibitionPages({ exhibitionId: selectedExhibition.id }),
       contentVersionsApi.listContentVersions({ exhibitionId: selectedExhibition.id }),
       devicesApi.listExhibitionDevices({ exhibitionId: selectedExhibition.id }),
@@ -465,7 +455,17 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       antennasApi.listRfidAntennas({ exhibitionId: selectedExhibition.id }),
       visitorsApi.listVisitors({ exhibitionId: selectedExhibition.id }),
       visitorSessionsApi.listVisitorSessions({ exhibitionId: selectedExhibition.id })
-    ]);
+    ])) as [
+      ExhibitionPage[],
+      ContentVersion[],
+      ExhibitionDevice[],
+      ExhibitionDeviceGroup[],
+      ExhibitionFloor[],
+      ExhibitionRoom[],
+      RfidAntenna[],
+      Visitor[],
+      VisitorSession[]
+    ];
 
     /** Promise.all allows only 10 variables at once */
     const visitorVariables = await visitorVariablesApi.listVisitorVariables({

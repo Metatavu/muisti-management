@@ -780,7 +780,7 @@ export class DeviceModelsScreen extends React.Component<Props, State> {
     const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
     const devicesApi = Api.getExhibitionDevicesApi(accessToken);
 
-    const [allExhibitions, layouts] = await Promise.all<Exhibition[], PageLayout[]>([
+    const [allExhibitions, layouts] = await Promise.all([
       exhibitionsApi.listExhibitions(),
       pageLayoutsApi.listPageLayouts({ deviceModelId: selectedDeviceModel.id })
     ]);

@@ -255,7 +255,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     }
 
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const [selectedRoom, rooms] = await Promise.all<ExhibitionRoom, ExhibitionRoom[]>([
+    const [selectedRoom, rooms] = await Promise.all([
       exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId: exhibitionId })
     ]);
@@ -277,11 +277,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
-    const [contentVersion, deviceGroups, groupContentVersions] = await Promise.all<
-      ContentVersion,
-      ExhibitionDeviceGroup[],
-      GroupContentVersion[]
-    >([
+    const [contentVersion, deviceGroups, groupContentVersions] = (await Promise.all([
       contentVersionsApi.findContentVersion({
         exhibitionId: exhibitionId,
         contentVersionId: contentVersionId
@@ -291,7 +287,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
         roomId: selectedRoom.id
       }),
       groupContentVersionsApi.listGroupContentVersions({ exhibitionId: exhibitionId })
-    ]);
+    ])) as [ContentVersion, ExhibitionDeviceGroup[], GroupContentVersion[]];
 
     breadCrumbs.push({ name: contentVersion?.name || "" });
     this.setState({ contentVersion, breadCrumbs, deviceGroups, groupContentVersions });
@@ -317,7 +313,7 @@ export class FloorPlanEditorView extends React.Component<Props, State> {
 
     const devicesApi = Api.getExhibitionDevicesApi(accessToken);
     const antennasApi = Api.getRfidAntennasApi(accessToken);
-    const [allDevices, allAntennas] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+    const [allDevices, allAntennas] = await Promise.all([
       devicesApi.listExhibitionDevices({ exhibitionId: exhibitionId }),
       antennasApi.listRfidAntennas({ exhibitionId: exhibitionId })
     ]);

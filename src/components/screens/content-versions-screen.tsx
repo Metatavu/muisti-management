@@ -405,12 +405,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
     const contentVersionsApi = Api.getContentVersionsApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
-    const [exhibition, room, contentVersions, visitorVariables] = await Promise.all<
-      Exhibition,
-      ExhibitionRoom,
-      ContentVersion[],
-      VisitorVariable[]
-    >([
+    const [exhibition, room, contentVersions, visitorVariables] = await Promise.all([
       exhibitionsApi.findExhibition({ exhibitionId }),
       exhibitionRoomsApi.findExhibitionRoom({ exhibitionId: exhibitionId, roomId: roomId }),
       contentVersionsApi.listContentVersions({ exhibitionId, roomId }),

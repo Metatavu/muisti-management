@@ -411,13 +411,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
-    const [floors, rooms, deviceGroups, devices, antennas] = await Promise.all<
-      ExhibitionFloor[],
-      ExhibitionRoom[],
-      ExhibitionDeviceGroup[],
-      ExhibitionDevice[],
-      RfidAntenna[]
-    >([
+    const [floors, rooms, deviceGroups, devices, antennas] = await Promise.all([
       exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
       exhibitionDeviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId }),
@@ -1163,7 +1157,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const devicesApi = Api.getExhibitionDevicesApi(accessToken);
     const antennasApi = Api.getRfidAntennasApi(accessToken);
-    const [devices, antennas] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+    const [devices, antennas] = await Promise.all([
       devicesApi.listExhibitionDevices({
         exhibitionId: exhibitionId,
         exhibitionGroupId: selectedDeviceGroup.id
