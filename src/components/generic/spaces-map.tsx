@@ -771,10 +771,12 @@ export default class SpacesMap extends React.Component<Props, State> {
     color?: string
   ) => {
     let tempLayer: any;
-    // Temporary fix
+    // Temporary fix for invalid geoJson data from API
     const tempGeoJson: Polygon = {
       ...geoJson,
-      coordinates: geoJson.coordinates.map((c) => c.filter((x) => x.length > 0))
+      coordinates: geoJson.coordinates.map((coordinates) =>
+        coordinates.filter((coordinate) => coordinate.length > 0)
+      )
     };
     L.geoJSON(tempGeoJson, {
       style: {
