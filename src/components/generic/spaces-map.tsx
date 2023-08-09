@@ -1,6 +1,3 @@
-// import "leaflet-draw";
-// import "leaflet-draw/dist/leaflet.draw.css";
-// tslint:disable-next-line: max-line-length
 import {
   DeviceImageLoadStrategy,
   DeviceModel,
@@ -30,11 +27,17 @@ import {
   Map as MapInstance,
   MarkerOptions
 } from "leaflet";
-// TODO: Leaflets related imports.
-// import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
+import "leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
+import "leaflet/dist/leaflet.css";
 import * as React from "react";
 import { ImageOverlay, Map as LeafletMap, ScaleControl } from "react-leaflet";
+
+// Required for Leaflet to work.
+// Older version of Leaflet declares it as global variable but newer version no longer does
+// https://github.com/Leaflet/Leaflet.draw/issues/1026#issuecomment-986702652
+window.type = true;
 
 /**
  * Component props
@@ -419,7 +422,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     }
 
     const marker = event.layer;
-    if (marker && marker._latlng) {
+    if (marker?._latlng) {
       const markerOptions: MarkerOptions = {
         icon: this.deviceIcon,
         draggable: false
@@ -432,7 +435,7 @@ export default class SpacesMap extends React.Component<Props, State> {
         groupId: selectedItems.deviceGroup.id,
         modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,
-        imageLoadStrategy: DeviceImageLoadStrategy.MEMORY,
+        imageLoadStrategy: DeviceImageLoadStrategy.Memory,
         location: {
           x: marker._latlng.lat,
           y: marker._latlng.lng
@@ -463,7 +466,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     }
 
     const marker = event.layer;
-    if (marker && marker._latlng) {
+    if (marker?._latlng) {
       const markerOptions: MarkerOptions = {
         icon: this.antennaIcon,
         draggable: false
@@ -500,7 +503,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     }
 
     const room = event.layer;
-    if (room && room._latlngs) {
+    if (room?._latlngs) {
       const newRoom = new L.Rectangle(room._latlngs);
       this.addedLayers.addLayer(newRoom);
 
@@ -510,10 +513,9 @@ export default class SpacesMap extends React.Component<Props, State> {
         return;
       }
       const roomPolygon = geoJson.features[0].geometry as ApiPolygon;
-
       const roomToCreate: ExhibitionRoom = {
         floorId: selectedItems.floor.id,
-        name: strings.floorPlan.floor.new,
+        name: strings.floorPlan.room.new,
         geoShape: roomPolygon
       };
       onRoomAdd(roomToCreate);
@@ -678,7 +680,6 @@ export default class SpacesMap extends React.Component<Props, State> {
     }
 
     const tempRooms = [...mapData.rooms] as ExhibitionRoom[];
-
     if (selectedItems.room) {
       this.addSelectedRoomLayer(tempRooms, selectedItems.room);
     }
@@ -770,16 +771,20 @@ export default class SpacesMap extends React.Component<Props, State> {
     color?: string
   ) => {
     let tempLayer: any;
-    L.geoJSON(geoJson, {
+    // Temporary fix
+    const tempGeoJson: Polygon = {
+      ...geoJson,
+      coordinates: geoJson.coordinates.map((c) => c.filter((x) => x.length > 0))
+    };
+    L.geoJSON(tempGeoJson, {
+      style: {
+        fillOpacity: opacity,
+        fillColor: color
+      },
       onEachFeature(_feature, layer) {
-        const customLayer = layer as any;
-        customLayer.setStyle({
-          fillOpacity: opacity,
-          fillColor: color
-        });
-        customLayer
+        layer
           .bindTooltip(layerName, {
-            permanent: true
+            permanent: false
           })
           .openTooltip();
         tempLayer = layer;
@@ -1348,7 +1353,6 @@ export default class SpacesMap extends React.Component<Props, State> {
    */
   public editRoom = () => {
     const layers = this.selectedRoomLayer.getLayers();
-
     if (layers && layers.length > 0) {
       const layer = layers[0] as any;
       layer.editing.enable();
