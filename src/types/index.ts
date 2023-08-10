@@ -8,7 +8,6 @@ import {
   ExhibitionPage,
   ExhibitionPageResource,
   ExhibitionRoom,
-  GroupContentVersion,
   PageLayout,
   RfidAntenna,
   Visitor,
@@ -210,7 +209,6 @@ export interface DeleteDataHolder {
     | Exhibition
     | ContentVersion
     | ExhibitionFloor
-    | GroupContentVersion
     | ExhibitionRoom
     | ExhibitionDeviceGroup
     | ExhibitionDevice

@@ -8,7 +8,6 @@ import {
   ExhibitionFloor,
   ExhibitionPage,
   ExhibitionRoom,
-  GroupContentVersion,
   RfidAntenna,
   Visitor,
   VisitorSession
@@ -111,7 +110,7 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <div className={classes.loader}>
-          <CircularProgress size={50} color="secondary"></CircularProgress>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
@@ -431,7 +430,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
     const deviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const floorsApi = Api.getExhibitionFloorsApi(accessToken);
     const roomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const groupContentVersionsApi = Api.getGroupContentVersionsApi(accessToken);
     const antennasApi = Api.getRfidAntennasApi(accessToken);
     const visitorsApi = Api.getVisitorsApi(accessToken);
     const visitorSessionsApi = Api.getVisitorSessionsApi(accessToken);
@@ -444,29 +442,16 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       deviceGroups,
       floors,
       rooms,
-      groupContentVersions,
       antennas,
       visitors,
       visitorSessions
-    ] = await Promise.all<
-      ExhibitionPage[],
-      ContentVersion[],
-      ExhibitionDevice[],
-      ExhibitionDeviceGroup[],
-      ExhibitionFloor[],
-      ExhibitionRoom[],
-      GroupContentVersion[],
-      RfidAntenna[],
-      Visitor[],
-      VisitorSession[]
-    >([
+    ] = await Promise.all([
       pagesApi.listExhibitionPages({ exhibitionId: selectedExhibition.id }),
       contentVersionsApi.listContentVersions({ exhibitionId: selectedExhibition.id }),
       devicesApi.listExhibitionDevices({ exhibitionId: selectedExhibition.id }),
       deviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId: selectedExhibition.id }),
       floorsApi.listExhibitionFloors({ exhibitionId: selectedExhibition.id }),
       roomsApi.listExhibitionRooms({ exhibitionId: selectedExhibition.id }),
-      groupContentVersionsApi.listGroupContentVersions({ exhibitionId: selectedExhibition.id }),
       antennasApi.listRfidAntennas({ exhibitionId: selectedExhibition.id }),
       visitorsApi.listVisitors({ exhibitionId: selectedExhibition.id }),
       visitorSessionsApi.listVisitorSessions({ exhibitionId: selectedExhibition.id })
@@ -484,7 +469,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       deviceGroups.length > 0 ||
       floors.length > 0 ||
       rooms.length > 0 ||
-      groupContentVersions.length > 0 ||
       antennas.length > 0 ||
       visitors.length > 0 ||
       visitorSessions.length > 0 ||
@@ -503,10 +487,6 @@ export class ExhibitionsScreen extends React.Component<Props, State> {
       holder.push({ objects: deviceGroups, localizedMessage: strings.deleteContent.deviceGroups });
       holder.push({ objects: floors, localizedMessage: strings.deleteContent.floors });
       holder.push({ objects: rooms, localizedMessage: strings.deleteContent.rooms });
-      holder.push({
-        objects: groupContentVersions,
-        localizedMessage: strings.deleteContent.groupContentVersions
-      });
       holder.push({ objects: antennas, localizedMessage: strings.deleteContent.antennas });
       holder.push({ objects: visitors, localizedMessage: strings.deleteContent.visitors });
       holder.push({

@@ -662,6 +662,7 @@
   },
 
   "contentVersion": {
+    "title": "Sisällöt",
     "add": "Uusi sisältökokonaisuus",
     "addDialogTitle": "Uusi sisältökokonaisuus",
     "addDialogDescription": "Anna nimi uudelle sisältökokonaisuudelle",

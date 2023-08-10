@@ -9,7 +9,6 @@ import {
   ExhibitionPagesApi,
   ExhibitionRoomsApi,
   ExhibitionsApi,
-  GroupContentVersionsApi,
   PageLayoutsApi,
   RfidAntennasApi,
   StoredFilesApi,
@@ -40,15 +39,6 @@ export default class Api {
    */
   public static getContentVersionsApi(accessToken: AccessToken) {
     return new ContentVersionsApi(Api.getConfiguration(accessToken));
-  }
-
-  /**
-   * Gets initialized exhibition group content versions api
-   *
-   * @param token access token
-   */
-  public static getGroupContentVersionsApi(accessToken: AccessToken) {
-    return new GroupContentVersionsApi(Api.getConfiguration(accessToken));
   }
 
   /**

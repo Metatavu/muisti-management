@@ -181,7 +181,7 @@ class RoomsScreen extends React.Component<Props, State> {
 
     const exhibitionsApi = Api.getExhibitionsApi(accessToken);
     const exhibitionRoomsApi = Api.getExhibitionRoomsApi(accessToken);
-    const [exhibition, rooms] = await Promise.all<Exhibition, ExhibitionRoom[]>([
+    const [exhibition, rooms] = await Promise.all([
       exhibitionsApi.findExhibition({ exhibitionId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId })
     ]);

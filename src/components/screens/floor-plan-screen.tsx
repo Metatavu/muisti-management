@@ -1156,7 +1156,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     const devicesApi = Api.getExhibitionDevicesApi(accessToken);
     const antennasApi = Api.getRfidAntennasApi(accessToken);
-    const [devices, antennas] = await Promise.all<ExhibitionDevice[], RfidAntenna[]>([
+    const [devices, antennas] = await Promise.all([
       devicesApi.listExhibitionDevices({
         exhibitionId: exhibitionId,
         exhibitionGroupId: selectedDeviceGroup.id

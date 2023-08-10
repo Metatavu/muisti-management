@@ -661,6 +661,7 @@
   },
 
   "contentVersion": {
+    "title": "Contents",
     "add": "Add new...",
     "addDialogTitle": "New set of materials",
     "addDialogDescription": "Give a name for the new set of exhibition content",
