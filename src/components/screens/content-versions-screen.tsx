@@ -528,7 +528,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
     }
 
     if (allContentVersions.length > 0 || allPages.length > 0) {
-      // TODO: causing a read only error if try to delete straight after creation?
+      // TODO: causing a read only error if try to delete straight after creating a new content version
       confirmDialogData.deletePossible = false;
       confirmDialogData.contentTitle = strings.contentVersion.delete.contentTitle;
 

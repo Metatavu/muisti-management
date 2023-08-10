@@ -3,7 +3,6 @@ import { ReduxActions, ReduxState, rootReducer } from "../store";
 import muistiTheme from "../styles/theme";
 import AccessTokenRefresh from "./containers/access-token-refresh";
 import StoreInitializer from "./containers/store-initializer";
-import FloorPlanEditorView from "./floor-plan/floor-plan-editor-view";
 import ContentEditorScreen from "./screens/content-editor-screen";
 import ContentVersionsScreen from "./screens/content-versions-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
@@ -73,19 +72,6 @@ class App extends React.Component<{}, {}> {
                         exact
                         render={({ history }) => <ExhibitionsScreen history={history} />}
                       />
-                      {/* TODO: Is this route actually used? */}
-                      <Route
-                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId"
-                        exact
-                        render={({ history, match }) => (
-                          <FloorPlanEditorView
-                            history={history}
-                            exhibitionId={match.params.exhibitionId}
-                            exhibitionFloorId={match.params.floorId}
-                            readOnly
-                          />
-                        )}
-                      />
                       <Route
                         path={[
                           "/exhibitions/:exhibitionId/content",
@@ -108,37 +94,7 @@ class App extends React.Component<{}, {}> {
                         )}
                       />
                       <Route
-                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId"
-                        exact
-                        render={({ history, match }) => (
-                          <FloorPlanEditorView
-                            history={history}
-                            exhibitionId={match.params.exhibitionId}
-                            exhibitionFloorId={match.params.floorId}
-                            roomId={match.params.roomId}
-                            readOnly
-                          />
-                        )}
-                      />
-                      <Route
-                        path="/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId"
-                        exact
-                        render={({ history, match }) => (
-                          <FloorPlanEditorView
-                            history={history}
-                            exhibitionId={match.params.exhibitionId}
-                            exhibitionFloorId={match.params.floorId}
-                            roomId={match.params.roomId}
-                            contentVersionId={match.params.contentVersionId}
-                            readOnly
-                          />
-                        )}
-                      />
-                      <Route
-                        // TODO: Top two paths are now redundant?
                         path={[
-                          "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
-                          "/exhibitions/:exhibitionId/floorplan/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/groupContentVersions/:groupContentVersionId/timeline",
                           "/exhibitions/:exhibitionId/content/floors/:floorId/rooms/:roomId/contentVersions/:contentVersionId/timeline"
                         ]}
                         exact
