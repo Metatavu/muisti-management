@@ -299,7 +299,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
             {visitorVariables
               ?.filter((variable) => variable.name === activeCondition?.userVariable)
               .map((variable) => {
-                return this.renderVariables(variable, activeCondition?.equals);
+                this.renderVariables(variable, activeCondition?.equals);
               })}
           </>
         )}
