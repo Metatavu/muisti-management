@@ -2,7 +2,7 @@ import PanZoom from "../generic/pan-zoom";
 import * as cropperjs from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import * as React from "react";
-import Cropper from "react-cropper";
+import Cropper, { ReactCropperElement } from "react-cropper";
 
 /**
  * Component props
@@ -27,7 +27,7 @@ interface State {
  * Component for floor plan crop
  */
 export default class FloorPlanCrop extends React.Component<Props, State> {
-  private cropperRef = React.createRef<Cropper>();
+  private cropperRef = React.createRef<ReactCropperElement>();
 
   /**
    * Constructor
@@ -82,7 +82,7 @@ export default class FloorPlanCrop extends React.Component<Props, State> {
    * Event handler for crop component crop end
    */
   private onCropEnd = () => {
-    const cropper = this.cropperRef.current;
+    const cropper = this.cropperRef.current?.cropper;
     if (cropper) {
       cropper.getCroppedCanvas().toBlob(
         (data: Blob | null) => {

@@ -192,7 +192,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
         <div className={classes.loader}>
-          <CircularProgress size={50} color="secondary"></CircularProgress>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
@@ -411,13 +411,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
-    const [floors, rooms, deviceGroups, devices, antennas] = await Promise.all<
-      ExhibitionFloor[],
-      ExhibitionRoom[],
-      ExhibitionDeviceGroup[],
-      ExhibitionDevice[],
-      RfidAntenna[]
-    >([
+    const [floors, rooms, deviceGroups, devices, antennas] = await Promise.all([
       exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
       exhibitionDeviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId }),
@@ -904,7 +898,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onFloorSaveClick = async () => {
     const { exhibitionId } = this.props;
     const { cropping, cropImageData, selectedFloor } = this.state;
-
     if (cropping && cropImageData) {
       await this.updateFloorPlanImage(cropImageData);
 
