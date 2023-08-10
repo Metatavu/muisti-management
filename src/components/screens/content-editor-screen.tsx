@@ -503,7 +503,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedPage
     } = this.state;
 
+    // TODO: content version here relates to a locale
     return contentVersions.map((contentVersion) => {
+      console.log("a content version", contentVersion);
       const selected = contentVersion.id === selectedContentVersion?.id;
       return (
         <Accordion
@@ -1191,20 +1193,28 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
+    // TODO: So not listing all the contentversions by room, and just passing in locale.?- changes below do this.
 
     const [
       initialContentVersion,
-      contentVersionsInRoom,
+      // contentVersionsInRoom,
       contentVersion,
       layouts,
       visitorVariables
     ] = await Promise.all([
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
-      contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
+      // contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
       layoutsApi.listPageLayouts({}),
       visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
+
+    // 1 locale From prop
+    console.log("initial content in the fetch data", initialContentVersion);
+    // All locales
+    // console.log("content version in the room", contentVersionsInRoom);
+    // 1 locale From prop
+    console.log("content versoin in the fetch data", contentVersion);
 
     /**
      * Devices from device group
@@ -1215,25 +1225,30 @@ class ContentEditorScreen extends React.Component<Props, State> {
       exhibitionGroupId: deviceGroupId
     });
 
-    /**
-     * Content versions for different languages.
-     * Identified by having the same name but different language than
-     * initial content version selected before navigating to content editor.
-     */
-    const contentVersions: ContentVersion[] = [];
-    contentVersionsInRoom.forEach((contentVersionInRoom) => {
-      const sameName = contentVersionInRoom.name === initialContentVersion.name;
-      const newLanguage = contentVersions.every(
-        (version) => version.language !== contentVersionInRoom.language
-      );
-      if (sameName && newLanguage) {
-        contentVersions.push(contentVersionInRoom);
-      }
-    });
+    // TODO: CAn reuse this logic to fetch and display the locale data the then update the contentVersions state to the newly selected contentVersion.
+    // /**
+    //  * Content versions for different languages.
+    //  * Identified by having the same name but different language than
+    //  * initial content version selected before navigating to content editor.
+    //  */
+    // const contentVersions: ContentVersion[] = [];
+    // contentVersionsInRoom.forEach((contentVersionInRoom) => {
+    //   const sameName = contentVersionInRoom.name === initialContentVersion.name;
+    //   const newLanguage = contentVersions.every(
+    //     (version) => version.language !== contentVersionInRoom.language
+    //   );
+    //   if (sameName && newLanguage) {
+    //     console.log("this content languages", contentVersionInRoom.language);
+    //     contentVersions.push(contentVersionInRoom);
+    //   }
+    // });
 
-    contentVersions.sort((a, b) => {
-      return a.language.localeCompare(b.language);
-    });
+    // // Sorting alphabetically
+    // contentVersions.sort((a, b) => {
+    //   return a.language.localeCompare(b.language);
+    // });
+
+    const contentVersions: ContentVersion[] = [contentVersion];
 
     const devicePages = await Promise.all(
       devices.map((device) =>
@@ -1258,6 +1273,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedPage) {
       this.updateResources(layouts, selectedPage);
     }
+    // TODO: This now only fetches the "default locale" from props, next need to set up the locale selector.
 
     this.setState({
       contentVersions,
@@ -1354,6 +1370,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return actionButtons;
   };
 
+  // TODO: What happens when add a content version? check how this is done, does it add a new locale??
   /**
    * Adds new content version
    */
