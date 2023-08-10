@@ -192,7 +192,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     if (!exhibition || !exhibition.id || this.state.loading) {
       return (
         <div className={classes.loader}>
-          <CircularProgress size={50} color="secondary"></CircularProgress>
+          <CircularProgress size={50} color="secondary" />
         </div>
       );
     }
@@ -898,7 +898,6 @@ export class FloorPlanScreen extends React.Component<Props, State> {
   private onFloorSaveClick = async () => {
     const { exhibitionId } = this.props;
     const { cropping, cropImageData, selectedFloor } = this.state;
-
     if (cropping && cropImageData) {
       await this.updateFloorPlanImage(cropImageData);
 

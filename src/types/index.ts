@@ -321,3 +321,12 @@ export enum HtmlTextComponentType {
   H6 = "H6",
   P = "P"
 }
+
+// Required for Leaflet to work.
+// Older version of Leaflet declares it as global variable but newer version no longer does
+// https://github.com/Leaflet/Leaflet.draw/issues/1026#issuecomment-986702652
+declare global {
+  interface Window {
+    type: boolean;
+  }
+}
