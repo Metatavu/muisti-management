@@ -1332,9 +1332,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
         name: strings.contentEditor.changeLocale,
         action: () => {},
         selectAction: this.onLocaleChange,
-        isSelect: true,
         options: this.getSelectLocaleOptions(),
-        value: selectedContentVersion?.language as LanguageOptions
+        value: selectedContentVersion?.language as LanguageOptions,
+        disabled: !!(this.getAvailableLocales().length === 1)
       },
       {
         name:

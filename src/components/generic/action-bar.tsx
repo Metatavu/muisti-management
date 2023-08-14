@@ -27,8 +27,8 @@ const ActionBar: React.FC<Props> = ({ buttons }) => {
  * @param button button data
  */
 const renderToolbarButton = (button: ActionButton) => {
-  if (button.isSelect) {
-    if (!button.options || !button.value || !button.selectAction) return;
+  if (button.selectAction) {
+    if (!button.options || !button.value || button.disabled) return;
 
     const { options } = button;
 

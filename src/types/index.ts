@@ -118,7 +118,6 @@ export interface ActionButton {
   disabled?: boolean;
   action: () => void;
   selectAction?: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
-  isSelect?: boolean;
   options?: LocalOptions[];
   value?: LanguageOptions;
 }
