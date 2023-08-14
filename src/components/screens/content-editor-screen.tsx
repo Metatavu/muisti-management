@@ -494,7 +494,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private renderTimeline = () => {
     const { classes } = this.props;
     const {
-      contentVersions,
       selectedContentVersion,
       devices,
       previewDevicesData,
@@ -503,50 +502,41 @@ class ContentEditorScreen extends React.Component<Props, State> {
       selectedPage
     } = this.state;
 
-    // TODO: content version here relates to a locale
-    return contentVersions.map((contentVersion) => {
-      console.log("a content version", contentVersion);
-      const selected = contentVersion.id === selectedContentVersion?.id;
-      return (
-        <Accordion
-          key={`ContentVersionAccordion-${contentVersion.id}`}
-          className={classes.timelineContentVersion}
-          expanded={selected}
-          onChange={this.onExpandContentVersion(contentVersion)}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            className={classes.timelineContentVersionTitle}
-          >
-            <Typography variant="body2" className={selected ? classes.selected : undefined}>
-              {contentVersion.language}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails className={classes.timelineContentVersionContent}>
-            <TimelineDevicesList
-              contentVersion={contentVersion}
-              selectedContentVersion={selectedContentVersion}
-              devices={devices}
-              selectedDevice={selectedDevice}
-              onClick={this.onDeviceClick}
-            />
-            <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
-            <TimelineEditor
-              contentVersion={contentVersion}
-              devices={devices}
-              previewDevicesData={previewDevicesData}
-              pages={pages}
-              pageType="active"
-              selectedContentVersion={selectedContentVersion}
-              selectedDevice={selectedDevice}
-              selectedPage={selectedPage}
-              onClick={this.onPageClick}
-              onDragEnd={this.onPageDragEnd}
-            />
-          </AccordionDetails>
-        </Accordion>
-      );
-    });
+    if (!selectedContentVersion) {
+      return null;
+    }
+
+    return (
+      <Box className={classes.timelineContentVersion}>
+        <Box className={classes.timelineContentVersionTitle}>
+          <Typography variant="body2" className={classes.selected}>
+            {selectedContentVersion.language}
+          </Typography>
+        </Box>
+        <Box className={classes.timelineContentVersionContent}>
+          <TimelineDevicesList
+            contentVersion={selectedContentVersion}
+            selectedContentVersion={selectedContentVersion}
+            devices={devices}
+            selectedDevice={selectedDevice}
+            onClick={this.onDeviceClick}
+          />
+          <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
+          <TimelineEditor
+            contentVersion={selectedContentVersion}
+            devices={devices}
+            previewDevicesData={previewDevicesData}
+            pages={pages}
+            pageType="active"
+            selectedContentVersion={selectedContentVersion}
+            selectedDevice={selectedDevice}
+            selectedPage={selectedPage}
+            onClick={this.onPageClick}
+            onDragEnd={this.onPageDragEnd}
+          />
+        </Box>
+      </Box>
+    );
   };
 
   /**
@@ -1193,28 +1183,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
-    // TODO: So not listing all the contentversions by room, and just passing in locale.?- changes below do this.
 
     const [
       initialContentVersion,
-      // contentVersionsInRoom,
+      contentVersionsInRoom,
       contentVersion,
       layouts,
       visitorVariables
     ] = await Promise.all([
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
-      // contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
+      contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
       layoutsApi.listPageLayouts({}),
       visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
     ]);
-
-    // 1 locale From prop
-    console.log("initial content in the fetch data", initialContentVersion);
-    // All locales
-    // console.log("content version in the room", contentVersionsInRoom);
-    // 1 locale From prop
-    console.log("content versoin in the fetch data", contentVersion);
 
     /**
      * Devices from device group
@@ -1225,42 +1207,34 @@ class ContentEditorScreen extends React.Component<Props, State> {
       exhibitionGroupId: deviceGroupId
     });
 
-    // TODO: CAn reuse this logic to fetch and display the locale data the then update the contentVersions state to the newly selected contentVersion.
-    // /**
-    //  * Content versions for different languages.
-    //  * Identified by having the same name but different language than
-    //  * initial content version selected before navigating to content editor.
-    //  */
-    // const contentVersions: ContentVersion[] = [];
-    // contentVersionsInRoom.forEach((contentVersionInRoom) => {
-    //   const sameName = contentVersionInRoom.name === initialContentVersion.name;
-    //   const newLanguage = contentVersions.every(
-    //     (version) => version.language !== contentVersionInRoom.language
-    //   );
-    //   if (sameName && newLanguage) {
-    //     console.log("this content languages", contentVersionInRoom.language);
-    //     contentVersions.push(contentVersionInRoom);
-    //   }
-    // });
-
-    // // Sorting alphabetically
-    // contentVersions.sort((a, b) => {
-    //   return a.language.localeCompare(b.language);
-    // });
-
-    const contentVersions: ContentVersion[] = [contentVersion];
+    /**
+     * Content versions for different languages.
+     * Identified by having the same name but different language than
+     * initial content version selected before navigating to content editor.
+     */
+    const contentVersions: ContentVersion[] = [];
+    contentVersionsInRoom.forEach((contentVersionInRoom) => {
+      const sameName = contentVersionInRoom.name === initialContentVersion.name;
+      const newLanguage = contentVersions.every(
+        (version) => version.language !== contentVersionInRoom.language
+      );
+      if (sameName && newLanguage) {
+        contentVersions.push(contentVersionInRoom);
+      }
+    });
 
     const devicePages = await Promise.all(
       devices.map((device) =>
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId,
-          exhibitionDeviceId: device.id
+          exhibitionDeviceId: device.id,
+          contentVersionId: contentVersion.id
         })
       )
     );
 
     const pages: ExhibitionPage[] = devicePages.flat();
-    const selectedContentVersion = contentVersions[0];
+    const selectedContentVersion = contentVersion;
     const selectedDevice = devices[0];
     const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
     const selectedPage = pages.find(
@@ -1273,7 +1247,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
     if (selectedPage) {
       this.updateResources(layouts, selectedPage);
     }
-    // TODO: This now only fetches the "default locale" from props, next need to set up the locale selector.
 
     this.setState({
       contentVersions,
@@ -1313,6 +1286,40 @@ class ContentEditorScreen extends React.Component<Props, State> {
   };
 
   /**
+   * Gets languages from contentVersions
+   *
+   * @returns list of strings
+   */
+  private getAvailableLocales = () => {
+    const { contentVersions } = this.state;
+    const availableLocales: string[] = [];
+
+    contentVersions.forEach((version) => {
+      const language = version.language;
+
+      if (!availableLocales.includes(language)) {
+        availableLocales.push(language);
+      }
+    });
+
+    return availableLocales;
+  };
+
+  /**
+   * Gets select locale options from available locales
+   *
+   * @returns list of options
+   */
+  private getSelectLocaleOptions = () => {
+    const availableLocales = this.getAvailableLocales();
+
+    return availableLocales.map((locale) => ({
+      value: locale,
+      label: locale
+    }));
+  };
+
+  /**
    * Gets action buttons
    *
    * @returns action buttons as array
@@ -1321,6 +1328,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { selectedContentVersion, selectedDevice, selectedPage, view, dataChanged } = this.state;
 
     const actionButtons: ActionButton[] = [
+      {
+        name: strings.contentEditor.changeLocale,
+        action: () => {},
+        selectAction: this.onLocaleChange,
+        isSelect: true,
+        options: this.getSelectLocaleOptions(),
+        value: selectedContentVersion?.language as LanguageOptions
+      },
       {
         name:
           view === "CODE"
@@ -1370,7 +1385,55 @@ class ContentEditorScreen extends React.Component<Props, State> {
     return actionButtons;
   };
 
-  // TODO: What happens when add a content version? check how this is done, does it add a new locale??
+  /**
+   * Updates the selected content version and associated data
+   *
+   * @param event select change event
+   */
+  private onLocaleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> =
+    async ({ target }) => {
+      const { accessToken, exhibitionId } = this.props;
+      const { selectedDevice, devices, layouts, contentVersions } = this.state;
+      const { value } = target;
+
+      const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
+
+      const selectedContentVersion = contentVersions.filter(
+        (contentVersion) => contentVersion.language === value
+      )[0];
+
+      if (!selectedContentVersion || !selectedDevice) return;
+
+      const devicePages = await Promise.all(
+        devices.map((device) =>
+          exhibitionPagesApi.listExhibitionPages({
+            exhibitionId,
+            exhibitionDeviceId: device.id,
+            contentVersionId: selectedContentVersion.id
+          })
+        )
+      );
+
+      const pages: ExhibitionPage[] = devicePages.flat();
+      const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
+      const selectedPage = pages.find(
+        (page) =>
+          page.deviceId === selectedDevice.id &&
+          page.contentVersionId === selectedContentVersion.id &&
+          page.orderNumber === 0
+      );
+
+      if (selectedPage) {
+        this.updateResources(layouts, selectedPage);
+      }
+
+      this.setState({
+        previewDevicesData,
+        selectedContentVersion,
+        pages
+      });
+    };
+
   /**
    * Adds new content version
    */

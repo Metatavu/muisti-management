@@ -190,6 +190,10 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         </Typography>
       );
 
+      const defaultLocale = (multiLingualContentVersion.languageVersions.filter(
+        (lang) => lang.language === LanguageOptions.FI
+      ) || multiLingualContentVersion.languageVersions[0])[0];
+
       return (
         <CardItem
           key={primaryVersion.id}
@@ -208,9 +212,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           selected={
             selectedContentVersion?.id === multiLingualContentVersion.languageVersions[0].id
           }
-          // TODO: SO this is dictating which content version is displayed first? Not yet.
-          // Will want to ensure always defaults to FI, but id here does not currently determine the openlocale- fix in content editor screen then pass in default locale here- not [0].
-          onActionClick={() => this.openTimeline(multiLingualContentVersion.languageVersions[0])}
+          onActionClick={() => this.openTimeline(defaultLocale)}
         />
       );
     });

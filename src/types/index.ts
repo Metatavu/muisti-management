@@ -18,6 +18,7 @@ import {
   DeviceModelDimensionsData,
   DeviceModelDisplayMetricsData
 } from "./device-model-string-data";
+import { ChangeEventHandler } from "react";
 
 /**
  * Interface describing an access token
@@ -116,6 +117,18 @@ export interface ActionButton {
   name: string;
   disabled?: boolean;
   action: () => void;
+  selectAction?: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+  isSelect?: boolean;
+  options?: LocalOptions[];
+  value?: LanguageOptions;
+}
+
+/**
+ * Interface describing locale options for select
+ */
+export interface LocalOptions {
+  value: string;
+  label: string;
 }
 
 /**

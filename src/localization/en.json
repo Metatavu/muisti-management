@@ -699,6 +699,7 @@
   "contentEditor": {
     "advanced": "Advanced features",
     "open": "Manage content",
+    "changeLocale": "Change language",
     "preview": {
       "resourceModePreview": {
         "dynamic": "Dynamic resource",

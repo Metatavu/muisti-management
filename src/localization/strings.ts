@@ -711,6 +711,7 @@ export interface IStrings extends LocalizedStringsMethods {
   contentEditor: {
     advanced: string;
     open: string;
+    changeLocale: string;
     preview: {
       resourceModePreview: {
         dynamic: string;
