@@ -21,6 +21,7 @@ import {
   constructTree,
   createTreeObject,
   deserializeElement,
+  extractResourceIds,
   treeObjectToHtmlElement,
   updateHtmlComponent
 } from "../layout/utils/tree-html-data-utils";
@@ -209,7 +210,15 @@ const LayoutScreenHTML: FC<Props> = ({
    * Handler for Code Editor onChange events
    */
   const onCodeChange = (value: string) => {
-    setFoundLayout({ ...foundLayout, data: { html: value } });
+    const resourceIds = extractResourceIds(value);
+    const updatedDefaultResources = foundLayout.defaultResources?.filter((resource) =>
+      resourceIds.includes(resource.id)
+    );
+    setFoundLayout({
+      ...foundLayout,
+      defaultResources: updatedDefaultResources,
+      data: { html: value }
+    });
     setDataChanged(true);
   };
 
@@ -258,9 +267,6 @@ const LayoutScreenHTML: FC<Props> = ({
     setIsNewComponentSibling(asChildren);
   };
 
-  const extractResourceIds = (html: string) =>
-    html.match(/@resources\/[a-zA-Z0-9-]{1,}/gm)?.map((match) => match.replace("@resources/", ""));
-
   /**
    * Create new component and add it to the layout
    *
@@ -277,17 +283,12 @@ const LayoutScreenHTML: FC<Props> = ({
 
     const resourceIds = extractResourceIds(componentData);
 
-    const updatedLayout = addNewHtmlComponent(
+    const updatedTree = addNewHtmlComponent(
       treeObjects,
       newComponent,
       targetPath,
       !!isNewComponentSibling
     );
-
-    const updatedHtmlElements = updatedLayout.map((treeObject) =>
-      treeObjectToHtmlElement(treeObject)
-    );
-    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
       id: resourceId,
@@ -296,13 +297,23 @@ const LayoutScreenHTML: FC<Props> = ({
       mode: PageResourceMode.Static
     }));
 
-    setFoundLayout({
+    const defaultResources = [...(foundLayout.defaultResources || []), ...newDefaultResources];
+
+    const updatedHtmlElements = updatedTree.map((treeObject) =>
+      treeObjectToHtmlElement(treeObject, undefined, defaultResources)
+    );
+
+    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+
+    const updatedLayout: PageLayout = {
       ...foundLayout,
       data: {
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       },
-      defaultResources: [...(foundLayout.defaultResources || []), ...newDefaultResources]
-    });
+      defaultResources: defaultResources
+    };
+
+    setFoundLayout(updatedLayout);
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(newComponent);
     setDataChanged(true);

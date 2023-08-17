@@ -76,6 +76,16 @@ const updateInTree = (
 };
 
 /**
+ * Extracts layout resource ids from given html string
+ *
+ * @param html html string
+ * @returns found resource ids
+ */
+export const extractResourceIds = (html: string) =>
+  html.match(/@resources\/[a-zA-Z0-9-]{1,}/gm)?.map((match) => match.replace("@resources/", "")) ??
+  [];
+
+/**
  * Convert tree object to html element
  *
  * @param treeObject tree object
@@ -91,7 +101,8 @@ export const treeObjectToHtmlElement = (
   showBorders?: boolean
 ): HTMLElement => {
   const element = treeObject.element;
-  const foundResource = resources?.find((resource) => resource.id === treeObject.id);
+  const resourceIds = extractResourceIds(element.innerHTML);
+  const foundResource = resources?.find((resource) => resourceIds.find((id) => id === resource.id));
 
   removeOutline(element);
 
@@ -106,7 +117,7 @@ export const treeObjectToHtmlElement = (
     switch (treeObject.type) {
       case HtmlComponentType.TEXT:
       case HtmlComponentType.BUTTON:
-        element.innerText = `@resources/${foundResource.data}`;
+        element.innerText = `@resources/${foundResource.id}`;
         break;
       case HtmlComponentType.IMAGE:
         (element as HTMLImageElement).src = foundResource.data;
