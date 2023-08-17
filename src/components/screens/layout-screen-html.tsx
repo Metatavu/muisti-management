@@ -235,11 +235,19 @@ const LayoutScreenHTML: FC<Props> = ({
           />
         );
       case LayoutEditorView.VISUAL:
+        const deviceModel = deviceModels.find(model => model.id === foundLayout.modelId);
+        if (!deviceModel) {
+          return null;
+        }
+
+        const layoutHtml = (foundLayout.data as PageLayoutViewHtml).html;
+
         return (
           <PagePreviewHtml
-            deviceModels={deviceModels}
-            layout={foundLayout}
-            treeObjects={treeObjects}
+            deviceModel={ deviceModel }
+            layoutHtml={ layoutHtml }
+            screenOrientation={ foundLayout.screenOrientation }
+            resources={foundLayout.defaultResources || []}
             selectedComponentId={selectedComponent?.id}
           />
         );

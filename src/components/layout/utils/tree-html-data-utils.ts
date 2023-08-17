@@ -330,3 +330,18 @@ export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
       ${bodyContent}
     </body>
   </html>`;
+
+/**
+ * Substitute resources in given html
+ * 
+ * @param html html
+ * @param resources resources 
+ * @returns html with substituted resources
+ */
+export const replaceResources = (html: string, resources: ExhibitionPageResource[] | undefined) => {
+  for (const resource of resources || []) {
+    html = html.replace(`@resources/${resource.id}`, resource.data);
+  }
+
+  return html;
+};

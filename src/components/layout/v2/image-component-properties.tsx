@@ -5,12 +5,12 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
+import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import TextField from "../../generic/v2/text-field";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import { Divider, Stack } from "@mui/material";
 import { ChangeEvent } from "react";
-import { v4 as uuid } from "uuid";
 
 /**
  * Component props
@@ -27,24 +27,9 @@ interface Props {
  */
 const ImageComponentProperties = ({
   component,
-  updateComponent,
   pageLayout,
   setPageLayout
 }: Props) => {
-  /**
-   * Get default resource associated with element
-   *
-   * @returns matchingResource string
-   */
-  const getElementsDefaultResource = () => {
-    if (!pageLayout.defaultResources) return;
-
-    const matchingResource = pageLayout.defaultResources.find(
-      (resource) => resource.id === component.element.id
-    );
-
-    return matchingResource?.data;
-  };
 
   /**
    * Validates that given string is a valid URL
@@ -61,6 +46,25 @@ const ImageComponentProperties = ({
   };
 
   /**
+   * Returns image resource path
+   * 
+   * @returns image resource path
+   */
+  const getImageResourcePath = () => {
+    const { element } = component;
+    return element.getAttribute("src");
+  }
+
+  /**
+   * Returns image src
+   * 
+   * @returns image src
+   */
+  const getImageSrc = () => {
+    return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, getImageResourcePath());
+  };
+
+  /**
    * Event handler for default resource change event
    *
    * @param event event
@@ -68,32 +72,21 @@ const ImageComponentProperties = ({
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     if (!validateUrl(value)) return;
 
-    const resourceId = uuid();
+    const ressourcePath = getImageResourcePath();
+    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    if (!resourceId) return;
+   
+    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
+      id: resourceId,
+      data: value,
+      type: ExhibitionPageResourceType.Image,
+      mode: PageResourceMode.Static
+    }];
 
-    const foundResource = pageLayout.defaultResources?.find(
-      (resource) => resource.id === component.element.id
-    );
-    if (foundResource) {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map((resource) =>
-          resource.id === foundResource?.id ? { ...resource, data: value } : resource
-        )
-      });
-    } else {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: [
-          ...(pageLayout.defaultResources ?? []),
-          {
-            id: resourceId,
-            data: value,
-            type: ExhibitionPageResourceType.Text,
-            mode: PageResourceMode.Static
-          }
-        ]
-      });
-    }
+    setPageLayout({
+      ...pageLayout,
+      defaultResources: defaultResources
+    });
   };
 
   return (
@@ -102,9 +95,9 @@ const ImageComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.imageProperties.defaultResource} />
         <TextField
-          value={getElementsDefaultResource() || ""}
-          onChange={handleDefaultResourceChange}
-          placeholder={strings.layoutEditorV2.textProperties.defaultResource}
+          value={ getImageSrc() }
+          onChange={ handleDefaultResourceChange }
+          placeholder={ strings.layoutEditorV2.textProperties.defaultResource }
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />

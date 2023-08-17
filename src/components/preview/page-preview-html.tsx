@@ -1,8 +1,7 @@
-import { DeviceModel, PageLayout } from "../../generated/client";
+import { DeviceModel, ExhibitionPageResource, PageLayout, PageLayoutViewHtml, ScreenOrientation } from "../../generated/client";
 import strings from "../../localization/strings";
-import { TreeObject } from "../../types";
 import PanZoom from "../generic/pan-zoom";
-import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
+import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { styled } from "@mui/styles";
 import Fraction from "fraction.js";
@@ -12,9 +11,10 @@ import { useState } from "react";
  * Components properties
  */
 interface Props {
-  deviceModels: DeviceModel[];
-  layout: PageLayout;
-  treeObjects: TreeObject[];
+  screenOrientation: ScreenOrientation;
+  layoutHtml: string;
+  deviceModel: DeviceModel;
+  resources: ExhibitionPageResource[];
   selectedComponentId?: string;
 }
 
@@ -61,12 +61,8 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
 /**
  * HTML Layouts Page Preview Component
  */
-const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentId }: Props) => {
+const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources, selectedComponentId }: Props) => {
   const [showElementBorders, setShowElementBorders] = useState(false);
-
-  if (deviceModels.length === 0) return null;
-
-  const deviceModel = deviceModels.find((model) => model.id === layout.modelId);
 
   if (!deviceModel) return null;
 
@@ -79,8 +75,7 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
    */
   const getPreviewDimensions = () => {
     const scale = 1;
-    const { screenOrientation } = layout;
-    const { screenOrientation: deviceOrientation } = deviceModel;
+    const deviceOrientation = deviceModel.screenOrientation;
 
     let height = screenHeight ?? 1 * scale;
     let width = screenWidth ?? 1 * scale;
@@ -117,16 +112,7 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
           {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <Preview
-          srcDoc={wrapHtmlLayout(
-            treeObjects?.map((treeObject) =>
-              treeObjectToHtmlElement(
-                treeObject,
-                selectedComponentId,
-                layout.defaultResources,
-                showElementBorders
-              )
-            )[0]?.outerHTML
-          )}
+          srcDoc={ wrapHtmlLayout(replaceResources(layoutHtml, resources)) }
           {...getPreviewDimensions()}
         />
       </PanZoom>
