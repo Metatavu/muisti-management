@@ -106,7 +106,7 @@ export const treeObjectToHtmlElement = (
     switch (treeObject.type) {
       case HtmlComponentType.TEXT:
       case HtmlComponentType.BUTTON:
-        element.innerText = foundResource.data;
+        element.innerText = `@resources/${foundResource.data}`;
         break;
       case HtmlComponentType.IMAGE:
         (element as HTMLImageElement).src = foundResource.data;

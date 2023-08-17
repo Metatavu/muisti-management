@@ -3,8 +3,10 @@ import Api from "../../api/api";
 import {
   DeviceModel,
   Exhibition,
+  ExhibitionPageResourceType,
   PageLayout,
   PageLayoutViewHtml,
+  PageResourceMode,
   ScreenOrientation,
   SubLayout
 } from "../../generated/client";
@@ -256,6 +258,9 @@ const LayoutScreenHTML: FC<Props> = ({
     setIsNewComponentSibling(asChildren);
   };
 
+  const extractResourceIds = (html: string) =>
+    html.match(/@resources\/[a-zA-Z0-9-]{1,}/gm)?.map((match) => match.replace("@resources/", ""));
+
   /**
    * Create new component and add it to the layout
    *
@@ -270,6 +275,8 @@ const LayoutScreenHTML: FC<Props> = ({
 
     if (!newComponent) return;
 
+    const resourceIds = extractResourceIds(componentData);
+
     const updatedLayout = addNewHtmlComponent(
       treeObjects,
       newComponent,
@@ -282,11 +289,19 @@ const LayoutScreenHTML: FC<Props> = ({
     );
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
+    const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
+      id: resourceId,
+      data: "",
+      type: ExhibitionPageResourceType.Text,
+      mode: PageResourceMode.Static
+    }));
+
     setFoundLayout({
       ...foundLayout,
       data: {
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
-      }
+      },
+      defaultResources: [...(foundLayout.defaultResources || []), ...newDefaultResources]
     });
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(newComponent);

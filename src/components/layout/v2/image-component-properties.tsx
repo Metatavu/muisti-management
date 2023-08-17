@@ -10,6 +10,7 @@ import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import { Divider, Stack } from "@mui/material";
 import { ChangeEvent } from "react";
+import { v4 as uuid } from "uuid";
 
 /**
  * Component props
@@ -66,6 +67,9 @@ const ImageComponentProperties = ({
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     if (!validateUrl(value)) return;
+
+    const resourceId = uuid();
+
     const foundResource = pageLayout.defaultResources?.find(
       (resource) => resource.id === component.element.id
     );
@@ -82,7 +86,7 @@ const ImageComponentProperties = ({
         defaultResources: [
           ...(pageLayout.defaultResources ?? []),
           {
-            id: component.element.id,
+            id: resourceId,
             data: value,
             type: ExhibitionPageResourceType.Text,
             mode: PageResourceMode.Static
