@@ -6,6 +6,7 @@ import {
   PageLayoutViewHtml,
   PageResourceMode
 } from "../generated/client";
+import { TreeObject } from "../types";
 
 /**
  * Utility functions for handling html resources
@@ -95,6 +96,24 @@ namespace HtmlResourceUtils {
     } else {
       throw new Error(`Unsupported layout type ${layout.layoutType}`);
     }
+  };
+
+  /**
+   * Extracts resource ids from given tree object
+   * 
+   * @param treeObject tree object
+   * @returns resource ids found in tree object
+   */
+  export const getTreeObjectResourceIds = (treeObject: TreeObject) => {
+    const elementClone = treeObject.element.cloneNode(false) as HTMLElement;
+
+    for (const childNode of treeObject.element.childNodes) {
+      if (childNode.nodeType === Node.TEXT_NODE) {
+        elementClone.appendChild(childNode.cloneNode());
+      }
+    }
+
+    return extractResourceIds(elementClone.outerHTML);
   };
 }
 
