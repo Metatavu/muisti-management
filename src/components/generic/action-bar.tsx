@@ -1,6 +1,6 @@
 import styles from "../../styles/components/generic/toolbar";
 import { ActionButton } from "../../types";
-import { Button } from "@mui/material";
+import { Button, MenuItem, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import * as React from "react";
@@ -27,6 +27,32 @@ const ActionBar: React.FC<Props> = ({ buttons }) => {
  * @param button button data
  */
 const renderToolbarButton = (button: ActionButton) => {
+  if (button.selectAction) {
+    if (!button.options || !button.value || button.disabled) return;
+
+    const { options } = button;
+
+    return (
+      <TextField
+        key={button.name}
+        select
+        disabled={button.disabled}
+        color="primary"
+        onChange={button.selectAction}
+        label={button.name}
+        value={button.value}
+        fullWidth
+        sx={{ marginRight: "10px" }}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
+    );
+  }
+
   return (
     <Button
       key={button.name}
