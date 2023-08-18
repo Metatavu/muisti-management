@@ -1,3 +1,31 @@
+import { default as ChevronRightIcon, default as ExpandMoreIcon } from "@mui/icons-material/ChevronRight";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  MenuItem,
+  Tab,
+  Tabs,
+  TextField,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { History } from "history";
+import produce from "immer";
+import { KeycloakInstance } from "keycloak-js";
+import * as React from "react";
+import { DropResult } from "react-beautiful-dnd";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { v4 as uuid } from "uuid";
 import { setSelectedExhibition } from "../../actions/exhibitions";
 import Api from "../../api/api";
 import {
@@ -10,11 +38,14 @@ import {
   ExhibitionPageEventTriggerFromJSON,
   ExhibitionPageResource,
   ExhibitionPageResourceFromJSON,
+  ExhibitionPageResourceType,
   ExhibitionPageTransition,
   LayoutType,
   PageLayout,
   PageLayoutView,
+  PageLayoutViewHtml,
   PageLayoutWidgetType,
+  PageResourceMode,
   VisitorVariable
 } from "../../generated/client";
 import strings from "../../localization/strings";
@@ -57,36 +88,9 @@ import ElementContentsPane from "../layouts/element-contents-pane";
 import ElementPropertiesPane from "../layouts/element-properties-pane";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import PagePreview from "../preview/page-preview";
-import ExpandMoreIcon from "@mui/icons-material/ChevronRight";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  MenuItem,
-  SelectChangeEvent,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { History } from "history";
-import produce from "immer";
-import { KeycloakInstance } from "keycloak-js";
-import * as React from "react";
-import { DropResult } from "react-beautiful-dnd";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { v4 as uuid } from "uuid";
+import HtmlResourceUtils from "../../utils/html-resource-utils";
+import PagePreviewHtml from "../preview/page-preview-html";
+import DisplayMetrics from "../../types/display-metrics";
 
 type View = "CODE" | "VISUAL";
 
@@ -251,8 +255,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const propertiesTitle = selectedResource
       ? strings.contentEditor.editor.resourceProperties
       : selectedTriggerIndex !== undefined
-      ? strings.contentEditor.editor.eventTriggers.title
-      : strings.contentEditor.editor.tabs.title;
+        ? strings.contentEditor.editor.eventTriggers.title
+        : strings.contentEditor.editor.tabs.title;
 
     return (
       <BasicLayout
@@ -411,15 +415,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
       previewDevicesData,
       pages,
       layouts,
-      selectedContentVersion,
-      selectedLayoutView,
-      tabMap
+      selectedContentVersion
     } = this.state;
 
     let totalContentWidth = 0;
     let totalContentHeight = 0;
 
-    const previews = previewDevicesData.map((previewData, index, array) => {
+    const previews = previewDevicesData.map((previewData, deviceIndex) => {
       const devicePages = pages.filter(
         (page) =>
           page.deviceId === previewData.device.id &&
@@ -432,46 +434,37 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return null;
       }
 
-      const view = previewLayout.data;
-      const resources = previewPage.resources;
       const deviceModel = deviceModels.find((model) => model.id === previewLayout.modelId);
-      const displayMetrics = AndroidUtils.getDisplayMetrics(
-        deviceModel ? deviceModel : deviceModels[0]
-      );
-      const scale = 1;
-
-      totalContentWidth += displayMetrics.widthPixels;
-      if (index < array.length - 1) {
-        totalContentWidth += 50;
+      if (!deviceModel) {
+        return null;
       }
 
-      if (totalContentHeight < displayMetrics.heightPixels) {
-        totalContentHeight = displayMetrics.heightPixels;
-      }
+      if (previewLayout.layoutType === LayoutType.Android) {
+        const displayMetrics = AndroidUtils.getDisplayMetrics(deviceModel);
 
-      return (
-        <div key={previewData.device.id} className={classes.previewDeviceContainer}>
-          <Typography variant="h1" style={{ fontSize: 72 }}>
-            {`${previewData.device?.name} - ${previewPage.name}`}
-          </Typography>
-          {previewLayout.layoutType === LayoutType.Android ? (
-            <PagePreview
-              screenOrientation={previewLayout.screenOrientation}
-              deviceOrientation={deviceModel?.screenOrientation}
-              device={previewData.device}
-              page={previewPage}
-              view={view}
-              selectedView={selectedLayoutView}
-              resources={resources}
-              displayMetrics={displayMetrics}
-              scale={scale}
-              onViewClick={this.onLayoutViewClick}
-              onTabClick={this.onPreviewTabClick}
-              tabMap={tabMap}
-            />
-          ) : null}
-        </div>
-      );
+        totalContentWidth += displayMetrics.widthPixels;
+        if (deviceIndex < previewDevicesData.length - 1) {
+          totalContentWidth += 50;
+        }
+
+        if (totalContentHeight < displayMetrics.heightPixels) {
+          totalContentHeight = displayMetrics.heightPixels;
+        }
+
+        return this.renderAndroidPreview(
+          deviceModel,
+          previewLayout,
+          previewPage,
+          previewData,
+          displayMetrics
+        );
+      } else {
+        return this.renderHtmlPreview(
+          deviceModel,
+          previewLayout,
+          previewPage
+        );
+      }
     });
 
     return (
@@ -484,6 +477,86 @@ class ContentEditorScreen extends React.Component<Props, State> {
         >
           {previews}
         </PanZoom>
+      </div>
+    );
+  };
+
+  /**
+   * Renders HTML layout preview
+   * 
+   * @param deviceModel device model
+   * @param previewLayout preview layout
+   * @param previewPage preview page
+   */
+  private renderHtmlPreview = (
+    deviceModel: DeviceModel,
+    previewLayout: PageLayout,
+    previewPage: ExhibitionPage,
+  ) => {
+    const layoutHtml = (previewLayout.data as PageLayoutViewHtml).html;
+
+    return (
+      <PagePreviewHtml
+        screenOrientation={previewLayout.screenOrientation}
+        deviceModel={deviceModel}
+        layoutHtml={layoutHtml}
+        resources={previewPage.resources}
+      />
+    );
+  }
+
+  /**
+   * Renders android layout preview
+   * 
+   * @param deviceModel device model
+   * @param previewLayout preview layout
+   * @param previewPage preview page
+   * @param previewData preview data
+   * @param displayMetrics Android display metrics
+   */
+  private renderAndroidPreview = (
+    deviceModel: DeviceModel,
+    previewLayout: PageLayout,
+    previewPage: ExhibitionPage,
+    previewData: PreviewDeviceData,
+    displayMetrics: DisplayMetrics
+  ) => {
+    const { classes } = this.props;
+    const { selectedLayoutView, tabMap } = this.state;
+
+    const view = previewLayout.data as PageLayoutView;
+
+    const resources = previewPage.resources;
+    const scale = 1;
+
+    return (
+      <div key={previewData.device.id} className={classes.previewDeviceContainer}>
+        <Typography variant="h1" style={{ fontSize: 72 }}>
+          {`${previewData.device?.name} - ${previewPage.name}`}
+        </Typography>
+        {previewLayout.layoutType === LayoutType.Android ? (
+          <PagePreview
+            screenOrientation={previewLayout.screenOrientation}
+            deviceOrientation={deviceModel?.screenOrientation}
+            device={previewData.device}
+            page={previewPage}
+            view={view}
+            selectedView={selectedLayoutView}
+            resources={resources}
+            displayMetrics={displayMetrics}
+            scale={scale}
+            onViewClick={this.onLayoutViewClick}
+            onTabClick={this.onPreviewTabClick}
+            tabMap={tabMap}
+          />
+        ) :
+          <PagePreviewHtml
+            deviceModel={deviceModel}
+            screenOrientation={previewLayout.screenOrientation}
+            layoutHtml={(previewLayout.data as PageLayoutViewHtml).html}
+            resources={resources}
+          />
+        }
       </div>
     );
   };
@@ -622,9 +695,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
             devices={devices}
             layouts={layouts}
             pageData={selectedPage}
-            onChange={this.onPageDataChange}
-            onChangeText={this.onPageDataTextChange}
-            onLayoutChange={this.onLayoutChange}
+            onDeviceChange={this.onPageDeviceChange}
+            onNameChange={this.onPageNameChange}
+            onLayoutChange={this.onPageLayoutChange}
           />
         </AccordionDetails>
         {pageElements}
@@ -642,8 +715,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return null;
     }
 
-    const elementList: JSX.Element[] = [];
-    return this.constructSingleElement(elementList, [pageLayout.data]);
+    if (pageLayout.layoutType === LayoutType.Android) {
+      const elementList: JSX.Element[] = [];
+      return this.constructSingleElement(elementList, [pageLayout.data as PageLayoutView]);
+    } else {
+      // TODO: What to do?
+    }
   };
 
   /**
@@ -1046,43 +1123,36 @@ class ContentEditorScreen extends React.Component<Props, State> {
   };
 
   /**
-   * Event handler for page data change
+   * Event handler for page device change
    *
-   * @param event event
+   * @param deviceId new device id
    */
-  private onPageDataChange = (event: SelectChangeEvent<string>) => {
+  private onPageDeviceChange = (deviceId: string | undefined) => {
     const { selectedPage } = this.state;
-    const { name, value } = event.target;
-    if (!selectedPage || !name) {
+
+    if (!selectedPage || !deviceId) {
       return;
     }
 
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedPage = { ...draft.selectedPage!, [name]: value };
-        draft.dataChanged = true;
-      })
-    );
+    this.setState({
+      selectedPage: { ...selectedPage, deviceId: deviceId },
+      dataChanged: true
+    });
   };
 
   /**
    *
    */
-  private onPageDataTextChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
+  private onPageNameChange = (name: string | undefined) => {
     const { selectedPage } = this.state;
-    const { name, value } = event.target;
     if (!selectedPage || !name) {
       return;
     }
 
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedPage = { ...draft.selectedPage!, [name]: value };
-        draft.dataChanged = true;
-      })
-    );
+    this.setState({
+      selectedPage: { ...selectedPage, name: name },
+      dataChanged: true
+    });
   };
 
   /**
@@ -1090,30 +1160,40 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param event event
    */
-  private onLayoutChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
+  private onPageLayoutChange = (layoutId: string | undefined) => {
     const { selectedPage, layouts } = this.state;
     if (!selectedPage) {
       return;
     }
 
-    const layoutId = event.target.value;
     const selectedLayout = layouts.find((layout) => layout.id === layoutId);
-    if (!selectedLayout) {
+    if (!selectedLayout || !layoutId) {
       return;
     }
 
-    const resourceHolder = ResourceUtils.getResourcesFromLayoutData(
-      selectedLayout.data as PageLayoutView
-    );
+    if (selectedLayout.layoutType === LayoutType.Android) {
+      const resourceHolder = ResourceUtils.getResourcesFromLayoutData(
+        selectedLayout.data as PageLayoutView
+      );
 
-    this.setState(
-      produce((draft: State) => {
-        draft.selectedPage!.layoutId = layoutId;
-        draft.selectedPage!.resources = resourceHolder.resources;
-        draft.resourceWidgetIdList = resourceHolder.widgetIds;
-        draft.dataChanged = true;
-      })
-    );
+      this.setState(
+        produce((draft: State) => {
+          draft.selectedPage!.layoutId = layoutId;
+          draft.selectedPage!.resources = resourceHolder.resources;
+          draft.resourceWidgetIdList = resourceHolder.widgetIds;
+          draft.dataChanged = true;
+        })
+      );
+    } else {
+      this.setState({
+        selectedPage: {
+          ...selectedPage,
+          layoutId: layoutId,
+          resources: HtmlResourceUtils.getDefaultResources(selectedLayout)
+        },
+        dataChanged: true
+      });
+    }
   };
 
   /**
@@ -1330,7 +1410,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const actionButtons: ActionButton[] = [
       {
         name: strings.contentEditor.changeLocale,
-        action: () => {},
+        action: () => { },
         selectAction: this.onLocaleChange,
         options: this.getSelectLocaleOptions(),
         value: selectedContentVersion?.language as LanguageOptions,
@@ -1542,7 +1622,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         ExhibitionPageEventTriggerFromJSON
       );
       result.resources = (parsedCode.resources || []).map(ExhibitionPageResourceFromJSON);
-    } catch (error) {
+    } catch (error: any) {
       this.setState({ error });
     }
 
@@ -2058,9 +2138,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
+    if (pageLayout.layoutType === LayoutType.Android) {
+    } else {
+      // TODO: What to do?
+      return null;
+    }
+
+    const layoutData = pageLayout.data as PageLayoutView;
+
     this.setState(
       produce((draft: State) => {
-        const resourceHolder = ResourceUtils.getResourcesFromLayoutData(pageLayout.data);
+        const resourceHolder = ResourceUtils.getResourcesFromLayoutData(layoutData);
 
         draft.selectedPage = selectedPage;
         draft.selectedLayoutView = undefined;
@@ -2142,7 +2230,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           draft.dataChanged = false;
         })
       );
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
 
       this.setState({
@@ -2199,12 +2287,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
+    const htmlLayouts = layouts.filter((layout) => layout.layoutType === LayoutType.Html);
     const isIdlePage = timelineTabIndex === 0;
-    const layoutId = layouts?.length ? layouts[0].id : null;
+    const defaultLayout = htmlLayouts[0];
     const deviceId = selectedDevice.id;
-    const temp = ResourceUtils.getResourcesFromLayoutData(layouts[0].data);
 
-    if (!layoutId || !deviceId || !selectedContentVersion || !selectedContentVersion.id) {
+    if (!defaultLayout || !deviceId || !selectedContentVersion || !selectedContentVersion.id) {
       return;
     }
 
@@ -2213,12 +2301,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
     );
 
     const newPage: ExhibitionPage = {
-      layoutId: layoutId,
+      layoutId: defaultLayout.id!!,
       deviceId: deviceId,
       contentVersionId: selectedContentVersion.id,
       name: strings.exhibition.newPage,
       eventTriggers: [],
-      resources: temp.resources,
+      resources: HtmlResourceUtils.getDefaultResources(defaultLayout),
       orderNumber: isIdlePage ? 0 : filteredPages.length,
       enterTransitions: [],
       exitTransitions: []
@@ -2292,7 +2380,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         pages: newPages,
         dataChanged: false
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
 
       this.setState({
@@ -2348,7 +2436,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         selectedPage: undefined,
         selectedTriggerIndex: undefined
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       this.setState({ error: e });
     }
@@ -2455,7 +2543,4 @@ function mapDispatchToProps(dispatch: Dispatch<ReduxActions>) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(ContentEditorScreen));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ContentEditorScreen));
