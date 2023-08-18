@@ -1,18 +1,11 @@
-import { ExhibitionDevice, ExhibitionPage, PageLayout } from "../../generated/client";
+import { ExhibitionDevice, ExhibitionPage, LayoutType, PageLayout } from "../../generated/client";
 import strings from "../../localization/strings";
 import styles from "../../styles/page-settings-editor";
 import theme from "../../styles/theme";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import * as React from "react";
+import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
 
 /**
  * Interface representing component properties
@@ -21,79 +14,57 @@ interface Props extends WithStyles<typeof styles> {
   layouts: PageLayout[];
   devices: ExhibitionDevice[];
   pageData: ExhibitionPage;
-  onChange: (event: SelectChangeEvent<string>) => void;
-  onChangeText: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
-  onLayoutChange: (event: SelectChangeEvent<string>) => void;
-}
-
-/**
- * Interface representing component state
- */
-interface State {
-  loading: boolean;
+  onDeviceChange: (deviceId: string) => void;
+  onLayoutChange: (layoutId: string) => void;
+  onNameChange: (text: string) => void;
 }
 
 /**
  * Component for common exhibition page settings editor
  */
-class CommonSettingsEditor extends React.Component<Props, State> {
-  /**
-   * Constructor
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: false
-    };
-  }
+const CommonSettingsEditor: React.FC<Props> = ({
+  layouts,
+  devices,
+  pageData,
+  classes,
+  onDeviceChange,
+  onLayoutChange,
+  onNameChange
+}) => {
+  const pageLayout = layouts.find((layout) => layout.id === pageData.layoutId);
+  const allowAndroid = pageData.layoutId === pageLayout?.id && pageLayout?.layoutType === LayoutType.Android;
 
   /**
-   * Component render method
+   * Renders layout select
    */
-  public render() {
-    const { classes, pageData, onChangeText } = this.props;
-
-    return (
-      <>
-        <TextField
-          label={strings.contentEditor.editor.pageName}
-          name="name"
-          value={pageData.name}
-          onChange={onChangeText}
-        />
-        <div className={classes.selectFields}>
-          {this.renderDeviceSelect(pageData)}
-          {this.renderLayoutSelect(pageData)}
-        </div>
-      </>
-    );
-  }
-
-  /**
-   * Render layout select
-   *
-   * @param page selected page
-   */
-  private renderLayoutSelect = (page: ExhibitionPage) => {
-    const { layouts, onLayoutChange } = this.props;
+  const renderLayoutSelect = () => {
     const layoutSelectItems = [...layouts]
+      .filter((layout) => allowAndroid || layout.layoutType !== LayoutType.Android)
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((layout) => (
         <MenuItem key={layout.id} value={layout.id}>
           {layout.name}
+          {layout.layoutType === LayoutType.Android ? (
+            <AndroidIcon sx={{ color: "#3DDC84", marginLeft: 1 }} />
+          ) : (
+            <HtmlIcon sx={{ marginLeft: 1 }} />
+          )}
         </MenuItem>
       ));
 
     return (
-      <div style={{ marginTop: theme.spacing(2) }}>
+      <div
+        style={{
+          marginTop: theme.spacing(2)
+        }}
+      >
         <FormControl>
           <InputLabel id="pageLayoutId">{strings.contentEditor.editor.layout}</InputLabel>
           <Select
             label={strings.contentEditor.editor.layout}
             labelId="pageLayoutId"
-            value={page.layoutId}
-            onChange={onLayoutChange}
+            value={pageData.layoutId}
+            onChange={(event) => onLayoutChange(event.target.value)}
           >
             {layoutSelectItems}
           </Select>
@@ -104,11 +75,8 @@ class CommonSettingsEditor extends React.Component<Props, State> {
 
   /**
    * Renders device select
-   *
-   * @param page selected page
    */
-  private renderDeviceSelect = (page: ExhibitionPage) => {
-    const { devices, onChange } = this.props;
+  const renderDeviceSelect = () => {
     const selectItems = devices.map((device) => {
       return (
         <MenuItem key={device.id!} value={device.id}>
@@ -116,7 +84,6 @@ class CommonSettingsEditor extends React.Component<Props, State> {
         </MenuItem>
       );
     });
-
     return (
       <FormControl>
         <InputLabel id="pageDeviceId">{strings.contentEditor.editor.device}</InputLabel>
@@ -124,14 +91,29 @@ class CommonSettingsEditor extends React.Component<Props, State> {
           label={strings.contentEditor.editor.device}
           labelId="pageDeviceId"
           name="deviceId"
-          value={page.deviceId}
-          onChange={onChange}
+          value={pageData.deviceId}
+          onChange={(event) => onDeviceChange(event.target.value)}
         >
           {selectItems}
         </Select>
       </FormControl>
     );
   };
-}
+
+  return (
+    <>
+      <TextField
+        label={strings.contentEditor.editor.pageName}
+        name="name"
+        value={pageData.name}
+        onChange={(event) => onNameChange(event.target.value)}
+      />
+      <div className={classes.selectFields}>
+        {renderDeviceSelect()}
+        {renderLayoutSelect()}
+      </div>
+    </>
+  );
+};
 
 export default withStyles(styles)(CommonSettingsEditor);
