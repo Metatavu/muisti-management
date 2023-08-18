@@ -26,6 +26,7 @@ import {
   updateHtmlComponent
 } from "../layout/utils/tree-html-data-utils";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
+import CodeEditorJSON from "../layout/v2/code-editor-json";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import LayoutRightPanel from "../layout/v2/layout-right-panel";
 import BasicLayout from "../layouts/basic-layout";
@@ -207,9 +208,11 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * Handler for Code Editor onChange events
+   * Handler for HTML code editor onChange events
+   * 
+   * @param value changed code
    */
-  const onCodeChange = (value: string) => {
+  const onHtmlCodeChange = (value: string) => {
     const resourceIds = extractResourceIds(value);
     const updatedDefaultResources = foundLayout.defaultResources?.filter((resource) =>
       resourceIds.includes(resource.id)
@@ -223,16 +226,35 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
+   * Handler for JSON code editor onChange events
+   * 
+   * @param value changed code
+   */
+  const onJsonCodeChange = (value: string) => {
+    setFoundLayout({
+      ...foundLayout,
+      defaultResources: JSON.parse(value)
+    });
+    setDataChanged(true);
+  };
+
+  /**
    * Renders editor view
    */
   const renderEditor = () => {
     switch (view) {
       case LayoutEditorView.CODE:
         return (
-          <CodeEditorHTML
-            htmlString={(foundLayout.data as PageLayoutViewHtml).html}
-            onCodeChange={onCodeChange}
-          />
+          <>
+            <CodeEditorHTML
+              htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
+              onCodeChange={ onHtmlCodeChange }
+            />
+            <CodeEditorJSON
+              jsonString={ JSON.stringify(foundLayout.defaultResources) }
+              onCodeChange={ onJsonCodeChange }
+            />
+          </>
         );
       case LayoutEditorView.VISUAL:
         const deviceModel = deviceModels.find(model => model.id === foundLayout.modelId);
@@ -340,10 +362,12 @@ const LayoutScreenHTML: FC<Props> = ({
       updatedComponent,
       selectedComponent.path
     );
+    
     const updatedHtmlElements = updatedTreeObjects.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
     );
-        const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+        
+    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
       ...foundLayout,
@@ -351,7 +375,8 @@ const LayoutScreenHTML: FC<Props> = ({
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       }
     });
-        setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
+       
+    setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
   };
