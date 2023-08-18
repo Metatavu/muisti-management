@@ -89,18 +89,12 @@ export const extractResourceIds = (html: string) =>
  * Convert tree object to html element
  *
  * @param treeObject tree object
- * @param selectedComponentId selected component id
- * @param showBorders whether to show borders or not
  * @returns HTMLElement
  */
 export const treeObjectToHtmlElement = (
-  treeObject: TreeObject,
-  selectedComponentId?: string,
-  showBorders?: boolean
+  treeObject: TreeObject
 ): HTMLElement => {
   const element = treeObject.element;
-
-  removeOutline(element);
 
   switch (treeObject.type) {
     case HtmlComponentType.LAYOUT:
@@ -108,15 +102,10 @@ export const treeObjectToHtmlElement = (
     break;
   }
 
-  if (showBorders && element.id === selectedComponentId) {
-    element.style["outline"] = "2px dashed #2196F3";
-    element.style["outlineOffset"] = "-2px";
-  }
-
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
       element.appendChild(
-        treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, showBorders)
+        treeObjectToHtmlElement(treeObject.children[i])
       );
     }
   }
@@ -255,8 +244,6 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     if (treeObject) children.push(treeObject);
   }
 
-  removeOutline(element as HTMLElement);
-
   return {
     type: componentType as HtmlComponentType,
     path: path,
@@ -265,16 +252,6 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     children: children,
     element: element as HTMLElement
   };
-};
-
-/**
- * Removes outline from given element
- *
- * @param element element
- */
-const removeOutline = (element: HTMLElement) => {
-  element.style.removeProperty("outline");
-  element.style.removeProperty("outline-offset");
 };
 
 /**

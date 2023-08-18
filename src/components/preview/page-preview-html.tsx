@@ -91,6 +91,29 @@ const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources
     };
   };
 
+  /**
+   * Adds borders to selected element
+   * 
+   * @param html layout html
+   * @returns layout html with borders added
+   */
+  const addBorders = (html: string): string => {
+    if (selectedComponentId && showElementBorders) {
+      const htmlDocument = new DOMParser().parseFromString(html, "text/html");
+
+      const element = htmlDocument.getElementById(selectedComponentId);
+
+      if (element) {
+        element.style["outline"] = "2px dashed #2196F3";
+        element.style["outlineOffset"] = "-2px";
+      }
+
+      return htmlDocument.body.outerHTML;
+    }
+
+    return html;
+  }
+
   return (
     <PreviewContainer>
       <PanZoom
@@ -112,7 +135,7 @@ const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources
           {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <Preview
-          srcDoc={ wrapHtmlLayout(replaceResources(layoutHtml, resources)) }
+          srcDoc={ wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources))) }
           {...getPreviewDimensions()}
         />
       </PanZoom>
