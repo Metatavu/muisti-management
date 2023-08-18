@@ -79,9 +79,9 @@ import ElementPropertiesPane from "../layouts/element-properties-pane";
 import ElementTimelinePane from "../layouts/element-timeline-pane";
 import PagePreview from "../preview/page-preview";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
-import PagePreviewHtml from "../preview/page-preview-html";
 import DisplayMetrics from "../../types/display-metrics";
 import { default as ExpandMoreIcon } from "@mui/icons-material/ChevronRight";
+import PagePreviewHtml from "../preview/page-preview-html";
 
 type View = "CODE" | "VISUAL";
 
@@ -525,29 +525,20 @@ class ContentEditorScreen extends React.Component<Props, State> {
         <Typography variant="h1" style={{ fontSize: 72 }}>
           {`${previewData.device?.name} - ${previewPage.name}`}
         </Typography>
-        {previewLayout.layoutType === LayoutType.Android ? (
-          <PagePreview
-            screenOrientation={previewLayout.screenOrientation}
-            deviceOrientation={deviceModel?.screenOrientation}
-            device={previewData.device}
-            page={previewPage}
-            view={view}
-            selectedView={selectedLayoutView}
-            resources={resources}
-            displayMetrics={displayMetrics}
-            scale={scale}
-            onViewClick={this.onLayoutViewClick}
-            onTabClick={this.onPreviewTabClick}
-            tabMap={tabMap}
-          />
-        ) :
-          <PagePreviewHtml
-            deviceModel={deviceModel}
-            screenOrientation={previewLayout.screenOrientation}
-            layoutHtml={(previewLayout.data as PageLayoutViewHtml).html}
-            resources={resources}
-          />
-        }
+        <PagePreview
+          screenOrientation={previewLayout.screenOrientation}
+          deviceOrientation={deviceModel?.screenOrientation}
+          device={previewData.device}
+          page={previewPage}
+          view={view}
+          selectedView={selectedLayoutView}
+          resources={resources}
+          displayMetrics={displayMetrics}
+          scale={scale}
+          onViewClick={this.onLayoutViewClick}
+          onTabClick={this.onPreviewTabClick}
+          tabMap={tabMap}
+        />
       </div>
     );
   };

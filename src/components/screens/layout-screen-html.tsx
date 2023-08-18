@@ -30,7 +30,6 @@ import CodeEditorJSON from "../layout/v2/code-editor-json";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
 import LayoutRightPanel from "../layout/v2/layout-right-panel";
 import BasicLayout from "../layouts/basic-layout";
-import PagePreviewHtml from "../preview/page-preview-html";
 import { CircularProgress, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -39,6 +38,7 @@ import { KeycloakInstance } from "keycloak-js";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import LayoutPreviewHtml from "../layout/v2/layout-preview";
 
 /**
  * Component props
@@ -265,7 +265,7 @@ const LayoutScreenHTML: FC<Props> = ({
         const layoutHtml = (foundLayout.data as PageLayoutViewHtml).html;
 
         return (
-          <PagePreviewHtml
+          <LayoutPreviewHtml
             deviceModel={deviceModel}
             layoutHtml={layoutHtml}
             screenOrientation={foundLayout.screenOrientation}
