@@ -241,7 +241,7 @@ const LayoutScreenHTML: FC<Props> = ({
         }
 
         const layoutHtml = (foundLayout.data as PageLayoutViewHtml).html;
-
+        
         return (
           <PagePreviewHtml
             deviceModel={ deviceModel }
@@ -308,7 +308,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const defaultResources = [...(foundLayout.defaultResources || []), ...newDefaultResources];
 
     const updatedHtmlElements = updatedTree.map((treeObject) =>
-      treeObjectToHtmlElement(treeObject, undefined, defaultResources)
+      treeObjectToHtmlElement(treeObject, undefined)
     );
 
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
@@ -334,7 +334,7 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-
+    
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
@@ -343,7 +343,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const updatedHtmlElements = updatedTreeObjects.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
     );
-    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+        const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
       ...foundLayout,
@@ -351,7 +351,7 @@ const LayoutScreenHTML: FC<Props> = ({
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       }
     });
-    setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
+        setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
   };

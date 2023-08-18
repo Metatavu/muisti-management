@@ -90,50 +90,33 @@ export const extractResourceIds = (html: string) =>
  *
  * @param treeObject tree object
  * @param selectedComponentId selected component id
- * @param resources resources
  * @param showBorders whether to show borders or not
  * @returns HTMLElement
  */
 export const treeObjectToHtmlElement = (
   treeObject: TreeObject,
   selectedComponentId?: string,
-  resources?: ExhibitionPageResource[],
   showBorders?: boolean
 ): HTMLElement => {
   const element = treeObject.element;
-  const resourceIds = extractResourceIds(element.innerHTML);
-  const foundResource = resources?.find((resource) => resourceIds.find((id) => id === resource.id));
 
   removeOutline(element);
 
-  element.replaceChildren();
+  switch (treeObject.type) {
+    case HtmlComponentType.LAYOUT:
+      element.replaceChildren();
+    break;
+  }
 
   if (showBorders && element.id === selectedComponentId) {
     element.style["outline"] = "2px dashed #2196F3";
     element.style["outlineOffset"] = "-2px";
   }
 
-  if (foundResource) {
-    switch (treeObject.type) {
-      case HtmlComponentType.TEXT:
-      case HtmlComponentType.BUTTON:
-        element.innerText = `@resources/${foundResource.id}`;
-        break;
-      case HtmlComponentType.IMAGE:
-        (element as HTMLImageElement).src = foundResource.data;
-        break;
-      case HtmlComponentType.VIDEO:
-        const sourceElement = document.createElement("source");
-        sourceElement.src = foundResource.data;
-        (element as HTMLVideoElement).appendChild(sourceElement);
-        break;
-    }
-  }
-
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
       element.appendChild(
-        treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources, showBorders)
+        treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, showBorders)
       );
     }
   }
