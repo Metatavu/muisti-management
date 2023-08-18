@@ -700,6 +700,7 @@
   "contentEditor": {
     "advanced": "Edistyneet tapahtumat",
     "open": "Hallitse sisältöä",
+    "changeLocale": "Vaihda kieltä",
     "preview": {
       "resourceModePreview": {
         "dynamic": "Dynaaminen resurssi",

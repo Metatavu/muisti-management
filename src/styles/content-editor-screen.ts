@@ -64,7 +64,7 @@ export default createStyles({
     backgroundColor: "#fff",
     minWidth: 253,
     maxWidth: 253,
-    borderRight: "3px solid #000"
+    borderRight: "4px solid #000"
   },
 
   timelineContentVersionContent: {

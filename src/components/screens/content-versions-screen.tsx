@@ -190,6 +190,10 @@ class ContentVersionsScreen extends React.Component<Props, State> {
         </Typography>
       );
 
+      const defaultLocale = (multiLingualContentVersion.languageVersions.filter(
+        (lang) => lang.language === LanguageOptions.FI
+      ) || multiLingualContentVersion.languageVersions[0])[0];
+
       return (
         <CardItem
           key={primaryVersion.id}
@@ -208,7 +212,7 @@ class ContentVersionsScreen extends React.Component<Props, State> {
           selected={
             selectedContentVersion?.id === multiLingualContentVersion.languageVersions[0].id
           }
-          onActionClick={() => this.openTimeline(multiLingualContentVersion.languageVersions[0])}
+          onActionClick={() => this.openTimeline(defaultLocale)}
         />
       );
     });
