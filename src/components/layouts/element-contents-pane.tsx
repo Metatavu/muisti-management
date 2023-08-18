@@ -12,41 +12,22 @@ interface Props extends WithStyles<typeof styles> {
    * Panel title
    */
   title?: string;
+  children: React.ReactNode;
 }
 
-/**
- * Component for element contents pane
- */
-class ElementContentsPane extends React.Component<Props, {}> {
-  /**
-   * Constructor
-   *
-   * @param props component properties
-   */
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
-
-  /**
-   * Render basic layout
-   */
-  public render() {
-    const { classes, title } = this.props;
-
-    return (
-      <div className={classes.root}>
-        <div className={classes.container}>
-          {title && (
-            <div className={classes.header}>
-              <Typography variant="h3">{title}</Typography>
-            </div>
-          )}
-          <div className={classes.content}>{this.props.children}</div>
-        </div>
-      </div>
-    );
-  }
-}
+const ElementContentsPane: React.FC<Props> = ({
+  title,
+  classes,
+  children
+}) => {
+  return <div className={classes.root}>
+    <div className={classes.container}>
+      {title && <div className={classes.header}>
+        <Typography variant="h3">{title}</Typography>
+      </div>}
+      <div className={classes.content}>{children}</div>
+    </div>
+  </div>;
+};
 
 export default withStyles(styles)(ElementContentsPane);
