@@ -76,16 +76,6 @@ const updateInTree = (
 };
 
 /**
- * Extracts layout resource ids from given html string
- *
- * @param html html string
- * @returns found resource ids
- */
-export const extractResourceIds = (html: string) =>
-  html.match(/@resources\/[a-zA-Z0-9-]{1,}/gm)?.map((match) => match.replace("@resources/", "")) ??
-  [];
-
-/**
  * Convert tree object to html element
  *
  * @param treeObject tree object

@@ -14,6 +14,7 @@ import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
+import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
 import {
@@ -21,7 +22,6 @@ import {
   constructTree,
   createTreeObject,
   deserializeElement,
-  extractResourceIds,
   treeObjectToHtmlElement,
   updateHtmlComponent
 } from "../layout/utils/tree-html-data-utils";
@@ -213,7 +213,7 @@ const LayoutScreenHTML: FC<Props> = ({
    * @param value changed code
    */
   const onHtmlCodeChange = (value: string) => {
-    const resourceIds = extractResourceIds(value);
+    const resourceIds = HtmlResourceUtils.extractResourceIds(value);
     const updatedDefaultResources = foundLayout.defaultResources?.filter((resource) =>
       resourceIds.includes(resource.id)
     );
@@ -247,12 +247,12 @@ const LayoutScreenHTML: FC<Props> = ({
         return (
           <>
             <CodeEditorHTML
-              htmlString={ (foundLayout.data as PageLayoutViewHtml).html }
-              onCodeChange={ onHtmlCodeChange }
+              htmlString={(foundLayout.data as PageLayoutViewHtml).html}
+              onCodeChange={onHtmlCodeChange}
             />
             <CodeEditorJSON
-              jsonString={ JSON.stringify(foundLayout.defaultResources) }
-              onCodeChange={ onJsonCodeChange }
+              jsonString={JSON.stringify(foundLayout.defaultResources)}
+              onCodeChange={onJsonCodeChange}
             />
           </>
         );
@@ -263,12 +263,12 @@ const LayoutScreenHTML: FC<Props> = ({
         }
 
         const layoutHtml = (foundLayout.data as PageLayoutViewHtml).html;
-        
+
         return (
           <PagePreviewHtml
-            deviceModel={ deviceModel }
-            layoutHtml={ layoutHtml }
-            screenOrientation={ foundLayout.screenOrientation }
+            deviceModel={deviceModel}
+            layoutHtml={layoutHtml}
+            screenOrientation={foundLayout.screenOrientation}
             resources={foundLayout.defaultResources || []}
             selectedComponentId={selectedComponent?.id}
           />
@@ -311,7 +311,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
     if (!newComponent) return;
 
-    const resourceIds = extractResourceIds(componentData);
+    const resourceIds = HtmlResourceUtils.extractResourceIds(componentData);
 
     const updatedTree = addNewHtmlComponent(
       treeObjects,
@@ -330,7 +330,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const defaultResources = [...(foundLayout.defaultResources || []), ...newDefaultResources];
 
     const updatedHtmlElements = updatedTree.map((treeObject) =>
-      treeObjectToHtmlElement(treeObject, undefined)
+      treeObjectToHtmlElement(treeObject)
     );
 
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
@@ -356,17 +356,17 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-    
+
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
       updatedComponent,
       selectedComponent.path
     );
-    
+
     const updatedHtmlElements = updatedTreeObjects.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
     );
-        
+
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -375,7 +375,7 @@ const LayoutScreenHTML: FC<Props> = ({
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       }
     });
-       
+
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
@@ -463,4 +463,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ReduxActions>) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreenHTML));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LayoutScreenHTML));
