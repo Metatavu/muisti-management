@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
+import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import TextField from "../../generic/v2/text-field";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
@@ -30,37 +31,24 @@ const VideoComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
-  /**
-   * Event handler for element change events
-   *
-   * @param value value
-   */
-  const handleElementChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const updatedHTMLTag = document.createElement(value);
-
-    for (const attribute of component.element.attributes) {
-      updatedHTMLTag.setAttribute(attribute.name, attribute.value);
-    }
-
-    updateComponent({
-      ...component,
-      element: updatedHTMLTag
-    });
-  };
 
   /**
-   * Get default resource associated with element
-   *
-   * @returns matchingResource string
+   * Returns video resource path
+   * 
+   * @returns video resource path
    */
-  const getElementsDefaultResource = () => {
-    if (!pageLayout.defaultResources) return;
+  const getVideoResourcePath = () => {
+    const { element } = component;
+    return element.getElementsByTagName("source")[0].getAttribute("src") || "";
+  }
 
-    const matchingResource = pageLayout.defaultResources.find(
-      (resource) => resource.id === component.element.id
-    );
-
-    return matchingResource?.data;
+  /**
+   * Returns video src
+   * 
+   * @returns video src
+   */
+  const getVideo = () => {
+    return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, getVideoResourcePath());
   };
 
   /**
@@ -69,30 +57,21 @@ const VideoComponentProperties = ({
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const foundResource = pageLayout.defaultResources?.find(
-      (resource) => resource.id === component.element.id
-    );
-    if (foundResource) {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map((resource) =>
-          resource.id === foundResource?.id ? { ...resource, data: value } : resource
-        )
-      });
-    } else {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: [
-          ...(pageLayout.defaultResources ?? []),
-          {
-            id: component.element.id,
-            data: value,
-            type: ExhibitionPageResourceType.Text,
-            mode: PageResourceMode.Static
-          }
-        ]
-      });
-    }
+    const ressourcePath = getVideoResourcePath();
+    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    if (!resourceId) return;
+   
+    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
+      id: resourceId,
+      data: value,
+      type: ExhibitionPageResourceType.Video,
+      mode: PageResourceMode.Static
+    }];
+
+    setPageLayout({
+      ...pageLayout,
+      defaultResources: defaultResources
+    });
   };
 
   /**
@@ -157,8 +136,8 @@ const VideoComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.videoProperties.defaultResource} />
         <TextField
-          value={getElementsDefaultResource() || ""}
-          onChange={handleDefaultResourceChange}
+          value={ getVideo() }
+          onChange={ handleDefaultResourceChange }
           placeholder={strings.layoutEditorV2.videoProperties.defaultResource}
         />
       </PropertyBox>
