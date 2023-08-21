@@ -72,7 +72,7 @@ const ImageComponentProperties = ({
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     if (!validateUrl(value)) return;
 
-    const ressourcePath = getImageResourcePath();
+    const resourcePath = getImageResourcePath();
     const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
     if (!resourceId) return;
    

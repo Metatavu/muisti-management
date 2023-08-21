@@ -57,7 +57,7 @@ const VideoComponentProperties = ({
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const ressourcePath = getVideoResourcePath();
+    const resourcePath = getVideoResourcePath();
     const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
     if (!resourceId) return;
    

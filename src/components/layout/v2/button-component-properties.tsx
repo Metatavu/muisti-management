@@ -34,9 +34,9 @@ const ButtonComponentProperties = ({
 }: Props) => {
 
   /**
-   * Returns image resource path
+   * Returns button resource path
    * 
-   * @returns image resource path
+   * @returns button resource path
    */
   const getButtonResourcePath = () => {
     const { element } = component;
@@ -44,9 +44,9 @@ const ButtonComponentProperties = ({
   }
 
   /**
-   * Returns image src
+   * Returns button text
    * 
-   * @returns image src
+   * @returns button text
    */
   const getButtonText = () => {
     return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, getButtonResourcePath());
