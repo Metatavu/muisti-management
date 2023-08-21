@@ -251,7 +251,7 @@ const LayoutScreenHTML: FC<Props> = ({
               onCodeChange={onHtmlCodeChange}
             />
             <CodeEditorJSON
-              jsonString={JSON.stringify(foundLayout.defaultResources)}
+              jsonString={JSON.stringify(foundLayout.defaultResources || [])}
               onCodeChange={onJsonCodeChange}
             />
           </>

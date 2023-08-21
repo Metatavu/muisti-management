@@ -31,7 +31,7 @@ const CodeEditorJSON = ({ jsonString, onCodeChange }: Props) => {
     <CodeEditorContainer>
       <Typography style={{ margin: 8 }}>{strings.exhibitionLayouts.editView.json}</Typography>
       <CodeMirror
-        value={ JSON.stringify(JSON.parse(jsonString), null, 2)}
+        value={jsonString ? JSON.stringify(JSON.parse(jsonString), null, 2) : ""}
         height="500px"
         style={{ overflow: "auto" }}
         extensions={[json()]}
