@@ -2,10 +2,10 @@ import { ExhibitionDevice, ExhibitionPage, LayoutType, PageLayout } from "../../
 import strings from "../../localization/strings";
 import styles from "../../styles/page-settings-editor";
 import theme from "../../styles/theme";
+import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { Android as AndroidIcon, Html as HtmlIcon } from "@mui/icons-material/";
 
 /**
  * Interface representing component properties
@@ -57,9 +57,10 @@ const CommonSettingsEditor: React.FC<Props> = ({
           marginTop: theme.spacing(2)
         }}
       >
-        <FormControl>
+        <FormControl fullWidth>
           <InputLabel id="pageLayoutId">{strings.contentEditor.editor.layout}</InputLabel>
           <Select
+            fullWidth
             label={strings.contentEditor.editor.layout}
             labelId="pageLayoutId"
             value={pageData.layoutId}
@@ -84,9 +85,10 @@ const CommonSettingsEditor: React.FC<Props> = ({
       );
     });
     return (
-      <FormControl>
+      <FormControl fullWidth>
         <InputLabel id="pageDeviceId">{strings.contentEditor.editor.device}</InputLabel>
         <Select
+          fullWidth
           label={strings.contentEditor.editor.device}
           labelId="pageDeviceId"
           name="deviceId"
@@ -102,6 +104,7 @@ const CommonSettingsEditor: React.FC<Props> = ({
   return (
     <>
       <TextField
+        fullWidth
         label={strings.contentEditor.editor.pageName}
         name="name"
         value={pageData.name}

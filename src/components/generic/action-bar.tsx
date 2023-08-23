@@ -31,21 +31,23 @@ const ActionBar: React.FC<Props> = ({ buttons }) => {
 
       return (
         <TextField
+          style={{ minWidth: 80 }}
           key={button.name}
           select
           disabled={button.disabled}
           color="primary"
           onChange={button.selectAction}
-          size="small"
           label={button.name}
           value={button.value}
         >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
+          {
+            options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))
+          }
+        </TextField >
       );
     }
 
@@ -64,7 +66,7 @@ const ActionBar: React.FC<Props> = ({ buttons }) => {
   };
 
   return (
-    <Stack direction="row" spacing={1}>
+    <Stack direction="row" spacing={1} mr={2} alignItems="center">
       {buttons.map((button) => renderToolbarButton(button))}
     </Stack>
   );

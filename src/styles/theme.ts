@@ -208,9 +208,6 @@ export default createTheme(
             color: "#222"
           }
         },
-        input: {
-          padding: "10px 12px"
-        },
         multiline: {
           paddingTop: 10
         },
@@ -240,19 +237,20 @@ export default createTheme(
           fontSize: 14
         },
         input: {
-          background: "#fff"
+          width: "100%",
+          background: "#fff",
+          padding: "10px 12px"
+        }
+      },
+      MuiOutlinedInput: {
+        input: {
+          padding: "10px 12px"
         }
       },
       MuiSelect: {
-        filled: {
-          padding: "10px 12px"
-        },
-        outlined: {
-          padding: "18.5px 14px"
-        },
         select: {
           lineHeight: 1,
-          padding: 5,
+          padding: "10px 12px",
           color: "#999"
         },
         icon: {

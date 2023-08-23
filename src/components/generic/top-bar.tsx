@@ -106,9 +106,7 @@ class TopBar extends React.Component<Props, {}> {
         </div>
 
         <div className={classes.bottomRow}>
-          <div className={classes.toolbar}>
-            <ActionBar buttons={actionBarButtons || []} />
-          </div>
+          <ActionBar buttons={actionBarButtons || []} />
         </div>
       </header>
     );
