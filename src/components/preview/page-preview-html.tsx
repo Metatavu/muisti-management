@@ -62,13 +62,15 @@ const PagePreviewHtml = ({
   const getPreviewDimensions = () => {
     const scale = 1;
     const deviceOrientation = deviceModel.screenOrientation;
+    const initialWidth = screenWidth ?? 1 * scale;
+    const initialHeight = screenHeight ?? 1 * scale;
 
-    let height = screenHeight ?? 1 * scale;
-    let width = screenWidth ?? 1 * scale;
+    let height = initialHeight;
+    let width = initialWidth;
 
     if (screenOrientation && deviceOrientation && screenOrientation !== deviceOrientation) {
-      height = width;
-      width = height;
+      height = initialWidth;
+      width = initialHeight;
     }
 
     return {
