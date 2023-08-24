@@ -1,11 +1,11 @@
 import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import PanZoom from "../../generic/pan-zoom";
+import PagePreviewHtml from "../../preview/page-preview-html";
 import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { styled } from "@mui/styles";
 import Fraction from "fraction.js";
 import { useState } from "react";
-import PagePreviewHtml from "../../preview/page-preview-html";
 
 /**
  * Components properties
