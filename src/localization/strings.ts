@@ -515,6 +515,12 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       margin: string;
       padding: string;
+      tooltips: {
+        top: string;
+        right: string;
+        bottom: string;
+        left: string;
+      };
     };
     layoutProperties: {
       contentEmphasis: string;

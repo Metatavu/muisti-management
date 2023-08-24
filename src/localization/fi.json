@@ -504,7 +504,13 @@
         "button": "Valitse väri"
       },
       "margin": "Marginaalit",
-      "padding": "Täyttö"
+      "padding": "Täyttö",
+      "tooltips": {
+        "top": "Ylä",
+        "right": "Oikea",
+        "bottom": "Ala",
+        "left": "Vasen"
+      }
     },
     "layoutProperties": {
       "contentEmphasis": "Sisällön painotus",

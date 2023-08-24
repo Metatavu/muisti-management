@@ -503,7 +503,13 @@
         "button": "Choose color"
       },
       "margin": "Margin",
-      "padding": "Padding"
+      "padding": "Padding",
+      "tooltips": {
+        "top": "Top",
+        "right": "Right",
+        "bottom": "Bottom",
+        "left": "Left"
+      }
     },
     "layoutProperties": {
       "contentEmphasis": "Content emphasis",
