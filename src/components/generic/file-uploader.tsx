@@ -3,7 +3,7 @@ import styles from "../../styles/dialog";
 import { Button, CircularProgress } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
-import { DropzoneDialog } from "material-ui-dropzone";
+import { DropzoneDialog } from "mui-file-dropzone";
 import * as React from "react";
 
 /**
@@ -74,7 +74,7 @@ class FileUploader extends React.Component<Props, State> {
     if (this.state.uploading) {
       return (
         <div className={classes.imageUploadLoaderContainer}>
-          <CircularProgress color="secondary" style={{ alignSelf: "center" }}></CircularProgress>
+          <CircularProgress color="secondary" style={{ alignSelf: "center" }} />
         </div>
       );
     }
@@ -110,6 +110,7 @@ class FileUploader extends React.Component<Props, State> {
         showPreviewsInDropzone={false}
         maxFileSize={bytes}
         filesLimit={filesLimit || 1}
+        fileObjects={[]}
       />
     );
   };

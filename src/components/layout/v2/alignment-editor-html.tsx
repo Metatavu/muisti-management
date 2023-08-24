@@ -1,6 +1,5 @@
 import { LayoutAlignment } from "../../../types";
 import LocalizationUtils from "../../../utils/localization-utils";
-import { Icon } from "@material-ui/core";
 import {
   EastOutlined,
   FilterCenterFocusRounded,
@@ -12,7 +11,7 @@ import {
   SouthWestOutlined,
   WestOutlined
 } from "@mui/icons-material";
-import { IconButton, Stack, Typography } from "@mui/material";
+import { Icon, IconButton, Stack, Typography } from "@mui/material";
 import { ElementType, useState } from "react";
 
 /**

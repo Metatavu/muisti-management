@@ -21,6 +21,7 @@ import {
   addNewHtmlComponent,
   constructTree,
   createTreeObject,
+  deleteHtmlComponent,
   deserializeElement,
   treeObjectToHtmlElement,
   updateHtmlComponent
@@ -28,6 +29,7 @@ import {
 import CodeEditorHTML from "../layout/v2/code-editor-html";
 import CodeEditorJSON from "../layout/v2/code-editor-json";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
+import LayoutPreviewHtml from "../layout/v2/layout-preview";
 import LayoutRightPanel from "../layout/v2/layout-right-panel";
 import BasicLayout from "../layouts/basic-layout";
 import { CircularProgress, SelectChangeEvent } from "@mui/material";
@@ -38,7 +40,6 @@ import { KeycloakInstance } from "keycloak-js";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import LayoutPreviewHtml from "../layout/v2/layout-preview";
 
 /**
  * Component props
@@ -209,7 +210,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Handler for HTML code editor onChange events
-   * 
+   *
    * @param value changed code
    */
   const onHtmlCodeChange = (value: string) => {
@@ -227,7 +228,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
   /**
    * Handler for JSON code editor onChange events
-   * 
+   *
    * @param value changed code
    */
   const onJsonCodeChange = (value: string) => {
@@ -256,8 +257,8 @@ const LayoutScreenHTML: FC<Props> = ({
             />
           </>
         );
-      case LayoutEditorView.VISUAL:
-        const deviceModel = deviceModels.find(model => model.id === foundLayout.modelId);
+      case LayoutEditorView.VISUAL: {
+        const deviceModel = deviceModels.find((model) => model.id === foundLayout.modelId);
         if (!deviceModel) {
           return null;
         }
@@ -273,6 +274,7 @@ const LayoutScreenHTML: FC<Props> = ({
             selectedComponentId={selectedComponent?.id}
           />
         );
+      }
     }
   };
 
@@ -350,6 +352,40 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
+   * Deletes component and removes it from the layout
+   *
+   * @param id id of the component to be deleted
+   */
+  const deleteComponent = (componentToDelete: TreeObject) => {
+    const resourceIds = HtmlResourceUtils.extractResourceIds(componentToDelete.element.outerHTML);
+
+    const updatedDefaultResources = foundLayout.defaultResources?.filter(
+      (resource) => !resourceIds.includes(resource.id)
+    );
+
+    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
+
+    const updatedHtmlElements = updatedTree.map((treeObject) =>
+      treeObjectToHtmlElement(treeObject)
+    );
+
+    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+
+    const updatedLayout: PageLayout = {
+      ...foundLayout,
+      data: {
+        html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
+      },
+      defaultResources: updatedDefaultResources
+    };
+
+    setFoundLayout(updatedLayout);
+    setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
+    setSelectedComponent(undefined);
+    setDataChanged(true);
+  };
+
+  /**
    * Update component and add it to the layout
    *
    * @param updatedComponent TreeObject
@@ -419,6 +455,7 @@ const LayoutScreenHTML: FC<Props> = ({
             layout={foundLayout}
             setLayout={setFoundLayout}
             updateComponent={updateComponent}
+            deleteComponent={deleteComponent}
             onClose={() => setSelectedComponent(undefined)}
           />
         )}

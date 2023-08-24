@@ -19,14 +19,6 @@ interface Props {
 }
 
 /**
- * Styled Preview components properties
- */
-interface PreviewProps {
-  width: number;
-  height: number;
-}
-
-/**
  * Preview Container styled component
  */
 const PreviewContainer = styled("div")(() => ({
@@ -42,7 +34,13 @@ const PreviewContainer = styled("div")(() => ({
 /**
  * HTML Layouts Page Preview Component
  */
-const LayoutPreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources, selectedComponentId }: Props) => {
+const LayoutPreviewHtml = ({
+  deviceModel,
+  screenOrientation,
+  layoutHtml,
+  resources,
+  selectedComponentId
+}: Props) => {
   const [showElementBorders, setShowElementBorders] = useState(false);
 
   if (!deviceModel) return null;
