@@ -15,7 +15,8 @@ import {
   SelectChangeEvent,
   Stack,
   Switch,
-  TextField
+  TextField,
+  Tooltip
 } from "@mui/material";
 import { useState } from "react";
 
@@ -112,19 +113,22 @@ const AddNewLayoutDialog: React.FC<Props> = ({
             value={newLayoutName ?? ""}
             onChange={onNewLayoutNameChange}
           />
-          <FormControlLabel
-            style={{ marginTop: theme.spacing(2) }}
-            control={
-              <Switch
-                checked={createSubLayout}
-                onChange={onLayoutTypeSwitchChange}
-                color="secondary"
-                name="sublayout"
-                inputProps={{ "aria-label": "primary checkbox" }}
-              />
-            }
-            label={strings.layout.makeAsSubLayout}
-          />
+          <Tooltip title={strings.generic.notYetImplemented}>
+            <FormControlLabel
+              style={{ marginTop: theme.spacing(2) }}
+              disabled
+              control={
+                <Switch
+                  checked={createSubLayout}
+                  onChange={onLayoutTypeSwitchChange}
+                  color="secondary"
+                  name="sublayout"
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                />
+              }
+              label={strings.layout.makeAsSubLayout}
+            />
+          </Tooltip>
           {!createSubLayout && renderDeviceModelSelect()}
         </Stack>
       </DialogContent>

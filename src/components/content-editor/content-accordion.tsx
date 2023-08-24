@@ -1,18 +1,45 @@
-import { ExhibitionDevice, ExhibitionPage, ExhibitionPageEventTrigger, ExhibitionPageResource, LayoutType, PageLayout, PageLayoutView, PageLayoutViewHtml, PageLayoutWidgetType } from "../../generated/client";
+import {
+  ExhibitionDevice,
+  ExhibitionPage,
+  ExhibitionPageEventTrigger,
+  ExhibitionPageResource,
+  LayoutType,
+  PageLayout,
+  PageLayoutView,
+  PageLayoutViewHtml,
+  PageLayoutWidgetType
+} from "../../generated/client";
 import strings from "../../localization/strings";
 import styles from "../../styles/content-editor-screen";
 import theme from "../../styles/theme";
-import { Accordion, AccordionDetails, AccordionSummary, Button, List, ListItem, ListItemSecondaryAction, Typography } from "@mui/material";
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import { default as ChevronRightIcon, default as ExpandMoreIcon } from "@mui/icons-material/ChevronRight";
-import CommonSettingsEditor from "./common-settings-editor";
-import { ExhibitionPageTab, ExhibitionPageTabHolder, ExhibitionPageTabProperty, TabStructure, allowedWidgetTypes } from "./constants";
-import LayoutViewResourcesList from "./layout-view-resources-list";
-import { v4 as uuid } from "uuid";
-import { constructTree } from "../layout/utils/tree-html-data-utils";
 import { TreeObject } from "../../types";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
+import LocalizationUtils from "../../utils/localization-utils";
+import { constructTree } from "../layout/utils/tree-html-data-utils";
+import CommonSettingsEditor from "./common-settings-editor";
+import {
+  ExhibitionPageTab,
+  ExhibitionPageTabHolder,
+  ExhibitionPageTabProperty,
+  TabStructure,
+  allowedWidgetTypes
+} from "./constants";
+import LayoutViewResourcesList from "./layout-view-resources-list";
+import { default as ExpandMoreIcon } from "@mui/icons-material/ChevronRight";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  Tooltip,
+  Typography
+} from "@mui/material";
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import { v4 as uuid } from "uuid";
 
 /**
  * Interface representing component properties
@@ -41,8 +68,18 @@ interface Props extends WithStyles<typeof styles> {
   setSelectedLayoutView: (view: PageLayoutView | undefined) => void;
   onAddEventTrigger: (page: ExhibitionPage, newTrigger: ExhibitionPageEventTrigger) => void;
   onDeleteEventTrigger: (page: ExhibitionPage, triggerIndex: number) => void;
-  onDeleteAndroidTab: (page: ExhibitionPage, tabIndex: number, tabResourceIndex: number, selectedLayoutView: PageLayoutView) => void;
-  onAddAndroidTab: (newTab: ExhibitionPageTab, layoutView: PageLayoutView, page: ExhibitionPage, tabResourceIndex: number) => void;
+  onDeleteAndroidTab: (
+    page: ExhibitionPage,
+    tabIndex: number,
+    tabResourceIndex: number,
+    selectedLayoutView: PageLayoutView
+  ) => void;
+  onAddAndroidTab: (
+    newTab: ExhibitionPageTab,
+    layoutView: PageLayoutView,
+    page: ExhibitionPage,
+    tabResourceIndex: number
+  ) => void;
 }
 
 /**
@@ -75,7 +112,6 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
   onDeleteAndroidTab,
   onAddAndroidTab
 }) => {
-
   /**
    * Event handler for trigger click
    *
@@ -93,21 +129,22 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    * @param pageLayoutViewId page layout view id
    * @param event react mouse event
    */
-  const onAddEventTriggerClick = (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (!selectedPage) {
-      return;
-    }
+  const onAddEventTriggerClick =
+    (pageLayoutViewId: string) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (!selectedPage) {
+        return;
+      }
 
-    event.stopPropagation();
+      event.stopPropagation();
 
-    const newTrigger: ExhibitionPageEventTrigger = {
-      clickViewId: pageLayoutViewId,
-      id: uuid(),
-      name: "New trigger"
+      const newTrigger: ExhibitionPageEventTrigger = {
+        clickViewId: pageLayoutViewId,
+        id: uuid(),
+        name: "New trigger"
+      };
+
+      onAddEventTrigger(selectedPage, newTrigger);
     };
-
-    onAddEventTrigger(selectedPage, newTrigger);
-  };
 
   /**
    * Event handler for delete trigger click
@@ -171,15 +208,16 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    *
    * @param tabIndex tab index to be deleted
    */
-  const onDeleteAndroidTabClick = (tabIndex: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.stopPropagation();
+  const onDeleteAndroidTabClick =
+    (tabIndex: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
 
-    if (tabResourceIndex === undefined || !selectedLayoutView || !tabMap || !selectedPage) {
-      return;
-    }
+      if (tabResourceIndex === undefined || !selectedLayoutView || !tabMap || !selectedPage) {
+        return;
+      }
 
-    onDeleteAndroidTab(selectedPage, tabIndex, tabResourceIndex, selectedLayoutView);
-  };
+      onDeleteAndroidTab(selectedPage, tabIndex, tabResourceIndex, selectedLayoutView);
+    };
 
   /**
    * Render Android layout tab list
@@ -208,7 +246,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
               {strings.generic.delete}
             </Button>
           </ListItemSecondaryAction>
-          <ChevronRightIcon htmlColor="#888" />
+          <ExpandMoreIcon htmlColor="#888" />
         </ListItem>
       );
     });
@@ -226,7 +264,10 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    * @param selectedPage selected page
    * @param pageLayoutView page layout view
    */
-  const getAndroidEventTriggerItems = (selectedPage: ExhibitionPage, pageLayoutView: PageLayoutView) => {
+  const getAndroidEventTriggerItems = (
+    selectedPage: ExhibitionPage,
+    pageLayoutView: PageLayoutView
+  ) => {
     const triggerList = selectedPage.eventTriggers.filter(
       (trigger) => trigger.clickViewId === pageLayoutView.id
     );
@@ -275,9 +316,10 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    * @param event React change event
    * @param expanded is element expanded
    */
-  const onExpandAndroidElement = (view: PageLayoutView) => (_event: React.ChangeEvent<{}>, expanded: boolean) => {
-    setSelectedLayoutView(expanded ? view : undefined);
-  };
+  const onExpandAndroidElement =
+    (view: PageLayoutView) => (_event: React.ChangeEvent<{}>, expanded: boolean) => {
+      setSelectedLayoutView(expanded ? view : undefined);
+    };
 
   /**
    * Render individual resources inside accordion element for Android layout
@@ -354,12 +396,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
       resources: []
     };
 
-    onAddAndroidTab(
-      newTab,
-      selectedLayoutView,
-      selectedPage,
-      tabResourceIndex
-    );
+    onAddAndroidTab(newTab, selectedLayoutView, selectedPage, tabResourceIndex);
   };
 
   /**
@@ -388,7 +425,9 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
         <AccordionDetails>
           <div style={{ marginLeft: theme.spacing(4) }}>
             <Typography style={{ padding: theme.spacing(1) }} variant="h5">
-              {!androidTabStructure || !androidTabStructure.tabs || androidTabStructure.tabs.length === 0
+              {!androidTabStructure ||
+              !androidTabStructure.tabs ||
+              androidTabStructure.tabs.length === 0
                 ? strings.contentEditor.editor.tabs.noTabs
                 : strings.contentEditor.editor.tabs.title}
             </Typography>
@@ -405,10 +444,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    * @param elementList JSX element list
    * @param pageLayoutViews list of page layout views
    */
-  const renderAndroidViews = (
-    elementList: JSX.Element[],
-    pageLayoutViews: PageLayoutView[]
-  ) => {
+  const renderAndroidViews = (elementList: JSX.Element[], pageLayoutViews: PageLayoutView[]) => {
     if (!resourceWidgetIdList) {
       return null;
     }
@@ -440,7 +476,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
 
   /**
    * Returns list of HTML components as flat list
-   * 
+   *
    * @param parentComponent parent component
    * @returns child components as flat list
    */
@@ -456,22 +492,28 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
 
   /**
    * Renders HTML layout component editor
-   * 
+   *
    * @param component component
    */
   const renderHtmlLayoutComponent = (component: TreeObject) => {
     const componentResourceIds = HtmlResourceUtils.getTreeObjectResourceIds(component);
-    const resources = selectedPage.resources.filter((resource) => componentResourceIds.includes(resource.id));
+
+    const resources = selectedPage.resources.filter((resource) =>
+      componentResourceIds.includes(resource.id)
+    );
+
+    if (resources.length < 1) return;
+
     const eventTriggerItems = null;
 
     return (
-      <Accordion
-        key={component.id}
-        className={classes.resource}
-      >
+      <Accordion key={component.id} className={classes.resource}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} className={classes.resourceItem}>
           <Typography variant="h5">{component.name || ""}</Typography>
-          <Button variant="text" onClick={onAddEventTriggerClick(component.id)}>
+          <Typography variant="caption">
+            {LocalizationUtils.getLocalizedComponentType(component.type)}
+          </Typography>
+          <Button variant="text" disabled onClick={onAddEventTriggerClick(component.id)}>
             {strings.contentEditor.editor.eventTriggers.add}
           </Button>
         </AccordionSummary>
@@ -510,14 +552,11 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
       });
 
       return componentList.map(renderHtmlLayoutComponent);
-    };
+    }
   };
 
   return (
-    <Accordion
-      expanded={expanded}
-      onChange={(_e, expanded) => onExpandedChange(expanded)}
-    >
+    <Accordion expanded={expanded} onChange={(_e, expanded) => onExpandedChange(expanded)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="h3">{strings.contentEditor.editor.properties}</Typography>
       </AccordionSummary>
@@ -532,7 +571,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
         />
       </AccordionDetails>
       {renderPageElements()}
-    </Accordion >
+    </Accordion>
   );
 };
 

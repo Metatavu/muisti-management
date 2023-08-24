@@ -1,5 +1,5 @@
+import { Close as CloseIcon } from "@mui/icons-material";
 import styles from "../../styles/element-properties-pane";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { IconButton, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -53,7 +53,7 @@ class ElementPropertiesPane extends React.Component<Props, {}> {
               <Typography variant="h3">{title}</Typography>
               {onCloseClick && (
                 <IconButton onClick={() => onCloseClick()} size="large">
-                  <ChevronRightIcon />
+                  <CloseIcon />
                 </IconButton>
               )}
             </div>

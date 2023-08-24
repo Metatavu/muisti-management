@@ -18,13 +18,21 @@ interface Props {
   layout: PageLayout;
   setLayout: (layout: PageLayout) => void;
   updateComponent: (component: TreeObject) => void;
+  deleteComponent: (component: TreeObject) => void;
   onClose: () => void;
 }
 
 /**
  * Layout Right Panel component
  */
-const LayoutRightPanel = ({ component, layout, setLayout, updateComponent, onClose }: Props) => {
+const LayoutRightPanel = ({
+  component,
+  layout,
+  setLayout,
+  updateComponent,
+  deleteComponent,
+  onClose
+}: Props) => {
   /**
    * Gets panel menu options
    */
@@ -32,6 +40,10 @@ const LayoutRightPanel = ({ component, layout, setLayout, updateComponent, onClo
     {
       name: strings.genericDialog.close,
       action: onClose
+    },
+    {
+      name: strings.genericDialog.delete,
+      action: () => deleteComponent(component)
     }
   ];
 

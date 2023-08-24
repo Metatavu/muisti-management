@@ -444,7 +444,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
           displayMetrics
         );
       } else {
-        return this.renderHtmlPreview(deviceModel, previewLayout, previewPage);
+        return this.renderHtmlPreview(previewData.device, deviceModel, previewLayout, previewPage);
       }
     });
 
@@ -470,6 +470,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param previewPage preview page
    */
   private renderHtmlPreview = (
+    device: ExhibitionDevice,
     deviceModel: DeviceModel,
     previewLayout: PageLayout,
     previewPage: ExhibitionPage
@@ -477,13 +478,23 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const layoutHtml = (previewLayout.data as PageLayoutViewHtml).html;
 
     return (
-      <PagePreviewHtml
-        key={previewPage.id}
-        screenOrientation={previewLayout.screenOrientation}
-        deviceModel={deviceModel}
-        layoutHtml={layoutHtml}
-        resources={previewPage.resources}
-      />
+      <div key={previewPage.id} style={{ position: "relative" }}>
+        <Typography
+          sx={{
+            position: "absolute",
+            top: -20,
+            opacity: 0.6
+          }}
+        >
+          {device.name} - {previewPage.name}
+        </Typography>
+        <PagePreviewHtml
+          screenOrientation={previewLayout.screenOrientation}
+          deviceModel={deviceModel}
+          layoutHtml={layoutHtml}
+          resources={previewPage.resources}
+        />
+      </div>
     );
   };
 
@@ -1989,6 +2000,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onPropertiesClose = () => {
     this.setState({
+      selectedResource: undefined,
       selectedTabIndex: undefined,
       selectedTriggerIndex: undefined
     });
