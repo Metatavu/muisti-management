@@ -58,6 +58,7 @@ const LayoutPreviewHtml = ({
         contentHeight={screenHeight}
         defaultPositionX={150}
         defaultPositionY={150}
+        defaultScale={1}
       >
         <Typography
           sx={{

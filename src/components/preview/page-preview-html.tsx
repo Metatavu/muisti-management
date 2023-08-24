@@ -1,11 +1,6 @@
-import { DeviceModel, ExhibitionPageResource, PageLayout, PageLayoutViewHtml, ScreenOrientation } from "../../generated/client";
-import strings from "../../localization/strings";
-import PanZoom from "../generic/pan-zoom";
+import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
 import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
-import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { styled } from "@mui/styles";
-import Fraction from "fraction.js";
-import { useState } from "react";
 
 /**
  * Components properties
@@ -48,7 +43,13 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
 /**
  * HTML Layouts Page Preview Component
  */
-const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources, borderedElementId }: Props) => {
+const PagePreviewHtml = ({
+  deviceModel,
+  screenOrientation,
+  layoutHtml,
+  resources,
+  borderedElementId
+}: Props) => {
   if (!deviceModel) return null;
 
   const {
@@ -78,7 +79,7 @@ const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources
 
   /**
    * Adds borders to selected element
-   * 
+   *
    * @param html layout html
    * @returns layout html with borders added
    */
@@ -97,13 +98,16 @@ const PagePreviewHtml = ({ deviceModel, screenOrientation, layoutHtml, resources
     }
 
     return html;
-  }
+  };
 
   return (
-    <Preview
-      srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
-      {...getPreviewDimensions()}
-    />
+    <>
+      <div style={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }} />
+      <Preview
+        srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
+        {...getPreviewDimensions()}
+      />
+    </>
   );
 };
 
