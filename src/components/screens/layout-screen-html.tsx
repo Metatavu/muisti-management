@@ -3,8 +3,10 @@ import Api from "../../api/api";
 import {
   DeviceModel,
   Exhibition,
+  ExhibitionPageResourceType,
   PageLayout,
   PageLayoutViewHtml,
+  PageResourceMode,
   ScreenOrientation,
   SubLayout
 } from "../../generated/client";
@@ -12,21 +14,24 @@ import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
 import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
+import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
 import {
   addNewHtmlComponent,
   constructTree,
   createTreeObject,
+  deleteHtmlComponent,
   deserializeElement,
   treeObjectToHtmlElement,
   updateHtmlComponent
 } from "../layout/utils/tree-html-data-utils";
 import CodeEditorHTML from "../layout/v2/code-editor-html";
+import CodeEditorJSON from "../layout/v2/code-editor-json";
 import LayoutLeftPanel from "../layout/v2/layout-left-panel";
+import LayoutPreviewHtml from "../layout/v2/layout-preview";
 import LayoutRightPanel from "../layout/v2/layout-right-panel";
 import BasicLayout from "../layouts/basic-layout";
-import PagePreviewHtml from "../preview/page-preview-html";
 import { CircularProgress, SelectChangeEvent } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -204,10 +209,33 @@ const LayoutScreenHTML: FC<Props> = ({
   };
 
   /**
-   * Handler for Code Editor onChange events
+   * Handler for HTML code editor onChange events
+   *
+   * @param value changed code
    */
-  const onCodeChange = (value: string) => {
-    setFoundLayout({ ...foundLayout, data: { html: value } });
+  const onHtmlCodeChange = (value: string) => {
+    const resourceIds = HtmlResourceUtils.extractResourceIds(value);
+    const updatedDefaultResources = foundLayout.defaultResources?.filter((resource) =>
+      resourceIds.includes(resource.id)
+    );
+    setFoundLayout({
+      ...foundLayout,
+      defaultResources: updatedDefaultResources,
+      data: { html: value }
+    });
+    setDataChanged(true);
+  };
+
+  /**
+   * Handler for JSON code editor onChange events
+   *
+   * @param value changed code
+   */
+  const onJsonCodeChange = (value: string) => {
+    setFoundLayout({
+      ...foundLayout,
+      defaultResources: JSON.parse(value)
+    });
     setDataChanged(true);
   };
 
@@ -218,20 +246,35 @@ const LayoutScreenHTML: FC<Props> = ({
     switch (view) {
       case LayoutEditorView.CODE:
         return (
-          <CodeEditorHTML
-            htmlString={(foundLayout.data as PageLayoutViewHtml).html}
-            onCodeChange={onCodeChange}
-          />
+          <>
+            <CodeEditorHTML
+              htmlString={(foundLayout.data as PageLayoutViewHtml).html}
+              onCodeChange={onHtmlCodeChange}
+            />
+            <CodeEditorJSON
+              jsonString={JSON.stringify(foundLayout.defaultResources || [])}
+              onCodeChange={onJsonCodeChange}
+            />
+          </>
         );
-      case LayoutEditorView.VISUAL:
+      case LayoutEditorView.VISUAL: {
+        const deviceModel = deviceModels.find((model) => model.id === foundLayout.modelId);
+        if (!deviceModel) {
+          return null;
+        }
+
+        const layoutHtml = (foundLayout.data as PageLayoutViewHtml).html;
+
         return (
-          <PagePreviewHtml
-            deviceModels={deviceModels}
-            layout={foundLayout}
-            treeObjects={treeObjects}
+          <LayoutPreviewHtml
+            deviceModel={deviceModel}
+            layoutHtml={layoutHtml}
+            screenOrientation={foundLayout.screenOrientation}
+            resources={foundLayout.defaultResources || []}
             selectedComponentId={selectedComponent?.id}
           />
         );
+      }
     }
   };
 
@@ -270,26 +313,75 @@ const LayoutScreenHTML: FC<Props> = ({
 
     if (!newComponent) return;
 
-    const updatedLayout = addNewHtmlComponent(
+    const resourceIds = HtmlResourceUtils.extractResourceIds(componentData);
+
+    const updatedTree = addNewHtmlComponent(
       treeObjects,
       newComponent,
       targetPath,
       !!isNewComponentSibling
     );
 
-    const updatedHtmlElements = updatedLayout.map((treeObject) =>
+    const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
+      id: resourceId,
+      data: "",
+      type: ExhibitionPageResourceType.Text,
+      mode: PageResourceMode.Static
+    }));
+
+    const defaultResources = [...(foundLayout.defaultResources || []), ...newDefaultResources];
+
+    const updatedHtmlElements = updatedTree.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
     );
+
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
-    setFoundLayout({
+    const updatedLayout: PageLayout = {
       ...foundLayout,
       data: {
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
-      }
-    });
+      },
+      defaultResources: defaultResources
+    };
+
+    setFoundLayout(updatedLayout);
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(newComponent);
+    setDataChanged(true);
+  };
+
+  /**
+   * Deletes component and removes it from the layout
+   *
+   * @param id id of the component to be deleted
+   */
+  const deleteComponent = (componentToDelete: TreeObject) => {
+    const resourceIds = HtmlResourceUtils.extractResourceIds(componentToDelete.element.outerHTML);
+
+    const updatedDefaultResources = foundLayout.defaultResources?.filter(
+      (resource) => !resourceIds.includes(resource.id)
+    );
+
+    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
+
+    const updatedHtmlElements = updatedTree.map((treeObject) =>
+      treeObjectToHtmlElement(treeObject)
+    );
+
+    const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
+
+    const updatedLayout: PageLayout = {
+      ...foundLayout,
+      data: {
+        html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
+      },
+      defaultResources: updatedDefaultResources
+    };
+
+    setFoundLayout(updatedLayout);
+    setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
+    setSelectedComponent(undefined);
     setDataChanged(true);
   };
 
@@ -306,9 +398,11 @@ const LayoutScreenHTML: FC<Props> = ({
       updatedComponent,
       selectedComponent.path
     );
+
     const updatedHtmlElements = updatedTreeObjects.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
     );
+
     const domArray = Array.from(updatedHtmlElements) as HTMLElement[];
 
     setFoundLayout({
@@ -317,6 +411,7 @@ const LayoutScreenHTML: FC<Props> = ({
         html: domArray[0].outerHTML.replace(/^\s*\n/gm, "")
       }
     });
+
     setTreeObjects([...constructTree(domArray[0].outerHTML.replace(/^\s*\n/gm, ""))]);
     setSelectedComponent(updatedComponent);
     setDataChanged(true);
@@ -360,6 +455,7 @@ const LayoutScreenHTML: FC<Props> = ({
             layout={foundLayout}
             setLayout={setFoundLayout}
             updateComponent={updateComponent}
+            deleteComponent={deleteComponent}
             onClose={() => setSelectedComponent(undefined)}
           />
         )}
@@ -404,4 +500,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ReduxActions>) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LayoutScreenHTML));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LayoutScreenHTML));

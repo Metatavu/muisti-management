@@ -1,21 +1,16 @@
-import { DeviceModel, PageLayout } from "../../generated/client";
-import strings from "../../localization/strings";
-import { TreeObject } from "../../types";
-import PanZoom from "../generic/pan-zoom";
-import { treeObjectToHtmlElement, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
-import { FormControlLabel, Switch, Typography } from "@mui/material";
+import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
+import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { styled } from "@mui/styles";
-import Fraction from "fraction.js";
-import { useState } from "react";
 
 /**
  * Components properties
  */
 interface Props {
-  deviceModels: DeviceModel[];
-  layout: PageLayout;
-  treeObjects: TreeObject[];
-  selectedComponentId?: string;
+  screenOrientation: ScreenOrientation;
+  layoutHtml: string;
+  deviceModel: DeviceModel;
+  resources: ExhibitionPageResource[];
+  borderedElementId?: string;
 }
 
 /**
@@ -25,19 +20,6 @@ interface PreviewProps {
   width: number;
   height: number;
 }
-
-/**
- * Preview Container styled component
- */
-const PreviewContainer = styled("div")(() => ({
-  display: "flex",
-  width: "100%",
-  minHeight: "100%",
-  justifyContent: "center",
-  alignContent: "center",
-  position: "relative",
-  backgroundColor: "#EFF0F1"
-}));
 
 /**
  * Preview styled component
@@ -61,13 +43,13 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
 /**
  * HTML Layouts Page Preview Component
  */
-const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentId }: Props) => {
-  const [showElementBorders, setShowElementBorders] = useState(false);
-
-  if (deviceModels.length === 0) return null;
-
-  const deviceModel = deviceModels.find((model) => model.id === layout.modelId);
-
+const PagePreviewHtml = ({
+  deviceModel,
+  screenOrientation,
+  layoutHtml,
+  resources,
+  borderedElementId
+}: Props) => {
   if (!deviceModel) return null;
 
   const {
@@ -79,8 +61,7 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
    */
   const getPreviewDimensions = () => {
     const scale = 1;
-    const { screenOrientation } = layout;
-    const { screenOrientation: deviceOrientation } = deviceModel;
+    const deviceOrientation = deviceModel.screenOrientation;
 
     let height = screenHeight ?? 1 * scale;
     let width = screenWidth ?? 1 * scale;
@@ -96,51 +77,37 @@ const PagePreviewHtml = ({ deviceModels, layout, treeObjects, selectedComponentI
     };
   };
 
+  /**
+   * Adds borders to selected element
+   *
+   * @param html layout html
+   * @returns layout html with borders added
+   */
+  const addBorders = (html: string): string => {
+    if (borderedElementId) {
+      const htmlDocument = new DOMParser().parseFromString(html, "text/html");
+
+      const element = htmlDocument.getElementById(borderedElementId);
+
+      if (element) {
+        element.style["outline"] = "2px dashed #2196F3";
+        element.style["outlineOffset"] = "-2px";
+      }
+
+      return htmlDocument.body.outerHTML;
+    }
+
+    return html;
+  };
+
   return (
-    <PreviewContainer>
-      <PanZoom
-        minScale={0.1}
-        fitContent={true}
-        contentWidth={screenWidth}
-        contentHeight={screenHeight}
-        defaultPositionX={150}
-        defaultPositionY={150}
-      >
-        <Typography
-          sx={{
-            position: "absolute",
-            top: -20,
-            opacity: 0.6
-          }}
-        >
-          {deviceModel.model} / {screenHeight}x{screenWidth} /{" "}
-          {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
-        </Typography>
-        <Preview
-          srcDoc={wrapHtmlLayout(
-            treeObjects?.map((treeObject) =>
-              treeObjectToHtmlElement(
-                treeObject,
-                selectedComponentId,
-                layout.defaultResources,
-                showElementBorders
-              )
-            )[0]?.outerHTML
-          )}
-          {...getPreviewDimensions()}
-        />
-      </PanZoom>
-      <FormControlLabel
-        sx={{
-          position: "absolute",
-          bottom: 10
-        }}
-        label={strings.layoutEditorV2.preview.showElementBorders}
-        onChange={() => setShowElementBorders(!showElementBorders)}
-        value={showElementBorders}
-        control={<Switch checked={showElementBorders} color="secondary" />}
+    <>
+      <div style={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }} />
+      <Preview
+        srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
+        {...getPreviewDimensions()}
       />
-    </PreviewContainer>
+    </>
   );
 };
 

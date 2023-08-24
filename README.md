@@ -1,4 +1,9 @@
-# muisti-management
+# noheva-management
+
+## Steps to run
+1. git submodule update --init
+2. npm i
+3. npm run dev
 
 [![Coverage Status](https://coveralls.io/repos/github/Metatavu/muisti-management/badge.svg)](https://coveralls.io/github/Metatavu/muisti-management)
 

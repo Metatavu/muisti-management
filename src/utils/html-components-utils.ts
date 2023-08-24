@@ -30,17 +30,17 @@ namespace HtmlComponentsUtils {
   const getHtmlLayoutElement = (name?: string) =>
     `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row;"></div>`;
   const getHtmlButtonElement = (name?: string) =>
-    `<button id="${uuid()}" data-component-type="button" name="${name}"></button>`;
+    `<button id="${uuid()}" data-component-type="button" name="${name}">@resources/${uuid()}</button>`;
   const getHtmlTextElement = (name?: string) =>
-    `<p id="${uuid()}" data-component-type="text" name="${name}"></p>`;
+    `<p id="${uuid()}" data-component-type="text" name="${name}">@resources/${uuid()}</p>`;
   const getHtmlImageElement = (name?: string) =>
-    `<img id="${uuid()}" data-component-type="image" name="${name}"/>`;
+    `<img id="${uuid()}" data-component-type="image" name="${name}" src="@resources/${uuid()}"/>`;
   const getHtmlTabsElement = (name?: string) =>
     `div id="${uuid()}" data-component-type="tabs" name="${name}"></div>`;
   const getHtmlTabElement = (name?: string) =>
     `<div id="${uuid()}" data-component-type="tab" name="${name}"></div>`;
   const getHtmlVideoElement = (name?: string) =>
-    `<video id="${uuid()}" data-component-type="video" name="${name}"></video>`;
+    `<video id="${uuid()}" data-component-type="video" name="${name}"><source src="@resources/${uuid()}"></video>`;
 }
 
 export default HtmlComponentsUtils;

@@ -163,7 +163,6 @@ const MediaLibrary = withStyles(styles)(
      * @param folder folder to process
      */
     private renderFiles = (folder: StoredFile) => {
-      const { mediaType } = this.props;
       const { openFolders } = this.state;
 
       if (!openFolders.has(folder.uri)) {
@@ -176,8 +175,7 @@ const MediaLibrary = withStyles(styles)(
         return null;
       }
 
-      const filteredFiles = files.filter((file) => file.contentType.includes(mediaType));
-      const fileItems = this.getFileItems(filteredFiles, folder);
+      const fileItems = this.getFileItems(files, folder);
 
       return (
         <AccordionDetails>

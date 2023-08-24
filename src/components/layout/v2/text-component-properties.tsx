@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { HtmlTextComponentType, TreeObject } from "../../../types";
+import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
@@ -33,13 +34,33 @@ const TextComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
+
+  /**
+   * Returns text resource path
+   * 
+   * @returns text resource path
+   */
+  const getTextResourcePath = () => {
+    const { element } = component;
+    return element.innerHTML;
+  }
+
+  /**
+   * Returns text
+   * 
+   * @returns text
+   */
+  const getText = () => {
+    return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, getTextResourcePath());
+  };
+
   /**
    * Event handler for element change events
    *
    * @param value value
    */
   const handleElementChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const updatedHTMLTag = document.createElement(value);
+        const updatedHTMLTag = document.createElement(value);
 
     for (const attribute of component.element.attributes) {
       updatedHTMLTag.setAttribute(attribute.name, attribute.value);
@@ -52,50 +73,26 @@ const TextComponentProperties = ({
   };
 
   /**
-   * Get default resource associated with element
-   *
-   * @returns matchingResource string
-   */
-  const getElementsDefaultResource = () => {
-    if (!pageLayout.defaultResources) return;
-
-    const matchingResource = pageLayout.defaultResources.find(
-      (resource) => resource.id === component.element.id
-    );
-
-    return matchingResource?.data;
-  };
-
-  /**
    * Event handler for default resource change event
    *
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const foundResource = pageLayout.defaultResources?.find(
-      (resource) => resource.id === component.element.id
-    );
-    if (foundResource) {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map((resource) =>
-          resource.id === foundResource?.id ? { ...resource, data: value } : resource
-        )
-      });
-    } else {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: [
-          ...(pageLayout.defaultResources ?? []),
-          {
-            id: component.element.id,
-            data: value,
-            type: ExhibitionPageResourceType.Text,
-            mode: PageResourceMode.Static
-          }
-        ]
-      });
-    }
+    const ressourcePath = getTextResourcePath();
+    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    if (!resourceId) return;
+   
+    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
+      id: resourceId,
+      data: value,
+      type: ExhibitionPageResourceType.Text,
+      mode: PageResourceMode.Static
+    }];
+
+    setPageLayout({
+      ...pageLayout,
+      defaultResources: defaultResources
+    });
   };
 
   return (
@@ -116,8 +113,8 @@ const TextComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.defaultResource} />
         <TextField
-          value={getElementsDefaultResource() || ""}
-          onChange={handleDefaultResourceChange}
+          value={ getText() }
+          onChange={ handleDefaultResourceChange }
           placeholder={strings.layoutEditorV2.textProperties.defaultResource}
         />
       </PropertyBox>

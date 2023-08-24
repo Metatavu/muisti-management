@@ -2,6 +2,66 @@ import { ExhibitionPageResource } from "../../../generated/client";
 import { HtmlComponentType, TreeObject } from "../../../types";
 
 /**
+ * Deletes item from tree structure
+ *
+ * @param treeData list of TreeObject
+ * @param destinationPath path of the element to be deleted within tree
+ * @returns updatedTree list of TreeObjects
+ */
+export const deleteHtmlComponent = (treeData: TreeObject[], destinationPath: string) => {
+  const updatedTree: TreeObject[] = [treeData[0]];
+  if (treeData[0].id === destinationPath) {
+    updatedTree.pop();
+  } else {
+    updatedTree[0].children = deleteInTree(
+      updatedTree[0].children,
+      destinationPath,
+      treeData[0].id
+    );
+  }
+
+  return updatedTree;
+};
+
+/**
+ * Recursive function that checks the component children and to find item to be deleted.
+ *
+ * @param treeData list of TreeObject
+ * @param destinationPath path to the item to be deleted within tree
+ * @param currentPath current path inside the recursion
+ * @returns list of TreeObjects
+ */
+const deleteInTree = (
+  treeData: TreeObject[],
+  destinationPath: string,
+  currentPath: string
+): TreeObject[] => {
+  let found = false;
+  const cleanNodes: TreeObject[] = [];
+  for (const element of treeData) {
+    const node = element;
+    const fullPath = `${currentPath}/${node.id}`;
+    if (fullPath !== destinationPath) {
+      cleanNodes.push(node);
+    } else {
+      found = true;
+    }
+
+    if (found) {
+      return cleanNodes;
+    } else {
+      for (const element of treeData) {
+        const child = element;
+        const updatedPath = `${currentPath}/${child.id}`;
+        child.children = deleteInTree(child.children ?? [], destinationPath, updatedPath);
+      }
+    }
+  }
+
+  return treeData;
+};
+
+/**
  * Update item within tree structure
  *
  * @param treeData list of TreeObject
@@ -79,51 +139,20 @@ const updateInTree = (
  * Convert tree object to html element
  *
  * @param treeObject tree object
- * @param selectedComponentId selected component id
- * @param resources resources
- * @param showBorders whether to show borders or not
  * @returns HTMLElement
  */
-export const treeObjectToHtmlElement = (
-  treeObject: TreeObject,
-  selectedComponentId?: string,
-  resources?: ExhibitionPageResource[],
-  showBorders?: boolean
-): HTMLElement => {
+export const treeObjectToHtmlElement = (treeObject: TreeObject): HTMLElement => {
   const element = treeObject.element;
-  const foundResource = resources?.find((resource) => resource.id === treeObject.id);
 
-  removeOutline(element);
-
-  element.replaceChildren();
-
-  if (showBorders && element.id === selectedComponentId) {
-    element.style["outline"] = "2px dashed #2196F3";
-    element.style["outlineOffset"] = "-2px";
-  }
-
-  if (foundResource) {
-    switch (treeObject.type) {
-      case HtmlComponentType.TEXT:
-      case HtmlComponentType.BUTTON:
-        element.innerText = foundResource.data;
-        break;
-      case HtmlComponentType.IMAGE:
-        (element as HTMLImageElement).src = foundResource.data;
-        break;
-      case HtmlComponentType.VIDEO:
-        const sourceElement = document.createElement("source");
-        sourceElement.src = foundResource.data;
-        (element as HTMLVideoElement).appendChild(sourceElement);
-        break;
-    }
+  switch (treeObject.type) {
+    case HtmlComponentType.LAYOUT:
+      element.replaceChildren();
+      break;
   }
 
   if (treeObject.children) {
     for (let i = 0; i < treeObject.children.length; i++) {
-      element.appendChild(
-        treeObjectToHtmlElement(treeObject.children[i], selectedComponentId, resources, showBorders)
-      );
+      element.appendChild(treeObjectToHtmlElement(treeObject.children[i]));
     }
   }
 
@@ -261,8 +290,6 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     if (treeObject) children.push(treeObject);
   }
 
-  removeOutline(element as HTMLElement);
-
   return {
     type: componentType as HtmlComponentType,
     path: path,
@@ -271,16 +298,6 @@ export const createTreeObject = (element: Element, basePath?: string): TreeObjec
     children: children,
     element: element as HTMLElement
   };
-};
-
-/**
- * Removes outline from given element
- *
- * @param element element
- */
-const removeOutline = (element: HTMLElement) => {
-  element.style.removeProperty("outline");
-  element.style.removeProperty("outline-offset");
 };
 
 /**
@@ -319,3 +336,18 @@ export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
       ${bodyContent}
     </body>
   </html>`;
+
+/**
+ * Substitute resources in given html
+ *
+ * @param html html
+ * @param resources resources
+ * @returns html with substituted resources
+ */
+export const replaceResources = (html: string, resources: ExhibitionPageResource[] | undefined) => {
+  for (const resource of resources || []) {
+    html = html.replace(`@resources/${resource.id}`, resource.data);
+  }
+
+  return html;
+};

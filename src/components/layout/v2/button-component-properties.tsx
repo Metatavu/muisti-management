@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
+import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import TextField from "../../generic/v2/text-field";
 import FontColorEditor from "./font-color-editor";
 import PanelSubtitle from "./panel-subtitle";
@@ -31,19 +32,24 @@ const ButtonComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
+
   /**
-   * Get default resource associated with element
-   *
-   * @returns matchingResource string
+   * Returns button resource path
+   * 
+   * @returns button resource path
    */
-  const getElementsDefaultResource = () => {
-    if (!pageLayout.defaultResources) return;
+  const getButtonResourcePath = () => {
+    const { element } = component;
+    return element.innerHTML;
+  }
 
-    const matchingResource = pageLayout.defaultResources.find(
-      (resource) => resource.id === component.element.id
-    );
-
-    return matchingResource?.data;
+  /**
+   * Returns button text
+   * 
+   * @returns button text
+   */
+  const getButtonText = () => {
+    return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, getButtonResourcePath());
   };
 
   /**
@@ -52,30 +58,21 @@ const ButtonComponentProperties = ({
    * @param event event
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const foundResource = pageLayout.defaultResources?.find(
-      (resource) => resource.id === component.element.id
-    );
-    if (foundResource) {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: pageLayout.defaultResources?.map((resource) =>
-          resource.id === foundResource?.id ? { ...resource, data: value } : resource
-        )
-      });
-    } else {
-      setPageLayout({
-        ...pageLayout,
-        defaultResources: [
-          ...(pageLayout.defaultResources ?? []),
-          {
-            id: component.element.id,
-            data: value,
-            type: ExhibitionPageResourceType.Text,
-            mode: PageResourceMode.Static
-          }
-        ]
-      });
-    }
+    const ressourcePath = getButtonResourcePath();
+    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    if (!resourceId) return;
+   
+    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
+      id: resourceId,
+      data: value,
+      type: ExhibitionPageResourceType.Text,
+      mode: PageResourceMode.Static
+    }];
+
+    setPageLayout({
+      ...pageLayout,
+      defaultResources: defaultResources
+    });
   };
 
   return (
@@ -85,8 +82,8 @@ const ButtonComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.buttonProperties.defaultResource} />
         <TextField
-          value={getElementsDefaultResource() || ""}
-          onChange={handleDefaultResourceChange}
+          value={ getButtonText() }
+          onChange={ handleDefaultResourceChange }
           placeholder={strings.layoutEditorV2.buttonProperties.defaultResource}
         />
       </PropertyBox>

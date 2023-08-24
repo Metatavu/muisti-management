@@ -1,6 +1,6 @@
-import styles from "../../styles/components/generic/toolbar";
+import styles from "../../styles/components/generic/top-bar";
 import { ActionButton } from "../../types";
-import { Button, MenuItem, TextField } from "@mui/material";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import * as React from "react";
@@ -18,52 +18,57 @@ interface Props extends WithStyles<typeof styles> {
  * @param props component props
  */
 const ActionBar: React.FC<Props> = ({ buttons }) => {
-  return <>{buttons.map((button) => renderToolbarButton(button))}</>;
-};
+  /**
+   * Renders single toolbar button
+   *
+   * @param button button data
+   */
+  const renderToolbarButton = (button: ActionButton) => {
+    if (button.selectAction) {
+      if (!button.options || !button.value || button.disabled) return;
 
-/**
- * Renders single toolbar button
- *
- * @param button button data
- */
-const renderToolbarButton = (button: ActionButton) => {
-  if (button.selectAction) {
-    if (!button.options || !button.value || button.disabled) return;
+      const { options } = button;
 
-    const { options } = button;
+      return (
+        <TextField
+          style={{ minWidth: 80 }}
+          key={button.name}
+          select
+          disabled={button.disabled}
+          color="primary"
+          onChange={button.selectAction}
+          label={button.name}
+          value={button.value}
+        >
+          {
+            options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))
+          }
+        </TextField >
+      );
+    }
 
     return (
-      <TextField
+      <Button
         key={button.name}
-        select
+        variant="contained"
+        disableElevation
         disabled={button.disabled}
         color="primary"
-        onChange={button.selectAction}
-        label={button.name}
-        value={button.value}
-        fullWidth
-        sx={{ marginRight: "10px" }}
+        onClick={button.action}
       >
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
+        {button.name}
+      </Button>
     );
-  }
+  };
 
   return (
-    <Button
-      key={button.name}
-      variant="contained"
-      disableElevation
-      disabled={button.disabled}
-      color="primary"
-      onClick={button.action}
-    >
-      {button.name}
-    </Button>
+    <Stack direction="row" spacing={1} mr={2} alignItems="center">
+      {buttons.map((button) => renderToolbarButton(button))}
+    </Stack>
   );
 };
 
