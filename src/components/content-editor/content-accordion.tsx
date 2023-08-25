@@ -513,13 +513,9 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
           <Typography variant="caption">
             {LocalizationUtils.getLocalizedComponentType(component.type)}
           </Typography>
-          <Tooltip title={strings.generic.notYetImplemented}>
-            <span>
-              <Button variant="text" disabled onClick={onAddEventTriggerClick(component.id)}>
-                {strings.contentEditor.editor.eventTriggers.add}
-              </Button>
-            </span>
-          </Tooltip>
+          <Button variant="text" disabled onClick={onAddEventTriggerClick(component.id)}>
+            {strings.contentEditor.editor.eventTriggers.add}
+          </Button>
         </AccordionSummary>
         <AccordionDetails>
           <LayoutViewResourcesList
