@@ -41,6 +41,11 @@ const AlignmentEditorHtml = ({ onChange, element }: Props) => {
    */
   const getAlignmentDirection = () => element.style.flexDirection ?? "row";
 
+  /**
+   * Gets the current selected alignment/emphasis of component
+   *
+   * @returns current selected alignment/emphasis as {@link LayoutAlignment}
+   */
   const getSelectedAlignment = () => {
     const direction = getAlignmentDirection();
     const justifyItems = element.style.justifyItems;
