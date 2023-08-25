@@ -34,20 +34,19 @@ const TextComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
-
   /**
    * Returns text resource path
-   * 
+   *
    * @returns text resource path
    */
   const getTextResourcePath = () => {
     const { element } = component;
     return element.innerHTML;
-  }
+  };
 
   /**
    * Returns text
-   * 
+   *
    * @returns text
    */
   const getText = () => {
@@ -60,11 +59,16 @@ const TextComponentProperties = ({
    * @param value value
    */
   const handleElementChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-        const updatedHTMLTag = document.createElement(value);
+    const updatedHTMLTag = document.createElement(value);
 
     for (const attribute of component.element.attributes) {
       updatedHTMLTag.setAttribute(attribute.name, attribute.value);
     }
+
+    for (const style of component.element.style) {
+      updatedHTMLTag.style.setProperty(style, component.element.style.getPropertyValue(style));
+    }
+    updatedHTMLTag.innerHTML = component.element.innerHTML;
 
     updateComponent({
       ...component,
@@ -81,13 +85,16 @@ const TextComponentProperties = ({
     const ressourcePath = getTextResourcePath();
     const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
     if (!resourceId) return;
-   
-    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
-      id: resourceId,
-      data: value,
-      type: ExhibitionPageResourceType.Text,
-      mode: PageResourceMode.Static
-    }];
+
+    const defaultResources = [
+      ...(pageLayout.defaultResources || []).filter((resource) => resource.id !== resourceId),
+      {
+        id: resourceId,
+        data: value,
+        type: ExhibitionPageResourceType.Text,
+        mode: PageResourceMode.Static
+      }
+    ];
 
     setPageLayout({
       ...pageLayout,
@@ -113,8 +120,8 @@ const TextComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.defaultResource} />
         <TextField
-          value={ getText() }
-          onChange={ handleDefaultResourceChange }
+          value={getText()}
+          onChange={handleDefaultResourceChange}
           placeholder={strings.layoutEditorV2.textProperties.defaultResource}
         />
       </PropertyBox>

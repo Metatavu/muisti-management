@@ -25,12 +25,7 @@ interface Props {
 /**
  * Image Component Properties component
  */
-const ImageComponentProperties = ({
-  component,
-  pageLayout,
-  setPageLayout
-}: Props) => {
-
+const ImageComponentProperties = ({ component, pageLayout, setPageLayout }: Props) => {
   /**
    * Validates that given string is a valid URL
    *
@@ -47,17 +42,17 @@ const ImageComponentProperties = ({
 
   /**
    * Returns image resource path
-   * 
+   *
    * @returns image resource path
    */
   const getImageResourcePath = () => {
     const { element } = component;
     return element.getAttribute("src");
-  }
+  };
 
   /**
    * Returns image src
-   * 
+   *
    * @returns image src
    */
   const getImageSrc = () => {
@@ -73,15 +68,18 @@ const ImageComponentProperties = ({
     if (!validateUrl(value)) return;
 
     const resourcePath = getImageResourcePath();
-    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    const resourceId = HtmlResourceUtils.getResourceId(resourcePath);
     if (!resourceId) return;
-   
-    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
-      id: resourceId,
-      data: value,
-      type: ExhibitionPageResourceType.Image,
-      mode: PageResourceMode.Static
-    }];
+
+    const defaultResources = [
+      ...(pageLayout.defaultResources || []).filter((resource) => resource.id !== resourceId),
+      {
+        id: resourceId,
+        data: value,
+        type: ExhibitionPageResourceType.Image,
+        mode: PageResourceMode.Static
+      }
+    ];
 
     setPageLayout({
       ...pageLayout,
@@ -95,9 +93,9 @@ const ImageComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.imageProperties.defaultResource} />
         <TextField
-          value={ getImageSrc() }
-          onChange={ handleDefaultResourceChange }
-          placeholder={ strings.layoutEditorV2.textProperties.defaultResource }
+          value={getImageSrc()}
+          onChange={handleDefaultResourceChange}
+          placeholder={strings.layoutEditorV2.textProperties.defaultResource}
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
