@@ -1,4 +1,5 @@
 import { LayoutAlignment } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import {
   EastOutlined,
@@ -12,7 +13,7 @@ import {
   WestOutlined
 } from "@mui/icons-material";
 import { Icon, IconButton, Stack, Typography } from "@mui/material";
-import { ElementType, useState } from "react";
+import { ElementType } from "react";
 
 /**
  * Alignment icon row type
@@ -27,14 +28,47 @@ type AlignmentIconRow = {
  */
 interface Props {
   onChange: (name: string, value: string) => void;
+  element: HTMLElement;
 }
 
-// TODO: Not yet implemented as a controlled componenet
 /**
  * HTML Component Alignment editor component
  */
-const AlignmentEditorHtml = ({ onChange }: Props) => {
-  const [selected, setSelected] = useState<LayoutAlignment>();
+const AlignmentEditorHtml = ({ onChange, element }: Props) => {
+  const ALIGNMENT_MAP = HtmlComponentsUtils.ALIGNMENT_MAP;
+  /**
+   * Gets the alignment direction for the component
+   */
+  const getAlignmentDirection = () => element.style.flexDirection ?? "row";
+
+  /**
+   * Gets the current selected alignment/emphasis of component
+   *
+   * @returns current selected alignment/emphasis as {@link LayoutAlignment}
+   */
+  const getSelectedAlignment = () => {
+    const direction = getAlignmentDirection();
+    const justifyItems = element.style.justifyItems;
+    const alignItems = element.style.alignItems;
+    const justifyContent = element.style.justifyContent;
+    const alignContent = element.style.alignContent;
+
+    const alignment = Object.keys(ALIGNMENT_MAP).find((key) => {
+      const alignment =
+        ALIGNMENT_MAP[key as keyof typeof ALIGNMENT_MAP][direction as "row" | "column"];
+
+      return (
+        alignment["justify-items"] === justifyItems &&
+        alignment["align-items"] === alignItems &&
+        alignment["justify-content"] === justifyContent &&
+        alignment["align-content"] === alignContent
+      );
+    });
+
+    return alignment as LayoutAlignment;
+  };
+
+  const selected = getSelectedAlignment();
 
   const topRowIcons: AlignmentIconRow[] = [
     {
@@ -81,6 +115,9 @@ const AlignmentEditorHtml = ({ onChange }: Props) => {
     }
   ];
 
+  /**
+   * Renders an icon row
+   */
   const renderIconRow = (row: AlignmentIconRow[]) => (
     <Stack direction="row" spacing={0.5}>
       {row.map((icon) => renderIcon(icon))}
@@ -92,58 +129,17 @@ const AlignmentEditorHtml = ({ onChange }: Props) => {
    */
   const onAlignmentChange = ({ currentTarget }: React.MouseEvent) => {
     const name = currentTarget.getAttribute("name");
+    const direction = getAlignmentDirection();
 
     if (!name) return;
 
-    setSelected(name as LayoutAlignment);
+    const alignment =
+      ALIGNMENT_MAP[name as keyof typeof ALIGNMENT_MAP][direction as "row" | "column"];
 
-    switch (name) {
-      case "nw": {
-        onChange("align-content", "flex-start");
-        onChange("justify-content", "flex-start");
-        break;
-      }
-      case "n": {
-        onChange("align-content", "center");
-        onChange("justify-content", "flex-start");
-        break;
-      }
-      case "ne": {
-        onChange("align-content", "flex-end");
-        onChange("justify-content", "flex-start");
-        break;
-      }
-      case "w": {
-        onChange("align-content", "flex-start");
-        onChange("justify-content", "center");
-        break;
-      }
-      case "c": {
-        onChange("align-content", "center");
-        onChange("justify-content", "center");
-        break;
-      }
-      case "e": {
-        onChange("align-content", "flex-end");
-        onChange("justify-content", "center");
-        break;
-      }
-      case "sw": {
-        onChange("align-content", "flex-start");
-        onChange("justify-content", "flex-end");
-        break;
-      }
-      case "s": {
-        onChange("align-content", "center");
-        onChange("justify-content", "flex-end");
-        break;
-      }
-      case "se": {
-        onChange("align-content", "flex-end");
-        onChange("justify-content", "flex-end");
-        break;
-      }
-    }
+    onChange("align-content", alignment["align-content"]);
+    onChange("justify-content", alignment["justify-content"]);
+    onChange("align-items", alignment["align-items"]);
+    onChange("justify-items", alignment["justify-items"]);
   };
 
   const renderIcon = (icon: AlignmentIconRow) => {

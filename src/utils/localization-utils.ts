@@ -70,6 +70,19 @@ namespace LocalizationUtils {
       [HtmlTextComponentType.H6]: strings.layout.html.textTypes.heading6,
       [HtmlTextComponentType.P]: strings.layout.html.textTypes.body
     })[textComponentType];
+
+  /**
+   * Returns localized margin/padding tooltip
+   *
+   * @param suffix suffix
+   */
+  export const getLocalizedMarginPaddingTooltip = (suffix: string) =>
+    ({
+      "-top": strings.layoutEditorV2.genericProperties.tooltips.top,
+      "-right": strings.layoutEditorV2.genericProperties.tooltips.right,
+      "-bottom": strings.layoutEditorV2.genericProperties.tooltips.bottom,
+      "-left": strings.layoutEditorV2.genericProperties.tooltips.left
+    })[suffix];
 }
 
 export default LocalizationUtils;

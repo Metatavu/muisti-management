@@ -55,7 +55,7 @@ const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) =>
       <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.layoutProperties.contentEmphasis} />
-        <AlignmentEditorHtml onChange={onAlignmentChange} />
+        <AlignmentEditorHtml onChange={onAlignmentChange} element={component.element} />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>

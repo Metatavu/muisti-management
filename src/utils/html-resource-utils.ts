@@ -57,7 +57,7 @@ namespace HtmlResourceUtils {
     resourcePath: string | undefined | null
   ) => {
     const resource = getResource(resources, resourcePath);
-    return resource?.data || null;
+    return resource?.data;
   };
 
   /**
@@ -100,7 +100,7 @@ namespace HtmlResourceUtils {
 
   /**
    * Extracts resource ids from given tree object
-   * 
+   *
    * @param treeObject tree object
    * @returns resource ids found in tree object
    */

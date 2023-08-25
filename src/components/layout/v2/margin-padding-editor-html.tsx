@@ -1,6 +1,7 @@
 import theme from "../../../styles/theme";
+import LocalizationUtils from "../../../utils/localization-utils";
 import { LinkRounded } from "@mui/icons-material";
-import { IconButton, Stack, TextField } from "@mui/material";
+import { IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 
 /**
@@ -39,25 +40,30 @@ const MarginPaddingEditorHtml = ({ type, onChange, styles }: Props) => {
   return (
     <Stack direction="row" spacing={theme.spacing(2)}>
       {suffixes.map((suffix) => (
-        <TextField
+        <Tooltip
           key={type + suffix}
-          value={parseInt(styles[`${type}${suffix}` as any] || "0").toString()}
-          name={`${type}${suffix}`}
-          inputProps={{
-            pattern: "[0-9]"
-          }}
-          InputProps={{
-            sx: {
-              "& .MuiInputBase-input": {
-                color: "#2196F3",
-                height: "20px",
-                padding: `0 0 0 ${theme.spacing(1)}`
+          title={LocalizationUtils.getLocalizedMarginPaddingTooltip(suffix)}
+          placement="top"
+        >
+          <TextField
+            value={parseInt(styles[`${type}${suffix}` as any] || "0").toString()}
+            name={`${type}${suffix}`}
+            inputProps={{
+              pattern: "[0-9]"
+            }}
+            InputProps={{
+              sx: {
+                "& .MuiInputBase-input": {
+                  color: "#2196F3",
+                  height: "20px",
+                  padding: `0 0 0 ${theme.spacing(1)}`
+                }
               }
-            }
-          }}
-          sx={{ width: "34px" }}
-          onChange={lock ? onLinkedValueChange : onValueChange}
-        />
+            }}
+            sx={{ width: "34px" }}
+            onChange={lock ? onLinkedValueChange : onValueChange}
+          />
+        </Tooltip>
       ))}
       <IconButton sx={{ margin: 0, padding: 0 }} onClick={() => setLock(!lock)}>
         <LinkRounded
