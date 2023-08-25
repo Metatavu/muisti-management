@@ -14,16 +14,7 @@ import styles from "../../styles/exhibition-view";
 import theme from "../../styles/theme";
 import { AccessToken } from "../../types";
 import HelpDialog from "../generic/help-dialog";
-import {
-  Box,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
-  TextField,
-  Typography
-} from "@mui/material";
+import { Box, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
@@ -100,7 +91,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
    * Component render method
    */
   public render = () => {
-    return <>{this.renderProperties()}</>;
+    return <div style={{ padding: theme.spacing(2) }}>{this.renderProperties()}</div>;
   };
 
   /**
@@ -240,14 +231,14 @@ class FloorPlanInfo extends React.Component<Props, State> {
           {...this.textFieldGenericProps}
           label={strings.generic.name}
           name="name"
+          fullWidth
           value={selectedDevice.name}
           onChange={onChangeDeviceProperties}
         />
-        <InputLabel id="modelId-label" style={{ marginTop: theme.spacing(2) }}>
-          {strings.floorPlan.properties.model}
-        </InputLabel>
-        <Select
+        <TextField
           {...this.selectFieldGenericProps}
+          select
+          fullWidth
           label={strings.device.dialog.model}
           name="modelId"
           value={selectedDevice.modelId || ""}
@@ -258,14 +249,13 @@ class FloorPlanInfo extends React.Component<Props, State> {
               {`${model.manufacturer} ${model.model}`}
             </MenuItem>
           ))}
-        </Select>
-        <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
-          {strings.floorPlan.properties.screenOrientation}
-        </InputLabel>
-        <Select
+        </TextField>
+        <TextField
           {...this.selectFieldGenericProps}
-          labelId="screenOrientation-label"
           name="screenOrientation"
+          label={strings.floorPlan.properties.screenOrientation}
+          select
+          fullWidth
           value={selectedDevice.screenOrientation || ""}
           onChange={onChangeDeviceProperties}
         >
@@ -278,28 +268,26 @@ class FloorPlanInfo extends React.Component<Props, State> {
           <MenuItem key={"forcedPortrait"} value={ScreenOrientation.ForcedPortrait}>
             {strings.floorPlan.properties.forcedPortrait}
           </MenuItem>
-        </Select>
-
-        <InputLabel id="imageLoadStrategy-label" style={{ marginTop: theme.spacing(2) }}>
-          {strings.floorPlan.properties.imageLoadStrategy}
-        </InputLabel>
-        <Select
+        </TextField>
+        <TextField
           {...this.selectFieldGenericProps}
-          labelId="imageLoadStrategy-label"
+          label={strings.floorPlan.properties.imageLoadStrategy}
+          select
+          fullWidth
           name="imageLoadStrategy"
           value={selectedDevice.imageLoadStrategy || ""}
           onChange={onChangeDeviceProperties}
         >
-          <MenuItem key={"memory"} value={DeviceImageLoadStrategy.MEMORY}>
+          <MenuItem key={"memory"} value={DeviceImageLoadStrategy.Memory}>
             {strings.floorPlan.properties.imageLoadStrategyMemory}
           </MenuItem>
-          <MenuItem key={"disk"} value={DeviceImageLoadStrategy.DISK}>
+          <MenuItem key={"disk"} value={DeviceImageLoadStrategy.Disk}>
             {strings.floorPlan.properties.imageLoadStrategyDisk}
           </MenuItem>
-          <MenuItem key={"diskraw"} value={DeviceImageLoadStrategy.DISKRAW}>
+          <MenuItem key={"diskraw"} value={DeviceImageLoadStrategy.DiskRaw}>
             {strings.floorPlan.properties.imageLoadStrategyDiskRaw}
           </MenuItem>
-        </Select>
+        </TextField>
       </>
     );
   };
@@ -318,48 +306,14 @@ class FloorPlanInfo extends React.Component<Props, State> {
           {...this.textFieldGenericProps}
           label={strings.generic.name}
           name="name"
+          fullWidth
           value={selectedDeviceGroup.name}
           onChange={onChangeDeviceGroupProperties}
         />
-        <Box display="flex" mt={2} alignItems="center" justifyContent="space-between">
-          <FormControlLabel
-            label={strings.floorPlan.properties.allowVisitorSessionCreation}
-            control={
-              <Switch
-                checked={selectedDeviceGroup.allowVisitorSessionCreation}
-                onChange={onChangeDeviceGroupProperties}
-                color="primary"
-                name="allowVisitorSessionCreation"
-                inputProps={{ "aria-label": "primary checkbox" }}
-              />
-            }
-          />
-          <HelpDialog title={strings.floorPlan.properties.allowVisitorSessionCreation}>
-            <Typography>
-              {strings.helpDialogs.floorPlanEditor.groupAssemblyPointDescription}
-            </Typography>
-          </HelpDialog>
-        </Box>
         <Box display="flex" mt={2} alignItems="center">
           <TextField
             type="text"
-            label={strings.floorPlan.properties.visitorSessionEndTimeout}
-            name="visitorSessionEndTimeout"
-            value={selectedDeviceGroup.visitorSessionEndTimeout}
-            onChange={onChangeDeviceGroupProperties}
-          />
-          <HelpDialog title="">
-            <Typography>
-              {strings.helpDialogs.floorPlanEditor.visitorSessionTimeoutDescription}
-            </Typography>
-            <Typography variant="h6">
-              {strings.helpDialogs.floorPlanEditor.visitorSessionTimeoutAdditionalDescription}
-            </Typography>
-          </HelpDialog>
-        </Box>
-        <Box display="flex" mt={2} alignItems="center">
-          <TextField
-            type="text"
+            fullWidth
             label={strings.floorPlan.properties.indexPageTimeout}
             name="indexPageTimeout"
             value={selectedDeviceGroup.indexPageTimeout}
@@ -393,15 +347,16 @@ class FloorPlanInfo extends React.Component<Props, State> {
           {...this.textFieldGenericProps}
           label={strings.generic.name}
           name="name"
+          fullWidth
           value={selectedRoom.name}
           onChange={onChangeRoomProperties}
         />
 
-        <InputLabel id="screenOrientation-label" style={{ marginTop: theme.spacing(2) }}>
+        <InputLabel style={{ marginTop: theme.spacing(2) }}>
           {strings.floorPlan.room.color}
         </InputLabel>
 
-        <div
+        <Box
           className={classes.color}
           style={{ backgroundColor: selectedRoom.color }}
           onClick={this.onColorBoxClick}
@@ -425,6 +380,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
       <TextField
         {...this.textFieldGenericProps}
         name="name"
+        fullWidth
         label={strings.generic.name}
         value={selectedFloor.name}
         onChange={onChangeFloorProperties}
@@ -470,4 +426,4 @@ const mapStateToProps = (state: ReduxState) => ({
   accessToken: state.auth.accessToken as AccessToken
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(FloorPlanInfo));
+export default withStyles(styles)(connect(mapStateToProps)(FloorPlanInfo));
