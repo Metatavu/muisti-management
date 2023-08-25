@@ -52,7 +52,7 @@ interface Props {
 
   onRoomAdd?: (roomToCreate: ExhibitionRoom) => void;
   onRoomSave?: (updatedRoom: ExhibitionRoom) => void;
-  onRoomClick?: (floorId: string, roomId: string, hasNodes: boolean) => void;
+  onRoomClick?: (floorId: string, roomId: string) => void;
 
   onDeviceGroupClick?: (
     floorId: string,
@@ -533,10 +533,11 @@ export default class SpacesMap extends React.Component<Props, State> {
     const { leafletIdToRoomMap } = this.state;
     const foundRoom = leafletIdToRoomMap.get(event.layer._leaflet_id);
 
-    if (!onRoomClick || !selectedItems.floor || !foundRoom || !selectedItems.selectedItemHasNodes) {
+    if (!onRoomClick || !selectedItems.floor?.id || !foundRoom?.id) {
       return;
     }
-    onRoomClick(selectedItems.floor.id!, foundRoom.id!, selectedItems.selectedItemHasNodes);
+
+    onRoomClick(selectedItems.floor.id, foundRoom.id);
   };
 
   /**
@@ -770,6 +771,7 @@ export default class SpacesMap extends React.Component<Props, State> {
     opacity: number,
     color?: string
   ) => {
+    const { onDataChange } = this.props;
     let tempLayer: any;
     // Temporary fix for invalid geoJson data from API
     const tempGeoJson: Polygon = {
@@ -788,6 +790,7 @@ export default class SpacesMap extends React.Component<Props, State> {
           .bindTooltip(layerName, {
             permanent: false
           })
+          .on("edit", () => onDataChange())
           .openTooltip();
         tempLayer = layer;
       }
@@ -823,7 +826,7 @@ export default class SpacesMap extends React.Component<Props, State> {
         this.selectedRoomLayer.addLayer(roomLayerToAdd);
         tempRooms.splice(index, 1);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };
@@ -855,7 +858,7 @@ export default class SpacesMap extends React.Component<Props, State> {
           );
           this.addRoomLayersToMap(roomLayerToAdd, room, tempMap);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     });

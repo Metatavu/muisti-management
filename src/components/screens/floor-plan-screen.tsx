@@ -546,10 +546,11 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           name: strings.floorPlan.device.add,
           action: () => this.mapRef.current!.addDeviceMarker()
         },
-        {
-          name: strings.floorPlan.antenna.add,
-          action: () => this.mapRef.current!.addAntennaMarker()
-        },
+        // Antennas are not used in the current version
+        // {
+        //   name: strings.floorPlan.antenna.add,
+        //   action: () => this.mapRef.current!.addAntennaMarker()
+        // },
         {
           name: strings.floorPlan.deviceGroup.copy,
           action: this.onDeviceGroupCopyClick

@@ -17,17 +17,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Divider,
-  FormControl,
   FormHelperText,
-  Grid,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   MenuItem,
-  Select,
+  Stack,
   TextField,
   Typography
 } from "@mui/material";
@@ -179,79 +176,61 @@ class TransitionsEditor extends React.Component<Props, State> {
   private renderDialogContent = () => {
     const { selectedTransition } = this.state;
     return (
-      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
-        <Grid item xs={12}>
-          <FormControl variant="outlined">
-            <InputLabel id={strings.contentEditor.editor.dialog.animation}>
-              {strings.contentEditor.editor.dialog.animation}
-            </InputLabel>
-            <Select
-              label={strings.contentEditor.editor.dialog.animation}
-              id="transitionDialogAnimation"
-              onChange={this.handleSelectChange}
-              name="animation"
-              value={selectedTransition?.transition.animation}
-            >
-              {this.getSelectItems([Animation.Fade])}
-            </Select>
-            <FormHelperText>
-              {strings.contentEditor.editor.dialog.animationHelperText}
-            </FormHelperText>
-          </FormControl>
-          <Divider
-            variant="fullWidth"
-            color="rgba(0,0,0,0.1)"
-            style={{ marginTop: 19, width: "100%" }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6"></Typography>
-          <FormControl variant="outlined">
-            <InputLabel id={strings.contentEditor.editor.dialog.timeInterpolation}>
-              {strings.contentEditor.editor.dialog.timeInterpolation}
-            </InputLabel>
-            <Select
-              label={strings.contentEditor.editor.dialog.timeInterpolation}
-              id="transitionDialogTimeInterpolation"
-              onChange={this.handleSelectChange}
-              name="timeInterpolation"
-              value={selectedTransition?.transition.timeInterpolation}
-            >
-              {this.getSelectItems(
-                Object.values(AnimationTimeInterpolation).filter(
-                  this.filterAnimationTimeInterpolationOption
-                )
-              )}
-            </Select>
-            <FormHelperText>{this.helpTextBySelectedTransitionType()}</FormHelperText>
-          </FormControl>
-          <Divider
-            variant="fullWidth"
-            color="rgba(0,0,0,0.1)"
-            style={{ marginTop: 19, width: "100%" }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography style={{ marginBottom: theme.spacing(2) }} variant="h6">
-            {strings.contentEditor.editor.dialog.duration}
-          </Typography>
-          <TextField
-            type="number"
-            name="duration"
-            value={selectedTransition?.transition.duration}
-            onChange={this.handleSelectChange}
-          />
-          <Divider
-            variant="fullWidth"
-            color="rgba(0,0,0,0.1)"
-            style={{ marginTop: 19, width: "100%" }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {selectedTransition?.transition.animation !== Animation.Fade &&
-            this.renderTransitionElementEditor()}
-        </Grid>
-      </Grid>
+      <Stack spacing={theme.spacing(2)} mt={theme.spacing(1)}>
+        <TextField
+          select
+          fullWidth
+          label={strings.contentEditor.editor.dialog.animation}
+          id="transitionDialogAnimation"
+          onChange={this.handleSelectChange}
+          name="animation"
+          value={selectedTransition?.transition.animation}
+        >
+          {this.getSelectItems([Animation.Fade])}
+        </TextField>
+        <FormHelperText>{strings.contentEditor.editor.dialog.animationHelperText}</FormHelperText>
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: 19, width: "100%" }}
+        />
+        <TextField
+          select
+          fullWidth
+          label={strings.contentEditor.editor.dialog.timeInterpolation}
+          id="transitionDialogTimeInterpolation"
+          onChange={this.handleSelectChange}
+          name="timeInterpolation"
+          value={selectedTransition?.transition.timeInterpolation}
+        >
+          {this.getSelectItems(
+            Object.values(AnimationTimeInterpolation).filter(
+              this.filterAnimationTimeInterpolationOption
+            )
+          )}
+        </TextField>
+        <FormHelperText>{this.helpTextBySelectedTransitionType()}</FormHelperText>
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: 19, width: "100%" }}
+        />
+        <TextField
+          type="number"
+          name="duration"
+          fullWidth
+          label={strings.contentEditor.editor.dialog.duration}
+          value={selectedTransition?.transition.duration}
+          onChange={this.handleSelectChange}
+        />
+        <Divider
+          variant="fullWidth"
+          color="rgba(0,0,0,0.1)"
+          style={{ marginTop: 19, width: "100%" }}
+        />
+        {selectedTransition?.transition.animation !== Animation.Fade &&
+          this.renderTransitionElementEditor()}
+      </Stack>
     );
   };
 

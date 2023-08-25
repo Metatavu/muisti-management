@@ -15,14 +15,7 @@ import ResourceUtils from "../../utils/resource-utils";
 import MediaLibrary from "../right-panel-editors/media-library";
 import { resourceModes } from "./constants";
 import DynamicResourceEditor from "./dynamic-resource-editor";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField
-} from "@mui/material";
+import { MenuItem, SelectChangeEvent, TextField } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import produce from "immer";
@@ -83,22 +76,20 @@ class ResourceEditor extends React.Component<Props, {}> {
     });
 
     return (
-      <FormControl variant="outlined">
-        <InputLabel id="modeLabel">{strings.exhibition.resources.mode}</InputLabel>
-        <Select
-          label={strings.exhibition.resources.mode}
-          labelId="modeLabel"
-          variant="outlined"
-          className={classes.field}
-          fullWidth
-          id={resource.id}
-          onChange={this.onModeChange}
-          name={"mode"}
-          value={resource.mode}
-        >
-          {selectOptions}
-        </Select>
-      </FormControl>
+      <TextField
+        label={strings.exhibition.resources.mode}
+        variant="outlined"
+        className={classes.field}
+        fullWidth
+        select
+        disabled
+        id={resource.id}
+        onChange={this.onModeChange}
+        name={"mode"}
+        value={resource.mode}
+      >
+        {selectOptions}
+      </TextField>
     );
   };
 
@@ -169,6 +160,7 @@ class ResourceEditor extends React.Component<Props, {}> {
           <TextField
             variant="outlined"
             multiline
+            fullWidth
             className={classes.field}
             label={strings.exhibition.resources.textView.properties.text}
             name="data"

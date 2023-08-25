@@ -36,7 +36,7 @@ const LayoutViewResourcesList: React.FC<Props> = ({
           button
           className={classes.listItem}
           selected={selectedResource?.id === resource.id}
-          onClick={onClick && onClick(resource)}
+          onClick={onClick?.(resource)}
         >
           <ListItemText
             primary={strings.contentEditor.editor.resource}
