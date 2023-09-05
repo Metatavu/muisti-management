@@ -34,7 +34,6 @@ import {
   List,
   ListItem,
   ListItemSecondaryAction,
-  Tooltip,
   Typography
 } from "@mui/material";
 import { WithStyles } from "@mui/styles";
@@ -276,7 +275,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
       return;
     }
 
-    return triggerList.map((trigger, index) => {
+    return triggerList.map((trigger) => {
       const pageEventTriggerIndex = selectedPage.eventTriggers.findIndex(
         (pageTrigger) => pageTrigger.id === trigger.id
       );
@@ -285,7 +284,6 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
         <List key={trigger.id} disablePadding style={{ marginBottom: theme.spacing(1) }}>
           <ListItem
             className={classes.borderedListItem}
-            key={index}
             button
             onClick={onTriggerClick(pageEventTriggerIndex)}
           >
@@ -301,7 +299,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
               >
                 {strings.generic.delete}
               </Button>
-              <ChevronRightIcon htmlColor="#888" />
+              <ExpandMoreIcon htmlColor="#888" />
             </ListItemSecondaryAction>
           </ListItem>
         </List>
@@ -491,6 +489,49 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
   };
 
   /**
+   * Get HTML layout event trigger items
+   *
+   * @param selectedPage selected page
+   * @param component component
+   */
+  const getHtmlEventTriggerItems = (selectedPage: ExhibitionPage, component: TreeObject) => {
+    const triggerList = selectedPage.eventTriggers.filter(
+      (trigger) => trigger.clickViewId === component.id
+    );
+
+    return triggerList.map((trigger) => {
+      const pageEventTriggerIndex = selectedPage.eventTriggers.findIndex(
+        (pageTrigger) => pageTrigger.id === trigger.id
+      );
+
+      return (
+        <List key={trigger.id} disablePadding style={{ marginBottom: theme.spacing(1) }}>
+          <ListItem
+            className={classes.borderedListItem}
+            button
+            onClick={onTriggerClick(pageEventTriggerIndex)}
+          >
+            <Typography style={{ marginLeft: theme.spacing(1) }} variant="h6">
+              {trigger.name}
+            </Typography>
+            <ListItemSecondaryAction className={classes.borderedListItemSecondaryAction}>
+              <Button
+                variant="text"
+                size="small"
+                aria-label="delete"
+                onClick={onDeleteTriggerClick(pageEventTriggerIndex)}
+              >
+                {strings.generic.delete}
+              </Button>
+              <ExpandMoreIcon htmlColor="#888" />
+            </ListItemSecondaryAction>
+          </ListItem>
+        </List>
+      );
+    });
+  };
+
+  /**
    * Renders HTML layout component editor
    *
    * @param component component
@@ -503,8 +544,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
     );
 
     if (resources.length < 1) return;
-
-    const eventTriggerItems = null;
+    const eventTriggerItems = getHtmlEventTriggerItems(selectedPage, component);
 
     return (
       <Accordion key={component.id} className={classes.resource}>
@@ -513,7 +553,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
           <Typography variant="caption">
             {LocalizationUtils.getLocalizedComponentType(component.type)}
           </Typography>
-          <Button variant="text" disabled onClick={onAddEventTriggerClick(component.id)}>
+          <Button variant="text" onClick={onAddEventTriggerClick(component.id)}>
             {strings.contentEditor.editor.eventTriggers.add}
           </Button>
         </AccordionSummary>
