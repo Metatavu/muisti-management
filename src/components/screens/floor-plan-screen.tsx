@@ -2,6 +2,7 @@ import Api from "../../api/api";
 import {
   Bounds,
   Coordinates,
+  Device,
   DeviceGroupVisitorSessionStartStrategy,
   DeviceModel,
   Exhibition,
@@ -68,7 +69,8 @@ interface State {
   floors: ExhibitionFloor[];
   rooms: ExhibitionRoom[];
   deviceGroups: ExhibitionDeviceGroup[];
-  devices: ExhibitionDevice[];
+  exhibitionDevices: ExhibitionDevice[];
+  devices: Device[];
   antennas: RfidAntenna[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
@@ -111,6 +113,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       floors: [],
       rooms: [],
       deviceGroups: [],
+      exhibitionDevices: [],
       devices: [],
       antennas: [],
       treeData: [],
@@ -347,7 +350,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedDeviceGroup,
       deviceGroups,
       selectedDevice,
-      selectedAntenna
+      selectedAntenna,
+      devices
     } = this.state;
     if (cropping && cropImageDataUrl) {
       return (
@@ -368,6 +372,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           selectedDevice={selectedDevice}
           selectedAntenna={selectedAntenna}
           deviceModels={deviceModels}
+          devices={devices}
           rooms={selectedRoom ? rooms.filter((room) => room.id === selectedRoom.id) : []}
           deviceGroups={
             selectedRoom ? deviceGroups.filter((group) => group.roomId === selectedRoom.id) : []
@@ -378,6 +383,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           onChangeDeviceGroupProperties={this.onChangeDeviceGroupProperties}
           onChangeDeviceProperties={this.onChangeDeviceProperties}
           onChangeAntennaProperties={this.onChangeAntennaProperties}
+          onSaveDevice={this.onSaveDevice}
         />
       );
     }
@@ -411,12 +417,14 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const exhibitionDeviceGroupsApi = Api.getExhibitionDeviceGroupsApi(accessToken);
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const rfidAntennasApi = Api.getRfidAntennasApi(accessToken);
-    const [floors, rooms, deviceGroups, devices, antennas] = await Promise.all([
+    const devicesApi = Api.getDevicesApi(accessToken);
+    const [floors, rooms, deviceGroups, exhibitionDevices, antennas, devices] = await Promise.all([
       exhibitionFloorsApi.listExhibitionFloors({ exhibitionId }),
       exhibitionRoomsApi.listExhibitionRooms({ exhibitionId }),
       exhibitionDeviceGroupsApi.listExhibitionDeviceGroups({ exhibitionId }),
       exhibitionDevicesApi.listExhibitionDevices({ exhibitionId }),
-      rfidAntennasApi.listRfidAntennas({ exhibitionId })
+      rfidAntennasApi.listRfidAntennas({ exhibitionId }),
+      devicesApi.listDevices({})
     ]);
     const selectedFloor = floors[0];
 
@@ -425,6 +433,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       floors,
       rooms,
       deviceGroups,
+      exhibitionDevices,
       devices,
       antennas,
       selectedFloor
@@ -437,7 +446,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @return array of tree nodes
    */
   private constructTreeData = (): TreeNodeInArray[] => {
-    const { floors, rooms, deviceGroups, devices, antennas } = this.state;
+    const { floors, rooms, deviceGroups, exhibitionDevices: devices, antennas } = this.state;
 
     return floors.map((floor) => {
       return {
@@ -628,7 +637,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedRoom,
       deviceGroups,
       selectedDeviceGroup,
-      devices,
+      exhibitionDevices: devices,
       antennas
     } = this.state;
     const data: any = {};
@@ -1232,7 +1241,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     const newDevice = await this.createDevice(accessToken, exhibitionId, deviceToCreate);
     this.setState(
       produce((draft: Draft<State>) => {
-        draft.devices.push(newDevice);
+        draft.exhibitionDevices.push(newDevice);
         draft.selectedDevice = newDevice;
         draft.selectedAntenna = undefined;
       })
@@ -1291,7 +1300,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
 
     this.setState(
       produce((draft: Draft<State>) => {
-        const { devices } = draft;
+        const { exhibitionDevices: devices } = draft;
         const deviceIndex = devices.findIndex((device) => device.id === selectedDevice.id);
         if (deviceIndex > -1) {
           devices.splice(deviceIndex, 1);
@@ -1321,7 +1330,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     );
     this.setState(
       produce((draft: Draft<State>) => {
-        const { devices } = draft;
+        const { exhibitionDevices: devices } = draft;
         const deviceIndex = devices.findIndex((device) => device.id === deviceToUpdate.id);
         if (deviceIndex > -1) {
           devices.splice(deviceIndex, 1, updatedDevice);
@@ -1330,6 +1339,21 @@ export class FloorPlanScreen extends React.Component<Props, State> {
         draft.dataChanged = false;
       })
     );
+  };
+
+  /**
+   * Event handler for save device click
+   */
+  private onSaveDevice = async (device: Device) => {
+    if (!device?.id) return;
+    const { accessToken } = this.props;
+    const devicesApi = Api.getDevicesApi(accessToken);
+    const updatedDevice = await devicesApi.updateDevice({ deviceId: device.id, device: device });
+    this.setState({
+      devices: this.state.devices.map((device) =>
+        device.id === updatedDevice.id ? updatedDevice : device
+      )
+    });
   };
 
   /**
@@ -1512,7 +1536,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
     deviceGroupId: string,
     deviceId: string
   ) => {
-    const { floors, rooms, deviceGroups, devices } = this.state;
+    const { floors, rooms, deviceGroups, exhibitionDevices } = this.state;
 
     const itemPathInTree = `${floorId}/${roomId}/${deviceGroupId}/${deviceId}`;
     this.updateOpenNodes(itemPathInTree);
@@ -1520,7 +1544,9 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       selectedFloor: floors.find((floor) => floor.id === floorId),
       selectedRoom: rooms.find((room) => room.id === roomId),
       selectedDeviceGroup: deviceGroups.find((group) => group.id === deviceGroupId),
-      selectedDevice: devices.find((device) => device.id === deviceId),
+      selectedDevice: exhibitionDevices.find(
+        (exhibitionDevice) => exhibitionDevice.id === deviceId
+      ),
       selectedAntenna: undefined
     });
   };

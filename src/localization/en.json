@@ -1106,5 +1106,31 @@
         }
       }
     }
+  },
+  "devicesV2": {
+    "name": "Name",
+    "description": "Description",
+    "status": {
+      "label": "Status",
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "version": "Version",
+    "approve": "Approve",
+    "approvalStatus": {
+      "label": "Approved",
+      "pending": "Pending",
+      "approved": "Approved",
+      "ready": "Ready",
+      "pendingReApproval": "Pending re-approval"
+    },
+    "serialNumber": "Serial number",
+    "lastSeen": "Last seen",
+    "model": "Device model",
+    "manageButton": "Manage",
+    "dialog": {
+      "title": "Manage device",
+      "description": "In this dialog you can manage devices settings."
+    }
   }
 }

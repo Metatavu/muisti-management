@@ -433,7 +433,6 @@ export default class SpacesMap extends React.Component<Props, State> {
       const exhibitionDevice: ExhibitionDevice = {
         name: strings.floorPlan.device.new,
         groupId: selectedItems.deviceGroup.id,
-        modelId: deviceModels[0].id,
         screenOrientation: ScreenOrientation.Landscape,
         imageLoadStrategy: DeviceImageLoadStrategy.Memory,
         location: {

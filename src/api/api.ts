@@ -3,6 +3,7 @@ import {
   Configuration,
   ContentVersionsApi,
   DeviceModelsApi,
+  DevicesApi,
   ExhibitionDeviceGroupsApi,
   ExhibitionDevicesApi,
   ExhibitionFloorsApi,
@@ -156,6 +157,15 @@ export default class Api {
    */
   public static getVisitorSessionsApi(accessToken: AccessToken) {
     return new VisitorSessionsApi(Api.getConfiguration(accessToken));
+  }
+
+  /**
+   * Gets initialized devices api
+   *
+   * @param accessToken access token
+   */
+  public static getDevicesApi(accessToken: AccessToken) {
+    return new DevicesApi(Api.getConfiguration(accessToken));
   }
 
   /**

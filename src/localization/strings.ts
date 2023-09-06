@@ -1138,6 +1138,32 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
   };
+  devicesV2: {
+    name: string;
+    description: string;
+    status: {
+      label: string;
+      online: string;
+      offline: string;
+    };
+    version: string;
+    approve: string;
+    approvalStatus: {
+      label: string;
+      pending: string;
+      approved: string;
+      ready: string;
+      pendingReApproval: string;
+    };
+    serialNumber: string;
+    lastSeen: string;
+    model: string;
+    manageButton: string;
+    dialog: {
+      title: string;
+      description: string;
+    };
+  };
 }
 
 const strings: IStrings = new LocalizedStrings({

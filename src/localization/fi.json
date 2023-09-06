@@ -1113,5 +1113,31 @@
         }
       }
     }
+  },
+  "devicesV2": {
+    "name": "Nimi",
+    "description": "Kuvaus",
+    "status": {
+      "label": "Tila",
+      "online": "Päällä",
+      "offline": "Pois päältä"
+    },
+    "version": "Versio",
+    "approve": "Ota käyttöön",
+    "approvalStatus": {
+      "label": "Hyväksyntätila",
+      "pending": "Odottaa",
+      "approved": "Hyväksytty",
+      "ready": "Valmis",
+      "pendingReApproval": "Odottaa uudelleenhyväksyntää"
+    },
+    "serialNumber": "Sarjanumero",
+    "lastSeen": "Viimeksi nähty",
+    "model": "Laitemalli",
+    "manageButton": "Hallitse",
+    "dialog": {
+      "title": "Hallitse laitetta",
+      "description": "Tässä näkymässä voit hallita laitteen asetuksia."
+    }
   }
 }
