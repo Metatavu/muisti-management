@@ -96,22 +96,20 @@ class FloorPlanInfo extends React.Component<Props, State> {
   /**
    * Component render method
    */
-  public render = () => {
-    return (
-      <div style={{ padding: theme.spacing(2) }}>
-        {this.renderProperties()}
-        <ManageDeviceDialog
-          open={this.state.manageDeviceDialogOpen}
-          deviceModels={this.props.deviceModels}
-          device={this.props.devices.find(
-            (device) => device.id === this.props.selectedDevice?.deviceId
-          )}
-          onClose={() => this.setState({ manageDeviceDialogOpen: false })}
-          onConfirm={this.props.onSaveDevice}
-        />
-      </div>
-    );
-  };
+  public render = () => (
+    <div style={{ padding: theme.spacing(2) }}>
+      {this.renderProperties()}
+      <ManageDeviceDialog
+        open={this.state.manageDeviceDialogOpen}
+        deviceModels={this.props.deviceModels}
+        device={this.props.devices.find(
+          (device) => device.id === this.props.selectedDevice?.deviceId
+        )}
+        onClose={() => this.setState({ manageDeviceDialogOpen: false })}
+        onConfirm={this.props.onSaveDevice}
+      />
+    </div>
+  );
 
   /**
    * On manage device click handler

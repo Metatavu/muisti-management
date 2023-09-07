@@ -4,7 +4,7 @@ import theme from "../../styles/theme";
 import LocalizationUtils from "../../utils/localization-utils";
 import GenericDialog from "../generic/generic-dialog";
 import { FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { ChangeEvent, ReactNode, useState } from "react";
 
 /**
  * Components properties
@@ -42,14 +42,17 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
 
   /**
    * Event handler for text field change
+   *
+   * @param event event
    */
-  const handleTextFieldChange = ({
-    target: { name, value }
-  }: React.ChangeEvent<HTMLInputElement>) =>
+  const handleTextFieldChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) =>
     setTempDevice({ ...tempDevice, [name as keyof typeof device]: value });
 
   /**
    * Event handler for switch change
+   *
+   * @param _ event
+   * @param checked checked
    */
   const handleSwitchChange = (_: any, checked: boolean) => {
     setTempDevice({
@@ -86,12 +89,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
    * @param name name
    * @param label label
    */
-  const renderSelect = (
-    name: string,
-    children: React.ReactNode,
-    value?: string,
-    label?: string
-  ) => (
+  const renderSelect = (name: string, children: ReactNode, value?: string, label?: string) => (
     <TextField
       fullWidth
       select
@@ -115,6 +113,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
         {deviceModel.model}
       </MenuItem>
     ));
+
   /**
    * Renders dialog content
    */
