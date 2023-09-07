@@ -351,7 +351,8 @@ export class FloorPlanScreen extends React.Component<Props, State> {
       deviceGroups,
       selectedDevice,
       selectedAntenna,
-      devices
+      devices,
+      exhibitionDevices
     } = this.state;
     if (cropping && cropImageDataUrl) {
       return (
@@ -373,6 +374,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
           selectedAntenna={selectedAntenna}
           deviceModels={deviceModels}
           devices={devices}
+          exhibitionDevices={exhibitionDevices}
           rooms={selectedRoom ? rooms.filter((room) => room.id === selectedRoom.id) : []}
           deviceGroups={
             selectedRoom ? deviceGroups.filter((group) => group.roomId === selectedRoom.id) : []
@@ -446,7 +448,7 @@ export class FloorPlanScreen extends React.Component<Props, State> {
    * @return array of tree nodes
    */
   private constructTreeData = (): TreeNodeInArray[] => {
-    const { floors, rooms, deviceGroups, exhibitionDevices: devices, antennas } = this.state;
+    const { floors, rooms, deviceGroups, exhibitionDevices, antennas } = this.state;
 
     return floors.map((floor) => {
       return {
@@ -471,15 +473,20 @@ export class FloorPlanScreen extends React.Component<Props, State> {
                     pathInTree: `${floor.id}/${room.id}/${group.id}`,
                     onClick: () => this.onDeviceGroupClick(floor.id!, room.id!, group.id!),
                     nodes: [
-                      ...devices
-                        .filter((device) => device.groupId === group.id)
-                        .map((device) => {
+                      ...exhibitionDevices
+                        .filter((exhibitionDevice) => exhibitionDevice.groupId === group.id)
+                        .map((exhibitionDevice) => {
                           return {
-                            key: device.id!,
-                            label: device.name,
-                            pathInTree: `${floor.id}/${room.id}/${group.id}/${device.id}`,
+                            key: exhibitionDevice.id!,
+                            label: exhibitionDevice.name,
+                            pathInTree: `${floor.id}/${room.id}/${group.id}/${exhibitionDevice.id}`,
                             onClick: () =>
-                              this.onDeviceClick(floor.id!, room.id!, group.id!, device.id!),
+                              this.onDeviceClick(
+                                floor.id!,
+                                room.id!,
+                                group.id!,
+                                exhibitionDevice.id!
+                              ),
                             nodes: []
                           };
                         }),

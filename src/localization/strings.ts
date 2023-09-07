@@ -444,7 +444,7 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     dialog: {
       brand: string;
-      model: string;
+      device: string;
       displayMetrics: {
         displayInfo: string;
         widthPixels: string;

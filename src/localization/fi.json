@@ -436,7 +436,7 @@
     },
     "dialog": {
       "brand": "Merkki",
-      "model": "Malli",
+      "device": "Laite",
       "displayMetrics": {
         "displayInfo": "Näytön tiedot",
         "widthPixels": "Ruudun pikselileveys",

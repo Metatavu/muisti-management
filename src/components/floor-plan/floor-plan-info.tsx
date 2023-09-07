@@ -1,6 +1,5 @@
 import {
   Device,
-  DeviceApprovalStatus,
   DeviceImageLoadStrategy,
   DeviceModel,
   ExhibitionDevice,
@@ -17,17 +16,7 @@ import theme from "../../styles/theme";
 import { AccessToken } from "../../types";
 import ManageDeviceDialog from "../dialogs/manage-device-dialog";
 import HelpDialog from "../generic/help-dialog";
-import { Close as CloseIcon, Done as DoneIcon } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography
-} from "@mui/material";
+import { Box, Button, InputLabel, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
@@ -43,6 +32,7 @@ interface Props extends WithStyles<typeof styles> {
   rooms?: ExhibitionRoom[];
   deviceGroups?: ExhibitionDeviceGroup[];
   devices: Device[];
+  exhibitionDevices: ExhibitionDevice[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
   selectedDeviceGroup?: ExhibitionDeviceGroup;
@@ -128,16 +118,6 @@ class FloorPlanInfo extends React.Component<Props, State> {
    */
   private onManageDeviceClick = () => {
     this.setState({ manageDeviceDialogOpen: true });
-  };
-
-  /**
-   * Renders appropriate icon for device menu items
-   *
-   * @param device devie
-   */
-  private renderDeviceIcon = (device: Device) => {
-    if (device.approvalStatus === DeviceApprovalStatus.Ready) return <DoneIcon />;
-    else return <CloseIcon />;
   };
 
   /**
@@ -261,6 +241,25 @@ class FloorPlanInfo extends React.Component<Props, State> {
   };
 
   /**
+   * Renders device select menu items
+   *
+   * @param device device
+   */
+  private renderDeviceMenuItem = (device: Device) => {
+    const { exhibitionDevices, selectedDevice } = this.props;
+    const deviceInUse = !!exhibitionDevices.find(
+      (exhibitionDevice) =>
+        exhibitionDevice.deviceId === device.id && exhibitionDevice.id !== selectedDevice?.id
+    );
+
+    return (
+      <MenuItem key={device.id} value={device.id} disabled={deviceInUse}>
+        {device.name}
+      </MenuItem>
+    );
+  };
+
+  /**
    * Render device settings
    *
    * @param selectedDevice selected device
@@ -283,7 +282,7 @@ class FloorPlanInfo extends React.Component<Props, State> {
             {...this.selectFieldGenericProps}
             select
             fullWidth
-            label={strings.device.dialog.model}
+            label={strings.device.dialog.device}
             name="deviceId"
             value={selectedDevice.deviceId || ""}
             onChange={onChangeDeviceProperties}
@@ -291,12 +290,8 @@ class FloorPlanInfo extends React.Component<Props, State> {
               renderValue: (value) => devices.find((device) => device.id === value)?.name || ""
             }}
           >
-            {devices.map((device) => (
-              <MenuItem key={device.id} value={device.id}>
-                <ListItemText>{device.name}</ListItemText>
-                {this.renderDeviceIcon(device)}
-              </MenuItem>
-            ))}
+            <MenuItem>{strings.generic.noSelection}</MenuItem>
+            {devices.map(this.renderDeviceMenuItem)}
           </TextField>
           <Button
             variant="contained"

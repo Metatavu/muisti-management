@@ -435,7 +435,7 @@
     },
     "dialog": {
       "brand": "Brand",
-      "model": "Model",
+      "device": "Device",
       "displayMetrics": {
         "displayInfo": "Screen info",
         "widthPixels": "Screen pixel width",
