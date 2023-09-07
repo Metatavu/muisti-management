@@ -432,8 +432,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
       const exhibitionDevice = exhibitionDevices.find(
         (exhibitionDevice) => exhibitionDevice.id === previewPage.deviceId
       );
+
+      // Find device model of the device attached to exhibition device
+      // As a fallback if that's not found (no device yet attached), use the device model of the preview layout
       const device = devices.find((device) => device.id === exhibitionDevice?.deviceId);
-      const deviceModel = deviceModels.find((model) => model.id === device?.deviceModelId);
+      const deviceModel =
+        deviceModels.find((model) => model.id === device?.deviceModelId) ??
+        deviceModels.find((model) => model.id === previewLayout.modelId);
+
       if (!deviceModel) {
         return null;
       }
