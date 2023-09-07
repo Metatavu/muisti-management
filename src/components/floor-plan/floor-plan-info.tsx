@@ -1,4 +1,5 @@
 import {
+  Device,
   DeviceImageLoadStrategy,
   DeviceModel,
   ExhibitionDevice,
@@ -13,8 +14,9 @@ import { ReduxState } from "../../store";
 import styles from "../../styles/exhibition-view";
 import theme from "../../styles/theme";
 import { AccessToken } from "../../types";
+import ManageDeviceDialog from "../dialogs/manage-device-dialog";
 import HelpDialog from "../generic/help-dialog";
-import { Box, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, InputLabel, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { KeycloakInstance } from "keycloak-js";
@@ -29,12 +31,13 @@ interface Props extends WithStyles<typeof styles> {
   deviceModels: DeviceModel[];
   rooms?: ExhibitionRoom[];
   deviceGroups?: ExhibitionDeviceGroup[];
+  devices: Device[];
+  exhibitionDevices: ExhibitionDevice[];
   selectedFloor?: ExhibitionFloor;
   selectedRoom?: ExhibitionRoom;
   selectedDeviceGroup?: ExhibitionDeviceGroup;
   selectedDevice?: ExhibitionDevice;
   selectedAntenna?: RfidAntenna;
-
   onChangeFloorProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeRoomProperties?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeRoomColor?: (color: ColorResult) => void;
@@ -45,6 +48,7 @@ interface Props extends WithStyles<typeof styles> {
   onChangeAntennaProperties?: (
     event: React.ChangeEvent<HTMLInputElement | { name?: string; value: any }>
   ) => void;
+  onSaveDevice: (device: Device) => Promise<void>;
 }
 
 /**
@@ -53,6 +57,7 @@ interface Props extends WithStyles<typeof styles> {
 interface State {
   loading: boolean;
   showColorPicker: boolean;
+  manageDeviceDialogOpen: boolean;
 }
 
 /**
@@ -83,15 +88,34 @@ class FloorPlanInfo extends React.Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      showColorPicker: false
+      showColorPicker: false,
+      manageDeviceDialogOpen: false
     };
   }
 
   /**
    * Component render method
    */
-  public render = () => {
-    return <div style={{ padding: theme.spacing(2) }}>{this.renderProperties()}</div>;
+  public render = () => (
+    <div style={{ padding: theme.spacing(2) }}>
+      {this.renderProperties()}
+      <ManageDeviceDialog
+        open={this.state.manageDeviceDialogOpen}
+        deviceModels={this.props.deviceModels}
+        device={this.props.devices.find(
+          (device) => device.id === this.props.selectedDevice?.deviceId
+        )}
+        onClose={() => this.setState({ manageDeviceDialogOpen: false })}
+        onConfirm={this.props.onSaveDevice}
+      />
+    </div>
+  );
+
+  /**
+   * On manage device click handler
+   */
+  private onManageDeviceClick = () => {
+    this.setState({ manageDeviceDialogOpen: true });
   };
 
   /**
@@ -170,19 +194,16 @@ class FloorPlanInfo extends React.Component<Props, State> {
             </Typography>
           </HelpDialog>
         </Box>
-
-        <InputLabel id="groupId-label" style={{ marginTop: theme.spacing(2) }}>
-          {strings.floorPlan.properties.deviceGroup}
-        </InputLabel>
-        <Select
+        <TextField
           {...this.selectFieldGenericProps}
-          labelId="groupId-label"
+          label={strings.floorPlan.properties.deviceGroup}
+          select
           name="groupId"
           value={selectedAntenna.groupId || ""}
           onChange={onChangeAntennaProperties}
         >
           {deviceGroupMenuItems}
-        </Select>
+        </TextField>
 
         <Box display="flex" mt={2} alignItems="center">
           <TextField
@@ -218,12 +239,31 @@ class FloorPlanInfo extends React.Component<Props, State> {
   };
 
   /**
+   * Renders device select menu items
+   *
+   * @param device device
+   */
+  private renderDeviceMenuItem = (device: Device) => {
+    const { exhibitionDevices, selectedDevice } = this.props;
+    const deviceInUse = !!exhibitionDevices.find(
+      (exhibitionDevice) =>
+        exhibitionDevice.deviceId === device.id && exhibitionDevice.id !== selectedDevice?.id
+    );
+
+    return (
+      <MenuItem key={device.id} value={device.id} disabled={deviceInUse}>
+        {device.name}
+      </MenuItem>
+    );
+  };
+
+  /**
    * Render device settings
    *
    * @param selectedDevice selected device
    */
   private renderDevice = (selectedDevice: ExhibitionDevice) => {
-    const { onChangeDeviceProperties, deviceModels } = this.props;
+    const { onChangeDeviceProperties, devices } = this.props;
 
     return (
       <>
@@ -235,21 +275,33 @@ class FloorPlanInfo extends React.Component<Props, State> {
           value={selectedDevice.name}
           onChange={onChangeDeviceProperties}
         />
-        <TextField
-          {...this.selectFieldGenericProps}
-          select
-          fullWidth
-          label={strings.device.dialog.model}
-          name="modelId"
-          value={selectedDevice.modelId || ""}
-          onChange={onChangeDeviceProperties}
-        >
-          {deviceModels.map((model) => (
-            <MenuItem key={model.id} value={model.id}>
-              {`${model.manufacturer} ${model.model}`}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Stack direction="row" justifyContent="space-between" spacing={2}>
+          <TextField
+            {...this.selectFieldGenericProps}
+            select
+            fullWidth
+            label={strings.device.dialog.device}
+            name="deviceId"
+            value={selectedDevice.deviceId || ""}
+            onChange={onChangeDeviceProperties}
+            SelectProps={{
+              renderValue: (value) => devices.find((device) => device.id === value)?.name || ""
+            }}
+          >
+            <MenuItem>{strings.generic.noSelection}</MenuItem>
+            {devices.map(this.renderDeviceMenuItem)}
+          </TextField>
+          <Button
+            variant="contained"
+            size="small"
+            disableElevation
+            disabled={!selectedDevice.deviceId}
+            sx={{ height: 40, alignSelf: "flex-end" }}
+            onClick={this.onManageDeviceClick}
+          >
+            {strings.devicesV2.manageButton}
+          </Button>
+        </Stack>
         <TextField
           {...this.selectFieldGenericProps}
           name="screenOrientation"

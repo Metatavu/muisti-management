@@ -1,3 +1,4 @@
+import { DeviceApprovalStatus } from "../generated/client";
 import strings from "../localization/strings";
 import { HtmlComponentType, HtmlTextComponentType, LayoutAlignment } from "../types";
 
@@ -83,6 +84,19 @@ namespace LocalizationUtils {
       "-bottom": strings.layoutEditorV2.genericProperties.tooltips.bottom,
       "-left": strings.layoutEditorV2.genericProperties.tooltips.left
     })[suffix];
+
+  /**
+   * Returns localized device approval status
+   *
+   * @param approvalStatus approvalStatus
+   */
+  export const getLocalizedDeviceApprovalStatus = (approvalStatus: DeviceApprovalStatus) =>
+    ({
+      [DeviceApprovalStatus.Pending]: strings.devicesV2.approvalStatus.pending,
+      [DeviceApprovalStatus.Approved]: strings.devicesV2.approvalStatus.approved,
+      [DeviceApprovalStatus.Ready]: strings.devicesV2.approvalStatus.ready,
+      [DeviceApprovalStatus.PendingReapproval]: strings.devicesV2.approvalStatus.pendingReApproval
+    })[approvalStatus];
 }
 
 export default LocalizationUtils;

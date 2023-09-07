@@ -436,7 +436,7 @@
     },
     "dialog": {
       "brand": "Merkki",
-      "model": "Malli",
+      "device": "Laite",
       "displayMetrics": {
         "displayInfo": "Näytön tiedot",
         "widthPixels": "Ruudun pikselileveys",
@@ -1112,6 +1112,32 @@
           "note": "Oletuksena sisältönä oleva teksti on keskellä. Lopputuloksen näkee parhaiten oikealta laitteelta."
         }
       }
+    }
+  },
+  "devicesV2": {
+    "name": "Nimi",
+    "description": "Kuvaus",
+    "status": {
+      "label": "Tila",
+      "online": "Päällä",
+      "offline": "Pois päältä"
+    },
+    "version": "Versio",
+    "approve": "Ota käyttöön",
+    "approvalStatus": {
+      "label": "Hyväksyntätila",
+      "pending": "Odottaa",
+      "approved": "Hyväksytty",
+      "ready": "Valmis",
+      "pendingReApproval": "Odottaa uudelleenhyväksyntää"
+    },
+    "serialNumber": "Sarjanumero",
+    "lastSeen": "Viimeksi nähty",
+    "model": "Laitemalli",
+    "manageButton": "Hallitse",
+    "dialog": {
+      "title": "Hallitse laitetta",
+      "description": "Tässä näkymässä voit hallita laitteen asetuksia."
     }
   }
 }

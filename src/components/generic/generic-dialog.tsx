@@ -30,6 +30,7 @@ interface Props {
   disableEnforceFocus?: boolean;
   children: React.ReactNode;
   confirmDisabled?: boolean;
+  loading?: boolean;
 }
 
 /**
@@ -63,7 +64,8 @@ export default class GenericDialog extends React.Component<Props, {}> {
       fullWidth,
       disableEnforceFocus,
       children,
-      confirmDisabled
+      confirmDisabled,
+      loading
     } = this.props;
 
     return (
@@ -85,7 +87,7 @@ export default class GenericDialog extends React.Component<Props, {}> {
           <Button
             disableElevation
             variant="contained"
-            disabled={error || confirmDisabled}
+            disabled={error || confirmDisabled || loading}
             onClick={onConfirm}
             color="secondary"
             autoFocus

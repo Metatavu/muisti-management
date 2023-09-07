@@ -2,6 +2,7 @@ import { setSelectedExhibition } from "../../actions/exhibitions";
 import Api from "../../api/api";
 import {
   ContentVersion,
+  Device,
   DeviceModel,
   Exhibition,
   ExhibitionDevice,
@@ -67,6 +68,7 @@ import {
   CircularProgress,
   Divider,
   MenuItem,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -109,7 +111,7 @@ interface State {
   loading: boolean;
   contentVersions: ContentVersion[];
   contentVersion?: ContentVersion;
-  devices: ExhibitionDevice[];
+  exhibitionDevices: ExhibitionDevice[];
   previewDevicesData: PreviewDeviceData[];
   layouts: PageLayout[];
   newContentVersion?: ContentVersion;
@@ -132,6 +134,7 @@ interface State {
   addLanguageDialogOpen: boolean;
   confirmDialogData: ConfirmDialogData;
   deleteDialogOpen: boolean;
+  devices: Device[];
 }
 
 /**
@@ -149,7 +152,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       timelineTabIndex: 1,
       dataChanged: false,
       loading: false,
-      devices: [],
+      exhibitionDevices: [],
       previewDevicesData: [],
       pages: [],
       visitorVariables: [],
@@ -401,7 +404,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderVisualEditor = () => {
     const { classes, deviceModels } = this.props;
-    const { previewDevicesData, pages, layouts, selectedContentVersion } = this.state;
+    const {
+      previewDevicesData,
+      pages,
+      layouts,
+      selectedContentVersion,
+      exhibitionDevices,
+      devices
+    } = this.state;
 
     let totalContentWidth = 0;
     let totalContentHeight = 0;
@@ -419,7 +429,17 @@ class ContentEditorScreen extends React.Component<Props, State> {
         return null;
       }
 
-      const deviceModel = deviceModels.find((model) => model.id === previewLayout.modelId);
+      const exhibitionDevice = exhibitionDevices.find(
+        (exhibitionDevice) => exhibitionDevice.id === previewPage.deviceId
+      );
+
+      // Find device model of the device attached to exhibition device
+      // As a fallback if that's not found (no device yet attached), use the device model of the preview layout
+      const device = devices.find((device) => device.id === exhibitionDevice?.deviceId);
+      const deviceModel =
+        deviceModels.find((model) => model.id === device?.deviceModelId) ??
+        deviceModels.find((model) => model.id === previewLayout.modelId);
+
       if (!deviceModel) {
         return null;
       }
@@ -456,7 +476,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           contentWidth={totalContentWidth}
           contentHeight={totalContentHeight}
         >
-          {previews}
+          <Stack direction="row" spacing={5}>
+            {previews}
+          </Stack>
         </PanZoom>
       </div>
     );
@@ -552,7 +574,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { classes } = this.props;
     const {
       selectedContentVersion,
-      devices,
+      exhibitionDevices,
       previewDevicesData,
       selectedDevice,
       pages,
@@ -574,14 +596,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <TimelineDevicesList
             contentVersion={selectedContentVersion}
             selectedContentVersion={selectedContentVersion}
-            devices={devices}
+            devices={exhibitionDevices}
             selectedDevice={selectedDevice}
             onClick={this.onDeviceClick}
           />
           <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
           <TimelineEditor
             contentVersion={selectedContentVersion}
-            devices={devices}
+            devices={exhibitionDevices}
             previewDevicesData={previewDevicesData}
             pages={pages}
             pageType="active"
@@ -601,7 +623,13 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderIdlePageEditor = () => {
     const { classes } = this.props;
-    const { devices, pages, previewDevicesData, selectedDevice, selectedPage } = this.state;
+    const {
+      exhibitionDevices: devices,
+      pages,
+      previewDevicesData,
+      selectedDevice,
+      selectedPage
+    } = this.state;
 
     return (
       <div className={classes.idlePageEditor}>
@@ -660,7 +688,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private renderContentAccordion = () => {
     const {
-      devices,
+      exhibitionDevices: devices,
       layouts,
       selectedPage,
       propertiesExpanded,
@@ -719,7 +747,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * Render transition accordion
    */
   private renderTransitionAccordion = () => {
-    const { devices, pages, selectedPage } = this.state;
+    const { exhibitionDevices: devices, pages, selectedPage } = this.state;
     if (!selectedPage) {
       return null;
     }
@@ -1019,26 +1047,29 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const exhibitionDevicesApi = Api.getExhibitionDevicesApi(accessToken);
     const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
     const visitorVariablesApi = Api.getVisitorVariablesApi(accessToken);
+    const devicesApi = Api.getDevicesApi(accessToken);
 
     const [
       initialContentVersion,
       contentVersionsInRoom,
       contentVersion,
       layouts,
-      visitorVariables
+      visitorVariables,
+      devices
     ] = await Promise.all([
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
       contentVersionsApi.listContentVersions({ exhibitionId, roomId }),
       contentVersionsApi.findContentVersion({ exhibitionId, contentVersionId }),
       layoutsApi.listPageLayouts({}),
-      visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId })
+      visitorVariablesApi.listVisitorVariables({ exhibitionId: exhibitionId }),
+      devicesApi.listDevices({})
     ]);
 
     /**
      * Devices from device group
      */
     const deviceGroupId = contentVersion.deviceGroupId;
-    const devices = await exhibitionDevicesApi.listExhibitionDevices({
+    const exhibitionDevices = await exhibitionDevicesApi.listExhibitionDevices({
       exhibitionId,
       exhibitionGroupId: deviceGroupId
     });
@@ -1060,10 +1091,10 @@ class ContentEditorScreen extends React.Component<Props, State> {
     });
 
     const devicePages = await Promise.all(
-      devices.map((device) =>
+      exhibitionDevices.map((exhibitionDevice) =>
         exhibitionPagesApi.listExhibitionPages({
           exhibitionId,
-          exhibitionDeviceId: device.id,
+          exhibitionDeviceId: exhibitionDevice.id,
           contentVersionId: contentVersion.id
         })
       )
@@ -1071,8 +1102,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     const pages: ExhibitionPage[] = devicePages.flat();
     const selectedContentVersion = contentVersion;
-    const selectedDevice = devices[0];
-    const previewDevicesData = this.getPreviewDevicesData(selectedContentVersion, devices, pages);
+    const selectedDevice = exhibitionDevices[0];
+    const previewDevicesData = this.getPreviewDevicesData(
+      selectedContentVersion,
+      exhibitionDevices,
+      pages
+    );
     const selectedPage = pages.find(
       (page) =>
         page.deviceId === selectedDevice.id &&
@@ -1086,13 +1121,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
     this.setState({
       contentVersions,
-      devices,
+      exhibitionDevices,
       previewDevicesData,
       pages,
       visitorVariables: visitorVariables,
       layouts,
       selectedContentVersion,
-      selectedDevice
+      selectedDevice,
+      devices
     });
   };
 
@@ -1229,7 +1265,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
   private onLocaleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> =
     async ({ target }) => {
       const { accessToken, exhibitionId } = this.props;
-      const { selectedDevice, devices, layouts, contentVersions } = this.state;
+      const { selectedDevice, exhibitionDevices: devices, layouts, contentVersions } = this.state;
       const { value } = target;
 
       const exhibitionPagesApi = Api.getExhibitionPagesApi(accessToken);
@@ -1425,7 +1461,12 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onPageClick =
     (selectedPage: ExhibitionPage, selectedContentVersion?: ContentVersion) => () => {
-      const { devices, previewDevicesData, timelineTabIndex, contentVersions } = this.state;
+      const {
+        exhibitionDevices: devices,
+        previewDevicesData,
+        timelineTabIndex,
+        contentVersions
+      } = this.state;
       const isIdlePage = timelineTabIndex === 0;
       const selectedDevice = devices.find((device) => device.id === selectedPage.deviceId);
       const previewDeviceIndex = previewDevicesData.findIndex(
@@ -1776,9 +1817,11 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       this.setState(
         produce((draft: State) => {
-          const deviceIndex = draft.devices.findIndex((device) => device.id === selectedDevice.id);
+          const deviceIndex = draft.exhibitionDevices.findIndex(
+            (device) => device.id === selectedDevice.id
+          );
           if (deviceIndex > -1) {
-            draft.devices[deviceIndex] = updatedDevice;
+            draft.exhibitionDevices[deviceIndex] = updatedDevice;
           }
           draft.dataChanged = false;
         })
@@ -1833,8 +1876,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
    */
   private onAddPageClick = async () => {
     const { accessToken, exhibitionId } = this.props;
-    const { layouts, selectedContentVersion, selectedDevice, devices, pages, timelineTabIndex } =
-      this.state;
+    const {
+      layouts,
+      selectedContentVersion,
+      selectedDevice,
+      exhibitionDevices: devices,
+      pages,
+      timelineTabIndex
+    } = this.state;
 
     if (!selectedDevice) {
       return;
@@ -1898,7 +1947,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
 
       this.setState(
         produce((draft: State) => {
-          draft.devices[deviceIndex] = updatedDevice;
+          draft.exhibitionDevices[deviceIndex] = updatedDevice;
         })
       );
     }
