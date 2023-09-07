@@ -24,14 +24,20 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
   if (!device?.id) return null;
 
   const [tempDevice, setTempDevice] = useState<Device>(device);
+  const [loading, setLoading] = useState(false);
 
   /**
    * Event handler for dialog confirm click
    */
-  const onConfirmClick = () => {
+  const onConfirmClick = async () => {
     if (!device?.id) return;
-
-    onConfirm(tempDevice);
+    setLoading(true);
+    try {
+      await onConfirm(tempDevice);
+    } catch (error: any) {
+      console.error(error);
+    }
+    setLoading(false);
   };
 
   /**
@@ -45,7 +51,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
   /**
    * Event handler for switch change
    */
-  const handleSwitchChange = (_, checked: boolean) => {
+  const handleSwitchChange = (_: any, checked: boolean) => {
     setTempDevice({
       ...device,
       approvalStatus: checked ? DeviceApprovalStatus.Approved : DeviceApprovalStatus.Pending
@@ -168,6 +174,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
       onConfirm={onConfirmClick}
       onCancel={onClose}
       onClose={onClose}
+      loading={loading}
     >
       {renderDialogContent()}
     </GenericDialog>
