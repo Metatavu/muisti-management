@@ -68,6 +68,7 @@ import {
   CircularProgress,
   Divider,
   MenuItem,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -433,8 +434,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
       );
       const device = devices.find((device) => device.id === exhibitionDevice?.deviceId);
       const deviceModel = deviceModels.find((model) => model.id === device?.deviceModelId);
-      console.log("deviceModel: ", deviceModel);
-      console.log("device: ", device);
       if (!deviceModel) {
         return null;
       }
@@ -471,7 +470,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           contentWidth={totalContentWidth}
           contentHeight={totalContentHeight}
         >
-          {previews}
+          <Stack direction="row" spacing={5}>
+            {previews}
+          </Stack>
         </PanZoom>
       </div>
     );
@@ -567,7 +568,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const { classes } = this.props;
     const {
       selectedContentVersion,
-      exhibitionDevices: devices,
+      exhibitionDevices,
       previewDevicesData,
       selectedDevice,
       pages,
@@ -589,14 +590,14 @@ class ContentEditorScreen extends React.Component<Props, State> {
           <TimelineDevicesList
             contentVersion={selectedContentVersion}
             selectedContentVersion={selectedContentVersion}
-            devices={devices}
+            devices={exhibitionDevices}
             selectedDevice={selectedDevice}
             onClick={this.onDeviceClick}
           />
           <Divider orientation="vertical" flexItem className={classes.timelineDivider} />
           <TimelineEditor
             contentVersion={selectedContentVersion}
-            devices={devices}
+            devices={exhibitionDevices}
             previewDevicesData={previewDevicesData}
             pages={pages}
             pageType="active"
