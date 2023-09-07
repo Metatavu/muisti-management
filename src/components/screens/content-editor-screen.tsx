@@ -245,8 +245,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const propertiesTitle = selectedResource
       ? strings.contentEditor.editor.resourceProperties
       : selectedTriggerIndex !== undefined
-        ? strings.contentEditor.editor.eventTriggers.title
-        : strings.contentEditor.editor.tabs.title;
+      ? strings.contentEditor.editor.eventTriggers.title
+      : strings.contentEditor.editor.tabs.title;
 
     return (
       <BasicLayout
@@ -1166,7 +1166,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     const actionButtons: ActionButton[] = [
       {
         name: strings.contentEditor.changeLocale,
-        action: () => { },
+        action: () => {},
         selectAction: this.onLocaleChange,
         options: this.getSelectLocaleOptions(),
         value: selectedContentVersion?.language as LanguageOptions,
