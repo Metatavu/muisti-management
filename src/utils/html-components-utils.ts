@@ -46,13 +46,11 @@ namespace HtmlComponentsUtils {
     nw: {
       row: {
         "justify-content": "flex-start",
-        "align-content": "flex-start",
         "justify-items": "flex-start",
         "align-items": "flex-start"
       },
       column: {
         "justify-content": "flex-start",
-        "align-content": "flex-start",
         "justify-items": "flex-start",
         "align-items": "flex-start"
       }
@@ -60,13 +58,11 @@ namespace HtmlComponentsUtils {
     n: {
       row: {
         "justify-content": "center",
-        "align-content": "flex-start",
         "justify-items": "center",
         "align-items": "flex-start"
       },
       column: {
         "justify-content": "flex-start",
-        "align-content": "center",
         "justify-items": "flex-start",
         "align-items": "center"
       }
@@ -74,13 +70,11 @@ namespace HtmlComponentsUtils {
     ne: {
       row: {
         "justify-content": "flex-end",
-        "align-content": "flex-start",
         "justify-items": "flex-end",
         "align-items": "flex-start"
       },
       column: {
         "justify-content": "flex-start",
-        "align-content": "flex-end",
         "justify-items": "flex-start",
         "align-items": "flex-end"
       }
@@ -88,13 +82,11 @@ namespace HtmlComponentsUtils {
     w: {
       row: {
         "justify-content": "flex-start",
-        "align-content": "center",
         "justify-items": "flex-start",
         "align-items": "center"
       },
       column: {
         "justify-content": "center",
-        "align-content": "flex-start",
         "justify-items": "center",
         "align-items": "flex-start"
       }
@@ -102,13 +94,11 @@ namespace HtmlComponentsUtils {
     c: {
       row: {
         "justify-content": "center",
-        "align-content": "center",
         "justify-items": "center",
         "align-items": "center"
       },
       column: {
         "justify-content": "center",
-        "align-content": "center",
         "justify-items": "center",
         "align-items": "center"
       }
@@ -116,13 +106,11 @@ namespace HtmlComponentsUtils {
     e: {
       row: {
         "justify-content": "flex-end",
-        "align-content": "center",
         "justify-items": "flex-end",
         "align-items": "center"
       },
       column: {
         "justify-content": "center",
-        "align-content": "flex-end",
         "justify-items": "center",
         "align-items": "flex-end"
       }
@@ -130,13 +118,11 @@ namespace HtmlComponentsUtils {
     sw: {
       row: {
         "justify-content": "flex-start",
-        "align-content": "flex-end",
         "justify-items": "flex-start",
         "align-items": "flex-end"
       },
       column: {
         "justify-content": "flex-end",
-        "align-content": "flex-start",
         "justify-items": "flex-end",
         "align-items": "flex-start"
       }
@@ -144,13 +130,11 @@ namespace HtmlComponentsUtils {
     s: {
       row: {
         "justify-content": "center",
-        "align-content": "flex-end",
         "justify-items": "center",
         "align-items": "flex-end"
       },
       column: {
         "justify-content": "flex-end",
-        "align-content": "center",
         "justify-items": "flex-end",
         "align-items": "center"
       }
@@ -158,13 +142,11 @@ namespace HtmlComponentsUtils {
     se: {
       row: {
         "justify-content": "flex-end",
-        "align-content": "flex-end",
         "justify-items": "flex-end",
         "align-items": "flex-end"
       },
       column: {
         "justify-content": "flex-end",
-        "align-content": "flex-end",
         "justify-items": "flex-end",
         "align-items": "flex-end"
       }
