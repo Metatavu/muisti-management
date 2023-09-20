@@ -68,6 +68,20 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
     return parseInt(component.element?.style?.height || "0").toString();
   };
 
+  const getElementWidth = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.width || "0").toString();
+  };
+
+  const getElementHeight = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.height || "0").toString();
+  };
+
   /**
    * Event handler for name change events
    *

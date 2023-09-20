@@ -62,6 +62,10 @@ const PagePreviewHtml = ({
 }: Props) => {
   const [widths, setWidths] = useState<{ [id: string]: number }>({});
 
+  const {
+    dimensions: { screenHeight, screenWidth }
+  } = deviceModel;
+
   const previewRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -86,6 +90,8 @@ const PagePreviewHtml = ({
    */
   const getPreviewDimensions = () => {
     const scale = 1;
+    const initialWidth = displayMetrics.widthPixels ?? 1 * scale;
+    const initialHeight = displayMetrics.heightPixels ?? 1 * scale;
     const initialWidth = displayMetrics.widthPixels ?? 1 * scale;
     const initialHeight = displayMetrics.heightPixels ?? 1 * scale;
 
@@ -130,6 +136,7 @@ const PagePreviewHtml = ({
     <>
       <div style={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }} />
       <Preview
+        ref={previewRef}
         ref={previewRef}
         srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
         {...getPreviewDimensions()}

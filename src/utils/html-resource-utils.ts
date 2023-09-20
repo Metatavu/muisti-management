@@ -7,6 +7,7 @@ import {
   PageResourceMode
 } from "../generated/client";
 import { HtmlComponentType, TreeObject } from "../types";
+import { HtmlComponentType, TreeObject } from "../types";
 
 /**
  * Utility functions for handling html resources
