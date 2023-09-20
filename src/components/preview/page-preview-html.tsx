@@ -1,4 +1,9 @@
-import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
+import {
+  DeviceModel,
+  DeviceModelDisplayMetrics,
+  ExhibitionPageResource,
+  ScreenOrientation
+} from "../../generated/client";
 import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { styled } from "@mui/styles";
 
@@ -6,6 +11,8 @@ import { styled } from "@mui/styles";
  * Components properties
  */
 interface Props {
+  displayMetrics: DeviceModelDisplayMetrics;
+  deviceOrientation: ScreenOrientation;
   screenOrientation: ScreenOrientation;
   layoutHtml: string;
   deviceModel: DeviceModel;
@@ -44,26 +51,20 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
  * HTML Layouts Page Preview Component
  */
 const PagePreviewHtml = ({
-  deviceModel,
+  displayMetrics,
+  deviceOrientation,
   screenOrientation,
   layoutHtml,
   resources,
   borderedElementId
 }: Props) => {
-  if (!deviceModel) return null;
-
-  const {
-    dimensions: { screenHeight, screenWidth }
-  } = deviceModel;
-
   /**
    * Gets preview dimensions
    */
   const getPreviewDimensions = () => {
     const scale = 1;
-    const deviceOrientation = deviceModel.screenOrientation;
-    const initialWidth = screenWidth ?? 1 * scale;
-    const initialHeight = screenHeight ?? 1 * scale;
+    const initialWidth = displayMetrics.widthPixels ?? 1 * scale;
+    const initialHeight = displayMetrics.heightPixels ?? 1 * scale;
 
     let height = initialHeight;
     let width = initialWidth;

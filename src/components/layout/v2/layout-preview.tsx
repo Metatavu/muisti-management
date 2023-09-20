@@ -46,7 +46,9 @@ const LayoutPreviewHtml = ({
   if (!deviceModel) return null;
 
   const {
-    dimensions: { screenHeight, screenWidth }
+    dimensions: { screenHeight, screenWidth },
+    displayMetrics,
+    screenOrientation: deviceOrientation
   } = deviceModel;
 
   return (
@@ -71,6 +73,8 @@ const LayoutPreviewHtml = ({
           {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <PagePreviewHtml
+          displayMetrics={displayMetrics}
+          deviceOrientation={deviceOrientation}
           deviceModel={deviceModel}
           screenOrientation={screenOrientation}
           layoutHtml={layoutHtml}

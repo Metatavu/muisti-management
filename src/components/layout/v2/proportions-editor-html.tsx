@@ -1,4 +1,5 @@
-import { TreeObject } from "../../../types";
+import { HtmlComponentType, TreeObject } from "../../../types";
+import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
@@ -18,6 +19,8 @@ interface Props {
 
 /**
  * HTML Component proportions editor
+ *
+ * TODO: Clean video specific stuff
  */
 const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Props) => {
   const [settings, setSettings] = useState<{
@@ -29,14 +32,25 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
   });
 
   useEffect(() => {
-    const widthType = getElementProportionType("width");
-    const heightType = getElementProportionType("height");
+    let widthType = getElementProportionType("width");
+    let heightType = getElementProportionType("height");
+
+    if (component.type === HtmlComponentType.VIDEO) {
+      widthType = "px";
+      heightType = "px";
+    }
 
     setSettings({
-      width: widthType || "px",
-      height: heightType || "px"
+      width: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("width"),
+      height: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("height")
     });
   }, [component]);
+
+  useEffect(() => {
+    const type = settings[name as keyof typeof settings];
+    const val = type === "px" ? value : `${value}${type}`;
+    onChange(name, val);
+  }, [settings]);
 
   /**
    * Event handler for input change events
@@ -58,9 +72,9 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
   const getElementProportionType = (proportion: "width" | "height") => {
     const elementDimension = component.element.style[proportion];
 
-    if (!elementDimension) return;
     if (elementDimension.endsWith("%")) return "%";
     if (elementDimension.endsWith("px")) return "px";
+    return "px";
   };
 
   /**
@@ -93,19 +107,25 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
         {label}
       </Typography>
       <TextField name={name} value={value} number onChange={onValueChange} />
-      <SelectBox
-        value={settings[name]}
-        onChange={({ target: { value } }) => {
-          setSettings({ ...settings, [name]: value as "px" | "%" });
-        }}
+      <ConditionalTooltip
+        enabled={component.type === HtmlComponentType.VIDEO}
+        title="Video elementti tukee vain pikselikokoa."
       >
-        <MenuItem value="px" sx={{ color: "#2196F3" }}>
-          px
-        </MenuItem>
-        <MenuItem value="%" sx={{ color: "#2196F3" }}>
-          %
-        </MenuItem>
-      </SelectBox>
+        <SelectBox
+          value={settings[name]}
+          disabled={component.type === HtmlComponentType.VIDEO}
+          onChange={({ target: { value } }) => {
+            setSettings({ ...settings, [name]: value as "px" | "%" });
+          }}
+        >
+          <MenuItem value="px" sx={{ color: "#2196F3" }}>
+            px
+          </MenuItem>
+          <MenuItem value="%" sx={{ color: "#2196F3" }}>
+            %
+          </MenuItem>
+        </SelectBox>
+      </ConditionalTooltip>
       {renderIcon()}
     </Stack>
   );

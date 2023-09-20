@@ -3,7 +3,6 @@ import Api from "../../api/api";
 import {
   DeviceModel,
   Exhibition,
-  ExhibitionPageResourceType,
   PageLayout,
   PageLayoutViewHtml,
   PageResourceMode,
@@ -325,7 +324,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
       id: resourceId,
       data: "",
-      type: ExhibitionPageResourceType.Text,
+      type: HtmlResourceUtils.getResourceType(newComponent.type),
       mode: PageResourceMode.Static
     }));
 
@@ -357,13 +356,13 @@ const LayoutScreenHTML: FC<Props> = ({
    * @param id id of the component to be deleted
    */
   const deleteComponent = (componentToDelete: TreeObject) => {
-    const resourceIds = HtmlResourceUtils.extractResourceIds(componentToDelete.element.outerHTML);
+    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
+
+    const resourceIds = HtmlResourceUtils.extractResourceIds(updatedTree[0].element.outerHTML);
 
     const updatedDefaultResources = foundLayout.defaultResources?.filter(
       (resource) => !resourceIds.includes(resource.id)
     );
-
-    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
 
     const updatedHtmlElements = updatedTree.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)

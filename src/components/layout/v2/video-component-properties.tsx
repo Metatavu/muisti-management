@@ -31,20 +31,19 @@ const VideoComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
-
   /**
    * Returns video resource path
-   * 
+   *
    * @returns video resource path
    */
   const getVideoResourcePath = () => {
     const { element } = component;
     return element.getElementsByTagName("source")[0].getAttribute("src") || "";
-  }
+  };
 
   /**
    * Returns video src
-   * 
+   *
    * @returns video src
    */
   const getVideo = () => {
@@ -58,15 +57,18 @@ const VideoComponentProperties = ({
    */
   const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     const resourcePath = getVideoResourcePath();
-    const resourceId = HtmlResourceUtils.getResourceId(ressourcePath);
+    const resourceId = HtmlResourceUtils.getResourceId(resourcePath);
     if (!resourceId) return;
-   
-    const defaultResources = [ ... (pageLayout.defaultResources || []).filter(resource => resource.id !== resourceId), {
-      id: resourceId,
-      data: value,
-      type: ExhibitionPageResourceType.Video,
-      mode: PageResourceMode.Static
-    }];
+
+    const defaultResources = [
+      ...(pageLayout.defaultResources || []).filter((resource) => resource.id !== resourceId),
+      {
+        id: resourceId,
+        data: value,
+        type: ExhibitionPageResourceType.Video,
+        mode: PageResourceMode.Static
+      }
+    ];
 
     setPageLayout({
       ...pageLayout,
@@ -136,8 +138,8 @@ const VideoComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.videoProperties.defaultResource} />
         <TextField
-          value={ getVideo() }
-          onChange={ handleDefaultResourceChange }
+          value={getVideo()}
+          onChange={handleDefaultResourceChange}
           placeholder={strings.layoutEditorV2.videoProperties.defaultResource}
         />
       </PropertyBox>

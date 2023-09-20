@@ -1,5 +1,6 @@
 import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
+import LocalizationUtils from "../../../utils/localization-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
@@ -39,12 +40,36 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
    * @param value value
    */
   const onPropertyChange = (name: string, value: string) => {
-    if (!value) {
-      component.element.style.removeProperty(name);
+    // TODO: Clean up this mess
+    const dimensionAttributes = ["width", "height"];
+    if (component.element.tagName === "VIDEO" && dimensionAttributes.includes(name)) {
+      if (!value) {
+        component.element.attributes.removeNamedItem(name);
+      } else {
+        component.element.setAttribute(name, value);
+      }
     } else {
-      component.element.style[name as any] = value;
+      if (!value) {
+        component.element.style.removeProperty(name);
+      } else {
+        component.element.style[name as any] = value;
+      }
     }
     updateComponent(component);
+  };
+
+  const getElementWidth = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.width || "0").toString();
+  };
+
+  const getElementHeight = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.height || "0").toString();
   };
 
   /**
@@ -78,7 +103,7 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
             <SelectBox value={component.type} disabled>
               {Object.values(HtmlComponentType).map((type) => (
                 <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
-                  {type}
+                  {LocalizationUtils.getLocalizedComponentType(type)}
                 </MenuItem>
               ))}
             </SelectBox>
@@ -98,14 +123,14 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.proportions} />
           <ProportionsEditorHtml
             component={component}
-            value={parseInt(component.element?.style?.width || "0").toString()}
+            value={getElementWidth()}
             name="width"
             label={strings.layoutEditorV2.genericProperties.width}
             onChange={onPropertyChange}
           />
           <ProportionsEditorHtml
             component={component}
-            value={parseInt(component.element?.style?.height || "0").toString()}
+            value={getElementHeight()}
             name="height"
             label={strings.layoutEditorV2.genericProperties.height}
             onChange={onPropertyChange}
