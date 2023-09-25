@@ -115,12 +115,12 @@ const TextComponentProperties = ({
   };
 
   /**
-   * Event handler for property change events
+   * Event handler for font size change events
    *
    * @param name name
    * @param value value
    */
-  const onPropertyChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const onFontSizeChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (!value) {
       component.element.style.fontSize = "0px";
     } else {
@@ -174,7 +174,7 @@ const TextComponentProperties = ({
       <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.fontSize} />
-        <TextField value={getFontSize()} name="font-size" number onChange={onPropertyChange} />
+        <TextField value={getFontSize()} name="font-size" number onChange={onFontSizeChange} />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <FontColorEditor component={component} updateComponent={updateComponent} />
