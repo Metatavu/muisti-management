@@ -1,11 +1,11 @@
 import strings from "../../../localization/strings";
-import { HtmlComponentType, TreeObject } from "../../../types";
+import { GroupedInputsType, HtmlComponentType, TreeObject } from "../../../types";
 import LocalizationUtils from "../../../utils/localization-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
+import GroupedInputsWithLock from "./GroupedInputsWithLock";
 import ColorPicker from "./color-picker";
-import MarginPaddingEditorHtml from "./margin-padding-editor-html";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import ProportionsEditorHtml from "./proportions-editor-html";
@@ -139,18 +139,18 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.margin} />
-          <MarginPaddingEditorHtml
+          <GroupedInputsWithLock
             styles={component.element.style}
-            type="margin"
+            type={GroupedInputsType.MARGIN}
             onChange={onPropertyChange}
           />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.padding} />
-          <MarginPaddingEditorHtml
+          <GroupedInputsWithLock
             styles={component.element.style}
-            type="padding"
+            type={GroupedInputsType.PADDING}
             onChange={onPropertyChange}
           />
         </PropertyBox>

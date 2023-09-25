@@ -504,11 +504,16 @@
       },
       "margin": "Margin",
       "padding": "Padding",
+      "borderRadius": "Border-radius",
       "tooltips": {
         "top": "Top",
         "right": "Right",
         "bottom": "Bottom",
-        "left": "Left"
+        "left": "Left",
+        "topLeft": "Top-left",
+        "topRight": "Top-right",
+        "bottomRight": "Bottom-right",
+        "bottomLeft": "Bottom-left"
       }
     },
     "layoutProperties": {

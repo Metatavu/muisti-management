@@ -505,11 +505,16 @@
       },
       "margin": "Marginaalit",
       "padding": "Täyttö",
+      "borderRadius": "Raja-säde",
       "tooltips": {
         "top": "Ylä",
         "right": "Oikea",
         "bottom": "Ala",
-        "left": "Vasen"
+        "left": "Vasen",
+        "topLeft": "Ylävasen",
+        "topRight": "Yläoikea",
+        "bottomRight": "Alaoikea",
+        "bottomLeft": "Alavasen"
       }
     },
     "layoutProperties": {

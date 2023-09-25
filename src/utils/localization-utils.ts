@@ -86,6 +86,19 @@ namespace LocalizationUtils {
     })[suffix];
 
   /**
+   * Returns localized border radius tooltip
+   *
+   * @param suffix suffix
+   */
+  export const getLocalizedBorderRadiusTooltip = (suffix: string) =>
+    ({
+      "-top-left": strings.layoutEditorV2.genericProperties.tooltips.topLeft,
+      "-top-right": strings.layoutEditorV2.genericProperties.tooltips.topRight,
+      "-bottom-right": strings.layoutEditorV2.genericProperties.tooltips.bottomRight,
+      "-bottom-left": strings.layoutEditorV2.genericProperties.tooltips.bottomLeft
+    })[suffix];
+
+  /**
    * Returns localized device approval status
    *
    * @param approvalStatus approvalStatus
