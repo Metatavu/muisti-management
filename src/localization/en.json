@@ -533,6 +533,7 @@
     },
     "textProperties": {
       "elementType": "Text element type",
+      "fontSize": "Font size (px)",
       "fontColor": "Font color",
       "defaultResource": "Default text"
     },

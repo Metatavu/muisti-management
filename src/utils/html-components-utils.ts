@@ -1,4 +1,4 @@
-import { HtmlComponentType } from "../types";
+import { HtmlComponentType, HtmlTextComponentType } from "../types";
 import { v4 as uuid } from "uuid";
 
 namespace HtmlComponentsUtils {
@@ -151,6 +151,24 @@ namespace HtmlComponentsUtils {
         "align-items": "flex-end"
       }
     }
+  };
+
+  /**
+   * Base font size for default fonts
+   */
+  export const BASE_FONT_SIZE = 16;
+
+  /**
+   * Default font sizes depending on HTML text component type
+   */
+  export const DEFAULT_FONT_SIZES = {
+    [HtmlTextComponentType.H1]: BASE_FONT_SIZE * 2,
+    [HtmlTextComponentType.H2]: BASE_FONT_SIZE * 1.5,
+    [HtmlTextComponentType.H3]: BASE_FONT_SIZE * 1.17,
+    [HtmlTextComponentType.H4]: BASE_FONT_SIZE,
+    [HtmlTextComponentType.H5]: BASE_FONT_SIZE * 0.83,
+    [HtmlTextComponentType.H6]: BASE_FONT_SIZE * 0.67,
+    [HtmlTextComponentType.P]: BASE_FONT_SIZE
   };
 }
 

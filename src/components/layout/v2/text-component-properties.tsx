@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { HtmlTextComponentType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import SelectBox from "../../generic/v2/select-box";
@@ -13,7 +14,7 @@ import FontColorEditor from "./font-color-editor";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import { Divider, MenuItem, Stack } from "@mui/material";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 
 /**
  * Component props
@@ -34,6 +35,17 @@ const TextComponentProperties = ({
   pageLayout,
   setPageLayout
 }: Props) => {
+  /**
+   * Updates the default font size based on text component type if no font size has been set
+   */
+  useEffect(() => {
+    if (!component.element?.style.fontSize) {
+      const defaultFontSize = getDefaultFontSize();
+      component.element.style.fontSize = `${defaultFontSize.toString()}px`;
+      updateComponent(component);
+    }
+  }, [component.element.tagName]);
+
   /**
    * Returns text resource path
    *
@@ -102,6 +114,50 @@ const TextComponentProperties = ({
     });
   };
 
+  /**
+   * Event handler for property change events
+   *
+   * @param name name
+   * @param value value
+   */
+  const onPropertyChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    if (!value) {
+      component.element.style.fontSize = "0px";
+    } else {
+      component.element.style[name as any] = `${value}px`;
+    }
+    updateComponent(component);
+  };
+
+  /**
+   * Gets default font size based on Html text component type
+   */
+  const getDefaultFontSize = () => {
+    const defaultFontSize =
+      HtmlComponentsUtils.DEFAULT_FONT_SIZES[
+        component.element.tagName as keyof typeof HtmlTextComponentType
+      ];
+
+    return Math.round(defaultFontSize);
+  };
+
+  /**
+   * Gets font size or default font size if no font size is set
+   */
+  const getFontSize = () => {
+    const fontSize = component.element?.style.fontSize;
+    const defaultFontSize =
+      HtmlComponentsUtils.DEFAULT_FONT_SIZES[
+        component.element.tagName as keyof typeof HtmlTextComponentType
+      ];
+
+    if (!fontSize) {
+      return Math.round(defaultFontSize);
+    }
+
+    return parseInt(fontSize);
+  };
+
   return (
     <Stack>
       <Divider sx={{ color: "#F5F5F5" }} />
@@ -114,6 +170,11 @@ const TextComponentProperties = ({
             </MenuItem>
           ))}
         </SelectBox>
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }} />
+      <PropertyBox>
+        <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.fontSize} />
+        <TextField value={getFontSize()} name="font-size" number onChange={onPropertyChange} />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <FontColorEditor component={component} updateComponent={updateComponent} />
