@@ -30,7 +30,6 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     width: "px",
     height: "px"
   });
-
   useEffect(() => {
     let widthType = getElementProportionType("width");
     let heightType = getElementProportionType("height");
@@ -45,12 +44,6 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
       height: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("height")
     });
   }, [component]);
-
-  useEffect(() => {
-    const type = settings[name as keyof typeof settings];
-    const val = type === "px" ? value : `${value}${type}`;
-    onChange(name, val);
-  }, [settings]);
 
   /**
    * Event handler for input change events
