@@ -539,6 +539,7 @@
     "textProperties": {
       "elementType": "Text element type",
       "fontSize": "Font size (px)",
+      "lineHeight": "Line height",
       "fontColor": "Font color",
       "defaultResource": "Default text"
     },

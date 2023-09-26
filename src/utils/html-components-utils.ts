@@ -188,6 +188,11 @@ namespace HtmlComponentsUtils {
 
     return parseInt(fontSize);
   };
+
+  /**
+   * Default line-height
+   */
+  export const DEFAULT_LINE_HEIGHT = 100;
 }
 
 export default HtmlComponentsUtils;

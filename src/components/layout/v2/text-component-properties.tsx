@@ -118,6 +118,32 @@ const TextComponentProperties = ({
     updateComponent(component);
   };
 
+  /**
+   * Event handler for line height change events
+   *
+   * @param name name
+   * @param value value
+   */
+  const onLineHeightChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    if (!value) {
+      component.element.style.lineHeight = "0%";
+    } else {
+      component.element.style[name as any] = `${parseFloat(value)}%`;
+    }
+    updateComponent(component);
+  };
+
+  /**
+   * Gets line height
+   */
+  const getLineHeight = () => {
+    const lineHeight = component.element?.style.lineHeight;
+
+    if (!lineHeight) return HtmlComponentsUtils.DEFAULT_LINE_HEIGHT;
+
+    return `${parseInt(lineHeight)}`;
+  };
+
   return (
     <Stack>
       <Divider sx={{ color: "#F5F5F5" }} />
@@ -140,6 +166,11 @@ const TextComponentProperties = ({
           number
           onChange={onFontSizeChange}
         />
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }} />
+      <PropertyBox>
+        <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.lineHeight} />
+        <TextField value={getLineHeight()} name="line-height" onChange={onLineHeightChange} />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <FontColorEditor component={component} updateComponent={updateComponent} />

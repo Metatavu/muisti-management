@@ -550,6 +550,7 @@ export interface IStrings extends LocalizedStringsMethods {
     textProperties: {
       elementType: string;
       fontSize: string;
+      lineHeight: string;
       fontColor: string;
       defaultResource: string;
     };

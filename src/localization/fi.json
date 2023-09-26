@@ -540,6 +540,7 @@
     "textProperties": {
       "elementType": "Tekstielementin tyyppi",
       "fontSize": "Fontin koko (px)",
+      "lineHeight": "Viivankorkeus",
       "fontColor": "Fontin väri",
       "defaultResource": "Oletusteksti"
     },
