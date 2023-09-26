@@ -42,6 +42,34 @@ namespace HtmlComponentsUtils {
   const getHtmlVideoElement = (name?: string) =>
     `<video id="${uuid()}" data-component-type="video" name="${name}"><source src="@resources/${uuid()}"></video>`;
 
+  export const handleAttributeChange = (
+    element: HTMLElement,
+    attribute: string,
+    value: string
+  ): HTMLElement => {
+    if (!value) {
+      element.removeAttribute(attribute);
+    } else {
+      element.setAttribute(attribute, value);
+    }
+
+    return element;
+  };
+
+  export const handleStyleAttributeChange = (
+    element: HTMLElement,
+    styleAttribute: string,
+    value: string
+  ): HTMLElement => {
+    if (!value) {
+      element.style.removeProperty(styleAttribute);
+    } else {
+      element.style.setProperty(styleAttribute, value);
+    }
+
+    return element;
+  };
+
   export const ALIGNMENT_MAP = {
     nw: {
       row: {

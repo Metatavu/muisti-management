@@ -1,5 +1,6 @@
 import strings from "../../../localization/strings";
 import { GroupedInputsType, HtmlComponentType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
@@ -40,33 +41,28 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
    * @param value value
    */
   const onPropertyChange = (name: string, value: string) => {
-    // TODO: Clean up this mess
+    let { element } = component;
     const dimensionAttributes = ["width", "height"];
-    if (component.element.tagName === "VIDEO" && dimensionAttributes.includes(name)) {
-      if (!value) {
-        component.element.attributes.removeNamedItem(name);
-      } else {
-        component.element.setAttribute(name, value);
-      }
+    const { tagName } = component.element;
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO && dimensionAttributes.includes(name)) {
+      element = HtmlComponentsUtils.handleAttributeChange(element, name, value);
     } else {
-      if (!value) {
-        component.element.style.removeProperty(name);
-      } else {
-        component.element.style[name as any] = value;
-      }
+      element = HtmlComponentsUtils.handleStyleAttributeChange(element, name, value);
     }
-    updateComponent(component);
+    updateComponent({ ...component, element: element });
   };
 
   const getElementWidth = () => {
-    if (component.element.tagName === "VIDEO") {
+    const { tagName } = component.element;
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
       return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
     }
     return parseInt(component.element?.style?.width || "0").toString();
   };
 
   const getElementHeight = () => {
-    if (component.element.tagName === "VIDEO") {
+    const { tagName } = component.element;
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
       return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
     }
     return parseInt(component.element?.style?.height || "0").toString();

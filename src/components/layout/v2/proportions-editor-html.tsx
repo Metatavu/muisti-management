@@ -1,3 +1,4 @@
+import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
@@ -17,16 +18,18 @@ interface Props {
   onChange: (name: string, value: string) => void;
 }
 
+interface ElementProportions {
+  width: "px" | "%";
+  height: "px" | "%";
+}
+
 /**
  * HTML Component proportions editor
  *
  * TODO: Clean video specific stuff
  */
 const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Props) => {
-  const [settings, setSettings] = useState<{
-    width: "px" | "%";
-    height: "px" | "%";
-  }>({
+  const [settings, setSettings] = useState<ElementProportions>({
     width: "px",
     height: "px"
   });
@@ -108,7 +111,7 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
       <TextField name={name} value={value} number onChange={onValueChange} />
       <ConditionalTooltip
         enabled={component.type === HtmlComponentType.VIDEO}
-        title="Video elementti tukee vain pikselikokoa."
+        title={strings.layoutEditorV2.genericProperties.videoProportionsTooltip}
       >
         <SelectBox
           value={settings[name]}
