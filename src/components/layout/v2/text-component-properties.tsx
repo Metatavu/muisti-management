@@ -13,7 +13,7 @@ import TextField from "../../generic/v2/text-field";
 import FontColorEditor from "./font-color-editor";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
-import { Divider, MenuItem, Stack } from "@mui/material";
+import { Divider, MenuItem, Slider, Stack, Typography } from "@mui/material";
 import { ChangeEvent } from "react";
 
 /**
@@ -124,11 +124,11 @@ const TextComponentProperties = ({
    * @param name name
    * @param value value
    */
-  const onLineHeightChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
-    if (!value) {
-      component.element.style.lineHeight = "0%";
+  const onLineHeightChange = (_: any, newValue: number | number[]) => {
+    if (!newValue) {
+      component.element.style.removeProperty("line-height");
     } else {
-      component.element.style[name as any] = `${parseFloat(value)}%`;
+      component.element.style.setProperty("line-height", newValue.toString());
     }
     updateComponent(component);
   };
@@ -139,9 +139,11 @@ const TextComponentProperties = ({
   const getLineHeight = () => {
     const lineHeight = component.element?.style.lineHeight;
 
-    if (!lineHeight) return HtmlComponentsUtils.DEFAULT_LINE_HEIGHT;
+    if (!lineHeight) {
+      return HtmlComponentsUtils.DEFAULT_LINE_HEIGHT;
+    }
 
-    return `${parseInt(lineHeight)}`;
+    return parseFloat(lineHeight);
   };
 
   return (
@@ -170,7 +172,18 @@ const TextComponentProperties = ({
       <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.lineHeight} />
-        <TextField value={getLineHeight()} name="line-height" onChange={onLineHeightChange} />
+        <Stack direction="row" spacing={2}>
+          <Slider
+            value={getLineHeight()}
+            onChange={onLineHeightChange}
+            valueLabelDisplay="auto"
+            step={0.1}
+            color="secondary"
+            min={0}
+            max={5}
+          />
+          <Typography variant="caption">{getLineHeight()}</Typography>
+        </Stack>
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <FontColorEditor component={component} updateComponent={updateComponent} />

@@ -220,7 +220,7 @@ namespace HtmlComponentsUtils {
   /**
    * Default line-height
    */
-  export const DEFAULT_LINE_HEIGHT = 100;
+  export const DEFAULT_LINE_HEIGHT = 1.2;
 }
 
 export default HtmlComponentsUtils;
