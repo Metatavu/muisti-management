@@ -28,7 +28,7 @@ namespace HtmlComponentsUtils {
   };
 
   const getHtmlLayoutElement = (name?: string) =>
-    `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row;"></div>`;
+    `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row; width: 100%; height: 100%"></div>`;
   const getHtmlButtonElement = (name?: string) =>
     `<button id="${uuid()}" data-component-type="button" name="${name}">@resources/${uuid()}</button>`;
   const getHtmlTextElement = (name?: string) =>
