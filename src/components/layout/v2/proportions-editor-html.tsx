@@ -45,6 +45,12 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     });
   }, [component]);
 
+  useEffect(() => {
+    const type = settings[name as keyof typeof settings];
+    const val = type === "px" ? value : `${value}${type}`;
+    onChange(name, val);
+  }, [settings]);
+
   /**
    * Event handler for input change events
    *
