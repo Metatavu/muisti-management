@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { GroupedInputsType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import TextField from "../../generic/v2/text-field";
 import GroupedInputsWithLock from "./GroupedInputsWithLock";
@@ -93,10 +94,35 @@ const ButtonComponentProperties = ({
     updateComponent(component);
   };
 
+  /**
+   * Event handler for font size change events
+   *
+   * @param name name
+   * @param value value
+   */
+  const onFontSizeChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    if (!value) {
+      component.element.style.fontSize = "0px";
+    } else {
+      component.element.style[name as any] = `${value}px`;
+    }
+    updateComponent(component);
+  };
+
   return (
     <Stack>
       <Divider sx={{ color: "#F5F5F5" }} />
       <FontColorEditor component={component} updateComponent={updateComponent} />
+      <PropertyBox>
+        <PanelSubtitle subtitle={strings.layoutEditorV2.textProperties.fontSize} />
+        <TextField
+          value={HtmlComponentsUtils.getFontSize(component)}
+          name="font-size"
+          number
+          onChange={onFontSizeChange}
+        />
+      </PropertyBox>
+      <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.borderRadius} />
         <GroupedInputsWithLock

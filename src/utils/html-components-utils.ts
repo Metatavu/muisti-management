@@ -1,4 +1,4 @@
-import { HtmlComponentType, HtmlTextComponentType } from "../types";
+import { HtmlComponentType, HtmlTextComponentType, TreeObject } from "../types";
 import { v4 as uuid } from "uuid";
 
 namespace HtmlComponentsUtils {
@@ -168,7 +168,25 @@ namespace HtmlComponentsUtils {
     [HtmlTextComponentType.H4]: BASE_FONT_SIZE,
     [HtmlTextComponentType.H5]: BASE_FONT_SIZE * 0.83,
     [HtmlTextComponentType.H6]: BASE_FONT_SIZE * 0.67,
-    [HtmlTextComponentType.P]: BASE_FONT_SIZE
+    [HtmlTextComponentType.P]: BASE_FONT_SIZE,
+    [HtmlTextComponentType.BUTTON]: BASE_FONT_SIZE
+  };
+
+  /**
+   * Gets font size or default font size if no font size is set
+   */
+  export const getFontSize = (component: TreeObject) => {
+    const fontSize = component.element?.style.fontSize;
+    const defaultFontSize =
+      HtmlComponentsUtils.DEFAULT_FONT_SIZES[
+        component.element.tagName as keyof typeof HtmlTextComponentType
+      ];
+
+    if (!fontSize) {
+      return Math.round(defaultFontSize);
+    }
+
+    return parseInt(fontSize);
   };
 }
 
