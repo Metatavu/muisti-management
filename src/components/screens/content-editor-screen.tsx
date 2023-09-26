@@ -515,7 +515,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
           displayMetrics={displayMetrics}
           deviceOrientation={deviceOrientation}
           screenOrientation={previewLayout.screenOrientation}
-          deviceModel={deviceModel}
           layoutHtml={layoutHtml}
           resources={previewPage.resources}
         />
