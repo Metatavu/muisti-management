@@ -403,6 +403,8 @@ const LayoutScreenHTML: FC<Props> = ({
   
       if (width && width.endsWith("%") && previewWidth) {
         element.style.maxWidth = `${previewWidth}px`;
+      } else {
+        element.style.maxWidth = "";
       }
     }
 
