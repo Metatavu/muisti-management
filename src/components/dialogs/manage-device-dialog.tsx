@@ -58,7 +58,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
    */
   const handleSwitchChange = (_: any, checked: boolean) => {
     setTempDevice({
-      ...device,
+      ...tempDevice,
       approvalStatus: checked ? DeviceApprovalStatus.Approved : DeviceApprovalStatus.Pending
     });
   };
