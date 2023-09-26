@@ -21,7 +21,7 @@ const GroupedInputsWithLock = ({ type, onChange, styles }: Props) => {
   const [lock, setLock] = useState(false);
 
   const paddingAndMarginSuffixes = ["-top", "-right", "-bottom", "-left"];
-  const borderRadiiSuffixes = ["-top-left", "-top-right", "-bottom-right", "-bottom-left"];
+  const borderRadiusSuffixes = ["-top-left", "-top-right", "-bottom-right", "-bottom-left"];
 
   /**
    * Event handler for input change events
@@ -40,7 +40,7 @@ const GroupedInputsWithLock = ({ type, onChange, styles }: Props) => {
     onChange(type, value);
 
   const suffixes =
-    type === GroupedInputsType.BORDER_RADIUS ? borderRadiiSuffixes : paddingAndMarginSuffixes;
+    type === GroupedInputsType.BORDER_RADIUS ? borderRadiusSuffixes : paddingAndMarginSuffixes;
 
   /**
    * Gets correct format for CSS border radius
