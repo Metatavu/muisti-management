@@ -16,6 +16,7 @@ interface Props {
   deviceModel: DeviceModel;
   resources: ExhibitionPageResource[];
   selectedComponentId?: string;
+  onWidthsChange?: (widths: { [id: string]: number }) => void;
 }
 
 /**
@@ -39,7 +40,8 @@ const LayoutPreviewHtml = ({
   screenOrientation,
   layoutHtml,
   resources,
-  selectedComponentId
+  selectedComponentId,
+  onWidthsChange
 }: Props) => {
   const [showElementBorders, setShowElementBorders] = useState(false);
 
@@ -76,6 +78,7 @@ const LayoutPreviewHtml = ({
           layoutHtml={layoutHtml}
           resources={resources}
           borderedElementId={showElementBorders ? selectedComponentId : undefined}
+          onWidthsChange={ onWidthsChange }
         />
       </PanZoom>
       <FormControlLabel

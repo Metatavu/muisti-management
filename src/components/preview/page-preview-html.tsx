@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
 import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { styled } from "@mui/styles";
+import deepEqual from "fast-deep-equal";
 
 /**
  * Components properties
@@ -11,6 +13,7 @@ interface Props {
   deviceModel: DeviceModel;
   resources: ExhibitionPageResource[];
   borderedElementId?: string;
+  onWidthsChange?: (widths: { [id: string]: number }) => void;
 }
 
 /**
@@ -48,13 +51,34 @@ const PagePreviewHtml = ({
   screenOrientation,
   layoutHtml,
   resources,
-  borderedElementId
+  borderedElementId,
+  onWidthsChange
 }: Props) => {
   if (!deviceModel) return null;
 
-  const {
-    dimensions: { screenHeight, screenWidth }
-  } = deviceModel;
+  const [widths, setWidths] = useState<{ [id: string]: number }>({});
+
+  const { dimensions: { screenHeight, screenWidth } } = deviceModel;
+
+  const previewRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const contentDocument = previewRef.current?.contentDocument;
+    if (!onWidthsChange || !contentDocument || !layoutHtml) return;
+
+    const newWidths: { [id: string]: number } = {};    
+
+    const elements = contentDocument.querySelectorAll("[id]");
+    elements.forEach(element => {
+      newWidths[element.id] = element.clientWidth;
+    });
+
+    if (!deepEqual(newWidths, widths)) {
+      setWidths(newWidths);
+      onWidthsChange(newWidths);
+    }
+
+  }, [ previewRef, layoutHtml, onWidthsChange ]);
 
   /**
    * Gets preview dimensions
@@ -106,6 +130,7 @@ const PagePreviewHtml = ({
     <>
       <div style={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }} />
       <Preview
+        ref={ previewRef }
         srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
         {...getPreviewDimensions()}
       />
