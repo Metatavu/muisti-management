@@ -25,15 +25,22 @@ interface ElementProportions {
 
 /**
  * HTML Component proportions editor
- *
- * TODO: Clean video specific stuff
  */
 const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Props) => {
-  const [settings, setSettings] = useState<ElementProportions>({
-    width: "px",
-    height: "px"
-  });
-  useEffect(() => {
+  /**
+   * Gets element proportion type
+   *
+   * @param proportion proportion
+   */
+  const getElementProportionType = (proportion: "width" | "height") => {
+    const elementDimension = component.element.style[proportion];
+
+    if (elementDimension.endsWith("%")) return "%";
+    if (elementDimension.endsWith("px")) return "px";
+    return "px";
+  };
+
+  const getInitialSettings = () => {
     let widthType = getElementProportionType("width");
     let heightType = getElementProportionType("height");
 
@@ -42,14 +49,21 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
       heightType = "px";
     }
 
-    setSettings({
+    return {
       width: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("width"),
       height: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("height")
-    });
-  }, [component]);
+    } as ElementProportions;
+  };
+
+  const [settings, setSettings] = useState<ElementProportions>(getInitialSettings());
 
   useEffect(() => {
-    const type = settings[name as keyof typeof settings];
+    let type = settings[name as keyof typeof settings];
+
+    if (component.type === HtmlComponentType.VIDEO) {
+      type = "px";
+    }
+
     const val = type === "px" ? value : `${value}${type}`;
     onChange(name, val);
   }, [settings]);
@@ -64,19 +78,6 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     const val = type === "px" ? value : `${value}${type}`;
 
     onChange(name, val);
-  };
-
-  /**
-   * Gets element proportion type
-   *
-   * @param proportion proportion
-   */
-  const getElementProportionType = (proportion: "width" | "height") => {
-    const elementDimension = component.element.style[proportion];
-
-    if (elementDimension.endsWith("%")) return "%";
-    if (elementDimension.endsWith("px")) return "px";
-    return "px";
   };
 
   /**

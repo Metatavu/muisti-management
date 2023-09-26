@@ -506,7 +506,7 @@
       },
       "margin": "Marginaalit",
       "padding": "Täyttö",
-      "borderRadius": "Raja-säde",
+      "borderRadius": "Kulmien pyöristys",
       "tooltips": {
         "top": "Ylä",
         "right": "Oikea",

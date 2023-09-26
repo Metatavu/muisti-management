@@ -12,7 +12,13 @@ import {
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
+import {
+  AccessToken,
+  ActionButton,
+  HtmlComponentType,
+  LayoutEditorView,
+  TreeObject
+} from "../../types";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
@@ -399,11 +405,11 @@ const LayoutScreenHTML: FC<Props> = ({
     if (type === HtmlComponentType.TEXT) {
       const width = element.style.width;
       const previewWidth = previewWidths[id];
-  
-      if (width && width.endsWith("%") && previewWidth) {
+
+      if (width?.endsWith("%") && previewWidth) {
         element.style.maxWidth = `${previewWidth}px`;
       } else {
-        element.style.maxWidth = "";
+        element.style.removeProperty("max-width");
       }
     }
 
