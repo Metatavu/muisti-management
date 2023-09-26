@@ -397,7 +397,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
     const { id, element, type } = updatedComponent;
 
-    if (type == HtmlComponentType.TEXT) {
+    if (type === HtmlComponentType.TEXT) {
       const width = element.style.width;
       const previewWidth = previewWidths[id];
   
