@@ -13,7 +13,7 @@ import {
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-import { AccessToken, ActionButton, LayoutEditorView, TreeObject } from "../../types";
+import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
@@ -82,6 +82,7 @@ const LayoutScreenHTML: FC<Props> = ({
   const [addComponentDialogOpen, setAddComponentDialogOpen] = useState(false);
   const [newComponentPath, setNewComponentPath] = useState<string>();
   const [isNewComponentSibling, setIsNewComponentSibling] = useState<boolean>();
+  const [previewWidths, setPreviewWidths] = useState<{ [id: string]: number }>({});
 
   useEffect(() => {
     fetchLayout();
@@ -175,10 +176,10 @@ const LayoutScreenHTML: FC<Props> = ({
         view === LayoutEditorView.CODE
           ? strings.exhibitionLayouts.editView.switchToVisualButton
           : strings.exhibitionLayouts.editView.switchToCodeButton,
-      action: () =>
-        view === LayoutEditorView.CODE
-          ? setView(LayoutEditorView.VISUAL)
-          : setView(LayoutEditorView.CODE)
+      action: () => {
+        setPreviewWidths({});
+        setView(view === LayoutEditorView.CODE ? LayoutEditorView.VISUAL : LayoutEditorView.CODE);
+      }
     },
     {
       name: strings.exhibitionLayouts.editView.saveButton,
@@ -272,6 +273,7 @@ const LayoutScreenHTML: FC<Props> = ({
             screenOrientation={foundLayout.screenOrientation}
             resources={foundLayout.defaultResources || []}
             selectedComponentId={selectedComponent?.id}
+            onWidthsChange={setPreviewWidths}
           />
         );
       }
@@ -392,6 +394,19 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
+
+    const { id, element, type } = updatedComponent;
+
+    if (type === HtmlComponentType.TEXT) {
+      const width = element.style.width;
+      const previewWidth = previewWidths[id];
+  
+      if (width && width.endsWith("%") && previewWidth) {
+        element.style.maxWidth = `${previewWidth}px`;
+      } else {
+        element.style.maxWidth = "";
+      }
+    }
 
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),
