@@ -506,6 +506,7 @@ export interface IStrings extends LocalizedStringsMethods {
       element: string;
       elementName: string;
       proportions: string;
+      backgroundImage: string;
       videoProportionsTooltip: string;
       width: string;
       height: string;
