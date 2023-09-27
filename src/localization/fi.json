@@ -497,6 +497,7 @@
       "element": "Elementti",
       "elementName": "Elementin nimi",
       "proportions": "Mittasuhteet",
+      "backgroundImage": "Taustakuva",
       "videoProportionsTooltip": "Videoelementti tukee vain pikselikokoa",
       "width": "Leveys",
       "height": "Korkeus",
