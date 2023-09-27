@@ -40,6 +40,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
       console.error(error);
     }
     setLoading(false);
+    onClose();
   };
 
   /**
