@@ -24,6 +24,8 @@ namespace HtmlComponentsUtils {
         return getHtmlTabElement(name);
       case HtmlComponentType.VIDEO:
         return getHtmlVideoElement(name);
+      case HtmlComponentType.IMAGE_BUTTON:
+        return getHtmlImageButtonElement(name);
     }
   };
 
@@ -41,6 +43,8 @@ namespace HtmlComponentsUtils {
     `<div id="${uuid()}" data-component-type="tab" name="${name}"></div>`;
   const getHtmlVideoElement = (name?: string) =>
     `<video id="${uuid()}" data-component-type="video" name="${name}"><source src="@resources/${uuid()}"></video>`;
+  const getHtmlImageButtonElement = (name?: string) =>
+    `<button id="${uuid()}" data-component-type="image-button" name="${name}" style="padding: 0;"><img src="@resources/${uuid()}" style="width: 100%; height: 100%;"/></button>`;
 
   export const handleAttributeChange = (
     element: HTMLElement,

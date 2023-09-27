@@ -298,6 +298,7 @@ export interface IStrings extends LocalizedStringsMethods {
         tabs: string;
         tab: string;
         video: string;
+        imageButton: string;
       };
       textTypes: {
         heading1: string;
@@ -1041,6 +1042,7 @@ export interface IStrings extends LocalizedStringsMethods {
       tabViewDescription: string;
       tabsViewDescription: string;
       videoViewDescription: string;
+      imageButtonViewDescription: string;
     };
     contentManager: {
       animationInterpolations: {

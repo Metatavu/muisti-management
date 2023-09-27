@@ -37,7 +37,8 @@ namespace LocalizationUtils {
       [HtmlComponentType.TEXT]: strings.layout.html.types.text,
       [HtmlComponentType.TABS]: strings.layout.html.types.tabs,
       [HtmlComponentType.TAB]: strings.layout.html.types.tab,
-      [HtmlComponentType.VIDEO]: strings.layout.html.types.video
+      [HtmlComponentType.VIDEO]: strings.layout.html.types.video,
+      [HtmlComponentType.IMAGE_BUTTON]: strings.layout.html.types.imageButton
     })[componentType];
 
   /**
@@ -53,7 +54,8 @@ namespace LocalizationUtils {
       [HtmlComponentType.TEXT]: strings.helpTexts.layoutEditorHtml.textViewDescription,
       [HtmlComponentType.TABS]: strings.helpTexts.layoutEditorHtml.tabsViewDescription,
       [HtmlComponentType.TAB]: strings.helpTexts.layoutEditorHtml.tabViewDescription,
-      [HtmlComponentType.VIDEO]: strings.helpTexts.layoutEditorHtml.videoViewDescription
+      [HtmlComponentType.VIDEO]: strings.helpTexts.layoutEditorHtml.videoViewDescription,
+      [HtmlComponentType.IMAGE_BUTTON]: strings.helpTexts.layoutEditorHtml.videoViewDescription
     })[componentType];
 
   /**
@@ -69,7 +71,8 @@ namespace LocalizationUtils {
       [HtmlTextComponentType.H4]: strings.layout.html.textTypes.heading4,
       [HtmlTextComponentType.H5]: strings.layout.html.textTypes.heading5,
       [HtmlTextComponentType.H6]: strings.layout.html.textTypes.heading6,
-      [HtmlTextComponentType.P]: strings.layout.html.textTypes.body
+      [HtmlTextComponentType.P]: strings.layout.html.textTypes.body,
+      [HtmlTextComponentType.BUTTON]: strings.layout.html.textTypes.body
     })[textComponentType];
 
   /**

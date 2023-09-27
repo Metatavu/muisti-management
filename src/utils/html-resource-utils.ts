@@ -130,7 +130,8 @@ namespace HtmlResourceUtils {
       [HtmlComponentType.BUTTON]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.TABS]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.TAB]: ExhibitionPageResourceType.Text,
-      [HtmlComponentType.LAYOUT]: ExhibitionPageResourceType.Text
+      [HtmlComponentType.LAYOUT]: ExhibitionPageResourceType.Text,
+      [HtmlComponentType.IMAGE_BUTTON]: ExhibitionPageResourceType.Text
     })[type];
 }
 
