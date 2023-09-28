@@ -95,15 +95,13 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.element} />
-          <ConditionalTooltip enabled title={strings.generic.notYetImplemented}>
-            <SelectBox value={component.type} disabled>
-              {Object.values(HtmlComponentType).map((type) => (
-                <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
-                  {LocalizationUtils.getLocalizedComponentType(type)}
-                </MenuItem>
-              ))}
-            </SelectBox>
-          </ConditionalTooltip>
+          <SelectBox value={component.type} disabled>
+            {Object.values(HtmlComponentType).map((type) => (
+              <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
+                {LocalizationUtils.getLocalizedComponentType(type)}
+              </MenuItem>
+            ))}
+          </SelectBox>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
