@@ -1,12 +1,6 @@
-import {
-  ExhibitionPageResourceType,
-  PageLayout,
-  PageResourceMode
-} from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { GroupedInputsType, HtmlComponentType, TreeObject } from "../../../types";
 import HtmlComponentsUtils from "../../../utils/html-components-utils";
-import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
@@ -30,19 +24,12 @@ import { ColorResult } from "react-color";
 interface Props {
   component: TreeObject;
   updateComponent: (updatedComponent: TreeObject) => void;
-  pageLayout: PageLayout;
-  setPageLayout: (foundLayout: PageLayout) => void;
 }
 
 /**
  * Generic Component Properties
  */
-const GenericComponentProperties = ({
-  component,
-  updateComponent,
-  pageLayout,
-  setPageLayout
-}: Props) => {
+const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) => {
   const [popoverAnchorElement, setPopoverAnchorElement] = useState<HTMLButtonElement>();
 
   if (!component) return null;
@@ -117,42 +104,6 @@ const GenericComponentProperties = ({
     };
   };
 
-  /**
-   * Gets elements background image source
-   */
-  const getBackgroundImageSrc = () => {
-    const { element } = component;
-    const backgroundImage = element.style.backgroundImage;
-
-    return HtmlResourceUtils.getResourceData(pageLayout.defaultResources, backgroundImage);
-  };
-
-  /**
-   * Event handler for default resource change event
-   *
-   * @param event event
-   */
-  const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const { element } = component;
-    const backgroundImage = element.style.backgroundImage;
-    const resourceId = HtmlResourceUtils.getResourceId(backgroundImage);
-    if (!resourceId) return;
-    const defaultResources = [
-      ...(pageLayout.defaultResources || []).filter((resource) => resource.id !== resourceId),
-      {
-        id: resourceId,
-        data: value,
-        type: ExhibitionPageResourceType.Image,
-        mode: PageResourceMode.Static
-      }
-    ];
-
-    setPageLayout({
-      ...pageLayout,
-      defaultResources: defaultResources
-    });
-  };
-
   return (
     <>
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
@@ -209,16 +160,6 @@ const GenericComponentProperties = ({
             styles={component.element.style}
             type={GroupedInputsType.PADDING}
             onChange={onPropertyChange}
-          />
-        </PropertyBox>
-        <Divider sx={{ color: "#F5F5F5" }} />
-        <PropertyBox>
-          <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.backgroundImage} />
-          <TextField
-            name="background-image"
-            value={getBackgroundImageSrc()}
-            onChange={handleDefaultResourceChange}
-            placeholder={strings.layoutEditorV2.genericProperties.backgroundImage}
           />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />

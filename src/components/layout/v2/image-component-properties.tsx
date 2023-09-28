@@ -95,7 +95,7 @@ const ImageComponentProperties = ({ component, pageLayout, setPageLayout }: Prop
         <TextField
           value={getImageSrc()}
           onChange={handleDefaultResourceChange}
-          placeholder={strings.layoutEditorV2.imageProperties.defaultResource}
+          placeholder={strings.layoutEditorV2.textProperties.defaultResource}
         />
       </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
