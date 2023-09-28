@@ -288,7 +288,8 @@
         "image": "Image",
         "tabs": "Tabs",
         "tab": "Tab",
-        "video": "Video"
+        "video": "Video",
+        "imageButton": "Image button"
       },
       "textTypes": {
         "heading1": "Heading 1",
@@ -1012,7 +1013,8 @@
       "layoutDescription": "Layout element",
       "tabViewDescription": "Tab element",
       "tabsViewDescription": "Tabs element",
-      "videoViewDescription": "Video element"
+      "videoViewDescription": "Video element",
+      "imageButtonViewDescription": "Image button element"
     },
     "contentManager": {
       "animationInterpolations": {

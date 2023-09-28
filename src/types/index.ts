@@ -303,7 +303,8 @@ export enum HtmlComponentType {
   TEXT = "text",
   TABS = "tabs",
   TAB = "tab",
-  VIDEO = "video"
+  VIDEO = "video",
+  IMAGE_BUTTON = "image-button"
 }
 
 /**

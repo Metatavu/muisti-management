@@ -72,6 +72,20 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
     return parseInt(styles["height"] || "0").toString();
   };
 
+  const getElementWidth = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.width || "0").toString();
+  };
+
+  const getElementHeight = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.height || "0").toString();
+  };
+
   /**
    * Event handler for name change events
    *
@@ -100,15 +114,13 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.element} />
-          <ConditionalTooltip enabled title={strings.generic.notYetImplemented}>
-            <SelectBox value={component.type} disabled>
-              {Object.values(HtmlComponentType).map((type) => (
-                <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
-                  {LocalizationUtils.getLocalizedComponentType(type)}
-                </MenuItem>
-              ))}
-            </SelectBox>
-          </ConditionalTooltip>
+          <SelectBox value={component.type} disabled>
+            {Object.values(HtmlComponentType).map((type) => (
+              <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
+                {LocalizationUtils.getLocalizedComponentType(type)}
+              </MenuItem>
+            ))}
+          </SelectBox>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
