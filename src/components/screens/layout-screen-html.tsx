@@ -42,7 +42,7 @@ import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
@@ -88,6 +88,7 @@ const LayoutScreenHTML: FC<Props> = ({
   const [newComponentPath, setNewComponentPath] = useState<string>();
   const [isNewComponentSibling, setIsNewComponentSibling] = useState<boolean>();
   const [previewWidths, setPreviewWidths] = useState<{ [id: string]: number }>({});
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     fetchLayout();
@@ -96,6 +97,11 @@ const LayoutScreenHTML: FC<Props> = ({
   useEffect(() => {
     if (!foundLayout) return;
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setDataChanged(true);
   }, [foundLayout]);
 
   /**
