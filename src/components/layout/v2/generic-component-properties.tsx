@@ -2,7 +2,6 @@ import strings from "../../../localization/strings";
 import { GroupedInputsType, HtmlComponentType, TreeObject } from "../../../types";
 import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import LocalizationUtils from "../../../utils/localization-utils";
-import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import ColorPicker from "./color-picker";
@@ -52,14 +51,6 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
     updateComponent({ ...component, element: element });
   };
 
-  const getElementWidth = () => {
-    const { tagName } = component.element;
-    if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
-      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
-    }
-    return parseInt(component.element?.style?.width || "0").toString();
-  };
-
   const getElementHeight = () => {
     const { tagName } = component.element;
     if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
@@ -73,13 +64,6 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
       return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
     }
     return parseInt(component.element?.style?.width || "0").toString();
-  };
-
-  const getElementHeight = () => {
-    if (component.element.tagName === "VIDEO") {
-      return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
-    }
-    return parseInt(component.element?.style?.height || "0").toString();
   };
 
   /**
