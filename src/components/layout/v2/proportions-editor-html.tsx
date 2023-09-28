@@ -36,6 +36,7 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
    * @param proportion proportion
    */
   const getElementProportionType = (proportion: "width" | "height") => {
+    if (component.type === HtmlComponentType.VIDEO) return "px";
     const styles = HtmlComponentsUtils.parseStyles(component.element);
     const elementDimension = styles[proportion];
 
@@ -44,20 +45,11 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     return "px";
   };
 
-  const getInitialSettings = () => {
-    let widthType = getElementProportionType("width");
-    let heightType = getElementProportionType("height");
-
-    if (component.type === HtmlComponentType.VIDEO) {
-      widthType = "px";
-      heightType = "px";
-    }
-
-    return {
-      width: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("width"),
-      height: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("height")
-    } as ElementProportions;
-  };
+  const getInitialSettings = () =>
+    ({
+      width: getElementProportionType("width"),
+      height: getElementProportionType("height")
+    }) as ElementProportions;
 
   const [settings, setSettings] = useState<ElementProportions>(getInitialSettings());
 
@@ -84,19 +76,6 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     const val = `${value}${type}`;
 
     onChange(name, val);
-  };
-
-  /**
-   * Gets element proportion type
-   *
-   * @param proportion proportion
-   */
-  const getElementProportionType = (proportion: "width" | "height") => {
-    const elementDimension = component.element.style[proportion];
-
-    if (elementDimension.endsWith("%")) return "%";
-    if (elementDimension.endsWith("px")) return "px";
-    return "px";
   };
 
   /**
