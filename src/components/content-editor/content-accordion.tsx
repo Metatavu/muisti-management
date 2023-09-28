@@ -539,6 +539,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    */
   const renderHtmlLayoutComponent = (component: TreeObject) => {
     const componentResourceIds = HtmlResourceUtils.getTreeObjectResourceIds(component);
+    console.log(component, componentResourceIds);
 
     const resources = selectedPage.resources.filter((resource) =>
       componentResourceIds.includes(resource.id)

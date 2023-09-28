@@ -26,8 +26,6 @@ interface ElementProportions {
 
 /**
  * HTML Component proportions editor
- *
- * TODO: Clean video specific stuff
  */
 const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Props) => {
   /**
@@ -53,18 +51,13 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
 
   const [settings, setSettings] = useState<ElementProportions>(getInitialSettings());
 
-  useEffect(() => {
-    let widthType = getElementProportionType("width");
-    let heightType = getElementProportionType("height");
+  // useEffect(() => {
+  //   const widthType = getElementProportionType("width");
+  //   const heightType = getElementProportionType("height");
 
-    if (component.type === HtmlComponentType.VIDEO) {
-      widthType = "px";
-      heightType = "px";
-    }
-
-    const val = `${value}${type}`;
-    onChange(name, val);
-  }, [settings]);
+  //   const val = `${value}${type}`;
+  //   onChange(name, val);
+  // }, [settings]);
 
   /**
    * Event handler for input change events

@@ -7,7 +7,6 @@ import {
   PageResourceMode
 } from "../generated/client";
 import { HtmlComponentType, TreeObject } from "../types";
-import { HtmlComponentType, TreeObject } from "../types";
 
 /**
  * Utility functions for handling html resources
@@ -109,7 +108,11 @@ namespace HtmlResourceUtils {
     const elementClone = treeObject.element.cloneNode(false) as HTMLElement;
 
     for (const childNode of treeObject.element.childNodes) {
-      if (childNode.nodeType === Node.TEXT_NODE || childNode.nodeName === "SOURCE") {
+      if (
+        childNode.nodeType === Node.TEXT_NODE ||
+        childNode.nodeName === "SOURCE" ||
+        childNode.nodeName === "IMG"
+      ) {
         elementClone.appendChild(childNode.cloneNode());
       }
     }
@@ -131,7 +134,7 @@ namespace HtmlResourceUtils {
       [HtmlComponentType.TABS]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.TAB]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.LAYOUT]: ExhibitionPageResourceType.Text,
-      [HtmlComponentType.IMAGE_BUTTON]: ExhibitionPageResourceType.Text
+      [HtmlComponentType.IMAGE_BUTTON]: ExhibitionPageResourceType.Image
     })[type];
 }
 
