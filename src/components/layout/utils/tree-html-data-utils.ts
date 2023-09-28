@@ -333,7 +333,7 @@ export const wrapHtmlLayout = (bodyContent: string) => `<!DOCTYPE html>
       </style>
     </head>
     <body>
-      ${bodyContent}
+      ${bodyContent.replaceAll(/max-width:\s*(\d+)\s*px/g, "")}
     </body>
   </html>`;
 

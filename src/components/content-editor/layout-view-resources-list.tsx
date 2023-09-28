@@ -1,6 +1,7 @@
 import { ExhibitionPageResource } from "../../generated/client/models";
 import strings from "../../localization/strings";
 import styles from "../../styles/components/content-editor/layout-view-resources-list";
+import { TreeObject } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { List, ListItem, ListItemText } from "@mui/material";
@@ -14,7 +15,8 @@ import * as React from "react";
 interface Props extends WithStyles<typeof styles> {
   resources: ExhibitionPageResource[];
   selectedResource?: ExhibitionPageResource;
-  onClick?: (resource: ExhibitionPageResource) => () => void;
+  component?: TreeObject;
+  onClick?: (resource: ExhibitionPageResource, component?: TreeObject) => () => void;
 }
 
 /**
@@ -25,6 +27,7 @@ interface Props extends WithStyles<typeof styles> {
 const LayoutViewResourcesList: React.FC<Props> = ({
   resources,
   selectedResource,
+  component,
   onClick,
   classes
 }) => {
@@ -36,7 +39,7 @@ const LayoutViewResourcesList: React.FC<Props> = ({
           button
           className={classes.listItem}
           selected={selectedResource?.id === resource.id}
-          onClick={onClick?.(resource)}
+          onClick={onClick?.(resource, component)}
         >
           <ListItemText
             primary={strings.contentEditor.editor.resource}

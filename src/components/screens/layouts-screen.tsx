@@ -5,8 +5,10 @@ import {
   DeviceModel,
   Exhibition,
   ExhibitionPage,
+  ExhibitionPageResourceType,
   LayoutType,
   PageLayout,
+  PageResourceMode,
   ScreenOrientation,
   SubLayout
 } from "../../generated/client";
@@ -22,6 +24,7 @@ import {
 } from "../../types";
 import DeleteUtils from "../../utils/delete-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
+import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewLayoutDialog from "../dialogs/add-new-layout-dialog";
 import CardItem from "../generic/card/card-item";
 import CardList from "../generic/card/card-list";
@@ -359,14 +362,25 @@ class LayoutsScreen extends Component<Props, State> {
       return;
     }
 
+    const layoutHtml = HtmlComponentsUtils.getSerializedHtmlElement(HtmlComponentType.LAYOUT);
+    const rootComponentBackgroundResource = HtmlResourceUtils.extractResourceIds(layoutHtml);
+
+    const defaultResource = {
+      id: rootComponentBackgroundResource[0],
+      data: "none",
+      type: ExhibitionPageResourceType.Image,
+      mode: PageResourceMode.Static
+    };
+
     const pageLayout: PageLayout = {
       name: name,
       screenOrientation: ScreenOrientation.Landscape,
       modelId: deviceModelId,
       layoutType: LayoutType.Html,
       data: {
-        html: HtmlComponentsUtils.getSerializedHtmlElement(HtmlComponentType.LAYOUT)
-      }
+        html: layoutHtml
+      },
+      defaultResources: [defaultResource]
     };
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const createdLayout = await layoutsApi.createPageLayout({ pageLayout });

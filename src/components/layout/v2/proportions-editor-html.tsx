@@ -1,5 +1,6 @@
 import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
@@ -33,10 +34,11 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
    * @param proportion proportion
    */
   const getElementProportionType = (proportion: "width" | "height") => {
-    const elementDimension = component.element.style[proportion];
+    const styles = HtmlComponentsUtils.parseStyles(component.element);
+    const elementDimension = styles[proportion];
 
-    if (elementDimension.endsWith("%")) return "%";
-    if (elementDimension.endsWith("px")) return "px";
+    if (elementDimension?.endsWith("%")) return "%";
+    if (elementDimension?.endsWith("px")) return "px";
     return "px";
   };
 
@@ -64,7 +66,7 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
       type = "px";
     }
 
-    const val = type === "px" ? value : `${value}${type}`;
+    const val = `${value}${type}`;
     onChange(name, val);
   }, [settings]);
 
@@ -75,7 +77,7 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
    */
   const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     const type = settings[name as keyof typeof settings];
-    const val = type === "px" ? value : `${value}${type}`;
+    const val = `${value}${type}`;
 
     onChange(name, val);
   };

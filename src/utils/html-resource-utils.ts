@@ -108,7 +108,6 @@ namespace HtmlResourceUtils {
     const elementClone = treeObject.element.cloneNode(false) as HTMLElement;
 
     for (const childNode of treeObject.element.childNodes) {
-      // TODO: Move these to constants
       if (childNode.nodeType === Node.TEXT_NODE || childNode.nodeName === "SOURCE") {
         elementClone.appendChild(childNode.cloneNode());
       }

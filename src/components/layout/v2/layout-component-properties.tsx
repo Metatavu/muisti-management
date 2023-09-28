@@ -1,5 +1,12 @@
+import {
+  ExhibitionPageResourceType,
+  PageLayout,
+  PageResourceMode
+} from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
+import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import AlignmentEditorHtml from "./alignment-editor-html";
@@ -14,12 +21,19 @@ import { ChangeEvent, FC } from "react";
 interface Props {
   component: TreeObject;
   updateComponent: (updatedComponent: TreeObject) => void;
+  pageLayout: PageLayout;
+  setPageLayout: (foundLayout: PageLayout) => void;
 }
 
 /**
  * Renders layout component properties
  */
-const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) => {
+const LayoutComponentProperties: FC<Props> = ({
+  component,
+  updateComponent,
+  pageLayout,
+  setPageLayout
+}) => {
   /**
    * Event handler for layout alignment change events
    *
@@ -27,7 +41,7 @@ const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) =>
    * @param value value
    */
   const onAlignmentChange = (name: string, value: string) => {
-    component.element.style[name as any] = value;
+    HtmlComponentsUtils.handleStyleAttributeChange(component.element, name, value);
     updateComponent(component);
   };
 
@@ -37,21 +51,67 @@ const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) =>
    * @param event event
    */
   const onPropertyChange = ({ target: { value, name } }: ChangeEvent<HTMLInputElement>) => {
-    if (!value) {
-      component.element.style.removeProperty(name);
-    } else {
-      if (name === "gap") {
-        component.element.style.gap = `${value}px ${value}px`;
-      } else {
-        component.element.style[name as any] = value;
-      }
-    }
+    const val = name === "gap" ? `${value}px ${value}px` : value;
+    HtmlComponentsUtils.handleStyleAttributeChange(component.element, name, val);
 
     updateComponent(component);
   };
 
+  /**
+   * Gets elements background image source
+   */
+  const getBackgroundImageSrc = () => {
+    const { element } = component;
+    const styles = HtmlComponentsUtils.parseStyles(element);
+    const backgroundImage = styles["background-image"];
+
+    const resourceData = HtmlResourceUtils.getResourceData(
+      pageLayout.defaultResources,
+      backgroundImage
+    );
+
+    return resourceData === "none" ? "" : resourceData?.replace("url('", "").replace("')", "");
+  };
+
+  /**
+   * Event handler for default resource change event
+   *
+   * @param event event
+   */
+  const handleDefaultResourceChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    const { element } = component;
+    const styles = HtmlComponentsUtils.parseStyles(element);
+    const backgroundImage = styles["background-image"];
+    const resourceId = HtmlResourceUtils.getResourceId(backgroundImage);
+    if (!resourceId) return;
+    const defaultResources = [
+      ...(pageLayout.defaultResources || []).filter((resource) => resource.id !== resourceId),
+      {
+        id: resourceId,
+        data: !value ? "none" : `url('${value}')`,
+        type: ExhibitionPageResourceType.Image,
+        mode: PageResourceMode.Static
+      }
+    ];
+
+    setPageLayout({
+      ...pageLayout,
+      defaultResources: defaultResources
+    });
+  };
+
   return (
     <Stack>
+      <Divider sx={{ color: "#F5F5F5" }} />
+      <PropertyBox>
+        <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.backgroundImage} />
+        <TextField
+          name="background-image"
+          value={getBackgroundImageSrc()}
+          onChange={handleDefaultResourceChange}
+          placeholder={strings.layoutEditorV2.genericProperties.backgroundImage}
+        />
+      </PropertyBox>
       <Divider sx={{ color: "#F5F5F5" }} />
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.layoutProperties.contentEmphasis} />
@@ -65,7 +125,7 @@ const LayoutComponentProperties: FC<Props> = ({ component, updateComponent }) =>
             subtitle={strings.layoutEditorV2.layoutProperties.contentDirection.label}
           />
           <SelectBox
-            name="flexDirection"
+            name="flex-direction"
             sx={{ flex: 1 }}
             value={component.element.style.flexDirection ?? "row"}
             onChange={onPropertyChange}

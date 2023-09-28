@@ -19,6 +19,7 @@ import {
   LayoutEditorView,
   TreeObject
 } from "../../types";
+import HtmlComponentsUtils from "../../utils/html-components-utils";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
@@ -70,7 +71,6 @@ const LayoutScreenHTML: FC<Props> = ({
   history,
   keycloak,
   deviceModels,
-  layout,
   layouts,
   layoutId,
   accessToken,
@@ -87,7 +87,7 @@ const LayoutScreenHTML: FC<Props> = ({
   const [addComponentDialogOpen, setAddComponentDialogOpen] = useState(false);
   const [newComponentPath, setNewComponentPath] = useState<string>();
   const [isNewComponentSibling, setIsNewComponentSibling] = useState<boolean>();
-  const [previewWidths, setPreviewWidths] = useState<{ [id: string]: number }>({});
+  const [onSaveCallback, setOnSaveCallback] = useState<() => { [key: string]: number }>(() => ({}));
 
   useEffect(() => {
     fetchLayout();
@@ -182,7 +182,6 @@ const LayoutScreenHTML: FC<Props> = ({
           ? strings.exhibitionLayouts.editView.switchToVisualButton
           : strings.exhibitionLayouts.editView.switchToCodeButton,
       action: () => {
-        setPreviewWidths({});
         setView(view === LayoutEditorView.CODE ? LayoutEditorView.VISUAL : LayoutEditorView.CODE);
       }
     },
@@ -193,16 +192,46 @@ const LayoutScreenHTML: FC<Props> = ({
     }
   ];
 
+  const addMaxWidthToComponent = (treeObject: TreeObject): TreeObject => {
+    const result = { ...treeObject };
+    const { id, element, type } = result;
+
+    if (type === HtmlComponentType.TEXT) {
+      const width = HtmlComponentsUtils.parseStyles(element)["width"];
+      const realWidths = onSaveCallback();
+      const previewWidth = realWidths[id];
+      if (width?.endsWith("%") && previewWidth) {
+        result.element = HtmlComponentsUtils.handleStyleAttributeChange(
+          element,
+          "max-width",
+          `${previewWidth}px`
+        );
+      } else {
+        result.element = HtmlComponentsUtils.handleStyleAttributeChange(element, "max-width");
+      }
+    }
+    result.children = result.children.map(addMaxWidthToComponent);
+
+    return result;
+  };
+
   /**
    * Event handler for layout save
    */
   const onLayoutSave = async () => {
     try {
       const pageLayoutsApi = Api.getPageLayoutsApi(accessToken);
+      const tree = addMaxWidthToComponent(treeObjects[0]);
+      const htmlElements = treeObjectToHtmlElement(tree);
+
+      const layout: PageLayout = {
+        ...foundLayout,
+        data: { html: htmlElements.outerHTML.replace(/^\s*\n/gm, "") } as PageLayoutViewHtml
+      };
 
       const updatedLayout = await pageLayoutsApi.updatePageLayout({
         pageLayoutId: layoutId,
-        pageLayout: foundLayout
+        pageLayout: layout
       });
 
       const updatedLayouts = layouts.filter((item) => item.id !== updatedLayout.id);
@@ -278,7 +307,7 @@ const LayoutScreenHTML: FC<Props> = ({
             screenOrientation={foundLayout.screenOrientation}
             resources={foundLayout.defaultResources || []}
             selectedComponentId={selectedComponent?.id}
-            onWidthsChange={setPreviewWidths}
+            setOnSaveCallback={setOnSaveCallback}
           />
         );
       }
@@ -331,7 +360,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
     const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
       id: resourceId,
-      data: "",
+      data: newComponent.type === HtmlComponentType.LAYOUT ? "none" : "",
       type: HtmlResourceUtils.getResourceType(newComponent.type),
       mode: PageResourceMode.Static
     }));
@@ -368,8 +397,8 @@ const LayoutScreenHTML: FC<Props> = ({
 
     const resourceIds = HtmlResourceUtils.extractResourceIds(updatedTree[0].element.outerHTML);
 
-    const updatedDefaultResources = foundLayout.defaultResources?.filter(
-      (resource) => !resourceIds.includes(resource.id)
+    const updatedDefaultResources = foundLayout.defaultResources?.filter((resource) =>
+      resourceIds.includes(resource.id)
     );
 
     const updatedHtmlElements = updatedTree.map((treeObject) =>
@@ -399,19 +428,6 @@ const LayoutScreenHTML: FC<Props> = ({
    */
   const updateComponent = (updatedComponent: TreeObject) => {
     if (!selectedComponent) return null;
-
-    const { id, element, type } = updatedComponent;
-
-    if (type === HtmlComponentType.TEXT) {
-      const width = element.style.width;
-      const previewWidth = previewWidths[id];
-
-      if (width?.endsWith("%") && previewWidth) {
-        element.style.maxWidth = `${previewWidth}px`;
-      } else {
-        element.style.removeProperty("max-width");
-      }
-    }
 
     const updatedTreeObjects = updateHtmlComponent(
       constructTree((foundLayout.data as PageLayoutViewHtml).html),

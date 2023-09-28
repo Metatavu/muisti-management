@@ -54,7 +54,12 @@ const LayoutRightPanel = ({
     switch (component.type) {
       case HtmlComponentType.LAYOUT:
         return (
-          <LayoutComponentProperties component={component} updateComponent={updateComponent} />
+          <LayoutComponentProperties
+            component={component}
+            updateComponent={updateComponent}
+            pageLayout={layout}
+            setPageLayout={setLayout}
+          />
         );
       case HtmlComponentType.TEXT:
         return (
@@ -103,12 +108,7 @@ const LayoutRightPanel = ({
       actionIcon={<CloseIcon sx={{ color: "#2196F3" }} />}
       menuOptions={getPanelMenuOptions()}
     >
-      <GenericComponentProperties
-        component={component}
-        updateComponent={updateComponent}
-        pageLayout={layout}
-        setPageLayout={setLayout}
-      />
+      <GenericComponentProperties component={component} updateComponent={updateComponent} />
       {renderComponentSpecificProperties()}
     </ElementSettingsPane>
   );

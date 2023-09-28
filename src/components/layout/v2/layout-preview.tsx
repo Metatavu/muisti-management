@@ -5,7 +5,7 @@ import PagePreviewHtml from "../../preview/page-preview-html";
 import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { styled } from "@mui/styles";
 import Fraction from "fraction.js";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 /**
  * Components properties
@@ -16,7 +16,7 @@ interface Props {
   deviceModel: DeviceModel;
   resources: ExhibitionPageResource[];
   selectedComponentId?: string;
-  onWidthsChange?: (widths: { [id: string]: number }) => void;
+  setOnSaveCallback?: Dispatch<SetStateAction<() => { [key: string]: number }>>;
 }
 
 /**
@@ -41,7 +41,7 @@ const LayoutPreviewHtml = ({
   layoutHtml,
   resources,
   selectedComponentId,
-  onWidthsChange
+  setOnSaveCallback
 }: Props) => {
   const [showElementBorders, setShowElementBorders] = useState(false);
 
@@ -81,7 +81,7 @@ const LayoutPreviewHtml = ({
           layoutHtml={layoutHtml}
           resources={resources}
           borderedElementId={showElementBorders ? selectedComponentId : undefined}
-          onWidthsChange={onWidthsChange}
+          setOnsaveCallback={setOnSaveCallback}
         />
       </PanZoom>
       <FormControlLabel
