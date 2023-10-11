@@ -1,3 +1,4 @@
+import { SOURCE_NODE_NAME, TEXT_NODE_TYPE } from "../components/content-editor/constants";
 import {
   ExhibitionPageResource,
   ExhibitionPageResourceType,
@@ -6,7 +7,6 @@ import {
   PageLayoutViewHtml,
   PageResourceMode
 } from "../generated/client";
-import { HtmlComponentType, TreeObject } from "../types";
 import { HtmlComponentType, TreeObject } from "../types";
 
 /**
@@ -109,8 +109,7 @@ namespace HtmlResourceUtils {
     const elementClone = treeObject.element.cloneNode(false) as HTMLElement;
 
     for (const childNode of treeObject.element.childNodes) {
-      // TODO: Move these to constants
-      if (childNode.nodeType === Node.TEXT_NODE || childNode.nodeName === "SOURCE") {
+      if (childNode.nodeType === TEXT_NODE_TYPE || childNode.nodeName === SOURCE_NODE_NAME) {
         elementClone.appendChild(childNode.cloneNode());
       }
     }
