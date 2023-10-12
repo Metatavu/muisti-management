@@ -6,7 +6,7 @@ import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
 import { MenuItem, Stack, Typography } from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 /**
  * Components properties
@@ -17,11 +17,6 @@ interface Props {
   name: "width" | "height";
   label: string;
   onChange: (name: string, value: string) => void;
-}
-
-interface ElementProportions {
-  width: "px" | "%";
-  height: "px" | "%";
 }
 
 /**
@@ -43,30 +38,23 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
     return "px";
   };
 
-  const getInitialSettings = () =>
-    ({
-      width: getElementProportionType("width"),
-      height: getElementProportionType("height")
-    }) as ElementProportions;
+  const [proportionType, setProportionType] = useState<"%" | "px">(getElementProportionType(name));
 
-  const [settings, setSettings] = useState<ElementProportions>(getInitialSettings());
+  const onSettingsChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    const styles = HtmlComponentsUtils.parseStyles(component.element);
+    const val = styles[name];
+    const numberVal = parseInt(val);
+    setProportionType(value as "px" | "%");
 
-  // useEffect(() => {
-  //   const widthType = getElementProportionType("width");
-  //   const heightType = getElementProportionType("height");
-
-  //   const val = `${value}${type}`;
-  //   onChange(name, val);
-  // }, [settings]);
-
+    onChange(name, `${numberVal}${value}`);
+  };
   /**
    * Event handler for input change events
    *
    * @param event event
    */
   const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
-    const type = settings[name as keyof typeof settings];
-    const val = `${value}${type}`;
+    const val = `${value}${proportionType}`;
 
     onChange(name, val);
   };
@@ -106,11 +94,9 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
         title={strings.layoutEditorV2.genericProperties.videoProportionsTooltip}
       >
         <SelectBox
-          value={settings[name]}
+          value={getElementProportionType(name)}
           disabled={component.type === HtmlComponentType.VIDEO}
-          onChange={({ target: { value } }) => {
-            setSettings({ ...settings, [name]: value as "px" | "%" });
-          }}
+          onChange={onSettingsChange}
         >
           <MenuItem value="px" sx={{ color: "#2196F3" }}>
             px
