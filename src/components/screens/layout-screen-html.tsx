@@ -242,6 +242,7 @@ const LayoutScreenHTML: FC<Props> = ({
 
       const updatedLayouts = layouts.filter((item) => item.id !== updatedLayout.id);
       setLayouts([...updatedLayouts, layout]);
+      setFoundLayout(updatedLayout);
       setDataChanged(false);
     } catch (e) {
       console.error(e);

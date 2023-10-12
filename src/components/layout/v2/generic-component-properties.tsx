@@ -137,7 +137,7 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.margin} />
           <GroupedInputsWithLock
-            styles={component.element.style}
+            styles={HtmlComponentsUtils.parseStyles(component.element)}
             type={GroupedInputsType.MARGIN}
             onChange={onPropertyChange}
           />
@@ -146,7 +146,7 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.padding} />
           <GroupedInputsWithLock
-            styles={component.element.style}
+            styles={HtmlComponentsUtils.parseStyles(component.element)}
             type={GroupedInputsType.PADDING}
             onChange={onPropertyChange}
           />

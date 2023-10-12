@@ -5,6 +5,7 @@ import {
 } from "../../../generated/client";
 import strings from "../../../localization/strings";
 import { GroupedInputsType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import HtmlResourceUtils from "../../../utils/html-resource-utils";
 import TextField from "../../generic/v2/text-field";
 import GroupedInputsWithLock from "./grouped-inputs-with-lock";
@@ -39,12 +40,9 @@ const ImageButtonComponentProperties = ({
    * @param value value
    */
   const onBorderRadiusChange = (name: string, value: string) => {
-    if (!value) {
-      component.element.style.removeProperty(name);
-    } else {
-      component.element.style[name as any] = `${value}px`;
-    }
-    updateComponent(component);
+    const element = HtmlComponentsUtils.handleStyleAttributeChange(component.element, name, value);
+
+    updateComponent({ ...component, element: element });
   };
 
   /**
@@ -114,7 +112,7 @@ const ImageButtonComponentProperties = ({
       <PropertyBox>
         <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.borderRadius} />
         <GroupedInputsWithLock
-          styles={component.element.style}
+          styles={HtmlComponentsUtils.parseStyles(component.element)}
           type={GroupedInputsType.BORDER_RADIUS}
           onChange={onBorderRadiusChange}
         />

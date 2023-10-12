@@ -81,7 +81,7 @@ const PagePreviewHtml = ({
 
   useEffect(() => {
     setOnsaveCallback?.(() => onSaveCallback);
-  });
+  }, []);
 
   /**
    * Gets preview dimensions
