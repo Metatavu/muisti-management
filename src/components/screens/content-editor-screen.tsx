@@ -1735,69 +1735,96 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return;
     }
 
-    if (pageLayout.layoutType === LayoutType.Android) {
-    } else {
-      // TODO: What to do?
+    if (pageLayout.layoutType === LayoutType.Html && pageLayout.defaultResources) {
+      const updatedResources: ExhibitionPageResource[] = selectedPage.resources.filter((resource) =>
+        pageLayout.defaultResources?.some((defaultResource) => defaultResource.id === resource.id)
+      );
+
+      for (const defaultResource of pageLayout.defaultResources) {
+        const foundResource = selectedPage.resources.find((res) => res.id === defaultResource.id);
+        if (!foundResource) {
+          updatedResources.push(defaultResource);
+        }
+      }
+      const updatedSelectedPage = {
+        ...selectedPage,
+        resources: updatedResources
+      };
+
+      this.setState((prevState) => ({
+        selectedPage: updatedSelectedPage,
+        pages: prevState.pages.map((page) =>
+          page.id === selectedPage.id ? updatedSelectedPage : page
+        )
+      }));
+
       return null;
-    }
+    } else {
+      const layoutData = pageLayout.data as PageLayoutView;
 
-    const layoutData = pageLayout.data as PageLayoutView;
+      this.setState(
+        produce((draft: State) => {
+          const resourceHolder = ResourceUtils.getResourcesFromLayoutData(layoutData);
 
-    this.setState(
-      produce((draft: State) => {
-        const resourceHolder = ResourceUtils.getResourcesFromLayoutData(layoutData);
+          draft.selectedPage = selectedPage;
+          draft.selectedLayoutView = undefined;
 
-        draft.selectedPage = selectedPage;
-        draft.selectedLayoutView = undefined;
+          resourceHolder.resources
+            .filter(
+              (layoutResource) =>
+                !selectedPage.resources.find(
+                  (pageResource) => pageResource.id === layoutResource.id
+                )
+            )
+            .forEach((missingLayoutResource) => {
+              selectedPage.resources.push(missingLayoutResource);
+            });
 
-        resourceHolder.resources
-          .filter(
-            (layoutResource) =>
-              !selectedPage.resources.find((pageResource) => pageResource.id === layoutResource.id)
-          )
-          .forEach((missingLayoutResource) => {
-            selectedPage.resources.push(missingLayoutResource);
+          const tempTriggers = [
+            ...draft.selectedPage.eventTriggers
+          ] as ExhibitionPageEventTrigger[];
+          tempTriggers.forEach((trigger) => {
+            if (!trigger.id) {
+              trigger.id = uuid();
+            }
+            if (!trigger.name) {
+              trigger.name = "Name";
+            }
           });
 
-        const tempTriggers = [...draft.selectedPage.eventTriggers] as ExhibitionPageEventTrigger[];
-        tempTriggers.forEach((trigger) => {
-          if (!trigger.id) {
-            trigger.id = uuid();
-          }
-          if (!trigger.name) {
-            trigger.name = "Name";
-          }
-        });
+          draft.selectedPage.resources.forEach((resource, index) => {
+            const resourceWidgetType = resourceHolder.resourceToWidgetType.get(resource.id);
+            if (
+              resourceWidgetType &&
+              resourceWidgetType === PageLayoutWidgetType.MaterialTabLayout
+            ) {
+              draft.tabResourceIndex = index;
+              return;
+            }
+          });
 
-        draft.selectedPage.resources.forEach((resource, index) => {
-          const resourceWidgetType = resourceHolder.resourceToWidgetType.get(resource.id);
-          if (resourceWidgetType && resourceWidgetType === PageLayoutWidgetType.MaterialTabLayout) {
-            draft.tabResourceIndex = index;
-            return;
-          }
-        });
-
-        resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
-          const tabIndex = draft.selectedPage?.resources.findIndex(
-            (resource) => resource.id === value.tabResourceId
-          );
-          if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
-            const tabComponent = ResourceUtils.getResourcesForTabComponent(
-              draft.selectedPage.resources,
-              tabIndex,
-              value.tabContentContainerId
+          resourceHolder.tabPropertyIdToTabResourceId.forEach((value, key) => {
+            const tabIndex = draft.selectedPage?.resources.findIndex(
+              (resource) => resource.id === value.tabResourceId
             );
-            draft.tabMap.set(key, {
-              activeTabIndex: 0,
-              tabComponent: tabComponent
-            });
-          }
-        });
+            if (tabIndex !== undefined && tabIndex > -1 && draft.selectedPage) {
+              const tabComponent = ResourceUtils.getResourcesForTabComponent(
+                draft.selectedPage.resources,
+                tabIndex,
+                value.tabContentContainerId
+              );
+              draft.tabMap.set(key, {
+                activeTabIndex: 0,
+                tabComponent: tabComponent
+              });
+            }
+          });
 
-        draft.selectedPage.eventTriggers = tempTriggers;
-        draft.resourceWidgetIdList = resourceHolder.widgetIds;
-      })
-    );
+          draft.selectedPage.eventTriggers = tempTriggers;
+          draft.resourceWidgetIdList = resourceHolder.widgetIds;
+        })
+      );
+    }
   };
 
   /**
