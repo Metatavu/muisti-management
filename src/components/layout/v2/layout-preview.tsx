@@ -48,7 +48,9 @@ const LayoutPreviewHtml = ({
   if (!deviceModel) return null;
 
   const {
-    dimensions: { screenHeight, screenWidth }
+    dimensions: { screenHeight, screenWidth },
+    displayMetrics,
+    screenOrientation: deviceOrientation
   } = deviceModel;
 
   return (
@@ -73,12 +75,13 @@ const LayoutPreviewHtml = ({
           {new Fraction((screenHeight ?? 0) / (screenWidth ?? 0)).toFraction().replace("/", ":")}
         </Typography>
         <PagePreviewHtml
-          deviceModel={deviceModel}
+          displayMetrics={displayMetrics}
+          deviceOrientation={deviceOrientation}
           screenOrientation={screenOrientation}
           layoutHtml={layoutHtml}
           resources={resources}
           borderedElementId={showElementBorders ? selectedComponentId : undefined}
-          onWidthsChange={ onWidthsChange }
+          onWidthsChange={onWidthsChange}
         />
       </PanZoom>
       <FormControlLabel

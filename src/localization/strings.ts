@@ -298,6 +298,7 @@ export interface IStrings extends LocalizedStringsMethods {
         tabs: string;
         tab: string;
         video: string;
+        imageButton: string;
       };
       textTypes: {
         heading1: string;
@@ -506,6 +507,7 @@ export interface IStrings extends LocalizedStringsMethods {
       element: string;
       elementName: string;
       proportions: string;
+      videoProportionsTooltip: string;
       width: string;
       height: string;
       elevation: string;
@@ -515,11 +517,16 @@ export interface IStrings extends LocalizedStringsMethods {
       };
       margin: string;
       padding: string;
+      borderRadius: string;
       tooltips: {
         top: string;
         right: string;
         bottom: string;
         left: string;
+        topLeft: string;
+        topRight: string;
+        bottomRight: string;
+        bottomLeft: string;
       };
     };
     layoutProperties: {
@@ -544,6 +551,8 @@ export interface IStrings extends LocalizedStringsMethods {
     };
     textProperties: {
       elementType: string;
+      fontSize: string;
+      lineHeight: string;
       fontColor: string;
       defaultResource: string;
     };
@@ -1033,6 +1042,7 @@ export interface IStrings extends LocalizedStringsMethods {
       tabViewDescription: string;
       tabsViewDescription: string;
       videoViewDescription: string;
+      imageButtonViewDescription: string;
     };
     contentManager: {
       animationInterpolations: {

@@ -498,6 +498,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
     previewPage: ExhibitionPage
   ) => {
     const layoutHtml = (previewLayout.data as PageLayoutViewHtml).html;
+    const { displayMetrics, screenOrientation: deviceOrientation } = deviceModel;
 
     return (
       <div key={previewPage.id} style={{ position: "relative" }}>
@@ -511,8 +512,9 @@ class ContentEditorScreen extends React.Component<Props, State> {
           {device.name} - {previewPage.name}
         </Typography>
         <PagePreviewHtml
+          displayMetrics={displayMetrics}
+          deviceOrientation={deviceOrientation}
           screenOrientation={previewLayout.screenOrientation}
-          deviceModel={deviceModel}
           layoutHtml={layoutHtml}
           resources={previewPage.resources}
         />

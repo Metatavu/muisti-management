@@ -303,7 +303,8 @@ export enum HtmlComponentType {
   TEXT = "text",
   TABS = "tabs",
   TAB = "tab",
-  VIDEO = "video"
+  VIDEO = "video",
+  IMAGE_BUTTON = "image-button"
 }
 
 /**
@@ -331,7 +332,17 @@ export enum HtmlTextComponentType {
   H4 = "H4",
   H5 = "H5",
   H6 = "H6",
-  P = "P"
+  P = "P",
+  BUTTON = "BUTTON"
+}
+
+/**
+ * Grouped inputs type enum
+ */
+export enum GroupedInputsType {
+  MARGIN = "margin",
+  PADDING = "padding",
+  BORDER_RADIUS = "border-radius"
 }
 
 // Required for Leaflet to work.

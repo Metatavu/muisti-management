@@ -1,10 +1,11 @@
 import strings from "../../../localization/strings";
-import { HtmlComponentType, TreeObject } from "../../../types";
-import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
+import { GroupedInputsType, HtmlComponentType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
+import LocalizationUtils from "../../../utils/localization-utils";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import ColorPicker from "./color-picker";
-import MarginPaddingEditorHtml from "./margin-padding-editor-html";
+import GroupedInputsWithLock from "./grouped-inputs-with-lock";
 import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import ProportionsEditorHtml from "./proportions-editor-html";
@@ -39,12 +40,30 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
    * @param value value
    */
   const onPropertyChange = (name: string, value: string) => {
-    if (!value) {
-      component.element.style.removeProperty(name);
+    let { element } = component;
+    const dimensionAttributes = ["width", "height"];
+    const { tagName } = component.element;
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO && dimensionAttributes.includes(name)) {
+      element = HtmlComponentsUtils.handleAttributeChange(element, name, value);
     } else {
-      component.element.style[name as any] = value;
+      element = HtmlComponentsUtils.handleStyleAttributeChange(element, name, value);
     }
-    updateComponent(component);
+    updateComponent({ ...component, element: element });
+  };
+
+  const getElementHeight = () => {
+    const { tagName } = component.element;
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
+      return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.height || "0").toString();
+  };
+
+  const getElementWidth = () => {
+    if (component.element.tagName === "VIDEO") {
+      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
+    }
+    return parseInt(component.element?.style?.width || "0").toString();
   };
 
   /**
@@ -74,15 +93,13 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.element} />
-          <ConditionalTooltip enabled title={strings.generic.notYetImplemented}>
-            <SelectBox value={component.type} disabled>
-              {Object.values(HtmlComponentType).map((type) => (
-                <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
-                  {type}
-                </MenuItem>
-              ))}
-            </SelectBox>
-          </ConditionalTooltip>
+          <SelectBox value={component.type} disabled>
+            {Object.values(HtmlComponentType).map((type) => (
+              <MenuItem key={type} value={type} sx={{ color: "#2196F3" }}>
+                {LocalizationUtils.getLocalizedComponentType(type)}
+              </MenuItem>
+            ))}
+          </SelectBox>
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
@@ -98,14 +115,14 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.proportions} />
           <ProportionsEditorHtml
             component={component}
-            value={parseInt(component.element?.style?.width || "0").toString()}
+            value={getElementWidth()}
             name="width"
             label={strings.layoutEditorV2.genericProperties.width}
             onChange={onPropertyChange}
           />
           <ProportionsEditorHtml
             component={component}
-            value={parseInt(component.element?.style?.height || "0").toString()}
+            value={getElementHeight()}
             name="height"
             label={strings.layoutEditorV2.genericProperties.height}
             onChange={onPropertyChange}
@@ -114,18 +131,18 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.margin} />
-          <MarginPaddingEditorHtml
+          <GroupedInputsWithLock
             styles={component.element.style}
-            type="margin"
+            type={GroupedInputsType.MARGIN}
             onChange={onPropertyChange}
           />
         </PropertyBox>
         <Divider sx={{ color: "#F5F5F5" }} />
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.padding} />
-          <MarginPaddingEditorHtml
+          <GroupedInputsWithLock
             styles={component.element.style}
-            type="padding"
+            type={GroupedInputsType.PADDING}
             onChange={onPropertyChange}
           />
         </PropertyBox>

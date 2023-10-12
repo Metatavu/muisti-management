@@ -51,7 +51,6 @@ const AlignmentEditorHtml = ({ onChange, element }: Props) => {
     const justifyItems = element.style.justifyItems;
     const alignItems = element.style.alignItems;
     const justifyContent = element.style.justifyContent;
-    const alignContent = element.style.alignContent;
 
     const alignment = Object.keys(ALIGNMENT_MAP).find((key) => {
       const alignment =
@@ -60,8 +59,7 @@ const AlignmentEditorHtml = ({ onChange, element }: Props) => {
       return (
         alignment["justify-items"] === justifyItems &&
         alignment["align-items"] === alignItems &&
-        alignment["justify-content"] === justifyContent &&
-        alignment["align-content"] === alignContent
+        alignment["justify-content"] === justifyContent
       );
     });
 
@@ -136,7 +134,6 @@ const AlignmentEditorHtml = ({ onChange, element }: Props) => {
     const alignment =
       ALIGNMENT_MAP[name as keyof typeof ALIGNMENT_MAP][direction as "row" | "column"];
 
-    onChange("align-content", alignment["align-content"]);
     onChange("justify-content", alignment["justify-content"]);
     onChange("align-items", alignment["align-items"]);
     onChange("justify-items", alignment["justify-items"]);

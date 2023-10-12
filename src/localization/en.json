@@ -288,7 +288,8 @@
         "image": "Image",
         "tabs": "Tabs",
         "tab": "Tab",
-        "video": "Video"
+        "video": "Video",
+        "imageButton": "Image button"
       },
       "textTypes": {
         "heading1": "Heading 1",
@@ -495,6 +496,7 @@
       "element": "Element",
       "elementName": "Element name",
       "proportions": "Proportions",
+      "videoProportionsTooltip": "Video element only supports pixel dimensions",
       "width": "Width",
       "height": "Height",
       "elevation": "Elevation",
@@ -504,11 +506,16 @@
       },
       "margin": "Margin",
       "padding": "Padding",
+      "borderRadius": "Border-radius",
       "tooltips": {
         "top": "Top",
         "right": "Right",
         "bottom": "Bottom",
-        "left": "Left"
+        "left": "Left",
+        "topLeft": "Top-left",
+        "topRight": "Top-right",
+        "bottomRight": "Bottom-right",
+        "bottomLeft": "Bottom-left"
       }
     },
     "layoutProperties": {
@@ -533,6 +540,8 @@
     },
     "textProperties": {
       "elementType": "Text element type",
+      "fontSize": "Font size (px)",
+      "lineHeight": "Line height",
       "fontColor": "Font color",
       "defaultResource": "Default text"
     },
@@ -1003,7 +1012,8 @@
       "layoutDescription": "Layout element",
       "tabViewDescription": "Tab element",
       "tabsViewDescription": "Tabs element",
-      "videoViewDescription": "Video element"
+      "videoViewDescription": "Video element",
+      "imageButtonViewDescription": "Image button element"
     },
     "contentManager": {
       "animationInterpolations": {
