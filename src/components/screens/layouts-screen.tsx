@@ -371,7 +371,6 @@ class LayoutsScreen extends Component<Props, State> {
       type: ExhibitionPageResourceType.Image,
       mode: PageResourceMode.Static
     };
-    console.log(defaultResource);
 
     const pageLayout: PageLayout = {
       name: name,

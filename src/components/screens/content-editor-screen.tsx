@@ -1007,7 +1007,6 @@ class ContentEditorScreen extends React.Component<Props, State> {
    * @param updatedResource updated page resource
    */
   private onUpdateResource = (updatedResource: ExhibitionPageResource, component?: TreeObject) => {
-    console.log(component?.type);
     this.setState(
       produce((draft: State) => {
         if (!draft.selectedPage) {
