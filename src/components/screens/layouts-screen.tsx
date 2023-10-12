@@ -370,8 +370,7 @@ class LayoutsScreen extends Component<Props, State> {
     };
     const layoutsApi = Api.getPageLayoutsApi(accessToken);
     const createdLayout = await layoutsApi.createPageLayout({ pageLayout });
-    layouts.push(createdLayout);
-    setLayouts(layouts);
+    setLayouts([...layouts, createdLayout]);
     this.setState({
       addNewDialogOpen: false
     });

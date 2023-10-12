@@ -3,7 +3,6 @@ import Api from "../../api/api";
 import {
   DeviceModel,
   Exhibition,
-  ExhibitionPageResourceType,
   PageLayout,
   PageLayoutViewHtml,
   PageResourceMode,
@@ -13,7 +12,13 @@ import {
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/layout-screen/layout-editor-view";
-import { AccessToken, ActionButton, HtmlComponentType, LayoutEditorView, TreeObject } from "../../types";
+import {
+  AccessToken,
+  ActionButton,
+  HtmlComponentType,
+  LayoutEditorView,
+  TreeObject
+} from "../../types";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
 import EditorView from "../editor/editor-view";
@@ -37,7 +42,7 @@ import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
@@ -83,6 +88,7 @@ const LayoutScreenHTML: FC<Props> = ({
   const [newComponentPath, setNewComponentPath] = useState<string>();
   const [isNewComponentSibling, setIsNewComponentSibling] = useState<boolean>();
   const [previewWidths, setPreviewWidths] = useState<{ [id: string]: number }>({});
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     fetchLayout();
@@ -91,6 +97,11 @@ const LayoutScreenHTML: FC<Props> = ({
   useEffect(() => {
     if (!foundLayout) return;
     setTreeObjects([...constructTree((foundLayout.data as PageLayoutViewHtml).html)]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setDataChanged(true);
   }, [foundLayout]);
 
   /**
@@ -327,7 +338,7 @@ const LayoutScreenHTML: FC<Props> = ({
     const newDefaultResources = (resourceIds ?? []).map((resourceId) => ({
       id: resourceId,
       data: "",
-      type: ExhibitionPageResourceType.Text,
+      type: HtmlResourceUtils.getResourceType(newComponent.type),
       mode: PageResourceMode.Static
     }));
 
@@ -359,13 +370,13 @@ const LayoutScreenHTML: FC<Props> = ({
    * @param id id of the component to be deleted
    */
   const deleteComponent = (componentToDelete: TreeObject) => {
-    const resourceIds = HtmlResourceUtils.extractResourceIds(componentToDelete.element.outerHTML);
+    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
+
+    const resourceIds = HtmlResourceUtils.extractResourceIds(updatedTree[0].element.outerHTML);
 
     const updatedDefaultResources = foundLayout.defaultResources?.filter(
       (resource) => !resourceIds.includes(resource.id)
     );
-
-    const updatedTree = deleteHtmlComponent(treeObjects, componentToDelete.path);
 
     const updatedHtmlElements = updatedTree.map((treeObject) =>
       treeObjectToHtmlElement(treeObject)
@@ -400,11 +411,11 @@ const LayoutScreenHTML: FC<Props> = ({
     if (type === HtmlComponentType.TEXT) {
       const width = element.style.width;
       const previewWidth = previewWidths[id];
-  
-      if (width && width.endsWith("%") && previewWidth) {
+
+      if (width?.endsWith("%") && previewWidth) {
         element.style.maxWidth = `${previewWidth}px`;
       } else {
-        element.style.maxWidth = "";
+        element.style.removeProperty("max-width");
       }
     }
 

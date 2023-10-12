@@ -4,7 +4,7 @@ import theme from "../../styles/theme";
 import LocalizationUtils from "../../utils/localization-utils";
 import GenericDialog from "../generic/generic-dialog";
 import { FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
-import { ChangeEvent, ReactNode, useState } from "react";
+import { ChangeEvent, ReactNode, useEffect, useState } from "react";
 
 /**
  * Components properties
@@ -26,6 +26,8 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
   const [tempDevice, setTempDevice] = useState<Device>(device);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => setTempDevice(device), [device]);
+
   /**
    * Event handler for dialog confirm click
    */
@@ -38,6 +40,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
       console.error(error);
     }
     setLoading(false);
+    onClose();
   };
 
   /**
@@ -56,7 +59,7 @@ const ManageDeviceDialog = ({ open, device, deviceModels, onConfirm, onClose }: 
    */
   const handleSwitchChange = (_: any, checked: boolean) => {
     setTempDevice({
-      ...device,
+      ...tempDevice,
       approvalStatus: checked ? DeviceApprovalStatus.Approved : DeviceApprovalStatus.Pending
     });
   };

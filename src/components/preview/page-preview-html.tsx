@@ -1,16 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
-import { DeviceModel, ExhibitionPageResource, ScreenOrientation } from "../../generated/client";
+import {
+  DeviceModelDisplayMetrics,
+  ExhibitionPageResource,
+  ScreenOrientation
+} from "../../generated/client";
 import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { styled } from "@mui/styles";
 import deepEqual from "fast-deep-equal";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Components properties
  */
 interface Props {
+  displayMetrics: DeviceModelDisplayMetrics;
+  deviceOrientation: ScreenOrientation;
   screenOrientation: ScreenOrientation;
   layoutHtml: string;
-  deviceModel: DeviceModel;
   resources: ExhibitionPageResource[];
   borderedElementId?: string;
   onWidthsChange?: (widths: { [id: string]: number }) => void;
@@ -47,18 +52,15 @@ const Preview = styled("iframe")(({ width, height }: PreviewProps) => ({
  * HTML Layouts Page Preview Component
  */
 const PagePreviewHtml = ({
-  deviceModel,
+  displayMetrics,
+  deviceOrientation,
   screenOrientation,
   layoutHtml,
   resources,
   borderedElementId,
   onWidthsChange
 }: Props) => {
-  if (!deviceModel) return null;
-
   const [widths, setWidths] = useState<{ [id: string]: number }>({});
-
-  const { dimensions: { screenHeight, screenWidth } } = deviceModel;
 
   const previewRef = useRef<HTMLIFrameElement>(null);
 
@@ -66,10 +68,10 @@ const PagePreviewHtml = ({
     const contentDocument = previewRef.current?.contentDocument;
     if (!onWidthsChange || !contentDocument || !layoutHtml) return;
 
-    const newWidths: { [id: string]: number } = {};    
+    const newWidths: { [id: string]: number } = {};
 
     const elements = contentDocument.querySelectorAll("[id]");
-    elements.forEach(element => {
+    elements.forEach((element) => {
       newWidths[element.id] = element.clientWidth;
     });
 
@@ -77,17 +79,15 @@ const PagePreviewHtml = ({
       setWidths(newWidths);
       onWidthsChange(newWidths);
     }
-
-  }, [ previewRef, layoutHtml, onWidthsChange ]);
+  }, [previewRef, layoutHtml, onWidthsChange]);
 
   /**
    * Gets preview dimensions
    */
   const getPreviewDimensions = () => {
     const scale = 1;
-    const deviceOrientation = deviceModel.screenOrientation;
-    const initialWidth = screenWidth ?? 1 * scale;
-    const initialHeight = screenHeight ?? 1 * scale;
+    const initialWidth = displayMetrics.widthPixels ?? 1 * scale;
+    const initialHeight = displayMetrics.heightPixels ?? 1 * scale;
 
     let height = initialHeight;
     let width = initialWidth;
@@ -130,7 +130,7 @@ const PagePreviewHtml = ({
     <>
       <div style={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }} />
       <Preview
-        ref={ previewRef }
+        ref={previewRef}
         srcDoc={wrapHtmlLayout(addBorders(replaceResources(layoutHtml, resources)))}
         {...getPreviewDimensions()}
       />
