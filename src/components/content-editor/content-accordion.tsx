@@ -61,7 +61,7 @@ interface Props extends WithStyles<typeof styles> {
   onPageDeviceChange: (deviceId: string) => void;
   onPageLayoutChange: (layoutId: string) => void;
   onPageNameChange: (text: string) => void;
-  setSelectResource: (resource: ExhibitionPageResource | undefined) => void;
+  setSelectResource: (resource?: ExhibitionPageResource, component?: TreeObject) => void;
   setSelectedTriggerIndex: (index: number | undefined) => void;
   setSelectedTabIndex: (index: number | undefined) => void;
   setSelectedLayoutView: (view: PageLayoutView | undefined) => void;
@@ -162,9 +162,10 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
    * Event handler for resource click
    *
    * @param resource resource
+   * @param treeObject tree object
    */
-  const onResourceClick = (resource: ExhibitionPageResource) => () => {
-    setSelectResource(resource);
+  const onResourceClick = (resource: ExhibitionPageResource, treeObject?: TreeObject) => () => {
+    setSelectResource(resource, treeObject);
     setSelectedTriggerIndex(undefined);
     setSelectedTabIndex(undefined);
   };
@@ -561,6 +562,7 @@ const ContentEditorContentAccordion: React.FC<Props> = ({
           <LayoutViewResourcesList
             resources={resources}
             selectedResource={selectedResource}
+            component={component}
             onClick={onResourceClick}
           />
           {eventTriggerItems && (

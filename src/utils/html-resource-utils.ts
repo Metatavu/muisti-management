@@ -1,4 +1,4 @@
-import { SOURCE_NODE_NAME, TEXT_NODE_TYPE } from "../components/content-editor/constants";
+import { ALLOWED_CHILD_NODE_NAMES, TEXT_NODE_TYPE } from "../components/content-editor/constants";
 import {
   ExhibitionPageResource,
   ExhibitionPageResourceType,
@@ -109,7 +109,10 @@ namespace HtmlResourceUtils {
     const elementClone = treeObject.element.cloneNode(false) as HTMLElement;
 
     for (const childNode of treeObject.element.childNodes) {
-      if (childNode.nodeType === TEXT_NODE_TYPE || childNode.nodeName === SOURCE_NODE_NAME) {
+      if (
+        childNode.nodeType === TEXT_NODE_TYPE ||
+        ALLOWED_CHILD_NODE_NAMES.includes(childNode.nodeName)
+      ) {
         elementClone.appendChild(childNode.cloneNode());
       }
     }
@@ -131,7 +134,7 @@ namespace HtmlResourceUtils {
       [HtmlComponentType.TABS]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.TAB]: ExhibitionPageResourceType.Text,
       [HtmlComponentType.LAYOUT]: ExhibitionPageResourceType.Text,
-      [HtmlComponentType.IMAGE_BUTTON]: ExhibitionPageResourceType.Text
+      [HtmlComponentType.IMAGE_BUTTON]: ExhibitionPageResourceType.Image
     })[type];
 }
 

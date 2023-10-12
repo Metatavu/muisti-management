@@ -30,7 +30,7 @@ namespace HtmlComponentsUtils {
   };
 
   const getHtmlLayoutElement = (name?: string) =>
-    `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row; width: 100%; height: 100%"></div>`;
+    `<div id="${uuid()}" data-component-type="layout" name="${name}" style="display: flex; flex-direction: row; width: 100%; height: 100%; background-repeat: no-repeat; background-position: center;  background-image: @resources/${uuid()};"></div>`;
   const getHtmlButtonElement = (name?: string) =>
     `<button id="${uuid()}" data-component-type="button" name="${name}">@resources/${uuid()}</button>`;
   const getHtmlTextElement = (name?: string) =>
@@ -63,13 +63,52 @@ namespace HtmlComponentsUtils {
   export const handleStyleAttributeChange = (
     element: HTMLElement,
     styleAttribute: string,
-    value: string
+    value?: string
   ): HTMLElement => {
+    const styles = parseStyles(element);
     if (!value) {
-      element.style.removeProperty(styleAttribute);
+      delete styles[styleAttribute];
     } else {
-      element.style.setProperty(styleAttribute, value);
+      styles[styleAttribute] = value;
     }
+
+    return updateStyles(element, styles);
+  };
+  /**
+   * Parses html elements styles and returns a map of styles
+   *
+   * @param element html element
+   * @returns map of styles
+   */
+  export const parseStyles = (element: HTMLElement) => {
+    const styles = element.attributes.getNamedItem("style")?.value?.split(";");
+    if (!styles) {
+      return {};
+    }
+    const styleMap: { [key: string]: string } = {};
+    for (const style of styles) {
+      const [key, value] = style.split(":");
+      if (key && value) {
+        if (key === "max-width") continue;
+        styleMap[key.trim()] = value.trim();
+      }
+    }
+
+    return styleMap;
+  };
+
+  /**
+   * Updates html elements styles
+   *
+   * @param styles map of styles
+   * @returns serialized element
+   */
+  export const updateStyles = (element: HTMLElement, styles: { [key: string]: string }) => {
+    const styleString = Object.entries(styles)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join("; ");
+
+    element.setAttribute("style", styleString);
 
     return element;
   };

@@ -1,11 +1,12 @@
 import strings from "../../../localization/strings";
 import { HtmlComponentType, TreeObject } from "../../../types";
+import HtmlComponentsUtils from "../../../utils/html-components-utils";
 import ConditionalTooltip from "../../generic/v2/conditional-tooltip";
 import SelectBox from "../../generic/v2/select-box";
 import TextField from "../../generic/v2/text-field";
 import { ExpandOutlined, HeightOutlined } from "@mui/icons-material";
 import { MenuItem, Stack, Typography } from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 /**
  * Components properties
@@ -18,15 +19,8 @@ interface Props {
   onChange: (name: string, value: string) => void;
 }
 
-interface ElementProportions {
-  width: "px" | "%";
-  height: "px" | "%";
-}
-
 /**
  * HTML Component proportions editor
- *
- * TODO: Clean video specific stuff
  */
 const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Props) => {
   /**
@@ -36,51 +30,31 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
    */
   const getElementProportionType = (proportion: "width" | "height") => {
     if (component.type === HtmlComponentType.VIDEO) return "px";
+    const styles = HtmlComponentsUtils.parseStyles(component.element);
+    const elementDimension = styles[proportion];
 
-    const elementDimension = component.element.style[proportion];
-
-    if (elementDimension.endsWith("%")) return "%";
-    if (elementDimension.endsWith("px")) return "px";
+    if (elementDimension?.endsWith("%")) return "%";
+    if (elementDimension?.endsWith("px")) return "px";
     return "px";
   };
 
-  const getInitialSettings = () =>
-    ({
-      width: getElementProportionType("width"),
-      height: getElementProportionType("height")
-    }) as ElementProportions;
+  const [proportionType, setProportionType] = useState<"%" | "px">(getElementProportionType(name));
 
-  const [settings, setSettings] = useState<ElementProportions>(getInitialSettings());
+  const onSettingsChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    const styles = HtmlComponentsUtils.parseStyles(component.element);
+    const val = styles[name];
+    const numberVal = parseInt(val);
+    setProportionType(value as "px" | "%");
 
-  useEffect(() => {
-    let widthType = getElementProportionType("width");
-    let heightType = getElementProportionType("height");
-
-    if (component.type === HtmlComponentType.VIDEO) {
-      widthType = "px";
-      heightType = "px";
-    }
-
-    setSettings({
-      width: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("width"),
-      height: component.type === HtmlComponentType.VIDEO ? "px" : getElementProportionType("height")
-    });
-  }, [component]);
-
-  useEffect(() => {
-    const type = settings[name as keyof typeof settings];
-    const val = type === "px" ? value : `${value}${type}`;
-    onChange(name, val);
-  }, [settings]);
-
+    onChange(name, `${numberVal}${value}`);
+  };
   /**
    * Event handler for input change events
    *
    * @param event event
    */
   const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
-    const type = settings[name as keyof typeof settings];
-    const val = type === "px" ? value : `${value}${type}`;
+    const val = `${value}${proportionType}`;
 
     onChange(name, val);
   };
@@ -120,11 +94,9 @@ const ProportionsEditorHtml = ({ component, value, name, label, onChange }: Prop
         title={strings.layoutEditorV2.genericProperties.videoProportionsTooltip}
       >
         <SelectBox
-          value={settings[name]}
+          value={getElementProportionType(name)}
           disabled={component.type === HtmlComponentType.VIDEO}
-          onChange={({ target: { value } }) => {
-            setSettings({ ...settings, [name]: value as "px" | "%" });
-          }}
+          onChange={onSettingsChange}
         >
           <MenuItem value="px" sx={{ color: "#2196F3" }}>
             px

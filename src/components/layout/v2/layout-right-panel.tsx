@@ -55,7 +55,12 @@ const LayoutRightPanel = ({
     switch (component.type) {
       case HtmlComponentType.LAYOUT:
         return (
-          <LayoutComponentProperties component={component} updateComponent={updateComponent} />
+          <LayoutComponentProperties
+            component={component}
+            updateComponent={updateComponent}
+            pageLayout={layout}
+            setPageLayout={setLayout}
+          />
         );
       case HtmlComponentType.TEXT:
         return (

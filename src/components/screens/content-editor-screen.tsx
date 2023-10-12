@@ -11,6 +11,7 @@ import {
   ExhibitionPageEventTriggerFromJSON,
   ExhibitionPageResource,
   ExhibitionPageResourceFromJSON,
+  ExhibitionPageResourceType,
   ExhibitionPageTransition,
   LayoutType,
   PageLayout,
@@ -27,8 +28,10 @@ import {
   AccessToken,
   ActionButton,
   ConfirmDialogData,
+  HtmlComponentType,
   LanguageOptions,
-  PreviewDeviceData
+  PreviewDeviceData,
+  TreeObject
 } from "../../types";
 import DisplayMetrics from "../../types/display-metrics";
 import AndroidUtils from "../../utils/android-utils";
@@ -135,6 +138,7 @@ interface State {
   confirmDialogData: ConfirmDialogData;
   deleteDialogOpen: boolean;
   devices: Device[];
+  selectedTreeObject?: TreeObject;
 }
 
 /**
@@ -155,6 +159,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       exhibitionDevices: [],
       previewDevicesData: [],
       pages: [],
+      devices: [],
       visitorVariables: [],
       layouts: [],
       contentVersions: [],
@@ -733,7 +738,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
         onPageDeviceChange={this.onPageDeviceChange}
         onPageLayoutChange={this.onPageLayoutChange}
         onPageNameChange={this.onPageNameChange}
-        setSelectResource={(selectedResource) => this.setState({ selectedResource })}
+        setSelectResource={this.handleResourceSelect}
         setSelectedTriggerIndex={(selectedTriggerIndex) => this.setState({ selectedTriggerIndex })}
         setSelectedTabIndex={(selectedTabIndex) => this.setState({ selectedTabIndex })}
         setSelectedLayoutView={(selectedLayoutView) => this.setState({ selectedLayoutView })}
@@ -743,6 +748,19 @@ class ContentEditorScreen extends React.Component<Props, State> {
         onAddAndroidTab={this.onAddAndroidTab}
       />
     );
+  };
+
+  /**
+   * Handles resource select
+   *
+   * @param selectedResource selected resource
+   * @param treeObject tree object
+   */
+  private handleResourceSelect = (
+    selectedResource?: ExhibitionPageResource,
+    treeObject?: TreeObject
+  ) => {
+    this.setState({ selectedResource: selectedResource, selectedTreeObject: treeObject });
   };
 
   /**
@@ -795,6 +813,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
       return (
         <ResourceEditor
           resource={selectedResource}
+          component={this.state.selectedTreeObject}
           onUpdate={this.onUpdateResource}
           visitorVariables={visitorVariables}
         />
@@ -987,7 +1006,7 @@ class ContentEditorScreen extends React.Component<Props, State> {
    *
    * @param updatedResource updated page resource
    */
-  private onUpdateResource = (updatedResource: ExhibitionPageResource) => {
+  private onUpdateResource = (updatedResource: ExhibitionPageResource, component?: TreeObject) => {
     this.setState(
       produce((draft: State) => {
         if (!draft.selectedPage) {
@@ -997,8 +1016,16 @@ class ContentEditorScreen extends React.Component<Props, State> {
         const resourceIndex = draft.selectedPage.resources.findIndex(
           (resource) => resource.id === updatedResource.id
         );
+        // At the moment layout components resource is background-image and in css format and it needs to be changed to url('') format
+        const resource =
+          component?.type === HtmlComponentType.LAYOUT
+            ? {
+                ...updatedResource,
+                data: updatedResource.data ? `url('${updatedResource.data}')` : ""
+              }
+            : updatedResource;
         if (resourceIndex > -1) {
-          draft.selectedPage.resources[resourceIndex] = updatedResource;
+          draft.selectedPage.resources[resourceIndex] = resource;
           draft.selectedResource = updatedResource;
           draft.dataChanged = true;
         }

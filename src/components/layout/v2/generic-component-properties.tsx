@@ -14,7 +14,7 @@ import {
   PaletteOutlined as PaletteOutlinedIcon
 } from "@mui/icons-material";
 import { Button, Divider, MenuItem, Stack } from "@mui/material";
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { ColorResult } from "react-color";
 
 /**
@@ -28,7 +28,7 @@ interface Props {
 /**
  * Generic Component Properties
  */
-const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) => {
+const GenericComponentProperties = ({ component, updateComponent }: Props) => {
   const [popoverAnchorElement, setPopoverAnchorElement] = useState<HTMLButtonElement>();
 
   if (!component) return null;
@@ -51,21 +51,25 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
     updateComponent({ ...component, element: element });
   };
 
+  const getElementWidth = () => {
+    const { element } = component;
+    const { tagName } = element;
+    const styles = HtmlComponentsUtils.parseStyles(element);
+    if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
+      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
+    }
+    return parseInt(styles["width"] || "0").toString();
+  };
+
   const getElementHeight = () => {
-    const { tagName } = component.element;
+    const { element } = component;
+    const { tagName } = element;
+    const styles = HtmlComponentsUtils.parseStyles(element);
     if (tagName.toLowerCase() === HtmlComponentType.VIDEO) {
       return parseInt(component.element.attributes.getNamedItem("height")?.value || "0").toString();
     }
-    return parseInt(component.element?.style?.height || "0").toString();
+    return parseInt(styles["height"] || "0").toString();
   };
-
-  const getElementWidth = () => {
-    if (component.element.tagName === "VIDEO") {
-      return parseInt(component.element.attributes.getNamedItem("width")?.value || "0").toString();
-    }
-    return parseInt(component.element?.style?.width || "0").toString();
-  };
-
   /**
    * Event handler for name change events
    *
@@ -80,14 +84,15 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
    * Gets elements background icon colors
    */
   const getElementBackgroundIconColors = () => {
-    const elementsBackgroundColor = component.element.style.backgroundColor;
+    const { element } = component;
+    const styles = HtmlComponentsUtils.parseStyles(element);
+    const elementsBackgroundColor = styles["background-color"];
 
     return {
       border: elementsBackgroundColor ? undefined : "1px solid #2196F3",
       backgroundColor: elementsBackgroundColor || "#F5F5F5"
     };
   };
-
   return (
     <>
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
@@ -132,7 +137,7 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.margin} />
           <GroupedInputsWithLock
-            styles={component.element.style}
+            styles={HtmlComponentsUtils.parseStyles(component.element)}
             type={GroupedInputsType.MARGIN}
             onChange={onPropertyChange}
           />
@@ -141,7 +146,7 @@ const GenericComponentProperties: FC<Props> = ({ component, updateComponent }) =
         <PropertyBox>
           <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.padding} />
           <GroupedInputsWithLock
-            styles={component.element.style}
+            styles={HtmlComponentsUtils.parseStyles(component.element)}
             type={GroupedInputsType.PADDING}
             onChange={onPropertyChange}
           />

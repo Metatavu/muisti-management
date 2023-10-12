@@ -5,8 +5,7 @@ import {
 } from "../../generated/client";
 import { replaceResources, wrapHtmlLayout } from "../layout/utils/tree-html-data-utils";
 import { styled } from "@mui/styles";
-import deepEqual from "fast-deep-equal";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 /**
  * Components properties
@@ -18,7 +17,7 @@ interface Props {
   layoutHtml: string;
   resources: ExhibitionPageResource[];
   borderedElementId?: string;
-  onWidthsChange?: (widths: { [id: string]: number }) => void;
+  setOnsaveCallback?: Dispatch<SetStateAction<() => { [key: string]: number }>>;
 }
 
 /**
@@ -58,28 +57,31 @@ const PagePreviewHtml = ({
   layoutHtml,
   resources,
   borderedElementId,
-  onWidthsChange
+  setOnsaveCallback
 }: Props) => {
-  const [widths, setWidths] = useState<{ [id: string]: number }>({});
-
   const previewRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
+  /**
+   * On save callback for layout screen
+   * Device application needs to know the max display width of text elements and it is calculated from the preview iframe.
+   *
+   * @returns new widths of elements
+   */
+  const onSaveCallback = () => {
     const contentDocument = previewRef.current?.contentDocument;
-    if (!onWidthsChange || !contentDocument || !layoutHtml) return;
-
     const newWidths: { [id: string]: number } = {};
 
-    const elements = contentDocument.querySelectorAll("[id]");
+    const elements = contentDocument?.querySelectorAll("[id]") ?? [];
     elements.forEach((element) => {
       newWidths[element.id] = element.clientWidth;
     });
 
-    if (!deepEqual(newWidths, widths)) {
-      setWidths(newWidths);
-      onWidthsChange(newWidths);
-    }
-  }, [previewRef, layoutHtml, onWidthsChange]);
+    return newWidths;
+  };
+
+  useEffect(() => {
+    setOnsaveCallback?.(() => onSaveCallback);
+  }, []);
 
   /**
    * Gets preview dimensions

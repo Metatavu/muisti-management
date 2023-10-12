@@ -11,7 +11,7 @@ import { ChangeEvent, useState } from "react";
 interface Props {
   type: GroupedInputsType;
   onChange: (name: string, value: string) => void;
-  styles: CSSStyleDeclaration;
+  styles: { [key: string]: string };
 }
 
 /**
@@ -28,16 +28,22 @@ const GroupedInputsWithLock = ({ type, onChange, styles }: Props) => {
    *
    * @param event event
    */
-  const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) =>
-    onChange(name, value);
+  const onValueChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    const val = value ? `${parseInt(value)}px` : "";
+
+    onChange(name, val);
+  };
 
   /**
    * Event handler for linked input change events
    *
    * @param event event
    */
-  const onLinkedValueChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
-    onChange(type, value);
+  const onLinkedValueChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    const val = value ? `${parseInt(value)}px` : "";
+
+    onChange(type, val);
+  };
 
   const suffixes =
     type === GroupedInputsType.BORDER_RADIUS ? borderRadiusSuffixes : paddingAndMarginSuffixes;
@@ -70,7 +76,7 @@ const GroupedInputsWithLock = ({ type, onChange, styles }: Props) => {
             placement="top"
           >
             <TextField
-              value={parseInt(styles[name as any] || "0").toString()}
+              value={(parseInt(styles[name] || styles[type]) || "0").toString()}
               name={name}
               inputProps={{
                 pattern: "[0-9]"

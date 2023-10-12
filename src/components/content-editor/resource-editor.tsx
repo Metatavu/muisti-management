@@ -10,7 +10,7 @@ import {
 import strings from "../../localization/strings";
 import { ReduxActions, ReduxState } from "../../store";
 import styles from "../../styles/components/content-editor/resource-editor";
-import { AccessToken } from "../../types";
+import { AccessToken, TreeObject } from "../../types";
 import ResourceUtils from "../../utils/resource-utils";
 import MediaLibrary from "../right-panel-editors/media-library";
 import { resourceModes } from "./constants";
@@ -30,7 +30,8 @@ interface Props extends WithStyles<typeof styles> {
   accessToken: AccessToken;
   resource: ExhibitionPageResource;
   visitorVariables: VisitorVariable[];
-  onUpdate: (resource: ExhibitionPageResource) => void;
+  component?: TreeObject;
+  onUpdate: (resource: ExhibitionPageResource, component?: TreeObject) => void;
 }
 
 /**
@@ -180,7 +181,7 @@ class ResourceEditor extends React.Component<Props, {}> {
    * @param child selected child
    */
   private onModeChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
-    const { resource, onUpdate } = this.props;
+    const { resource, component, onUpdate } = this.props;
     const mode = event.target.value as PageResourceMode;
 
     if (mode === resource.mode) {
@@ -200,7 +201,8 @@ class ResourceEditor extends React.Component<Props, {}> {
         }
 
         draft.mode = mode;
-      })
+      }),
+      component
     );
   };
 
@@ -248,12 +250,13 @@ class ResourceEditor extends React.Component<Props, {}> {
    * @param value value as string
    */
   private updateResourceData = (value: string) => {
-    const { resource, onUpdate } = this.props;
+    const { resource, component, onUpdate } = this.props;
 
     onUpdate(
       produce(resource, (draft) => {
         draft.data = value;
-      })
+      }),
+      component
     );
   };
 }
