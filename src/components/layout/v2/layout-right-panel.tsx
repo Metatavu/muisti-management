@@ -9,7 +9,7 @@ import ImageComponentProperties from "./image-component-properties";
 import LayoutComponentProperties from "./layout-component-properties";
 import TextComponentProperties from "./text-component-properties";
 import VideoComponentProperties from "./video-component-properties";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Menu as MenuIcon } from "@mui/icons-material";
 
 /**
  * Components properties
@@ -115,7 +115,7 @@ const LayoutRightPanel = ({
       width={250}
       open={!!component}
       title={strings.layoutEditorV2.drawerTitle}
-      actionIcon={<CloseIcon sx={{ color: "#2196F3" }} />}
+      actionIcon={<MenuIcon sx={{ color: "#2196F3" }} />}
       menuOptions={getPanelMenuOptions()}
     >
       <GenericComponentProperties component={component} updateComponent={updateComponent} />
