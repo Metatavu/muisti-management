@@ -6,7 +6,8 @@
       "devicesButton": "Laitetyypit",
       "layoutsButton": "Asettelut",
       "floorPlansButton": "Pohjapiirrustukset",
-      "spacesButton": "Tilat"
+      "spacesButton": "Tilat",
+      "fleetManagementButton": "Laitehallinta"
     },
     "tabs": {
       "floorPlanTab": "Pohjapiirros",

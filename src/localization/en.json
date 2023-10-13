@@ -6,7 +6,8 @@
       "devicesButton": "Devices",
       "layoutsButton": "Layouts",
       "floorPlansButton": "Floorplans",
-      "spacesButton": "Spaces"
+      "spacesButton": "Spaces",
+      "fleetManagementButton": "Fleet management"
     },
     "tabs": {
       "floorPlanTab": "Floorplan",

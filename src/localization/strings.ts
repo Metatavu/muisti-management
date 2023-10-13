@@ -119,6 +119,7 @@ export interface IStrings extends LocalizedStringsMethods {
       layoutsButton: string;
       floorPlansButton: string;
       spacesButton: string;
+      fleetManagementButton: string;
     };
     tabs: {
       floorPlanTab: string;

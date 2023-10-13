@@ -8,6 +8,7 @@ import ContentVersionsScreen from "./screens/content-versions-screen";
 import DeviceModelsScreen from "./screens/device-models-screen";
 import DiagnosticsScreen from "./screens/diagnostics-screen";
 import ExhibitionsScreen from "./screens/exhibitions-screen";
+import FleetManagementScreen from "./screens/fleet-management-screen";
 import FloorPlanScreen from "./screens/floor-plan-screen";
 import FloorPlansScreen from "./screens/floor-plans-screen";
 import LayoutScreenAndroid from "./screens/layout-screen-android";
@@ -67,6 +68,11 @@ class App extends React.Component<{}, {}> {
                   <div className="App">
                     <Switch>
                       <Redirect exact from="/" to="/exhibitions" />
+                      <Route
+                        path="/fleetManagement"
+                        exact
+                        render={({ history }) => <FleetManagementScreen history={history} />}
+                      />
                       <Route
                         path="/exhibitions"
                         exact
