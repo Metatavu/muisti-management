@@ -11,7 +11,6 @@ import {
   ExhibitionPageEventTriggerFromJSON,
   ExhibitionPageResource,
   ExhibitionPageResourceFromJSON,
-  ExhibitionPageResourceType,
   ExhibitionPageTransition,
   LayoutType,
   PageLayout,
@@ -36,6 +35,7 @@ import {
 import DisplayMetrics from "../../types/display-metrics";
 import AndroidUtils from "../../utils/android-utils";
 import { parseStringToJsonObject } from "../../utils/content-editor-utils";
+import GenericUtils from "../../utils/generic-utils";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import LanguageUtils from "../../utils/language-utils";
 import ResourceUtils from "../../utils/resource-utils";
@@ -1242,7 +1242,8 @@ class ContentEditorScreen extends React.Component<Props, State> {
           view === "CODE"
             ? strings.exhibitionLayouts.editView.switchToVisualButton
             : strings.exhibitionLayouts.editView.switchToCodeButton,
-        action: this.onSwitchViewClick
+        action: this.onSwitchViewClick,
+        disabled: !GenericUtils.isDeveloper(this.props.keycloak)
       }
     ];
 

@@ -19,6 +19,7 @@ import {
   LayoutEditorView,
   TreeObject
 } from "../../types";
+import GenericUtils from "../../utils/generic-utils";
 import HtmlComponentsUtils from "../../utils/html-components-utils";
 import HtmlResourceUtils from "../../utils/html-resource-utils";
 import AddNewElementDialog from "../dialogs/add-new-element-dialog";
@@ -189,7 +190,8 @@ const LayoutScreenHTML: FC<Props> = ({
           : strings.exhibitionLayouts.editView.switchToCodeButton,
       action: () => {
         setView(view === LayoutEditorView.CODE ? LayoutEditorView.VISUAL : LayoutEditorView.CODE);
-      }
+      },
+      disabled: !GenericUtils.isDeveloper(keycloak)
     },
     {
       name: strings.exhibitionLayouts.editView.saveButton,

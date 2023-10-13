@@ -24,6 +24,15 @@ namespace GenericUtils {
    * @returns Array of distinct values
    */
   export const distinctArray = <T,>(array: T[]) => [...new Set(array)];
+
+  /**
+   * Returns whether logged in user is a developer
+   *
+   * @param keycloak Keycloak instance
+   * @returns Whether logged in user is a developer
+   */
+  export const isDeveloper = (keycloak: Keycloak.KeycloakInstance) =>
+    keycloak.hasRealmRole("developer");
 }
 
 export default GenericUtils;
