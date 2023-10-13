@@ -10,10 +10,11 @@ import PanelSubtitle from "./panel-subtitle";
 import PropertyBox from "./property-box";
 import ProportionsEditorHtml from "./proportions-editor-html";
 import {
+  Close as CloseIcon,
   FormatColorFillOutlined as FormatColorFillOutlinedIcon,
   PaletteOutlined as PaletteOutlinedIcon
 } from "@mui/icons-material";
-import { Button, Divider, MenuItem, Stack } from "@mui/material";
+import { Button, Divider, IconButton, MenuItem, Stack } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
 import { ColorResult } from "react-color";
 
@@ -51,6 +52,18 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
     updateComponent({ ...component, element: element });
   };
 
+  /**
+   * Event handler for background remove events
+   */
+  const handleBackgroundRemove = () => {
+    const element = HtmlComponentsUtils.handleStyleAttributeChange(
+      component.element,
+      "background-color",
+      ""
+    );
+    updateComponent({ ...component, element: element });
+  };
+
   const getElementWidth = () => {
     const { element } = component;
     const { tagName } = element;
@@ -81,18 +94,57 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
   };
 
   /**
-   * Gets elements background icon colors
+   * Gets elements background color
    */
-  const getElementBackgroundIconColors = () => {
+  const getElementBackgroundColor = () => {
     const { element } = component;
     const styles = HtmlComponentsUtils.parseStyles(element);
-    const elementsBackgroundColor = styles["background-color"];
+
+    return styles["background-color"];
+  };
+
+  /**
+   * Gets elements background icon colors
+   */
+  const getElementsBackgroundIconColors = () => {
+    const backgroundColor = getElementBackgroundColor();
 
     return {
-      border: elementsBackgroundColor ? undefined : "1px solid #2196F3",
-      backgroundColor: elementsBackgroundColor || "#F5F5F5"
+      border: backgroundColor ? undefined : "1px solid #2196F3",
+      backgroundColor: backgroundColor || "#F5F5F5"
     };
   };
+
+  /**
+   * Renders background color remove button
+   */
+  const renderBackgroundColorRemoveButton = () => {
+    const backgroundColor = getElementBackgroundColor();
+    const buttonStyle = {
+      visibility: backgroundColor ? "visible" : "hidden"
+    };
+
+    return (
+      <IconButton onClick={handleBackgroundRemove} sx={buttonStyle}>
+        <CloseIcon />
+      </IconButton>
+    );
+  };
+
+  /**
+   * Renders background color indicator
+   */
+  const renderBackgroundColorIndicator = () => (
+    <span
+      style={{
+        width: 16,
+        height: 16,
+        borderRadius: 4,
+        ...getElementsBackgroundIconColors()
+      }}
+    />
+  );
+
   return (
     <>
       <Stack spacing={2} paddingLeft={0} paddingRight={0}>
@@ -158,14 +210,6 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
             <PanelSubtitle subtitle={strings.layoutEditorV2.genericProperties.color.label} />
           </Stack>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <span
-              style={{
-                width: 16,
-                height: 16,
-                borderRadius: 4,
-                ...getElementBackgroundIconColors()
-              }}
-            />
             <Button
               sx={{ color: "#2196F3" }}
               onClick={({ currentTarget }: React.MouseEvent<HTMLButtonElement>) =>
@@ -174,6 +218,8 @@ const GenericComponentProperties = ({ component, updateComponent }: Props) => {
             >
               {strings.layoutEditorV2.genericProperties.color.button}
             </Button>
+            {renderBackgroundColorRemoveButton()}
+            {renderBackgroundColorIndicator()}
             <FormatColorFillOutlinedIcon sx={{ color: "#2196F3" }} />
           </Stack>
         </PropertyBox>
