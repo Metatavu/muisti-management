@@ -24,8 +24,8 @@ import { CssBaseline, responsiveFontSizes } from "@mui/material";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import * as immer from "immer";
 import moment from "moment";
-import "moment/locale/en-gb";
-import "moment/locale/fi";
+import "moment/dist/locale/en-gb";
+import "moment/dist/locale/fi";
 import * as React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
@@ -48,9 +48,9 @@ class App extends React.Component<{}, {}> {
    * Component did mount life cycle component
    */
   public componentDidMount = () => {
+    strings.setLanguage("fi");
     moment.locale(strings.getLanguage());
     immer.enableAllPlugins();
-    strings.setLanguage("fi");
   };
 
   /**

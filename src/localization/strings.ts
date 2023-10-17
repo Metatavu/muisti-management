@@ -865,6 +865,8 @@ export interface IStrings extends LocalizedStringsMethods {
     properties: string;
     noSelection: string;
     notYetImplemented: string;
+    actions: string;
+    edit: string;
   };
 
   spaces: {
@@ -1150,6 +1152,7 @@ export interface IStrings extends LocalizedStringsMethods {
       };
     };
   };
+
   devicesV2: {
     name: string;
     description: string;
@@ -1159,6 +1162,8 @@ export interface IStrings extends LocalizedStringsMethods {
       offline: string;
     };
     version: string;
+    createdAt: string;
+    modifiedAt: string;
     approve: string;
     approvalStatus: {
       label: string;
@@ -1174,6 +1179,37 @@ export interface IStrings extends LocalizedStringsMethods {
     dialog: {
       title: string;
       description: string;
+    };
+  };
+  fleetManagement: {
+    title: string;
+    properties: {
+      name: string;
+      description: string;
+      status: {
+        label: string;
+        online: string;
+        offline: string;
+      };
+      version: string;
+      createdAt: string;
+      modifiedAt: string;
+      approve: string;
+      approvalStatus: {
+        label: string;
+        pending: string;
+        approved: string;
+        ready: string;
+        pendingReApproval: string;
+      };
+      serialNumber: string;
+      lastSeen: string;
+      model: string;
+    };
+    deleteDialog: {
+      title: string;
+      description: string;
+      confirmInputPlaceholder: string;
     };
   };
 }

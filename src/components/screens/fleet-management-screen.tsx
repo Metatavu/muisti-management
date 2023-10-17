@@ -1,22 +1,17 @@
 import Api from "../../api/api";
-import {
-  Device,
-  DeviceApprovalStatus,
-  DeviceModel,
-  DeviceStatus,
-  Exhibition
-} from "../../generated/client";
+import { Device, DeviceModel, Exhibition } from "../../generated/client";
 import strings from "../../localization/strings";
 import { ReduxState } from "../../store";
 import { AccessToken } from "../../types";
-import LocalizationUtils from "../../utils/localization-utils";
+import DeleteDeviceDialog from "../dialogs/delete-device-dialog";
+import EditDeviceDrawer from "../fleet-management/edit-device-drawer";
+import FleetManagementTable from "../fleet-management/fleet-management-table";
 import BasicLayout from "../layouts/basic-layout";
-import { Circle } from "@mui/icons-material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { History } from "history";
 import { KeycloakInstance } from "keycloak-js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
+
 /*
  * Component props
  */
@@ -31,16 +26,11 @@ interface Props {
 /**
  * Fleet Management Screen component
  */
-const FleetManagementScreen = ({
-  history,
-  keycloak,
-  accessToken
-  // exhibitions,
-  // deviceModels
-}: Props) => {
+const FleetManagementScreen = ({ history, keycloak, accessToken, deviceModels }: Props) => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [selectedDevice, setSelectedDevice] = useState<Device>();
+  const [selectedDevice, setSelectedDevice] = useState<Device>();
+  const [deviceToDelete, setDeviceToDelete] = useState<Device>();
   const [error, setError] = useState<Error>();
 
   /**
@@ -53,7 +43,41 @@ const FleetManagementScreen = ({
       const foundDevices = await devicesApi.listDevices({});
       setDevices(foundDevices);
     } catch (e: any) {
-      console.error(e);
+      setError(e);
+    }
+    setLoading(false);
+  };
+
+  /**
+   * Handler for save device button click
+   */
+  const handleSaveDevice = async (device: Device) => {
+    setLoading(true);
+    try {
+      if (!device.id) return;
+      const devicesApi = Api.getDevicesApi(accessToken);
+      const updatedDevice = await devicesApi.updateDevice({ deviceId: device.id, device: device });
+      setDevices(
+        devices.map((device) => (device.id === updatedDevice.id ? updatedDevice : device))
+      );
+      setSelectedDevice(undefined);
+    } catch (e: any) {
+      setError(e);
+    }
+    setLoading(false);
+  };
+
+  /**
+   * Handler for delete device button click
+   */
+  const handleDeleteDevice = async (device?: Device) => {
+    setLoading(true);
+    try {
+      if (!device?.id) return;
+      const devicesApi = Api.getDevicesApi(accessToken);
+      await devicesApi.deleteDevice({ deviceId: device.id });
+      setDevices(devices.filter((dev) => dev.id !== device.id));
+    } catch (e: any) {
       setError(e);
     }
     setLoading(false);
@@ -63,99 +87,36 @@ const FleetManagementScreen = ({
     loadDevices();
   }, []);
 
-  /**
-   * Gets correct icon for device status
-   *
-   * @param status status
-   * @returns appropriate icon
-   */
-  const getDeviceStatusIcon = (status: string) =>
-    ({
-      [DeviceStatus.Online]: <Circle color="success" />,
-      [DeviceStatus.Offline]: <Circle color="error" />
-    })[status as DeviceStatus];
-
-  const columns: GridColDef[] = useMemo(
-    () => [
-      {
-        field: "name",
-        headerName: strings.devicesV2.name,
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "serialNumber",
-        headerName: strings.devicesV2.serialNumber,
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "description",
-        headerName: strings.devicesV2.description,
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "approvalStatus",
-        headerName: strings.devicesV2.approvalStatus.label,
-        flex: 1,
-        minWidth: 100,
-        valueGetter: ({ value }) =>
-          LocalizationUtils.getLocalizedDeviceApprovalStatus(value as DeviceApprovalStatus)
-      },
-      {
-        field: "status",
-        headerName: strings.devicesV2.status.label,
-        flex: 1,
-        minWidth: 100,
-        valueGetter: getDeviceStatusIcon
-      },
-      {
-        field: "version",
-        headerName: strings.devicesV2.version,
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "lastSeen",
-        headerName: strings.devicesV2.lastSeen,
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "lastModifierId",
-        headerName: "Viimeisin muokkaaja",
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "createdAt",
-        headerName: "Luotu",
-        flex: 1,
-        minWidth: 100
-      },
-      {
-        field: "modifiedAt",
-        headerName: "Muokattu",
-        flex: 1,
-        minWidth: 100
-      }
-    ],
-    []
-  );
-
   return (
-    <BasicLayout
-      history={history}
-      title={strings.header.navigation.fleetManagementButton}
-      breadcrumbs={[]}
-      error={error}
-      actionBarButtons={[]}
-      keycloak={keycloak}
-      noBackButton
-    >
-      <DataGrid autoHeight columns={columns} loading={loading} rows={devices} />
-    </BasicLayout>
+    <>
+      <BasicLayout
+        history={history}
+        title={strings.header.navigation.fleetManagementButton}
+        breadcrumbs={[]}
+        error={error}
+        actionBarButtons={[]}
+        keycloak={keycloak}
+        noBackButton
+      >
+        <FleetManagementTable
+          devices={devices}
+          loading={loading}
+          setDeviceToDelete={setDeviceToDelete}
+          setSelectedDevice={setSelectedDevice}
+        />
+      </BasicLayout>
+      <EditDeviceDrawer
+        selectedDevice={selectedDevice}
+        deviceModels={deviceModels}
+        onSave={handleSaveDevice}
+        onClose={() => setSelectedDevice(undefined)}
+      />
+      <DeleteDeviceDialog
+        deviceToDelete={deviceToDelete}
+        onClose={() => setDeviceToDelete(undefined)}
+        onDelete={handleDeleteDevice}
+      />
+    </>
   );
 };
 

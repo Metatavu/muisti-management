@@ -1,3 +1,5 @@
+import moment from "moment";
+
 namespace GenericUtils {
   /**
    * Get any enum keys
@@ -33,6 +35,18 @@ namespace GenericUtils {
    */
   export const isDeveloper = (keycloak: Keycloak.KeycloakInstance) =>
     keycloak.hasRealmRole("developer");
+
+  /**
+   * Formats date time string to a readable format
+   *
+   * @param dateTime date time
+   * @param format format to use (default: DD.MM.yyyy HH:mm)
+   * @returns formatted date time
+   */
+  export const formatDateTime = (
+    dateTime: string | Date | undefined,
+    format = "DD.MM.yyyy HH:mm"
+  ) => moment(dateTime).format(format);
 }
 
 export default GenericUtils;

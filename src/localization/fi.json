@@ -855,7 +855,9 @@
     "properties": "Ominaisuudet",
     "noSelection": "Ei valintaa",
     "clear": "Tyhjennä",
-    "notYetImplemented": "Ei vielä toteutettu"
+    "notYetImplemented": "Ei vielä toteutettu",
+    "actions": "Toiminnot",
+    "edit": "Muokkaa"
   },
 
   "spaces": {
@@ -1135,6 +1137,8 @@
       "offline": "Pois päältä"
     },
     "version": "Versio",
+    "createdAt": "Luotu",
+    "modifiedAt": "Muokattu",
     "approve": "Ota käyttöön",
     "approvalStatus": {
       "label": "Hyväksyntätila",
@@ -1150,6 +1154,37 @@
     "dialog": {
       "title": "Hallitse laitetta",
       "description": "Tässä näkymässä voit hallita laitteen asetuksia."
+    }
+  },
+  "fleetManagement": {
+    "title": "Laitehallinta",
+    "properties": {
+      "name": "Nimi",
+      "description": "Kuvaus",
+      "status": {
+        "label": "Tila",
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "version": "Ohjelmistoversio",
+      "createdAt": "Luotu",
+      "modifiedAt": "Muokattu",
+      "approve": "Ota käyttöön",
+      "approvalStatus": {
+        "label": "Hyväksynnän tila",
+        "pending": "Odottaa",
+        "approved": "Hyväksytty",
+        "ready": "Valmis",
+        "pendingReApproval": "Odottaa uudelleenhyväksyntää"
+      },
+      "serialNumber": "Sarjanumero",
+      "lastSeen": "Viimeksi nähty",
+      "model": "Laitemalli"
+    },
+    "deleteDialog": {
+      "title": "Poista laite",
+      "description": "Kirjoita poistettavan laitteen nimi vahvistaaksesi poisto.",
+      "confirmInputPlaceholder": "Poistettavan laitteen nimi"
     }
   }
 }
