@@ -1151,6 +1151,7 @@
   },
   "fleetManagement": {
     "title": "Fleet management",
+    "drawerTitle": "Device information",
     "properties": {
       "name": "Name",
       "description": "Description",
@@ -1160,6 +1161,9 @@
         "offline": "Offline"
       },
       "version": "Software version",
+      "usageHours": "Usage hours",
+      "warrantyExpiry": "Warranty expiry",
+      "lastConnected": "Last connected",
       "createdAt": "Created at",
       "modifiedAt": "Modified at",
       "approve": "Approve",

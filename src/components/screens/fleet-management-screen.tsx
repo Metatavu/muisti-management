@@ -52,9 +52,9 @@ const FleetManagementScreen = ({ history, keycloak, accessToken, deviceModels }:
    * Handler for save device button click
    */
   const handleSaveDevice = async (device: Device) => {
+    if (!device.id) return;
     setLoading(true);
     try {
-      if (!device.id) return;
       const devicesApi = Api.getDevicesApi(accessToken);
       const updatedDevice = await devicesApi.updateDevice({ deviceId: device.id, device: device });
       setDevices(
@@ -101,6 +101,7 @@ const FleetManagementScreen = ({ history, keycloak, accessToken, deviceModels }:
         <FleetManagementTable
           devices={devices}
           loading={loading}
+          loadDevices={loadDevices}
           setDeviceToDelete={setDeviceToDelete}
           setSelectedDevice={setSelectedDevice}
         />

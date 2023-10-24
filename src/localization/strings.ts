@@ -1183,6 +1183,7 @@ export interface IStrings extends LocalizedStringsMethods {
   };
   fleetManagement: {
     title: string;
+    drawerTitle: string;
     properties: {
       name: string;
       description: string;
@@ -1192,6 +1193,9 @@ export interface IStrings extends LocalizedStringsMethods {
         offline: string;
       };
       version: string;
+      usageHours: string;
+      warrantyExpiry: string;
+      lastConnected: string;
       createdAt: string;
       modifiedAt: string;
       approve: string;

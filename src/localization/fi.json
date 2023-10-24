@@ -1158,6 +1158,7 @@
   },
   "fleetManagement": {
     "title": "Laitehallinta",
+    "drawerTitle": "Laitteen tiedot",
     "properties": {
       "name": "Nimi",
       "description": "Kuvaus",
@@ -1167,6 +1168,9 @@
         "offline": "Offline"
       },
       "version": "Ohjelmistoversio",
+      "usageHours": "Käyttötunnit",
+      "warrantyExpiry": "Takuun umpeutuminen",
+      "lastConnected": "Viimeksi yhdistetty",
       "createdAt": "Luotu",
       "modifiedAt": "Muokattu",
       "approve": "Ota käyttöön",
