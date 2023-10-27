@@ -54,10 +54,10 @@ const EditDeviceDrawer = ({ selectedDevice, deviceModels, onSave, onClose }: Pro
   /**
    * Event handler for switch change
    *
-   * @param _ event
+   * @param _event
    * @param checked checked
    */
-  const handleSwitchChange = (_: any, checked: boolean) => {
+  const handleSwitchChange = (_event: any, checked: boolean) => {
     setTempDevice({
       ...tempDevice,
       approvalStatus: checked ? DeviceApprovalStatus.Approved : DeviceApprovalStatus.Pending
@@ -67,8 +67,11 @@ const EditDeviceDrawer = ({ selectedDevice, deviceModels, onSave, onClose }: Pro
   /**
    * Renders device property field by type
    *
+   * @param type type
    * @param name name
+   * @param label label
    * @param disabled disabled
+   * @param children children
    */
   const renderDevicePropertyFieldByType = (
     type: "text" | "datetime" | "date" | "select" | "number",
@@ -198,6 +201,10 @@ const EditDeviceDrawer = ({ selectedDevice, deviceModels, onSave, onClose }: Pro
 
   /**
    * Renders device models select box
+   *
+   * @param name name
+   * @param label label
+   * @param children children
    */
   const renderDevicePropertySelectField = (name: string, label: string, children?: ReactNode) => (
     <TextField

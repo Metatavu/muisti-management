@@ -50,6 +50,8 @@ const FleetManagementScreen = ({ history, keycloak, accessToken, deviceModels }:
 
   /**
    * Handler for save device button click
+   *
+   * @param device device to save
    */
   const handleSaveDevice = async (device: Device) => {
     if (!device.id) return;
@@ -69,6 +71,8 @@ const FleetManagementScreen = ({ history, keycloak, accessToken, deviceModels }:
 
   /**
    * Handler for delete device button click
+   *
+   * @param device device to delete
    */
   const handleDeleteDevice = async (device?: Device) => {
     setLoading(true);

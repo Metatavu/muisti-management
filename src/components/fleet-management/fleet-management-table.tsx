@@ -132,7 +132,7 @@ const FleetManagementTable = ({
       },
       {
         field: "modifiedAt",
-        headerName: "Muokattu",
+        headerName: strings.fleetManagement.properties.modifiedAt,
         flex: 1,
         minWidth: 100,
         valueGetter: ({ value }) => GenericUtils.formatDateTime(value as string)
@@ -167,6 +167,7 @@ const FleetManagementTable = ({
       <GridFooter />
     </Stack>
   );
+
   return (
     <DataGrid
       autoHeight
