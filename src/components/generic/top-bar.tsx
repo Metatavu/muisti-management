@@ -1,6 +1,6 @@
 import strings from "../../localization/strings";
 import styles from "../../styles/components/generic/top-bar";
-import { ActionButton, BreadcrumbData } from "../../types";
+import { ActionButton, BreadcrumbData, NavigationButton } from "../../types";
 import ActionBar from "./action-bar";
 import Breadcrumbs from "./breadcrumbs";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -17,7 +17,6 @@ import { Link as RouterLink } from "react-router-dom";
  */
 interface Props extends WithStyles<typeof styles> {
   history: History;
-  xs;
   breadcrumbs: BreadcrumbData[];
   actionBarButtons?: ActionButton[];
   noBackButton?: boolean;
@@ -29,17 +28,29 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 /**
- * Interface representing navigation button
- */
-interface NavigationButton {
-  postfix: string;
-  text: string;
-}
-
-/**
  * Component for top bar
  */
 class TopBar extends React.Component<Props, {}> {
+  private navigationButtons: NavigationButton[] = [
+    {
+      postfix: "exhibitions",
+      label: strings.header.navigation.exhibitionsButton
+    },
+    {
+      postfix: "deviceModels",
+      label: strings.header.navigation.devicesButton
+    },
+    { postfix: "layouts", label: strings.header.navigation.layoutsButton },
+    {
+      postfix: "floorPlans",
+      label: strings.header.navigation.spacesButton
+    },
+    {
+      postfix: "fleetManagement",
+      label: strings.header.navigation.fleetManagementButton
+    }
+  ];
+
   /**
    * Constructor
    *
@@ -65,8 +76,8 @@ class TopBar extends React.Component<Props, {}> {
       hideHeader
     } = this.props;
 
-    const firstName = (keycloak.profile && keycloak.profile.firstName) ?? "";
-    const lastName = (keycloak.profile && keycloak.profile.lastName) ?? "";
+    const firstName = keycloak.profile?.firstName ?? "";
+    const lastName = keycloak.profile?.lastName ?? "";
     const initials = `${firstName.charAt(0).toUpperCase()}`;
 
     return (
@@ -117,30 +128,9 @@ class TopBar extends React.Component<Props, {}> {
    */
   private renderNavigation = () => {
     const { classes } = this.props;
-    const exhibitionsButton = {
-      postfix: "exhibitions",
-      text: strings.header.navigation.exhibitionsButton
-    };
-    // Remove commenting when users view is done
-    //const usersButton = { postfix: "users", text: strings.header.navigation.usersButton };
-    const deviceModelsButton = {
-      postfix: "deviceModels",
-      text: strings.header.navigation.devicesButton
-    };
-    const layoutsButton = { postfix: "layouts", text: strings.header.navigation.layoutsButton };
-    const floorPlansButton = {
-      postfix: "floorPlans",
-      text: strings.header.navigation.spacesButton
-    };
-
     return (
       <List disablePadding dense className={classes.navList}>
-        {this.renderNavigationButton(exhibitionsButton)}
-        {this.renderNavigationButton(layoutsButton)}
-        {this.renderNavigationButton(floorPlansButton)}
-        {/* Remove commenting when users view is done */}
-        {/* { this.renderNavigationButton(usersButton) } */}
-        {this.renderNavigationButton(deviceModelsButton)}
+        {this.navigationButtons.map(this.renderNavigationButton)}
       </List>
     );
   };
@@ -152,13 +142,14 @@ class TopBar extends React.Component<Props, {}> {
    */
   private renderNavigationButton = (navigationButton: NavigationButton) => {
     const { history } = this.props;
+    const { label, postfix } = navigationButton;
 
-    const targetUrl = `/${navigationButton.postfix}`;
+    const targetUrl = `/${postfix}`;
     const selected = history.location.pathname.includes(targetUrl);
 
     return (
-      <ListItem button selected={selected} component={RouterLink} to={targetUrl}>
-        <Typography>{navigationButton.text}</Typography>
+      <ListItem button selected={selected} component={RouterLink} to={targetUrl} key={postfix}>
+        <Typography>{label}</Typography>
       </ListItem>
     );
   };

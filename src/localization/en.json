@@ -6,7 +6,8 @@
       "devicesButton": "Devices",
       "layoutsButton": "Layouts",
       "floorPlansButton": "Floorplans",
-      "spacesButton": "Spaces"
+      "spacesButton": "Spaces",
+      "fleetManagementButton": "Fleet management"
     },
     "tabs": {
       "floorPlanTab": "Floorplan",
@@ -846,7 +847,9 @@
     "properties": "Properties",
     "noSelection": "No selection",
     "clear": "Clear",
-    "notYetImplemented": "Not yet implemented"
+    "notYetImplemented": "Not yet implemented",
+    "actions": "Actions",
+    "edit": "Modify"
   },
 
   "spaces": {
@@ -1127,9 +1130,11 @@
       "offline": "Offline"
     },
     "version": "Version",
+    "createdAt": "Created at",
+    "modifiedAt": "Modified at",
     "approve": "Approve",
     "approvalStatus": {
-      "label": "Approved",
+      "label": "Approval status",
       "pending": "Pending",
       "approved": "Approved",
       "ready": "Ready",
@@ -1142,6 +1147,41 @@
     "dialog": {
       "title": "Manage device",
       "description": "In this dialog you can manage devices settings."
+    }
+  },
+  "fleetManagement": {
+    "title": "Fleet management",
+    "drawerTitle": "Device information",
+    "properties": {
+      "name": "Name",
+      "description": "Description",
+      "status": {
+        "label": "Status",
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "version": "Software version",
+      "usageHours": "Usage hours",
+      "warrantyExpiry": "Warranty expiry",
+      "lastConnected": "Last connected",
+      "createdAt": "Created at",
+      "modifiedAt": "Modified at",
+      "approve": "Approve",
+      "approvalStatus": {
+        "label": "Approval status",
+        "pending": "Pending",
+        "approved": "Approved",
+        "ready": "Ready",
+        "pendingReApproval": "Pending re-approval"
+      },
+      "serialNumber": "Serial number",
+      "lastSeen": "Last seen",
+      "model": "Device model"
+    },
+    "deleteDialog": {
+      "title": "Delete device",
+      "description": "Type the name of the device to delete to confirm.",
+      "confirmInputPlaceholder": "Name of the device to delete"
     }
   }
 }

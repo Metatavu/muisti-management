@@ -6,7 +6,8 @@
       "devicesButton": "Laitetyypit",
       "layoutsButton": "Asettelut",
       "floorPlansButton": "Pohjapiirrustukset",
-      "spacesButton": "Tilat"
+      "spacesButton": "Tilat",
+      "fleetManagementButton": "Laitehallinta"
     },
     "tabs": {
       "floorPlanTab": "Pohjapiirros",
@@ -854,7 +855,9 @@
     "properties": "Ominaisuudet",
     "noSelection": "Ei valintaa",
     "clear": "Tyhjennä",
-    "notYetImplemented": "Ei vielä toteutettu"
+    "notYetImplemented": "Ei vielä toteutettu",
+    "actions": "Toiminnot",
+    "edit": "Muokkaa"
   },
 
   "spaces": {
@@ -1134,6 +1137,8 @@
       "offline": "Pois päältä"
     },
     "version": "Versio",
+    "createdAt": "Luotu",
+    "modifiedAt": "Muokattu",
     "approve": "Ota käyttöön",
     "approvalStatus": {
       "label": "Hyväksyntätila",
@@ -1149,6 +1154,41 @@
     "dialog": {
       "title": "Hallitse laitetta",
       "description": "Tässä näkymässä voit hallita laitteen asetuksia."
+    }
+  },
+  "fleetManagement": {
+    "title": "Laitehallinta",
+    "drawerTitle": "Laitteen tiedot",
+    "properties": {
+      "name": "Nimi",
+      "description": "Kuvaus",
+      "status": {
+        "label": "Tila",
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "version": "Ohjelmistoversio",
+      "usageHours": "Käyttötunnit",
+      "warrantyExpiry": "Takuun umpeutuminen",
+      "lastConnected": "Viimeksi yhdistetty",
+      "createdAt": "Luotu",
+      "modifiedAt": "Muokattu",
+      "approve": "Ota käyttöön",
+      "approvalStatus": {
+        "label": "Hyväksynnän tila",
+        "pending": "Odottaa",
+        "approved": "Hyväksytty",
+        "ready": "Valmis",
+        "pendingReApproval": "Odottaa uudelleenhyväksyntää"
+      },
+      "serialNumber": "Sarjanumero",
+      "lastSeen": "Viimeksi nähty",
+      "model": "Laitemalli"
+    },
+    "deleteDialog": {
+      "title": "Poista laite",
+      "description": "Kirjoita poistettavan laitteen nimi vahvistaaksesi poisto.",
+      "confirmInputPlaceholder": "Poistettavan laitteen nimi"
     }
   }
 }
