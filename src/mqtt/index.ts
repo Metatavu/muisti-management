@@ -135,19 +135,12 @@ export class Mqtt {
         return resolve();
       }
 
-      const secure = config.mqttConfig.secure !== false;
-      const host = config.mqttConfig.host;
-      const port = config.mqttConfig.port || undefined;
-      const path = config.mqttConfig.path || "";
-      const protocol = secure ? "wss://" : "ws://";
-      const username = config.mqttConfig.userName;
-      const password = config.mqttConfig.password;
-
+      const { urls, userName, password } = Config.getConfig().mqttConfig;
+      
       this.client?.connect({
-        hosts: [host!],
-        ports: [port!],
+        hosts: urls,
         keepAliveInterval: 30,
-        userName: username,
+        userName: userName,
         password: password,
         onSuccess: () => {}
       });

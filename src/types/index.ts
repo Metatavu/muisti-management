@@ -259,10 +259,7 @@ export interface KeycloakConfig {
  * Interface describing mqtt configuration
  */
 export interface MQTTConfig {
-  secure: boolean;
-  host: string;
-  port: number;
-  path: string;
+  urls: string[];
   prefix: string;
   userName: string;
   password: string;
