@@ -1,11 +1,21 @@
 /* eslint-disable new-parens */
 import * as mqtt from "mqtt";
 import { IClientOptions } from "mqtt";
+import { Config } from "../constants/configuration";
 
 /**
  * Message subscribe callback handler
  */
 export type OnMessageCallback = (message: any) => void;
+
+/**
+ * MQTT server
+ */
+interface MqttServer {
+  host: string;
+  port: number;
+  protocol: 'wss' | 'ws' | 'mqtt' | 'mqtts' | 'tcp' | 'ssl' | 'wx' | 'wxs';
+};
 
 
 /**
@@ -161,24 +171,16 @@ export class Mqtt {
         return resolve();
       }
 
-      const secure = process.env.REACT_APP_MQTT_SECURE !== "false";
-      const host = process.env.REACT_APP_MQTT_HOST;
-      const port = parseInt(process.env.REACT_APP_MQTT_PORT || "") || undefined;
-      const path = process.env.REACT_APP_MQTT_PATH || "";
-      const protocol = secure ? "wss://" : "ws://";
-      const username = process.env.REACT_APP_MQTT_USERNAME;
-      const password = process.env.REACT_APP_MQTT_PASSWORD;
+      const { urls, userName, password } = Config.getConfig().mqttConfig;
 
-      const url = `${protocol}${host}:${port}${path}`;
       const options: IClientOptions = {
-        host: host,
-        port: port,
         keepalive: 30,
-        username: username,
-        password: password
+        username: userName,
+        password: password,
+        servers: this.parseServers(urls),
       };
 
-      this.client = mqtt.connect(url, options);
+      this.client = mqtt.connect(options);
 
       this.client.on("close", this.onClientClose.bind(this));
       this.client.on("offline", this.onClientOffline.bind(this));
@@ -191,6 +193,42 @@ export class Mqtt {
       });
 
     });
+  }
+
+  /**
+   * Parses MQTT server URLs
+   * 
+   * @param urls MQTT server URLs
+   * @returns parsed MQTT servers
+   */
+  private parseServers = (urls: string[]): MqttServer[] => {
+    return urls
+      .map(url => this.parseServer(url))
+      .filter(server => server !== null) as MqttServer[];
+  }
+
+  /**
+   * Parses MQTT server URL
+   * 
+   * @param url MQTT server URL
+   * @returns parsed MQTT server
+   */
+  private parseServer = (url: string): MqttServer | null => {
+    const regex = /([a-zA-Z]{1,}):\/\/([a-zA-Z0-9-.]{1,}):([1-9]{1,})/gm;
+    const match = regex.exec(url);
+    if (!match || match.length !== 4) {
+      return null;
+    }
+
+    const protocol = match[1];
+    const host = match[2];
+    const port = parseInt(match[3]);
+
+    return {
+      port: port,
+      host: host,
+      protocol: protocol as 'wss' | 'ws' | 'mqtt' | 'mqtts' | 'tcp' | 'ssl' | 'wx' | 'wxs'
+    };
   }
 
   /**
