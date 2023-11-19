@@ -1,4 +1,4 @@
-import { cleanEnv, bool, str, url, num } from "envalid";
+import { cleanEnv, str, url, num } from "envalid";
 import { StaticConfig } from "../types";
 
 /**
@@ -11,10 +11,7 @@ const env = cleanEnv(process.env, {
   REACT_APP_API_BASE_PATH: url(),
   REACT_APP_CDN_BASE_PATH: url(),
   REACT_APP_USER_CONTENT_UPLOAD_URL: url(),
-  REACT_APP_MQTT_SECURE: bool(),
-  REACT_APP_MQTT_HOST: str(),
-  REACT_APP_MQTT_PORT: num(),
-  REACT_APP_MQTT_PATH: str(),
+  REACT_APP_MQTT_URLS: str(),
   REACT_APP_MQTT_PREFIX: str(),
   REACT_APP_MQTT_USERNAME: str(),
   REACT_APP_MQTT_PASSWORD: str(),
@@ -47,10 +44,7 @@ export class Config {
       cdnBasePath: env.REACT_APP_CDN_BASE_PATH,
       userContentUploadUrl: env.REACT_APP_USER_CONTENT_UPLOAD_URL,
       mqttConfig: {
-        secure: env.REACT_APP_MQTT_SECURE,
-        host: env.REACT_APP_MQTT_HOST,
-        port: env.REACT_APP_MQTT_PORT,
-        path: env.REACT_APP_MQTT_PATH,
+        urls: env.REACT_APP_MQTT_URLS.split(","),
         prefix: env.REACT_APP_MQTT_PREFIX,
         userName: env.REACT_APP_MQTT_USERNAME,
         password: env.REACT_APP_MQTT_PASSWORD,
